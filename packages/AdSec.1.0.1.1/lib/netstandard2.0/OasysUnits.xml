@@ -1,0 +1,2369 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OasysUnits</name>
+    </assembly>
+    <members>
+        <member name="T:Oasys.Units.AxialStiffness">
+            <inheritdoc />
+            <summary>
+                .
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_Multiply(Oasys.Units.AxialStiffness,Oasys.Units.Strain)">
+            <summary>Get <see cref="T:UnitsNet.Force"/> from <see cref="T:Oasys.Units.AxialStiffness"/> times <see cref="T:Oasys.Units.Strain"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_Division(UnitsNet.Force,Oasys.Units.AxialStiffness)">
+            <summary>Get <see cref="T:Oasys.Units.Strain"/> from <see cref="T:UnitsNet.Force"/> divided by <see cref="T:Oasys.Units.AxialStiffness"/>.</summary>
+        </member>
+        <member name="F:Oasys.Units.AxialStiffness._value">
+            <summary>
+                The numeric value this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="F:Oasys.Units.AxialStiffness._unit">
+            <summary>
+                The unit this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.#ctor(System.Double,Oasys.Units.AxialStiffnessUnit)">
+            <summary>
+                Creates the quantity with the given numeric value and unit.
+            </summary>
+            <param name="value">The numeric value to construct this quantity with.</param>
+            <param name="unit">The unit representation to construct this quantity with.</param>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.#ctor(System.Double,UnitsNet.UnitSystem)">
+            <summary>
+            Creates an instance of the quantity with the given numeric value in units compatible with the given <see cref="T:UnitsNet.UnitSystem"/>.
+            If multiple compatible units were found, the first match is used.
+            </summary>
+            <param name="value">The numeric value to construct this quantity with.</param>
+            <param name="unitSystem">The unit system to create the quantity with.</param>
+            <exception cref="T:System.ArgumentNullException">The given <see cref="T:UnitsNet.UnitSystem"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">No unit was found for the given <see cref="T:UnitsNet.UnitSystem"/>.</exception>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Info">
+            <inheritdoc cref="P:UnitsNet.IQuantity.QuantityInfo"/>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.BaseDimensions">
+            <summary>
+                The <see cref="P:Oasys.Units.AxialStiffness.BaseDimensions" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.BaseUnit">
+            <summary>
+                The base unit of AxialStiffness, which is Newton. All conversions go via this value.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.MaxValue">
+            <summary>
+            Represents the largest possible value of AxialStiffness
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.MinValue">
+            <summary>
+            Represents the smallest possible value of AxialStiffness
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.QuantityType">
+            <summary>
+                The <see cref="P:Oasys.Units.AxialStiffness.QuantityType" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Units">
+            <summary>
+                All units of measurement for the AxialStiffness quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Zero">
+            <summary>
+                Gets an instance of this quantity with a value of 0 in the base unit Newton.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Value">
+            <summary>
+                The numeric value this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Unit">
+            <inheritdoc />
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.QuantityInfo">
+            <inheritdoc />
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.UnitsNet#IQuantity#QuantityInfo">
+            <inheritdoc cref="P:UnitsNet.IQuantity.QuantityInfo"/>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Type">
+            <summary>
+                The <see cref="P:Oasys.Units.AxialStiffness.QuantityType" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Dimensions">
+            <summary>
+                The <see cref="P:Oasys.Units.AxialStiffness.BaseDimensions" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Decanewtons">
+            <summary>
+                Get AxialStiffness in Decanewtons.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Dyne">
+            <summary>
+                Get AxialStiffness in Dyne.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.KilogramsForce">
+            <summary>
+                Get AxialStiffness in KilogramsForce.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Kilonewtons">
+            <summary>
+                Get AxialStiffness in Kilonewtons.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.KiloPonds">
+            <summary>
+                Get AxialStiffness in KiloPonds.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.KilopoundsForce">
+            <summary>
+                Get AxialStiffness in KilopoundsForce.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Meganewtons">
+            <summary>
+                Get AxialStiffness in Meganewtons.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Micronewtons">
+            <summary>
+                Get AxialStiffness in Micronewtons.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Millinewtons">
+            <summary>
+                Get AxialStiffness in Millinewtons.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Newtons">
+            <summary>
+                Get AxialStiffness in Newtons.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.OunceForce">
+            <summary>
+                Get AxialStiffness in OunceForce.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.Poundals">
+            <summary>
+                Get AxialStiffness in Poundals.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.PoundsForce">
+            <summary>
+                Get AxialStiffness in PoundsForce.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.ShortTonsForce">
+            <summary>
+                Get AxialStiffness in ShortTonsForce.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.AxialStiffness.TonnesForce">
+            <summary>
+                Get AxialStiffness in TonnesForce.
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.GetAbbreviation(Oasys.Units.AxialStiffnessUnit)">
+            <summary>
+                Get unit abbreviation string.
+            </summary>
+            <param name="unit">Unit to get abbreviation for.</param>
+            <returns>Unit abbreviation string.</returns>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.GetAbbreviation(Oasys.Units.AxialStiffnessUnit,System.IFormatProvider)">
+            <summary>
+                Get unit abbreviation string.
+            </summary>
+            <param name="unit">Unit to get abbreviation for.</param>
+            <returns>Unit abbreviation string.</returns>
+            <param name="provider">Format to use for localization. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromDecanewtons(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from Decanewtons.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromDyne(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from Dyne.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromKilogramsForce(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from KilogramsForce.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromKilonewtons(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from Kilonewtons.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromKiloPonds(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from KiloPonds.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromKilopoundsForce(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from KilopoundsForce.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromMeganewtons(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from Meganewtons.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromMicronewtons(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from Micronewtons.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromMillinewtons(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from Millinewtons.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromNewtons(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from Newtons.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromOunceForce(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from OunceForce.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromPoundals(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from Poundals.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromPoundsForce(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from PoundsForce.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromShortTonsForce(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from ShortTonsForce.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.FromTonnesForce(UnitsNet.QuantityValue)">
+            <summary>
+                Get AxialStiffness from TonnesForce.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.From(UnitsNet.QuantityValue,Oasys.Units.AxialStiffnessUnit)">
+            <summary>
+                Dynamically convert from value and unit enum <see cref="T:Oasys.Units.AxialStiffnessUnit" /> to <see cref="T:Oasys.Units.AxialStiffness" />.
+            </summary>
+            <param name="value">Value to convert from.</param>
+            <param name="fromUnit">Unit to convert from.</param>
+            <returns>AxialStiffness unit value.</returns>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.ParseUnit(System.String)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <example>
+                Length.ParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <exception cref="T:System.ArgumentNullException">The value of 'str' cannot be null. </exception>
+            <exception cref="T:UnitsNet.UnitsNetException">Error parsing string.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.ParseUnit(System.String,System.IFormatProvider)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <param name="provider">Format to use when parsing number and unit. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+            <example>
+                Length.ParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <exception cref="T:System.ArgumentNullException">The value of 'str' cannot be null. </exception>
+            <exception cref="T:UnitsNet.UnitsNetException">Error parsing string.</exception>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.TryParseUnit(System.String,Oasys.Units.AxialStiffnessUnit@)">
+            <inheritdoc cref="M:Oasys.Units.AxialStiffness.TryParseUnit(System.String,System.IFormatProvider,Oasys.Units.AxialStiffnessUnit@)"/>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.TryParseUnit(System.String,System.IFormatProvider,Oasys.Units.AxialStiffnessUnit@)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <param name="unit">The parsed unit if successful.</param>
+            <returns>True if successful, otherwise false.</returns>
+            <example>
+                Length.TryParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <param name="provider">Format to use when parsing number and unit. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_UnaryNegation(Oasys.Units.AxialStiffness)">
+            <summary>Negate the value.</summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_Addition(Oasys.Units.AxialStiffness,Oasys.Units.AxialStiffness)">
+            <summary>Get <see cref="T:Oasys.Units.AxialStiffness"/> from adding two <see cref="T:Oasys.Units.AxialStiffness"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_Subtraction(Oasys.Units.AxialStiffness,Oasys.Units.AxialStiffness)">
+            <summary>Get <see cref="T:Oasys.Units.AxialStiffness"/> from subtracting two <see cref="T:Oasys.Units.AxialStiffness"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_Multiply(System.Double,Oasys.Units.AxialStiffness)">
+            <summary>Get <see cref="T:Oasys.Units.AxialStiffness"/> from multiplying value and <see cref="T:Oasys.Units.AxialStiffness"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_Multiply(Oasys.Units.AxialStiffness,System.Double)">
+            <summary>Get <see cref="T:Oasys.Units.AxialStiffness"/> from multiplying value and <see cref="T:Oasys.Units.AxialStiffness"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_Division(Oasys.Units.AxialStiffness,System.Double)">
+            <summary>Get <see cref="T:Oasys.Units.AxialStiffness"/> from dividing <see cref="T:Oasys.Units.AxialStiffness"/> by value.</summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_Division(Oasys.Units.AxialStiffness,Oasys.Units.AxialStiffness)">
+            <summary>Get ratio value from dividing <see cref="T:Oasys.Units.AxialStiffness"/> by <see cref="T:Oasys.Units.AxialStiffness"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_LessThanOrEqual(Oasys.Units.AxialStiffness,Oasys.Units.AxialStiffness)">
+            <summary>Returns true if less or equal to.</summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_GreaterThanOrEqual(Oasys.Units.AxialStiffness,Oasys.Units.AxialStiffness)">
+            <summary>Returns true if greater than or equal to.</summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_LessThan(Oasys.Units.AxialStiffness,Oasys.Units.AxialStiffness)">
+            <summary>Returns true if less than.</summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_GreaterThan(Oasys.Units.AxialStiffness,Oasys.Units.AxialStiffness)">
+            <summary>Returns true if greater than.</summary>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_Equality(Oasys.Units.AxialStiffness,Oasys.Units.AxialStiffness)">
+            <summary>Returns true if exactly equal.</summary>
+            <remarks>Consider using <see cref="M:Oasys.Units.AxialStiffness.Equals(Oasys.Units.AxialStiffness,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.op_Inequality(Oasys.Units.AxialStiffness,Oasys.Units.AxialStiffness)">
+            <summary>Returns true if not exactly equal.</summary>
+            <remarks>Consider using <see cref="M:Oasys.Units.AxialStiffness.Equals(Oasys.Units.AxialStiffness,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.CompareTo(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.CompareTo(Oasys.Units.AxialStiffness)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.Equals(System.Object)">
+            <inheritdoc />
+            <remarks>Consider using <see cref="M:Oasys.Units.AxialStiffness.Equals(Oasys.Units.AxialStiffness,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.Equals(Oasys.Units.AxialStiffness)">
+            <inheritdoc />
+            <remarks>Consider using <see cref="M:Oasys.Units.AxialStiffness.Equals(Oasys.Units.AxialStiffness,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.Equals(Oasys.Units.AxialStiffness,System.Double,UnitsNet.ComparisonType)">
+            <summary>
+                <para>
+                Compare equality to another AxialStiffness within the given absolute or relative tolerance.
+                </para>
+                <para>
+                Relative tolerance is defined as the maximum allowable absolute difference between this quantity's value and
+                <paramref name="other"/> as a percentage of this quantity's value. <paramref name="other"/> will be converted into
+                this quantity's unit for comparison. A relative tolerance of 0.01 means the absolute difference must be within +/- 1% of
+                this quantity's value to be considered equal.
+                <example>
+                In this example, the two quantities will be equal if the value of b is within +/- 1% of a (0.02m or 2cm).
+                <code>
+                var a = Length.FromMeters(2.0);
+                var b = Length.FromInches(50.0);
+                a.Equals(b, 0.01, ComparisonType.Relative);
+                </code>
+                </example>
+                </para>
+                <para>
+                Absolute tolerance is defined as the maximum allowable absolute difference between this quantity's value and
+                <paramref name="other"/> as a fixed number in this quantity's unit. <paramref name="other"/> will be converted into
+                this quantity's unit for comparison.
+                <example>
+                In this example, the two quantities will be equal if the value of b is within 0.01 of a (0.01m or 1cm).
+                <code>
+                var a = Length.FromMeters(2.0);
+                var b = Length.FromInches(50.0);
+                a.Equals(b, 0.01, ComparisonType.Absolute);
+                </code>
+                </example>
+                </para>
+                <para>
+                Note that it is advised against specifying zero difference, due to the nature
+                of floating point operations and using System.Double internally.
+                </para>
+            </summary>
+            <param name="other">The other quantity to compare to.</param>
+            <param name="tolerance">The absolute or relative tolerance value. Must be greater than or equal to 0.</param>
+            <param name="comparisonType">The comparison type: either relative or absolute.</param>
+            <returns>True if the absolute difference between the two values is not greater than the specified relative or absolute tolerance.</returns>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.GetHashCode">
+            <summary>
+                Returns the hash code for this instance.
+            </summary>
+            <returns>A hash code for the current AxialStiffness.</returns>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.As(Oasys.Units.AxialStiffnessUnit)">
+            <summary>
+                Convert to the unit representation <paramref name="unit" />.
+            </summary>
+            <returns>Value converted to the specified unit.</returns>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.As(UnitsNet.UnitSystem)">
+            <inheritdoc cref="M:UnitsNet.IQuantity.As(UnitsNet.UnitSystem)"/>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.UnitsNet#IQuantity#As(System.Enum)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.ToUnit(Oasys.Units.AxialStiffnessUnit)">
+            <summary>
+                Converts this AxialStiffness to another AxialStiffness with the unit representation <paramref name="unit" />.
+            </summary>
+            <returns>A AxialStiffness with the specified unit.</returns>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.UnitsNet#IQuantity#ToUnit(System.Enum)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc cref="M:UnitsNet.IQuantity.ToUnit(UnitsNet.UnitSystem)"/>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.UnitsNet#IQuantity#ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.UnitsNet#IQuantity{Oasys#Units#AxialStiffnessUnit}#ToUnit(Oasys.Units.AxialStiffnessUnit)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.UnitsNet#IQuantity{Oasys#Units#AxialStiffnessUnit}#ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.GetValueInBaseUnit">
+            <summary>
+                Converts the current value + unit to the base unit.
+                This is typically the first step in converting from one unit to another.
+            </summary>
+            <returns>The value in the base unit representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.ToBaseUnit">
+            <summary>
+                Converts the current value + unit to the base unit.
+                This is typically the first step in converting from one unit to another.
+            </summary>
+            <returns>The value in the base unit representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.ToString">
+            <summary>
+                Gets the default string representation of value and unit.
+            </summary>
+            <returns>String representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.ToString(System.IFormatProvider)">
+            <summary>
+                Gets the default string representation of value and unit using the given format provider.
+            </summary>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.ToString(System.IFormatProvider,System.Int32)">
+            <summary>
+                Get string representation of value and unit.
+            </summary>
+            <param name="significantDigitsAfterRadix">The number of significant digits after the radix point.</param>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.ToString(System.IFormatProvider,System.String,System.Object[])">
+            <summary>
+                Get string representation of value and unit.
+            </summary>
+            <param name="format">String format to use. Default:  "{0:0.##} {1} for value and unit abbreviation respectively."</param>
+            <param name="args">Arguments for string format. Value and unit are implicitly included as arguments 0 and 1.</param>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.ToString(System.String)">
+            <inheritdoc cref="M:UnitsNet.QuantityFormatter.Format``1(UnitsNet.IQuantity{``0},System.String,System.IFormatProvider)"/>
+            <summary>
+            Gets the string representation of this instance in the specified format string using <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" />.
+            </summary>
+            <param name="format">The format string.</param>
+            <returns>The string representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.AxialStiffness.ToString(System.String,System.IFormatProvider)">
+            <inheritdoc cref="M:UnitsNet.QuantityFormatter.Format``1(UnitsNet.IQuantity{``0},System.String,System.IFormatProvider)"/>
+            <summary>
+            Gets the string representation of this instance in the specified format string using the specified format provider, or <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.
+            </summary>
+            <param name="format">The format string.</param>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+            <returns>The string representation.</returns>
+        </member>
+        <member name="T:Oasys.Units.BendingStiffness">
+            <inheritdoc />
+            <summary>
+                .
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_Multiply(Oasys.Units.BendingStiffness,Oasys.Units.Curvature)">
+            <summary>Get <see cref="T:Oasys.Units.Moment"/> from <see cref="T:Oasys.Units.BendingStiffness"/> times <see cref="T:Oasys.Units.Curvature"/>.</summary>
+        </member>
+        <member name="F:Oasys.Units.BendingStiffness._value">
+            <summary>
+                The numeric value this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="F:Oasys.Units.BendingStiffness._unit">
+            <summary>
+                The unit this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.#ctor(System.Double,Oasys.Units.BendingStiffnessUnit)">
+            <summary>
+                Creates the quantity with the given numeric value and unit.
+            </summary>
+            <param name="value">The numeric value to construct this quantity with.</param>
+            <param name="unit">The unit representation to construct this quantity with.</param>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.#ctor(System.Double,UnitsNet.UnitSystem)">
+            <summary>
+            Creates an instance of the quantity with the given numeric value in units compatible with the given <see cref="T:UnitsNet.UnitSystem"/>.
+            If multiple compatible units were found, the first match is used.
+            </summary>
+            <param name="value">The numeric value to construct this quantity with.</param>
+            <param name="unitSystem">The unit system to create the quantity with.</param>
+            <exception cref="T:System.ArgumentNullException">The given <see cref="T:UnitsNet.UnitSystem"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">No unit was found for the given <see cref="T:UnitsNet.UnitSystem"/>.</exception>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.Info">
+            <inheritdoc cref="P:UnitsNet.IQuantity.QuantityInfo"/>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.BaseDimensions">
+            <summary>
+                The <see cref="P:Oasys.Units.BendingStiffness.BaseDimensions" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.BaseUnit">
+            <summary>
+                The base unit of BendingStiffness, which is NewtonSquareMeter. All conversions go via this value.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.MaxValue">
+            <summary>
+            Represents the largest possible value of BendingStiffness
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.MinValue">
+            <summary>
+            Represents the smallest possible value of BendingStiffness
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.QuantityType">
+            <summary>
+                The <see cref="P:Oasys.Units.BendingStiffness.QuantityType" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.Units">
+            <summary>
+                All units of measurement for the BendingStiffness quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.Zero">
+            <summary>
+                Gets an instance of this quantity with a value of 0 in the base unit NewtonSquareMeter.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.Value">
+            <summary>
+                The numeric value this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.Unit">
+            <inheritdoc />
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.QuantityInfo">
+            <inheritdoc />
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.UnitsNet#IQuantity#QuantityInfo">
+            <inheritdoc cref="P:UnitsNet.IQuantity.QuantityInfo"/>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.Type">
+            <summary>
+                The <see cref="P:Oasys.Units.BendingStiffness.QuantityType" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.Dimensions">
+            <summary>
+                The <see cref="P:Oasys.Units.BendingStiffness.BaseDimensions" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.KilonewtonSquareMeters">
+            <summary>
+                Get BendingStiffness in KilonewtonSquareMeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.KilonewtonSquareMillimeters">
+            <summary>
+                Get BendingStiffness in KilonewtonSquareMillimeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.NewtonSquareMeters">
+            <summary>
+                Get BendingStiffness in NewtonSquareMeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.NewtonSquareMillimeters">
+            <summary>
+                Get BendingStiffness in NewtonSquareMillimeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.PoundsForceSquareFeet">
+            <summary>
+                Get BendingStiffness in PoundsForceSquareFeet.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.BendingStiffness.PoundsForceSquareInches">
+            <summary>
+                Get BendingStiffness in PoundsForceSquareInches.
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.GetAbbreviation(Oasys.Units.BendingStiffnessUnit)">
+            <summary>
+                Get unit abbreviation string.
+            </summary>
+            <param name="unit">Unit to get abbreviation for.</param>
+            <returns>Unit abbreviation string.</returns>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.GetAbbreviation(Oasys.Units.BendingStiffnessUnit,System.IFormatProvider)">
+            <summary>
+                Get unit abbreviation string.
+            </summary>
+            <param name="unit">Unit to get abbreviation for.</param>
+            <returns>Unit abbreviation string.</returns>
+            <param name="provider">Format to use for localization. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.FromKilonewtonSquareMeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get BendingStiffness from KilonewtonSquareMeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.FromKilonewtonSquareMillimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get BendingStiffness from KilonewtonSquareMillimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.FromNewtonSquareMeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get BendingStiffness from NewtonSquareMeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.FromNewtonSquareMillimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get BendingStiffness from NewtonSquareMillimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.FromPoundsForceSquareFeet(UnitsNet.QuantityValue)">
+            <summary>
+                Get BendingStiffness from PoundsForceSquareFeet.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.FromPoundsForceSquareInches(UnitsNet.QuantityValue)">
+            <summary>
+                Get BendingStiffness from PoundsForceSquareInches.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.From(UnitsNet.QuantityValue,Oasys.Units.BendingStiffnessUnit)">
+            <summary>
+                Dynamically convert from value and unit enum <see cref="T:Oasys.Units.BendingStiffnessUnit" /> to <see cref="T:Oasys.Units.BendingStiffness" />.
+            </summary>
+            <param name="value">Value to convert from.</param>
+            <param name="fromUnit">Unit to convert from.</param>
+            <returns>BendingStiffness unit value.</returns>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.ParseUnit(System.String)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <example>
+                Length.ParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <exception cref="T:System.ArgumentNullException">The value of 'str' cannot be null. </exception>
+            <exception cref="T:UnitsNet.UnitsNetException">Error parsing string.</exception>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.ParseUnit(System.String,System.IFormatProvider)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <param name="provider">Format to use when parsing number and unit. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+            <example>
+                Length.ParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <exception cref="T:System.ArgumentNullException">The value of 'str' cannot be null. </exception>
+            <exception cref="T:UnitsNet.UnitsNetException">Error parsing string.</exception>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.TryParseUnit(System.String,Oasys.Units.BendingStiffnessUnit@)">
+            <inheritdoc cref="M:Oasys.Units.BendingStiffness.TryParseUnit(System.String,System.IFormatProvider,Oasys.Units.BendingStiffnessUnit@)"/>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.TryParseUnit(System.String,System.IFormatProvider,Oasys.Units.BendingStiffnessUnit@)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <param name="unit">The parsed unit if successful.</param>
+            <returns>True if successful, otherwise false.</returns>
+            <example>
+                Length.TryParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <param name="provider">Format to use when parsing number and unit. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_UnaryNegation(Oasys.Units.BendingStiffness)">
+            <summary>Negate the value.</summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_Addition(Oasys.Units.BendingStiffness,Oasys.Units.BendingStiffness)">
+            <summary>Get <see cref="T:Oasys.Units.BendingStiffness"/> from adding two <see cref="T:Oasys.Units.BendingStiffness"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_Subtraction(Oasys.Units.BendingStiffness,Oasys.Units.BendingStiffness)">
+            <summary>Get <see cref="T:Oasys.Units.BendingStiffness"/> from subtracting two <see cref="T:Oasys.Units.BendingStiffness"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_Multiply(System.Double,Oasys.Units.BendingStiffness)">
+            <summary>Get <see cref="T:Oasys.Units.BendingStiffness"/> from multiplying value and <see cref="T:Oasys.Units.BendingStiffness"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_Multiply(Oasys.Units.BendingStiffness,System.Double)">
+            <summary>Get <see cref="T:Oasys.Units.BendingStiffness"/> from multiplying value and <see cref="T:Oasys.Units.BendingStiffness"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_Division(Oasys.Units.BendingStiffness,System.Double)">
+            <summary>Get <see cref="T:Oasys.Units.BendingStiffness"/> from dividing <see cref="T:Oasys.Units.BendingStiffness"/> by value.</summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_Division(Oasys.Units.BendingStiffness,Oasys.Units.BendingStiffness)">
+            <summary>Get ratio value from dividing <see cref="T:Oasys.Units.BendingStiffness"/> by <see cref="T:Oasys.Units.BendingStiffness"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_LessThanOrEqual(Oasys.Units.BendingStiffness,Oasys.Units.BendingStiffness)">
+            <summary>Returns true if less or equal to.</summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_GreaterThanOrEqual(Oasys.Units.BendingStiffness,Oasys.Units.BendingStiffness)">
+            <summary>Returns true if greater than or equal to.</summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_LessThan(Oasys.Units.BendingStiffness,Oasys.Units.BendingStiffness)">
+            <summary>Returns true if less than.</summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_GreaterThan(Oasys.Units.BendingStiffness,Oasys.Units.BendingStiffness)">
+            <summary>Returns true if greater than.</summary>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_Equality(Oasys.Units.BendingStiffness,Oasys.Units.BendingStiffness)">
+            <summary>Returns true if exactly equal.</summary>
+            <remarks>Consider using <see cref="M:Oasys.Units.BendingStiffness.Equals(Oasys.Units.BendingStiffness,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.op_Inequality(Oasys.Units.BendingStiffness,Oasys.Units.BendingStiffness)">
+            <summary>Returns true if not exactly equal.</summary>
+            <remarks>Consider using <see cref="M:Oasys.Units.BendingStiffness.Equals(Oasys.Units.BendingStiffness,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.CompareTo(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.CompareTo(Oasys.Units.BendingStiffness)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.Equals(System.Object)">
+            <inheritdoc />
+            <remarks>Consider using <see cref="M:Oasys.Units.BendingStiffness.Equals(Oasys.Units.BendingStiffness,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.Equals(Oasys.Units.BendingStiffness)">
+            <inheritdoc />
+            <remarks>Consider using <see cref="M:Oasys.Units.BendingStiffness.Equals(Oasys.Units.BendingStiffness,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.Equals(Oasys.Units.BendingStiffness,System.Double,UnitsNet.ComparisonType)">
+            <summary>
+                <para>
+                Compare equality to another BendingStiffness within the given absolute or relative tolerance.
+                </para>
+                <para>
+                Relative tolerance is defined as the maximum allowable absolute difference between this quantity's value and
+                <paramref name="other"/> as a percentage of this quantity's value. <paramref name="other"/> will be converted into
+                this quantity's unit for comparison. A relative tolerance of 0.01 means the absolute difference must be within +/- 1% of
+                this quantity's value to be considered equal.
+                <example>
+                In this example, the two quantities will be equal if the value of b is within +/- 1% of a (0.02m or 2cm).
+                <code>
+                var a = Length.FromMeters(2.0);
+                var b = Length.FromInches(50.0);
+                a.Equals(b, 0.01, ComparisonType.Relative);
+                </code>
+                </example>
+                </para>
+                <para>
+                Absolute tolerance is defined as the maximum allowable absolute difference between this quantity's value and
+                <paramref name="other"/> as a fixed number in this quantity's unit. <paramref name="other"/> will be converted into
+                this quantity's unit for comparison.
+                <example>
+                In this example, the two quantities will be equal if the value of b is within 0.01 of a (0.01m or 1cm).
+                <code>
+                var a = Length.FromMeters(2.0);
+                var b = Length.FromInches(50.0);
+                a.Equals(b, 0.01, ComparisonType.Absolute);
+                </code>
+                </example>
+                </para>
+                <para>
+                Note that it is advised against specifying zero difference, due to the nature
+                of floating point operations and using System.Double internally.
+                </para>
+            </summary>
+            <param name="other">The other quantity to compare to.</param>
+            <param name="tolerance">The absolute or relative tolerance value. Must be greater than or equal to 0.</param>
+            <param name="comparisonType">The comparison type: either relative or absolute.</param>
+            <returns>True if the absolute difference between the two values is not greater than the specified relative or absolute tolerance.</returns>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.GetHashCode">
+            <summary>
+                Returns the hash code for this instance.
+            </summary>
+            <returns>A hash code for the current BendingStiffness.</returns>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.As(Oasys.Units.BendingStiffnessUnit)">
+            <summary>
+                Convert to the unit representation <paramref name="unit" />.
+            </summary>
+            <returns>Value converted to the specified unit.</returns>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.As(UnitsNet.UnitSystem)">
+            <inheritdoc cref="M:UnitsNet.IQuantity.As(UnitsNet.UnitSystem)"/>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.UnitsNet#IQuantity#As(System.Enum)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.ToUnit(Oasys.Units.BendingStiffnessUnit)">
+            <summary>
+                Converts this BendingStiffness to another BendingStiffness with the unit representation <paramref name="unit" />.
+            </summary>
+            <returns>A BendingStiffness with the specified unit.</returns>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.UnitsNet#IQuantity#ToUnit(System.Enum)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc cref="M:UnitsNet.IQuantity.ToUnit(UnitsNet.UnitSystem)"/>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.UnitsNet#IQuantity#ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.UnitsNet#IQuantity{Oasys#Units#BendingStiffnessUnit}#ToUnit(Oasys.Units.BendingStiffnessUnit)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.UnitsNet#IQuantity{Oasys#Units#BendingStiffnessUnit}#ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.GetValueInBaseUnit">
+            <summary>
+                Converts the current value + unit to the base unit.
+                This is typically the first step in converting from one unit to another.
+            </summary>
+            <returns>The value in the base unit representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.ToBaseUnit">
+            <summary>
+                Converts the current value + unit to the base unit.
+                This is typically the first step in converting from one unit to another.
+            </summary>
+            <returns>The value in the base unit representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.ToString">
+            <summary>
+                Gets the default string representation of value and unit.
+            </summary>
+            <returns>String representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.ToString(System.IFormatProvider)">
+            <summary>
+                Gets the default string representation of value and unit using the given format provider.
+            </summary>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.ToString(System.IFormatProvider,System.Int32)">
+            <summary>
+                Get string representation of value and unit.
+            </summary>
+            <param name="significantDigitsAfterRadix">The number of significant digits after the radix point.</param>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.ToString(System.IFormatProvider,System.String,System.Object[])">
+            <summary>
+                Get string representation of value and unit.
+            </summary>
+            <param name="format">String format to use. Default:  "{0:0.##} {1} for value and unit abbreviation respectively."</param>
+            <param name="args">Arguments for string format. Value and unit are implicitly included as arguments 0 and 1.</param>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.ToString(System.String)">
+            <inheritdoc cref="M:UnitsNet.QuantityFormatter.Format``1(UnitsNet.IQuantity{``0},System.String,System.IFormatProvider)"/>
+            <summary>
+            Gets the string representation of this instance in the specified format string using <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" />.
+            </summary>
+            <param name="format">The format string.</param>
+            <returns>The string representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.BendingStiffness.ToString(System.String,System.IFormatProvider)">
+            <inheritdoc cref="M:UnitsNet.QuantityFormatter.Format``1(UnitsNet.IQuantity{``0},System.String,System.IFormatProvider)"/>
+            <summary>
+            Gets the string representation of this instance in the specified format string using the specified format provider, or <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.
+            </summary>
+            <param name="format">The format string.</param>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+            <returns>The string representation.</returns>
+        </member>
+        <member name="T:Oasys.Units.Moment">
+            <inheritdoc />
+            <summary>
+                .
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_Division(Oasys.Units.Moment,UnitsNet.Length)">
+            <summary>Get <see cref="T:UnitsNet.Force"/> from <see cref="T:Oasys.Units.Moment"/> times <see cref="T:UnitsNet.Length"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_Division(Oasys.Units.Moment,UnitsNet.Force)">
+            <summary>Get <see cref="T:UnitsNet.Length"/> from <see cref="T:Oasys.Units.Moment"/> times <see cref="T:UnitsNet.Force"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_Division(Oasys.Units.Moment,Oasys.Units.Curvature)">
+            <summary>Get <see cref="T:Oasys.Units.BendingStiffness"/> from <see cref="T:Oasys.Units.Moment"/> divided by <see cref="T:Oasys.Units.Curvature"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_Division(Oasys.Units.Moment,Oasys.Units.BendingStiffness)">
+            <summary>Get <see cref="T:Oasys.Units.Curvature"/> from <see cref="T:Oasys.Units.Moment"/> divided by <see cref="T:Oasys.Units.BendingStiffness"/>.</summary>
+        </member>
+        <member name="F:Oasys.Units.Moment._value">
+            <summary>
+                The numeric value this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="F:Oasys.Units.Moment._unit">
+            <summary>
+                The unit this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.#ctor(System.Double,Oasys.Units.MomentUnit)">
+            <summary>
+                Creates the quantity with the given numeric value and unit.
+            </summary>
+            <param name="value">The numeric value to construct this quantity with.</param>
+            <param name="unit">The unit representation to construct this quantity with.</param>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.#ctor(System.Double,UnitsNet.UnitSystem)">
+            <summary>
+            Creates an instance of the quantity with the given numeric value in units compatible with the given <see cref="T:UnitsNet.UnitSystem"/>.
+            If multiple compatible units were found, the first match is used.
+            </summary>
+            <param name="value">The numeric value to construct this quantity with.</param>
+            <param name="unitSystem">The unit system to create the quantity with.</param>
+            <exception cref="T:System.ArgumentNullException">The given <see cref="T:UnitsNet.UnitSystem"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">No unit was found for the given <see cref="T:UnitsNet.UnitSystem"/>.</exception>
+        </member>
+        <member name="P:Oasys.Units.Moment.Info">
+            <inheritdoc cref="P:UnitsNet.IQuantity.QuantityInfo"/>
+        </member>
+        <member name="P:Oasys.Units.Moment.BaseDimensions">
+            <summary>
+                The <see cref="P:Oasys.Units.Moment.BaseDimensions" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.BaseUnit">
+            <summary>
+                The base unit of Moment, which is NewtonMeter. All conversions go via this value.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.MaxValue">
+            <summary>
+            Represents the largest possible value of Moment
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.MinValue">
+            <summary>
+            Represents the smallest possible value of Moment
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.QuantityType">
+            <summary>
+                The <see cref="P:Oasys.Units.Moment.QuantityType" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.Units">
+            <summary>
+                All units of measurement for the Moment quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.Zero">
+            <summary>
+                Gets an instance of this quantity with a value of 0 in the base unit NewtonMeter.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.Value">
+            <summary>
+                The numeric value this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.Unit">
+            <inheritdoc />
+        </member>
+        <member name="P:Oasys.Units.Moment.QuantityInfo">
+            <inheritdoc />
+        </member>
+        <member name="P:Oasys.Units.Moment.UnitsNet#IQuantity#QuantityInfo">
+            <inheritdoc cref="P:UnitsNet.IQuantity.QuantityInfo"/>
+        </member>
+        <member name="P:Oasys.Units.Moment.Type">
+            <summary>
+                The <see cref="P:Oasys.Units.Moment.QuantityType" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.Dimensions">
+            <summary>
+                The <see cref="P:Oasys.Units.Moment.BaseDimensions" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.KilogramForceCentimeters">
+            <summary>
+                Get Moment in KilogramForceCentimeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.KilogramForceMeters">
+            <summary>
+                Get Moment in KilogramForceMeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.KilogramForceMillimeters">
+            <summary>
+                Get Moment in KilogramForceMillimeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.KilonewtonCentimeters">
+            <summary>
+                Get Moment in KilonewtonCentimeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.KilonewtonMeters">
+            <summary>
+                Get Moment in KilonewtonMeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.KilonewtonMillimeters">
+            <summary>
+                Get Moment in KilonewtonMillimeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.KilopoundForceFeet">
+            <summary>
+                Get Moment in KilopoundForceFeet.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.KilopoundForceInches">
+            <summary>
+                Get Moment in KilopoundForceInches.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.MeganewtonCentimeters">
+            <summary>
+                Get Moment in MeganewtonCentimeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.MeganewtonMeters">
+            <summary>
+                Get Moment in MeganewtonMeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.MeganewtonMillimeters">
+            <summary>
+                Get Moment in MeganewtonMillimeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.MegapoundForceFeet">
+            <summary>
+                Get Moment in MegapoundForceFeet.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.MegapoundForceInches">
+            <summary>
+                Get Moment in MegapoundForceInches.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.NewtonCentimeters">
+            <summary>
+                Get Moment in NewtonCentimeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.NewtonMeters">
+            <summary>
+                Get Moment in NewtonMeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.NewtonMillimeters">
+            <summary>
+                Get Moment in NewtonMillimeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.PoundalFeet">
+            <summary>
+                Get Moment in PoundalFeet.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.PoundForceFeet">
+            <summary>
+                Get Moment in PoundForceFeet.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.PoundForceInches">
+            <summary>
+                Get Moment in PoundForceInches.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.TonneForceCentimeters">
+            <summary>
+                Get Moment in TonneForceCentimeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.TonneForceMeters">
+            <summary>
+                Get Moment in TonneForceMeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Moment.TonneForceMillimeters">
+            <summary>
+                Get Moment in TonneForceMillimeters.
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.GetAbbreviation(Oasys.Units.MomentUnit)">
+            <summary>
+                Get unit abbreviation string.
+            </summary>
+            <param name="unit">Unit to get abbreviation for.</param>
+            <returns>Unit abbreviation string.</returns>
+        </member>
+        <member name="M:Oasys.Units.Moment.GetAbbreviation(Oasys.Units.MomentUnit,System.IFormatProvider)">
+            <summary>
+                Get unit abbreviation string.
+            </summary>
+            <param name="unit">Unit to get abbreviation for.</param>
+            <returns>Unit abbreviation string.</returns>
+            <param name="provider">Format to use for localization. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromKilogramForceCentimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from KilogramForceCentimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromKilogramForceMeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from KilogramForceMeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromKilogramForceMillimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from KilogramForceMillimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromKilonewtonCentimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from KilonewtonCentimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromKilonewtonMeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from KilonewtonMeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromKilonewtonMillimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from KilonewtonMillimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromKilopoundForceFeet(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from KilopoundForceFeet.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromKilopoundForceInches(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from KilopoundForceInches.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromMeganewtonCentimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from MeganewtonCentimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromMeganewtonMeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from MeganewtonMeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromMeganewtonMillimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from MeganewtonMillimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromMegapoundForceFeet(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from MegapoundForceFeet.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromMegapoundForceInches(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from MegapoundForceInches.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromNewtonCentimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from NewtonCentimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromNewtonMeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from NewtonMeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromNewtonMillimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from NewtonMillimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromPoundalFeet(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from PoundalFeet.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromPoundForceFeet(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from PoundForceFeet.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromPoundForceInches(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from PoundForceInches.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromTonneForceCentimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from TonneForceCentimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromTonneForceMeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from TonneForceMeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.FromTonneForceMillimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Moment from TonneForceMillimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.From(UnitsNet.QuantityValue,Oasys.Units.MomentUnit)">
+            <summary>
+                Dynamically convert from value and unit enum <see cref="T:Oasys.Units.MomentUnit" /> to <see cref="T:Oasys.Units.Moment" />.
+            </summary>
+            <param name="value">Value to convert from.</param>
+            <param name="fromUnit">Unit to convert from.</param>
+            <returns>Moment unit value.</returns>
+        </member>
+        <member name="M:Oasys.Units.Moment.ParseUnit(System.String)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <example>
+                Length.ParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <exception cref="T:System.ArgumentNullException">The value of 'str' cannot be null. </exception>
+            <exception cref="T:UnitsNet.UnitsNetException">Error parsing string.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.ParseUnit(System.String,System.IFormatProvider)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <param name="provider">Format to use when parsing number and unit. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+            <example>
+                Length.ParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <exception cref="T:System.ArgumentNullException">The value of 'str' cannot be null. </exception>
+            <exception cref="T:UnitsNet.UnitsNetException">Error parsing string.</exception>
+        </member>
+        <member name="M:Oasys.Units.Moment.TryParseUnit(System.String,Oasys.Units.MomentUnit@)">
+            <inheritdoc cref="M:Oasys.Units.Moment.TryParseUnit(System.String,System.IFormatProvider,Oasys.Units.MomentUnit@)"/>
+        </member>
+        <member name="M:Oasys.Units.Moment.TryParseUnit(System.String,System.IFormatProvider,Oasys.Units.MomentUnit@)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <param name="unit">The parsed unit if successful.</param>
+            <returns>True if successful, otherwise false.</returns>
+            <example>
+                Length.TryParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <param name="provider">Format to use when parsing number and unit. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_UnaryNegation(Oasys.Units.Moment)">
+            <summary>Negate the value.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_Addition(Oasys.Units.Moment,Oasys.Units.Moment)">
+            <summary>Get <see cref="T:Oasys.Units.Moment"/> from adding two <see cref="T:Oasys.Units.Moment"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_Subtraction(Oasys.Units.Moment,Oasys.Units.Moment)">
+            <summary>Get <see cref="T:Oasys.Units.Moment"/> from subtracting two <see cref="T:Oasys.Units.Moment"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_Multiply(System.Double,Oasys.Units.Moment)">
+            <summary>Get <see cref="T:Oasys.Units.Moment"/> from multiplying value and <see cref="T:Oasys.Units.Moment"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_Multiply(Oasys.Units.Moment,System.Double)">
+            <summary>Get <see cref="T:Oasys.Units.Moment"/> from multiplying value and <see cref="T:Oasys.Units.Moment"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_Division(Oasys.Units.Moment,System.Double)">
+            <summary>Get <see cref="T:Oasys.Units.Moment"/> from dividing <see cref="T:Oasys.Units.Moment"/> by value.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_Division(Oasys.Units.Moment,Oasys.Units.Moment)">
+            <summary>Get ratio value from dividing <see cref="T:Oasys.Units.Moment"/> by <see cref="T:Oasys.Units.Moment"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_LessThanOrEqual(Oasys.Units.Moment,Oasys.Units.Moment)">
+            <summary>Returns true if less or equal to.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_GreaterThanOrEqual(Oasys.Units.Moment,Oasys.Units.Moment)">
+            <summary>Returns true if greater than or equal to.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_LessThan(Oasys.Units.Moment,Oasys.Units.Moment)">
+            <summary>Returns true if less than.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_GreaterThan(Oasys.Units.Moment,Oasys.Units.Moment)">
+            <summary>Returns true if greater than.</summary>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_Equality(Oasys.Units.Moment,Oasys.Units.Moment)">
+            <summary>Returns true if exactly equal.</summary>
+            <remarks>Consider using <see cref="M:Oasys.Units.Moment.Equals(Oasys.Units.Moment,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.Moment.op_Inequality(Oasys.Units.Moment,Oasys.Units.Moment)">
+            <summary>Returns true if not exactly equal.</summary>
+            <remarks>Consider using <see cref="M:Oasys.Units.Moment.Equals(Oasys.Units.Moment,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.Moment.CompareTo(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Moment.CompareTo(Oasys.Units.Moment)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Moment.Equals(System.Object)">
+            <inheritdoc />
+            <remarks>Consider using <see cref="M:Oasys.Units.Moment.Equals(Oasys.Units.Moment,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.Moment.Equals(Oasys.Units.Moment)">
+            <inheritdoc />
+            <remarks>Consider using <see cref="M:Oasys.Units.Moment.Equals(Oasys.Units.Moment,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.Moment.Equals(Oasys.Units.Moment,System.Double,UnitsNet.ComparisonType)">
+            <summary>
+                <para>
+                Compare equality to another Moment within the given absolute or relative tolerance.
+                </para>
+                <para>
+                Relative tolerance is defined as the maximum allowable absolute difference between this quantity's value and
+                <paramref name="other"/> as a percentage of this quantity's value. <paramref name="other"/> will be converted into
+                this quantity's unit for comparison. A relative tolerance of 0.01 means the absolute difference must be within +/- 1% of
+                this quantity's value to be considered equal.
+                <example>
+                In this example, the two quantities will be equal if the value of b is within +/- 1% of a (0.02m or 2cm).
+                <code>
+                var a = Length.FromMeters(2.0);
+                var b = Length.FromInches(50.0);
+                a.Equals(b, 0.01, ComparisonType.Relative);
+                </code>
+                </example>
+                </para>
+                <para>
+                Absolute tolerance is defined as the maximum allowable absolute difference between this quantity's value and
+                <paramref name="other"/> as a fixed number in this quantity's unit. <paramref name="other"/> will be converted into
+                this quantity's unit for comparison.
+                <example>
+                In this example, the two quantities will be equal if the value of b is within 0.01 of a (0.01m or 1cm).
+                <code>
+                var a = Length.FromMeters(2.0);
+                var b = Length.FromInches(50.0);
+                a.Equals(b, 0.01, ComparisonType.Absolute);
+                </code>
+                </example>
+                </para>
+                <para>
+                Note that it is advised against specifying zero difference, due to the nature
+                of floating point operations and using System.Double internally.
+                </para>
+            </summary>
+            <param name="other">The other quantity to compare to.</param>
+            <param name="tolerance">The absolute or relative tolerance value. Must be greater than or equal to 0.</param>
+            <param name="comparisonType">The comparison type: either relative or absolute.</param>
+            <returns>True if the absolute difference between the two values is not greater than the specified relative or absolute tolerance.</returns>
+        </member>
+        <member name="M:Oasys.Units.Moment.GetHashCode">
+            <summary>
+                Returns the hash code for this instance.
+            </summary>
+            <returns>A hash code for the current Moment.</returns>
+        </member>
+        <member name="M:Oasys.Units.Moment.As(Oasys.Units.MomentUnit)">
+            <summary>
+                Convert to the unit representation <paramref name="unit" />.
+            </summary>
+            <returns>Value converted to the specified unit.</returns>
+        </member>
+        <member name="M:Oasys.Units.Moment.As(UnitsNet.UnitSystem)">
+            <inheritdoc cref="M:UnitsNet.IQuantity.As(UnitsNet.UnitSystem)"/>
+        </member>
+        <member name="M:Oasys.Units.Moment.UnitsNet#IQuantity#As(System.Enum)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Moment.ToUnit(Oasys.Units.MomentUnit)">
+            <summary>
+                Converts this Moment to another Moment with the unit representation <paramref name="unit" />.
+            </summary>
+            <returns>A Moment with the specified unit.</returns>
+        </member>
+        <member name="M:Oasys.Units.Moment.UnitsNet#IQuantity#ToUnit(System.Enum)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Moment.ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc cref="M:UnitsNet.IQuantity.ToUnit(UnitsNet.UnitSystem)"/>
+        </member>
+        <member name="M:Oasys.Units.Moment.UnitsNet#IQuantity#ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Moment.UnitsNet#IQuantity{Oasys#Units#MomentUnit}#ToUnit(Oasys.Units.MomentUnit)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Moment.UnitsNet#IQuantity{Oasys#Units#MomentUnit}#ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Moment.GetValueInBaseUnit">
+            <summary>
+                Converts the current value + unit to the base unit.
+                This is typically the first step in converting from one unit to another.
+            </summary>
+            <returns>The value in the base unit representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.Moment.ToBaseUnit">
+            <summary>
+                Converts the current value + unit to the base unit.
+                This is typically the first step in converting from one unit to another.
+            </summary>
+            <returns>The value in the base unit representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.Moment.ToString">
+            <summary>
+                Gets the default string representation of value and unit.
+            </summary>
+            <returns>String representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.Moment.ToString(System.IFormatProvider)">
+            <summary>
+                Gets the default string representation of value and unit using the given format provider.
+            </summary>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Moment.ToString(System.IFormatProvider,System.Int32)">
+            <summary>
+                Get string representation of value and unit.
+            </summary>
+            <param name="significantDigitsAfterRadix">The number of significant digits after the radix point.</param>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Moment.ToString(System.IFormatProvider,System.String,System.Object[])">
+            <summary>
+                Get string representation of value and unit.
+            </summary>
+            <param name="format">String format to use. Default:  "{0:0.##} {1} for value and unit abbreviation respectively."</param>
+            <param name="args">Arguments for string format. Value and unit are implicitly included as arguments 0 and 1.</param>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Moment.ToString(System.String)">
+            <inheritdoc cref="M:UnitsNet.QuantityFormatter.Format``1(UnitsNet.IQuantity{``0},System.String,System.IFormatProvider)"/>
+            <summary>
+            Gets the string representation of this instance in the specified format string using <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" />.
+            </summary>
+            <param name="format">The format string.</param>
+            <returns>The string representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.Moment.ToString(System.String,System.IFormatProvider)">
+            <inheritdoc cref="M:UnitsNet.QuantityFormatter.Format``1(UnitsNet.IQuantity{``0},System.String,System.IFormatProvider)"/>
+            <summary>
+            Gets the string representation of this instance in the specified format string using the specified format provider, or <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.
+            </summary>
+            <param name="format">The format string.</param>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+            <returns>The string representation.</returns>
+        </member>
+        <member name="T:Oasys.Units.Strain">
+            <inheritdoc />
+            <summary>
+                .
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_Division(UnitsNet.Force,Oasys.Units.Strain)">
+            <summary>Get <see cref="T:Oasys.Units.AxialStiffness"/> from <see cref="T:UnitsNet.Force"/> divided by <see cref="T:Oasys.Units.Strain"/>.</summary>
+        </member>
+        <member name="F:Oasys.Units.Strain._value">
+            <summary>
+                The numeric value this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="F:Oasys.Units.Strain._unit">
+            <summary>
+                The unit this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.#ctor(System.Double,Oasys.Units.StrainUnit)">
+            <summary>
+                Creates the quantity with the given numeric value and unit.
+            </summary>
+            <param name="value">The numeric value to construct this quantity with.</param>
+            <param name="unit">The unit representation to construct this quantity with.</param>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Strain.#ctor(System.Double,UnitsNet.UnitSystem)">
+            <summary>
+            Creates an instance of the quantity with the given numeric value in units compatible with the given <see cref="T:UnitsNet.UnitSystem"/>.
+            If multiple compatible units were found, the first match is used.
+            </summary>
+            <param name="value">The numeric value to construct this quantity with.</param>
+            <param name="unitSystem">The unit system to create the quantity with.</param>
+            <exception cref="T:System.ArgumentNullException">The given <see cref="T:UnitsNet.UnitSystem"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">No unit was found for the given <see cref="T:UnitsNet.UnitSystem"/>.</exception>
+        </member>
+        <member name="P:Oasys.Units.Strain.Info">
+            <inheritdoc cref="P:UnitsNet.IQuantity.QuantityInfo"/>
+        </member>
+        <member name="P:Oasys.Units.Strain.BaseDimensions">
+            <summary>
+                The <see cref="P:Oasys.Units.Strain.BaseDimensions" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.BaseUnit">
+            <summary>
+                The base unit of Strain, which is Ratio. All conversions go via this value.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.MaxValue">
+            <summary>
+            Represents the largest possible value of Strain
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.MinValue">
+            <summary>
+            Represents the smallest possible value of Strain
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.QuantityType">
+            <summary>
+                The <see cref="P:Oasys.Units.Strain.QuantityType" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.Units">
+            <summary>
+                All units of measurement for the Strain quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.Zero">
+            <summary>
+                Gets an instance of this quantity with a value of 0 in the base unit Ratio.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.Value">
+            <summary>
+                The numeric value this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.Unit">
+            <inheritdoc />
+        </member>
+        <member name="P:Oasys.Units.Strain.QuantityInfo">
+            <inheritdoc />
+        </member>
+        <member name="P:Oasys.Units.Strain.UnitsNet#IQuantity#QuantityInfo">
+            <inheritdoc cref="P:UnitsNet.IQuantity.QuantityInfo"/>
+        </member>
+        <member name="P:Oasys.Units.Strain.Type">
+            <summary>
+                The <see cref="P:Oasys.Units.Strain.QuantityType" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.Dimensions">
+            <summary>
+                The <see cref="P:Oasys.Units.Strain.BaseDimensions" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.MicroStrain">
+            <summary>
+                Get Strain in MicroStrain.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.MilliStrain">
+            <summary>
+                Get Strain in MilliStrain.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.Percent">
+            <summary>
+                Get Strain in Percent.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Strain.Ratio">
+            <summary>
+                Get Strain in Ratio.
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.GetAbbreviation(Oasys.Units.StrainUnit)">
+            <summary>
+                Get unit abbreviation string.
+            </summary>
+            <param name="unit">Unit to get abbreviation for.</param>
+            <returns>Unit abbreviation string.</returns>
+        </member>
+        <member name="M:Oasys.Units.Strain.GetAbbreviation(Oasys.Units.StrainUnit,System.IFormatProvider)">
+            <summary>
+                Get unit abbreviation string.
+            </summary>
+            <param name="unit">Unit to get abbreviation for.</param>
+            <returns>Unit abbreviation string.</returns>
+            <param name="provider">Format to use for localization. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Strain.FromMicroStrain(UnitsNet.QuantityValue)">
+            <summary>
+                Get Strain from MicroStrain.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Strain.FromMilliStrain(UnitsNet.QuantityValue)">
+            <summary>
+                Get Strain from MilliStrain.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Strain.FromPercent(UnitsNet.QuantityValue)">
+            <summary>
+                Get Strain from Percent.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Strain.FromRatio(UnitsNet.QuantityValue)">
+            <summary>
+                Get Strain from Ratio.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Strain.From(UnitsNet.QuantityValue,Oasys.Units.StrainUnit)">
+            <summary>
+                Dynamically convert from value and unit enum <see cref="T:Oasys.Units.StrainUnit" /> to <see cref="T:Oasys.Units.Strain" />.
+            </summary>
+            <param name="value">Value to convert from.</param>
+            <param name="fromUnit">Unit to convert from.</param>
+            <returns>Strain unit value.</returns>
+        </member>
+        <member name="M:Oasys.Units.Strain.ParseUnit(System.String,System.IFormatProvider)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <param name="provider">Format to use when parsing number and unit. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+            <example>
+                Length.ParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <exception cref="T:System.ArgumentNullException">The value of 'str' cannot be null. </exception>
+            <exception cref="T:UnitsNet.UnitsNetException">Error parsing string.</exception>
+        </member>
+        <member name="M:Oasys.Units.Strain.TryParseUnit(System.String,Oasys.Units.StrainUnit@)">
+            <inheritdoc cref="M:Oasys.Units.Strain.TryParseUnit(System.String,System.IFormatProvider,Oasys.Units.StrainUnit@)"/>
+        </member>
+        <member name="M:Oasys.Units.Strain.TryParseUnit(System.String,System.IFormatProvider,Oasys.Units.StrainUnit@)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <param name="unit">The parsed unit if successful.</param>
+            <returns>True if successful, otherwise false.</returns>
+            <example>
+                Length.TryParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <param name="provider">Format to use when parsing number and unit. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_UnaryNegation(Oasys.Units.Strain)">
+            <summary>Negate the value.</summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_Addition(Oasys.Units.Strain,Oasys.Units.Strain)">
+            <summary>Get <see cref="T:Oasys.Units.Strain"/> from adding two <see cref="T:Oasys.Units.Strain"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_Subtraction(Oasys.Units.Strain,Oasys.Units.Strain)">
+            <summary>Get <see cref="T:Oasys.Units.Strain"/> from subtracting two <see cref="T:Oasys.Units.Strain"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_Multiply(System.Double,Oasys.Units.Strain)">
+            <summary>Get <see cref="T:Oasys.Units.Strain"/> from multiplying value and <see cref="T:Oasys.Units.Strain"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_Multiply(Oasys.Units.Strain,System.Double)">
+            <summary>Get <see cref="T:Oasys.Units.Strain"/> from multiplying value and <see cref="T:Oasys.Units.Strain"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_Division(Oasys.Units.Strain,System.Double)">
+            <summary>Get <see cref="T:Oasys.Units.Strain"/> from dividing <see cref="T:Oasys.Units.Strain"/> by value.</summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_Division(Oasys.Units.Strain,Oasys.Units.Strain)">
+            <summary>Get ratio value from dividing <see cref="T:Oasys.Units.Strain"/> by <see cref="T:Oasys.Units.Strain"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_LessThanOrEqual(Oasys.Units.Strain,Oasys.Units.Strain)">
+            <summary>Returns true if less or equal to.</summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_GreaterThanOrEqual(Oasys.Units.Strain,Oasys.Units.Strain)">
+            <summary>Returns true if greater than or equal to.</summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_LessThan(Oasys.Units.Strain,Oasys.Units.Strain)">
+            <summary>Returns true if less than.</summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_GreaterThan(Oasys.Units.Strain,Oasys.Units.Strain)">
+            <summary>Returns true if greater than.</summary>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_Equality(Oasys.Units.Strain,Oasys.Units.Strain)">
+            <summary>Returns true if exactly equal.</summary>
+            <remarks>Consider using <see cref="M:Oasys.Units.Strain.Equals(Oasys.Units.Strain,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.Strain.op_Inequality(Oasys.Units.Strain,Oasys.Units.Strain)">
+            <summary>Returns true if not exactly equal.</summary>
+            <remarks>Consider using <see cref="M:Oasys.Units.Strain.Equals(Oasys.Units.Strain,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.Strain.CompareTo(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Strain.CompareTo(Oasys.Units.Strain)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Strain.Equals(System.Object)">
+            <inheritdoc />
+            <remarks>Consider using <see cref="M:Oasys.Units.Strain.Equals(Oasys.Units.Strain,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.Strain.Equals(Oasys.Units.Strain)">
+            <inheritdoc />
+            <remarks>Consider using <see cref="M:Oasys.Units.Strain.Equals(Oasys.Units.Strain,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.Strain.Equals(Oasys.Units.Strain,System.Double,UnitsNet.ComparisonType)">
+            <summary>
+                <para>
+                Compare equality to another Strain within the given absolute or relative tolerance.
+                </para>
+                <para>
+                Relative tolerance is defined as the maximum allowable absolute difference between this quantity's value and
+                <paramref name="other"/> as a percentage of this quantity's value. <paramref name="other"/> will be converted into
+                this quantity's unit for comparison. A relative tolerance of 0.01 means the absolute difference must be within +/- 1% of
+                this quantity's value to be considered equal.
+                <example>
+                In this example, the two quantities will be equal if the value of b is within +/- 1% of a (0.02m or 2cm).
+                <code>
+                var a = Length.FromMeters(2.0);
+                var b = Length.FromInches(50.0);
+                a.Equals(b, 0.01, ComparisonType.Relative);
+                </code>
+                </example>
+                </para>
+                <para>
+                Absolute tolerance is defined as the maximum allowable absolute difference between this quantity's value and
+                <paramref name="other"/> as a fixed number in this quantity's unit. <paramref name="other"/> will be converted into
+                this quantity's unit for comparison.
+                <example>
+                In this example, the two quantities will be equal if the value of b is within 0.01 of a (0.01m or 1cm).
+                <code>
+                var a = Length.FromMeters(2.0);
+                var b = Length.FromInches(50.0);
+                a.Equals(b, 0.01, ComparisonType.Absolute);
+                </code>
+                </example>
+                </para>
+                <para>
+                Note that it is advised against specifying zero difference, due to the nature
+                of floating point operations and using System.Double internally.
+                </para>
+            </summary>
+            <param name="other">The other quantity to compare to.</param>
+            <param name="tolerance">The absolute or relative tolerance value. Must be greater than or equal to 0.</param>
+            <param name="comparisonType">The comparison type: either relative or absolute.</param>
+            <returns>True if the absolute difference between the two values is not greater than the specified relative or absolute tolerance.</returns>
+        </member>
+        <member name="M:Oasys.Units.Strain.GetHashCode">
+            <summary>
+                Returns the hash code for this instance.
+            </summary>
+            <returns>A hash code for the current Strain.</returns>
+        </member>
+        <member name="M:Oasys.Units.Strain.As(Oasys.Units.StrainUnit)">
+            <summary>
+                Convert to the unit representation <paramref name="unit" />.
+            </summary>
+            <returns>Value converted to the specified unit.</returns>
+        </member>
+        <member name="M:Oasys.Units.Strain.As(UnitsNet.UnitSystem)">
+            <inheritdoc cref="M:UnitsNet.IQuantity.As(UnitsNet.UnitSystem)"/>
+        </member>
+        <member name="M:Oasys.Units.Strain.UnitsNet#IQuantity#As(System.Enum)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Strain.ToUnit(Oasys.Units.StrainUnit)">
+            <summary>
+                Converts this Strain to another Strain with the unit representation <paramref name="unit" />.
+            </summary>
+            <returns>A Strain with the specified unit.</returns>
+        </member>
+        <member name="M:Oasys.Units.Strain.UnitsNet#IQuantity#ToUnit(System.Enum)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Strain.ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc cref="M:UnitsNet.IQuantity.ToUnit(UnitsNet.UnitSystem)"/>
+        </member>
+        <member name="M:Oasys.Units.Strain.UnitsNet#IQuantity#ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Strain.UnitsNet#IQuantity{Oasys#Units#StrainUnit}#ToUnit(Oasys.Units.StrainUnit)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Strain.UnitsNet#IQuantity{Oasys#Units#StrainUnit}#ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Strain.GetValueInBaseUnit">
+            <summary>
+                Converts the current value + unit to the base unit.
+                This is typically the first step in converting from one unit to another.
+            </summary>
+            <returns>The value in the base unit representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.Strain.ToBaseUnit">
+            <summary>
+                Converts the current value + unit to the base unit.
+                This is typically the first step in converting from one unit to another.
+            </summary>
+            <returns>The value in the base unit representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.Strain.ToString">
+            <summary>
+                Gets the default string representation of value and unit.
+            </summary>
+            <returns>String representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.Strain.ToString(System.IFormatProvider)">
+            <summary>
+                Gets the default string representation of value and unit using the given format provider.
+            </summary>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Strain.ToString(System.IFormatProvider,System.Int32)">
+            <summary>
+                Get string representation of value and unit.
+            </summary>
+            <param name="significantDigitsAfterRadix">The number of significant digits after the radix point.</param>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Strain.ToString(System.IFormatProvider,System.String,System.Object[])">
+            <summary>
+                Get string representation of value and unit.
+            </summary>
+            <param name="format">String format to use. Default:  "{0:0.##} {1} for value and unit abbreviation respectively."</param>
+            <param name="args">Arguments for string format. Value and unit are implicitly included as arguments 0 and 1.</param>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Strain.ToString(System.String)">
+            <inheritdoc cref="M:UnitsNet.QuantityFormatter.Format``1(UnitsNet.IQuantity{``0},System.String,System.IFormatProvider)"/>
+            <summary>
+            Gets the string representation of this instance in the specified format string using <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" />.
+            </summary>
+            <param name="format">The format string.</param>
+            <returns>The string representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.Strain.ToString(System.String,System.IFormatProvider)">
+            <inheritdoc cref="M:UnitsNet.QuantityFormatter.Format``1(UnitsNet.IQuantity{``0},System.String,System.IFormatProvider)"/>
+            <summary>
+            Gets the string representation of this instance in the specified format string using the specified format provider, or <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.
+            </summary>
+            <param name="format">The format string.</param>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+            <returns>The string representation.</returns>
+        </member>
+        <member name="T:Oasys.Units.Curvature">
+            <inheritdoc />
+            <summary>
+                .
+            </summary>
+        </member>
+        <member name="F:Oasys.Units.Curvature._value">
+            <summary>
+                The numeric value this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="F:Oasys.Units.Curvature._unit">
+            <summary>
+                The unit this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.#ctor(System.Double,Oasys.Units.CurvatureUnit)">
+            <summary>
+                Creates the quantity with the given numeric value and unit.
+            </summary>
+            <param name="value">The numeric value to construct this quantity with.</param>
+            <param name="unit">The unit representation to construct this quantity with.</param>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Curvature.#ctor(System.Double,UnitsNet.UnitSystem)">
+            <summary>
+            Creates an instance of the quantity with the given numeric value in units compatible with the given <see cref="T:UnitsNet.UnitSystem"/>.
+            If multiple compatible units were found, the first match is used.
+            </summary>
+            <param name="value">The numeric value to construct this quantity with.</param>
+            <param name="unitSystem">The unit system to create the quantity with.</param>
+            <exception cref="T:System.ArgumentNullException">The given <see cref="T:UnitsNet.UnitSystem"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">No unit was found for the given <see cref="T:UnitsNet.UnitSystem"/>.</exception>
+        </member>
+        <member name="P:Oasys.Units.Curvature.Info">
+            <inheritdoc cref="P:UnitsNet.IQuantity.QuantityInfo"/>
+        </member>
+        <member name="P:Oasys.Units.Curvature.BaseDimensions">
+            <summary>
+                The <see cref="P:Oasys.Units.Curvature.BaseDimensions" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.BaseUnit">
+            <summary>
+                The base unit of Curvature, which is PerMeter. All conversions go via this value.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.MaxValue">
+            <summary>
+            Represents the largest possible value of Curvature
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.MinValue">
+            <summary>
+            Represents the smallest possible value of Curvature
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.QuantityType">
+            <summary>
+                The <see cref="P:Oasys.Units.Curvature.QuantityType" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.Units">
+            <summary>
+                All units of measurement for the Curvature quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.Zero">
+            <summary>
+                Gets an instance of this quantity with a value of 0 in the base unit PerMeter.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.Value">
+            <summary>
+                The numeric value this quantity was constructed with.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.Unit">
+            <inheritdoc />
+        </member>
+        <member name="P:Oasys.Units.Curvature.QuantityInfo">
+            <inheritdoc />
+        </member>
+        <member name="P:Oasys.Units.Curvature.UnitsNet#IQuantity#QuantityInfo">
+            <inheritdoc cref="P:UnitsNet.IQuantity.QuantityInfo"/>
+        </member>
+        <member name="P:Oasys.Units.Curvature.Type">
+            <summary>
+                The <see cref="P:Oasys.Units.Curvature.QuantityType" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.Dimensions">
+            <summary>
+                The <see cref="P:Oasys.Units.Curvature.BaseDimensions" /> of this quantity.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.PerCentimeters">
+            <summary>
+                Get Curvature in PerCentimeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.PerFeet">
+            <summary>
+                Get Curvature in PerFeet.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.PerInches">
+            <summary>
+                Get Curvature in PerInches.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.PerMeters">
+            <summary>
+                Get Curvature in PerMeters.
+            </summary>
+        </member>
+        <member name="P:Oasys.Units.Curvature.PerMillimeters">
+            <summary>
+                Get Curvature in PerMillimeters.
+            </summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.GetAbbreviation(Oasys.Units.CurvatureUnit)">
+            <summary>
+                Get unit abbreviation string.
+            </summary>
+            <param name="unit">Unit to get abbreviation for.</param>
+            <returns>Unit abbreviation string.</returns>
+        </member>
+        <member name="M:Oasys.Units.Curvature.GetAbbreviation(Oasys.Units.CurvatureUnit,System.IFormatProvider)">
+            <summary>
+                Get unit abbreviation string.
+            </summary>
+            <param name="unit">Unit to get abbreviation for.</param>
+            <returns>Unit abbreviation string.</returns>
+            <param name="provider">Format to use for localization. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Curvature.FromPerCentimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Curvature from PerCentimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Curvature.FromPerFeet(UnitsNet.QuantityValue)">
+            <summary>
+                Get Curvature from PerFeet.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Curvature.FromPerInches(UnitsNet.QuantityValue)">
+            <summary>
+                Get Curvature from PerInches.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Curvature.FromPerMeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Curvature from PerMeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Curvature.FromPerMillimeters(UnitsNet.QuantityValue)">
+            <summary>
+                Get Curvature from PerMillimeters.
+            </summary>
+            <exception cref="T:System.ArgumentException">If value is NaN or Infinity.</exception>
+        </member>
+        <member name="M:Oasys.Units.Curvature.From(UnitsNet.QuantityValue,Oasys.Units.CurvatureUnit)">
+            <summary>
+                Dynamically convert from value and unit enum <see cref="T:Oasys.Units.CurvatureUnit" /> to <see cref="T:Oasys.Units.Curvature" />.
+            </summary>
+            <param name="value">Value to convert from.</param>
+            <param name="fromUnit">Unit to convert from.</param>
+            <returns>Curvature unit value.</returns>
+        </member>
+        <member name="M:Oasys.Units.Curvature.ParseUnit(System.String)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <example>
+                Length.ParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <exception cref="T:System.ArgumentNullException">The value of 'str' cannot be null. </exception>
+            <exception cref="T:UnitsNet.UnitsNetException">Error parsing string.</exception>
+        </member>
+        <member name="M:Oasys.Units.Curvature.ParseUnit(System.String,System.IFormatProvider)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <param name="provider">Format to use when parsing number and unit. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+            <example>
+                Length.ParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <exception cref="T:System.ArgumentNullException">The value of 'str' cannot be null. </exception>
+            <exception cref="T:UnitsNet.UnitsNetException">Error parsing string.</exception>
+        </member>
+        <member name="M:Oasys.Units.Curvature.TryParseUnit(System.String,Oasys.Units.CurvatureUnit@)">
+            <inheritdoc cref="M:Oasys.Units.Curvature.TryParseUnit(System.String,System.IFormatProvider,Oasys.Units.CurvatureUnit@)"/>
+        </member>
+        <member name="M:Oasys.Units.Curvature.TryParseUnit(System.String,System.IFormatProvider,Oasys.Units.CurvatureUnit@)">
+            <summary>
+                Parse a unit string.
+            </summary>
+            <param name="str">String to parse. Typically in the form: {number} {unit}</param>
+            <param name="unit">The parsed unit if successful.</param>
+            <returns>True if successful, otherwise false.</returns>
+            <example>
+                Length.TryParseUnit("m", new CultureInfo("en-US"));
+            </example>
+            <param name="provider">Format to use when parsing number and unit. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_UnaryNegation(Oasys.Units.Curvature)">
+            <summary>Negate the value.</summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_Addition(Oasys.Units.Curvature,Oasys.Units.Curvature)">
+            <summary>Get <see cref="T:Oasys.Units.Curvature"/> from adding two <see cref="T:Oasys.Units.Curvature"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_Subtraction(Oasys.Units.Curvature,Oasys.Units.Curvature)">
+            <summary>Get <see cref="T:Oasys.Units.Curvature"/> from subtracting two <see cref="T:Oasys.Units.Curvature"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_Multiply(System.Double,Oasys.Units.Curvature)">
+            <summary>Get <see cref="T:Oasys.Units.Curvature"/> from multiplying value and <see cref="T:Oasys.Units.Curvature"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_Multiply(Oasys.Units.Curvature,System.Double)">
+            <summary>Get <see cref="T:Oasys.Units.Curvature"/> from multiplying value and <see cref="T:Oasys.Units.Curvature"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_Division(Oasys.Units.Curvature,System.Double)">
+            <summary>Get <see cref="T:Oasys.Units.Curvature"/> from dividing <see cref="T:Oasys.Units.Curvature"/> by value.</summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_Division(Oasys.Units.Curvature,Oasys.Units.Curvature)">
+            <summary>Get ratio value from dividing <see cref="T:Oasys.Units.Curvature"/> by <see cref="T:Oasys.Units.Curvature"/>.</summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_LessThanOrEqual(Oasys.Units.Curvature,Oasys.Units.Curvature)">
+            <summary>Returns true if less or equal to.</summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_GreaterThanOrEqual(Oasys.Units.Curvature,Oasys.Units.Curvature)">
+            <summary>Returns true if greater than or equal to.</summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_LessThan(Oasys.Units.Curvature,Oasys.Units.Curvature)">
+            <summary>Returns true if less than.</summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_GreaterThan(Oasys.Units.Curvature,Oasys.Units.Curvature)">
+            <summary>Returns true if greater than.</summary>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_Equality(Oasys.Units.Curvature,Oasys.Units.Curvature)">
+            <summary>Returns true if exactly equal.</summary>
+            <remarks>Consider using <see cref="M:Oasys.Units.Curvature.Equals(Oasys.Units.Curvature,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.Curvature.op_Inequality(Oasys.Units.Curvature,Oasys.Units.Curvature)">
+            <summary>Returns true if not exactly equal.</summary>
+            <remarks>Consider using <see cref="M:Oasys.Units.Curvature.Equals(Oasys.Units.Curvature,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.Curvature.CompareTo(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Curvature.CompareTo(Oasys.Units.Curvature)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Curvature.Equals(System.Object)">
+            <inheritdoc />
+            <remarks>Consider using <see cref="M:Oasys.Units.Curvature.Equals(Oasys.Units.Curvature,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.Curvature.Equals(Oasys.Units.Curvature)">
+            <inheritdoc />
+            <remarks>Consider using <see cref="M:Oasys.Units.Curvature.Equals(Oasys.Units.Curvature,System.Double,UnitsNet.ComparisonType)"/> for safely comparing floating point values.</remarks>
+        </member>
+        <member name="M:Oasys.Units.Curvature.Equals(Oasys.Units.Curvature,System.Double,UnitsNet.ComparisonType)">
+            <summary>
+                <para>
+                Compare equality to another Curvature within the given absolute or relative tolerance.
+                </para>
+                <para>
+                Relative tolerance is defined as the maximum allowable absolute difference between this quantity's value and
+                <paramref name="other"/> as a percentage of this quantity's value. <paramref name="other"/> will be converted into
+                this quantity's unit for comparison. A relative tolerance of 0.01 means the absolute difference must be within +/- 1% of
+                this quantity's value to be considered equal.
+                <example>
+                In this example, the two quantities will be equal if the value of b is within +/- 1% of a (0.02m or 2cm).
+                <code>
+                var a = Length.FromMeters(2.0);
+                var b = Length.FromInches(50.0);
+                a.Equals(b, 0.01, ComparisonType.Relative);
+                </code>
+                </example>
+                </para>
+                <para>
+                Absolute tolerance is defined as the maximum allowable absolute difference between this quantity's value and
+                <paramref name="other"/> as a fixed number in this quantity's unit. <paramref name="other"/> will be converted into
+                this quantity's unit for comparison.
+                <example>
+                In this example, the two quantities will be equal if the value of b is within 0.01 of a (0.01m or 1cm).
+                <code>
+                var a = Length.FromMeters(2.0);
+                var b = Length.FromInches(50.0);
+                a.Equals(b, 0.01, ComparisonType.Absolute);
+                </code>
+                </example>
+                </para>
+                <para>
+                Note that it is advised against specifying zero difference, due to the nature
+                of floating point operations and using System.Double internally.
+                </para>
+            </summary>
+            <param name="other">The other quantity to compare to.</param>
+            <param name="tolerance">The absolute or relative tolerance value. Must be greater than or equal to 0.</param>
+            <param name="comparisonType">The comparison type: either relative or absolute.</param>
+            <returns>True if the absolute difference between the two values is not greater than the specified relative or absolute tolerance.</returns>
+        </member>
+        <member name="M:Oasys.Units.Curvature.GetHashCode">
+            <summary>
+                Returns the hash code for this instance.
+            </summary>
+            <returns>A hash code for the current Curvature.</returns>
+        </member>
+        <member name="M:Oasys.Units.Curvature.As(Oasys.Units.CurvatureUnit)">
+            <summary>
+                Convert to the unit representation <paramref name="unit" />.
+            </summary>
+            <returns>Value converted to the specified unit.</returns>
+        </member>
+        <member name="M:Oasys.Units.Curvature.As(UnitsNet.UnitSystem)">
+            <inheritdoc cref="M:UnitsNet.IQuantity.As(UnitsNet.UnitSystem)"/>
+        </member>
+        <member name="M:Oasys.Units.Curvature.UnitsNet#IQuantity#As(System.Enum)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Curvature.ToUnit(Oasys.Units.CurvatureUnit)">
+            <summary>
+                Converts this Curvature to another Curvature with the unit representation <paramref name="unit" />.
+            </summary>
+            <returns>A Curvature with the specified unit.</returns>
+        </member>
+        <member name="M:Oasys.Units.Curvature.UnitsNet#IQuantity#ToUnit(System.Enum)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Curvature.ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc cref="M:UnitsNet.IQuantity.ToUnit(UnitsNet.UnitSystem)"/>
+        </member>
+        <member name="M:Oasys.Units.Curvature.UnitsNet#IQuantity#ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Curvature.UnitsNet#IQuantity{Oasys#Units#CurvatureUnit}#ToUnit(Oasys.Units.CurvatureUnit)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Curvature.UnitsNet#IQuantity{Oasys#Units#CurvatureUnit}#ToUnit(UnitsNet.UnitSystem)">
+            <inheritdoc />
+        </member>
+        <member name="M:Oasys.Units.Curvature.GetValueInBaseUnit">
+            <summary>
+                Converts the current value + unit to the base unit.
+                This is typically the first step in converting from one unit to another.
+            </summary>
+            <returns>The value in the base unit representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.Curvature.ToBaseUnit">
+            <summary>
+                Converts the current value + unit to the base unit.
+                This is typically the first step in converting from one unit to another.
+            </summary>
+            <returns>The value in the base unit representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.Curvature.ToString">
+            <summary>
+                Gets the default string representation of value and unit.
+            </summary>
+            <returns>String representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.Curvature.ToString(System.IFormatProvider)">
+            <summary>
+                Gets the default string representation of value and unit using the given format provider.
+            </summary>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Curvature.ToString(System.IFormatProvider,System.Int32)">
+            <summary>
+                Get string representation of value and unit.
+            </summary>
+            <param name="significantDigitsAfterRadix">The number of significant digits after the radix point.</param>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Curvature.ToString(System.IFormatProvider,System.String,System.Object[])">
+            <summary>
+                Get string representation of value and unit.
+            </summary>
+            <param name="format">String format to use. Default:  "{0:0.##} {1} for value and unit abbreviation respectively."</param>
+            <param name="args">Arguments for string format. Value and unit are implicitly included as arguments 0 and 1.</param>
+            <returns>String representation.</returns>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+        </member>
+        <member name="M:Oasys.Units.Curvature.ToString(System.String)">
+            <inheritdoc cref="M:UnitsNet.QuantityFormatter.Format``1(UnitsNet.IQuantity{``0},System.String,System.IFormatProvider)"/>
+            <summary>
+            Gets the string representation of this instance in the specified format string using <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" />.
+            </summary>
+            <param name="format">The format string.</param>
+            <returns>The string representation.</returns>
+        </member>
+        <member name="M:Oasys.Units.Curvature.ToString(System.String,System.IFormatProvider)">
+            <inheritdoc cref="M:UnitsNet.QuantityFormatter.Format``1(UnitsNet.IQuantity{``0},System.String,System.IFormatProvider)"/>
+            <summary>
+            Gets the string representation of this instance in the specified format string using the specified format provider, or <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.
+            </summary>
+            <param name="format">The format string.</param>
+            <param name="provider">Format to use for localization and number formatting. Defaults to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture" /> if null.</param>
+            <returns>The string representation.</returns>
+        </member>
+        <member name="F:Oasys.Units.AxialStiffnessUnit.ShortTonForce">
+            <summary>
+                The short ton-force is a unit of force equal to 2,000 pounds-force (907.18474 kgf), that is most commonly used in the United States – known there simply as the ton or US ton.
+            </summary>
+            <remarks>https://en.wikipedia.org/wiki/Ton-force#Short_ton-force</remarks>
+        </member>
+    </members>
+</doc>

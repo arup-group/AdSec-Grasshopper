@@ -1,6 +1,18 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using Grasshopper.Kernel;
+using Oasys.Units;
+using UnitsNet;
 using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
+using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.AdSec.StandardMaterials;
+using Oasys.Profiles;
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Layers;
 
 namespace GhAdSec.Components
 {
@@ -34,17 +46,20 @@ namespace GhAdSec.Components
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddTextParameter("AdSec Plugin Version", "Plugin", "Plugin version", GH_ParamAccess.item);
-            //pManager.AddTextParameter("Location", "File", "Plugin File Location", GH_ParamAccess.item);
+            pManager.AddTextParameter("AdSec API version", "API", "AdSec Plugin Version", GH_ParamAccess.item);
+            pManager.AddTextParameter("AdSec GH version", "GH", "AdSec API Version", GH_ParamAccess.item);
+            pManager.AddTextParameter("API Version", "File", "AdSec API Version", GH_ParamAccess.item);
+            pManager.AddTextParameter("API Test", "Test", "AdSec API Test", GH_ParamAccess.list);
         }
         #endregion
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            GH_AssemblyInfo adsecplugin = Grasshopper.Instances.ComponentServer.FindAssembly(new Guid("f815c29a-e1eb-4ca6-9e56-0554777ff9c9"));
+            GH_AssemblyInfo adsecPlugin = Grasshopper.Instances.ComponentServer.FindAssembly(new Guid("f815c29a-e1eb-4ca6-9e56-0554777ff9c9"));
 
-            DA.SetData(0, adsecplugin.Version);
-            DA.SetData(1, IVersion.Api());
+            DA.SetData(0, IVersion.Api());
+            DA.SetData(1, adsecPlugin.Version);
+            DA.SetData(2, adsecPlugin.Location);
         }
     }
 }

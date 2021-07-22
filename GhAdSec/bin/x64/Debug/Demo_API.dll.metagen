@@ -1,0 +1,42 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly Demo_API, Version=0.0.*, Culture=Invariant Language (Invariant Country): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly OasysUnits, Version=1.0.*, Culture=Invariant Language (Invariant Country): 
+	hash=None, flags=None
+Assembly UnitsNet, Version=4.0.0.0, Culture=neutral, PublicKeyToken=f8601875a1f041da: 
+	hash=None, flags=None
+Assembly netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Class ApiUtils: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    GetWrapperType(basic_string<char\,std::char_traits<char>\,std::allocator<char> >*): PrivateScope, Public, Static, HideBySig
+    GetWrapperType(String): PrivateScope, Public, Static, HideBySig
+    ToInterfaceTypeName(basic_string<char\,std::char_traits<char>\,std::allocator<char> >*, Type): PrivateScope, Public, Static, HideBySig
+    ToInterfaceTypeName2(Type): PrivateScope, Public, Static, HideBySig
+Interface ICheck: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, BeforeFieldInit
+  Properties:
+    System.String Message 'get set' : 
+  Methods:
+    get_Message(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    set_Message(String): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    Create(): PrivateScope, Public, Static, HideBySig
+Class Oasys.Exceptions.LogicError: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.ArgumentException
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Oasys.Exceptions.RuntimeError: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.SystemException
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Interface Oasys.Collections.IList`1[T]: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract, BeforeFieldInit
+  Type parameter: T
+  Interfaces:
+    System.Collections.Generic.IList`1[T]
+    System.Collections.Generic.ICollection`1[T]
+    System.Collections.Generic.IEnumerable`1[T]
+    System.Collections.IEnumerable
+  Methods:
+    Create(): PrivateScope, Public, Static, HideBySig

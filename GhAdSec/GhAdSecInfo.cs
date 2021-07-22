@@ -2,6 +2,9 @@
 using System;
 using System.Drawing;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace GhAdSec
 {
@@ -15,18 +18,19 @@ namespace GhAdSec
         /// <returns></returns>
         public override GH_LoadingInstruction PriorityLoad()
         {
-            // ### Reference GSA API and SQLite dlls ###
-            // set folder to latest GSA version.
-            //Assembly ass1 = Assembly.LoadFile(@"C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSec_API.dll");
-            //Assembly ass2 = Assembly.LoadFile(Util.Gsa.InstallationFolderPath.GetPath + "\\System.Data.SQLite.dll");
-            //Assembly ass3 = Assembly.LoadFile(Util.Gsa.InstallationFolderPath.GetPath + "\\libiomp5md.dll");
-
+            // ## Get plugin assembly file location
+            string pluginPath = Assembly.GetExecutingAssembly().Location; // full path+name
+            pluginPath = pluginPath.Replace("GhAdSec.gha", "");
+            
             // ### Set system environment variables to allow user rights to read above dll ###
-            //const string name = "PATH";
-            //string pathvar = System.Environment.GetEnvironmentVariable(name);
-            //var value = pathvar + ";" + Util.Gsa.InstallationFolderPath.GetPath + "\\";
-            //var target = EnvironmentVariableTarget.Process;
-            //System.Environment.SetEnvironmentVariable(name, value, target);
+            const string name = "PATH";
+            string pathvar = System.Environment.GetEnvironmentVariable(name);
+            var value = pathvar + ";" + pluginPath;
+            var target = EnvironmentVariableTarget.Process;
+            System.Environment.SetEnvironmentVariable(name, value, target);
+
+            // ### Reference AdSec API dlls from .gha assembly path ###
+            Assembly ass1 = Assembly.LoadFile(pluginPath + "\\AdSec_API.dll");
 
             // ### Create Ribbon Category name and icon ###
             Grasshopper.Instances.ComponentServer.AddCategorySymbolName("AdSec", 'A');
@@ -35,6 +39,7 @@ namespace GhAdSec
             return GH_LoadingInstruction.Proceed;
         }
     }
+   
     public class GhAdSecInfo : GH_AssemblyInfo
     {
         public override string Name
@@ -50,6 +55,13 @@ namespace GhAdSec
             {
                 //Return a 24x24 pixel bitmap to represent this GHA library.
                 return null;
+            }
+        }
+        public override Bitmap AssemblyIcon
+        {
+            get
+            {
+                return Icon;
             }
         }
         public override string Description

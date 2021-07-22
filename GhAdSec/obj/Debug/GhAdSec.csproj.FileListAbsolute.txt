@@ -16,8 +16,12 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Debug\GhAdSec.csprojA
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Debug\GhAdSec.csproj.CoreCompileInputs.cache
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Debug\GhAdSec.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Debug\GhAdSec.pdb
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\AdSec_API.dll
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\AdSec_API.pdb
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\AdSec_API.xml
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Debug\GhAdSec.csproj.CopyComplete
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\GhAdSec.dll.config
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\OasysUnits.dll
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\UnitsNet.dll
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\OasysUnits.xml
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\UnitsNet.xml
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\Demo_API.dll
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\Demo_API.pdb
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\Demo_API.xml
