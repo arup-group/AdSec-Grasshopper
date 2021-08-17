@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "t3pcMNXoeraQ8pEeLtqOSlBJpU1Leg9hmCZKHeuWXIDTHJ1d6S9C4ldW9z/4EmY6f7KUdBqJKOeLesaQiMxVKw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\GhAdSec.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\adsec\\1.0.1.1\\adsec.1.0.1.1.nupkg.sha512",
+    "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\grasshopper\\6.27.20176.5001\\grasshopper.6.27.20176.5001.nupkg.sha512",
+    "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\rhinocommon\\6.27.20176.5001\\rhinocommon.6.27.20176.5001.nupkg.sha512",
+    "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\system.valuetuple\\4.5.0\\system.valuetuple.4.5.0.nupkg.sha512",
+    "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\unitsnet\\4.89.0\\unitsnet.4.89.0.nupkg.sha512"
+  ],
+  "logs": []
+}

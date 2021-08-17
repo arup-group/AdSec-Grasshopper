@@ -5,22 +5,23 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace GhAdSec
 {
     public class AddReferencePriority : GH_AssemblyPriority
     {
         /// <summary>
-        /// This method finds the user's GSA installation folder and loads GsaAPI.dll so that this plugin does not need to ship with an additional dll file
-        /// 
-        /// Method also provides access rights to Grasshopper to read dynamically linked dll files in the GSA installation folder.
+        /// This method finds the location of the AdSec plugin and add's the path to the system environment to load referenced dll files.
+        /// Method also tries to load the adsec_api.dll file and provides grasshopper loading error messages if it fails.
+        /// If loading of the dll files fails then the method will abort loading the adsec plugin.
         /// </summary>
         /// <returns></returns>
         public override GH_LoadingInstruction PriorityLoad()
         {
             // ## Get plugin assembly file location
             string pluginPath = Assembly.GetExecutingAssembly().Location; // full path+name
-            pluginPath = pluginPath.Replace("GhAdSec.gha", "");
+            pluginPath = pluginPath.Replace("AdSec.gha", "");
             
             // ### Set system environment variables to allow user rights to read above dll ###
             const string name = "PATH";
@@ -29,8 +30,69 @@ namespace GhAdSec
             var target = EnvironmentVariableTarget.Process;
             System.Environment.SetEnvironmentVariable(name, value, target);
 
-            // ### Reference AdSec API dlls from .gha assembly path ###
-            Assembly ass1 = Assembly.LoadFile(pluginPath + "\\AdSec_API.dll");
+            // ### Try Reference AdSecAPI and SQLite dlls ###
+            // set folder to latest GSA version.
+            try
+            {
+                // ### Reference AdSec API dlls from .gha assembly path ###
+                adsecAPI = Assembly.LoadFile(pluginPath + "\\AdSec_API.dll");
+            }
+            catch (Exception e)
+            {
+                // check other plugins?
+                string loadedPlugins = "";
+                ReadOnlyCollection<GH_AssemblyInfo> plugins = Grasshopper.Instances.ComponentServer.Libraries;
+                foreach (GH_AssemblyInfo plugin in plugins)
+                {
+                    if (!plugin.IsCoreLibrary)
+                    {
+                        if (!plugin.Name.StartsWith("Kangaroo"))
+                        {
+                            loadedPlugins = loadedPlugins + "-" + plugin.Name + System.Environment.NewLine;
+                        }
+                    }
+                }
+                string message = e.Message
+                    + System.Environment.NewLine + System.Environment.NewLine +
+                    "This may be due to clash with other referenced dll files by one of these plugins that's already been loaded: "
+                    + System.Environment.NewLine + loadedPlugins
+                    + System.Environment.NewLine + "You may try disable the above plugins to solve the issue."
+                    + System.Environment.NewLine + "The plugin cannot be loaded.";
+                Exception exception = new Exception(message);
+                Grasshopper.Kernel.GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec: AdSec_API.dll loading", exception);
+                Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
+                return GH_LoadingInstruction.Abort;
+            }
+
+            //try
+            //{
+            //    Assembly ass2 = Assembly.LoadFile(pluginPath + "\\System.Data.SQLite.dll");
+            //}
+            //catch (Exception e)
+            //{
+            //    string loadedPlugins = "";
+            //    ReadOnlyCollection<GH_AssemblyInfo> plugins = Grasshopper.Instances.ComponentServer.Libraries;
+            //    foreach (GH_AssemblyInfo plugin in plugins)
+            //    {
+            //        if (!plugin.IsCoreLibrary)
+            //        {
+            //            if (!plugin.Name.StartsWith("Kangaroo"))
+            //            {
+            //                loadedPlugins = loadedPlugins + "-" + plugin.Name + System.Environment.NewLine;
+            //            }
+            //        }
+            //    }
+            //    string message = e.Message
+            //        + System.Environment.NewLine + System.Environment.NewLine +
+            //        "This may be due to clash with other referenced dll files by one of these plugins that's already been loaded: "
+            //        + System.Environment.NewLine + loadedPlugins
+            //        + System.Environment.NewLine + "You may try disable the above plugins to solve the issue."
+            //        + System.Environment.NewLine + "The plugin cannot be loaded.";
+            //    Exception exception = new Exception(message);
+            //    Grasshopper.Kernel.GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec: System.Data.SQLite.dll loading", exception);
+            //    Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
+            //    return GH_LoadingInstruction.Abort;
+            //}
 
             // ### Create Ribbon Category name and icon ###
             Grasshopper.Instances.ComponentServer.AddCategorySymbolName("AdSec", 'A');
@@ -38,6 +100,7 @@ namespace GhAdSec
 
             return GH_LoadingInstruction.Proceed;
         }
+        public static Assembly adsecAPI;
     }
    
     public class GhAdSecInfo : GH_AssemblyInfo

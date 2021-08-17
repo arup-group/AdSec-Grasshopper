@@ -6,8 +6,6 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\GhAdSec.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\GhAdSec.pdb
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\OasysUnits.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\UnitsNet.dll
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\OasysUnits.xml
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\UnitsNet.xml
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\GhAdSec.csproj.CopyComplete
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\GhAdSec.csproj.AssemblyReference.cache
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\addata.dll
@@ -51,6 +49,4 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\vcruntime14
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSec_API.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\System.ValueTuple.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSec_API.pdb
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSec_API.xml
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\System.ValueTuple.xml
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\UnitsNet.pdb

@@ -58,46 +58,24 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdSec_API, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\AdSec.1.0.1.1\lib\netstandard2.0\AdSec_API.dll</HintPath>
-    </Reference>
-    <Reference Include="Eto, Version=2.5.0.0, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.6.27.20176.5001\lib\net45\Eto.dll</HintPath>
-    </Reference>
-    <Reference Include="GH_IO, Version=6.27.20176.5000, Culture=neutral, PublicKeyToken=6a29997d2e6b4f97, processorArchitecture=MSIL">
-      <HintPath>..\packages\Grasshopper.6.27.20176.5001\lib\net45\GH_IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Grasshopper, Version=6.27.20176.5000, Culture=neutral, PublicKeyToken=dda4f5ec2cd80803, processorArchitecture=MSIL">
-      <HintPath>..\packages\Grasshopper.6.27.20176.5001\lib\net45\Grasshopper.dll</HintPath>
-    </Reference>
-    <Reference Include="OasysUnits, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdSec.1.0.1.1\lib\netstandard2.0\OasysUnits.dll</HintPath>
-    </Reference>
-    <Reference Include="Rhino.UI, Version=6.27.20176.5000, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.6.27.20176.5001\lib\net45\Rhino.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="RhinoCommon, Version=6.27.20176.5000, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.6.27.20176.5001\lib\net45\RhinoCommon.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="UnitsNet, Version=4.0.0.0, Culture=neutral, PublicKeyToken=f8601875a1f041da, processorArchitecture=MSIL">
-      <HintPath>..\packages\UnitsNet.4.89.0\lib\net40\UnitsNet.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\0_AdSec\Version.cs" />
+    <Compile Include="Components\1_Properties\DesignCode.cs" />
+    <Compile Include="Components\1_Properties\CreateMaterial.cs" />
     <Compile Include="GhAdSecInfo.cs" />
+    <Compile Include="Helpers\Test.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
-    <Compile Include="Parameters\ParameterClass.cs" />
+    <Compile Include="Parameters\AdSecDesignCode.cs" />
+    <Compile Include="Parameters\AdSecMaterial.cs" />
+    <Compile Include="Helpers\_Reflection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\GraphicButtons.cs" />
     <Compile Include="UI\WidthFix.cs" />
@@ -106,14 +84,23 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Components\1_Properties\" />
     <Folder Include="Components\2_Section\" />
     <Folder Include="Components\3_Loads\" />
     <Folder Include="Components\4_Solution\" />
     <Folder Include="Components\5_Results\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AdSec">
+      <Version>1.0.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="Grasshopper">
+      <Version>6.27.20176.5001</Version>
+    </PackageReference>
+    <PackageReference Include="RhinoCommon">
+      <Version>6.27.20176.5001</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -124,7 +111,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)$(ProjectName).gha"
+    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"
 Erase "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
@@ -138,15 +125,4 @@ Erase "$(TargetPath)"</PostBuildEvent>
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\AdSec.1.0.1.1\build\AdSec.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AdSec.1.0.1.1\build\AdSec.targets'))" />
-    <Error Condition="!Exists('..\packages\RhinoCommon.6.27.20176.5001\build\net45\RhinoCommon.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RhinoCommon.6.27.20176.5001\build\net45\RhinoCommon.targets'))" />
-    <Error Condition="!Exists('..\packages\Grasshopper.6.27.20176.5001\build\net45\Grasshopper.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Grasshopper.6.27.20176.5001\build\net45\Grasshopper.targets'))" />
-  </Target>
-  <Import Project="..\packages\AdSec.1.0.1.1\build\AdSec.targets" Condition="Exists('..\packages\AdSec.1.0.1.1\build\AdSec.targets')" />
-  <Import Project="..\packages\RhinoCommon.6.27.20176.5001\build\net45\RhinoCommon.targets" Condition="Exists('..\packages\RhinoCommon.6.27.20176.5001\build\net45\RhinoCommon.targets')" />
-  <Import Project="..\packages\Grasshopper.6.27.20176.5001\build\net45\Grasshopper.targets" Condition="Exists('..\packages\Grasshopper.6.27.20176.5001\build\net45\Grasshopper.targets')" />
 </Project>

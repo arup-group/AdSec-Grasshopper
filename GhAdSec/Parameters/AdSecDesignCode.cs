@@ -1,0 +1,278 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
+using Rhino.Geometry;
+using Rhino;
+using Grasshopper.Documentation;
+using Rhino.Collections;
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
+using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.AdSec;
+using Oasys.AdSec.StandardMaterials;
+using Oasys.Profiles;
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Layers;
+using UnitsNet;
+using Oasys.Units;
+
+namespace GhAdSec.Parameters
+{
+    /// <summary>
+    /// AdSec DesignCode class, this class defines the basic properties and methods for any AdSec DesignCode
+    /// </summary>
+    public class AdSecDesignCode
+    {
+        public IDesignCode DesignCode
+        {
+            get { return m_designCode; }
+            set { m_designCode = value; }
+        }
+        public string DesignCodeName
+        {
+            get { return m_designCodeName; }
+            set { m_designCodeName = value; }
+        }
+        
+        #region fields
+        private IDesignCode m_designCode;
+        private string m_designCodeName;
+        #endregion
+
+        #region constructors
+        public AdSecDesignCode()
+        {
+        }
+        internal AdSecDesignCode(FieldInfo fieldDesignCode)
+        {
+            string designCodeReflectedLevels = fieldDesignCode.DeclaringType.FullName.Replace("Oasys.AdSec.DesignCode", "IgnoredLevel");
+            List<string> designCodeLevelsSplit = designCodeReflectedLevels.Split('+').ToList();
+            CreateFromReflectedLevels(designCodeLevelsSplit);
+        }
+        internal AdSecDesignCode(List<string> designCodeReflectedLevels)
+        {
+            CreateFromReflectedLevels(designCodeReflectedLevels);
+        }
+        private bool CreateFromReflectedLevels(List<string> designCodeReflectedLevels)
+        {
+            // Get all DesignCodes
+            Dictionary<string, Type> designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNamespace("Oasys.AdSec.DesignCode");
+
+            // Find the DesignCode
+            string designcodeName = "";
+            Type typ = null;
+            for (int i = 0; i < designCodeReflectedLevels.Count - 1; i++)
+            {
+                designcodeName = designcodeName + designCodeReflectedLevels[i] + " ";
+                designCodeKVP.TryGetValue(designCodeReflectedLevels[i], out typ);
+                if (typ == null) { return false; }
+                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectTypes(typ);
+            }
+
+            foreach (var type in Assembly.GetAssembly(typeof(Oasys.AdSec.IAdSec)).GetTypes())
+            {
+                if (type.IsInterface && type.Namespace == "Oasys.AdSec.DesignCode")
+                {
+                    foreach (var field in type.GetFields())
+                    {
+                        if (field.DeclaringType.FullName == typ.FullName)
+                            m_designCode = (IDesignCode)field.GetValue(null);
+                    }
+                }
+            }
+            if (m_designCode == null) { return false; }
+            m_designCodeName = designcodeName + " " + designCodeReflectedLevels.Last();
+            return true;
+        }
+
+        public AdSecDesignCode Duplicate()
+        {
+            if (this == null) { return null; }
+            AdSecDesignCode dup = (AdSecDesignCode)this.MemberwiseClone();
+            return dup;
+        }
+        #endregion
+
+        #region properties
+        public bool IsValid
+        {
+            get
+            {
+                if (this.DesignCode == null) { return false; }
+                return true;
+            }
+        }
+        #endregion
+
+        #region methods
+        public override string ToString()
+        {
+            return DesignCodeName;
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Goo wrapper class, makes sure this can be used in Grasshopper.
+    /// </summary>
+    public class AdSecDesignCodeGoo : GH_Goo<AdSecDesignCode>
+    {
+        #region constructors
+        public AdSecDesignCodeGoo()
+        {
+            this.Value = new AdSecDesignCode();
+        }
+        public AdSecDesignCodeGoo(AdSecDesignCode goo)
+        {
+            if (goo == null)
+                goo = new AdSecDesignCode();
+            this.Value = goo.Duplicate(); 
+        }
+
+        public override IGH_Goo Duplicate()
+        {
+            return DuplicateGoo();
+        }
+        public AdSecDesignCodeGoo DuplicateGoo()
+        {
+            return new AdSecDesignCodeGoo(Value == null ? new AdSecDesignCode() : Value.Duplicate()); 
+        }
+        #endregion
+
+        #region properties
+        public override bool IsValid
+        {
+            get
+            {
+                if (Value == null) { return false; }
+                return true;
+            }
+        }
+        public override string IsValidWhyNot
+        {
+            get
+            {
+                if (Value.IsValid) { return string.Empty; }
+                return Value.IsValid.ToString(); 
+            }
+        }
+        public override string ToString()
+        {
+            if (Value == null)
+                return "Null";
+            else
+                return Value.ToString();
+        }
+        public override string TypeName
+        {
+            get { return ("AdSec DesignCode"); }
+        }
+        public override string TypeDescription
+        {
+            get { return ("AdSec DesignCode parameter"); }
+        }
+
+
+        #endregion
+
+        #region casting methods
+        public override bool CastTo<Q>(ref Q target)
+        {
+            // This function is called when Grasshopper needs to convert this 
+            // instance of GsaBool6 into some other type Q.            
+
+
+            if (typeof(Q).IsAssignableFrom(typeof(AdSecDesignCode)))
+            {
+                if (Value == null)
+                    target = default;
+                else
+                    target = (Q)(object)Value.Duplicate();
+                return true;
+            }
+
+            target = default;
+            return false;
+        }
+        public override bool CastFrom(object source)
+        {
+            // This function is called when Grasshopper needs to convert other data 
+            // into this parameter.
+
+
+            if (source == null) { return false; }
+
+            //Cast from own type
+            if (typeof(AdSecDesignCode).IsAssignableFrom(source.GetType()))
+            {
+                Value = (AdSecDesignCode)source;
+                return true;
+            }
+            
+            return false;
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// This class provides a Parameter interface for the Data_GsaBool6 type.
+    /// </summary>
+    public class AdSecDesignCodeParameter : GH_PersistentParam<AdSecDesignCodeGoo>
+    {
+        public AdSecDesignCodeParameter()
+          : base(new GH_InstanceDescription("DesignCode", "Code", "AdSec DesignCode Parameter", GhAdSec.Components.Ribbon.CategoryName.Name(), GhAdSec.Components.Ribbon.SubCategoryName.Cat9()))
+        {
+        }
+
+        public override Guid ComponentGuid => new Guid("6d656276-61f6-47ce-81bc-9fabdd39edc2");
+
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
+
+        //protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.GsaBool6;
+
+        protected override GH_GetterResult Prompt_Plural(ref List<AdSecDesignCodeGoo> values)
+        {
+            return GH_GetterResult.cancel;
+        }
+        protected override GH_GetterResult Prompt_Singular(ref AdSecDesignCodeGoo value)
+        {
+            return GH_GetterResult.cancel;
+        }
+        protected override System.Windows.Forms.ToolStripMenuItem Menu_CustomSingleValueItem()
+        {
+            System.Windows.Forms.ToolStripMenuItem item = new System.Windows.Forms.ToolStripMenuItem
+            {
+                Text = "Not available",
+                Visible = false
+            };
+            return item;
+        }
+        protected override System.Windows.Forms.ToolStripMenuItem Menu_CustomMultiValueItem()
+        {
+            System.Windows.Forms.ToolStripMenuItem item = new System.Windows.Forms.ToolStripMenuItem
+            {
+                Text = "Not available",
+                Visible = false
+            };
+            return item;
+        }
+
+        #region preview methods
+
+        public bool Hidden
+        {
+            get { return true; }
+            //set { m_hidden = value; }
+        }
+        public bool IsPreviewCapable
+        {
+            get { return false; }
+        }
+        #endregion
+    }
+}

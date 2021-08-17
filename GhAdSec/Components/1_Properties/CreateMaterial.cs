@@ -1,0 +1,305 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Reflection;
+using Grasshopper.Kernel.Attributes;
+using Grasshopper.GUI.Canvas;
+using Grasshopper.GUI;
+using Grasshopper.Kernel;
+using Grasshopper;
+using Rhino.Geometry;
+using System.Windows.Forms;
+using Grasshopper.Kernel.Types;
+using Grasshopper.Kernel.Parameters;
+using GhAdSec.Parameters;
+using System.Resources;
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
+
+namespace GhAdSec.Components
+{
+    /// <summary>
+    /// Component to create a new Material
+    /// </summary>
+    public class CreateMaterial : GH_Component
+    {
+        #region Name and Ribbon Layout
+        // This region handles how the component in displayed on the ribbon
+        // including name, exposure level and icon
+        public override Guid ComponentGuid => new Guid("42f42580-8ed7-42fb-9cc7-c6f6171a0248");
+        public CreateMaterial()
+          : base("Material", "Ma", "Create a new AdSec Design Code based material",
+                Ribbon.CategoryName.Name(),
+                Ribbon.SubCategoryName.Cat1())
+        { this.Hidden = true; } // sets the initial state of the component to hidden
+        public override GH_Exposure Exposure => GH_Exposure.primary;
+
+        //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.CreateMaterial;
+        #endregion
+
+        #region Custom UI
+        //This region overrides the typical component layout
+        public override void CreateAttributes()
+        {
+            if (first)
+            {
+                if (selecteditems == null)
+                {
+                    // create a new list of selected items and add the first material type
+                    selecteditems = new List<string>();
+                    selecteditems.Add(materialTypes[0]);
+                }
+                if (dropdownitems == null)
+                {
+                    // create a new list of selected items and add the first material type
+                    dropdownitems = new List<List<string>>();
+                    dropdownitems.Add(materialTypes);
+                }
+                if (dropdownitems.Count == 1)
+                {
+                    //Enum.TryParse(selecteditems[0], out AdSecMaterial.AdSecMaterialType materialType);
+                    designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.StandardCodes(AdSecMaterial.AdSecMaterialType.Concrete);
+                    dropdownitems.Add(designCodeKVP.Keys.ToList());
+                    // select default code to EN1992
+                    selecteditems.Add(designCodeKVP.Keys.ElementAt(4));
+                    
+                    // create string for selected item to use for type search while drilling
+                    string typeString = selecteditems.Last();
+                    bool drill = true;
+                    while (drill)
+                    {
+                        // get the type of the most recent selected from level above
+                        designCodeKVP.TryGetValue(typeString, out Type typ);
+                        
+                        // update the KVP by reflecting the type
+                        designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectTypes(typ);
+                        
+                        // determine if we have reached the fields layer
+                        if (designCodeKVP.Count > 1)
+                        {
+                            // if kvp has >1 values we add them to create a new dropdown list
+                            dropdownitems.Add(designCodeKVP.Keys.ToList());
+                            // with first item being the selected
+                            selecteditems.Add(designCodeKVP.Keys.First());
+                            // and set the next search item to this
+                            typeString = selecteditems.Last();
+                        }
+                        else if (designCodeKVP.Count == 1)
+                        {
+                            // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
+                            typeString = designCodeKVP.Keys.First();
+                        }
+                        else
+                        {
+                            // if kvp is empty we have reached the field level
+                            // where we set the materials by reflecting the type
+                            materials = GhAdSec.Helpers.ReflectAdSecAPI.ReflectFields(typ);
+                            // if kvp has values we add them to create a new dropdown list
+                            dropdownitems.Add(materials.Keys.ToList());
+                            // with first item being the selected
+                            selecteditems.Add(materials.Keys.First().ToString());
+                            // stop drilling
+                            drill = false;
+                        }
+                    }
+                }
+                first = false;
+            }
+
+            m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+        }
+
+        public void SetSelected(int i, int j)
+        {
+            // change selected item
+            selecteditems[i] = dropdownitems[i][j];
+
+            // if selected item is not in the last dropdown then we need to update lists
+            if (selecteditems.Count - 1 != i)
+            {
+                // remove all sub dropdowns after top level and code level
+                while (dropdownitems.Count > 1)
+                    dropdownitems.RemoveAt(1);
+
+                // remove all selected items after the dropdown that has been changed
+                while (selecteditems.Count > i + 1)
+                    selecteditems.RemoveAt(i + 1);
+
+                // get the selected material and parse it to type enum
+                Enum.TryParse(selecteditems[0], out AdSecMaterial.AdSecMaterialType materialType);
+                // get list of standard codes for the selected material
+                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.StandardCodes(materialType);
+                // add codes for selected material to list of dropdowns
+                dropdownitems.Add(designCodeKVP.Keys.ToList());
+                if (selecteditems.Count == 1)
+                    selecteditems.Add(designCodeKVP.Keys.First());
+
+                if (selecteditems[1].StartsWith("EN1992"))
+                {
+                    spacerDescriptions[1] = "Design Code";
+                    spacerDescriptions[2] = "National Annex";
+                }
+                else
+                {
+                    spacerDescriptions[1] = "Code Group";
+                    spacerDescriptions[2] = "Design Code";
+                }
+
+
+                // create string for selected item to use for type search while drilling
+                int level = 1;
+                string typeString = selecteditems[level];
+                bool drill = true;
+                while (drill)
+                {
+                    // get the type of the most recent selected from level above
+                    designCodeKVP.TryGetValue(typeString, out Type typ);
+
+                    // update the KVP by reflecting the type
+                    designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectTypes(typ);
+
+                    // determine if we have reached the fields layer
+                    if (designCodeKVP.Count > 1)
+                    {
+                        level++;
+
+                        // if kvp has >1 values we add them to create a new dropdown list
+                        dropdownitems.Add(designCodeKVP.Keys.ToList());
+
+                        // with first item being the selected
+                        if (selecteditems.Count - 1 < level)
+                        {
+                            selecteditems.Add(designCodeKVP.Keys.First());
+                            // and set the next search item to this
+                            typeString = selecteditems.Last();
+                        }
+                        else
+                            typeString = selecteditems[level];
+
+                        if (typeString.StartsWith("Edition"))
+                            spacerDescriptions[level] = "Edition";
+                        if (typeString.StartsWith("Metric") | typeString.StartsWith("US"))
+                            spacerDescriptions[level] = "Unit";
+                    }
+                    else if (designCodeKVP.Count == 1)
+                    {
+                        // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
+                        typeString = designCodeKVP.Keys.First();
+                    }
+                    else
+                    {
+                        // if kvp is empty we have reached the field level
+                        // where we set the materials by reflecting the type
+                        materials = GhAdSec.Helpers.ReflectAdSecAPI.ReflectFields(typ);
+                        // if kvp has values we add them to create a new dropdown list
+                        dropdownitems.Add(materials.Keys.ToList());
+                        // with first item being the selected
+                        selecteditems.Add(materials.Keys.First().ToString());
+                        // stop drilling
+                        drill = false;
+
+                        spacerDescriptions[selecteditems.Count - 1] = "Grade";
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Input and output
+        // get list of material types defined in material parameter
+        List<string> materialTypes = Enum.GetNames(typeof(AdSecMaterial.AdSecMaterialType)).ToList();
+        // list of materials
+        Dictionary<string, FieldInfo> materials;
+        FieldInfo selectedMaterial;
+        // list of lists with all dropdown lists conctent
+        List<List<string>> dropdownitems;
+        Dictionary<string, Type> designCodeKVP;
+        // list of selected items
+        List<string> selecteditems;
+        // list of descriptions 
+        List<string> spacerDescriptions = new List<string>(new string[]
+        {
+            "Material Type",
+            "Design Code",
+            "National Annex",
+            "Grade",
+            "Another level",
+            "Another other",
+            "This is so deep"
+        });
+        private bool first = true;
+        #endregion
+
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
+        {
+            
+        }
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
+        {
+            pManager.AddGenericParameter("Material", "Ma", "AdSec Material", GH_ParamAccess.item);
+        }
+
+        protected override void SolveInstance(IGH_DataAccess DA)
+        {
+            // update selected material
+            selectedMaterial = materials[selecteditems.Last()];
+
+            // create new material
+            AdSecMaterial mat = new AdSecMaterial(selectedMaterial);
+
+            DA.SetData(0, new GhAdSec.Parameters.AdSecMaterialGoo(mat));
+        }
+        
+        #region (de)serialization
+        public override bool Write(GH_IO.Serialization.GH_IWriter writer)
+        {
+            // to save the dropdownlist content, spacer list and selection list 
+            // loop through the lists and save number of lists as well
+            writer.SetInt32("dropdownCount", dropdownitems.Count);
+            for (int i = 0; i < dropdownitems.Count; i++)
+            {
+                writer.SetInt32("dropdowncontentsCount" + i, dropdownitems[i].Count);
+                for (int j = 0; j < dropdownitems[i].Count; j++)
+                    writer.SetString("dropdowncontents" + i + j, dropdownitems[i][j]);
+            }
+            // spacer list
+            writer.SetInt32("spacerCount", spacerDescriptions.Count);
+            for (int i = 0; i < spacerDescriptions.Count; i++)
+                writer.SetString("spacercontents" + i, spacerDescriptions[i]);
+            // selection list
+            writer.SetInt32("selectionCount", selecteditems.Count);
+            for (int i = 0; i < selecteditems.Count; i++)
+                writer.SetString("selectioncontents" + i, selecteditems[i]);
+            
+            return base.Write(writer);
+        }
+        public override bool Read(GH_IO.Serialization.GH_IReader reader)
+        {
+            // dropdown content list
+            int dropdownCount = reader.GetInt32("dropdownCount");
+            dropdownitems = new List<List<string>>();
+            for (int i = 0; i < dropdownCount; i++)
+            {
+                int dropdowncontentsCount = reader.GetInt32("dropdowncontentsCount" + i);
+                List<string> tempcontent = new List<string>();
+                for (int j = 0; j < dropdowncontentsCount; j++)
+                    tempcontent.Add(reader.GetString("dropdowncontents" + i + j));
+                dropdownitems.Add(tempcontent);
+            }
+            // spacer list
+            int dropdownspacerCount = reader.GetInt32("spacerCount");
+            spacerDescriptions = new List<string>();
+            for (int i = 0; i < dropdownspacerCount; i++)
+                spacerDescriptions.Add(reader.GetString("spacercontents" + i));
+            // selection list
+            int selectionsCount = reader.GetInt32("selectionCount");
+            selecteditems = new List<string>();
+            for (int i = 0; i < selectionsCount; i++)
+                selecteditems.Add(reader.GetString("selectioncontents" + i));
+
+            first = false;
+            return base.Read(reader);
+        }
+        #endregion
+    }
+}

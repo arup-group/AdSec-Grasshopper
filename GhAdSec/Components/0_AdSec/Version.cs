@@ -49,7 +49,7 @@ namespace GhAdSec.Components
             pManager.AddTextParameter("AdSec API version", "API", "AdSec Plugin Version", GH_ParamAccess.item);
             pManager.AddTextParameter("AdSec GH version", "GH", "AdSec API Version", GH_ParamAccess.item);
             pManager.AddTextParameter("API Version", "File", "AdSec API Version", GH_ParamAccess.item);
-            pManager.AddTextParameter("API Test", "Test", "AdSec API Test", GH_ParamAccess.list);
+             //pManager.AddTextParameter("API Test", "Test", "AdSec API Test", GH_ParamAccess.list);
         }
         #endregion
 

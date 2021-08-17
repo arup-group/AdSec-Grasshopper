@@ -1,0 +1,529 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETFramework,Version=v4.7.2": {
+      "AdSec/1.0.1.1": {
+        "type": "package",
+        "dependencies": {
+          "UnitsNet": "4.89.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/OasysUnits.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/OasysUnits.dll": {}
+        },
+        "build": {
+          "build/AdSec.targets": {}
+        }
+      },
+      "Grasshopper/6.27.20176.5001": {
+        "type": "package",
+        "dependencies": {
+          "RhinoCommon": "[6.27.20176.5001]"
+        },
+        "compile": {
+          "lib/net45/GH_IO.dll": {},
+          "lib/net45/Grasshopper.dll": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        },
+        "build": {
+          "build/net45/Grasshopper.targets": {}
+        }
+      },
+      "RhinoCommon/6.27.20176.5001": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Eto.dll": {},
+          "lib/net45/Rhino.UI.dll": {},
+          "lib/net45/RhinoCommon.dll": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        },
+        "build": {
+          "build/net45/RhinoCommon.targets": {}
+        }
+      },
+      "System.ValueTuple/4.5.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "mscorlib"
+        ],
+        "compile": {
+          "ref/net47/System.ValueTuple.dll": {}
+        },
+        "runtime": {
+          "lib/net47/System.ValueTuple.dll": {}
+        }
+      },
+      "UnitsNet/4.89.0": {
+        "type": "package",
+        "dependencies": {
+          "System.ValueTuple": "4.5.0"
+        },
+        "compile": {
+          "lib/net40/UnitsNet.dll": {}
+        },
+        "runtime": {
+          "lib/net40/UnitsNet.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.7.2/win": {
+      "AdSec/1.0.1.1": {
+        "type": "package",
+        "dependencies": {
+          "UnitsNet": "4.89.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/OasysUnits.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/OasysUnits.dll": {}
+        },
+        "build": {
+          "build/AdSec.targets": {}
+        }
+      },
+      "Grasshopper/6.27.20176.5001": {
+        "type": "package",
+        "dependencies": {
+          "RhinoCommon": "[6.27.20176.5001]"
+        },
+        "compile": {
+          "lib/net45/GH_IO.dll": {},
+          "lib/net45/Grasshopper.dll": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        },
+        "build": {
+          "build/net45/Grasshopper.targets": {}
+        }
+      },
+      "RhinoCommon/6.27.20176.5001": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Eto.dll": {},
+          "lib/net45/Rhino.UI.dll": {},
+          "lib/net45/RhinoCommon.dll": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        },
+        "build": {
+          "build/net45/RhinoCommon.targets": {}
+        }
+      },
+      "System.ValueTuple/4.5.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "mscorlib"
+        ],
+        "compile": {
+          "ref/net47/System.ValueTuple.dll": {}
+        },
+        "runtime": {
+          "lib/net47/System.ValueTuple.dll": {}
+        }
+      },
+      "UnitsNet/4.89.0": {
+        "type": "package",
+        "dependencies": {
+          "System.ValueTuple": "4.5.0"
+        },
+        "compile": {
+          "lib/net40/UnitsNet.dll": {}
+        },
+        "runtime": {
+          "lib/net40/UnitsNet.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.7.2/win-x64": {
+      "AdSec/1.0.1.1": {
+        "type": "package",
+        "dependencies": {
+          "UnitsNet": "4.89.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/OasysUnits.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/OasysUnits.dll": {}
+        },
+        "build": {
+          "build/AdSec.targets": {}
+        }
+      },
+      "Grasshopper/6.27.20176.5001": {
+        "type": "package",
+        "dependencies": {
+          "RhinoCommon": "[6.27.20176.5001]"
+        },
+        "compile": {
+          "lib/net45/GH_IO.dll": {},
+          "lib/net45/Grasshopper.dll": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        },
+        "build": {
+          "build/net45/Grasshopper.targets": {}
+        }
+      },
+      "RhinoCommon/6.27.20176.5001": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Eto.dll": {},
+          "lib/net45/Rhino.UI.dll": {},
+          "lib/net45/RhinoCommon.dll": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        },
+        "build": {
+          "build/net45/RhinoCommon.targets": {}
+        }
+      },
+      "System.ValueTuple/4.5.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "mscorlib"
+        ],
+        "compile": {
+          "ref/net47/System.ValueTuple.dll": {}
+        },
+        "runtime": {
+          "lib/net47/System.ValueTuple.dll": {}
+        }
+      },
+      "UnitsNet/4.89.0": {
+        "type": "package",
+        "dependencies": {
+          "System.ValueTuple": "4.5.0"
+        },
+        "compile": {
+          "lib/net40/UnitsNet.dll": {}
+        },
+        "runtime": {
+          "lib/net40/UnitsNet.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.7.2/win-x86": {
+      "AdSec/1.0.1.1": {
+        "type": "package",
+        "dependencies": {
+          "UnitsNet": "4.89.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/OasysUnits.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/OasysUnits.dll": {}
+        },
+        "build": {
+          "build/AdSec.targets": {}
+        }
+      },
+      "Grasshopper/6.27.20176.5001": {
+        "type": "package",
+        "dependencies": {
+          "RhinoCommon": "[6.27.20176.5001]"
+        },
+        "compile": {
+          "lib/net45/GH_IO.dll": {},
+          "lib/net45/Grasshopper.dll": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        },
+        "build": {
+          "build/net45/Grasshopper.targets": {}
+        }
+      },
+      "RhinoCommon/6.27.20176.5001": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Eto.dll": {},
+          "lib/net45/Rhino.UI.dll": {},
+          "lib/net45/RhinoCommon.dll": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        },
+        "build": {
+          "build/net45/RhinoCommon.targets": {}
+        }
+      },
+      "System.ValueTuple/4.5.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "mscorlib"
+        ],
+        "compile": {
+          "ref/net47/System.ValueTuple.dll": {}
+        },
+        "runtime": {
+          "lib/net47/System.ValueTuple.dll": {}
+        }
+      },
+      "UnitsNet/4.89.0": {
+        "type": "package",
+        "dependencies": {
+          "System.ValueTuple": "4.5.0"
+        },
+        "compile": {
+          "lib/net40/UnitsNet.dll": {}
+        },
+        "runtime": {
+          "lib/net40/UnitsNet.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "AdSec/1.0.1.1": {
+      "sha512": "65wzH1uF/ths/pL2OfUE5s8EaaoqA/oRj4mZ1uwZTNSpqMsMyWjAC+o3iiFQi5Doe9U3OHDZaPz+HeT6pwPgTA==",
+      "type": "package",
+      "path": "adsec/1.0.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENCE.pdf",
+        "LICENCE.txt",
+        "adsec.1.0.1.1.nupkg.sha512",
+        "adsec.nuspec",
+        "build/AdSec.targets",
+        "build/x64/AdSecLogic.dll",
+        "build/x64/AdSec_SDK_Implementation.dll",
+        "build/x64/AdSol.dll",
+        "build/x64/OaData.dll",
+        "build/x64/OaNumeric.dll",
+        "build/x64/OaUtil.dll",
+        "build/x64/addata.dll",
+        "build/x64/application.avf",
+        "build/x64/clrcompression.dll",
+        "build/x64/concrt140.dll",
+        "build/x64/external/application.avf",
+        "build/x64/libiomp5md.dll",
+        "build/x64/mfc140.dll",
+        "build/x64/mfc140chs.dll",
+        "build/x64/mfc140cht.dll",
+        "build/x64/mfc140deu.dll",
+        "build/x64/mfc140enu.dll",
+        "build/x64/mfc140esn.dll",
+        "build/x64/mfc140fra.dll",
+        "build/x64/mfc140ita.dll",
+        "build/x64/mfc140jpn.dll",
+        "build/x64/mfc140kor.dll",
+        "build/x64/mfc140rus.dll",
+        "build/x64/mfc140u.dll",
+        "build/x64/mfcm140.dll",
+        "build/x64/mfcm140u.dll",
+        "build/x64/msvcp140.dll",
+        "build/x64/msvcp140_1.dll",
+        "build/x64/msvcp140_2.dll",
+        "build/x64/msvcp140_atomic_wait.dll",
+        "build/x64/msvcp140_codecvt_ids.dll",
+        "build/x64/sectlib.db3",
+        "build/x64/sentry.dll",
+        "build/x64/vcamp140.dll",
+        "build/x64/vccorlib140.dll",
+        "build/x64/vcomp140.dll",
+        "build/x64/vcruntime140.dll",
+        "build/x64/vcruntime140_1.dll",
+        "icon.png",
+        "lib/netstandard2.0/AdSec_API.dll",
+        "lib/netstandard2.0/AdSec_API.exp",
+        "lib/netstandard2.0/AdSec_API.lib",
+        "lib/netstandard2.0/AdSec_API.pdb",
+        "lib/netstandard2.0/AdSec_API.runtimeconfig.json",
+        "lib/netstandard2.0/AdSec_API.xml",
+        "lib/netstandard2.0/OasysUnits.dll",
+        "lib/netstandard2.0/OasysUnits.xml"
+      ]
+    },
+    "Grasshopper/6.27.20176.5001": {
+      "sha512": "USSQCY7UUoSAGmAJQ95aD2TM7wgClAioOrisLfmprRBqDiWQYVSGDqdxodiYz6bYWp2LL8xE93sYQPH2VeY8ag==",
+      "type": "package",
+      "path": "grasshopper/6.27.20176.5001",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "build/net45/Grasshopper.targets",
+        "grasshopper.6.27.20176.5001.nupkg.sha512",
+        "grasshopper.nuspec",
+        "grasshopper.png",
+        "lib/net45/GH_IO.XML",
+        "lib/net45/GH_IO.dll",
+        "lib/net45/Grasshopper.dll",
+        "lib/net45/Grasshopper.xml"
+      ]
+    },
+    "RhinoCommon/6.27.20176.5001": {
+      "sha512": "mKCGn2j258zGr/h8vh8h1nciBsVpbNJoz9Tm1BEwWj4qU0RmVx4reiEI9YefTtz3v1foSB9rx+Pj1NAX02zyrg==",
+      "type": "package",
+      "path": "rhinocommon/6.27.20176.5001",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Eto-LICENSE.txt",
+        "build/net45/RhinoCommon.targets",
+        "lib/net45/Eto.dll",
+        "lib/net45/Eto.xml",
+        "lib/net45/Rhino.UI.dll",
+        "lib/net45/RhinoCommon.XML",
+        "lib/net45/RhinoCommon.dll",
+        "rhinocommon.6.27.20176.5001.nupkg.sha512",
+        "rhinocommon.nuspec",
+        "rhinocommon.png"
+      ]
+    },
+    "System.ValueTuple/4.5.0": {
+      "sha512": "okurQJO6NRE/apDIP23ajJ0hpiNmJ+f0BwOlB/cSqTLQlw5upkf+5+96+iG2Jw40G1fCVCyPz/FhIABUjMR+RQ==",
+      "type": "package",
+      "path": "system.valuetuple/4.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net461/System.ValueTuple.dll",
+        "lib/net461/System.ValueTuple.xml",
+        "lib/net47/System.ValueTuple.dll",
+        "lib/net47/System.ValueTuple.xml",
+        "lib/netcoreapp2.0/_._",
+        "lib/netstandard1.0/System.ValueTuple.dll",
+        "lib/netstandard1.0/System.ValueTuple.xml",
+        "lib/netstandard2.0/_._",
+        "lib/portable-net40+sl4+win8+wp8/System.ValueTuple.dll",
+        "lib/portable-net40+sl4+win8+wp8/System.ValueTuple.xml",
+        "lib/uap10.0.16299/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net461/System.ValueTuple.dll",
+        "ref/net47/System.ValueTuple.dll",
+        "ref/netcoreapp2.0/_._",
+        "ref/netstandard2.0/_._",
+        "ref/portable-net40+sl4+win8+wp8/System.ValueTuple.dll",
+        "ref/uap10.0.16299/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "system.valuetuple.4.5.0.nupkg.sha512",
+        "system.valuetuple.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "UnitsNet/4.89.0": {
+      "sha512": "otRjsWKDTTlD2ttgQjJaL+Jzs4UqRsxV0baPIMwOuZcfhOtdjJJFs56ge12e7S5Pqpy4BNAnB+VqkF4w8oMJUg==",
+      "type": "package",
+      "path": "unitsnet/4.89.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net40/UnitsNet.dll",
+        "lib/net40/UnitsNet.pdb",
+        "lib/net40/UnitsNet.xml",
+        "lib/netstandard2.0/UnitsNet.dll",
+        "lib/netstandard2.0/UnitsNet.pdb",
+        "lib/netstandard2.0/UnitsNet.xml",
+        "logo-32.png",
+        "unitsnet.4.89.0.nupkg.sha512",
+        "unitsnet.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETFramework,Version=v4.7.2": [
+      "AdSec >= 1.0.1.1",
+      "Grasshopper >= 6.27.20176.5001",
+      "RhinoCommon >= 6.27.20176.5001"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\GhAdSec.csproj",
+      "projectName": "GhAdSec",
+      "projectPath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\GhAdSec.csproj",
+      "packagesPath": "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\obj\\",
+      "projectStyle": "PackageReference",
+      "skipContentFileWrite": true,
+      "configFilePaths": [
+        "C:\\Users\\Kristjan.Nielsen\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net472"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Users\\Kristjan.Nielsen\\source\\repos\\NuGet": {},
+        "https://api.nuget.org/v3/index.json": {},
+        "https://pkgs.dev.azure.com/arupcomputedevops/_packaging/arupcomputedevops/nuget/v3/index.json": {}
+      },
+      "frameworks": {
+        "net472": {
+          "projectReferences": {}
+        }
+      }
+    },
+    "frameworks": {
+      "net472": {
+        "dependencies": {
+          "AdSec": {
+            "target": "Package",
+            "version": "[1.0.1.1, )"
+          },
+          "Grasshopper": {
+            "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+            "target": "Package",
+            "version": "[6.27.20176.5001, )"
+          },
+          "RhinoCommon": {
+            "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+            "target": "Package",
+            "version": "[6.27.20176.5001, )"
+          }
+        }
+      }
+    },
+    "runtimes": {
+      "win": {
+        "#import": []
+      },
+      "win-x64": {
+        "#import": []
+      },
+      "win-x86": {
+        "#import": []
+      }
+    }
+  }
+}
