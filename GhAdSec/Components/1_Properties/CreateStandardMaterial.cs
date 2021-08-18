@@ -21,14 +21,14 @@ namespace GhAdSec.Components
     /// <summary>
     /// Component to create a new Material
     /// </summary>
-    public class CreateMaterial : GH_Component
+    public class StandardMaterial : GH_Component
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
         // including name, exposure level and icon
         public override Guid ComponentGuid => new Guid("42f42580-8ed7-42fb-9cc7-c6f6171a0248");
-        public CreateMaterial()
-          : base("Material", "Ma", "Create a new AdSec Design Code based material",
+        public StandardMaterial()
+          : base("Standard Material", "Material", "Create a new AdSec Design Code based standard material",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat1())
         { this.Hidden = true; } // sets the initial state of the component to hidden
@@ -65,6 +65,7 @@ namespace GhAdSec.Components
                     
                     // create string for selected item to use for type search while drilling
                     string typeString = selecteditems.Last();
+                    int level = 1;
                     bool drill = true;
                     while (drill)
                     {
@@ -77,10 +78,14 @@ namespace GhAdSec.Components
                         // determine if we have reached the fields layer
                         if (designCodeKVP.Count > 1)
                         {
+                            level++;
                             // if kvp has >1 values we add them to create a new dropdown list
                             dropdownitems.Add(designCodeKVP.Keys.ToList());
                             // with first item being the selected
-                            selecteditems.Add(designCodeKVP.Keys.First());
+                            if (level == 2)
+                                selecteditems.Add(designCodeKVP.Keys.ElementAt(6));
+                            else
+                                selecteditems.Add(designCodeKVP.Keys.First());
                             // and set the next search item to this
                             typeString = selecteditems.Last();
                         }
@@ -97,7 +102,7 @@ namespace GhAdSec.Components
                             // if kvp has values we add them to create a new dropdown list
                             dropdownitems.Add(materials.Keys.ToList());
                             // with first item being the selected
-                            selecteditems.Add(materials.Keys.First().ToString());
+                            selecteditems.Add(materials.Keys.ElementAt(4));
                             // stop drilling
                             drill = false;
                         }
@@ -194,7 +199,10 @@ namespace GhAdSec.Components
                         // if kvp has values we add them to create a new dropdown list
                         dropdownitems.Add(materials.Keys.ToList());
                         // with first item being the selected
-                        selecteditems.Add(materials.Keys.First().ToString());
+                        if (selecteditems[1].StartsWith("EN1992"))
+                            selecteditems.Add(materials.Keys.ElementAt(4));
+                        else
+                            selecteditems.Add(materials.Keys.First().ToString());
                         // stop drilling
                         drill = false;
 
@@ -236,7 +244,8 @@ namespace GhAdSec.Components
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Material", "Ma", "AdSec Material", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Material", "Mat", "AdSec Material", GH_ParamAccess.item);
+            
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
@@ -248,6 +257,7 @@ namespace GhAdSec.Components
             AdSecMaterial mat = new AdSecMaterial(selectedMaterial);
 
             DA.SetData(0, new GhAdSec.Parameters.AdSecMaterialGoo(mat));
+            
         }
         
         #region (de)serialization

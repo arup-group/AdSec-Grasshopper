@@ -28,7 +28,7 @@ namespace GhAdSec.Components
         // including name, exposure level and icon
         public override Guid ComponentGuid => new Guid("bbad3d3b-f585-474b-8cc6-76fd375819de");
         public DesignCode()
-          : base("DesignCode", "DC", "Select an AdSec Design Code ",
+          : base("DesignCode", "DesignCode", "Select an AdSec Design Code",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat1())
         { this.Hidden = true; } // sets the initial state of the component to hidden
@@ -65,12 +65,6 @@ namespace GhAdSec.Components
                 }
                 if (dropdownitems.Count == 1)
                 {
-                    ////Enum.TryParse(selecteditems[0], out AdSecMaterial.AdSecMaterialType materialType);
-                    //designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.StandardCodes(AdSecMaterial.AdSecMaterialType.Concrete);
-                    //dropdownitems.Add(designCodeKVP.Keys.ToList());
-                    //// select default code to EN1992
-                    //selecteditems.Add(designCodeKVP.Keys.ElementAt(4));
-
                     designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNamespace("Oasys.AdSec.DesignCode");
 
                     // create string for selected item to use for type search while drilling
@@ -128,35 +122,37 @@ namespace GhAdSec.Components
             if (selecteditems.Count - 1 != i)
             {
                 // remove all sub dropdowns and selected items below changed list
+                while (dropdownitems.Count > 1)
+                {
+                    dropdownitems.RemoveAt(1);
+                }
                 while (selecteditems.Count > i + 1)
                 { 
                     selecteditems.RemoveAt(i + 1);
-                    dropdownitems.RemoveAt(i + 1);
                 }
-
-                // get the selected material and parse it to type enum
-                Enum.TryParse(selecteditems[0], out AdSecMaterial.AdSecMaterialType materialType);
+                
                 // get list of standard codes for the selected material
-                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.StandardCodes(materialType);
-                // add codes for selected material to list of dropdowns
-                dropdownitems.Add(designCodeKVP.Keys.ToList());
-                if (selecteditems.Count == 1)
-                    selecteditems.Add(designCodeKVP.Keys.First());
+                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNamespace("Oasys.AdSec.DesignCode");
+                
+                //// add codes for selected material to list of dropdowns
+                //dropdownitems.Add(designCodeKVP.Keys.ToList());
+                //if (selecteditems.Count == 1)
+                //    selecteditems.Add(designCodeKVP.Keys.First());
 
-                if (selecteditems[1].StartsWith("EN1992"))
-                {
-                    spacerDescriptions[1] = "Design Code";
-                    spacerDescriptions[2] = "National Annex";
-                }
-                else
-                {
-                    spacerDescriptions[1] = "Code Group";
-                    spacerDescriptions[2] = "Design Code";
-                }
+                //if (selecteditems[1].StartsWith("EN1992"))
+                //{
+                //    spacerDescriptions[1] = "Design Code";
+                //    spacerDescriptions[2] = "National Annex";
+                //}
+                //else
+                //{
+                //    spacerDescriptions[1] = "Code Group";
+                //    spacerDescriptions[2] = "Design Code";
+                //}
 
 
                 // create string for selected item to use for type search while drilling
-                int level = 1;
+                int level = 0;
                 string typeString = selecteditems[level];
                 bool drill = true;
                 while (drill)
@@ -191,6 +187,8 @@ namespace GhAdSec.Components
                             spacerDescriptions[level] = "Part";
                         if (typeString.StartsWith("Metric") | typeString.StartsWith("US"))
                             spacerDescriptions[level] = "Unit";
+                        if (typeString.StartsWith("National"))
+                            spacerDescriptions[level] = "National Annex";
                     }
                     else if (designCodeKVP.Count == 1)
                     {
@@ -254,7 +252,7 @@ namespace GhAdSec.Components
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("DesignCode", "DC", "AdSec Design Code", GH_ParamAccess.item);
+            pManager.AddGenericParameter("DesignCode", "Code", "AdSec Design Code", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)

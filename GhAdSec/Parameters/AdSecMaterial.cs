@@ -131,7 +131,7 @@ namespace GhAdSec.Parameters
         #region methods
         public override string ToString()
         {
-            return GradeName + " " + TypeName + " " + DesignCodeName;
+            return GradeName.Replace("  ", " ") + " " + TypeName.Replace("  ", " ") + " " + DesignCodeName.Replace("  ", " ");
         }
 
         #endregion
@@ -151,7 +151,7 @@ namespace GhAdSec.Parameters
         {
             if (goo == null)
                 goo = new AdSecMaterial();
-            this.Value = goo.Duplicate(); 
+            this.Value = goo; //goo.Duplicate(); 
         }
 
         public override IGH_Goo Duplicate()
