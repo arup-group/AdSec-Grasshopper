@@ -148,7 +148,7 @@ namespace GhAdSec.Components
                         return;
                     }
                 }
-                // 4 StressStrain ULS Compression
+                // 4 StressStrain SLS Compression
                 gh_typ = new GH_ObjectWrapper();
                 if (DA.GetData(4, ref gh_typ))
                 {
@@ -163,7 +163,7 @@ namespace GhAdSec.Components
                         return;
                     }
                 }
-                // 5 StressStrain ULS Tension
+                // 5 StressStrain SLS Tension
                 gh_typ = new GH_ObjectWrapper();
                 if (DA.GetData(5, ref gh_typ))
                 {
@@ -198,24 +198,32 @@ namespace GhAdSec.Components
 
                 if (rebuildCurves)
                 {
+                    ITensionCompressionCurve ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.StressStrainCurve, ulsCompCrv.StressStrainCurve);
+                    ITensionCompressionCurve slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
                     switch (editMat.Type)
                     {
                         case AdSecMaterial.AdSecMaterialType.Concrete:
                             
-                            { 
-                            }
-                            ITensionCompressionCurve ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.StressStrainCurve, ulsCompCrv.StressStrainCurve);
-                            ITensionCompressionCurve slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
                             if (concreteCrack == null)
-                            {
-                                IConcrete concrete = IConcrete.Create(ulsTC, slsTC);
-                                editMat.Material = concrete;
-                            }
+                                editMat.Material = IConcrete.Create(ulsTC, slsTC);
                             else
-                            {
-                                IConcrete concrete = IConcrete.Create(ulsTC, slsTC, concreteCrack);
-                                editMat.Material = concrete;
-                            }
+                                editMat.Material = IConcrete.Create(ulsTC, slsTC, concreteCrack);
+                            break;
+
+                        case AdSecMaterial.AdSecMaterialType.FRP:
+                            editMat.Material = IFrp.Create(ulsTC, slsTC);
+                            break;
+
+                        case AdSecMaterial.AdSecMaterialType.Rebar:
+                            editMat.Material = IReinforcement.Create(ulsTC, slsTC);
+                            break;
+
+                        case AdSecMaterial.AdSecMaterialType.Tendon:
+                            editMat.Material = IReinforcement.Create(ulsTC, slsTC);
+                            break;
+
+                        case AdSecMaterial.AdSecMaterialType.Steel:
+                            editMat.Material = ISteel.Create(ulsTC, slsTC);
                             break;
                     }
                 }

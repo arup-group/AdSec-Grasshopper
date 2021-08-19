@@ -73,6 +73,7 @@
     <Compile Include="Components\1_Properties\CreateDesignCode.cs" />
     <Compile Include="Components\1_Properties\CreateStandardMaterial.cs" />
     <Compile Include="Components\1_Properties\CreateStressStrainCrv.cs" />
+    <Compile Include="Components\1_Properties\CreateCustomMaterial.cs" />
     <Compile Include="Components\1_Properties\EditMaterial.cs" />
     <Compile Include="GhAdSecInfo.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
