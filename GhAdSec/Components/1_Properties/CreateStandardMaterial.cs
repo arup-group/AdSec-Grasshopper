@@ -200,9 +200,16 @@ namespace GhAdSec.Components
                         dropdownitems.Add(materials.Keys.ToList());
                         // with first item being the selected
                         if (selecteditems[1].StartsWith("EN1992"))
-                            selecteditems.Add(materials.Keys.ElementAt(4));
+                        {
+                            if (materials.Keys.Count > 4)
+                                selecteditems.Add(materials.Keys.ElementAt(4));
+                            else if (materials.Keys.Count == 3)
+                                selecteditems.Add(materials.Keys.ElementAt(2));
+                            else
+                                selecteditems.Add(materials.Keys.First());
+                        }
                         else
-                            selecteditems.Add(materials.Keys.First().ToString());
+                            selecteditems.Add(materials.Keys.First());
                         // stop drilling
                         drill = false;
 

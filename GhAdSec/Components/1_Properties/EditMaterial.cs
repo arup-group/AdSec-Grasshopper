@@ -103,10 +103,10 @@ namespace GhAdSec.Components
                     }
                 }
                 // create stress strain curves
-                Tuple<Curve, List<Point3d>> ulsComp = GhAdSec.Parameters.AdSecStressStrainCurve.CreateFromCode(editMat.Material.Strength.Compression);
-                Tuple<Curve, List<Point3d>> ulsTens = GhAdSec.Parameters.AdSecStressStrainCurve.CreateFromCode(editMat.Material.Strength.Tension);
-                Tuple<Curve, List<Point3d>> slsComp = GhAdSec.Parameters.AdSecStressStrainCurve.CreateFromCode(editMat.Material.Serviceability.Compression);
-                Tuple<Curve, List<Point3d>> slsTens = GhAdSec.Parameters.AdSecStressStrainCurve.CreateFromCode(editMat.Material.Serviceability.Tension);
+                Tuple<Curve, List<Point3d>> ulsComp = GhAdSec.Parameters.AdSecStressStrainCurve.CreateFromCode(editMat.Material.Strength.Compression, true);
+                Tuple<Curve, List<Point3d>> ulsTens = GhAdSec.Parameters.AdSecStressStrainCurve.CreateFromCode(editMat.Material.Strength.Tension, false);
+                Tuple<Curve, List<Point3d>> slsComp = GhAdSec.Parameters.AdSecStressStrainCurve.CreateFromCode(editMat.Material.Serviceability.Compression, true);
+                Tuple<Curve, List<Point3d>> slsTens = GhAdSec.Parameters.AdSecStressStrainCurve.CreateFromCode(editMat.Material.Serviceability.Tension, false);
 
                 AdSecStressStrainCurve ulsCompCrv = new AdSecStressStrainCurve(ulsComp.Item1, editMat.Material.Strength.Compression,
                 AdSecStressStrainCurve.StressStrainCurveType.StressStrainDefault, ulsComp.Item2);

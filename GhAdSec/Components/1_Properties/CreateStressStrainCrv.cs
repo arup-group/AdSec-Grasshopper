@@ -369,7 +369,7 @@ namespace GhAdSec.Components
             }
 
             // create preview
-            Tuple<Curve, List<Point3d>> tuple = GhAdSec.Parameters.AdSecStressStrainCurve.Create(crv, _mode);
+            Tuple<Curve, List<Point3d>> tuple = GhAdSec.Parameters.AdSecStressStrainCurve.Create(crv, _mode, true);
 
             DA.SetData(0, new GhAdSec.Parameters.AdSecStressStrainCurve(tuple.Item1, crv, _mode, tuple.Item2));
         }
