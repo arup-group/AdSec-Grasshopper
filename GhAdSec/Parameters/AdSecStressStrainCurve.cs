@@ -35,6 +35,20 @@ namespace GhAdSec.Parameters
             m_SScurve = stressStrainCurve;
         }
 
+        internal static Oasys.Collections.IList<IStressStrainPoint> StressStrainPtsFromPolyline(PolylineCurve curve)
+        {
+            Oasys.Collections.IList<IStressStrainPoint> pts = Oasys.Collections.IList<IStressStrainPoint>.Create();
+            IStressStrainPoint pt = null;
+            for (int j = 0; j < curve.PointCount; j++)
+            {
+                Point3d point3d = curve.Point(j);
+                pt = IStressStrainPoint.Create(
+                    new UnitsNet.Pressure(point3d.Y, GhAdSec.DocumentUnits.PressureUnit),
+                    new Oasys.Units.Strain(point3d.X, GhAdSec.DocumentUnits.StrainUnit));
+                pts.Add(pt);
+            }
+            return pts;
+        }
         internal static Tuple<Curve, List<Point3d>> Create(IStressStrainCurve stressStrainCurve, StressStrainCurveType type, bool isCompression)
         {
 

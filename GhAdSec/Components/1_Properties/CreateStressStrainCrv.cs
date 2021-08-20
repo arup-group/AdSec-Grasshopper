@@ -206,9 +206,15 @@ namespace GhAdSec.Components
                     {
                         for (int i = 0; i < gh_typs.Count; i++)
                         {
+                            Curve polycurve = null;
                             if (gh_typs[i].Value is IStressStrainPoint)
                             {
                                 pts.Add((IStressStrainPoint)gh_typs[i].Value);
+                            }
+                            else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both))
+                            {
+                                PolylineCurve curve = (PolylineCurve)polycurve;
+                                pts = GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainPtsFromPolyline(curve);
                             }
                             else
                             {
@@ -219,7 +225,7 @@ namespace GhAdSec.Components
                     }
                     IExplicitStressStrainCurve exCrv = IExplicitStressStrainCurve.Create();
                     exCrv.Points = pts;
-                    crv = IExplicitStressStrainCurve.Create();
+                    crv = exCrv;
                     break;
 
                 case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.FibModelCode:

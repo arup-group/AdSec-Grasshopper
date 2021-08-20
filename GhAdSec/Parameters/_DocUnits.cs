@@ -34,7 +34,7 @@ namespace GhAdSec
             get { return m_strain; }
             set { m_strain = value; }
         }
-        private static Oasys.Units.StrainUnit m_strain = Oasys.Units.StrainUnit.Ratio;
+        private static Oasys.Units.StrainUnit m_strain = Oasys.Units.StrainUnit.MilliStrain;
         public static UnitsNet.Units.PressureUnit PressureUnit
         {
             get { return m_pressure; }
