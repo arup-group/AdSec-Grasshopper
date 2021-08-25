@@ -25,21 +25,29 @@ using Oasys.AdSec.Materials.StressStrainCurves;
 
 namespace GhAdSec.Parameters
 {
-    public class AdSecStressStrainPoint : GH_GeometricGoo<Point3d>, IGH_PreviewData
+    public class AdSecStressStrainPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData
     {
-        public AdSecStressStrainPoint(Point3d point)
+        public AdSecStressStrainPointGoo(Point3d point)
         : base(point)
         {
-            m_pt = point;
+            m_value = point;
             this.m_SSpoint = IStressStrainPoint.Create(
-                new UnitsNet.Pressure(m_pt.Y, GhAdSec.DocumentUnits.PressureUnit), 
-                new Oasys.Units.Strain(m_pt.X, GhAdSec.DocumentUnits.StrainUnit));
+                new UnitsNet.Pressure(m_value.Y, GhAdSec.DocumentUnits.PressureUnit), 
+                new Oasys.Units.Strain(m_value.X, GhAdSec.DocumentUnits.StrainUnit));
         }
 
-        public AdSecStressStrainPoint(IStressStrainPoint stressstrainPoint)
+        public AdSecStressStrainPointGoo(IStressStrainPoint stressstrainPoint)
         {
             m_SSpoint = stressstrainPoint;
-            m_pt = new Point3d(
+            this.m_value = new Point3d(
+                m_SSpoint.Strain.As(GhAdSec.DocumentUnits.StrainUnit),
+                m_SSpoint.Stress.As(GhAdSec.DocumentUnits.PressureUnit),
+                0);
+        }
+        public AdSecStressStrainPointGoo(UnitsNet.Pressure stress, Oasys.Units.Strain strain)
+        {
+            m_SSpoint = IStressStrainPoint.Create(stress, strain);
+            m_value = new Point3d(
                 m_SSpoint.Strain.As(GhAdSec.DocumentUnits.StrainUnit),
                 m_SSpoint.Stress.As(GhAdSec.DocumentUnits.PressureUnit),
                 0);
@@ -52,7 +60,6 @@ namespace GhAdSec.Parameters
                 new Oasys.Units.Strain(point.X, GhAdSec.DocumentUnits.StrainUnit)); 
         }
 
-        private Point3d m_pt = new Point3d();
         private IStressStrainPoint m_SSpoint;
         public IStressStrainPoint StressStrainPoint
         {
@@ -61,7 +68,7 @@ namespace GhAdSec.Parameters
 
         public override string ToString()
         {
-            GH_Point gH_Point = new GH_Point(m_pt);
+            GH_Point gH_Point = new GH_Point(m_value);
             string ptTxt = "AdSec StressStrainPoint " + gH_Point.ToString();
             return ptTxt;
         }
@@ -76,7 +83,7 @@ namespace GhAdSec.Parameters
 
         public override IGH_GeometricGoo DuplicateGeometry()
         {
-            return new AdSecStressStrainPoint(new Point3d(this.Value));
+            return new AdSecStressStrainPointGoo(new Point3d(this.Value));
         }
         public override BoundingBox Boundingbox
         {
@@ -155,7 +162,7 @@ namespace GhAdSec.Parameters
             if (source is IStressStrainPoint)
             {
                 m_SSpoint = (IStressStrainPoint)source;
-                m_pt = new Point3d(
+                m_value = new Point3d(
                     m_SSpoint.Strain.As(GhAdSec.DocumentUnits.StrainUnit),
                     m_SSpoint.Stress.As(GhAdSec.DocumentUnits.PressureUnit),
                     0);

@@ -28,7 +28,7 @@ namespace GhAdSec.Components
         // including name, exposure level and icon
         public override Guid ComponentGuid => new Guid("f422b2ba-f171-4ba6-a4da-86a0f3fa9a16");
         public EditUnits()
-          : base("EditUnits", "Units", "Edit units for AdSec in Grasshopper file",
+          : base("Set AdSec GH Units", "Units", "Edit units for AdSec in Grasshopper instance",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat0())
         { this.Hidden = true; } // sets the initial state of the component to hidden
@@ -45,7 +45,17 @@ namespace GhAdSec.Components
             {
                 dropdownitems = new List<List<string>>();
                 selecteditems = new List<string>();
-                
+
+                // length
+                UnitsNet.Units.LengthUnit rhUNit = GhAdSec.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+                string rhinounitstr = "Use Rhino unit: " + rhUNit.ToString();
+                rhinounit = rhinounitstr;
+                List<string> length = new List<string>();
+                length.Add(rhinounitstr);
+                length.AddRange(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                dropdownitems.Add(length);
+                selecteditems.Add(length[0]);
+
                 // strain
                 dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
                 selecteditems.Add(GhAdSec.DocumentUnits.StrainUnit.ToString());
@@ -57,23 +67,47 @@ namespace GhAdSec.Components
                 first = false;
             }
 
-            m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+            m_attributes = new UI.MultiDropDownComponentUICapsule(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
         }
-
+        string rhinounit;
         public void SetSelected(int i, int j)
         {
             // change selected item
             selecteditems[i] = dropdownitems[i][j];
 
+            bool redraw = false;
+            // update rhino unit string
+            UnitsNet.Units.LengthUnit rhUNit = GhAdSec.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+            string rhinounitstr = "Use Rhino unit: " + rhUNit.ToString();
+            if (!rhinounit.Equals(rhinounitstr))
+            {
+                dropdownitems[0][0] = rhinounitstr;
+                rhinounit = rhinounitstr;
+                redraw = true;
+            }
+
             switch (i)
             {
                 case 0:
-                    GhAdSec.DocumentUnits.StrainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
+                    if (j == 0)
+                        GhAdSec.DocumentUnits.LengthUnit = rhUNit;
+                    else
+                        GhAdSec.DocumentUnits.LengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
                     break;
                 case 1:
+                    GhAdSec.DocumentUnits.StrainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
+                    break;
+                case 2:
                     GhAdSec.DocumentUnits.PressureUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
                     break;
             }
+
+            if (redraw)
+            {
+                this.ExpireSolution(true);
+                this.ExpirePreview(true);
+            }
+                
             
         }
         #endregion
@@ -87,6 +121,7 @@ namespace GhAdSec.Components
         // list of descriptions 
         List<string> spacerDescriptions = new List<string>(new string[]
         {
+            "Length Unit",
             "Strain Unit",
             "Pressure Unit"
         });

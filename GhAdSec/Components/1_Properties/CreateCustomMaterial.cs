@@ -126,13 +126,13 @@ namespace GhAdSec.Components
             }
 
             // 1 StressStrain ULS Compression
-            AdSecStressStrainCurve ulsCompCrv = null;
+            AdSecStressStrainCurveGoo ulsCompCrv = null;
             gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(1, ref gh_typ))
             {
-                if (gh_typ.Value is AdSecStressStrainCurve)
+                if (gh_typ.Value is AdSecStressStrainCurveGoo)
                 {
-                    ulsCompCrv = (AdSecStressStrainCurve)gh_typ.Value;
+                    ulsCompCrv = (AdSecStressStrainCurveGoo)gh_typ.Value;
                 }
                 else
                 {
@@ -142,13 +142,13 @@ namespace GhAdSec.Components
             }
 
             // 2 StressStrain ULS Tension
-            AdSecStressStrainCurve ulsTensCrv = null;
+            AdSecStressStrainCurveGoo ulsTensCrv = null;
             gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(2, ref gh_typ))
             {
-                if (gh_typ.Value is AdSecStressStrainCurve)
+                if (gh_typ.Value is AdSecStressStrainCurveGoo)
                 {
-                    ulsTensCrv = (AdSecStressStrainCurve)gh_typ.Value;
+                    ulsTensCrv = (AdSecStressStrainCurveGoo)gh_typ.Value;
                 }
                 else
                 {
@@ -158,13 +158,13 @@ namespace GhAdSec.Components
             }
 
             // 3 StressStrain SLS Compression
-            AdSecStressStrainCurve slsCompCrv = null;
+            AdSecStressStrainCurveGoo slsCompCrv = null;
             gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(3, ref gh_typ))
             {
-                if (gh_typ.Value is AdSecStressStrainCurve)
+                if (gh_typ.Value is AdSecStressStrainCurveGoo)
                 {
-                    slsCompCrv = (AdSecStressStrainCurve)gh_typ.Value;
+                    slsCompCrv = (AdSecStressStrainCurveGoo)gh_typ.Value;
                 }
                 else
                 {
@@ -174,13 +174,13 @@ namespace GhAdSec.Components
             }
 
             // 4 StressStrain SLS Tension
-            AdSecStressStrainCurve slsTensCrv = null;
+            AdSecStressStrainCurveGoo slsTensCrv = null;
             gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(4, ref gh_typ))
             {
-                if (gh_typ.Value is AdSecStressStrainCurve)
+                if (gh_typ.Value is AdSecStressStrainCurveGoo)
                 {
-                    slsTensCrv = (AdSecStressStrainCurve)gh_typ.Value;
+                    slsTensCrv = (AdSecStressStrainCurveGoo)gh_typ.Value;
                 }
                 else
                 {
@@ -200,14 +200,14 @@ namespace GhAdSec.Components
                     {
                         concreteCrack = (IConcreteCrackCalculationParameters)gh_typ.Value;
                     }
-                    else if (gh_typ.Value is AdSecConcreteCrackCalculationParameters)
+                    else if (gh_typ.Value is AdSecConcreteCrackCalculationParametersGoo)
                     {
-                        AdSecConcreteCrackCalculationParameters adsecccp = (AdSecConcreteCrackCalculationParameters)gh_typ.Value;
+                        AdSecConcreteCrackCalculationParametersGoo adsecccp = (AdSecConcreteCrackCalculationParametersGoo)gh_typ.Value;
                         concreteCrack = adsecccp.ConcreteCrackCalculationParameters;
                     }
                     else
                     {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert CCP input to a Concrete Crack Calculation Parameters");
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert CCP input to ConcreteCrackCalculationParameters");
                         return;
                     }
                 }

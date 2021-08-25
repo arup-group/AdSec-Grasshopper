@@ -28,7 +28,7 @@ namespace GhAdSec.Components
                 Ribbon.SubCategoryName.Cat0())
         { this.Hidden = true; } // sets the initial state of the component to hidden
 
-        //public override GH_Exposure Exposure => GH_Exposure.quarternary | GH_Exposure.obscure;
+        public override GH_Exposure Exposure => GH_Exposure.septenary | GH_Exposure.obscure;
 
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.GsaVersion;
         #endregion

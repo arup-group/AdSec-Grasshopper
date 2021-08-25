@@ -9,6 +9,7 @@ using Grasshopper.Kernel.Parameters;
 using Rhino.Geometry;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using GhAdSec.Parameters;
+using UnitsNet.GH;
 
 namespace GhAdSec.Components
 {
@@ -37,7 +38,7 @@ namespace GhAdSec.Components
                 selecteditems.Add(_mode.ToString());
                 
                 dropdownitems = new List<List<string>>();
-                dropdownitems.Add(Enum.GetNames(typeof(GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)).ToList());
+                dropdownitems.Add(Enum.GetNames(typeof(GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)).ToList());
                 dropdownitems[0].RemoveAt(dropdownitems[0].Count - 1);
                 first = false;
             }
@@ -148,7 +149,7 @@ namespace GhAdSec.Components
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Failure", "SPu", "AdSec Stress Strain Point representing the Failure Point", GH_ParamAccess.item);
-            _mode = GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Linear;
+            _mode = GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Linear;
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -164,14 +165,10 @@ namespace GhAdSec.Components
             IStressStrainPoint pt = null;
             IStressStrainPoint pt1 = null;
             IStressStrainPoint pt2 = null;
-            double val1 = 0;
-            double val2 = 0;
-            double val3 = 0;
-            double val4 = 0;
 
             switch (_mode)
             {
-                case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Bilinear:
+                case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear:
                     if (DA.GetData(0, ref gh_typ1))
                     {
                         Point3d ghpt = new Point3d();
@@ -179,13 +176,13 @@ namespace GhAdSec.Components
                         {
                             pt1 = (IStressStrainPoint)gh_typ1.Value;
                         }
-                        else if (gh_typ1.Value is AdSecStressStrainPoint)
+                        else if (gh_typ1.Value is AdSecStressStrainPointGoo)
                         {
                             pt1 = (IStressStrainPoint)gh_typ1.Value;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ1.Value, ref ghpt, GH_Conversion.Both))
                         {
-                            pt1 = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
+                            pt1 = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -200,13 +197,13 @@ namespace GhAdSec.Components
                         {
                             pt2 = (IStressStrainPoint)gh_typ2.Value;
                         }
-                        else if (gh_typ2.Value is AdSecStressStrainPoint)
+                        else if (gh_typ2.Value is AdSecStressStrainPointGoo)
                         {
                             pt2 = (IStressStrainPoint)gh_typ2.Value;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ2.Value, ref ghpt, GH_Conversion.Both))
                         {
-                            pt2 = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
+                            pt2 = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -217,7 +214,7 @@ namespace GhAdSec.Components
                     crv = IBilinearStressStrainCurve.Create(pt1, pt2);
                     break;
 
-                case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Explicit:
+                case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit:
                     Oasys.Collections.IList<IStressStrainPoint> pts = Oasys.Collections.IList<IStressStrainPoint>.Create();
                     List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
                     if (DA.GetDataList(0, gh_typs))
@@ -230,18 +227,18 @@ namespace GhAdSec.Components
                             {
                                 pts.Add((IStressStrainPoint)gh_typs[i].Value);
                             }
-                            else if (gh_typ2.Value is AdSecStressStrainPoint)
+                            else if (gh_typ2.Value is AdSecStressStrainPointGoo)
                             {
                                 pts.Add((IStressStrainPoint)gh_typs[i].Value);
                             }
                             else if (GH_Convert.ToPoint3d(gh_typs[i].Value, ref ghpt, GH_Conversion.Both))
                             {
-                                pts.Add(GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt));
+                                pts.Add(GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt));
                             }
                             else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both))
                             {
                                 PolylineCurve curve = (PolylineCurve)polycurve;
-                                pts = GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainPtsFromPolyline(curve);
+                                pts = GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
                             }
                             else
                             {
@@ -260,7 +257,7 @@ namespace GhAdSec.Components
                     crv = exCrv;
                     break;
 
-                case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.FibModelCode:
+                case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
                     if (DA.GetData(0, ref gh_typ))
                     {
                         Point3d ghpt = new Point3d();
@@ -268,13 +265,13 @@ namespace GhAdSec.Components
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
-                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
+                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -282,15 +279,69 @@ namespace GhAdSec.Components
                             return;
                         }
                     }
-                    DA.GetData(1, ref val1);
-                    DA.GetData(2, ref val2);
+                    // get stress strain inputs
+                    UnitsNet.Pressure stressFib = new UnitsNet.Pressure();
+                    Oasys.Units.Strain strainFib = new Oasys.Units.Strain();
+
+                    // 1 Stress input
+                    gh_typ = new GH_ObjectWrapper();
+                    if (DA.GetData(1, ref gh_typ))
+                    {
+                        GH_Quantity inStress;
+
+                        // try cast directly to quantity type
+                        if (gh_typ.Value is GH_Quantity)
+                        {
+                            inStress = (GH_Quantity)gh_typ.Value;
+                            stressFib = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
+                        }
+                        // try cast to double
+                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                        {
+                            // create new quantity from default units
+                            inStress = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnit));
+                            stressFib = (UnitsNet.Pressure)inStress.Value;
+                        }
+                        else
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert stress input");
+                            return;
+                        }
+                    }
+
+                    // 2 Strain input
+                    gh_typ = new GH_ObjectWrapper();
+                    if (DA.GetData(2, ref gh_typ))
+                    {
+                        GH_Quantity inStrain;
+
+                        // try cast directly to quantity type
+                        if (gh_typ.Value is GH_Quantity)
+                        {
+                            inStrain = (GH_Quantity)gh_typ.Value;
+                            strainFib = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
+                        }
+                        // try cast to double
+                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                        {
+                            // create new quantity from default units
+                            inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                            strainFib = (Oasys.Units.Strain)inStrain.Value;
+                        }
+                        else
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert strain input");
+                            return;
+                        }
+                    }
+                    
                     crv = IFibModelCodeStressStrainCurve.Create(
-                        new UnitsNet.Pressure(val1, pressureUnit),
+                        stressFib,
                         pt,
-                        new Oasys.Units.Strain(val2, strainUnit));
+                        strainFib);
                     break;
 
-                case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Mander:
+                case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
                     if (DA.GetData(0, ref gh_typ))
                     {
                         Point3d ghpt = new Point3d();
@@ -298,13 +349,13 @@ namespace GhAdSec.Components
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
-                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
+                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -312,16 +363,69 @@ namespace GhAdSec.Components
                             return;
                         }
                     }
-                    DA.GetData(1, ref val1);
-                    DA.GetData(2, ref val2);
+                    // get stress strain inputs
+                    UnitsNet.Pressure stressMander = new UnitsNet.Pressure();
+                    Oasys.Units.Strain strainMander = new Oasys.Units.Strain();
+
+                    // 1 Stress input
+                    gh_typ = new GH_ObjectWrapper();
+                    if (DA.GetData(1, ref gh_typ))
+                    {
+                        GH_Quantity inStress;
+
+                        // try cast directly to quantity type
+                        if (gh_typ.Value is GH_Quantity)
+                        {
+                            inStress = (GH_Quantity)gh_typ.Value;
+                            stressMander = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
+                        }
+                        // try cast to double
+                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                        {
+                            // create new quantity from default units
+                            inStress = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnit));
+                            stressMander = (UnitsNet.Pressure)inStress.Value;
+                        }
+                        else
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert stress input");
+                            return;
+                        }
+                    }
+
+                    // 2 Strain input
+                    gh_typ = new GH_ObjectWrapper();
+                    if (DA.GetData(2, ref gh_typ))
+                    {
+                        GH_Quantity inStrain;
+
+                        // try cast directly to quantity type
+                        if (gh_typ.Value is GH_Quantity)
+                        {
+                            inStrain = (GH_Quantity)gh_typ.Value;
+                            strainMander = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
+                        }
+                        // try cast to double
+                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                        {
+                            // create new quantity from default units
+                            inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                            strainMander = (Oasys.Units.Strain)inStrain.Value;
+                        }
+                        else
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert strain input");
+                            return;
+                        }
+                    }
 
                     crv = IManderStressStrainCurve.Create(
-                        new UnitsNet.Pressure(val1, pressureUnit),
+                        stressMander,
                         pt,
-                        new Oasys.Units.Strain(val2, strainUnit));
+                        strainMander);
                     break;
 
-                case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Linear:
+                case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
                     if (DA.GetData(0, ref gh_typ))
                     {
                         Point3d ghpt = new Point3d();
@@ -329,13 +433,13 @@ namespace GhAdSec.Components
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
-                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
+                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -344,24 +448,124 @@ namespace GhAdSec.Components
                         }
                     }
                     
-                    if (_mode == GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Linear)
+                    if (_mode == GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Linear)
                         crv = ILinearStressStrainCurve.Create(pt);
                     break;
                 
-                case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.ManderConfined:
-                    DA.GetData(0, ref val1);
-                    DA.GetData(1, ref val2);
-                    DA.GetData(2, ref val3);
-                    DA.GetData(3, ref val4);
+                case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
+                    // get stress strain inputs
+                    UnitsNet.Pressure stressMander1 = new UnitsNet.Pressure();
+                    UnitsNet.Pressure stressMander2 = new UnitsNet.Pressure();
+                    UnitsNet.Pressure stressMander3 = new UnitsNet.Pressure();
+                    Oasys.Units.Strain strainManderConf = new Oasys.Units.Strain();
+
+                    // 0 Stress input
+                    gh_typ = new GH_ObjectWrapper();
+                    if (DA.GetData(0, ref gh_typ))
+                    {
+                        GH_Quantity inStress;
+
+                        // try cast directly to quantity type
+                        if (gh_typ.Value is GH_Quantity)
+                        {
+                            inStress = (GH_Quantity)gh_typ.Value;
+                            stressMander1 = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
+                        }
+                        // try cast to double
+                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                        {
+                            // create new quantity from default units
+                            inStress = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnit));
+                            stressMander1 = (UnitsNet.Pressure)inStress.Value;
+                        }
+                        else
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert first stress input");
+                            return;
+                        }
+                    }
+                    // 1 Stress input
+                    gh_typ = new GH_ObjectWrapper();
+                    if (DA.GetData(1, ref gh_typ))
+                    {
+                        GH_Quantity inStress;
+
+                        // try cast directly to quantity type
+                        if (gh_typ.Value is GH_Quantity)
+                        {
+                            inStress = (GH_Quantity)gh_typ.Value;
+                            stressMander2 = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
+                        }
+                        // try cast to double
+                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                        {
+                            // create new quantity from default units
+                            inStress = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnit));
+                            stressMander2 = (UnitsNet.Pressure)inStress.Value;
+                        }
+                        else
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert second stress input");
+                            return;
+                        }
+                    }
+                    // 2 Stress input
+                    gh_typ = new GH_ObjectWrapper();
+                    if (DA.GetData(2, ref gh_typ))
+                    {
+                        GH_Quantity inStress;
+
+                        // try cast directly to quantity type
+                        if (gh_typ.Value is GH_Quantity)
+                        {
+                            inStress = (GH_Quantity)gh_typ.Value;
+                            stressMander3 = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
+                        }
+                        // try cast to double
+                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                        {
+                            // create new quantity from default units
+                            inStress = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnit));
+                            stressMander3 = (UnitsNet.Pressure)inStress.Value;
+                        }
+                        else
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert third stress input");
+                            return;
+                        }
+                    }
+
+                    // 3 Strain input
+                    gh_typ = new GH_ObjectWrapper();
+                    if (DA.GetData(3, ref gh_typ))
+                    {
+                        GH_Quantity inStrain;
+
+                        // try cast directly to quantity type
+                        if (gh_typ.Value is GH_Quantity)
+                        {
+                            inStrain = (GH_Quantity)gh_typ.Value;
+                            strainManderConf = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
+                        }
+                        // try cast to double
+                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                        {
+                            // create new quantity from default units
+                            inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                            strainManderConf = (Oasys.Units.Strain)inStrain.Value;
+                        }
+                        else
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert strain input");
+                            return;
+                        }
+                    }
 
                     crv = IManderConfinedStressStrainCurve.Create(
-                        new UnitsNet.Pressure(val1, pressureUnit),
-                        new UnitsNet.Pressure(val2, pressureUnit),
-                        new UnitsNet.Pressure(val3, pressureUnit),
-                        new Oasys.Units.Strain(val4, strainUnit));
+                        stressMander1, stressMander2, stressMander3, strainManderConf);
                     break;
 
-                case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.ParabolaRectangle:
+                case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
                     if (DA.GetData(0, ref gh_typ))
                     {
                         Point3d ghpt = new Point3d();
@@ -369,13 +573,13 @@ namespace GhAdSec.Components
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
-                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
+                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -383,11 +587,36 @@ namespace GhAdSec.Components
                             return;
                         }
                     }
-                    DA.GetData(1, ref val1);
-                    crv = IParabolaRectangleStressStrainCurve.Create(pt, new Oasys.Units.Strain(val1, strainUnit));
+                    // 1 Strain input
+                    Oasys.Units.Strain strainParabol = new Oasys.Units.Strain();
+                    gh_typ = new GH_ObjectWrapper();
+                    if (DA.GetData(1, ref gh_typ))
+                    {
+                        GH_Quantity inStrain;
+
+                        // try cast directly to quantity type
+                        if (gh_typ.Value is GH_Quantity)
+                        {
+                            inStrain = (GH_Quantity)gh_typ.Value;
+                            strainParabol = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
+                        }
+                        // try cast to double
+                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                        {
+                            // create new quantity from default units
+                            inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                            strainParabol = (Oasys.Units.Strain)inStrain.Value;
+                        }
+                        else
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert strain input");
+                            return;
+                        }
+                    }
+                    crv = IParabolaRectangleStressStrainCurve.Create(pt, strainParabol);
                     break;
 
-                case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Park:
+                case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
                     if (DA.GetData(0, ref gh_typ))
                     {
                         Point3d ghpt = new Point3d();
@@ -395,13 +624,13 @@ namespace GhAdSec.Components
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
-                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
+                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -410,11 +639,11 @@ namespace GhAdSec.Components
                         }
                     }
 
-                    if (_mode == GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Linear)
+                    if (_mode == GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Linear)
                         crv = IParkStressStrainCurve.Create(pt);
                     break;
 
-                case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Popovics:
+                case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics:
                     if (DA.GetData(0, ref gh_typ))
                     {
                         Point3d ghpt = new Point3d();
@@ -422,13 +651,13 @@ namespace GhAdSec.Components
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
-                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
+                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -436,12 +665,39 @@ namespace GhAdSec.Components
                             return;
                         }
                     }
-                    
-                    DA.GetData(1, ref val1);
-                    crv = IParabolaRectangleStressStrainCurve.Create(pt, new Oasys.Units.Strain(val1, strainUnit));
+
+                    // 1 Strain input
+                    Oasys.Units.Strain strainPopo = new Oasys.Units.Strain();
+                    gh_typ = new GH_ObjectWrapper();
+                    if (DA.GetData(1, ref gh_typ))
+                    {
+                        GH_Quantity inStrain;
+
+                        // try cast directly to quantity type
+                        if (gh_typ.Value is GH_Quantity)
+                        {
+                            inStrain = (GH_Quantity)gh_typ.Value;
+                            strainPopo = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
+                        }
+                        // try cast to double
+                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                        {
+                            // create new quantity from default units
+                            inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                            strainPopo = (Oasys.Units.Strain)inStrain.Value;
+                        }
+                        else
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert strain input");
+                            return;
+                        }
+                    }
+
+                    // create curve
+                    crv = IParabolaRectangleStressStrainCurve.Create(pt, strainPopo);
                     break;
 
-                case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Rectangular:
+                case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
                     if (DA.GetData(0, ref gh_typ))
                     {
                         Point3d ghpt = new Point3d();
@@ -449,13 +705,13 @@ namespace GhAdSec.Components
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
-                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
+                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -464,15 +720,42 @@ namespace GhAdSec.Components
                         }
                     }
 
-                    DA.GetData(1, ref val1);
-                    crv = IRectangularStressStrainCurve.Create(pt, new Oasys.Units.Strain(val1, strainUnit));
+                    // 1 Strain input
+                    Oasys.Units.Strain strainRect = new Oasys.Units.Strain();
+                    gh_typ = new GH_ObjectWrapper();
+                    if (DA.GetData(1, ref gh_typ))
+                    {
+                        GH_Quantity inStrain;
+
+                        // try cast directly to quantity type
+                        if (gh_typ.Value is GH_Quantity)
+                        {
+                            inStrain = (GH_Quantity)gh_typ.Value;
+                            strainRect = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
+                        }
+                        // try cast to double
+                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                        {
+                            // create new quantity from default units
+                            inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                            strainRect = (Oasys.Units.Strain)inStrain.Value;
+                        }
+                        else
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert strain input");
+                            return;
+                        }
+                    }
+
+                    // create curve
+                    crv = IRectangularStressStrainCurve.Create(pt, strainRect);
                     break;
             }
 
             // create preview
-            Tuple<Curve, List<Point3d>> tuple = GhAdSec.Parameters.AdSecStressStrainCurve.Create(crv, _mode, true);
+            Tuple<Curve, List<Point3d>> tuple = GhAdSec.Parameters.AdSecStressStrainCurveGoo.Create(crv, _mode, true);
 
-            DA.SetData(0, new GhAdSec.Parameters.AdSecStressStrainCurve(tuple.Item1, crv, _mode, tuple.Item2));
+            DA.SetData(0, new GhAdSec.Parameters.AdSecStressStrainCurveGoo(tuple.Item1, crv, _mode, tuple.Item2));
         }
 
         #region menu override
@@ -490,19 +773,19 @@ namespace GhAdSec.Components
         //    Rectangular
         //}
         private bool first = true;
-        private GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType _mode = GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Linear;
+        private GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType _mode = GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Linear;
 
         private void Mode0Clicked()
         {
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)0)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)0)
                 return;
             
             bool cleanAll = false;
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)4)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
                 cleanAll = true;
 
             RecordUndoEvent("Changed dropdown");
-            _mode = (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)0;
+            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)0;
 
             //remove input parameters
             int i = cleanAll ? 0 : 1;
@@ -517,15 +800,15 @@ namespace GhAdSec.Components
         }
         private void Mode1Clicked()
         {
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)1)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)1)
                 return;
 
             bool cleanAll = false;
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)4)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
                 cleanAll = true;
 
             RecordUndoEvent("Changed dropdown");
-            _mode = (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)1;
+            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)1;
 
             //remove input parameters
             int i = cleanAll ? 0 : 1;
@@ -540,15 +823,15 @@ namespace GhAdSec.Components
         }
         private void Mode2Clicked()
         {
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)2)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)2)
                 return;
 
             bool cleanAll = false;
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)4)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
                 cleanAll = true;
 
             RecordUndoEvent("Changed dropdown");
-            _mode = (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)2;
+            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)2;
 
             //remove input parameters
             int i = cleanAll ? 0 : 1;
@@ -557,7 +840,7 @@ namespace GhAdSec.Components
             if (cleanAll)
                 Params.RegisterInputParam(new Param_GenericObject());
             while (Params.Input.Count != 3)
-                Params.RegisterInputParam(new Param_Number());
+                Params.RegisterInputParam(new Param_GenericObject());
 
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
@@ -565,15 +848,15 @@ namespace GhAdSec.Components
         }
         private void Mode3Clicked()
         {
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)3)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)3)
                 return;
 
             bool cleanAll = false;
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)4)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
                 cleanAll = true;
 
             RecordUndoEvent("Changed dropdown");
-            _mode = (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)3;
+            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)3;
 
             //remove input parameters
             int i = cleanAll ? 0 : 1;
@@ -588,17 +871,17 @@ namespace GhAdSec.Components
         }
         private void Mode4Clicked()
         {
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)4)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
                 return;
 
             RecordUndoEvent("Changed dropdown");
-            _mode = (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)4;
+            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4;
 
             //remove input parameters
             while (Params.Input.Count > 0)
                 Params.UnregisterInputParameter(Params.Input[0], true);
             while (Params.Input.Count != 4)
-                Params.RegisterInputParam(new Param_Number());
+                Params.RegisterInputParam(new Param_GenericObject());
 
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
@@ -606,15 +889,15 @@ namespace GhAdSec.Components
         }
         private void Mode5Clicked()
         {
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)5)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)5)
                 return;
 
             bool cleanAll = false;
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)4)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
                 cleanAll = true;
 
             RecordUndoEvent("Changed dropdown");
-            _mode = (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)5;
+            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)5;
 
             //remove input parameters
             int i = cleanAll ? 0 : 1;
@@ -623,7 +906,7 @@ namespace GhAdSec.Components
             if (cleanAll)
                 Params.RegisterInputParam(new Param_GenericObject());
             while (Params.Input.Count != 3)
-                Params.RegisterInputParam(new Param_Number());
+                Params.RegisterInputParam(new Param_GenericObject());
 
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
@@ -631,15 +914,15 @@ namespace GhAdSec.Components
         }
         private void Mode6Clicked()
         {
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)6)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)6)
                 return;
 
             bool cleanAll = false;
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)4)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
                 cleanAll = true;
 
             RecordUndoEvent("Changed dropdown");
-            _mode = (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)6;
+            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)6;
 
             //remove input parameters
             int i = cleanAll ? 0 : 1;
@@ -648,7 +931,7 @@ namespace GhAdSec.Components
             if (cleanAll)
                 Params.RegisterInputParam(new Param_GenericObject());
             while (Params.Input.Count != 2)
-                Params.RegisterInputParam(new Param_Number());
+                Params.RegisterInputParam(new Param_GenericObject());
 
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
@@ -656,15 +939,15 @@ namespace GhAdSec.Components
         }
         private void Mode7Clicked()
         {
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)7)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)7)
                 return;
 
             bool cleanAll = false;
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)4)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
                 cleanAll = true;
 
             RecordUndoEvent("Changed dropdown");
-            _mode = (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)7;
+            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)7;
 
             //remove input parameters
             int i = cleanAll ? 0 : 1;
@@ -679,15 +962,15 @@ namespace GhAdSec.Components
         }
         private void Mode8Clicked()
         {
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)8)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)8)
                 return;
 
             bool cleanAll = false;
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)4)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
                 cleanAll = true;
 
             RecordUndoEvent("Changed dropdown");
-            _mode = (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)8;
+            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)8;
 
             //remove input parameters
             int i = cleanAll ? 0 : 1;
@@ -696,7 +979,7 @@ namespace GhAdSec.Components
             if (cleanAll)
                 Params.RegisterInputParam(new Param_GenericObject());
             while (Params.Input.Count != 2)
-                Params.RegisterInputParam(new Param_Number());
+                Params.RegisterInputParam(new Param_GenericObject());
 
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
@@ -704,15 +987,15 @@ namespace GhAdSec.Components
         }
         private void Mode9Clicked()
         {
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)9)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)9)
                 return;
 
             bool cleanAll = false;
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)4)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
                 cleanAll = true;
 
             RecordUndoEvent("Changed dropdown");
-            _mode = (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)9;
+            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)9;
 
             //remove input parameters
             int i = cleanAll ? 0 : 1;
@@ -721,7 +1004,7 @@ namespace GhAdSec.Components
             if (cleanAll)
                 Params.RegisterInputParam(new Param_GenericObject());
             while (Params.Input.Count != 2)
-                Params.RegisterInputParam(new Param_Number());
+                Params.RegisterInputParam(new Param_GenericObject());
 
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
@@ -803,7 +1086,7 @@ namespace GhAdSec.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)0)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)0)
             {
                 Params.Input[0].Name = "Yield Point";
                 Params.Input[0].NickName = "SPy";
@@ -818,7 +1101,7 @@ namespace GhAdSec.Components
                 Params.Input[1].Optional = false;
             }
 
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)1)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)1)
             {
                 Params.Input[0].Name = "StressStrainPts";
                 Params.Input[0].NickName = "SPs";
@@ -827,7 +1110,7 @@ namespace GhAdSec.Components
                 Params.Input[0].Optional = false;
             }
 
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)2)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)2)
             {
                 Params.Input[0].Name = "Peak Point";
                 Params.Input[0].NickName = "SPt";
@@ -848,7 +1131,7 @@ namespace GhAdSec.Components
                 Params.Input[2].Optional = false;
             }
 
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)3)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)3)
             {
                 Params.Input[0].Name = "Failure Point";
                 Params.Input[0].NickName = "SPu";
@@ -857,7 +1140,7 @@ namespace GhAdSec.Components
                 Params.Input[0].Optional = false;
             }
 
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)4)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
             {
                 Params.Input[0].Name = "Unconfined Strength";
                 Params.Input[0].NickName = "σU";
@@ -884,7 +1167,7 @@ namespace GhAdSec.Components
                 Params.Input[3].Optional = false;
             }
 
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)5)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)5)
             {
                 Params.Input[0].Name = "Peak Point";
                 Params.Input[0].NickName = "SPt";
@@ -905,7 +1188,7 @@ namespace GhAdSec.Components
                 Params.Input[2].Optional = false;
             }
 
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)6)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)6)
             {
                 Params.Input[0].Name = "Yield Point";
                 Params.Input[0].NickName = "SPy";
@@ -920,7 +1203,7 @@ namespace GhAdSec.Components
                 Params.Input[1].Optional = false;
             }
 
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)7)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)7)
             {
                 Params.Input[0].Name = "Yield Point";
                 Params.Input[0].NickName = "SPy";
@@ -929,7 +1212,7 @@ namespace GhAdSec.Components
                 Params.Input[0].Optional = false;
             }
 
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)8)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)8)
             {
                 Params.Input[0].Name = "Peak Point";
                 Params.Input[0].NickName = "SPt";
@@ -944,7 +1227,7 @@ namespace GhAdSec.Components
                 Params.Input[1].Optional = false;
             }
 
-            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType)9)
+            if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)9)
             {
                 Params.Input[0].Name = "Yield Point";
                 Params.Input[0].NickName = "SPy";

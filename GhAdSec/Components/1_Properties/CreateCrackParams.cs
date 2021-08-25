@@ -16,6 +16,7 @@ using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
+using UnitsNet.GH;
 
 namespace GhAdSec.Components
 {
@@ -97,30 +98,107 @@ namespace GhAdSec.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddNumberParameter("Elastic Modulus", "E", "Value for Elastic Modulus", GH_ParamAccess.item);
-            pManager.AddNumberParameter("Compression", "fck", "Value for Characteristic Compressive Strength", GH_ParamAccess.item);
-            pManager.AddNumberParameter("Tension", "ftk", "Value for Characteristic Tension Strength", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Elastic Modulus", "E", "Value for Elastic Modulus", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Compression", "fc", "Value for Characteristic Compressive Strength", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Tension", "ft", "Value for Characteristic Tension Strength", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("CrackCalcParams", "CCP", "AdSec Concrete Crack Calculation Parameters", GH_ParamAccess.item);
+            pManager.AddGenericParameter("CrackCalcParams", "CCP", "AdSec ConcreteCrackCalculationParameters", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            // get inputs
-            double e = 0; double fc = 0; double ft = 0;
-            DA.GetData(0, ref e);
-            DA.GetData(1, ref fc);
-            DA.GetData(2, ref ft);
+            UnitsNet.Pressure e = new UnitsNet.Pressure();
+            UnitsNet.Pressure fck = new UnitsNet.Pressure();
+            UnitsNet.Pressure ft = new UnitsNet.Pressure();
 
-            // create pressure values with units
-            UnitsNet.Pressure presE = new UnitsNet.Pressure(e, pressureUnitE);
-            UnitsNet.Pressure presFc = new UnitsNet.Pressure(Math.Abs(fc) * -1, pressureUnit);
-            UnitsNet.Pressure presFt = new UnitsNet.Pressure(ft, pressureUnit);
+            // 0 Elastic modulus
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(0, ref gh_typ))
+            {
+                GH_Quantity newElastic;
+
+                // try cast directly to quantity type
+                if (gh_typ.Value is GH_Quantity)
+                {
+                    newElastic = (GH_Quantity)gh_typ.Value;
+                }
+                // try cast to double
+                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                {
+                    // create new quantity from default units
+                    newElastic = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnitE));
+                }
+                else
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert E input");
+                    return;
+                }
+                e = (UnitsNet.Pressure)newElastic.Value.ToUnit(pressureUnitE);
+            }
+
+            // 1 Compression strength
+            gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(1, ref gh_typ))
+            {
+                GH_Quantity newCompression;
+
+                // try cast directly to quantity type
+                if (gh_typ.Value is GH_Quantity)
+                {
+                    newCompression = (GH_Quantity)gh_typ.Value;
+                    fck = (UnitsNet.Pressure)newCompression.Value.ToUnit(pressureUnit);
+                    if (fck.Value > 0)
+                    {
+                        fck = new UnitsNet.Pressure(fck.Value * -1, fck.Unit);
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression (fc) must be negative; note that value has been multiplied by -1");
+                    }
+                }
+                // try cast to double
+                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                {
+                    // create new quantity from default units
+                    newCompression = new GH_Quantity(new UnitsNet.Pressure(Math.Abs(val) * -1, pressureUnit));
+                    fck = (UnitsNet.Pressure)newCompression.Value;
+                    if (val >= 0)
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression (fc) must be negative; note that value has been multiplied by -1");
+                }
+                else
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert fck input");
+                    return;
+                }
+            }
+
+            // 2 Compression strength
+            gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(2, ref gh_typ))
+            {
+                GH_Quantity newTensions;
+
+                // try cast directly to quantity type
+                if (gh_typ.Value is GH_Quantity)
+                {
+                    newTensions = (GH_Quantity)gh_typ.Value;
+                    ft = (UnitsNet.Pressure)newTensions.Value.ToUnit(pressureUnit);
+                }
+                // try cast to double
+                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                {
+                    // create new quantity from default units
+                    newTensions = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnit));
+                    ft = (UnitsNet.Pressure)newTensions.Value;
+                }
+                else
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert ft input");
+                    return;
+                }
+            }
 
             // create new ccp
-            AdSecConcreteCrackCalculationParameters ccp = new AdSecConcreteCrackCalculationParameters(presE, presFc, presFt);
+            AdSecConcreteCrackCalculationParametersGoo ccp = new AdSecConcreteCrackCalculationParametersGoo(e, fck, ft);
 
             DA.SetData(0, ccp);
         }

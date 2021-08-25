@@ -25,9 +25,9 @@ using Oasys.AdSec.Materials.StressStrainCurves;
 
 namespace GhAdSec.Parameters
 {
-    public class AdSecStressStrainCurve : GH_GeometricGoo<Curve>, IGH_PreviewData
+    public class AdSecStressStrainCurveGoo : GH_GeometricGoo<Curve>, IGH_PreviewData
     {
-        public AdSecStressStrainCurve(Curve curve, IStressStrainCurve stressStrainCurve, StressStrainCurveType type, List<Point3d> points)
+        public AdSecStressStrainCurveGoo(Curve curve, IStressStrainCurve stressStrainCurve, StressStrainCurveType type, List<Point3d> points)
         : base(curve)
         {
             m_pts = points;
@@ -213,7 +213,7 @@ namespace GhAdSec.Parameters
 
         public override IGH_GeometricGoo DuplicateGeometry()
         {
-            return new AdSecStressStrainCurve(this.Value.DuplicateCurve(), m_SScurve, m_type, m_pts);
+            return new AdSecStressStrainCurveGoo(this.Value.DuplicateCurve(), m_SScurve, m_type, m_pts);
         }
         public override BoundingBox Boundingbox
         {

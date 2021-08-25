@@ -25,20 +25,20 @@ using Oasys.AdSec.Materials;
 
 namespace GhAdSec.Parameters
 {
-    public class AdSecConcreteCrackCalculationParameters : GH_Goo<IConcreteCrackCalculationParameters>
+    public class AdSecConcreteCrackCalculationParametersGoo : GH_Goo<IConcreteCrackCalculationParameters>
     {
-        public AdSecConcreteCrackCalculationParameters(IConcreteCrackCalculationParameters concreteCrackCalculationParameters)
+        public AdSecConcreteCrackCalculationParametersGoo(IConcreteCrackCalculationParameters concreteCrackCalculationParameters)
         : base(concreteCrackCalculationParameters)
         {
         }
-        public AdSecConcreteCrackCalculationParameters(UnitsNet.Pressure elasticModulus, UnitsNet.Pressure characteristicCompressiveStrength, UnitsNet.Pressure characteristicTensionStrength)
+        public AdSecConcreteCrackCalculationParametersGoo(UnitsNet.Pressure elasticModulus, UnitsNet.Pressure characteristicCompressiveStrength, UnitsNet.Pressure characteristicTensionStrength)
         {
             this.Value = IConcreteCrackCalculationParameters.Create(
                 elasticModulus, 
                 characteristicCompressiveStrength, 
                 characteristicTensionStrength);
         }
-        public AdSecConcreteCrackCalculationParameters(double elasticModulus, double characteristicCompressiveStrength, double characteristicTensionStrength)
+        public AdSecConcreteCrackCalculationParametersGoo(double elasticModulus, double characteristicCompressiveStrength, double characteristicTensionStrength)
         {
             this.Value = IConcreteCrackCalculationParameters.Create(
                 new UnitsNet.Pressure(elasticModulus, GhAdSec.DocumentUnits.PressureUnit),
@@ -55,19 +55,23 @@ namespace GhAdSec.Parameters
 
         public override string TypeName => "AdSec CCP";
 
-        public override string TypeDescription => "AdSec Concrete Crack-Calculation Parameters";
+        public override string TypeDescription => "AdSec ConcreteCrackCalculationParameters";
 
         public override IGH_Goo Duplicate()
         {
-            return new AdSecConcreteCrackCalculationParameters(this.Value.ElasticModulus, Value.CharacteristicCompressiveStrength, Value.CharacteristicTensileStrength);
+            return new AdSecConcreteCrackCalculationParametersGoo(this.Value.ElasticModulus, Value.CharacteristicCompressiveStrength, Value.CharacteristicTensileStrength);
         }
 
         public override string ToString()
         {
-            return TypeName + 
-                " E:" + this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.PressureUnit) + 
-                " fck:" + this.Value.CharacteristicCompressiveStrength.As(GhAdSec.DocumentUnits.PressureUnit) + 
-                " ftk: " + this.Value.CharacteristicTensileStrength.As(GhAdSec.DocumentUnits.PressureUnit);
+            // recreate pressure values with document units
+            UnitsNet.Pressure e = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.PressureUnit), GhAdSec.DocumentUnits.PressureUnit);
+            UnitsNet.Pressure fck = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.PressureUnit), GhAdSec.DocumentUnits.PressureUnit);
+            UnitsNet.Pressure ftk = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.PressureUnit), GhAdSec.DocumentUnits.PressureUnit);
+            return TypeName +
+                " E:" + e.ToString() +
+                " fc:" + fck.ToString() +
+                " ft: " + ftk.ToString();
         }
     }
 }

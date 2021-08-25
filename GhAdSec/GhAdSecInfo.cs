@@ -98,6 +98,9 @@ namespace GhAdSec
             Grasshopper.Instances.ComponentServer.AddCategorySymbolName("AdSec", 'A');
             //Grasshopper.Instances.ComponentServer.AddCategoryIcon("GSA", GhSA.Properties.Resources.GsaGhLogo);
 
+            // Setup units
+            GhAdSec.DocumentUnits.SetupUnits();
+
             return GH_LoadingInstruction.Proceed;
         }
         public static Assembly adsecAPI;

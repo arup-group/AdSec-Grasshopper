@@ -16,6 +16,7 @@ using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
+using UnitsNet.GH;
 
 namespace GhAdSec.Components
 {
@@ -99,8 +100,8 @@ namespace GhAdSec.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddNumberParameter("Strain", "ε", "Value for strain (X-axis)", GH_ParamAccess.item);
-            pManager.AddNumberParameter("Pressure", "σ", "Value for pressure (Y-axis)", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Strain", "ε", "Value for strain (X-axis)", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Pressure", "σ", "Value for pressure (Y-axis)", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -110,12 +111,63 @@ namespace GhAdSec.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // get inputs
-            double x = 0; double y = 0;
-            DA.GetData(0, ref x);
-            DA.GetData(1, ref y);
+            UnitsNet.Pressure stress = new UnitsNet.Pressure();
+            Oasys.Units.Strain strain = new Oasys.Units.Strain();
+
+            // 0 Strain input
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(0, ref gh_typ))
+            {
+                GH_Quantity inStrain;
+
+                // try cast directly to quantity type
+                if (gh_typ.Value is GH_Quantity)
+                {
+                    inStrain = (GH_Quantity)gh_typ.Value;
+                    strain = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
+                }
+                // try cast to double
+                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                {
+                    // create new quantity from default units
+                    inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                    strain = (Oasys.Units.Strain)inStrain.Value;
+                }
+                else
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert E input");
+                    return;
+                }
+            }
+
+            // 1 Stress input
+            gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(1, ref gh_typ))
+            {
+                GH_Quantity inStress;
+
+                // try cast directly to quantity type
+                if (gh_typ.Value is GH_Quantity)
+                {
+                    inStress = (GH_Quantity)gh_typ.Value;
+                    stress = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
+                }
+                // try cast to double
+                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                {
+                    // create new quantity from default units
+                    inStress = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnit));
+                    stress = (UnitsNet.Pressure)inStress.Value;
+                }
+                else
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert E input");
+                    return;
+                }
+            }
 
             // create new point
-            AdSecStressStrainPoint pt = new AdSecStressStrainPoint(new Point3d(x, y, 0));
+            AdSecStressStrainPointGoo pt = new AdSecStressStrainPointGoo(stress, strain);
 
             DA.SetData(0, pt);
         }

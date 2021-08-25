@@ -51,7 +51,7 @@ namespace GhAdSec.Components
             pManager.AddGenericParameter("ULS Tens. Crv", "U_T", "ULS Stress Strain Curve for Tension", GH_ParamAccess.item);
             pManager.AddGenericParameter("SLS Comp. Crv", "S_C", "SLS Stress Strain Curve for Compression", GH_ParamAccess.item);
             pManager.AddGenericParameter("SLS Tens. Crv", "S_T", "SLS Stress Strain Curve for Tension", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Crack Calc Params", "CCP", "[Optional] Overwrite the Material's Crack Calculation Parameters", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Crack Calc Params", "CCP", "[Optional] Overwrite the Material's ConcreteCrackCalculationParameters", GH_ParamAccess.item);
             
             // make all but first input optional
             for (int i = 1; i < pManager.ParamCount; i++)
@@ -66,7 +66,7 @@ namespace GhAdSec.Components
             pManager.AddGenericParameter("ULS Tens. Crv", "U_T", "ULS Stress Strain Curve for Tension", GH_ParamAccess.item);
             pManager.AddGenericParameter("SLS Comp. Crv", "S_C", "SLS Stress Strain Curve for Compression", GH_ParamAccess.item);
             pManager.AddGenericParameter("SLS Tens. Crv", "S_T", "SLS Stress Strain Curve for Tension", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Crack Calc Params", "CCP", "Crack Calculation Parameters", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Crack Calc Params", "CCP", "ConcreteCrackCalculationParameters", GH_ParamAccess.item);
         }
         #endregion
 
@@ -99,32 +99,31 @@ namespace GhAdSec.Components
                     else
                     {
                         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert DC input to a DesignCode" + System.Environment.NewLine + "DesignCode input has been ignored");
-                        return;
                     }
                 }
                 // create stress strain curves
-                Tuple<Curve, List<Point3d>> ulsComp = GhAdSec.Parameters.AdSecStressStrainCurve.CreateFromCode(editMat.Material.Strength.Compression, true);
-                Tuple<Curve, List<Point3d>> ulsTens = GhAdSec.Parameters.AdSecStressStrainCurve.CreateFromCode(editMat.Material.Strength.Tension, false);
-                Tuple<Curve, List<Point3d>> slsComp = GhAdSec.Parameters.AdSecStressStrainCurve.CreateFromCode(editMat.Material.Serviceability.Compression, true);
-                Tuple<Curve, List<Point3d>> slsTens = GhAdSec.Parameters.AdSecStressStrainCurve.CreateFromCode(editMat.Material.Serviceability.Tension, false);
+                Tuple<Curve, List<Point3d>> ulsComp = GhAdSec.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Compression, true);
+                Tuple<Curve, List<Point3d>> ulsTens = GhAdSec.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Tension, false);
+                Tuple<Curve, List<Point3d>> slsComp = GhAdSec.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Compression, true);
+                Tuple<Curve, List<Point3d>> slsTens = GhAdSec.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Tension, false);
 
-                AdSecStressStrainCurve ulsCompCrv = new AdSecStressStrainCurve(ulsComp.Item1, editMat.Material.Strength.Compression,
-                AdSecStressStrainCurve.StressStrainCurveType.StressStrainDefault, ulsComp.Item2);
-                AdSecStressStrainCurve ulsTensCrv = new AdSecStressStrainCurve(ulsTens.Item1, editMat.Material.Strength.Tension,
-                    AdSecStressStrainCurve.StressStrainCurveType.StressStrainDefault, ulsTens.Item2);
-                AdSecStressStrainCurve slsCompCrv = new AdSecStressStrainCurve(slsComp.Item1, editMat.Material.Serviceability.Compression,
-                    AdSecStressStrainCurve.StressStrainCurveType.StressStrainDefault, slsComp.Item2);
-                AdSecStressStrainCurve slsTensCrv = new AdSecStressStrainCurve(slsTens.Item1, editMat.Material.Serviceability.Tension,
-                    AdSecStressStrainCurve.StressStrainCurveType.StressStrainDefault, slsTens.Item2);
+                AdSecStressStrainCurveGoo ulsCompCrv = new AdSecStressStrainCurveGoo(ulsComp.Item1, editMat.Material.Strength.Compression,
+                AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsComp.Item2);
+                AdSecStressStrainCurveGoo ulsTensCrv = new AdSecStressStrainCurveGoo(ulsTens.Item1, editMat.Material.Strength.Tension,
+                    AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsTens.Item2);
+                AdSecStressStrainCurveGoo slsCompCrv = new AdSecStressStrainCurveGoo(slsComp.Item1, editMat.Material.Serviceability.Compression,
+                    AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsComp.Item2);
+                AdSecStressStrainCurveGoo slsTensCrv = new AdSecStressStrainCurveGoo(slsTens.Item1, editMat.Material.Serviceability.Tension,
+                    AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsTens.Item2);
 
                 bool rebuildCurves = false;
                 // 2 StressStrain ULS Compression
                 gh_typ = new GH_ObjectWrapper();
                 if (DA.GetData(2, ref gh_typ))
                 {
-                    if (gh_typ.Value is AdSecStressStrainCurve)
+                    if (gh_typ.Value is AdSecStressStrainCurveGoo)
                     {
-                        ulsCompCrv = (AdSecStressStrainCurve)gh_typ.Value;
+                        ulsCompCrv = (AdSecStressStrainCurveGoo)gh_typ.Value;
                         rebuildCurves = true;
                     }
                     else
@@ -137,9 +136,9 @@ namespace GhAdSec.Components
                 gh_typ = new GH_ObjectWrapper();
                 if (DA.GetData(3, ref gh_typ))
                 {
-                    if (gh_typ.Value is AdSecStressStrainCurve)
+                    if (gh_typ.Value is AdSecStressStrainCurveGoo)
                     {
-                        ulsTensCrv = (AdSecStressStrainCurve)gh_typ.Value;
+                        ulsTensCrv = (AdSecStressStrainCurveGoo)gh_typ.Value;
                         rebuildCurves = true;
                     }
                     else
@@ -152,9 +151,9 @@ namespace GhAdSec.Components
                 gh_typ = new GH_ObjectWrapper();
                 if (DA.GetData(4, ref gh_typ))
                 {
-                    if (gh_typ.Value is AdSecStressStrainCurve)
+                    if (gh_typ.Value is AdSecStressStrainCurveGoo)
                     {
-                        slsCompCrv = (AdSecStressStrainCurve)gh_typ.Value;
+                        slsCompCrv = (AdSecStressStrainCurveGoo)gh_typ.Value;
                         rebuildCurves = true;
                     }
                     else
@@ -167,9 +166,9 @@ namespace GhAdSec.Components
                 gh_typ = new GH_ObjectWrapper();
                 if (DA.GetData(5, ref gh_typ))
                 {
-                    if (gh_typ.Value is AdSecStressStrainCurve)
+                    if (gh_typ.Value is AdSecStressStrainCurveGoo)
                     {
-                        slsTensCrv = (AdSecStressStrainCurve)gh_typ.Value;
+                        slsTensCrv = (AdSecStressStrainCurveGoo)gh_typ.Value;
                         rebuildCurves = true;
                     }
                     else
@@ -189,9 +188,15 @@ namespace GhAdSec.Components
                         concreteCrack = (IConcreteCrackCalculationParameters)gh_typ.Value;
                         rebuildCurves = true;
                     }
+                    else if (gh_typ.Value is AdSecConcreteCrackCalculationParametersGoo)
+                    {
+                        AdSecConcreteCrackCalculationParametersGoo adsecccp = (AdSecConcreteCrackCalculationParametersGoo)gh_typ.Value;
+                        concreteCrack = adsecccp.ConcreteCrackCalculationParameters;
+                        rebuildCurves = true;
+                    }
                     else
                     {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert CCP input to a StressStrainCurve");
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert CCP input to a ConcreteCrackCalculationParameters");
                         return;
                     }
                 }
@@ -236,7 +241,7 @@ namespace GhAdSec.Components
                 if (editMat.Type == AdSecMaterial.AdSecMaterialType.Concrete)
                 {
                     IConcrete concrete = (IConcrete)editMat.Material;
-                    DA.SetData(6, concrete.ConcreteCrackCalculationParameters);
+                    DA.SetData(6, new AdSecConcreteCrackCalculationParametersGoo(concrete.ConcreteCrackCalculationParameters));
                 }
             }
         }
