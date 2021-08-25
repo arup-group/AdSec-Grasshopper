@@ -21,7 +21,7 @@ namespace GhAdSec.Components
                 Ribbon.SubCategoryName.Cat1())
         { this.Hidden = false; }
         public override Guid ComponentGuid => new Guid("b2ddf545-2a4c-45ac-ba1c-cb0f3da5b37f");
-        public override GH_Exposure Exposure => GH_Exposure.quarternary;
+        public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
 
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.BeamLoad;
         #endregion
@@ -174,9 +174,18 @@ namespace GhAdSec.Components
                 case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Bilinear:
                     if (DA.GetData(0, ref gh_typ1))
                     {
+                        Point3d ghpt = new Point3d();
                         if (gh_typ1.Value is IStressStrainPoint)
                         {
                             pt1 = (IStressStrainPoint)gh_typ1.Value;
+                        }
+                        else if (gh_typ1.Value is AdSecStressStrainPoint)
+                        {
+                            pt1 = (IStressStrainPoint)gh_typ1.Value;
+                        }
+                        else if (GH_Convert.ToPoint3d(gh_typ1.Value, ref ghpt, GH_Conversion.Both))
+                        {
+                            pt1 = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -186,9 +195,18 @@ namespace GhAdSec.Components
                     }
                     if (DA.GetData(1, ref gh_typ2))
                     {
+                        Point3d ghpt = new Point3d();
                         if (gh_typ2.Value is IStressStrainPoint)
                         {
                             pt2 = (IStressStrainPoint)gh_typ2.Value;
+                        }
+                        else if (gh_typ2.Value is AdSecStressStrainPoint)
+                        {
+                            pt2 = (IStressStrainPoint)gh_typ2.Value;
+                        }
+                        else if (GH_Convert.ToPoint3d(gh_typ2.Value, ref ghpt, GH_Conversion.Both))
+                        {
+                            pt2 = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -207,9 +225,18 @@ namespace GhAdSec.Components
                         for (int i = 0; i < gh_typs.Count; i++)
                         {
                             Curve polycurve = null;
+                            Point3d ghpt = new Point3d();
                             if (gh_typs[i].Value is IStressStrainPoint)
                             {
                                 pts.Add((IStressStrainPoint)gh_typs[i].Value);
+                            }
+                            else if (gh_typ2.Value is AdSecStressStrainPoint)
+                            {
+                                pts.Add((IStressStrainPoint)gh_typs[i].Value);
+                            }
+                            else if (GH_Convert.ToPoint3d(gh_typs[i].Value, ref ghpt, GH_Conversion.Both))
+                            {
+                                pts.Add(GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt));
                             }
                             else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both))
                             {
@@ -222,6 +249,11 @@ namespace GhAdSec.Components
                                 return;
                             }
                         }
+                        if (pts.Count < 2)
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input at least 2 points to create an Explicit Stress Strain Curve");
+                            return;
+                        }
                     }
                     IExplicitStressStrainCurve exCrv = IExplicitStressStrainCurve.Create();
                     exCrv.Points = pts;
@@ -231,9 +263,18 @@ namespace GhAdSec.Components
                 case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.FibModelCode:
                     if (DA.GetData(0, ref gh_typ))
                     {
+                        Point3d ghpt = new Point3d();
                         if (gh_typ.Value is IStressStrainPoint)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        {
+                            pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
+                        {
+                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -252,9 +293,18 @@ namespace GhAdSec.Components
                 case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Mander:
                     if (DA.GetData(0, ref gh_typ))
                     {
+                        Point3d ghpt = new Point3d();
                         if (gh_typ.Value is IStressStrainPoint)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        {
+                            pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
+                        {
+                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -274,9 +324,18 @@ namespace GhAdSec.Components
                 case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Linear:
                     if (DA.GetData(0, ref gh_typ))
                     {
+                        Point3d ghpt = new Point3d();
                         if (gh_typ.Value is IStressStrainPoint)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        {
+                            pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
+                        {
+                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -305,9 +364,18 @@ namespace GhAdSec.Components
                 case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.ParabolaRectangle:
                     if (DA.GetData(0, ref gh_typ))
                     {
+                        Point3d ghpt = new Point3d();
                         if (gh_typ.Value is IStressStrainPoint)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        {
+                            pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
+                        {
+                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -322,9 +390,18 @@ namespace GhAdSec.Components
                 case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Park:
                     if (DA.GetData(0, ref gh_typ))
                     {
+                        Point3d ghpt = new Point3d();
                         if (gh_typ.Value is IStressStrainPoint)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        {
+                            pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
+                        {
+                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -340,9 +417,18 @@ namespace GhAdSec.Components
                 case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Popovics:
                     if (DA.GetData(0, ref gh_typ))
                     {
+                        Point3d ghpt = new Point3d();
                         if (gh_typ.Value is IStressStrainPoint)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        {
+                            pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
+                        {
+                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
                         }
                         else
                         {
@@ -358,9 +444,18 @@ namespace GhAdSec.Components
                 case GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType.Rectangular:
                     if (DA.GetData(0, ref gh_typ))
                     {
+                        Point3d ghpt = new Point3d();
                         if (gh_typ.Value is IStressStrainPoint)
                         {
                             pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (gh_typ.Value is AdSecStressStrainPoint)
+                        {
+                            pt = (IStressStrainPoint)gh_typ.Value;
+                        }
+                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
+                        {
+                            pt = GhAdSec.Parameters.AdSecStressStrainPoint.CreateFromPoint3d(ghpt);
                         }
                         else
                         {

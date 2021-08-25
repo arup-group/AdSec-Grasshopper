@@ -22,18 +22,18 @@ namespace GhAdSec.Components
     /// <summary>
     /// Component to create a new Material
     /// </summary>
-    public class CreateStressStrainPoint : GH_Component
+    public class CreateConcreteCrackCalculationParameters : GH_Component
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
         // including name, exposure level and icon
-        public override Guid ComponentGuid => new Guid("69a789d4-c11b-4396-b237-a10efdd6d0c4");
-        public CreateStressStrainPoint()
-          : base("Create StressStrainPt", "StressStrainPt", "Create a Stress Strain Point for AdSec Stress Strain Curve",
+        public override Guid ComponentGuid => new Guid("bc810b4b-11f1-496f-b949-a0be77e9bdc8");
+        public CreateConcreteCrackCalculationParameters()
+          : base("Create CrackCalcParams", "CrackCalcParams", "Create Concrete Crack Calculation Parameters for AdSec Material",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat1())
         { this.Hidden = false; } // sets the initial state of the component to hidden
-        public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
+        public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
 
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.CreateMaterial;
         #endregion
@@ -47,11 +47,11 @@ namespace GhAdSec.Components
                 dropdownitems = new List<List<string>>();
                 selecteditems = new List<string>();
 
-                // strain
-                dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
-                selecteditems.Add(strainUnit.ToString());
+                // pressure E
+                dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+                selecteditems.Add(pressureUnit.ToString());
 
-                // pressure
+                // pressure stress
                 dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
                 selecteditems.Add(pressureUnit.ToString());
 
@@ -69,13 +69,12 @@ namespace GhAdSec.Components
             switch (i)
             {
                 case 0:
-                    strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
+                    pressureUnitE = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
                     break;
                 case 1:
                     pressureUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
                     break;
             }
-
         }
         #endregion
 
@@ -88,36 +87,42 @@ namespace GhAdSec.Components
         // list of descriptions 
         List<string> spacerDescriptions = new List<string>(new string[]
         {
-            "Strain Unit",
-            "Pressure Unit"
+            "Elasticity Unit",
+            "Strength Unit"
         });
         private bool first = true;
-
-        private Oasys.Units.StrainUnit strainUnit = GhAdSec.DocumentUnits.StrainUnit;
+        private UnitsNet.Units.PressureUnit pressureUnitE = GhAdSec.DocumentUnits.PressureUnit;
         private UnitsNet.Units.PressureUnit pressureUnit = GhAdSec.DocumentUnits.PressureUnit;
         #endregion
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddNumberParameter("Strain", "ε", "Value for strain (X-axis)", GH_ParamAccess.item);
-            pManager.AddNumberParameter("Pressure", "σ", "Value for pressure (Y-axis)", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Elastic Modulus", "E", "Value for Elastic Modulus", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Compression", "fck", "Value for Characteristic Compressive Strength", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Tension", "ftk", "Value for Characteristic Tension Strength", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("StressStrainPt", "SPt", "AdSec Stress Strain Point", GH_ParamAccess.item);
+            pManager.AddGenericParameter("CrackCalcParams", "CCP", "AdSec Concrete Crack Calculation Parameters", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // get inputs
-            double x = 0; double y = 0;
-            DA.GetData(0, ref x);
-            DA.GetData(1, ref y);
+            double e = 0; double fc = 0; double ft = 0;
+            DA.GetData(0, ref e);
+            DA.GetData(1, ref fc);
+            DA.GetData(2, ref ft);
 
-            // create new point
-            AdSecStressStrainPoint pt = new AdSecStressStrainPoint(new Point3d(x, y, 0));
+            // create pressure values with units
+            UnitsNet.Pressure presE = new UnitsNet.Pressure(e, pressureUnitE);
+            UnitsNet.Pressure presFc = new UnitsNet.Pressure(Math.Abs(fc) * -1, pressureUnit);
+            UnitsNet.Pressure presFt = new UnitsNet.Pressure(ft, pressureUnit);
 
-            DA.SetData(0, pt);
+            // create new ccp
+            AdSecConcreteCrackCalculationParameters ccp = new AdSecConcreteCrackCalculationParameters(presE, presFc, presFt);
+
+            DA.SetData(0, ccp);
         }
         
         #region (de)serialization
@@ -167,7 +172,7 @@ namespace GhAdSec.Components
             for (int i = 0; i < selectionsCount; i++)
                 selecteditems.Add(reader.GetString("selectioncontents" + i));
 
-            strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
+            pressureUnitE = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[0]);
             pressureUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
 
             first = false;

@@ -68,11 +68,11 @@ namespace GhAdSec.UI
         {
             get
             {
-                float sp = UI.ComponentUI.MaxTextWidth(spacerTxts, GH_FontServer.Small);
+                float sp = UI.ComponentUI.MaxTextWidth(spacerTxts, GH_FontServer.Standard);
                 float bt = 0;
                 for (int i = 0; i < dropdownlists.Count; i++)
                 {
-                    float tbt = UI.ComponentUI.MaxTextWidth(dropdownlists[i], new Font(GH_FontServer.FamilyStandard, 7));
+                    float tbt = UI.ComponentUI.MaxTextWidth(dropdownlists[i], new Font(GH_FontServer.FamilyStandard, 8));
                     if (tbt > bt)
                         bt = tbt;
                 }

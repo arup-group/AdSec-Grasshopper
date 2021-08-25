@@ -131,10 +131,18 @@ namespace GhAdSec.Parameters
         #region methods
         public override string ToString()
         {
+            string grd = "Custom ";
+            if (GradeName != null)
+                grd = GradeName.Replace("  ", " ") + " ";
+
+            string code = "";
             if (DesignCode != null)
-                return GradeName.Replace("  ", " ") + " " + TypeName.Replace("  ", " ") + " " + DesignCodeName.Replace("  ", " ");
-            else
-                return GradeName.Replace("  ", " ") + " " + TypeName.Replace("  ", " ");
+            {
+                if (DesignCode.DesignCodeName != null)
+                    code = " to " + DesignCodeName.Replace("  ", " ");
+            }
+                
+            return grd + TypeName.Replace("  ", " ") + code;
         }
 
         #endregion

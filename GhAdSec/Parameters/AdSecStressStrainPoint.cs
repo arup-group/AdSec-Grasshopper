@@ -1,0 +1,201 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using Rhino;
+using Rhino.Geometry;
+using Grasshopper;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Data;
+using Grasshopper.Kernel.Types;
+using System.IO;
+using System.Linq;
+using System.Data;
+using System.Drawing;
+using System.Reflection;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
+using System.Runtime.InteropServices;
+using Rhino.DocObjects;
+using Rhino.Collections;
+using GH_IO;
+using GH_IO.Serialization;
+using Rhino.Display;
+using Oasys.AdSec.Materials.StressStrainCurves;
+
+namespace GhAdSec.Parameters
+{
+    public class AdSecStressStrainPoint : GH_GeometricGoo<Point3d>, IGH_PreviewData
+    {
+        public AdSecStressStrainPoint(Point3d point)
+        : base(point)
+        {
+            m_pt = point;
+            this.m_SSpoint = IStressStrainPoint.Create(
+                new UnitsNet.Pressure(m_pt.Y, GhAdSec.DocumentUnits.PressureUnit), 
+                new Oasys.Units.Strain(m_pt.X, GhAdSec.DocumentUnits.StrainUnit));
+        }
+
+        public AdSecStressStrainPoint(IStressStrainPoint stressstrainPoint)
+        {
+            m_SSpoint = stressstrainPoint;
+            m_pt = new Point3d(
+                m_SSpoint.Strain.As(GhAdSec.DocumentUnits.StrainUnit),
+                m_SSpoint.Stress.As(GhAdSec.DocumentUnits.PressureUnit),
+                0);
+        }
+
+        public static IStressStrainPoint CreateFromPoint3d(Point3d point)
+        {
+            return IStressStrainPoint.Create(
+                new UnitsNet.Pressure(point.Y, GhAdSec.DocumentUnits.PressureUnit),
+                new Oasys.Units.Strain(point.X, GhAdSec.DocumentUnits.StrainUnit)); 
+        }
+
+        private Point3d m_pt = new Point3d();
+        private IStressStrainPoint m_SSpoint;
+        public IStressStrainPoint StressStrainPoint
+        {
+            get { return m_SSpoint; }
+        }
+
+        public override string ToString()
+        {
+            GH_Point gH_Point = new GH_Point(m_pt);
+            string ptTxt = "AdSec StressStrainPoint " + gH_Point.ToString();
+            return ptTxt;
+        }
+        public override string TypeName
+        {
+            get { return "StressStrainPoint"; }
+        }
+        public override string TypeDescription
+        {
+            get { return "An AdSec StressStrainPoint type."; }
+        }
+
+        public override IGH_GeometricGoo DuplicateGeometry()
+        {
+            return new AdSecStressStrainPoint(new Point3d(this.Value));
+        }
+        public override BoundingBox Boundingbox
+        {
+            get
+            {
+                if (Value == null) { return BoundingBox.Empty; }
+                Point3d pt1 = new Point3d(Value);
+                pt1.Z += 0.25;
+                Point3d pt2 = new Point3d(Value);
+                pt2.Z += -0.25;
+                Line ln = new Line(pt1, pt2);
+                LineCurve crv = new LineCurve(ln);
+                return crv.GetBoundingBox(false);
+            }
+        }
+        public override BoundingBox GetBoundingBox(Transform xform)
+        {
+            if (Value == null) { return BoundingBox.Empty; }
+            Point3d pt = new Point3d(Value);
+            pt.Z += 0.001;
+            Line ln = new Line(Value, pt);
+            LineCurve crv = new LineCurve(ln);
+            return crv.GetBoundingBox(xform);
+        }
+        public override IGH_GeometricGoo Transform(Transform xform)
+        {
+            return null;
+        }
+        public override IGH_GeometricGoo Morph(SpaceMorph xmorph)
+        {
+            return null;
+        }
+
+        public override object ScriptVariable()
+        {
+            return Value;
+        }
+        public override bool CastTo<TQ>(out TQ target)
+        {
+            if (typeof(TQ).IsAssignableFrom(typeof(Point3d)))
+            {
+                target = (TQ)(object)Value;
+                return true;
+            }
+
+            if (typeof(TQ).IsAssignableFrom(typeof(GH_Point)))
+            {
+                target = (TQ)(object)new GH_Point(Value);
+                return true;
+            }
+
+            if (typeof(TQ).IsAssignableFrom(typeof(IStressStrainPoint)))
+            {
+                target = (TQ)(object) IStressStrainPoint.Create(
+                    new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.PressureUnit),
+                    new Oasys.Units.Strain(Value.X, GhAdSec.DocumentUnits.StrainUnit));
+                return true;
+            }
+
+            target = default(TQ);
+            return false;
+        }
+        public override bool CastFrom(object source)
+        {
+            if (source == null) return false;
+
+            if (source is Point3d)
+            {
+                Value = (Point3d)source;
+                this.m_SSpoint = IStressStrainPoint.Create(
+                new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.PressureUnit),
+                new Oasys.Units.Strain(Value.X, GhAdSec.DocumentUnits.StrainUnit));
+                return true;
+            }
+
+            if (source is IStressStrainPoint)
+            {
+                m_SSpoint = (IStressStrainPoint)source;
+                m_pt = new Point3d(
+                    m_SSpoint.Strain.As(GhAdSec.DocumentUnits.StrainUnit),
+                    m_SSpoint.Stress.As(GhAdSec.DocumentUnits.PressureUnit),
+                    0);
+                return true;
+            }
+
+            GH_Point ptGoo = source as GH_Point;
+            if (ptGoo != null)
+            {
+                Value = ptGoo.Value;
+                this.m_SSpoint = IStressStrainPoint.Create(
+                new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.PressureUnit),
+                new Oasys.Units.Strain(Value.X, GhAdSec.DocumentUnits.StrainUnit));
+                return true;
+            }
+
+            Point3d pt = new Point3d();
+            if (GH_Convert.ToPoint3d(source, ref pt, GH_Conversion.Both))
+            {
+                Value = pt;
+                this.m_SSpoint = IStressStrainPoint.Create(
+                new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.PressureUnit),
+                new Oasys.Units.Strain(Value.X, GhAdSec.DocumentUnits.StrainUnit));
+                return true;
+            }
+
+            return false;
+        }
+
+        public BoundingBox ClippingBox
+        {
+            get { return Boundingbox; }
+        }
+        public void DrawViewportWires(GH_PreviewWireArgs args)
+        {
+            if (Value != null)
+            {
+                args.Pipeline.DrawCircle(new Circle(Value, 0.5), GhAdSec.UI.Colour.StressStrainPoint, 1);
+            }
+        }
+        public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
+    }
+}

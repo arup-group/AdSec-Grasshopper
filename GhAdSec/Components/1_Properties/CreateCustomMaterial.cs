@@ -33,7 +33,7 @@ namespace GhAdSec.Components
                 Ribbon.SubCategoryName.Cat1())
         { this.Hidden = false; } // sets the initial state of the component to hidden
 
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.primary | GH_Exposure.obscure;
 
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.GsaVersion;
         #endregion
@@ -200,9 +200,14 @@ namespace GhAdSec.Components
                     {
                         concreteCrack = (IConcreteCrackCalculationParameters)gh_typ.Value;
                     }
+                    else if (gh_typ.Value is AdSecConcreteCrackCalculationParameters)
+                    {
+                        AdSecConcreteCrackCalculationParameters adsecccp = (AdSecConcreteCrackCalculationParameters)gh_typ.Value;
+                        concreteCrack = adsecccp.ConcreteCrackCalculationParameters;
+                    }
                     else
                     {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert CCP input to a StressStrainCurve");
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert CCP input to a Concrete Crack Calculation Parameters");
                         return;
                     }
                 }
@@ -210,6 +215,8 @@ namespace GhAdSec.Components
 
             // create new empty material
             AdSecMaterial material = new AdSecMaterial();
+            if (designCode != null)
+                material.DesignCode = designCode;
             
             // set material type from dropdown input
             material.Type = type;

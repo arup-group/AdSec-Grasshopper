@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Components\0_AdSec\EditUnits.cs" />
     <Compile Include="Components\0_AdSec\Version.cs" />
+    <Compile Include="Components\1_Properties\CreateCrackParams.cs" />
     <Compile Include="Components\1_Properties\CreateStressStrainPt.cs" />
     <Compile Include="Components\1_Properties\CreateDesignCode.cs" />
     <Compile Include="Components\1_Properties\CreateStandardMaterial.cs" />
@@ -80,6 +81,8 @@
     <Compile Include="Parameters\AdSecDesignCode.cs" />
     <Compile Include="Parameters\AdSecMaterial.cs" />
     <Compile Include="Helpers\_Reflection.cs" />
+    <Compile Include="Parameters\AdSecCrackCalcParams.cs" />
+    <Compile Include="Parameters\AdSecStressStrainPoint.cs" />
     <Compile Include="Parameters\AdSecStressStrainCurve.cs" />
     <Compile Include="Parameters\_DocUnits.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

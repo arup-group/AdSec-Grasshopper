@@ -288,12 +288,13 @@ namespace GhAdSec.Parameters
         }
         public void DrawViewportWires(GH_PreviewWireArgs args)
         {
-            
-            args.Pipeline.DrawCurve(Value, Color.FromArgb(255, 65, 162, 224), 2);
-            foreach (Point3d pt in m_pts)
+            if (Value != null)
             {
-                args.Pipeline.DrawCircle(new Circle(pt, 0.5), Color.Yellow, 1);
-                //args.Pipeline.DrawPoint(pt, PointStyle.RoundSimple, 3, Color.Yellow);
+                args.Pipeline.DrawCurve(Value, GhAdSec.UI.Colour.StressStrainCurve, 2);
+                foreach (Point3d pt in m_pts)
+                {
+                    args.Pipeline.DrawCircle(new Circle(pt, 0.5), GhAdSec.UI.Colour.StressStrainPoint, 1);
+                }
             }
         }
         public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }

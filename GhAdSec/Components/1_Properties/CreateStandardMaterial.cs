@@ -139,6 +139,7 @@ namespace GhAdSec.Components
                 if (selecteditems.Count == 1)
                     selecteditems.Add(designCodeKVP.Keys.First());
 
+                // make the UI look more intelligent
                 if (selecteditems[1].StartsWith("EN1992"))
                 {
                     spacerDescriptions[1] = "Design Code";
@@ -149,7 +150,6 @@ namespace GhAdSec.Components
                     spacerDescriptions[1] = "Code Group";
                     spacerDescriptions[2] = "Design Code";
                 }
-
 
                 // create string for selected item to use for type search while drilling
                 int level = 1;
