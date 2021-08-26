@@ -16,20 +16,20 @@ namespace GhAdSec.Helpers
             switch (materialType)
             {
                 case Parameters.AdSecMaterial.AdSecMaterialType.Concrete:
-                    return ReflectTypes(typeof(Oasys.AdSec.StandardMaterials.Concrete));
+                    return ReflectNestedTypes(typeof(Oasys.AdSec.StandardMaterials.Concrete));
                 case Parameters.AdSecMaterial.AdSecMaterialType.Steel:
-                    return ReflectTypes(typeof(Oasys.AdSec.StandardMaterials.Steel));
+                    return ReflectNestedTypes(typeof(Oasys.AdSec.StandardMaterials.Steel));
                 case Parameters.AdSecMaterial.AdSecMaterialType.FRP:
-                    return ReflectTypes(typeof(Oasys.AdSec.StandardMaterials.FRP));
+                    return ReflectNestedTypes(typeof(Oasys.AdSec.StandardMaterials.FRP));
                 case Parameters.AdSecMaterial.AdSecMaterialType.Rebar:
-                    return ReflectTypes(typeof(Oasys.AdSec.StandardMaterials.Reinforcement.Steel));
+                    return ReflectNestedTypes(typeof(Oasys.AdSec.StandardMaterials.Reinforcement.Steel));
                 case Parameters.AdSecMaterial.AdSecMaterialType.Tendon:
-                    return ReflectTypes(typeof(Oasys.AdSec.StandardMaterials.Reinforcement.Tendon));
+                    return ReflectNestedTypes(typeof(Oasys.AdSec.StandardMaterials.Reinforcement.Tendon));
             }
             return null;
         }
 
-        internal static Dictionary<string, Type> ReflectTypes(Type type)
+        internal static Dictionary<string, Type> ReflectNestedTypes(Type type)
         {
             Dictionary<string, Type> dict = new Dictionary<string, Type>();
             var subClasses = type.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
@@ -37,6 +37,20 @@ namespace GhAdSec.Helpers
             {
                 dict.Add(subClass.Name, (Type)subClass);
             }
+            return dict;
+        }
+        internal static Dictionary<List<string>, Type> ReflectMethods(Type type)
+        {
+            Dictionary<List<string>, Type> dict = new Dictionary<List<string>, Type>();
+            var subClasses = type.FindInterfaces(null, null);
+            //foreach (MemberInfo subClass in subClasses)
+            //{
+            //    subClass.CustomAttributes.ToList();
+            //    List<string> nameSummary = new List<string>();
+            //    nameSummary.Add(subClass.Name);
+            //    nameSummary.Add(subClass.Name);
+            //    dict.Add(nameSummary, (Type)subClass);
+            //}
             return dict;
         }
         internal static Dictionary<string, FieldInfo> ReflectFields(Type type)
@@ -54,7 +68,7 @@ namespace GhAdSec.Helpers
 
         internal static Dictionary<string, Type> ReflectNamespace(string nspace)
         {
-            Assembly adsecAPI = GhAdSec.AddReferencePriority.adsecAPI;
+            Assembly adsecAPI = GhAdSec.AddReferencePriority.AdSecAPI;
             var q = from t in adsecAPI.GetTypes()
                     where t.IsInterface && t.Namespace == nspace
                     select t;

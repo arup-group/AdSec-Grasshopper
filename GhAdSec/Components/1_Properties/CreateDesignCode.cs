@@ -76,7 +76,7 @@ namespace GhAdSec.Components
                         designCodeKVP.TryGetValue(typeString, out Type typ);
                         
                         // update the KVP by reflecting the type
-                        designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectTypes(typ);
+                        designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
                         
                         // determine if we have reached the fields layer
                         if (designCodeKVP.Count > 1)
@@ -161,7 +161,7 @@ namespace GhAdSec.Components
                     designCodeKVP.TryGetValue(typeString, out Type typ);
 
                     // update the KVP by reflecting the type
-                    designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectTypes(typ);
+                    designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
 
                     // determine if we have reached the fields layer
                     if (designCodeKVP.Count > 1)

@@ -70,7 +70,7 @@ namespace GhAdSec.Parameters
                 designcodeName = designcodeName + designCodeReflectedLevels[i] + " ";
                 designCodeKVP.TryGetValue(designCodeReflectedLevels[i], out typ);
                 if (typ == null) { return false; }
-                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectTypes(typ);
+                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
             }
             if (designCodeReflectedLevels.Count == 1)
             {

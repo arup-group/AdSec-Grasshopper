@@ -20,13 +20,13 @@ namespace GhAdSec
         public override GH_LoadingInstruction PriorityLoad()
         {
             // ## Get plugin assembly file location
-            string pluginPath = Assembly.GetExecutingAssembly().Location; // full path+name
-            pluginPath = pluginPath.Replace("AdSec.gha", "");
+            PluginPath = Assembly.GetExecutingAssembly().Location; // full path+name
+            PluginPath = PluginPath.Replace("AdSec.gha", "");
             
             // ### Set system environment variables to allow user rights to read above dll ###
             const string name = "PATH";
             string pathvar = System.Environment.GetEnvironmentVariable(name);
-            var value = pathvar + ";" + pluginPath;
+            var value = pathvar + ";" + PluginPath;
             var target = EnvironmentVariableTarget.Process;
             System.Environment.SetEnvironmentVariable(name, value, target);
 
@@ -35,7 +35,7 @@ namespace GhAdSec
             try
             {
                 // ### Reference AdSec API dlls from .gha assembly path ###
-                adsecAPI = Assembly.LoadFile(pluginPath + "\\AdSec_API.dll");
+                AdSecAPI = Assembly.LoadFile(PluginPath + "\\AdSec_API.dll");
             }
             catch (Exception e)
             {
@@ -103,7 +103,8 @@ namespace GhAdSec
 
             return GH_LoadingInstruction.Proceed;
         }
-        public static Assembly adsecAPI;
+        public static Assembly AdSecAPI;
+        public static string PluginPath;
     }
    
     public class GhAdSecInfo : GH_AssemblyInfo

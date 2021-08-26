@@ -78,14 +78,17 @@
     <Compile Include="Components\1_Properties\CreateCustomMaterial.cs" />
     <Compile Include="Components\1_Properties\EditCrackParams.cs" />
     <Compile Include="Components\1_Properties\EditMaterial.cs" />
+    <Compile Include="Components\2_Section\CreateProfile.cs" />
     <Compile Include="GhAdSecInfo.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
+    <Compile Include="Helpers\_SqlReader.cs" />
+    <Compile Include="Parameters\AdSecProfileGoo.cs" />
     <Compile Include="Parameters\GH_UnitNumber.cs" />
     <Compile Include="Parameters\AdSecDesignCode.cs" />
     <Compile Include="Parameters\AdSecMaterial.cs" />
     <Compile Include="Helpers\_Reflection.cs" />
-    <Compile Include="Parameters\AdSecCrackCalcParams.cs" />
+    <Compile Include="Parameters\AdSecCrackCalcParamsGoo.cs" />
     <Compile Include="Parameters\AdSecStressStrainPointGoo.cs" />
     <Compile Include="Parameters\AdSecStressStrainCurveGoo.cs" />
     <Compile Include="Parameters\_DocUnits.cs" />
@@ -100,7 +103,6 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Components\2_Section\" />
     <Folder Include="Components\3_Loads\" />
     <Folder Include="Components\4_Solution\" />
     <Folder Include="Components\5_Results\" />
@@ -114,6 +116,9 @@
     </PackageReference>
     <PackageReference Include="RhinoCommon">
       <Version>6.27.20176.5001</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite">
+      <Version>1.0.115</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

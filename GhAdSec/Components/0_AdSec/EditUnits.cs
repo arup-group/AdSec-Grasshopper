@@ -15,6 +15,7 @@ using GhAdSec.Parameters;
 using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
+using Rhino;
 
 namespace GhAdSec.Components
 {
@@ -43,18 +44,36 @@ namespace GhAdSec.Components
         {
             if (first)
             {
+                // add hook to get updates to rhino units
+                Rhino.RhinoDoc.DocumentPropertiesChanged += DocumentPropertiesChanged;
+
                 dropdownitems = new List<List<string>>();
                 selecteditems = new List<string>();
 
                 // length
-                UnitsNet.Units.LengthUnit rhUNit = GhAdSec.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
-                string rhinounitstr = "Use Rhino unit: " + rhUNit.ToString();
-                rhinounit = rhinounitstr;
-                List<string> length = new List<string>();
-                length.Add(rhinounitstr);
-                length.AddRange(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                UnitsNet.Units.LengthUnit rhUnit = GhAdSec.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+                
+                List<string> length = Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList();
+                for (int i = 0; i < length.Count; i++)
+                {
+                    if (length[i].Equals(rhUnit.ToString()))
+                    {
+                        string rh = "Use Rhino unit: " + length[i];
+                        length.RemoveAt(i);
+                        length.Insert(0, rh);
+                        break;
+                    }
+                }
+
                 dropdownitems.Add(length);
-                selecteditems.Add(length[0]);
+                if (GhAdSec.DocumentUnits.LengthUnit.Equals(rhUnit))
+                {
+                    selecteditems.Add(length[0]);
+                }
+                else
+                {
+                    selecteditems.Add(GhAdSec.DocumentUnits.LengthUnit.ToString());
+                }
 
                 // strain
                 dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
@@ -69,28 +88,18 @@ namespace GhAdSec.Components
 
             m_attributes = new UI.MultiDropDownComponentUICapsule(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
         }
-        string rhinounit;
         public void SetSelected(int i, int j)
         {
             // change selected item
             selecteditems[i] = dropdownitems[i][j];
 
-            bool redraw = false;
-            // update rhino unit string
-            UnitsNet.Units.LengthUnit rhUNit = GhAdSec.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
-            string rhinounitstr = "Use Rhino unit: " + rhUNit.ToString();
-            if (!rhinounit.Equals(rhinounitstr))
-            {
-                dropdownitems[0][0] = rhinounitstr;
-                rhinounit = rhinounitstr;
-                redraw = true;
-            }
+            UnitsNet.Units.LengthUnit rhUnit = GhAdSec.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
 
             switch (i)
             {
                 case 0:
                     if (j == 0)
-                        GhAdSec.DocumentUnits.LengthUnit = rhUNit;
+                        GhAdSec.DocumentUnits.LengthUnit = rhUnit;
                     else
                         GhAdSec.DocumentUnits.LengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
                     break;
@@ -102,13 +111,45 @@ namespace GhAdSec.Components
                     break;
             }
 
-            if (redraw)
+            List<string> length = Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList();
+            for (int k = 0; k < length.Count; k++)
             {
-                this.ExpireSolution(true);
-                this.ExpirePreview(true);
+                if (length[k].Equals(rhUnit.ToString()))
+                {
+                    string rh = "Use Rhino unit: " + length[k];
+                    length.RemoveAt(k);
+                    length.Insert(0, rh);
+                    break;
+                }
             }
-                
-            
+            dropdownitems[0] = length;
+        }
+
+        UnitSystem cachedUnitSystem = Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem;
+        
+        private void DocumentPropertiesChanged(object s, Rhino.DocumentEventArgs e)
+        {
+            if (e.Document.ModelUnitSystem != cachedUnitSystem)
+            {
+                cachedUnitSystem = e.Document.ModelUnitSystem;
+                if (selecteditems[0].StartsWith("Use Rhino unit: "))
+                    GhAdSec.DocumentUnits.LengthUnit = GhAdSec.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+                first = true;
+                this.ExpireSolution(true);
+                ReDrawComponent();
+            }
+        }
+
+        private void ReDrawComponent()
+        {
+            System.Drawing.PointF pivot = new System.Drawing.PointF(this.Attributes.Pivot.X, this.Attributes.Pivot.Y);
+            System.Drawing.RectangleF bound = new System.Drawing.RectangleF(this.Attributes.Bounds.X, this.Attributes.Bounds.Y, this.Attributes.Bounds.Width, this.Attributes.Bounds.Height);
+            this.CreateAttributes();
+            this.Attributes.Pivot = pivot;
+            this.Attributes.Bounds = bound;
+            this.Attributes.ExpireLayout();
+            this.Attributes.PerformLayout();
+            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -117,7 +158,7 @@ namespace GhAdSec.Components
         // list of lists with all dropdown lists conctent
         List<List<string>> dropdownitems;
         // list of selected items
-        List<string> selecteditems;
+        static List<string> selecteditems;
         // list of descriptions 
         List<string> spacerDescriptions = new List<string>(new string[]
         {
