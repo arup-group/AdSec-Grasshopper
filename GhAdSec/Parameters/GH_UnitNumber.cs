@@ -25,17 +25,17 @@ namespace UnitsNet.GH
     /// <summary>
     /// Goo wrapper class, makes sure this can be used in Grasshopper.
     /// </summary>
-    public class GH_Quantity : GH_Goo<UnitsNet.IQuantity>
+    public class GH_UnitNumber : GH_Goo<UnitsNet.IQuantity>
     {
         #region constructors
-        public GH_Quantity(UnitsNet.IQuantity quantity)
+        public GH_UnitNumber(UnitsNet.IQuantity quantity)
         : base(quantity)
         {
         }
 
         public override IGH_Goo Duplicate()
         {
-            return new GH_Quantity(this.Value);
+            return new GH_UnitNumber(this.Value);
         }
         #endregion
 
@@ -117,7 +117,7 @@ namespace UnitsNet.GH
     /// <summary>
     /// This class provides a Parameter interface for the Data_GsaBool6 type.
     /// </summary>
-    public class UnitNumber : GH_PersistentParam<GH_Quantity>
+    public class UnitNumber : GH_PersistentParam<GH_UnitNumber>
     {
         public UnitNumber()
           : base(new GH_InstanceDescription("UnitNumber", "UNum", "Quantity = number + unit", GhAdSec.Components.Ribbon.CategoryName.Name(), GhAdSec.Components.Ribbon.SubCategoryName.Cat9()))
@@ -131,11 +131,11 @@ namespace UnitsNet.GH
         
         //protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.GsaBool6;
 
-        protected override GH_GetterResult Prompt_Plural(ref List<GH_Quantity> values)
+        protected override GH_GetterResult Prompt_Plural(ref List<GH_UnitNumber> values)
         {
             return GH_GetterResult.cancel;
         }
-        protected override GH_GetterResult Prompt_Singular(ref GH_Quantity value)
+        protected override GH_GetterResult Prompt_Singular(ref GH_UnitNumber value)
         {
             return GH_GetterResult.cancel;
         }

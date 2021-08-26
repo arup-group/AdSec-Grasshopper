@@ -18,10 +18,13 @@ namespace GhAdSec.UI
             // adjust fontsize to high resolution displays
             font = new Font(font.FontFamily, font.Size / GH_GraphicsUtil.UiScale, FontStyle.Regular);
 
-            for (int i = 0; i < spacerTxts.Count; i++)
+            if (spacerTxts != null)
             {
-                if (GH_FontServer.StringWidth(spacerTxts[i] + " ", font) + 8 > sp)
-                    sp = GH_FontServer.StringWidth(spacerTxts[i] + " ", font) + 8;
+                for (int i = 0; i < spacerTxts.Count; i++)
+                {
+                    if (GH_FontServer.StringWidth(spacerTxts[i] + " ", font) + 8 > sp)
+                        sp = GH_FontServer.StringWidth(spacerTxts[i] + " ", font) + 8;
+                }
             }
             return sp;
         }

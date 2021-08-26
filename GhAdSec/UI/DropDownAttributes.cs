@@ -27,15 +27,18 @@ namespace GhAdSec.UI
             spacerTxts = spacerTexts;
             action = clickHandle;
             initialTxts = initialdescriptions ?? null; // if no description is inputted then null initialTxt
-            if (selections == null)
+            if (dropdownContents != null)
             {
-                List<string> tempDisplaytxt = new List<string>();
-                for (int i = 0; i < dropdownlists.Count; i++)
-                    tempDisplaytxt.Add((initialdescriptions == null) ? dropdownlists[i][0] : initialdescriptions[i]);
-                displayTexts = tempDisplaytxt;
+                if (selections == null)
+                {
+                    List<string> tempDisplaytxt = new List<string>();
+                    for (int i = 0; i < dropdownlists.Count; i++)
+                        tempDisplaytxt.Add((initialdescriptions == null) ? dropdownlists[i][0] : initialdescriptions[i]);
+                    displayTexts = tempDisplaytxt;
+                }
+                else
+                    displayTexts = selections;
             }
-            else
-                displayTexts = selections;
         }
 
         readonly List<string> spacerTxts; // list of descriptive texts above each dropdown
@@ -76,6 +79,7 @@ namespace GhAdSec.UI
                     if (tbt > bt)
                         bt = tbt;
                 }
+
                 float num = Math.Max(Math.Max(sp, bt), 90);
                 return num;
             }
@@ -108,7 +112,6 @@ namespace GhAdSec.UI
             int h0 = 0;
 
             bool removeScroll = true;
-
             for (int i = 0; i < dropdownlists.Count; i++)
             {
                 //spacer and title
@@ -182,7 +185,7 @@ namespace GhAdSec.UI
 
                         // setup size of scroll bar
                         scrollBar.X = dropdownBound[i].X + dropdownBound[i].Width - 8; // locate from right-side of dropdown area
-                        // compute height based on number of items in list, but with a minimum size of 2 rows
+                                                                                       // compute height based on number of items in list, but with a minimum size of 2 rows
                         scrollBar.Height = (float)Math.Max(2 * h1, dropdownBound[i].Height * ((double)maxNoRows / ((double)dropdownlists[i].Count)));
                         scrollBar.Width = 8; // width of mouse-grab area (actual scroll bar drawn later)
 

@@ -67,6 +67,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\0_AdSec\ConvertUnitNumber.cs" />
     <Compile Include="Components\0_AdSec\EditUnits.cs" />
     <Compile Include="Components\0_AdSec\Version.cs" />
     <Compile Include="Components\1_Properties\CreateCrackParams.cs" />
@@ -78,8 +79,9 @@
     <Compile Include="Components\1_Properties\EditCrackParams.cs" />
     <Compile Include="Components\1_Properties\EditMaterial.cs" />
     <Compile Include="GhAdSecInfo.cs" />
+    <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
-    <Compile Include="Parameters\GH_Quantity.cs" />
+    <Compile Include="Parameters\GH_UnitNumber.cs" />
     <Compile Include="Parameters\AdSecDesignCode.cs" />
     <Compile Include="Parameters\AdSecMaterial.cs" />
     <Compile Include="Helpers\_Reflection.cs" />

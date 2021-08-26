@@ -287,19 +287,19 @@ namespace GhAdSec.Components
                     gh_typ = new GH_ObjectWrapper();
                     if (DA.GetData(1, ref gh_typ))
                     {
-                        GH_Quantity inStress;
+                        GH_UnitNumber inStress;
 
                         // try cast directly to quantity type
-                        if (gh_typ.Value is GH_Quantity)
+                        if (gh_typ.Value is GH_UnitNumber)
                         {
-                            inStress = (GH_Quantity)gh_typ.Value;
+                            inStress = (GH_UnitNumber)gh_typ.Value;
                             stressFib = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStress = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnit));
+                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnit));
                             stressFib = (UnitsNet.Pressure)inStress.Value;
                         }
                         else
@@ -313,19 +313,19 @@ namespace GhAdSec.Components
                     gh_typ = new GH_ObjectWrapper();
                     if (DA.GetData(2, ref gh_typ))
                     {
-                        GH_Quantity inStrain;
+                        GH_UnitNumber inStrain;
 
                         // try cast directly to quantity type
-                        if (gh_typ.Value is GH_Quantity)
+                        if (gh_typ.Value is GH_UnitNumber)
                         {
-                            inStrain = (GH_Quantity)gh_typ.Value;
+                            inStrain = (GH_UnitNumber)gh_typ.Value;
                             strainFib = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                            inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
                             strainFib = (Oasys.Units.Strain)inStrain.Value;
                         }
                         else
@@ -371,19 +371,19 @@ namespace GhAdSec.Components
                     gh_typ = new GH_ObjectWrapper();
                     if (DA.GetData(1, ref gh_typ))
                     {
-                        GH_Quantity inStress;
+                        GH_UnitNumber inStress;
 
                         // try cast directly to quantity type
-                        if (gh_typ.Value is GH_Quantity)
+                        if (gh_typ.Value is GH_UnitNumber)
                         {
-                            inStress = (GH_Quantity)gh_typ.Value;
+                            inStress = (GH_UnitNumber)gh_typ.Value;
                             stressMander = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStress = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnit));
+                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnit));
                             stressMander = (UnitsNet.Pressure)inStress.Value;
                         }
                         else
@@ -397,19 +397,19 @@ namespace GhAdSec.Components
                     gh_typ = new GH_ObjectWrapper();
                     if (DA.GetData(2, ref gh_typ))
                     {
-                        GH_Quantity inStrain;
+                        GH_UnitNumber inStrain;
 
                         // try cast directly to quantity type
-                        if (gh_typ.Value is GH_Quantity)
+                        if (gh_typ.Value is GH_UnitNumber)
                         {
-                            inStrain = (GH_Quantity)gh_typ.Value;
+                            inStrain = (GH_UnitNumber)gh_typ.Value;
                             strainMander = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                            inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
                             strainMander = (Oasys.Units.Strain)inStrain.Value;
                         }
                         else
@@ -463,19 +463,19 @@ namespace GhAdSec.Components
                     gh_typ = new GH_ObjectWrapper();
                     if (DA.GetData(0, ref gh_typ))
                     {
-                        GH_Quantity inStress;
+                        GH_UnitNumber inStress;
 
                         // try cast directly to quantity type
-                        if (gh_typ.Value is GH_Quantity)
+                        if (gh_typ.Value is GH_UnitNumber)
                         {
-                            inStress = (GH_Quantity)gh_typ.Value;
+                            inStress = (GH_UnitNumber)gh_typ.Value;
                             stressMander1 = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStress = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnit));
+                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnit));
                             stressMander1 = (UnitsNet.Pressure)inStress.Value;
                         }
                         else
@@ -488,19 +488,19 @@ namespace GhAdSec.Components
                     gh_typ = new GH_ObjectWrapper();
                     if (DA.GetData(1, ref gh_typ))
                     {
-                        GH_Quantity inStress;
+                        GH_UnitNumber inStress;
 
                         // try cast directly to quantity type
-                        if (gh_typ.Value is GH_Quantity)
+                        if (gh_typ.Value is GH_UnitNumber)
                         {
-                            inStress = (GH_Quantity)gh_typ.Value;
+                            inStress = (GH_UnitNumber)gh_typ.Value;
                             stressMander2 = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStress = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnit));
+                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnit));
                             stressMander2 = (UnitsNet.Pressure)inStress.Value;
                         }
                         else
@@ -513,19 +513,19 @@ namespace GhAdSec.Components
                     gh_typ = new GH_ObjectWrapper();
                     if (DA.GetData(2, ref gh_typ))
                     {
-                        GH_Quantity inStress;
+                        GH_UnitNumber inStress;
 
                         // try cast directly to quantity type
-                        if (gh_typ.Value is GH_Quantity)
+                        if (gh_typ.Value is GH_UnitNumber)
                         {
-                            inStress = (GH_Quantity)gh_typ.Value;
+                            inStress = (GH_UnitNumber)gh_typ.Value;
                             stressMander3 = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStress = new GH_Quantity(new UnitsNet.Pressure(val, pressureUnit));
+                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnit));
                             stressMander3 = (UnitsNet.Pressure)inStress.Value;
                         }
                         else
@@ -539,19 +539,19 @@ namespace GhAdSec.Components
                     gh_typ = new GH_ObjectWrapper();
                     if (DA.GetData(3, ref gh_typ))
                     {
-                        GH_Quantity inStrain;
+                        GH_UnitNumber inStrain;
 
                         // try cast directly to quantity type
-                        if (gh_typ.Value is GH_Quantity)
+                        if (gh_typ.Value is GH_UnitNumber)
                         {
-                            inStrain = (GH_Quantity)gh_typ.Value;
+                            inStrain = (GH_UnitNumber)gh_typ.Value;
                             strainManderConf = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                            inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
                             strainManderConf = (Oasys.Units.Strain)inStrain.Value;
                         }
                         else
@@ -592,19 +592,19 @@ namespace GhAdSec.Components
                     gh_typ = new GH_ObjectWrapper();
                     if (DA.GetData(1, ref gh_typ))
                     {
-                        GH_Quantity inStrain;
+                        GH_UnitNumber inStrain;
 
                         // try cast directly to quantity type
-                        if (gh_typ.Value is GH_Quantity)
+                        if (gh_typ.Value is GH_UnitNumber)
                         {
-                            inStrain = (GH_Quantity)gh_typ.Value;
+                            inStrain = (GH_UnitNumber)gh_typ.Value;
                             strainParabol = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                            inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
                             strainParabol = (Oasys.Units.Strain)inStrain.Value;
                         }
                         else
@@ -671,19 +671,19 @@ namespace GhAdSec.Components
                     gh_typ = new GH_ObjectWrapper();
                     if (DA.GetData(1, ref gh_typ))
                     {
-                        GH_Quantity inStrain;
+                        GH_UnitNumber inStrain;
 
                         // try cast directly to quantity type
-                        if (gh_typ.Value is GH_Quantity)
+                        if (gh_typ.Value is GH_UnitNumber)
                         {
-                            inStrain = (GH_Quantity)gh_typ.Value;
+                            inStrain = (GH_UnitNumber)gh_typ.Value;
                             strainPopo = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                            inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
                             strainPopo = (Oasys.Units.Strain)inStrain.Value;
                         }
                         else
@@ -725,19 +725,19 @@ namespace GhAdSec.Components
                     gh_typ = new GH_ObjectWrapper();
                     if (DA.GetData(1, ref gh_typ))
                     {
-                        GH_Quantity inStrain;
+                        GH_UnitNumber inStrain;
 
                         // try cast directly to quantity type
-                        if (gh_typ.Value is GH_Quantity)
+                        if (gh_typ.Value is GH_UnitNumber)
                         {
-                            inStrain = (GH_Quantity)gh_typ.Value;
+                            inStrain = (GH_UnitNumber)gh_typ.Value;
                             strainRect = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStrain = new GH_Quantity(new Oasys.Units.Strain(val, strainUnit));
+                            inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
                             strainRect = (Oasys.Units.Strain)inStrain.Value;
                         }
                         else
@@ -1015,49 +1015,13 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            // to save the dropdownlist content, spacer list and selection list 
-            // loop through the lists and save number of lists as well
-            writer.SetInt32("dropdownCount", dropdownitems.Count);
-            for (int i = 0; i < dropdownitems.Count; i++)
-            {
-                writer.SetInt32("dropdowncontentsCount" + i, dropdownitems[i].Count);
-                for (int j = 0; j < dropdownitems[i].Count; j++)
-                    writer.SetString("dropdowncontents" + i + j, dropdownitems[i][j]);
-            }
-            // spacer list
-            writer.SetInt32("spacerCount", spacerDescriptions.Count);
-            for (int i = 0; i < spacerDescriptions.Count; i++)
-                writer.SetString("spacercontents" + i, spacerDescriptions[i]);
-            // selection list
-            writer.SetInt32("selectionCount", selecteditems.Count);
-            for (int i = 0; i < selecteditems.Count; i++)
-                writer.SetString("selectioncontents" + i, selecteditems[i]);
+            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
 
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            // dropdown content list
-            int dropdownCount = reader.GetInt32("dropdownCount");
-            dropdownitems = new List<List<string>>();
-            for (int i = 0; i < dropdownCount; i++)
-            {
-                int dropdowncontentsCount = reader.GetInt32("dropdowncontentsCount" + i);
-                List<string> tempcontent = new List<string>();
-                for (int j = 0; j < dropdowncontentsCount; j++)
-                    tempcontent.Add(reader.GetString("dropdowncontents" + i + j));
-                dropdownitems.Add(tempcontent);
-            }
-            // spacer list
-            int dropdownspacerCount = reader.GetInt32("spacerCount");
-            spacerDescriptions = new List<string>();
-            for (int i = 0; i < dropdownspacerCount; i++)
-                spacerDescriptions.Add(reader.GetString("spacercontents" + i));
-            // selection list
-            int selectionsCount = reader.GetInt32("selectionCount");
-            selecteditems = new List<string>();
-            for (int i = 0; i < selectionsCount; i++)
-                selecteditems.Add(reader.GetString("selectioncontents" + i));
+            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
             pressureUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
