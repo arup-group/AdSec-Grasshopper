@@ -192,6 +192,15 @@ namespace GhAdSec.Components
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
+            if (selecteditems[0].StartsWith("Use Rhino unit: "))
+                GhAdSec.DocumentUnits.LengthUnit = GhAdSec.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+            else
+                GhAdSec.DocumentUnits.LengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[0]);
+            GhAdSec.DocumentUnits.StrainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[1]);
+            GhAdSec.DocumentUnits.PressureUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[2]);
+            this.Attributes.ExpireLayout();
+            this.Attributes.PerformLayout();
+            this.OnDisplayExpired(true);
             first = false;
             return base.Read(reader);
         }
