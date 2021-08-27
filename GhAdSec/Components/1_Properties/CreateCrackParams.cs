@@ -33,7 +33,7 @@ namespace GhAdSec.Components
           : base("Create CrackCalcParams", "CrackCalcParams", "Create Concrete Crack Calculation Parameters for AdSec Material",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat1())
-        { this.Hidden = false; } // sets the initial state of the component to hidden
+        { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
 
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.CreateMaterial;

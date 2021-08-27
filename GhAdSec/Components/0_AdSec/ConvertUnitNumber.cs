@@ -32,7 +32,7 @@ namespace GhAdSec.Components
           : base("Convert UnitNumber", "ConvertUnit", "Convert a unit number (quantity) into another unit",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat0())
-        { this.Hidden = false; } // sets the initial state of the component to hidden
+        { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.CreateMaterial;

@@ -264,7 +264,7 @@ namespace GhAdSec.UI
             if (channel == GH_CanvasChannel.Objects)
             {
                 // Define the default palette.
-                GH_Palette palette = GH_Palette.Normal;
+                GH_Palette palette = GH_Palette.Grey;
 
                 // Adjust palette based on the Owner's worst case messaging level.
                 switch (Owner.RuntimeMessageLevel)
