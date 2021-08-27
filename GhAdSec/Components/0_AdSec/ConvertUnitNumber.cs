@@ -20,7 +20,7 @@ using UnitsNet.GH;
 namespace GhAdSec.Components
 {
     /// <summary>
-    /// Component to create a new Material
+    /// Component to convert a UnitNumber
     /// </summary>
     public class ConvertUnitNumber : GH_Component
     {
@@ -48,14 +48,12 @@ namespace GhAdSec.Components
                 {
                     // create a new list of selected items and add the first material type
                     selecteditems = new List<string>();
-                    //selecteditems.Add(GhAdSec.DocumentUnits.LengthUnit.ToString());
                     selecteditems.Add("   ");
                 }
                 if (dropdownitems == null)
                 {
                     // create a new list of selected items and add the first material type
                     dropdownitems = new List<List<string>>();
-                    //List<string> unitTypes = Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList();
                     List<string> unitTypes = new List<string>(new string[]
                     {
                         "Input some UnitNumber",
@@ -76,7 +74,6 @@ namespace GhAdSec.Components
             {
                 // change selected item
                 selecteditems[i] = dropdownitems[i][j];
-
                 dropdownitems[0] = unitDict.Keys.ToList();
             }
         }
@@ -122,8 +119,9 @@ namespace GhAdSec.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     inUnitNumber = (GH_UnitNumber)gh_typ.Value;
-                    if (convertedUnitNumber == null || convertedUnitNumber.Equals(inUnitNumber))
+                    if (convertedUnitNumber == null || !convertedUnitNumber.Value.QuantityInfo.UnitType.Equals(inUnitNumber.Value.QuantityInfo.UnitType))
                     {
+
                         unitDict = new Dictionary<string, Enum>();
                         foreach (UnitsNet.UnitInfo unit in inUnitNumber.Value.QuantityInfo.UnitInfos)
                         {

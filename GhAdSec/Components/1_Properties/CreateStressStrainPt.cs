@@ -21,7 +21,7 @@ using UnitsNet.GH;
 namespace GhAdSec.Components
 {
     /// <summary>
-    /// Component to create a new Material
+    /// Component to create a new Stress Strain Point
     /// </summary>
     public class CreateStressStrainPoint : GH_Component
     {
@@ -54,7 +54,7 @@ namespace GhAdSec.Components
 
                 // pressure
                 dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-                selecteditems.Add(pressureUnit.ToString());
+                selecteditems.Add(stressUnit.ToString());
 
                 first = false;
             }
@@ -73,7 +73,7 @@ namespace GhAdSec.Components
                     strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
                     break;
                 case 1:
-                    pressureUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
+                    stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
                     break;
             }
 
@@ -90,18 +90,18 @@ namespace GhAdSec.Components
         List<string> spacerDescriptions = new List<string>(new string[]
         {
             "Strain Unit",
-            "Pressure Unit"
+            "Stress Unit"
         });
         private bool first = true;
 
         private Oasys.Units.StrainUnit strainUnit = GhAdSec.DocumentUnits.StrainUnit;
-        private UnitsNet.Units.PressureUnit pressureUnit = GhAdSec.DocumentUnits.PressureUnit;
+        private UnitsNet.Units.PressureUnit stressUnit = GhAdSec.DocumentUnits.StressUnit;
         #endregion
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Strain", "ε", "Value for strain (X-axis)", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Pressure", "σ", "Value for pressure (Y-axis)", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Stress", "σ", "Value for stress (Y-axis)", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -150,13 +150,13 @@ namespace GhAdSec.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     inStress = (GH_UnitNumber)gh_typ.Value;
-                    stress = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
+                    stress = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
                 }
                 // try cast to double
                 else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                 {
                     // create new quantity from default units
-                    inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnit));
+                    inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
                     stress = (UnitsNet.Pressure)inStress.Value;
                 }
                 else
@@ -184,7 +184,7 @@ namespace GhAdSec.Components
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
-            pressureUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
+            stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
 
             first = false;
             return base.Read(reader);

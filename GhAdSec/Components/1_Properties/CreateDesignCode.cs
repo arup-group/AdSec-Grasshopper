@@ -19,7 +19,7 @@ using Oasys.AdSec.Materials;
 namespace GhAdSec.Components
 {
     /// <summary>
-    /// Component to create a new Material
+    /// Component to lookup DesignCode for AdSec
     /// </summary>
     public class DesignCode : GH_Component
     {
@@ -65,7 +65,7 @@ namespace GhAdSec.Components
                 }
                 if (dropdownitems.Count == 1)
                 {
-                    designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNamespace("Oasys.AdSec.DesignCode");
+                    designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
                     // create string for selected item to use for type search while drilling
                     string typeString = selecteditems.Last();
@@ -132,7 +132,7 @@ namespace GhAdSec.Components
                 }
                 
                 // get list of standard codes for the selected material
-                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNamespace("Oasys.AdSec.DesignCode");
+                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
                 
                 //// add codes for selected material to list of dropdowns
                 //dropdownitems.Add(designCodeKVP.Keys.ToList());
@@ -223,7 +223,7 @@ namespace GhAdSec.Components
 
         #region Input and output
         // get list of material types defined in material parameter
-        List<string> designCodeGroups = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
+        List<string> designCodeGroups = GhAdSec.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
         // list of materials
         Dictionary<string, FieldInfo> designCodes;
         FieldInfo selectedCode;

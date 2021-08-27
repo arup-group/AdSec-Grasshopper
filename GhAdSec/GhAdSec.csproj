@@ -67,6 +67,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\0_AdSec\CreateUnitNumber.cs" />
     <Compile Include="Components\0_AdSec\ConvertUnitNumber.cs" />
     <Compile Include="Components\0_AdSec\EditUnits.cs" />
     <Compile Include="Components\0_AdSec\Version.cs" />

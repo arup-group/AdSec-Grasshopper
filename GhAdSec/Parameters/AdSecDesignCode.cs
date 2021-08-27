@@ -60,7 +60,7 @@ namespace GhAdSec.Parameters
         private bool CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false)
         {
             // Get all DesignCodes in DLL under namespace
-            Dictionary<string, Type> designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNamespace("Oasys.AdSec.DesignCode");
+            Dictionary<string, Type> designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
             // Loop through DesignCodes types to find the DesignCode type matching our input list of levels
             string designcodeName = "";

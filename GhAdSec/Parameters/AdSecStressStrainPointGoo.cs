@@ -32,7 +32,7 @@ namespace GhAdSec.Parameters
         {
             m_value = point;
             this.m_SSpoint = IStressStrainPoint.Create(
-                new UnitsNet.Pressure(m_value.Y, GhAdSec.DocumentUnits.PressureUnit), 
+                new UnitsNet.Pressure(m_value.Y, GhAdSec.DocumentUnits.StressUnit), 
                 new Oasys.Units.Strain(m_value.X, GhAdSec.DocumentUnits.StrainUnit));
         }
 
@@ -41,7 +41,7 @@ namespace GhAdSec.Parameters
             m_SSpoint = stressstrainPoint;
             this.m_value = new Point3d(
                 m_SSpoint.Strain.As(GhAdSec.DocumentUnits.StrainUnit),
-                m_SSpoint.Stress.As(GhAdSec.DocumentUnits.PressureUnit),
+                m_SSpoint.Stress.As(GhAdSec.DocumentUnits.StressUnit),
                 0);
         }
         public AdSecStressStrainPointGoo(UnitsNet.Pressure stress, Oasys.Units.Strain strain)
@@ -49,14 +49,14 @@ namespace GhAdSec.Parameters
             m_SSpoint = IStressStrainPoint.Create(stress, strain);
             m_value = new Point3d(
                 m_SSpoint.Strain.As(GhAdSec.DocumentUnits.StrainUnit),
-                m_SSpoint.Stress.As(GhAdSec.DocumentUnits.PressureUnit),
+                m_SSpoint.Stress.As(GhAdSec.DocumentUnits.StressUnit),
                 0);
         }
 
         public static IStressStrainPoint CreateFromPoint3d(Point3d point)
         {
             return IStressStrainPoint.Create(
-                new UnitsNet.Pressure(point.Y, GhAdSec.DocumentUnits.PressureUnit),
+                new UnitsNet.Pressure(point.Y, GhAdSec.DocumentUnits.StressUnit),
                 new Oasys.Units.Strain(point.X, GhAdSec.DocumentUnits.StrainUnit)); 
         }
 
@@ -138,7 +138,7 @@ namespace GhAdSec.Parameters
             if (typeof(TQ).IsAssignableFrom(typeof(IStressStrainPoint)))
             {
                 target = (TQ)(object) IStressStrainPoint.Create(
-                    new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.PressureUnit),
+                    new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.StressUnit),
                     new Oasys.Units.Strain(Value.X, GhAdSec.DocumentUnits.StrainUnit));
                 return true;
             }
@@ -154,7 +154,7 @@ namespace GhAdSec.Parameters
             {
                 Value = (Point3d)source;
                 this.m_SSpoint = IStressStrainPoint.Create(
-                new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.PressureUnit),
+                new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.StressUnit),
                 new Oasys.Units.Strain(Value.X, GhAdSec.DocumentUnits.StrainUnit));
                 return true;
             }
@@ -164,7 +164,7 @@ namespace GhAdSec.Parameters
                 m_SSpoint = (IStressStrainPoint)source;
                 m_value = new Point3d(
                     m_SSpoint.Strain.As(GhAdSec.DocumentUnits.StrainUnit),
-                    m_SSpoint.Stress.As(GhAdSec.DocumentUnits.PressureUnit),
+                    m_SSpoint.Stress.As(GhAdSec.DocumentUnits.StressUnit),
                     0);
                 return true;
             }
@@ -174,7 +174,7 @@ namespace GhAdSec.Parameters
             {
                 Value = ptGoo.Value;
                 this.m_SSpoint = IStressStrainPoint.Create(
-                new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.PressureUnit),
+                new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.StressUnit),
                 new Oasys.Units.Strain(Value.X, GhAdSec.DocumentUnits.StrainUnit));
                 return true;
             }
@@ -184,7 +184,7 @@ namespace GhAdSec.Parameters
             {
                 Value = pt;
                 this.m_SSpoint = IStressStrainPoint.Create(
-                new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.PressureUnit),
+                new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.StressUnit),
                 new Oasys.Units.Strain(Value.X, GhAdSec.DocumentUnits.StrainUnit));
                 return true;
             }

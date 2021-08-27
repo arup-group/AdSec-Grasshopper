@@ -29,27 +29,34 @@ namespace GhAdSec
     /// </summary>
     public static class DocumentUnits
     {
-        public static Oasys.Units.StrainUnit StrainUnit
+        public enum AdSecUnits
         {
-            get { return m_strain; }
-            set { m_strain = value; }
+            Length,
+            Force,
+            Moment,
+            Stress,
+            Strain,
+            AxialStiffness,
+            BendingStiffness,
+            Curvature
         }
-        private static Oasys.Units.StrainUnit m_strain = Oasys.Units.StrainUnit.MilliStrain;
-        public static UnitsNet.Units.PressureUnit PressureUnit
-        {
-            get { return m_pressure; }
-            set { m_pressure = value; }
-        }
-        private static UnitsNet.Units.PressureUnit m_pressure = UnitsNet.Units.PressureUnit.Megapascal;
 
+        // length
         public static UnitsNet.Units.LengthUnit LengthUnit
         {
-            get 
+            get
             {
-                m_length = m_units.BaseUnits.Length;
-                return m_length; 
+                if (m_units == null)
+                {
+                    m_length = GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+                }
+                else
+                {
+                    m_length = m_units.BaseUnits.Length;
+                }
+                return m_length;
             }
-            set 
+            set
             {
                 m_length = value;
                 // update unit system
@@ -61,6 +68,63 @@ namespace GhAdSec
         }
         private static UnitsNet.Units.LengthUnit m_length;
 
+        // force
+        public static UnitsNet.Units.ForceUnit ForceUnit
+        {
+            get { return m_force; }
+            set { m_force = value; }
+        }
+        private static UnitsNet.Units.ForceUnit m_force = UnitsNet.Units.ForceUnit.Kilonewton;
+
+        // moment
+        public static Oasys.Units.MomentUnit MomentUnit
+        {
+            get { return m_moment; }
+            set { m_moment = value; }
+        }
+        private static Oasys.Units.MomentUnit m_moment = Oasys.Units.MomentUnit.KilonewtonMeter;
+
+        // stress
+        public static UnitsNet.Units.PressureUnit StressUnit
+        {
+            get { return m_stress; }
+            set { m_stress = value; }
+        }
+        private static UnitsNet.Units.PressureUnit m_stress = UnitsNet.Units.PressureUnit.Megapascal;
+
+        // strain
+        public static Oasys.Units.StrainUnit StrainUnit
+        {
+            get { return m_strain; }
+            set { m_strain = value; }
+        }
+        private static Oasys.Units.StrainUnit m_strain = Oasys.Units.StrainUnit.MilliStrain;
+
+        // axial stiffness
+        public static Oasys.Units.AxialStiffnessUnit AxialStiffnessUnit
+        {
+            get { return m_axialstiffness; }
+            set { m_axialstiffness = value; }
+        }
+        private static Oasys.Units.AxialStiffnessUnit m_axialstiffness = Oasys.Units.AxialStiffnessUnit.Kilonewton;
+
+        // bending stiffness
+        public static Oasys.Units.BendingStiffnessUnit BendingStiffnessUnit
+        {
+            get { return m_bendingstiffness; }
+            set { m_bendingstiffness = value; }
+        }
+        private static Oasys.Units.BendingStiffnessUnit m_bendingstiffness = Oasys.Units.BendingStiffnessUnit.KilonewtonSquareMeter;
+
+        // curvature
+        public static Oasys.Units.CurvatureUnit CurvatureUnit
+        {
+            get { return m_curvature; }
+            set { m_curvature = value; }
+        }
+        private static Oasys.Units.CurvatureUnit m_curvature = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), "Per" + LengthUnit.ToString());
+
+        // unit system
         public static UnitsNet.UnitSystem UnitSystem
         {
             get { return m_units; }

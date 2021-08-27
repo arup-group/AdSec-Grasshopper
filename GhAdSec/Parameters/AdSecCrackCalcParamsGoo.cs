@@ -41,9 +41,9 @@ namespace GhAdSec.Parameters
         public AdSecConcreteCrackCalculationParametersGoo(double elasticModulus, double characteristicCompressiveStrength, double characteristicTensionStrength)
         {
             this.Value = IConcreteCrackCalculationParameters.Create(
-                new UnitsNet.Pressure(elasticModulus, GhAdSec.DocumentUnits.PressureUnit),
-                new UnitsNet.Pressure(characteristicCompressiveStrength, GhAdSec.DocumentUnits.PressureUnit),
-                new UnitsNet.Pressure(characteristicTensionStrength, GhAdSec.DocumentUnits.PressureUnit));
+                new UnitsNet.Pressure(elasticModulus, GhAdSec.DocumentUnits.StressUnit),
+                new UnitsNet.Pressure(characteristicCompressiveStrength, GhAdSec.DocumentUnits.StressUnit),
+                new UnitsNet.Pressure(characteristicTensionStrength, GhAdSec.DocumentUnits.StressUnit));
         }
 
         public IConcreteCrackCalculationParameters ConcreteCrackCalculationParameters
@@ -65,9 +65,9 @@ namespace GhAdSec.Parameters
         public override string ToString()
         {
             // recreate pressure values with document units
-            UnitsNet.Pressure e = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.PressureUnit), GhAdSec.DocumentUnits.PressureUnit);
-            UnitsNet.Pressure fck = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.PressureUnit), GhAdSec.DocumentUnits.PressureUnit);
-            UnitsNet.Pressure ftk = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.PressureUnit), GhAdSec.DocumentUnits.PressureUnit);
+            UnitsNet.Pressure e = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
+            UnitsNet.Pressure fck = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
+            UnitsNet.Pressure ftk = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
             return TypeName +
                 " E:" + e.ToString() +
                 " fc:" + fck.ToString() +

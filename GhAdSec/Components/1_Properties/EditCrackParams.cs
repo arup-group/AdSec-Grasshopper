@@ -103,13 +103,13 @@ namespace GhAdSec.Components
                     if (gh_typ.Value is GH_UnitNumber)
                     {
                         newElastic = (GH_UnitNumber)gh_typ.Value;
-                        e = (UnitsNet.Pressure)newElastic.Value.ToUnit(GhAdSec.DocumentUnits.PressureUnit);
+                        e = (UnitsNet.Pressure)newElastic.Value.ToUnit(GhAdSec.DocumentUnits.StressUnit);
                     }
                     // try cast to double
                     else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                     {
                         // create new quantity from default units
-                        newElastic = new GH_UnitNumber(new UnitsNet.Pressure(val, GhAdSec.DocumentUnits.PressureUnit));
+                        newElastic = new GH_UnitNumber(new UnitsNet.Pressure(val, GhAdSec.DocumentUnits.StressUnit));
                         e = (UnitsNet.Pressure)newElastic.Value;
                     }
                     else
@@ -130,7 +130,7 @@ namespace GhAdSec.Components
                     if (gh_typ.Value is GH_UnitNumber)
                     {
                         newCompression = (GH_UnitNumber)gh_typ.Value;
-                        fck = (UnitsNet.Pressure)newCompression.Value.ToUnit(GhAdSec.DocumentUnits.PressureUnit);
+                        fck = (UnitsNet.Pressure)newCompression.Value.ToUnit(GhAdSec.DocumentUnits.StressUnit);
                         if (fck.Value > 0)
                         {
                             fck = new UnitsNet.Pressure(fck.Value * -1, fck.Unit);
@@ -141,7 +141,7 @@ namespace GhAdSec.Components
                     else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                     {
                         // create new quantity from default units
-                        newCompression = new GH_UnitNumber(new UnitsNet.Pressure(Math.Abs(val) * -1, GhAdSec.DocumentUnits.PressureUnit));
+                        newCompression = new GH_UnitNumber(new UnitsNet.Pressure(Math.Abs(val) * -1, GhAdSec.DocumentUnits.StressUnit));
                         fck = (UnitsNet.Pressure)newCompression.Value;
                         if (val >= 0)
                             AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression (fc) must be negative; note that value has been multiplied by -1");
@@ -164,13 +164,13 @@ namespace GhAdSec.Components
                     if (gh_typ.Value is GH_UnitNumber)
                     {
                         newTensions = (GH_UnitNumber)gh_typ.Value;
-                        ft = (UnitsNet.Pressure)newTensions.Value.ToUnit(GhAdSec.DocumentUnits.PressureUnit);
+                        ft = (UnitsNet.Pressure)newTensions.Value.ToUnit(GhAdSec.DocumentUnits.StressUnit);
                     }
                     // try cast to double
                     else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                     {
                         // create new quantity from default units
-                        newTensions = new GH_UnitNumber(new UnitsNet.Pressure(val, GhAdSec.DocumentUnits.PressureUnit));
+                        newTensions = new GH_UnitNumber(new UnitsNet.Pressure(val, GhAdSec.DocumentUnits.StressUnit));
                         ft = (UnitsNet.Pressure)newTensions.Value;
                     }
                     else
@@ -186,9 +186,9 @@ namespace GhAdSec.Components
 
                 // #### set outputs ####
                 DA.SetData(0, concreteCrack);
-                DA.SetData(1, new GH_UnitNumber(new UnitsNet.Pressure(e.As(GhAdSec.DocumentUnits.PressureUnit), GhAdSec.DocumentUnits.PressureUnit)));
-                DA.SetData(2, new GH_UnitNumber(new UnitsNet.Pressure(fck.As(GhAdSec.DocumentUnits.PressureUnit), GhAdSec.DocumentUnits.PressureUnit)));
-                DA.SetData(3, new GH_UnitNumber(new UnitsNet.Pressure(ft.As(GhAdSec.DocumentUnits.PressureUnit), GhAdSec.DocumentUnits.PressureUnit)));
+                DA.SetData(1, new GH_UnitNumber(new UnitsNet.Pressure(e.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit)));
+                DA.SetData(2, new GH_UnitNumber(new UnitsNet.Pressure(fck.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit)));
+                DA.SetData(3, new GH_UnitNumber(new UnitsNet.Pressure(ft.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit)));
 
             }
             else

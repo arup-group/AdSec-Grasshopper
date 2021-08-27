@@ -23,7 +23,7 @@ using Oasys.Profiles;
 namespace GhAdSec.Components
 {
     /// <summary>
-    /// Component to create a profile text-string
+    /// Component to create AdSec profile
     /// </summary>
     public class CreateProfile : GH_Component, IGH_VariableParameterComponent
     {
@@ -48,11 +48,12 @@ namespace GhAdSec.Components
         {
             if (first)
             {
-                Dictionary<string, Type> profileTypesInitial = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNamespace("Oasys.Profiles");
+                Dictionary<string, Type> profileTypesInitial = GhAdSec.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.Profiles");
                 profileTypes = new Dictionary<string, Type>();
                 foreach (KeyValuePair<string, Type> kvp in profileTypesInitial)
                 {
-                    if (kvp.Key != "IProfile")
+                    // filter out IProfile, IPoint, IFlange, IWeb and ITrapezoidProfileAbstractInterface
+                    if (kvp.Key != "IProfile" && kvp.Key != "IPoint" && kvp.Key != "IFlange" && kvp.Key != "IWeb" && kvp.Key != "ITrapezoidProfileAbstractInterface")
                     {
                         // remove the "Profile" from name
                         string key = kvp.Key.Replace("Profile", "");

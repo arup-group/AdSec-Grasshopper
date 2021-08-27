@@ -66,7 +66,7 @@ namespace GhAdSec.Helpers
             return materials;
         }
 
-        internal static Dictionary<string, Type> ReflectNamespace(string nspace)
+        internal static Dictionary<string, Type> ReflectAdSecNamespace(string nspace)
         {
             Assembly adsecAPI = GhAdSec.AddReferencePriority.AdSecAPI;
             var q = from t in adsecAPI.GetTypes()

@@ -21,7 +21,7 @@ using UnitsNet.GH;
 namespace GhAdSec.Components
 {
     /// <summary>
-    /// Component to create a new Material
+    /// Component to create a new Concrete Crack Calculation Parameters
     /// </summary>
     public class CreateConcreteCrackCalculationParameters : GH_Component
     {
@@ -50,11 +50,11 @@ namespace GhAdSec.Components
 
                 // pressure E
                 dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-                selecteditems.Add(pressureUnit.ToString());
+                selecteditems.Add(strengthUnit.ToString());
 
                 // pressure stress
                 dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-                selecteditems.Add(pressureUnit.ToString());
+                selecteditems.Add(strengthUnit.ToString());
 
                 first = false;
             }
@@ -70,10 +70,10 @@ namespace GhAdSec.Components
             switch (i)
             {
                 case 0:
-                    pressureUnitE = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
+                    stressUnitE = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
                     break;
                 case 1:
-                    pressureUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
+                    strengthUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
                     break;
             }
         }
@@ -92,8 +92,8 @@ namespace GhAdSec.Components
             "Strength Unit"
         });
         private bool first = true;
-        private UnitsNet.Units.PressureUnit pressureUnitE = GhAdSec.DocumentUnits.PressureUnit;
-        private UnitsNet.Units.PressureUnit pressureUnit = GhAdSec.DocumentUnits.PressureUnit;
+        private UnitsNet.Units.PressureUnit stressUnitE = GhAdSec.DocumentUnits.StressUnit;
+        private UnitsNet.Units.PressureUnit strengthUnit = GhAdSec.DocumentUnits.StressUnit;
         #endregion
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
@@ -128,14 +128,14 @@ namespace GhAdSec.Components
                 else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                 {
                     // create new quantity from default units
-                    newElastic = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnitE));
+                    newElastic = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnitE));
                 }
                 else
                 {
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert E input");
                     return;
                 }
-                e = (UnitsNet.Pressure)newElastic.Value.ToUnit(pressureUnitE);
+                e = (UnitsNet.Pressure)newElastic.Value.ToUnit(stressUnitE);
             }
 
             // 1 Compression strength
@@ -148,7 +148,7 @@ namespace GhAdSec.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     newCompression = (GH_UnitNumber)gh_typ.Value;
-                    fck = (UnitsNet.Pressure)newCompression.Value.ToUnit(pressureUnit);
+                    fck = (UnitsNet.Pressure)newCompression.Value.ToUnit(strengthUnit);
                     if (fck.Value > 0)
                     {
                         fck = new UnitsNet.Pressure(fck.Value * -1, fck.Unit);
@@ -159,7 +159,7 @@ namespace GhAdSec.Components
                 else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                 {
                     // create new quantity from default units
-                    newCompression = new GH_UnitNumber(new UnitsNet.Pressure(Math.Abs(val) * -1, pressureUnit));
+                    newCompression = new GH_UnitNumber(new UnitsNet.Pressure(Math.Abs(val) * -1, strengthUnit));
                     fck = (UnitsNet.Pressure)newCompression.Value;
                     if (val >= 0)
                         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression (fc) must be negative; note that value has been multiplied by -1");
@@ -181,13 +181,13 @@ namespace GhAdSec.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     newTensions = (GH_UnitNumber)gh_typ.Value;
-                    ft = (UnitsNet.Pressure)newTensions.Value.ToUnit(pressureUnit);
+                    ft = (UnitsNet.Pressure)newTensions.Value.ToUnit(strengthUnit);
                 }
                 // try cast to double
                 else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                 {
                     // create new quantity from default units
-                    newTensions = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnit));
+                    newTensions = new GH_UnitNumber(new UnitsNet.Pressure(val, strengthUnit));
                     ft = (UnitsNet.Pressure)newTensions.Value;
                 }
                 else
@@ -214,8 +214,8 @@ namespace GhAdSec.Components
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
-            pressureUnitE = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[0]);
-            pressureUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
+            stressUnitE = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[0]);
+            strengthUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
 
             first = false;
             return base.Read(reader);

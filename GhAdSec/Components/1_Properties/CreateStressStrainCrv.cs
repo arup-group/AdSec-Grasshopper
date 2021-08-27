@@ -71,7 +71,7 @@ namespace GhAdSec.Components
 
                         // add pressure dropdown
                         dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-                        selecteditems.Add(pressureUnit.ToString());
+                        selecteditems.Add(stressUnit.ToString());
 
                         Mode2Clicked();
                         break;
@@ -85,7 +85,7 @@ namespace GhAdSec.Components
 
                         // add pressure dropdown
                         dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-                        selecteditems.Add(pressureUnit.ToString());
+                        selecteditems.Add(stressUnit.ToString());
 
                         Mode4Clicked();
                         break;
@@ -125,7 +125,7 @@ namespace GhAdSec.Components
                         strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
                         break;
                     case 2:
-                        pressureUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
+                        stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
                         break;
                 }
             }
@@ -140,10 +140,10 @@ namespace GhAdSec.Components
         {
             "Curve Type",
             "Strain Unit",
-            "Pressure Unit",
+            "Stress Unit",
         });
         private Oasys.Units.StrainUnit strainUnit = GhAdSec.DocumentUnits.StrainUnit;
-        private UnitsNet.Units.PressureUnit pressureUnit = GhAdSec.DocumentUnits.PressureUnit;
+        private UnitsNet.Units.PressureUnit stressUnit = GhAdSec.DocumentUnits.StressUnit;
         #endregion
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
@@ -293,13 +293,13 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStress = (GH_UnitNumber)gh_typ.Value;
-                            stressFib = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
+                            stressFib = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnit));
+                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
                             stressFib = (UnitsNet.Pressure)inStress.Value;
                         }
                         else
@@ -377,13 +377,13 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStress = (GH_UnitNumber)gh_typ.Value;
-                            stressMander = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
+                            stressMander = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnit));
+                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
                             stressMander = (UnitsNet.Pressure)inStress.Value;
                         }
                         else
@@ -469,13 +469,13 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStress = (GH_UnitNumber)gh_typ.Value;
-                            stressMander1 = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
+                            stressMander1 = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnit));
+                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
                             stressMander1 = (UnitsNet.Pressure)inStress.Value;
                         }
                         else
@@ -494,13 +494,13 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStress = (GH_UnitNumber)gh_typ.Value;
-                            stressMander2 = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
+                            stressMander2 = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnit));
+                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
                             stressMander2 = (UnitsNet.Pressure)inStress.Value;
                         }
                         else
@@ -519,13 +519,13 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStress = (GH_UnitNumber)gh_typ.Value;
-                            stressMander3 = (UnitsNet.Pressure)inStress.Value.ToUnit(pressureUnit);
+                            stressMander3 = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
                         }
                         // try cast to double
                         else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                         {
                             // create new quantity from default units
-                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, pressureUnit));
+                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
                             stressMander3 = (UnitsNet.Pressure)inStress.Value;
                         }
                         else
@@ -1024,7 +1024,7 @@ namespace GhAdSec.Components
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
-            pressureUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
+            stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
 
             first = false;
             return base.Read(reader);

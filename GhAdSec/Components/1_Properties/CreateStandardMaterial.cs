@@ -19,7 +19,7 @@ using Oasys.AdSec.Materials;
 namespace GhAdSec.Components
 {
     /// <summary>
-    /// Component to create a new Material
+    /// Component to create a new Standard Material for AdSec
     /// </summary>
     public class StandardMaterial : GH_Component
     {
