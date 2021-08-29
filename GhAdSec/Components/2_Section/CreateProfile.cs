@@ -39,6 +39,12 @@ namespace GhAdSec.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
+        protected override string HtmlHelp_Source()
+        {
+            string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.Profiles.html";
+            return help;
+        }
+
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.CreateProfile;
         #endregion
 
@@ -474,13 +480,13 @@ namespace GhAdSec.Components
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
             GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
-
+            writer.SetString("enum", _mode.ToString());
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
+            _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
             first = false;
             return base.Read(reader);
         }

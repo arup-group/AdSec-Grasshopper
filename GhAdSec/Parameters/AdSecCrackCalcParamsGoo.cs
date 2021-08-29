@@ -53,9 +53,9 @@ namespace GhAdSec.Parameters
 
         public override bool IsValid => true;
 
-        public override string TypeName => "AdSec CCP";
+        public override string TypeName => "ConcreteCrackCalculationParameters";
 
-        public override string TypeDescription => "AdSec ConcreteCrackCalculationParameters";
+        public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
         public override IGH_Goo Duplicate()
         {
@@ -68,10 +68,10 @@ namespace GhAdSec.Parameters
             UnitsNet.Pressure e = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
             UnitsNet.Pressure fck = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
             UnitsNet.Pressure ftk = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
-            return TypeName +
-                " E:" + e.ToString() +
-                " fc:" + fck.ToString() +
-                " ft: " + ftk.ToString();
+            return "AdSec " + TypeName +
+                " {E:" + e.ToString() +
+                ", fc:" + fck.ToString() +
+                ", ft: " + ftk.ToString() + "}";
         }
     }
 }

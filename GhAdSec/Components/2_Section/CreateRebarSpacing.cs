@@ -1,0 +1,275 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Grasshopper;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Data;
+using Grasshopper.Kernel.Types;
+using Grasshopper.Kernel.Parameters;
+using Rhino.Geometry;
+using Oasys.AdSec.Materials.StressStrainCurves;
+using GhAdSec.Parameters;
+using UnitsNet.GH;
+using Oasys.Profiles;
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Layers;
+using UnitsNet;
+
+namespace GhAdSec.Components
+{
+    public class CreateRebarSpacing : GH_Component, IGH_VariableParameterComponent
+    {
+        #region Name and Ribbon Layout
+        public CreateRebarSpacing()
+            : base("Create Rebar Spacing", "Spacing", "Create Rebar (single or bundle) for AdSec Section",
+                Ribbon.CategoryName.Name(),
+                Ribbon.SubCategoryName.Cat2())
+        { this.Hidden = true; }
+        public override Guid ComponentGuid => new Guid("846d546a-4284-4d69-906b-0e6985d7ddd3");
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
+
+        //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.BeamLoad;
+        #endregion
+
+        #region Custom UI
+        //This region overrides the typical component layout
+        public override void CreateAttributes()
+        {
+            
+            if (first)
+            {
+                List<string> list = Enum.GetNames(typeof(FoldMode)).ToList();
+                dropdownitems = new List<List<string>>();
+                dropdownitems.Add(list);
+
+                selecteditems = new List<string>();
+                selecteditems.Add(dropdownitems[0][0]);
+
+                // length
+                dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                selecteditems.Add(lengthUnit.ToString());
+
+                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+                unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
+
+                first = false;
+            }
+
+            m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+        }
+
+        public void SetSelected(int i, int j)
+        {
+            // set selected item
+            selecteditems[i] = dropdownitems[i][j];
+            if (i == 0)
+            {
+                _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[i]);
+            }
+            else
+            {
+                lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+            }
+            ToggleInput();
+            this.OnDisplayExpired(true);
+        }
+        #endregion
+
+        #region Input and output
+        List<List<string>> dropdownitems;
+        List<string> selecteditems;
+        List<string> spacerDescriptions = new List<string>(new string[]
+        {
+            "Spacing method",
+            "Measure"
+        });
+        private UnitsNet.Units.LengthUnit lengthUnit = GhAdSec.DocumentUnits.LengthUnit;
+        string unitAbbreviation;
+        #endregion
+
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
+        {
+            pManager.AddGenericParameter("Rebar", "Rb", "AdSec Rebar (single or bundle)", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Spacing [" + unitAbbreviation + "]", "S", "Number of bars is calculated based on the available length and the given bar pitch. " +
+                    "The bar pitch is re-calculated to place the bars at equal spacing, with a maximum final pitch of the given value. " +
+                    "Example: If the available length for the bars is 1000mm and the given bar pitch is 300mm, then the number of " +
+                    "spacings that can fit in the available length is calculated as 1000 / 300 i.e. 3.333. The number of spacings is" +
+                    " rounded up (3.333 rounds up to 4) and the bar pitch re-calculated (1000mm / 4), resulting in a final pitch of 250mm.", GH_ParamAccess.item);
+            _mode = FoldMode.Distance;
+        }
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
+        {
+            pManager.AddGenericParameter("Spaced Rebars", "RbS", "Rebars Spaced in a Layer for AdSec Reinforcement", GH_ParamAccess.item);
+        }
+
+        protected override void SolveInstance(IGH_DataAccess DA)
+        {
+            // 0 rebar input
+            AdSecRebarBundleGoo rebar = null;
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(0, ref gh_typ))
+            {
+                if (gh_typ.Value is AdSecRebarBundleGoo)
+                {
+                    rebar = (AdSecRebarBundleGoo)gh_typ.Value;
+                }
+                else
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in rebar input - unable to cast from type " + gh_typ.Value.GetType().Name);
+                }
+            }
+            if (rebar == null)
+            { 
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in rebar input - unable to convert from type " + gh_typ.Value.GetType().Name);
+                return;
+            }
+
+            if (_mode == FoldMode.Distance)
+            {
+                GH_UnitNumber spacing = null;
+                gh_typ = new GH_ObjectWrapper();
+                if (DA.GetData(1, ref gh_typ))
+                {
+                    // try cast directly to quantity type
+                    if (gh_typ.Value is GH_UnitNumber)
+                    {
+                        spacing = (GH_UnitNumber)gh_typ.Value;
+                        // check that unit is of right type
+                        if (!spacing.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
+                                + System.Environment.NewLine + "Unit type is " + spacing.Value.QuantityInfo.Name + " but must be Length");
+                            return;
+                        }
+                    }
+                    // try cast to double
+                    else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                    {
+                        // create new quantity from default units
+                        spacing = new GH_UnitNumber(new UnitsNet.Length(val, GhAdSec.DocumentUnits.LengthUnit));
+                    }
+                    else
+                    {
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 1");
+                        return;
+                    }
+                }
+
+                AdSecRebarLayerGoo bundle = new AdSecRebarLayerGoo(ILayerByBarPitch.Create(rebar.Value, (UnitsNet.Length)spacing.Value));
+                DA.SetData(0, bundle);
+            }
+            else
+            {
+                int count = 1;
+                DA.GetData(1, ref count);
+                
+                AdSecRebarLayerGoo bundle = new AdSecRebarLayerGoo(ILayerByBarCount.Create(count, rebar.Value));
+                DA.SetData(0, bundle);
+            }
+        }
+
+        #region menu override
+        
+        private bool first = true;
+        private enum FoldMode
+        {
+            Distance,
+            Count
+        }
+
+        private FoldMode _mode = FoldMode.Distance;
+
+        private void ToggleInput()
+        {
+            RecordUndoEvent("Changed dropdown");
+
+            switch (_mode)
+            {
+                case FoldMode.Distance:
+                    // remove any additional input parameters
+                    while (Params.Input.Count > 1)
+                        Params.UnregisterInputParameter(Params.Input[1], true);
+
+                    Params.RegisterInputParam(new Param_GenericObject());
+
+                    break;
+
+                case FoldMode.Count:
+                    // add input parameter
+                    while (Params.Input.Count > 1)
+                        Params.UnregisterInputParameter(Params.Input[1], true);
+
+                    Params.RegisterInputParam(new Param_Integer());
+
+                    break;
+            }
+
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            ExpireSolution(true);
+        }
+        #endregion
+
+        #region (de)serialization
+        public override bool Write(GH_IO.Serialization.GH_IWriter writer)
+        {
+            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            writer.SetString("enum", _mode.ToString());
+            return base.Write(writer);
+        }
+        public override bool Read(GH_IO.Serialization.GH_IReader reader)
+        {
+            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
+            first = false;
+            return base.Read(reader);
+        }
+
+        bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
+        {
+            return null;
+        }
+        bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        #endregion
+        #region IGH_VariableParameterComponent null implementation
+        void IGH_VariableParameterComponent.VariableParameterMaintenance()
+        {
+            
+            
+            if (_mode == FoldMode.Distance)
+            {
+                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+                unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
+                Params.Input[1].Name = "Spacing [" + unitAbbreviation + "]";
+                Params.Input[1].NickName = "S";
+                Params.Input[1].Description = "Number of bars is calculated based on the available length and the given bar pitch. " +
+                    "The bar pitch is re-calculated to place the bars at equal spacing, with a maximum final pitch of the given value. " +
+                    "Example: If the available length for the bars is 1000mm and the given bar pitch is 300mm, then the number of " +
+                    "spacings that can fit in the available length is calculated as 1000 / 300 i.e. 3.333. The number of spacings is" +
+                    " rounded up (3.333 rounds up to 4) and the bar pitch re-calculated (1000mm / 4), resulting in a final pitch of 250mm.";
+                Params.Input[1].Access = GH_ParamAccess.item;
+                Params.Input[1].Optional = false;
+            }
+            if (_mode == FoldMode.Count)
+            {
+                Params.Input[1].Name = "Count";
+                Params.Input[1].NickName = "N";
+                Params.Input[1].Description = "The number of bundles or single bars. The bundles or single bars are spaced out evenly over the available space.";
+                Params.Input[1].Access = GH_ParamAccess.item;
+                Params.Input[1].Optional = false;
+            }
+        }
+        #endregion
+    }
+}

@@ -22,31 +22,38 @@ using GH_IO;
 using GH_IO.Serialization;
 using Rhino.Display;
 using Oasys.AdSec.Materials;
-using Oasys.Profiles;
+using Oasys.AdSec.Reinforcement;
 
 namespace GhAdSec.Parameters
 {
-    public class AdSecProfileGoo : GH_Goo<IProfile>
+    public class AdSecRebarBundleGoo : GH_Goo<IBarBundle>
     {
-        public AdSecProfileGoo(IProfile profile)
-        : base(profile)
+        public AdSecRebarBundleGoo(IBarBundle bar)
+        : base(bar)
         {
         }
 
         public override bool IsValid => true;
 
-        public override string TypeName => "Profile";
+        public override string TypeName => "Rebar Bundle";
 
         public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
         public override IGH_Goo Duplicate()
         {
-            return new AdSecProfileGoo(this.Value);
+            return new AdSecRebarBundleGoo(this.Value);
         }
-
         public override string ToString()
         {
-            return "AdSec " + TypeName + " {" + this.Value.Description() + "}";
+            string bar = "Rebar {";
+            UnitsNet.Length thk1 = this.Value.Diameter.ToUnit(GhAdSec.DocumentUnits.LengthUnit);
+            bar += "Ø" + thk1.ToString();
+            if (this.Value.CountPerBundle > 1)
+            {
+                bar += ", Bundle (" + this.Value.CountPerBundle + ")";
+            }
+            //bar += ", " + this.Value.Material.ToString();
+            return "AdSec " +  bar + "}";
         }
     }
 }

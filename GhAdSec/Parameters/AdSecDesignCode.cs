@@ -181,16 +181,11 @@ namespace GhAdSec.Parameters
             if (Value == null)
                 return "Null";
             else
-                return Value.ToString();
+                return "AdSec " + TypeName + " {" + Value.ToString() + "}";
         }
-        public override string TypeName
-        {
-            get { return ("AdSec DesignCode"); }
-        }
-        public override string TypeDescription
-        {
-            get { return ("AdSec DesignCode parameter"); }
-        }
+        public override string TypeName => "DesignCode";
+
+        public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
 
         #endregion

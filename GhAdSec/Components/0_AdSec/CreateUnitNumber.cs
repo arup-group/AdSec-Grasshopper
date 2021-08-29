@@ -23,7 +23,7 @@ namespace GhAdSec.Components
     /// <summary>
     /// Component to create a new UnitNumber
     /// </summary>
-    public class CreateUnitNumber : GH_Component
+    public class CreateUnitNumber : GH_Component, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -59,6 +59,7 @@ namespace GhAdSec.Components
                 // set selected unit to
                 quantity = new UnitsNet.Length(0, GhAdSec.DocumentUnits.LengthUnit);
                 selectedUnit = quantity.Unit;
+                unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
 
                 // create new dictionary and set all unit measures from quantity to it
                 unitDict = new Dictionary<string, Enum>();
@@ -131,12 +132,18 @@ namespace GhAdSec.Components
                 dropdownitems[1] = unitDict.Keys.ToList();
                 // set selected to default unit
                 selecteditems[1] = selectedUnit.ToString();
+                
             }
             else // if change is made to the measure of a unit
             {
                 selectedUnit = unitDict[selecteditems.Last()];
             }
 
+            // update name of input (to display unit on sliders)
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -159,11 +166,12 @@ namespace GhAdSec.Components
         private bool first = true;
         IQuantity quantity;
         double val;
+        string unitAbbreviation;
         #endregion
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddNumberParameter("Number", "N", "Number representing the value of selected unit and measure", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Number [" + unitAbbreviation + "]", "N", "Number representing the value of selected unit and measure", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -226,6 +234,30 @@ namespace GhAdSec.Components
 
             first = false;
             return base.Read(reader);
+        }
+        bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
+        {
+            return null;
+        }
+        bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        #endregion
+
+        #region IGH_VariableParameterComponent null implementation
+        void IGH_VariableParameterComponent.VariableParameterMaintenance()
+        {
+            unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
+            Params.Input[0].Name = "Number [" + unitAbbreviation + "]";
         }
         #endregion
     }

@@ -17,13 +17,14 @@ using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using UnitsNet.GH;
+using UnitsNet;
 
 namespace GhAdSec.Components
 {
     /// <summary>
     /// Component to create a new Stress Strain Point
     /// </summary>
-    public class CreateStressStrainPoint : GH_Component
+    public class CreateStressStrainPoint : GH_Component, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -34,7 +35,7 @@ namespace GhAdSec.Components
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat1())
         { this.Hidden = false; } // sets the initial state of the component to hidden
-        public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
+        public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.CreateMaterial;
         #endregion
@@ -55,6 +56,11 @@ namespace GhAdSec.Components
                 // pressure
                 dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
                 selecteditems.Add(stressUnit.ToString());
+
+                IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
+                strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
+                IQuantity stress = new UnitsNet.Pressure(0, stressUnit);
+                stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 
                 first = false;
             }
@@ -77,6 +83,11 @@ namespace GhAdSec.Components
                     break;
             }
 
+            // update name of inputs (to display unit on sliders)
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -96,12 +107,14 @@ namespace GhAdSec.Components
 
         private Oasys.Units.StrainUnit strainUnit = GhAdSec.DocumentUnits.StrainUnit;
         private UnitsNet.Units.PressureUnit stressUnit = GhAdSec.DocumentUnits.StressUnit;
+        string strainUnitAbbreviation;
+        string stressUnitAbbreviation;
         #endregion
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Strain", "ε", "Value for strain (X-axis)", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Stress", "σ", "Value for stress (Y-axis)", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Strain [" + strainUnitAbbreviation + "]", "ε", "Value for strain (X-axis)", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Stress [" + stressUnitAbbreviation + "]", "σ", "Value for stress (Y-axis)", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -124,6 +137,12 @@ namespace GhAdSec.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     inStrain = (GH_UnitNumber)gh_typ.Value;
+                    if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.StrainUnit)))
+                    {
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input: Wrong unit type supplied"
+                            + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Strain");
+                        return;
+                    }
                     strain = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
                 }
                 // try cast to double
@@ -135,7 +154,7 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert E input");
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 0");
                     return;
                 }
             }
@@ -150,6 +169,12 @@ namespace GhAdSec.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     inStress = (GH_UnitNumber)gh_typ.Value;
+                    if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                    {
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input: Wrong unit type supplied"
+                            + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                        return;
+                    }
                     stress = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
                 }
                 // try cast to double
@@ -161,7 +186,7 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert E input");
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 1");
                     return;
                 }
             }
@@ -188,6 +213,34 @@ namespace GhAdSec.Components
 
             first = false;
             return base.Read(reader);
+        }
+        bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
+        {
+            return null;
+        }
+        bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        #endregion
+
+        #region IGH_VariableParameterComponent null implementation
+        void IGH_VariableParameterComponent.VariableParameterMaintenance()
+        {
+            IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
+            strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
+            IQuantity stress = new UnitsNet.Pressure(0, stressUnit);
+            stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
+            Params.Input[0].Name = "Strain [" + strainUnitAbbreviation + "]";
+            Params.Input[1].Name = "Stress [" + stressUnitAbbreviation + "]";
         }
         #endregion
     }

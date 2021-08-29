@@ -33,7 +33,7 @@ namespace GhAdSec.Components
                 Ribbon.SubCategoryName.Cat1())
         { this.Hidden = true; } // sets the initial state of the component to hidden
 
-        public override GH_Exposure Exposure => GH_Exposure.primary | GH_Exposure.obscure;
+        public override GH_Exposure Exposure => GH_Exposure.primary;
 
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.GsaVersion;
         #endregion
@@ -281,13 +281,13 @@ namespace GhAdSec.Components
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
             GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
-
+            writer.SetBoolean("isConcrete", isConcrete);
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
+            isConcrete = reader.GetBoolean("isConcrete");
             first = false;
             return base.Read(reader);
         }

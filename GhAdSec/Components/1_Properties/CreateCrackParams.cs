@@ -17,13 +17,14 @@ using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using UnitsNet.GH;
+using UnitsNet;
 
 namespace GhAdSec.Components
 {
     /// <summary>
     /// Component to create a new Concrete Crack Calculation Parameters
     /// </summary>
-    public class CreateConcreteCrackCalculationParameters : GH_Component
+    public class CreateConcreteCrackCalculationParameters : GH_Component, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -34,7 +35,7 @@ namespace GhAdSec.Components
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat1())
         { this.Hidden = true; } // sets the initial state of the component to hidden
-        public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.CreateMaterial;
         #endregion
@@ -56,6 +57,11 @@ namespace GhAdSec.Components
                 dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
                 selecteditems.Add(strengthUnit.ToString());
 
+                IQuantity quantityE = new UnitsNet.Pressure(0, stressUnitE);
+                unitEAbbreviation = string.Concat(quantityE.ToString().Where(char.IsLetter));
+                IQuantity quantityS = new UnitsNet.Pressure(0, strengthUnit);
+                unitSAbbreviation = string.Concat(quantityS.ToString().Where(char.IsLetter));
+
                 first = false;
             }
 
@@ -76,6 +82,12 @@ namespace GhAdSec.Components
                     strengthUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
                     break;
             }
+
+            // update name of inputs (to display unit on sliders)
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -94,13 +106,15 @@ namespace GhAdSec.Components
         private bool first = true;
         private UnitsNet.Units.PressureUnit stressUnitE = GhAdSec.DocumentUnits.StressUnit;
         private UnitsNet.Units.PressureUnit strengthUnit = GhAdSec.DocumentUnits.StressUnit;
+        string unitEAbbreviation;
+        string unitSAbbreviation;
         #endregion
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Elastic Modulus", "E", "Value for Elastic Modulus", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Compression", "fc", "Value for Characteristic Compressive Strength", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Tension", "ft", "Value for Characteristic Tension Strength", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Elastic Modulus [" + unitEAbbreviation + "]", "E", "Value for Elastic Modulus", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Compression [" + unitSAbbreviation + "]", "fc", "Value for Characteristic Compressive Strength", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Tension [" + unitSAbbreviation + "]", "ft", "Value for Characteristic Tension Strength", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -123,6 +137,12 @@ namespace GhAdSec.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     newElastic = (GH_UnitNumber)gh_typ.Value;
+                    if (!newElastic.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                    {
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
+                            + System.Environment.NewLine + "Unit type is " + newElastic.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                        return;
+                    }
                 }
                 // try cast to double
                 else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
@@ -148,6 +168,12 @@ namespace GhAdSec.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     newCompression = (GH_UnitNumber)gh_typ.Value;
+                    if (!newCompression.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                    {
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
+                            + System.Environment.NewLine + "Unit type is " + newCompression.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                        return;
+                    }
                     fck = (UnitsNet.Pressure)newCompression.Value.ToUnit(strengthUnit);
                     if (fck.Value > 0)
                     {
@@ -181,6 +207,12 @@ namespace GhAdSec.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     newTensions = (GH_UnitNumber)gh_typ.Value;
+                    if (!newTensions.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                    {
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
+                            + System.Environment.NewLine + "Unit type is " + newTensions.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                        return;
+                    }
                     ft = (UnitsNet.Pressure)newTensions.Value.ToUnit(strengthUnit);
                 }
                 // try cast to double
@@ -219,6 +251,35 @@ namespace GhAdSec.Components
 
             first = false;
             return base.Read(reader);
+        }
+        bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
+        {
+            return null;
+        }
+        bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        #endregion
+
+        #region IGH_VariableParameterComponent null implementation
+        void IGH_VariableParameterComponent.VariableParameterMaintenance()
+        {
+            IQuantity quantityE = new UnitsNet.Pressure(0, stressUnitE);
+            unitEAbbreviation = string.Concat(quantityE.ToString().Where(char.IsLetter));
+            IQuantity quantityS = new UnitsNet.Pressure(0, strengthUnit);
+            unitSAbbreviation = string.Concat(quantityS.ToString().Where(char.IsLetter));
+            Params.Input[0].Name = "Elastic Modulus [" + unitEAbbreviation + "]";
+            Params.Input[1].Name = "Compression [" + unitSAbbreviation + "]";
+            Params.Input[2].Name = "Tension [" + unitSAbbreviation + "]";
         }
         #endregion
     }

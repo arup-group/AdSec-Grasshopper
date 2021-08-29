@@ -26,27 +26,30 @@ using Oasys.Profiles;
 
 namespace GhAdSec.Parameters
 {
-    public class AdSecProfileGoo : GH_Goo<IProfile>
+    public class AdSecProfileFlangeGoo : GH_Goo<IFlange>
     {
-        public AdSecProfileGoo(IProfile profile)
-        : base(profile)
+        public AdSecProfileFlangeGoo(IFlange flange)
+        : base(flange)
         {
         }
 
         public override bool IsValid => true;
 
-        public override string TypeName => "Profile";
+        public override string TypeName => "Flange Profile";
 
         public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
         public override IGH_Goo Duplicate()
         {
-            return new AdSecProfileGoo(this.Value);
+            return new AdSecProfileFlangeGoo(this.Value);
         }
-
         public override string ToString()
         {
-            return "AdSec " + TypeName + " {" + this.Value.Description() + "}";
+            string flange = "AdSec Flange {";
+            UnitsNet.Length thk1 = this.Value.Width.ToUnit(GhAdSec.DocumentUnits.LengthUnit);
+            UnitsNet.Length thk2 = this.Value.Thickness.ToUnit(GhAdSec.DocumentUnits.LengthUnit);
+            flange += "Width:" + thk1.ToString() + ", Thk:" + thk2.ToString() + "}";
+            return flange;
         }
     }
 }

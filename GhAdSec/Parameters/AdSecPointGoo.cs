@@ -21,73 +21,71 @@ using Rhino.Collections;
 using GH_IO;
 using GH_IO.Serialization;
 using Rhino.Display;
-using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.Profiles;
 using UnitsNet;
 
 namespace GhAdSec.Parameters
 {
-    public class AdSecStressStrainPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData
+    public class AdSecPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData
     {
-        public AdSecStressStrainPointGoo(Point3d point)
+        public AdSecPointGoo(Point3d point)
         : base(point)
         {
             m_value = point;
-            this.m_SSpoint = IStressStrainPoint.Create(
-                new UnitsNet.Pressure(m_value.Y, GhAdSec.DocumentUnits.StressUnit), 
-                new Oasys.Units.Strain(m_value.X, GhAdSec.DocumentUnits.StrainUnit));
+            this.m_AdSecPoint = IPoint.Create(
+                new UnitsNet.Length(m_value.X, GhAdSec.DocumentUnits.LengthUnit), 
+                new UnitsNet.Length(m_value.Y, GhAdSec.DocumentUnits.LengthUnit));
         }
-        public AdSecStressStrainPointGoo(AdSecStressStrainPointGoo stressstrainPoint)
+        public AdSecPointGoo(AdSecPointGoo adsecPoint)
         {
-            m_SSpoint = stressstrainPoint.StressStrainPoint;
+            m_AdSecPoint = adsecPoint.AdSecPoint;
             this.m_value = new Point3d(Value);
         }
-        public AdSecStressStrainPointGoo(IStressStrainPoint stressstrainPoint)
+        public AdSecPointGoo(IPoint adsecPoint)
         {
-            m_SSpoint = stressstrainPoint;
+            m_AdSecPoint = adsecPoint;
             this.m_value = new Point3d(
-                m_SSpoint.Strain.As(GhAdSec.DocumentUnits.StrainUnit),
-                m_SSpoint.Stress.As(GhAdSec.DocumentUnits.StressUnit),
+                m_AdSecPoint.Y.As(GhAdSec.DocumentUnits.LengthUnit),
+                m_AdSecPoint.Z.As(GhAdSec.DocumentUnits.LengthUnit),
                 0);
         }
-        public AdSecStressStrainPointGoo(UnitsNet.Pressure stress, Oasys.Units.Strain strain)
+        public AdSecPointGoo(UnitsNet.Length y, UnitsNet.Length z)
         {
-            m_SSpoint = IStressStrainPoint.Create(stress, strain);
+            m_AdSecPoint = IPoint.Create(y, z);
             m_value = new Point3d(
-                m_SSpoint.Strain.As(GhAdSec.DocumentUnits.StrainUnit),
-                m_SSpoint.Stress.As(GhAdSec.DocumentUnits.StressUnit),
+                m_AdSecPoint.Y.As(GhAdSec.DocumentUnits.LengthUnit),
+                m_AdSecPoint.Z.As(GhAdSec.DocumentUnits.LengthUnit),
                 0);
         }
 
-        public static IStressStrainPoint CreateFromPoint3d(Point3d point)
+        public static IPoint CreateFromPoint3d(Point3d point)
         {
-            return IStressStrainPoint.Create(
-                new UnitsNet.Pressure(point.Y, GhAdSec.DocumentUnits.StressUnit),
-                new Oasys.Units.Strain(point.X, GhAdSec.DocumentUnits.StrainUnit)); 
+            return IPoint.Create(
+                new UnitsNet.Length(point.X, GhAdSec.DocumentUnits.LengthUnit),
+                new UnitsNet.Length(point.Y, GhAdSec.DocumentUnits.LengthUnit));
         }
 
-        private IStressStrainPoint m_SSpoint;
-        public IStressStrainPoint StressStrainPoint
+        private IPoint m_AdSecPoint;
+        public IPoint AdSecPoint
         {
-            get { return m_SSpoint; }
+            get { return m_AdSecPoint; }
         }
 
         public override string ToString()
         {
-            IQuantity quantityStrain = new Oasys.Units.Strain(0, GhAdSec.DocumentUnits.StrainUnit);
-            string unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
-            IQuantity quantityStress = new UnitsNet.Pressure(0, GhAdSec.DocumentUnits.StressUnit);
-            string unitStressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
+            IQuantity quantity = new UnitsNet.Length(0, GhAdSec.DocumentUnits.LengthUnit);
+            string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
             return "AdSec " + TypeName + " {"
-                + Math.Round(StressStrainPoint.Strain.As(GhAdSec.DocumentUnits.StrainUnit), 4) + unitStrainAbbreviation + ", "
-                + Math.Round(StressStrainPoint.Stress.As(GhAdSec.DocumentUnits.StressUnit), 4) + unitStressAbbreviation + "}";
+                + Math.Round(AdSecPoint.Y.As(GhAdSec.DocumentUnits.LengthUnit), 4) + unitAbbreviation + ", "
+                + Math.Round(AdSecPoint.Z.As(GhAdSec.DocumentUnits.LengthUnit), 4) + unitAbbreviation + "}";
         }
-        public override string TypeName => "StressStrainPoint";
+        public override string TypeName => "Vertex";
 
         public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
         public override IGH_GeometricGoo DuplicateGeometry()
         {
-            return new AdSecStressStrainPointGoo(new Point3d(this.Value));
+            return new AdSecPointGoo(new Point3d(this.Value));
         }
         public override BoundingBox Boundingbox
         {
@@ -127,9 +125,9 @@ namespace GhAdSec.Parameters
         }
         public override bool CastTo<TQ>(out TQ target)
         {
-            if (typeof(TQ).IsAssignableFrom(typeof(AdSecStressStrainPointGoo)))
+            if (typeof(TQ).IsAssignableFrom(typeof(AdSecPointGoo)))
             {
-                target = (TQ)(object)new AdSecStressStrainPointGoo(this.Value);
+                target = (TQ)(object)new AdSecPointGoo(this.Value);
                 return true;
             }
 
@@ -145,13 +143,15 @@ namespace GhAdSec.Parameters
                 return true;
             }
 
-            if (typeof(TQ).IsAssignableFrom(typeof(IStressStrainPoint)))
+            if (typeof(TQ).IsAssignableFrom(typeof(IPoint)))
             {
-                target = (TQ)(object) IStressStrainPoint.Create(
-                    new UnitsNet.Pressure(Value.Y, GhAdSec.DocumentUnits.StressUnit),
-                    new Oasys.Units.Strain(Value.X, GhAdSec.DocumentUnits.StrainUnit));
+                target = (TQ)(object)IPoint.Create(
+                    new UnitsNet.Length(Value.X, GhAdSec.DocumentUnits.LengthUnit),
+                    new UnitsNet.Length(Value.Y, GhAdSec.DocumentUnits.LengthUnit));
                 return true;
             }
+
+            
 
             target = default(TQ);
             return false;
@@ -162,35 +162,35 @@ namespace GhAdSec.Parameters
 
             if (source is Point3d)
             {
-                AdSecStressStrainPointGoo temp = new AdSecStressStrainPointGoo((Point3d)source);
+                AdSecPointGoo temp = new AdSecPointGoo((Point3d)source);
                 this.m_value = temp.Value;
-                this.m_SSpoint = temp.StressStrainPoint;
+                this.m_AdSecPoint = temp.AdSecPoint;
                 return true;
             }
 
-            if (source is IStressStrainPoint)
+            if (source is IPoint)
             {
-                AdSecStressStrainPointGoo temp = new AdSecStressStrainPointGoo((IStressStrainPoint)source);
+                AdSecPointGoo temp = new AdSecPointGoo((IPoint)source);
                 this.m_value = temp.Value;
-                this.m_SSpoint = temp.StressStrainPoint;
+                this.m_AdSecPoint = temp.AdSecPoint;
                 return true;
             }
 
             GH_Point ptGoo = source as GH_Point;
             if (ptGoo != null)
             {
-                AdSecStressStrainPointGoo temp = new AdSecStressStrainPointGoo(ptGoo.Value);
+                AdSecPointGoo temp = new AdSecPointGoo(ptGoo.Value);
                 this.m_value = temp.Value;
-                this.m_SSpoint = temp.StressStrainPoint;
+                this.m_AdSecPoint = temp.AdSecPoint;
                 return true;
             }
 
             Point3d pt = new Point3d();
             if (GH_Convert.ToPoint3d(source, ref pt, GH_Conversion.Both))
             {
-                AdSecStressStrainPointGoo temp = new AdSecStressStrainPointGoo(pt);
+                AdSecPointGoo temp = new AdSecPointGoo(pt);
                 this.m_value = temp.Value;
-                this.m_SSpoint = temp.StressStrainPoint;
+                this.m_AdSecPoint = temp.AdSecPoint;
                 return true;
             }
 
@@ -203,10 +203,7 @@ namespace GhAdSec.Parameters
         }
         public void DrawViewportWires(GH_PreviewWireArgs args)
         {
-            if (Value != null)
-            {
-                args.Pipeline.DrawCircle(new Circle(Value, 0.5), GhAdSec.UI.Colour.StressStrainPoint, 1);
-            }
+            args.Pipeline.DrawPoint(Value, PointStyle.RoundSimple, 2, GhAdSec.UI.Colour.StressStrainCurve);
         }
         public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
     }

@@ -28,7 +28,7 @@ namespace GhAdSec.Components
                 Ribbon.SubCategoryName.Cat0())
         { this.Hidden = true; } // sets the initial state of the component to hidden
 
-        public override GH_Exposure Exposure => GH_Exposure.septenary | GH_Exposure.obscure;
+        public override GH_Exposure Exposure => GH_Exposure.septenary;
 
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.GsaVersion;
         #endregion
@@ -49,7 +49,6 @@ namespace GhAdSec.Components
             pManager.AddTextParameter("AdSec API version", "API", "AdSec Plugin Version", GH_ParamAccess.item);
             pManager.AddTextParameter("AdSec GH version", "GH", "AdSec API Version", GH_ParamAccess.item);
             pManager.AddTextParameter("API Version", "File", "AdSec API Version", GH_ParamAccess.item);
-             //pManager.AddTextParameter("API Test", "Test", "AdSec API Test", GH_ParamAccess.list);
         }
         #endregion
 

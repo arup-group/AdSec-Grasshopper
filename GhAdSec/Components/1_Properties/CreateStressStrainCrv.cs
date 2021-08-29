@@ -10,6 +10,7 @@ using Rhino.Geometry;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using GhAdSec.Parameters;
 using UnitsNet.GH;
+using UnitsNet;
 
 namespace GhAdSec.Components
 {
@@ -22,8 +23,13 @@ namespace GhAdSec.Components
                 Ribbon.SubCategoryName.Cat1())
         { this.Hidden = false; }
         public override Guid ComponentGuid => new Guid("b2ddf545-2a4c-45ac-ba1c-cb0f3da5b37f");
-        public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
+        public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
+        protected override string HtmlHelp_Source()
+        {
+            string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Materials.StressStrainCurves.html";
+            return help;
+        }
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.BeamLoad;
         #endregion
 
@@ -144,6 +150,9 @@ namespace GhAdSec.Components
         });
         private Oasys.Units.StrainUnit strainUnit = GhAdSec.DocumentUnits.StrainUnit;
         private UnitsNet.Units.PressureUnit stressUnit = GhAdSec.DocumentUnits.StressUnit;
+
+        string unitStressAbbreviation;
+        string unitStrainAbbreviation;
         #endregion
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
@@ -178,7 +187,8 @@ namespace GhAdSec.Components
                         }
                         else if (gh_typ1.Value is AdSecStressStrainPointGoo)
                         {
-                            pt1 = (IStressStrainPoint)gh_typ1.Value;
+                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ1.Value;
+                            pt1 = sspt.StressStrainPoint;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ1.Value, ref ghpt, GH_Conversion.Both))
                         {
@@ -199,7 +209,8 @@ namespace GhAdSec.Components
                         }
                         else if (gh_typ2.Value is AdSecStressStrainPointGoo)
                         {
-                            pt2 = (IStressStrainPoint)gh_typ2.Value;
+                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ2.Value;
+                            pt2 = sspt.StressStrainPoint;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ2.Value, ref ghpt, GH_Conversion.Both))
                         {
@@ -227,9 +238,10 @@ namespace GhAdSec.Components
                             {
                                 pts.Add((IStressStrainPoint)gh_typs[i].Value);
                             }
-                            else if (gh_typ2.Value is AdSecStressStrainPointGoo)
+                            else if (gh_typs[i].Value is AdSecStressStrainPointGoo)
                             {
-                                pts.Add((IStressStrainPoint)gh_typs[i].Value);
+                                AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typs[i].Value;
+                                pts.Add(sspt.StressStrainPoint);
                             }
                             else if (GH_Convert.ToPoint3d(gh_typs[i].Value, ref ghpt, GH_Conversion.Both))
                             {
@@ -267,7 +279,8 @@ namespace GhAdSec.Components
                         }
                         else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
-                            pt = (IStressStrainPoint)gh_typ.Value;
+                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
+                            pt = sspt.StressStrainPoint;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
@@ -293,6 +306,12 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStress = (GH_UnitNumber)gh_typ.Value;
+                            if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                            {
+                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
+                                    + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                                return;
+                            }
                             stressFib = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
                         }
                         // try cast to double
@@ -319,6 +338,12 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStrain = (GH_UnitNumber)gh_typ.Value;
+                            if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.StrainUnit)))
+                            {
+                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
+                                    + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Strain");
+                                return;
+                            }
                             strainFib = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
                         }
                         // try cast to double
@@ -351,7 +376,8 @@ namespace GhAdSec.Components
                         }
                         else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
-                            pt = (IStressStrainPoint)gh_typ.Value;
+                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
+                            pt = sspt.StressStrainPoint;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
@@ -377,6 +403,12 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStress = (GH_UnitNumber)gh_typ.Value;
+                            if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                            {
+                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
+                                    + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                                return;
+                            }
                             stressMander = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
                         }
                         // try cast to double
@@ -403,6 +435,12 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStrain = (GH_UnitNumber)gh_typ.Value;
+                            if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.StrainUnit)))
+                            {
+                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
+                                    + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Strain");
+                                return;
+                            }
                             strainMander = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
                         }
                         // try cast to double
@@ -435,7 +473,8 @@ namespace GhAdSec.Components
                         }
                         else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
-                            pt = (IStressStrainPoint)gh_typ.Value;
+                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
+                            pt = sspt.StressStrainPoint;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
@@ -469,6 +508,12 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStress = (GH_UnitNumber)gh_typ.Value;
+                            if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                            {
+                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 0: Wrong unit type supplied"
+                                    + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                                return;
+                            }
                             stressMander1 = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
                         }
                         // try cast to double
@@ -494,6 +539,12 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStress = (GH_UnitNumber)gh_typ.Value;
+                            if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                            {
+                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
+                                    + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                                return;
+                            }
                             stressMander2 = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
                         }
                         // try cast to double
@@ -519,6 +570,12 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStress = (GH_UnitNumber)gh_typ.Value;
+                            if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                            {
+                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
+                                    + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                                return;
+                            }
                             stressMander3 = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
                         }
                         // try cast to double
@@ -545,6 +602,12 @@ namespace GhAdSec.Components
                         if (gh_typ.Value is GH_UnitNumber)
                         {
                             inStrain = (GH_UnitNumber)gh_typ.Value;
+                            if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.StrainUnit)))
+                            {
+                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 3: Wrong unit type supplied"
+                                    + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Strain");
+                                return;
+                            }
                             strainManderConf = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
                         }
                         // try cast to double
@@ -575,7 +638,8 @@ namespace GhAdSec.Components
                         }
                         else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
-                            pt = (IStressStrainPoint)gh_typ.Value;
+                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
+                            pt = sspt.StressStrainPoint;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
@@ -626,7 +690,8 @@ namespace GhAdSec.Components
                         }
                         else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
-                            pt = (IStressStrainPoint)gh_typ.Value;
+                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
+                            pt = sspt.StressStrainPoint;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
@@ -653,7 +718,8 @@ namespace GhAdSec.Components
                         }
                         else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
-                            pt = (IStressStrainPoint)gh_typ.Value;
+                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
+                            pt = sspt.StressStrainPoint;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
@@ -707,7 +773,8 @@ namespace GhAdSec.Components
                         }
                         else if (gh_typ.Value is AdSecStressStrainPointGoo)
                         {
-                            pt = (IStressStrainPoint)gh_typ.Value;
+                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
+                            pt = sspt.StressStrainPoint;
                         }
                         else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                         {
@@ -1016,7 +1083,7 @@ namespace GhAdSec.Components
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
             GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
-
+            writer.SetString("enum", _mode.ToString());
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
@@ -1025,7 +1092,7 @@ namespace GhAdSec.Components
 
             strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
             stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
-
+            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)Enum.Parse(typeof(GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType), reader.GetString("mode"));
             first = false;
             return base.Read(reader);
         }
@@ -1082,13 +1149,19 @@ namespace GhAdSec.Components
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
 
-                Params.Input[1].Name = "Initial Modus";
+                IQuantity quantityStress = new UnitsNet.Pressure(0, stressUnit);
+                unitStressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
+
+                Params.Input[1].Name = "Initial Modus [" + unitStressAbbreviation + "]";
                 Params.Input[1].NickName = "Ei";
                 Params.Input[1].Description = "Initial Moduls from FIB model code";
                 Params.Input[1].Access = GH_ParamAccess.item;
                 Params.Input[1].Optional = false;
 
-                Params.Input[2].Name = "Failure Strain";
+                IQuantity quantityStrain = new Oasys.Units.Strain(0, strainUnit);
+                unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
+
+                Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
                 Params.Input[2].NickName = "εu";
                 Params.Input[2].Description = "Failure strain from FIB model code";
                 Params.Input[2].Access = GH_ParamAccess.item;
@@ -1106,25 +1179,31 @@ namespace GhAdSec.Components
 
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
             {
-                Params.Input[0].Name = "Unconfined Strength";
+                IQuantity quantityStress = new UnitsNet.Pressure(0, stressUnit);
+                unitStressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
+
+                Params.Input[0].Name = "Unconfined Strength [" + unitStressAbbreviation + "]";
                 Params.Input[0].NickName = "σU";
                 Params.Input[0].Description = "Unconfined strength for Mander Confined Model";
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
 
-                Params.Input[1].Name = "Confined Strength";
+                Params.Input[1].Name = "Confined Strength [" + unitStressAbbreviation + "]";
                 Params.Input[1].NickName = "σC";
                 Params.Input[1].Description = "Confined strength for Mander Confined Model";
                 Params.Input[1].Access = GH_ParamAccess.item;
                 Params.Input[1].Optional = false;
 
-                Params.Input[2].Name = "Initial Modus";
+                Params.Input[2].Name = "Initial Modus [" + unitStressAbbreviation + "]";
                 Params.Input[2].NickName = "Ei";
                 Params.Input[2].Description = "Initial Moduls for Mander Confined Model";
                 Params.Input[2].Access = GH_ParamAccess.item;
                 Params.Input[2].Optional = false;
 
-                Params.Input[3].Name = "Failure Strain";
+                IQuantity quantityStrain = new Oasys.Units.Strain(0, strainUnit);
+                unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
+
+                Params.Input[3].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
                 Params.Input[3].NickName = "εu";
                 Params.Input[3].Description = "Failure strain for Mander Confined Model";
                 Params.Input[3].Access = GH_ParamAccess.item;
@@ -1139,13 +1218,19 @@ namespace GhAdSec.Components
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
 
-                Params.Input[1].Name = "Initial Modus";
+                IQuantity quantityStress = new UnitsNet.Pressure(0, stressUnit);
+                unitStressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
+
+                Params.Input[1].Name = "Initial Modus [" + unitStressAbbreviation + "]";
                 Params.Input[1].NickName = "Ei";
                 Params.Input[1].Description = "Initial Moduls for Mander model";
                 Params.Input[1].Access = GH_ParamAccess.item;
                 Params.Input[1].Optional = false;
 
-                Params.Input[2].Name = "Failure Strain";
+                IQuantity quantityStrain = new Oasys.Units.Strain(0, strainUnit);
+                unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
+
+                Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
                 Params.Input[2].NickName = "εu";
                 Params.Input[2].Description = "Failure strain for Mander model";
                 Params.Input[2].Access = GH_ParamAccess.item;
@@ -1160,7 +1245,10 @@ namespace GhAdSec.Components
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
 
-                Params.Input[1].Name = "Failure Strain";
+                IQuantity quantityStrain = new Oasys.Units.Strain(0, strainUnit);
+                unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
+
+                Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
                 Params.Input[1].NickName = "εu";
                 Params.Input[1].Description = "Failure strain from FIB model code";
                 Params.Input[1].Access = GH_ParamAccess.item;
@@ -1184,7 +1272,10 @@ namespace GhAdSec.Components
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
 
-                Params.Input[1].Name = "Failure Strain";
+                IQuantity quantityStrain = new Oasys.Units.Strain(0, strainUnit);
+                unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
+
+                Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
                 Params.Input[1].NickName = "εu";
                 Params.Input[1].Description = "Failure strain from Popovic model";
                 Params.Input[1].Access = GH_ParamAccess.item;
@@ -1199,7 +1290,10 @@ namespace GhAdSec.Components
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
 
-                Params.Input[1].Name = "Failure Strain";
+                IQuantity quantityStrain = new Oasys.Units.Strain(0, strainUnit);
+                unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
+
+                Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
                 Params.Input[1].NickName = "εu";
                 Params.Input[1].Description = "Failure strain";
                 Params.Input[1].Access = GH_ParamAccess.item;

@@ -126,6 +126,8 @@ namespace GhAdSec.Components
                 while (dropdownitems.Count > 1)
                     dropdownitems.RemoveAt(1);
 
+                string prevSelectedCode = selecteditems[1].ToString();
+                
                 // remove all selected items after the dropdown that has been changed
                 while (selecteditems.Count > i + 1)
                     selecteditems.RemoveAt(i + 1);
@@ -137,7 +139,12 @@ namespace GhAdSec.Components
                 // add codes for selected material to list of dropdowns
                 dropdownitems.Add(designCodeKVP.Keys.ToList());
                 if (selecteditems.Count == 1)
-                    selecteditems.Add(designCodeKVP.Keys.First());
+                {
+                    if (dropdownitems[1].Contains(prevSelectedCode))
+                        selecteditems.Add(prevSelectedCode);
+                    else
+                        selecteditems.Add(designCodeKVP.Keys.First());
+                }
 
                 // make the UI look more intelligent
                 if (selecteditems[1].StartsWith("EN1992"))

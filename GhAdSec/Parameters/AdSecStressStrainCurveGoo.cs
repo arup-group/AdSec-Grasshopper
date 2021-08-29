@@ -193,23 +193,54 @@ namespace GhAdSec.Parameters
         private List<Point3d> m_pts = new List<Point3d>();
         private StressStrainCurveType m_type;
         private IStressStrainCurve m_SScurve;
+
         public IStressStrainCurve StressStrainCurve
         {
             get { return m_SScurve; }
         }
+        public List<Point3d> ControlPoints
+        {
+            get { return m_pts; }
+        }
+        public Oasys.Collections.IList<IStressStrainPoint> IStressStrainPoints
+        {
+            get
+            {
+                try
+                {
+                    IExplicitStressStrainCurve crv2 = (IExplicitStressStrainCurve)m_SScurve;
+                    return crv2.Points;
+
+                }
+                catch (Exception)
+                {
+
+                    throw new Exception("Unable to cast to internal IStressStrainCurve to IExplicitStressStrainCurve");
+                }
+            }
+        }
+        public List<AdSecStressStrainPointGoo> AdSecStressStrainPoints
+        {
+            get 
+            {
+                List<AdSecStressStrainPointGoo> outPts = new List<AdSecStressStrainPointGoo>();
+                Oasys.Collections.IList<IStressStrainPoint> pts = this.IStressStrainPoints;
+                foreach (IStressStrainPoint pt in pts)
+                {
+                    outPts.Add(new AdSecStressStrainPointGoo(pt));
+                }
+                return outPts; 
+            }
+        }
+
 
         public override string ToString()
         {
-            return "AdSec StressStrainCurve " + m_type.ToString();
+            return "AdSec " + TypeName + " {" + m_type.ToString() + "}";
         }
-        public override string TypeName
-        {
-            get { return "StressStrainCurve"; }
-        }
-        public override string TypeDescription
-        {
-            get { return "An AdSec StressStrainCurve type."; }
-        }
+        public override string TypeName => "StressStrainCurve";
+
+        public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
         public override IGH_GeometricGoo DuplicateGeometry()
         {
@@ -242,6 +273,12 @@ namespace GhAdSec.Parameters
         }
         public override bool CastTo<TQ>(out TQ target)
         {
+            if (typeof(TQ).IsAssignableFrom(typeof(AdSecStressStrainCurveGoo)))
+            {
+                target = (TQ)(object)new AdSecStressStrainCurveGoo(m_value.DuplicateCurve(), m_SScurve, m_type, m_pts.ToList());
+                return true;
+            }
+
             if (typeof(TQ).IsAssignableFrom(typeof(Line)))
             {
                 target = (TQ)(object)Value;

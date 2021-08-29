@@ -81,6 +81,11 @@ namespace UnitsNet.GH
             // This function is called when Grasshopper needs to convert this 
             // instance of UnitNumber into some other type Q.            
 
+            if (typeof(Q).IsAssignableFrom(typeof(GH_UnitNumber)))
+            {
+                target = (Q)(object)new GH_UnitNumber(Value);
+                return true;
+            }
 
             if (typeof(Q).IsAssignableFrom(typeof(GH_Number)))
             {

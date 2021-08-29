@@ -32,7 +32,7 @@ namespace GhAdSec.Components
                 Ribbon.SubCategoryName.Cat1())
         { this.Hidden = false; } // sets the initial state of the component to hidden
 
-        public override GH_Exposure Exposure => GH_Exposure.primary | GH_Exposure.obscure;
+        public override GH_Exposure Exposure => GH_Exposure.primary;
 
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.GsaVersion;
         #endregion
@@ -75,19 +75,26 @@ namespace GhAdSec.Components
             // #### get material input and duplicate it ####
             AdSecMaterial input = new AdSecMaterial();
             AdSecMaterial editMat = new AdSecMaterial();
-            if (DA.GetData(0, ref input))
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(0, ref gh_typ))
             {
-                editMat = input.Duplicate();
+                if (gh_typ.Value is AdSecMaterialGoo)
+                {
+                    gh_typ.CastTo(ref input);
+                    editMat = input.Duplicate();
+                }
+                else
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in material input - unable to cast from type " + gh_typ.Value.GetType().Name);
+                }
             }
 
             if (editMat != null)
             {
-                
-
                 // #### get the remaining inputs ####
 
                 // 1 DesignCode
-                GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+                gh_typ = new GH_ObjectWrapper();
                 if (DA.GetData(1, ref gh_typ))
                 {
                     AdSecDesignCode designCode = new AdSecDesignCode();

@@ -32,7 +32,7 @@ namespace GhAdSec.Components
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat1())
         { this.Hidden = true; } // sets the initial state of the component to hidden
-        public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.GsaVersion;
         #endregion
@@ -45,10 +45,13 @@ namespace GhAdSec.Components
 
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
+            IQuantity quantity = new UnitsNet.Pressure(0, GhAdSec.DocumentUnits.StressUnit);
+            string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
+
             pManager.AddGenericParameter("CrackCalcParams", "CCP", "AdSec ConcreteCrackCalculationParameters", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Elastic Modulus", "E", "[Optional] Overwrite Value for Elastic Modulus", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Compression", "fc", "[Optional] Overwrite Value for Characteristic Compressive Strength", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Tension", "ft", "[Optional] Overwrite Value for Characteristic Tension Strength", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Elastic Modulus [" + unitAbbreviation + "]", "E", "[Optional] Overwrite Value for Elastic Modulus", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Compression [" + unitAbbreviation + "]", "fc", "[Optional] Overwrite Value for Characteristic Compressive Strength", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Tension [" + unitAbbreviation + "]", "ft", "[Optional] Overwrite Value for Characteristic Tension Strength", GH_ParamAccess.item);
             // make all but first input optional
             for (int i = 1; i < pManager.ParamCount; i++)
                 pManager[i].Optional = true;
@@ -103,6 +106,12 @@ namespace GhAdSec.Components
                     if (gh_typ.Value is GH_UnitNumber)
                     {
                         newElastic = (GH_UnitNumber)gh_typ.Value;
+                        if (!newElastic.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
+                                + System.Environment.NewLine + "Unit type is " + newElastic.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                            return;
+                        }
                         e = (UnitsNet.Pressure)newElastic.Value.ToUnit(GhAdSec.DocumentUnits.StressUnit);
                     }
                     // try cast to double
@@ -130,6 +139,12 @@ namespace GhAdSec.Components
                     if (gh_typ.Value is GH_UnitNumber)
                     {
                         newCompression = (GH_UnitNumber)gh_typ.Value;
+                        if (!newCompression.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
+                                + System.Environment.NewLine + "Unit type is " + newCompression.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                            return;
+                        }
                         fck = (UnitsNet.Pressure)newCompression.Value.ToUnit(GhAdSec.DocumentUnits.StressUnit);
                         if (fck.Value > 0)
                         {
@@ -164,6 +179,12 @@ namespace GhAdSec.Components
                     if (gh_typ.Value is GH_UnitNumber)
                     {
                         newTensions = (GH_UnitNumber)gh_typ.Value;
+                        if (!newTensions.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 3: Wrong unit type supplied"
+                                + System.Environment.NewLine + "Unit type is " + newTensions.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                            return;
+                        }
                         ft = (UnitsNet.Pressure)newTensions.Value.ToUnit(GhAdSec.DocumentUnits.StressUnit);
                     }
                     // try cast to double
