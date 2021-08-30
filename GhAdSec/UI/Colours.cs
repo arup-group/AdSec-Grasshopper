@@ -23,15 +23,23 @@ namespace GhAdSec.UI
         }
 
         // Colours for custom geometry
-        public static Color StressStrainPoint
+        public static Color OasysYellow
         {
-            get { return Color.FromArgb(255, 224, 126, 65); }
+            get { return Color.FromArgb(255, 251, 180, 22); }
+        }
+        public static Color OasysBlue
+        {
+            //R:0 G:97 B:160
+            get { return Color.FromArgb(255, 0, 97, 160); }
         }
         public static Color StressStrainCurve
         {
             get { return Color.FromArgb(255, 65, 162, 224); }
         }
-
+        public static Color StreszzzsStrainPoint
+        {
+            get { return Color.FromArgb(255, 224, 126, 65); }
+        }
         // Colours for results
         public static Grasshopper.GUI.Gradient.GH_Gradient Stress_Gradient(List<System.Drawing.Color> colours = null)
         {

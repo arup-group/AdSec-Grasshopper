@@ -19,6 +19,8 @@ using System.Text;
 using System.Reflection;
 using GhAdSec.Helpers;
 using Oasys.Profiles;
+using UnitsNet;
+using UnitsNet.GH;
 
 namespace GhAdSec.Components
 {
@@ -45,7 +47,7 @@ namespace GhAdSec.Components
             return help;
         }
 
-        //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.CreateProfile;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateSection;
         #endregion
 
         #region Custom UI
@@ -93,6 +95,13 @@ namespace GhAdSec.Components
                     dropdownitems = new List<List<string>>();
                     dropdownitems.Add(profileTypes.Keys.ToList());
                 }
+
+                // length
+                dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                selecteditems.Add(lengthUnit.ToString());
+
+                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+                unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
             }
 
             m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
@@ -116,7 +125,12 @@ namespace GhAdSec.Components
 
             if (selecteditems[0] == "Catalogue")
             {
-                
+                // update spacer description to match catalogue dropdowns
+                spacerDescriptions = new List<string>(new string[]
+                {
+                    "Profile type", "Catalogue", "Type", "Profile"
+                });
+
                 // if FoldMode is not currently catalogue state, then we update all lists
                 if (_mode != FoldMode.Catalogue | updateCat)
                 {
@@ -306,6 +320,12 @@ namespace GhAdSec.Components
             }
             else
             {
+                // update spacer description to match none-catalogue dropdowns
+                spacerDescriptions = new List<string>(new string[]
+                {
+                    "Profile type", "Measure"
+                });
+
                 _mode = FoldMode.Other;
                 Type typ = profileTypes[selecteditems[0]];
                 Mode2Clicked(typ);
@@ -323,10 +343,13 @@ namespace GhAdSec.Components
         // list of descriptions 
         List<string> spacerDescriptions = new List<string>(new string[]
         {
-            "Profile type", "Catalogue", "Type", "Profile"
+            "Profile type", "Measure"
         });
         Dictionary<string, Type> profileTypes;
         Dictionary<string, FieldInfo> profileFields;
+
+        private UnitsNet.Units.LengthUnit lengthUnit = GhAdSec.DocumentUnits.LengthUnit;
+        string unitAbbreviation;
 
         #region catalogue sections
         // for catalogue selection
@@ -357,7 +380,8 @@ namespace GhAdSec.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddTextParameter("Search", "S", "Text to search from", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Width [" + unitAbbreviation + "]" , "B", "Profile width", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Depth [" + unitAbbreviation + "]", "H", "Profile depth", GH_ParamAccess.item);
             pManager[0].Optional = true;
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -402,6 +426,75 @@ namespace GhAdSec.Components
                 DA.SetData(0, catalogueProfile);
                 return;
             }
+
+            if (_mode == FoldMode.Other)
+            {
+                GH_UnitNumber width = null;
+                GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+                if (DA.GetData(0, ref gh_typ))
+                {
+                    // try cast directly to quantity type
+                    if (gh_typ.Value is GH_UnitNumber)
+                    {
+                        width = (GH_UnitNumber)gh_typ.Value;
+                        // check that unit is of right type
+                        if (!width.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 0: Wrong unit type supplied"
+                                + System.Environment.NewLine + "Unit type is " + width.Value.QuantityInfo.Name + " but must be Length");
+                            return;
+                        }
+                    }
+                    // try cast to double
+                    else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                    {
+                        // create new quantity from default units
+                        width = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
+                    }
+                    else
+                    {
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 0");
+                        return;
+                    }
+                }
+
+                GH_UnitNumber height = null;
+                gh_typ = new GH_ObjectWrapper();
+                if (DA.GetData(1, ref gh_typ))
+                {
+                    // try cast directly to quantity type
+                    if (gh_typ.Value is GH_UnitNumber)
+                    {
+                        height = (GH_UnitNumber)gh_typ.Value;
+                        // check that unit is of right type
+                        if (!width.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
+                        {
+                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
+                                + System.Environment.NewLine + "Unit type is " + height.Value.QuantityInfo.Name + " but must be Length");
+                            return;
+                        }
+                    }
+                    // try cast to double
+                    else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                    {
+                        // create new quantity from default units
+                        height = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
+                    }
+                    else
+                    {
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 1");
+                        return;
+                    }
+                }
+
+                AdSecProfileGoo catalogueProfile = new AdSecProfileGoo(IRectangleProfile.Create((UnitsNet.Length)height.Value, (UnitsNet.Length)width.Value));
+                Oasys.Collections.IList<Oasys.AdSec.IWarning> warn = catalogueProfile.Value.Validate();
+                foreach (Oasys.AdSec.IWarning warning in warn)
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning.Description);
+                DA.SetData(0, catalogueProfile);
+                return;
+            }
+
             #endregion
 
         }

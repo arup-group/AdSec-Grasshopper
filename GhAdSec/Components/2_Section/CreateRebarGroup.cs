@@ -27,7 +27,7 @@ namespace GhAdSec.Components
         public override Guid ComponentGuid => new Guid("1250f456-de99-4834-8d7f-4019cc0c70ba");
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.BeamLoad;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.RebarLayout;
         #endregion
 
         #region Custom UI

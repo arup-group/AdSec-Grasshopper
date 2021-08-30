@@ -90,22 +90,27 @@
     <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
     <Compile Include="Helpers\_SqlReader.cs" />
-    <Compile Include="Parameters\AdSecRebarGroupGoo.cs" />
-    <Compile Include="Parameters\AdSecRebarLayerGoo.cs" />
-    <Compile Include="Parameters\AdSecRebarBundleGoo.cs" />
-    <Compile Include="Parameters\AdSecProfileWebGoo.cs" />
-    <Compile Include="Parameters\AdSecProfileFlangeGoo.cs" />
-    <Compile Include="Parameters\AdSecProfileGoo.cs" />
-    <Compile Include="Parameters\AdSecPointGoo.cs" />
+    <Compile Include="Parameters\RebarGroupGoo.cs" />
+    <Compile Include="Parameters\RebarLayerGoo.cs" />
+    <Compile Include="Parameters\RebarBundleGoo.cs" />
+    <Compile Include="Parameters\ProfileWebGoo.cs" />
+    <Compile Include="Parameters\ProfileFlangeGoo.cs" />
+    <Compile Include="Parameters\ProfileGoo.cs" />
+    <Compile Include="Parameters\PointGoo.cs" />
     <Compile Include="Parameters\GH_UnitNumber.cs" />
     <Compile Include="Parameters\AdSecDesignCode.cs" />
     <Compile Include="Parameters\AdSecMaterial.cs" />
     <Compile Include="Helpers\_Reflection.cs" />
-    <Compile Include="Parameters\AdSecCrackCalcParamsGoo.cs" />
-    <Compile Include="Parameters\AdSecStressStrainPointGoo.cs" />
-    <Compile Include="Parameters\AdSecStressStrainCurveGoo.cs" />
+    <Compile Include="Parameters\CrackCalcParamsGoo.cs" />
+    <Compile Include="Parameters\StressStrainPointGoo.cs" />
+    <Compile Include="Parameters\StressStrainCurveGoo.cs" />
     <Compile Include="Parameters\_DocUnits.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="UI\DropDownAttributesCustomCapsule.cs" />
     <Compile Include="UI\GraphicButtons.cs" />
     <Compile Include="UI\WidthFix.cs" />
@@ -133,6 +138,90 @@
     <PackageReference Include="System.Data.SQLite">
       <Version>1.0.115</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\AdSecDesignCode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\AdSecInfo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\AdSecLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\AdSecMaterial.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\AdSecSection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\AdSecUnits.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\ConvertUnitNumber.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateCustomMaterial.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateDesignCode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateStandardMaterial.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateUnitNumber.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\StressStrainCurve.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\StressStrainPoint.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\UnitNumber.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateSection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\EditMaterial.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\EditSection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateCrackParams.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateFlange.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateVertex.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateWeb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\EditCrackParams.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\Rebar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\RebarLayout.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\RebarSpacing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateProfile.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

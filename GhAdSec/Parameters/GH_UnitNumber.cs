@@ -131,10 +131,10 @@ namespace UnitsNet.GH
 
         public override Guid ComponentGuid => new Guid("7368cb74-1c8d-411f-9455-1134a6d9df44");
 
-        public override GH_Exposure Exposure => GH_Exposure.secondary;
-        
-        
-        //protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.GsaBool6;
+        public override GH_Exposure Exposure => GH_Exposure.primary;
+
+
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.UnitNumber;
 
         protected override GH_GetterResult Prompt_Plural(ref List<GH_UnitNumber> values)
         {

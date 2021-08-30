@@ -30,7 +30,7 @@ namespace GhAdSec.Components
             string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Materials.StressStrainCurves.html";
             return help;
         }
-        //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.BeamLoad;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.StressStrainCurve;
         #endregion
 
         #region Custom UI
@@ -760,7 +760,7 @@ namespace GhAdSec.Components
                     }
 
                     // create curve
-                    crv = IParabolaRectangleStressStrainCurve.Create(pt, strainPopo);
+                    crv = IPopovicsStressStrainCurve.Create(pt, strainPopo);
                     break;
 
                 case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:

@@ -64,39 +64,10 @@ namespace GhAdSec
                 return GH_LoadingInstruction.Abort;
             }
 
-            //try
-            //{
-            //    Assembly ass2 = Assembly.LoadFile(pluginPath + "\\System.Data.SQLite.dll");
-            //}
-            //catch (Exception e)
-            //{
-            //    string loadedPlugins = "";
-            //    ReadOnlyCollection<GH_AssemblyInfo> plugins = Grasshopper.Instances.ComponentServer.Libraries;
-            //    foreach (GH_AssemblyInfo plugin in plugins)
-            //    {
-            //        if (!plugin.IsCoreLibrary)
-            //        {
-            //            if (!plugin.Name.StartsWith("Kangaroo"))
-            //            {
-            //                loadedPlugins = loadedPlugins + "-" + plugin.Name + System.Environment.NewLine;
-            //            }
-            //        }
-            //    }
-            //    string message = e.Message
-            //        + System.Environment.NewLine + System.Environment.NewLine +
-            //        "This may be due to clash with other referenced dll files by one of these plugins that's already been loaded: "
-            //        + System.Environment.NewLine + loadedPlugins
-            //        + System.Environment.NewLine + "You may try disable the above plugins to solve the issue."
-            //        + System.Environment.NewLine + "The plugin cannot be loaded.";
-            //    Exception exception = new Exception(message);
-            //    Grasshopper.Kernel.GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec: System.Data.SQLite.dll loading", exception);
-            //    Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
-            //    return GH_LoadingInstruction.Abort;
-            //}
 
             // ### Create Ribbon Category name and icon ###
             Grasshopper.Instances.ComponentServer.AddCategorySymbolName("AdSec", 'A');
-            //Grasshopper.Instances.ComponentServer.AddCategoryIcon("GSA", GhSA.Properties.Resources.GsaGhLogo);
+            Grasshopper.Instances.ComponentServer.AddCategoryIcon("GSA", GhAdSec.Properties.Resources.AdSecLogo);
 
             // Setup units
             GhAdSec.DocumentUnits.SetupUnits();

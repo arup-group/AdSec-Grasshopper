@@ -37,7 +37,7 @@ namespace GhAdSec.Components
         { this.Hidden = false; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.CreateMaterial;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.StressStrainPoint;
         #endregion
 
         #region Custom UI

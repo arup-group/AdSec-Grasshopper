@@ -257,9 +257,9 @@ namespace GhAdSec.Parameters
 
         public override Guid ComponentGuid => new Guid("cf5636e2-628d-4794-ab29-97f83002db34");
 
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        //protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.GsaBool6;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.AdSecMaterial;
 
         protected override GH_GetterResult Prompt_Plural(ref List<AdSecMaterialGoo> values)
         {

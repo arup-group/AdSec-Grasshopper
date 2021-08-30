@@ -35,7 +35,7 @@ namespace GhAdSec.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.GsaVersion;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateCustomMaterial;
         #endregion
 
         #region Custom UI
@@ -91,7 +91,7 @@ namespace GhAdSec.Components
         private bool isConcrete = true;
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("DesignCode", "Code", "[Optional] Overwrite the Material's DesignCode", GH_ParamAccess.item);
+            pManager.AddGenericParameter("DesignCode", "Code", "[Optional] Set the Material's DesignCode", GH_ParamAccess.item);
             pManager[0].Optional = true;
             pManager.AddGenericParameter("ULS Comp. Crv", "U_C", "ULS Stress Strain Curve for Compression", GH_ParamAccess.item);
             pManager.AddGenericParameter("ULS Tens. Crv", "U_T", "ULS Stress Strain Curve for Tension", GH_ParamAccess.item);

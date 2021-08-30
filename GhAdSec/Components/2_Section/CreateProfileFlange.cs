@@ -35,7 +35,7 @@ namespace GhAdSec.Components
 
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.GsaVersion;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateFlange;
         #endregion
 
         #region Custom UI

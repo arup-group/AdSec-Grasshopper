@@ -34,7 +34,7 @@ namespace GhAdSec.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        //protected override System.Drawing.Bitmap Icon => GhSA.Properties.Resources.CreateMaterial;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateStandardMaterial;
         #endregion
 
         #region Custom UI
@@ -140,7 +140,18 @@ namespace GhAdSec.Components
                 dropdownitems.Add(designCodeKVP.Keys.ToList());
                 if (selecteditems.Count == 1)
                 {
-                    if (dropdownitems[1].Contains(prevSelectedCode))
+                    if (prevSelectedCode.StartsWith("EN199"))
+                    {
+                        foreach (string code in dropdownitems[1])
+                        {
+                            if (code.StartsWith("EN199"))
+                            {
+                                selecteditems.Add(code);
+                                break;
+                            }
+                        }
+                    }
+                    else if (dropdownitems[1].Contains(prevSelectedCode))
                         selecteditems.Add(prevSelectedCode);
                     else
                         selecteditems.Add(designCodeKVP.Keys.First());
