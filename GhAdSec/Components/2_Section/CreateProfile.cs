@@ -37,7 +37,7 @@ namespace GhAdSec.Components
           : base("Create Profile", "Profile", "Create Profile AdSec Section",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat2())
-        { this.Hidden = true; } // sets the initial state of the component to hidden
+        { this.Hidden = false; } // sets the initial state of the component to hidden
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
@@ -47,7 +47,7 @@ namespace GhAdSec.Components
             return help;
         }
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateSection;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateProfile;
         #endregion
 
         #region Custom UI
@@ -61,7 +61,7 @@ namespace GhAdSec.Components
                 foreach (KeyValuePair<string, Type> kvp in profileTypesInitial)
                 {
                     // filter out IProfile, IPoint, IFlange, IWeb and ITrapezoidProfileAbstractInterface
-                    if (kvp.Key != "IProfile" && kvp.Key != "IPoint" && kvp.Key != "IFlange" && kvp.Key != "IWeb" && kvp.Key != "ITrapezoidProfileAbstractInterface")
+                    if (!excludedInterfaces.Contains(kvp.Key))
                     {
                         // remove the "Profile" from name
                         string key = kvp.Key.Replace("Profile", "");
@@ -323,12 +323,12 @@ namespace GhAdSec.Components
                 // update spacer description to match none-catalogue dropdowns
                 spacerDescriptions = new List<string>(new string[]
                 {
-                    "Profile type", "Measure"
+                    "Profile type", "Measure", "Type", "Profile"
                 });
 
-                _mode = FoldMode.Other;
+                
                 Type typ = profileTypes[selecteditems[0]];
-                Mode2Clicked(typ);
+                Mode2Clicked();
             }
         }
 
@@ -343,7 +343,11 @@ namespace GhAdSec.Components
         // list of descriptions 
         List<string> spacerDescriptions = new List<string>(new string[]
         {
-            "Profile type", "Measure"
+            "Profile type", "Measure", "Type", "Profile"
+        });
+        List<string> excludedInterfaces = new List<string>(new string[]
+        {
+        "IProfile", "IPoint", "IPolygon", "IFlange", "IWeb", "ITrapezoidProfileAbstractInterface", "IIBeamProfile"
         });
         Dictionary<string, Type> profileTypes;
         Dictionary<string, FieldInfo> profileFields;
@@ -420,84 +424,268 @@ namespace GhAdSec.Components
                 }
 
                 AdSecProfileGoo catalogueProfile = new AdSecProfileGoo(ICatalogueProfile.Create("CAT " + profileString));
-                Oasys.Collections.IList<Oasys.AdSec.IWarning> warn = catalogueProfile.Value.Validate();
+                Oasys.Collections.IList<Oasys.AdSec.IWarning> warn = catalogueProfile.Profile.Validate();
                 foreach(Oasys.AdSec.IWarning warning in warn)
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning.Description);
                 DA.SetData(0, catalogueProfile);
+                                
                 return;
             }
 
             if (_mode == FoldMode.Other)
             {
-                GH_UnitNumber width = null;
-                GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-                if (DA.GetData(0, ref gh_typ))
+                IProfile profile = null;
+                // angle
+                if (typ.GetType().ToString().Equals(typeof(IAngleProfile).ToString() + "_Implementation"))
                 {
-                    // try cast directly to quantity type
-                    if (gh_typ.Value is GH_UnitNumber)
-                    {
-                        width = (GH_UnitNumber)gh_typ.Value;
-                        // check that unit is of right type
-                        if (!width.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 0: Wrong unit type supplied"
-                                + System.Environment.NewLine + "Unit type is " + width.Value.QuantityInfo.Name + " but must be Length");
-                            return;
-                        }
-                    }
-                    // try cast to double
-                    else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                    {
-                        // create new quantity from default units
-                        width = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
-                    }
-                    else
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 0");
-                        return;
-                    }
+                    profile = IAngleProfile.Create(
+                        GetUnitNumberInput(DA, 0), 
+                        GetFlangeInput(DA, 1),
+                        GetWebInput(DA, 2));
                 }
 
-                GH_UnitNumber height = null;
-                gh_typ = new GH_ObjectWrapper();
-                if (DA.GetData(1, ref gh_typ))
+                // channel
+                else if (typ.GetType().ToString().Equals(typeof(IChannelProfile).ToString() + "_Implementation"))
                 {
-                    // try cast directly to quantity type
-                    if (gh_typ.Value is GH_UnitNumber)
-                    {
-                        height = (GH_UnitNumber)gh_typ.Value;
-                        // check that unit is of right type
-                        if (!width.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
-                                + System.Environment.NewLine + "Unit type is " + height.Value.QuantityInfo.Name + " but must be Length");
-                            return;
-                        }
-                    }
-                    // try cast to double
-                    else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                    {
-                        // create new quantity from default units
-                        height = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
-                    }
-                    else
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 1");
-                        return;
-                    }
+                    profile = IChannelProfile.Create(
+                        GetUnitNumberInput(DA, 0),
+                        GetFlangeInput(DA, 1),
+                        (IWebConstant)GetWebInput(DA, 2));
                 }
 
-                AdSecProfileGoo catalogueProfile = new AdSecProfileGoo(IRectangleProfile.Create((UnitsNet.Length)height.Value, (UnitsNet.Length)width.Value));
-                Oasys.Collections.IList<Oasys.AdSec.IWarning> warn = catalogueProfile.Value.Validate();
+                // circle hollow
+                else if (typ.GetType().ToString().Equals(typeof(ICircleHollowProfile).ToString() + "_Implementation"))
+                {
+                    ICircleHollowProfile circleHollow = (ICircleHollowProfile)typ;
+                    profile = ICircleHollowProfile.Create(circleHollow.Diameter, circleHollow.WallThickness);
+                }
+
+                // circle
+                else if (typ.GetType().ToString().Equals(typeof(ICircleProfile).ToString() + "_Implementation"))
+                {
+                    ICircleProfile circle = (ICircleProfile)typ;
+                    profile = ICircleProfile.Create(circle.Diameter);
+                }
+
+                // ICruciformSymmetricalProfile
+                else if (typ.GetType().ToString().Equals(typeof(ICruciformSymmetricalProfile).ToString() + "_Implementation"))
+                {
+                    ICruciformSymmetricalProfile cruciformSymmetrical = (ICruciformSymmetricalProfile)typ;
+                    profile = ICruciformSymmetricalProfile.Create(cruciformSymmetrical.Depth, cruciformSymmetrical.Flange, cruciformSymmetrical.Web);
+                }
+
+                // IEllipseHollowProfile
+                else if (typ.GetType().ToString().Equals(typeof(IEllipseHollowProfile).ToString() + "_Implementation"))
+                {
+                    IEllipseHollowProfile ellipseHollow = (IEllipseHollowProfile)typ;
+                    profile = IEllipseHollowProfile.Create(ellipseHollow.Depth, ellipseHollow.Width, ellipseHollow.WallThickness);
+                }
+
+                // IEllipseProfile
+                else if (typ.GetType().ToString().Equals(typeof(IEllipseProfile).ToString() + "_Implementation"))
+                {
+                    IEllipseProfile ellipse = (IEllipseProfile)typ;
+                    profile = IEllipseProfile.Create(ellipse.Depth, ellipse.Width);
+                }
+
+                // IGeneralCProfile
+                else if (typ.GetType().ToString().Equals(typeof(IGeneralCProfile).ToString() + "_Implementation"))
+                {
+                    IGeneralCProfile generalC = (IGeneralCProfile)typ;
+                    profile = IGeneralCProfile.Create(generalC.Depth, generalC.FlangeWidth, generalC.Lip, generalC.Thickness);
+                }
+
+                // IGeneralZProfile
+                else if (typ.GetType().ToString().Equals(typeof(IGeneralZProfile).ToString() + "_Implementation"))
+                {
+                    IGeneralZProfile generalZ = (IGeneralZProfile)typ;
+                    profile = IGeneralZProfile.Create(generalZ.Depth, generalZ.TopFlangeWidth, generalZ.BottomFlangeWidth, generalZ.TopLip, generalZ.BottomLip, generalZ.Thickness);
+                }
+
+                // IIBeamAsymmetricalProfile
+                else if (typ.GetType().ToString().Equals(typeof(IIBeamAsymmetricalProfile).ToString() + "_Implementation"))
+                {
+                    IIBeamAsymmetricalProfile iBeamAsymmetrical = (IIBeamAsymmetricalProfile)typ;
+                    profile = IIBeamAsymmetricalProfile.Create(iBeamAsymmetrical.Depth, iBeamAsymmetrical.TopFlange, iBeamAsymmetrical.BottomFlange, iBeamAsymmetrical.Web);
+                }
+
+                // IIBeamCellularProfile
+                else if (typ.GetType().ToString().Equals(typeof(IIBeamCellularProfile).ToString() + "_Implementation"))
+                {
+                    IIBeamCellularProfile iBeamCellular = (IIBeamCellularProfile)typ;
+                    profile = IIBeamCellularProfile.Create(iBeamCellular.Depth, iBeamCellular.Flanges, iBeamCellular.Web, iBeamCellular.WebOpening);
+                }
+
+                // IIBeamSymmetricalProfile
+                else if (typ.GetType().ToString().Equals(typeof(IIBeamSymmetricalProfile).ToString() + "_Implementation"))
+                {
+                    IIBeamSymmetricalProfile iBeamSymmetrical = (IIBeamSymmetricalProfile)typ;
+                    profile = IIBeamSymmetricalProfile.Create(iBeamSymmetrical.Depth, iBeamSymmetrical.Flanges, iBeamSymmetrical.Web);
+                }
+
+                // IRectangleHollowProfile
+                else if (typ.GetType().ToString().Equals(typeof(IRectangleHollowProfile).ToString() + "_Implementation"))
+                {
+                    IRectangleHollowProfile rectangleHollow = (IRectangleHollowProfile)typ;
+                    profile = IRectangleHollowProfile.Create(rectangleHollow.Depth, rectangleHollow.Flanges, rectangleHollow.Webs);
+                }
+
+                // IRectangleProfile
+                else if (typ.GetType().ToString().Equals(typeof(IRectangleProfile).ToString() + "_Implementation"))
+                {
+                    IRectangleProfile rectangle = (IRectangleProfile)typ;
+                    profile = IRectangleProfile.Create(rectangle.Depth, rectangle.Width);
+                }
+
+                // IRectoEllipseProfile
+                else if (typ.GetType().ToString().Equals(typeof(IRectoEllipseProfile).ToString() + "_Implementation"))
+                {
+                    IRectoEllipseProfile rectoEllipse = (IRectoEllipseProfile)typ;
+                    profile = IRectoEllipseProfile.Create(rectoEllipse.Depth, rectoEllipse.DepthFlat, rectoEllipse.Width, rectoEllipse.WidthFlat);
+                }
+
+                // ISecantPileProfile
+                else if (typ.GetType().ToString().Equals(typeof(ISecantPileProfile).ToString() + "_Implementation"))
+                {
+                    ISecantPileProfile secantPile = (ISecantPileProfile)typ;
+                    profile = ISecantPileProfile.Create(secantPile.Diameter, secantPile.PileCentres, secantPile.PileCount, secantPile.IsWallNotSection);
+                }
+
+                // ISheetPileProfile
+                else if (typ.GetType().ToString().Equals(typeof(ISheetPileProfile).ToString() + "_Implementation"))
+                {
+                    ISheetPileProfile sheetPile = (ISheetPileProfile)typ;
+                    profile = ISheetPileProfile.Create(sheetPile.Depth, sheetPile.Width, sheetPile.TopFlangeWidth, sheetPile.BottomFlangeWidth, sheetPile.FlangeThickness, sheetPile.WebThickness);
+                }
+
+                // IStadiumProfile
+                else if (typ.GetType().ToString().Equals(typeof(IStadiumProfile).ToString() + "_Implementation"))
+                {
+                    IStadiumProfile stadium = (IStadiumProfile)typ;
+                    profile = IStadiumProfile.Create(stadium.Depth, stadium.Width);
+                }
+
+                // ITrapezoidProfile
+                else if (typ.GetType().ToString().Equals(typeof(ITrapezoidProfile).ToString() + "_Implementation"))
+                {
+                    ITrapezoidProfile trapezoid = (ITrapezoidProfile)typ;
+                    profile = ITrapezoidProfile.Create(trapezoid.Depth, trapezoid.TopWidth, trapezoid.BottomWidth);
+                }
+
+                // ITSectionProfile
+                else if (typ.GetType().ToString().Equals(typeof(ITSectionProfile).ToString() + "_Implementation"))
+                {
+                    ITSectionProfile tSection = (ITSectionProfile)typ;
+                    profile = ITSectionProfile.Create(tSection.Depth, tSection.Flange, tSection.Web);
+                }
+
+                // IPerimeterProfile (last chance...)
+                else
+                {
+                    profile = IPerimeterProfile.Create(typ);
+                }
+
+                Oasys.Collections.IList<Oasys.AdSec.IWarning> warn = profile.Profile.Validate();
                 foreach (Oasys.AdSec.IWarning warning in warn)
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning.Description);
-                DA.SetData(0, catalogueProfile);
+                DA.SetData(0, profile);
                 return;
             }
 
             #endregion
 
         }
+
+        private UnitsNet.Length GetUnitNumberInput(IGH_DataAccess DA, int inputid)
+        {
+            GH_UnitNumber unitNumber = null;
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(inputid, ref gh_typ))
+            {
+                // try cast directly to quantity type
+                if (gh_typ.Value is GH_UnitNumber)
+                {
+                    unitNumber = (GH_UnitNumber)gh_typ.Value;
+                    // check that unit is of right type
+                    if (!unitNumber.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
+                    {
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
+                            + System.Environment.NewLine + "Unit type is " + unitNumber.Value.QuantityInfo.Name + " but must be Length");
+                        return UnitsNet.Length.Zero;
+                    }
+                }
+                // try cast to double
+                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                {
+                    // create new quantity from default units
+                    unitNumber = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
+                }
+                else
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index " + inputid);
+                    return UnitsNet.Length.Zero;
+                }
+            }
+            else
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index " + inputid);
+            return (UnitsNet.Length)unitNumber.Value;
+        }
+        private IFlange GetFlangeInput(IGH_DataAccess DA, int inputid)
+        {
+            AdSecProfileFlangeGoo flange = null;
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(inputid, ref gh_typ))
+            {
+                // try cast directly to quantity type
+                if (gh_typ.Value is AdSecProfileFlangeGoo)
+                {
+                    flange = (AdSecProfileFlangeGoo)gh_typ.Value;
+                    return flange.Value;
+                }
+                // try cast from web
+                else if (gh_typ.Value is AdSecProfileWebGoo)
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert flange to web; input index " + inputid);
+                }
+                else
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index " + inputid);
+                    return null;
+                }
+            }
+            else
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index " + inputid);
+            return null;
+        }
+        private IWeb GetWebInput(IGH_DataAccess DA, int inputid)
+        {
+            AdSecProfileWebGoo web = null;
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(inputid, ref gh_typ))
+            {
+                // try cast directly to quantity type
+                if (gh_typ.Value is AdSecProfileWebGoo)
+                {
+                    web = (AdSecProfileWebGoo)gh_typ.Value;
+                    return web.Value;
+                }
+                // try cast from web
+                else if (gh_typ.Value is AdSecProfileFlangeGoo)
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert web to flange; input index " + inputid);
+                }
+                else
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index " + inputid);
+                    return null;
+                }
+            }
+            else
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index " + inputid);
+            return null;
+        }
+
+
         #region menu override
         private enum FoldMode
         {
@@ -530,42 +718,206 @@ namespace GhAdSec.Components
             Params.OnParametersChanged();
             ExpireSolution(true);
         }
-        private void Mode2Clicked(Type typ)
+        private void SetNumberOfGenericInputs(int inputs, bool isSecantPile = false)
+        {
+            numberOfInputs = inputs;
+
+            // if last input previously was a bool and we no longer need that
+            if (lastInputWasSecant && !isSecantPile)
+            {
+                // make sure to remove last param
+                Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 2], true);
+            }
+
+            // remove any additional inputs
+            while (Params.Input.Count > inputs)
+                Params.UnregisterInputParameter(Params.Input[inputs], true);
+
+            if (isSecantPile) // add two less generic than input says
+            {
+                inputs -= 2;
+            }
+
+            // add inputs parameter
+            while (Params.Input.Count < inputs)
+                Params.RegisterInputParam(new Param_GenericObject());
+
+            if (isSecantPile) // finally add int and bool param if secant
+            {
+                Params.RegisterInputParam(new Param_Integer());
+                Params.RegisterInputParam(new Param_Boolean());
+                lastInputWasSecant = true;
+            }
+        }
+        private bool lastInputWasSecant;
+        private int numberOfInputs;
+        Type typ;
+        private void Mode2Clicked()
         {
             RecordUndoEvent("Dropdown changed");
 
-            Dictionary<List<string>, Type> profileMethods = GhAdSec.Helpers.ReflectAdSecAPI.ReflectMethods(typ);
-            //    // set number of input parameters
-            //    int param;
-            //    if (isTapered)
-            //        param = 3;
-            //    else
-            //    {
-            //        if (isHollow)
-            //            param = 4;
-            //        else
-            //            param = 2;
-            //    }
-            //    //handle exception when we come from Geometric or Catalogue mode where 
-            //    //first input paraemter is of curve type and must be deleted
-            //    int par2;
-            //    if (_mode == FoldMode.Geometric || _mode == FoldMode.Catalogue)
-            //        par2 = 0;
-            //    else
-            //        par2 = param;
-            //    //remove input parameters
-            //    while (Params.Input.Count > par2)
-            //        Params.UnregisterInputParameter(Params.Input[par2], true);
+            // check if mode is correct
+            if (_mode != FoldMode.Other)
+            {
+                // if we come from catalogue mode remove all input parameters
+                while (Params.Input.Count > 0)
+                    Params.UnregisterInputParameter(Params.Input[0], true);
 
-            //    //register input parameter
-            //    while (Params.Input.Count < param)
-            //        Params.RegisterInputParam(new Param_Number());
+                // set mode to other
+                _mode = FoldMode.Other;
+            }
 
-            //    _mode = myMode;
+            // angle
+            if (typ.ToString().Equals(typeof(IAngleProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(3);
+                //dup = IAngleProfile.Create(angle.Depth, angle.Flange, angle.Web);
+            }
 
-            //    (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            //    Params.OnParametersChanged();
-            //    ExpireSolution(true);
+            // channel
+            else if (typ.ToString().Equals(typeof(IChannelProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(3);
+                //dup = IChannelProfile.Create(channel.Depth, channel.Flanges, channel.Web);
+            }
+
+            // circle hollow
+            else if (typ.ToString().Equals(typeof(ICircleHollowProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(2);
+                //dup = ICircleHollowProfile.Create(circleHollow.Diameter, circleHollow.WallThickness);
+            }
+
+            // circle
+            else if (typ.ToString().Equals(typeof(ICircleProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(1);
+                //dup = ICircleProfile.Create(circle.Diameter);
+            }
+
+            // ICruciformSymmetricalProfile
+            else if (typ.ToString().Equals(typeof(ICruciformSymmetricalProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(3);
+                //dup = ICruciformSymmetricalProfile.Create(cruciformSymmetrical.Depth, cruciformSymmetrical.Flange, cruciformSymmetrical.Web);
+            }
+
+            // IEllipseHollowProfile
+            else if (typ.ToString().Equals(typeof(IEllipseHollowProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(3);
+                //dup = IEllipseHollowProfile.Create(ellipseHollow.Depth, ellipseHollow.Width, ellipseHollow.WallThickness);
+            }
+
+            // IEllipseProfile
+            else if (typ.ToString().Equals(typeof(IEllipseProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(2);
+                //dup = IEllipseProfile.Create(ellipse.Depth, ellipse.Width);
+            }
+
+            // IGeneralCProfile
+            else if (typ.ToString().Equals(typeof(IGeneralCProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(4);
+                //dup = IGeneralCProfile.Create(generalC.Depth, generalC.FlangeWidth, generalC.Lip, generalC.Thickness);
+            }
+
+            // IGeneralZProfile
+            else if (typ.ToString().Equals(typeof(IGeneralZProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(6);
+                //dup = IGeneralZProfile.Create(generalZ.Depth, generalZ.TopFlangeWidth, generalZ.BottomFlangeWidth, generalZ.TopLip, generalZ.BottomLip, generalZ.Thickness);
+            }
+
+            // IIBeamAsymmetricalProfile
+            else if (typ.ToString().Equals(typeof(IIBeamAsymmetricalProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(4);
+                //dup = IIBeamAsymmetricalProfile.Create(iBeamAsymmetrical.Depth, iBeamAsymmetrical.TopFlange, iBeamAsymmetrical.BottomFlange, iBeamAsymmetrical.Web);
+            }
+
+            // IIBeamCellularProfile
+            else if (typ.ToString().Equals(typeof(IIBeamCellularProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(4);
+                //dup = IIBeamCellularProfile.Create(iBeamCellular.Depth, iBeamCellular.Flanges, iBeamCellular.Web, iBeamCellular.WebOpening);
+            }
+
+            // IIBeamSymmetricalProfile
+            else if (typ.ToString().Equals(typeof(IIBeamSymmetricalProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(3);
+                //dup = IIBeamSymmetricalProfile.Create(iBeamSymmetrical.Depth, iBeamSymmetrical.Flanges, iBeamSymmetrical.Web);
+            }
+
+            // IRectangleHollowProfile
+            else if (typ.ToString().Equals(typeof(IRectangleHollowProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(3);
+                //dup = IRectangleHollowProfile.Create(rectangleHollow.Depth, rectangleHollow.Flanges, rectangleHollow.Webs);
+            }
+
+            // IRectangleProfile
+            else if (typ.ToString().Equals(typeof(IRectangleProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(2);
+                //dup = IRectangleProfile.Create(rectangle.Depth, rectangle.Width);
+            }
+
+            // IRectoEllipseProfile
+            else if (typ.ToString().Equals(typeof(IRectoEllipseProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(4);
+                //dup = IRectoEllipseProfile.Create(rectoEllipse.Depth, rectoEllipse.DepthFlat, rectoEllipse.Width, rectoEllipse.WidthFlat);
+            }
+
+            // ISecantPileProfile
+            else if (typ.ToString().Equals(typeof(ISecantPileProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(4, true);
+                //dup = ISecantPileProfile.Create(secantPile.Diameter, secantPile.PileCentres, secantPile.PileCount, secantPile.IsWallNotSection);
+            }
+
+            // ISheetPileProfile
+            else if (typ.ToString().Equals(typeof(ISheetPileProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(6);
+                //dup = ISheetPileProfile.Create(sheetPile.Depth, sheetPile.Width, sheetPile.TopFlangeWidth, sheetPile.BottomFlangeWidth, sheetPile.FlangeThickness, sheetPile.WebThickness);
+            }
+
+            // IStadiumProfile
+            else if (typ.ToString().Equals(typeof(IStadiumProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(2);
+                //dup = IStadiumProfile.Create(stadium.Depth, stadium.Width);
+            }
+
+            // ITrapezoidProfile
+            else if (typ.ToString().Equals(typeof(ITrapezoidProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(3);
+                //dup = ITrapezoidProfile.Create(trapezoid.Depth, trapezoid.TopWidth, trapezoid.BottomWidth);
+            }
+
+            // ITSectionProfile
+            else if (typ.ToString().Equals(typeof(ITSectionProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(3);
+                //dup = ITSectionProfile.Create(tSection.Depth, tSection.Flange, tSection.Web);
+            }
+            // IPerimeterProfile
+            else if (typ.ToString().Equals(typeof(IPerimeterProfile).ToString() + "_Implementation"))
+            {
+                SetNumberOfGenericInputs(2);
+                //dup = IPerimeterProfile.Create();
+                //solidPolygon;
+                //voidPolygons;
+            }
+
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            ExpireSolution(true);
         }
 
         #endregion
@@ -612,24 +964,574 @@ namespace GhAdSec.Components
                 Params.Input[i].Description = "Text to search from";
                 Params.Input[i].Access = GH_ParamAccess.item;
                 Params.Input[i].Optional = true;
-                
 
-                i = 1;
+                i++;
                 Params.Input[i].NickName = "iSS";
                 Params.Input[i].Name = "Include Superseeded";
                 Params.Input[i].Description = "Input true to include superseeded catalogue sections";
                 Params.Input[i].Access = GH_ParamAccess.item;
                 Params.Input[i].Optional = true;
             }
-            
-        }
-        private void ReDrawComponent()
-        {
-            System.Drawing.PointF pivot = new System.Drawing.PointF(this.Attributes.Pivot.X, this.Attributes.Pivot.Y);
-            this.CreateAttributes();
-            this.Attributes.Pivot = pivot;
-            this.Attributes.ExpireLayout();
-            this.Attributes.PerformLayout();
+            else
+            {
+                int i = 0;
+                // angle
+                if (typ.ToString().Equals(typeof(IAngleProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the angle profile (leg in the local z axis).";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Fla";
+                    Params.Input[i].Name = "Flange";
+                    Params.Input[i].Description = "The flange of the angle profile (leg in the local y axis).";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Web";
+                    Params.Input[i].Name = "Web";
+                    Params.Input[i].Description = "The web of the angle profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    //dup = IAngleProfile.Create(angle.Depth, angle.Flange, angle.Web);
+                }
+
+                // channel
+                else if (typ.ToString().Equals(typeof(IChannelProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the channel profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Fla";
+                    Params.Input[i].Name = "Flanges";
+                    Params.Input[i].Description = "The flanges of the channel profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Web";
+                    Params.Input[i].Name = "Web";
+                    Params.Input[i].Description = "The web of the channel profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = IChannelProfile.Create(channel.Depth, channel.Flanges, channel.Web);
+                }
+
+                // circle hollow
+                else if (typ.ToString().Equals(typeof(ICircleHollowProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "Ø";
+                    Params.Input[i].Name = "Diameter [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The diameter of the hollow circle.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "t";
+                    Params.Input[i].Name = "Thickness [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The wall thickness of the hollow circle.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = ICircleHollowProfile.Create(circleHollow.Diameter, circleHollow.WallThickness);
+                }
+
+                // circle
+                else if (typ.ToString().Equals(typeof(ICircleProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "Ø";
+                    Params.Input[i].Name = "Diameter [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The diameter of the circle.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    //dup = ICircleProfile.Create(circle.Diameter);
+                }
+
+                // ICruciformSymmetricalProfile
+                else if (typ.ToString().Equals(typeof(ICruciformSymmetricalProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Fla";
+                    Params.Input[i].Name = "Flange";
+                    Params.Input[i].Description = "The flange (local y axis leg) of the cruciform.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Web";
+                    Params.Input[i].Name = "Web";
+                    Params.Input[i].Description = "The web (local z axis leg) thickness of the cruciform.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = ICruciformSymmetricalProfile.Create(cruciformSymmetrical.Depth, cruciformSymmetrical.Flange, cruciformSymmetrical.Web);
+                }
+
+                // IEllipseHollowProfile
+                else if (typ.ToString().Equals(typeof(IEllipseHollowProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the hollow ellipse.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "B";
+                    Params.Input[i].Name = "Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The width of the hollow ellipse.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "t";
+                    Params.Input[i].Name = "Thickness [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The wall thickness of the hollow ellipse.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = IEllipseHollowProfile.Create(ellipseHollow.Depth, ellipseHollow.Width, ellipseHollow.WallThickness);
+                }
+
+                // IEllipseProfile
+                else if (typ.ToString().Equals(typeof(IEllipseProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the ellipse.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "B";
+                    Params.Input[i].Name = "Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The width of the ellipse.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = IEllipseProfile.Create(ellipse.Depth, ellipse.Width);
+                }
+
+                // IGeneralCProfile
+                else if (typ.ToString().Equals(typeof(IGeneralCProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the generic c section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "B";
+                    Params.Input[i].Name = "Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The flange width of the generic c section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "L";
+                    Params.Input[i].Name = "Lip [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The lip of the generic c section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "t";
+                    Params.Input[i].Name = "Thickness [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The thickness of the generic c section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = IGeneralCProfile.Create(generalC.Depth, generalC.FlangeWidth, generalC.Lip, generalC.Thickness);
+                }
+
+                // IGeneralZProfile
+                else if (typ.ToString().Equals(typeof(IGeneralZProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the generic z section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Bt";
+                    Params.Input[i].Name = "Top Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The top flange width of the generic z section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Bb";
+                    Params.Input[i].Name = "Bottom Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The bottom flange width of the generic z section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Lt";
+                    Params.Input[i].Name = "Top Lip [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The top lip of the generic z section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Lb";
+                    Params.Input[i].Name = "Lip [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The top lip of the generic z section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "t";
+                    Params.Input[i].Name = "Thickness [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The thickness of the generic z section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = IGeneralZProfile.Create(generalZ.Depth, generalZ.TopFlangeWidth, generalZ.BottomFlangeWidth, generalZ.TopLip, generalZ.BottomLip, generalZ.Thickness);
+                }
+
+                // IIBeamAsymmetricalProfile
+                else if (typ.ToString().Equals(typeof(IIBeamAsymmetricalProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Ft";
+                    Params.Input[i].Name = "Top Flange";
+                    Params.Input[i].Description = "The top flange of the beam. Top is relative to the beam local access.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Fb";
+                    Params.Input[i].Name = "Bottom Flange";
+                    Params.Input[i].Description = "The bottom flange of the beam. Bottom is relative to the beam local access.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Web";
+                    Params.Input[i].Name = "Web";
+                    Params.Input[i].Description = "The web of the beam.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = IIBeamAsymmetricalProfile.Create(iBeamAsymmetrical.Depth, iBeamAsymmetrical.TopFlange, iBeamAsymmetrical.BottomFlange, iBeamAsymmetrical.Web);
+                }
+
+                // IIBeamCellularProfile
+                else if (typ.ToString().Equals(typeof(IIBeamCellularProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Fla";
+                    Params.Input[i].Name = "Flanges";
+                    Params.Input[i].Description = "The flange of the cellular I-beam section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Web";
+                    Params.Input[i].Name = "Web";
+                    Params.Input[i].Description = "The web of the beam.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Wop";
+                    Params.Input[i].Name = "Web Opening [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The size of the web opening.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = IIBeamCellularProfile.Create(iBeamCellular.Depth, iBeamCellular.Flanges, iBeamCellular.Web, iBeamCellular.WebOpening);
+                }
+
+                // IIBeamSymmetricalProfile
+                else if (typ.ToString().Equals(typeof(IIBeamSymmetricalProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Fla";
+                    Params.Input[i].Name = "Flanges";
+                    Params.Input[i].Description = "Both flanges of the beam.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Web";
+                    Params.Input[i].Name = "Web";
+                    Params.Input[i].Description = "The web of the beam.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = IIBeamSymmetricalProfile.Create(iBeamSymmetrical.Depth, iBeamSymmetrical.Flanges, iBeamSymmetrical.Web);
+                }
+
+                // IRectangleHollowProfile
+                else if (typ.ToString().Equals(typeof(IRectangleHollowProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the hollow rectangle.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Fla";
+                    Params.Input[i].Name = "Flanges";
+                    Params.Input[i].Description = "The flanges (top and bottom) of the hollow rectangle. The flange width defines the profile's total width.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Web";
+                    Params.Input[i].Name = "Webs";
+                    Params.Input[i].Description = "The webs (side walls) of the hollow rectangle.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = IRectangleHollowProfile.Create(rectangleHollow.Depth, rectangleHollow.Flanges, rectangleHollow.Webs);
+                }
+
+                // IRectangleProfile
+                else if (typ.ToString().Equals(typeof(IRectangleProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "Depth of the rectangle, in local z-axis direction.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "B";
+                    Params.Input[i].Name = "Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "Width of the rectangle, in loca y-axis direction.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = IRectangleProfile.Create(rectangle.Depth, rectangle.Width);
+                }
+
+                // IRectoEllipseProfile
+                else if (typ.ToString().Equals(typeof(IRectoEllipseProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The overall depth of the recto-ellipse profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Df";
+                    Params.Input[i].Name = "Depth Flat [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The flat length of the profile's overall depth.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "B";
+                    Params.Input[i].Name = "Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The overall width of the recto-ellipse profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Bf";
+                    Params.Input[i].Name = "Width Flat [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The flat length of the profile's overall width.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = IRectoEllipseProfile.Create(rectoEllipse.Depth, rectoEllipse.DepthFlat, rectoEllipse.Width, rectoEllipse.WidthFlat);
+                }
+
+                // ISecantPileProfile
+                else if (typ.ToString().Equals(typeof(ISecantPileProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "Ø";
+                    Params.Input[i].Name = "Diameter [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The diameter of the piles.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "c/c";
+                    Params.Input[i].Name = "Pile Centres [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The centre to centre distance between adjacent piles.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "No";
+                    Params.Input[i].Name = "Pile Count";
+                    Params.Input[i].Description = "The number of piles in the profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "W/S";
+                    Params.Input[i].Name = "isWall";
+                    Params.Input[i].Description = "Converts the profile into a wall secant pile profile if true -- Converts the profile into a section secant pile profile if false.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = ISecantPileProfile.Create(secantPile.Diameter, secantPile.PileCentres, secantPile.PileCount, secantPile.IsWallNotSection);
+                }
+
+                // ISheetPileProfile
+                else if (typ.ToString().Equals(typeof(ISheetPileProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the sheet pile section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "B";
+                    Params.Input[i].Name = "Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The overall width of the sheet pile section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Bt";
+                    Params.Input[i].Name = "Top Flange Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The top flange width of the sheet pile section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Bb";
+                    Params.Input[i].Name = "Bottom Flange Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The bottom flange width of the sheet pile section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Ft";
+                    Params.Input[i].Name = "Flange Thickness [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The flange thickness of the sheet pile section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Wt";
+                    Params.Input[i].Name = "Web Thickness [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The web thickness of the sheet pile section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = ISheetPileProfile.Create(sheetPile.Depth, sheetPile.Width, sheetPile.TopFlangeWidth, sheetPile.BottomFlangeWidth, sheetPile.FlangeThickness, sheetPile.WebThickness);
+                }
+
+                // IStadiumProfile
+                else if (typ.ToString().Equals(typeof(IStadiumProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The profile's overall depth considering the side length of the rectangle and the radii of the semicircles on the two ends.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "B";
+                    Params.Input[i].Name = "Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The profile's width (diameter of the semicircles).";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = IStadiumProfile.Create(stadium.Depth, stadium.Width);
+                }
+
+                // ITrapezoidProfile
+                else if (typ.ToString().Equals(typeof(ITrapezoidProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth in z-axis direction of trapezoidal profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Bt";
+                    Params.Input[i].Name = "Top Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The top width of trapezoidal profile. Top is relative to the local z-axis.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Bb";
+                    Params.Input[i].Name = "Bottom Width [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The bottom width of trapezoidal profile. Bottom is relative to the local z-axis.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = ITrapezoidProfile.Create(trapezoid.Depth, trapezoid.TopWidth, trapezoid.BottomWidth);
+                }
+
+                // ITSectionProfile
+                else if (typ.ToString().Equals(typeof(ITSectionProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "D";
+                    Params.Input[i].Name = "Depth [" + unitAbbreviation + "]";
+                    Params.Input[i].Description = "The depth of the T section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Fla";
+                    Params.Input[i].Name = "Flange";
+                    Params.Input[i].Description = "The flange of the T section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "Web";
+                    Params.Input[i].Name = "Web";
+                    Params.Input[i].Description = "The web of the T section profile.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+                    //dup = ITSectionProfile.Create(tSection.Depth, tSection.Flange, tSection.Web);
+                }
+                // IPerimeterProfile
+                else if (typ.ToString().Equals(typeof(IPerimeterProfile).ToString() + "_Implementation"))
+                {
+                    Params.Input[i].NickName = "B";
+                    Params.Input[i].Name = "Boundary";
+                    Params.Input[i].Description = "The outer edge polyline or BRep. If BRep contains openings these will be added as voids";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    i++;
+                    Params.Input[i].NickName = "V";
+                    Params.Input[i].Name = "[Optional] Void polylines";
+                    Params.Input[i].Description = "The void polygons within the solid polygon of the perimeter profile. If first input is a BRep this input will be ignored.";
+                    Params.Input[i].Access = GH_ParamAccess.item;
+                    Params.Input[i].Optional = false;
+
+                    //dup = IPerimeterProfile.Create();
+                    //solidPolygon;
+                    //voidPolygons;
+                }
+            }
         }
         #endregion  
     }

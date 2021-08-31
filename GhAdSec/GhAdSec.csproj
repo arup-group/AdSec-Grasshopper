@@ -95,13 +95,13 @@
     <Compile Include="Parameters\RebarBundleGoo.cs" />
     <Compile Include="Parameters\ProfileWebGoo.cs" />
     <Compile Include="Parameters\ProfileFlangeGoo.cs" />
-    <Compile Include="Parameters\ProfileGoo.cs" />
     <Compile Include="Parameters\PointGoo.cs" />
     <Compile Include="Parameters\GH_UnitNumber.cs" />
     <Compile Include="Parameters\AdSecDesignCode.cs" />
     <Compile Include="Parameters\AdSecMaterial.cs" />
     <Compile Include="Helpers\_Reflection.cs" />
     <Compile Include="Parameters\CrackCalcParamsGoo.cs" />
+    <Compile Include="Parameters\ProfileGoo.cs" />
     <Compile Include="Parameters\StressStrainPointGoo.cs" />
     <Compile Include="Parameters\StressStrainCurveGoo.cs" />
     <Compile Include="Parameters\_DocUnits.cs" />
