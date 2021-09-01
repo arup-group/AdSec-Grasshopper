@@ -123,76 +123,11 @@ namespace GhAdSec.Components
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            // get inputs
-            UnitsNet.Pressure stress = new UnitsNet.Pressure();
-            Oasys.Units.Strain strain = new Oasys.Units.Strain();
-
-            // 0 Strain input
-            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(0, ref gh_typ))
-            {
-                GH_UnitNumber inStrain;
-
-                // try cast directly to quantity type
-                if (gh_typ.Value is GH_UnitNumber)
-                {
-                    inStrain = (GH_UnitNumber)gh_typ.Value;
-                    if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.StrainUnit)))
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input: Wrong unit type supplied"
-                            + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Strain");
-                        return;
-                    }
-                    strain = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
-                }
-                // try cast to double
-                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                {
-                    // create new quantity from default units
-                    inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
-                    strain = (Oasys.Units.Strain)inStrain.Value;
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 0");
-                    return;
-                }
-            }
-
-            // 1 Stress input
-            gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(1, ref gh_typ))
-            {
-                GH_UnitNumber inStress;
-
-                // try cast directly to quantity type
-                if (gh_typ.Value is GH_UnitNumber)
-                {
-                    inStress = (GH_UnitNumber)gh_typ.Value;
-                    if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input: Wrong unit type supplied"
-                            + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
-                        return;
-                    }
-                    stress = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
-                }
-                // try cast to double
-                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                {
-                    // create new quantity from default units
-                    inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
-                    stress = (UnitsNet.Pressure)inStress.Value;
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 1");
-                    return;
-                }
-            }
 
             // create new point
-            AdSecStressStrainPointGoo pt = new AdSecStressStrainPointGoo(stress, strain);
+            AdSecStressStrainPointGoo pt = new AdSecStressStrainPointGoo(
+                GetInput.Stress(this, DA, 1, stressUnit),
+                GetInput.Strain(this, DA, 0, strainUnit));
 
             DA.SetData(0, pt);
         }

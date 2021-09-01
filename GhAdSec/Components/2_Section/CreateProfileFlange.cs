@@ -90,8 +90,8 @@ namespace GhAdSec.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "W", "Flange width", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "B", "Flange thickness", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Flange width", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Flange thickness", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -101,66 +101,12 @@ namespace GhAdSec.Components
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            // 0 first input
-            GH_UnitNumber thickness1 = null;
-            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(0, ref gh_typ))
-            {
-                // try cast directly to quantity type
-                if (gh_typ.Value is GH_UnitNumber)
-                {
-                    thickness1 = (GH_UnitNumber)gh_typ.Value;
-                    // check that unit is of right type
-                    if (!thickness1.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 0: Wrong unit type supplied"
-                            + System.Environment.NewLine + "Unit type is " + thickness1.Value.QuantityInfo.Name + " but must be Length");
-                        return;
-                    }
-                }
-                // try cast to double
-                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                {
-                    // create new quantity from default units
-                    thickness1 = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert W input");
-                    return;
-                }
-            }
 
-            GH_UnitNumber thickness2 = null;
-            gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(1, ref gh_typ))
-            {
-                // try cast directly to quantity type
-                if (gh_typ.Value is GH_UnitNumber)
-                {
-                    thickness2 = (GH_UnitNumber)gh_typ.Value;
-                    // check that unit is of right type
-                    if (!thickness2.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
-                            + System.Environment.NewLine + "Unit type is " + thickness2.Value.QuantityInfo.Name + " but must be Length");
-                        return;
-                    }
-                }
-                // try cast to double
-                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                {
-                    // create new quantity from default units
-                    thickness2 = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert B input");
-                    return;
-                }
-            }
+            AdSecProfileFlangeGoo flange = new AdSecProfileFlangeGoo(
+                IFlange.Create(
+                    GetInput.Length(this, DA, 0, lengthUnit), 
+                    GetInput.Length(this, DA, 1, lengthUnit)));
 
-            AdSecProfileFlangeGoo flange = new AdSecProfileFlangeGoo(IFlange.Create((UnitsNet.Length)thickness1.Value, (UnitsNet.Length)thickness2.Value));
             DA.SetData(0, flange);
         }
         #region (de)serialization

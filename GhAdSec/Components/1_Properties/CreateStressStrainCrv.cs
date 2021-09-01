@@ -168,654 +168,78 @@ namespace GhAdSec.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             IStressStrainCurve crv = null;
-            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-            GH_ObjectWrapper gh_typ1 = new GH_ObjectWrapper();
-            GH_ObjectWrapper gh_typ2 = new GH_ObjectWrapper();
-            IStressStrainPoint pt = null;
-            IStressStrainPoint pt1 = null;
-            IStressStrainPoint pt2 = null;
 
             switch (_mode)
             {
                 case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear:
-                    if (DA.GetData(0, ref gh_typ1))
-                    {
-                        Point3d ghpt = new Point3d();
-                        if (gh_typ1.Value is IStressStrainPoint)
-                        {
-                            pt1 = (IStressStrainPoint)gh_typ1.Value;
-                        }
-                        else if (gh_typ1.Value is AdSecStressStrainPointGoo)
-                        {
-                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ1.Value;
-                            pt1 = sspt.StressStrainPoint;
-                        }
-                        else if (GH_Convert.ToPoint3d(gh_typ1.Value, ref ghpt, GH_Conversion.Both))
-                        {
-                            pt1 = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert SPt input 1 to a Stress Strain Point");
-                            return;
-                        }
-                    }
-                    if (DA.GetData(1, ref gh_typ2))
-                    {
-                        Point3d ghpt = new Point3d();
-                        if (gh_typ2.Value is IStressStrainPoint)
-                        {
-                            pt2 = (IStressStrainPoint)gh_typ2.Value;
-                        }
-                        else if (gh_typ2.Value is AdSecStressStrainPointGoo)
-                        {
-                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ2.Value;
-                            pt2 = sspt.StressStrainPoint;
-                        }
-                        else if (GH_Convert.ToPoint3d(gh_typ2.Value, ref ghpt, GH_Conversion.Both))
-                        {
-                            pt2 = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert SPt input 2 to a Stress Strain Point");
-                            return;
-                        }
-                    }
-                    crv = IBilinearStressStrainCurve.Create(pt1, pt2);
+                    
+                    crv = IBilinearStressStrainCurve.Create(GetInput.StressStrainPoint(this, DA, 0), GetInput.StressStrainPoint(this, DA, 1));
                     break;
 
                 case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit:
-                    Oasys.Collections.IList<IStressStrainPoint> pts = Oasys.Collections.IList<IStressStrainPoint>.Create();
-                    List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
-                    if (DA.GetDataList(0, gh_typs))
-                    {
-                        for (int i = 0; i < gh_typs.Count; i++)
-                        {
-                            Curve polycurve = null;
-                            Point3d ghpt = new Point3d();
-                            if (gh_typs[i].Value is IStressStrainPoint)
-                            {
-                                pts.Add((IStressStrainPoint)gh_typs[i].Value);
-                            }
-                            else if (gh_typs[i].Value is AdSecStressStrainPointGoo)
-                            {
-                                AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typs[i].Value;
-                                pts.Add(sspt.StressStrainPoint);
-                            }
-                            else if (GH_Convert.ToPoint3d(gh_typs[i].Value, ref ghpt, GH_Conversion.Both))
-                            {
-                                pts.Add(GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt));
-                            }
-                            else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both))
-                            {
-                                PolylineCurve curve = (PolylineCurve)polycurve;
-                                pts = GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
-                            }
-                            else
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert SPt input index " + i + " to a Stress Strain Point");
-                                return;
-                            }
-                        }
-                        if (pts.Count < 2)
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input at least 2 points to create an Explicit Stress Strain Curve");
-                            return;
-                        }
-                    }
+                    
                     IExplicitStressStrainCurve exCrv = IExplicitStressStrainCurve.Create();
-                    exCrv.Points = pts;
+                    exCrv.Points = GetInput.StressStrainPoints(this, DA, 0);
                     crv = exCrv;
                     break;
 
                 case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
-                    if (DA.GetData(0, ref gh_typ))
-                    {
-                        Point3d ghpt = new Point3d();
-                        if (gh_typ.Value is IStressStrainPoint)
-                        {
-                            pt = (IStressStrainPoint)gh_typ.Value;
-                        }
-                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
-                        {
-                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
-                            pt = sspt.StressStrainPoint;
-                        }
-                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
-                        {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert SPt input to a Stress Strain Point");
-                            return;
-                        }
-                    }
-                    // get stress strain inputs
-                    UnitsNet.Pressure stressFib = new UnitsNet.Pressure();
-                    Oasys.Units.Strain strainFib = new Oasys.Units.Strain();
-
-                    // 1 Stress input
-                    gh_typ = new GH_ObjectWrapper();
-                    if (DA.GetData(1, ref gh_typ))
-                    {
-                        GH_UnitNumber inStress;
-
-                        // try cast directly to quantity type
-                        if (gh_typ.Value is GH_UnitNumber)
-                        {
-                            inStress = (GH_UnitNumber)gh_typ.Value;
-                            if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
-                                    + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
-                                return;
-                            }
-                            stressFib = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
-                        }
-                        // try cast to double
-                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                        {
-                            // create new quantity from default units
-                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
-                            stressFib = (UnitsNet.Pressure)inStress.Value;
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert stress input");
-                            return;
-                        }
-                    }
-
-                    // 2 Strain input
-                    gh_typ = new GH_ObjectWrapper();
-                    if (DA.GetData(2, ref gh_typ))
-                    {
-                        GH_UnitNumber inStrain;
-
-                        // try cast directly to quantity type
-                        if (gh_typ.Value is GH_UnitNumber)
-                        {
-                            inStrain = (GH_UnitNumber)gh_typ.Value;
-                            if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.StrainUnit)))
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
-                                    + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Strain");
-                                return;
-                            }
-                            strainFib = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
-                        }
-                        // try cast to double
-                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                        {
-                            // create new quantity from default units
-                            inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
-                            strainFib = (Oasys.Units.Strain)inStrain.Value;
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert strain input");
-                            return;
-                        }
-                    }
                     
                     crv = IFibModelCodeStressStrainCurve.Create(
-                        stressFib,
-                        pt,
-                        strainFib);
+                        GetInput.Stress(this, DA, 1, stressUnit),
+                        GetInput.StressStrainPoint(this, DA, 0),
+                        GetInput.Strain(this, DA, 2, strainUnit));
                     break;
 
                 case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
-                    if (DA.GetData(0, ref gh_typ))
-                    {
-                        Point3d ghpt = new Point3d();
-                        if (gh_typ.Value is IStressStrainPoint)
-                        {
-                            pt = (IStressStrainPoint)gh_typ.Value;
-                        }
-                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
-                        {
-                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
-                            pt = sspt.StressStrainPoint;
-                        }
-                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
-                        {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert SPt input to a Stress Strain Point");
-                            return;
-                        }
-                    }
-                    // get stress strain inputs
-                    UnitsNet.Pressure stressMander = new UnitsNet.Pressure();
-                    Oasys.Units.Strain strainMander = new Oasys.Units.Strain();
-
-                    // 1 Stress input
-                    gh_typ = new GH_ObjectWrapper();
-                    if (DA.GetData(1, ref gh_typ))
-                    {
-                        GH_UnitNumber inStress;
-
-                        // try cast directly to quantity type
-                        if (gh_typ.Value is GH_UnitNumber)
-                        {
-                            inStress = (GH_UnitNumber)gh_typ.Value;
-                            if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
-                                    + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
-                                return;
-                            }
-                            stressMander = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
-                        }
-                        // try cast to double
-                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                        {
-                            // create new quantity from default units
-                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
-                            stressMander = (UnitsNet.Pressure)inStress.Value;
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert stress input");
-                            return;
-                        }
-                    }
-
-                    // 2 Strain input
-                    gh_typ = new GH_ObjectWrapper();
-                    if (DA.GetData(2, ref gh_typ))
-                    {
-                        GH_UnitNumber inStrain;
-
-                        // try cast directly to quantity type
-                        if (gh_typ.Value is GH_UnitNumber)
-                        {
-                            inStrain = (GH_UnitNumber)gh_typ.Value;
-                            if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.StrainUnit)))
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
-                                    + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Strain");
-                                return;
-                            }
-                            strainMander = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
-                        }
-                        // try cast to double
-                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                        {
-                            // create new quantity from default units
-                            inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
-                            strainMander = (Oasys.Units.Strain)inStrain.Value;
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert strain input");
-                            return;
-                        }
-                    }
 
                     crv = IManderStressStrainCurve.Create(
-                        stressMander,
-                        pt,
-                        strainMander);
+                        GetInput.Stress(this, DA, 1, stressUnit),
+                        GetInput.StressStrainPoint(this, DA, 0),
+                        GetInput.Strain(this, DA, 2, strainUnit));
                     break;
 
                 case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
-                    if (DA.GetData(0, ref gh_typ))
-                    {
-                        Point3d ghpt = new Point3d();
-                        if (gh_typ.Value is IStressStrainPoint)
-                        {
-                            pt = (IStressStrainPoint)gh_typ.Value;
-                        }
-                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
-                        {
-                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
-                            pt = sspt.StressStrainPoint;
-                        }
-                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
-                        {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert SPt input to a Stress Strain Point");
-                            return;
-                        }
-                    }
                     
-                    if (_mode == GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Linear)
-                        crv = ILinearStressStrainCurve.Create(pt);
+                    crv = ILinearStressStrainCurve.Create(
+                        GetInput.StressStrainPoint(this, DA, 0));
                     break;
                 
                 case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
-                    // get stress strain inputs
-                    UnitsNet.Pressure stressMander1 = new UnitsNet.Pressure();
-                    UnitsNet.Pressure stressMander2 = new UnitsNet.Pressure();
-                    UnitsNet.Pressure stressMander3 = new UnitsNet.Pressure();
-                    Oasys.Units.Strain strainManderConf = new Oasys.Units.Strain();
-
-                    // 0 Stress input
-                    gh_typ = new GH_ObjectWrapper();
-                    if (DA.GetData(0, ref gh_typ))
-                    {
-                        GH_UnitNumber inStress;
-
-                        // try cast directly to quantity type
-                        if (gh_typ.Value is GH_UnitNumber)
-                        {
-                            inStress = (GH_UnitNumber)gh_typ.Value;
-                            if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 0: Wrong unit type supplied"
-                                    + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
-                                return;
-                            }
-                            stressMander1 = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
-                        }
-                        // try cast to double
-                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                        {
-                            // create new quantity from default units
-                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
-                            stressMander1 = (UnitsNet.Pressure)inStress.Value;
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert first stress input");
-                            return;
-                        }
-                    }
-                    // 1 Stress input
-                    gh_typ = new GH_ObjectWrapper();
-                    if (DA.GetData(1, ref gh_typ))
-                    {
-                        GH_UnitNumber inStress;
-
-                        // try cast directly to quantity type
-                        if (gh_typ.Value is GH_UnitNumber)
-                        {
-                            inStress = (GH_UnitNumber)gh_typ.Value;
-                            if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
-                                    + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
-                                return;
-                            }
-                            stressMander2 = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
-                        }
-                        // try cast to double
-                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                        {
-                            // create new quantity from default units
-                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
-                            stressMander2 = (UnitsNet.Pressure)inStress.Value;
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert second stress input");
-                            return;
-                        }
-                    }
-                    // 2 Stress input
-                    gh_typ = new GH_ObjectWrapper();
-                    if (DA.GetData(2, ref gh_typ))
-                    {
-                        GH_UnitNumber inStress;
-
-                        // try cast directly to quantity type
-                        if (gh_typ.Value is GH_UnitNumber)
-                        {
-                            inStress = (GH_UnitNumber)gh_typ.Value;
-                            if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
-                                    + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
-                                return;
-                            }
-                            stressMander3 = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
-                        }
-                        // try cast to double
-                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                        {
-                            // create new quantity from default units
-                            inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
-                            stressMander3 = (UnitsNet.Pressure)inStress.Value;
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert third stress input");
-                            return;
-                        }
-                    }
-
-                    // 3 Strain input
-                    gh_typ = new GH_ObjectWrapper();
-                    if (DA.GetData(3, ref gh_typ))
-                    {
-                        GH_UnitNumber inStrain;
-
-                        // try cast directly to quantity type
-                        if (gh_typ.Value is GH_UnitNumber)
-                        {
-                            inStrain = (GH_UnitNumber)gh_typ.Value;
-                            if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.StrainUnit)))
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 3: Wrong unit type supplied"
-                                    + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Strain");
-                                return;
-                            }
-                            strainManderConf = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
-                        }
-                        // try cast to double
-                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                        {
-                            // create new quantity from default units
-                            inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
-                            strainManderConf = (Oasys.Units.Strain)inStrain.Value;
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert strain input");
-                            return;
-                        }
-                    }
 
                     crv = IManderConfinedStressStrainCurve.Create(
-                        stressMander1, stressMander2, stressMander3, strainManderConf);
+                        GetInput.Stress(this, DA, 0, stressUnit),
+                        GetInput.Stress(this, DA, 1, stressUnit),
+                        GetInput.Stress(this, DA, 2, stressUnit),
+                        GetInput.Strain(this, DA, 3, strainUnit));
                     break;
 
                 case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
-                    if (DA.GetData(0, ref gh_typ))
-                    {
-                        Point3d ghpt = new Point3d();
-                        if (gh_typ.Value is IStressStrainPoint)
-                        {
-                            pt = (IStressStrainPoint)gh_typ.Value;
-                        }
-                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
-                        {
-                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
-                            pt = sspt.StressStrainPoint;
-                        }
-                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
-                        {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert SPt input to a Stress Strain Point");
-                            return;
-                        }
-                    }
-                    // 1 Strain input
-                    Oasys.Units.Strain strainParabol = new Oasys.Units.Strain();
-                    gh_typ = new GH_ObjectWrapper();
-                    if (DA.GetData(1, ref gh_typ))
-                    {
-                        GH_UnitNumber inStrain;
-
-                        // try cast directly to quantity type
-                        if (gh_typ.Value is GH_UnitNumber)
-                        {
-                            inStrain = (GH_UnitNumber)gh_typ.Value;
-                            strainParabol = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
-                        }
-                        // try cast to double
-                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                        {
-                            // create new quantity from default units
-                            inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
-                            strainParabol = (Oasys.Units.Strain)inStrain.Value;
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert strain input");
-                            return;
-                        }
-                    }
-                    crv = IParabolaRectangleStressStrainCurve.Create(pt, strainParabol);
+                    
+                    crv = IParabolaRectangleStressStrainCurve.Create(
+                        GetInput.StressStrainPoint(this, DA, 0),
+                        GetInput.Strain(this, DA, 1, strainUnit));
                     break;
 
                 case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
-                    if (DA.GetData(0, ref gh_typ))
-                    {
-                        Point3d ghpt = new Point3d();
-                        if (gh_typ.Value is IStressStrainPoint)
-                        {
-                            pt = (IStressStrainPoint)gh_typ.Value;
-                        }
-                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
-                        {
-                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
-                            pt = sspt.StressStrainPoint;
-                        }
-                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
-                        {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert SPt input to a Stress Strain Point");
-                            return;
-                        }
-                    }
-
-                    if (_mode == GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Linear)
-                        crv = IParkStressStrainCurve.Create(pt);
+                     
+                    crv = IParkStressStrainCurve.Create(
+                        GetInput.StressStrainPoint(this, DA, 0));
                     break;
 
                 case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics:
-                    if (DA.GetData(0, ref gh_typ))
-                    {
-                        Point3d ghpt = new Point3d();
-                        if (gh_typ.Value is IStressStrainPoint)
-                        {
-                            pt = (IStressStrainPoint)gh_typ.Value;
-                        }
-                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
-                        {
-                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
-                            pt = sspt.StressStrainPoint;
-                        }
-                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
-                        {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert SPt input to a Stress Strain Point");
-                            return;
-                        }
-                    }
 
-                    // 1 Strain input
-                    Oasys.Units.Strain strainPopo = new Oasys.Units.Strain();
-                    gh_typ = new GH_ObjectWrapper();
-                    if (DA.GetData(1, ref gh_typ))
-                    {
-                        GH_UnitNumber inStrain;
-
-                        // try cast directly to quantity type
-                        if (gh_typ.Value is GH_UnitNumber)
-                        {
-                            inStrain = (GH_UnitNumber)gh_typ.Value;
-                            strainPopo = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
-                        }
-                        // try cast to double
-                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                        {
-                            // create new quantity from default units
-                            inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
-                            strainPopo = (Oasys.Units.Strain)inStrain.Value;
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert strain input");
-                            return;
-                        }
-                    }
-
-                    // create curve
-                    crv = IPopovicsStressStrainCurve.Create(pt, strainPopo);
+                    crv = IPopovicsStressStrainCurve.Create(
+                        GetInput.StressStrainPoint(this, DA, 0),
+                        GetInput.Strain(this, DA, 1, strainUnit));
                     break;
 
                 case GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
-                    if (DA.GetData(0, ref gh_typ))
-                    {
-                        Point3d ghpt = new Point3d();
-                        if (gh_typ.Value is IStressStrainPoint)
-                        {
-                            pt = (IStressStrainPoint)gh_typ.Value;
-                        }
-                        else if (gh_typ.Value is AdSecStressStrainPointGoo)
-                        {
-                            AdSecStressStrainPointGoo sspt = (AdSecStressStrainPointGoo)gh_typ.Value;
-                            pt = sspt.StressStrainPoint;
-                        }
-                        else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
-                        {
-                            pt = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert SPt input to a Stress Strain Point");
-                            return;
-                        }
-                    }
+                    
 
-                    // 1 Strain input
-                    Oasys.Units.Strain strainRect = new Oasys.Units.Strain();
-                    gh_typ = new GH_ObjectWrapper();
-                    if (DA.GetData(1, ref gh_typ))
-                    {
-                        GH_UnitNumber inStrain;
-
-                        // try cast directly to quantity type
-                        if (gh_typ.Value is GH_UnitNumber)
-                        {
-                            inStrain = (GH_UnitNumber)gh_typ.Value;
-                            strainRect = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
-                        }
-                        // try cast to double
-                        else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                        {
-                            // create new quantity from default units
-                            inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
-                            strainRect = (Oasys.Units.Strain)inStrain.Value;
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert strain input");
-                            return;
-                        }
-                    }
-
-                    // create curve
-                    crv = IRectangularStressStrainCurve.Create(pt, strainRect);
+                    crv = IRectangularStressStrainCurve.Create(
+                        GetInput.StressStrainPoint(this, DA, 0),
+                        GetInput.Strain(this, DA, 1, strainUnit));
                     break;
             }
 

@@ -101,67 +101,17 @@ namespace GhAdSec.Components
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            // 0 first input
-            GH_UnitNumber y = null;
-            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(0, ref gh_typ))
-            {
-                // try cast directly to quantity type
-                if (gh_typ.Value is GH_UnitNumber)
-                {
-                    y = (GH_UnitNumber)gh_typ.Value;
-                    // check that unit is of right type
-                    if (!y.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 0: Wrong unit type supplied"
-                            + System.Environment.NewLine + "Unit type is " + y.Value.QuantityInfo.Name + " but must be Length");
-                        return;
-                    }
-                }
-                // try cast to double
-                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                {
-                    // create new quantity from default units
-                    y = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert y input");
-                    return;
-                }
-            }
+            // get inputs
+            Length y = GetInput.Length(this, DA, 0, lengthUnit);
+            Length z = GetInput.Length(this, DA, 1, lengthUnit);
 
-            // 1 second input
-            GH_UnitNumber z = null;
-            gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(1, ref gh_typ))
-            {
-                // try cast directly to quantity type
-                if (gh_typ.Value is GH_UnitNumber)
-                {
-                    z = (GH_UnitNumber)gh_typ.Value;
-                    // check that unit is of right type
-                    if (!z.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
-                            + System.Environment.NewLine + "Unit type is " + z.Value.QuantityInfo.Name + " but must be Length");
-                        return;
-                    }
-                }
-                // try cast to double
-                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                {
-                    // create new quantity from default units
-                    z = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert z input");
-                    return;
-                }
-            }
+            // create IPoint
+            IPoint pt = IPoint.Create(y, z);
 
-            AdSecPointGoo point = new AdSecPointGoo(IPoint.Create((UnitsNet.Length)y.Value, (UnitsNet.Length)z.Value));
+            // Convert to AdSecPointGoo param
+            AdSecPointGoo point = new AdSecPointGoo(pt);
+
+            // set output
             DA.SetData(0, point);
         }
         #region (de)serialization

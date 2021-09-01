@@ -110,107 +110,26 @@ namespace GhAdSec.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // 0 DesignCode
-            AdSecDesignCode designCode = new AdSecDesignCode();
-            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(0, ref gh_typ))
-            {
-                if (gh_typ.Value is AdSecDesignCodeGoo)
-                {
-                    gh_typ.CastTo(ref designCode);
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert DC input to a DesignCode" + System.Environment.NewLine + "DesignCode input has been ignored");
-                    return;
-                }
-            }
+            AdSecDesignCode designCode = GetInput.AdSecDesignCode(this, DA, 0);
 
             // 1 StressStrain ULS Compression
-            AdSecStressStrainCurveGoo ulsCompCrv = null;
-            gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(1, ref gh_typ))
-            {
-                if (gh_typ.Value is AdSecStressStrainCurveGoo)
-                {
-                    ulsCompCrv = (AdSecStressStrainCurveGoo)gh_typ.Value;
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert U_C input to a StressStrainCurve");
-                    return;
-                }
-            }
+            AdSecStressStrainCurveGoo ulsCompCrv = GetInput.StressStrainCurveGoo(this, DA, 1, true);
+            
 
             // 2 StressStrain ULS Tension
-            AdSecStressStrainCurveGoo ulsTensCrv = null;
-            gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(2, ref gh_typ))
-            {
-                if (gh_typ.Value is AdSecStressStrainCurveGoo)
-                {
-                    ulsTensCrv = (AdSecStressStrainCurveGoo)gh_typ.Value;
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert U_T input to a StressStrainCurve");
-                    return;
-                }
-            }
+            AdSecStressStrainCurveGoo ulsTensCrv = GetInput.StressStrainCurveGoo(this, DA, 2, false);
 
             // 3 StressStrain SLS Compression
-            AdSecStressStrainCurveGoo slsCompCrv = null;
-            gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(3, ref gh_typ))
-            {
-                if (gh_typ.Value is AdSecStressStrainCurveGoo)
-                {
-                    slsCompCrv = (AdSecStressStrainCurveGoo)gh_typ.Value;
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert S_C input to a StressStrainCurve");
-                    return;
-                }
-            }
+            AdSecStressStrainCurveGoo slsCompCrv = GetInput.StressStrainCurveGoo(this, DA, 3, true);
 
             // 4 StressStrain SLS Tension
-            AdSecStressStrainCurveGoo slsTensCrv = null;
-            gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(4, ref gh_typ))
-            {
-                if (gh_typ.Value is AdSecStressStrainCurveGoo)
-                {
-                    slsTensCrv = (AdSecStressStrainCurveGoo)gh_typ.Value;
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert S_T input to a StressStrainCurve");
-                    return;
-                }
-            }
-
+            AdSecStressStrainCurveGoo slsTensCrv = GetInput.StressStrainCurveGoo(this, DA, 4, false);
+            
             // 5 Cracked params
             IConcreteCrackCalculationParameters concreteCrack = null;
             if (isConcrete)
             {
-                gh_typ = new GH_ObjectWrapper();
-                if (DA.GetData(5, ref gh_typ))
-                {
-                    if (gh_typ.Value is IConcreteCrackCalculationParameters)
-                    {
-                        concreteCrack = (IConcreteCrackCalculationParameters)gh_typ.Value;
-                    }
-                    else if (gh_typ.Value is AdSecConcreteCrackCalculationParametersGoo)
-                    {
-                        AdSecConcreteCrackCalculationParametersGoo adsecccp = (AdSecConcreteCrackCalculationParametersGoo)gh_typ.Value;
-                        concreteCrack = adsecccp.ConcreteCrackCalculationParameters;
-                    }
-                    else
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert CCP input to ConcreteCrackCalculationParameters");
-                        return;
-                    }
-                }
+                concreteCrack = GetInput.ConcreteCrackCalculationParameters(this, DA, 5);
             }
 
             // create new empty material

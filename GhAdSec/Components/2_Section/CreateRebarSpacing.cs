@@ -105,66 +105,32 @@ namespace GhAdSec.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // 0 rebar input
-            AdSecRebarBundleGoo rebar = null;
-            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(0, ref gh_typ))
-            {
-                if (gh_typ.Value is AdSecRebarBundleGoo)
-                {
-                    rebar = (AdSecRebarBundleGoo)gh_typ.Value;
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in rebar input - unable to cast from type " + gh_typ.Value.GetType().Name);
-                }
-            }
-            if (rebar == null)
-            { 
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in rebar input - unable to convert from type " + gh_typ.Value.GetType().Name);
-                return;
-            }
+            AdSecRebarBundleGoo rebar = GetInput.AdSecRebarBundleGoo(this, DA, 0);
 
-            if (_mode == FoldMode.Distance)
+            switch (_mode)
             {
-                GH_UnitNumber spacing = null;
-                gh_typ = new GH_ObjectWrapper();
-                if (DA.GetData(1, ref gh_typ))
-                {
-                    // try cast directly to quantity type
-                    if (gh_typ.Value is GH_UnitNumber)
-                    {
-                        spacing = (GH_UnitNumber)gh_typ.Value;
-                        // check that unit is of right type
-                        if (!spacing.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
-                                + System.Environment.NewLine + "Unit type is " + spacing.Value.QuantityInfo.Name + " but must be Length");
-                            return;
-                        }
-                    }
-                    // try cast to double
-                    else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                    {
-                        // create new quantity from default units
-                        spacing = new GH_UnitNumber(new UnitsNet.Length(val, GhAdSec.DocumentUnits.LengthUnit));
-                    }
-                    else
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 1");
-                        return;
-                    }
-                }
+                case FoldMode.Distance:
+                    AdSecRebarLayerGoo bundleD =
+                    new AdSecRebarLayerGoo(
+                        ILayerByBarPitch.Create(
+                            rebar.Value,
+                            GetInput.Length(this, DA, 1, lengthUnit)));
+                    DA.SetData(0, bundleD);
 
-                AdSecRebarLayerGoo bundle = new AdSecRebarLayerGoo(ILayerByBarPitch.Create(rebar.Value, (UnitsNet.Length)spacing.Value));
-                DA.SetData(0, bundle);
-            }
-            else
-            {
-                int count = 1;
-                DA.GetData(1, ref count);
-                
-                AdSecRebarLayerGoo bundle = new AdSecRebarLayerGoo(ILayerByBarCount.Create(count, rebar.Value));
-                DA.SetData(0, bundle);
+                    break;
+
+                case FoldMode.Count:
+                    int count = 1;
+                    DA.GetData(1, ref count);
+
+                    AdSecRebarLayerGoo bundleC =
+                        new AdSecRebarLayerGoo(
+                            ILayerByBarCount.Create(
+                                count,
+                                rebar.Value));
+                    DA.SetData(0, bundleC);
+
+                    break;
             }
         }
 

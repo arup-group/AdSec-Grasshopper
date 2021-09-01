@@ -64,7 +64,34 @@ namespace GhAdSec.Parameters
                 new UnitsNet.Length(point.X, GhAdSec.DocumentUnits.LengthUnit),
                 new UnitsNet.Length(point.Y, GhAdSec.DocumentUnits.LengthUnit));
         }
-
+        internal static Oasys.Collections.IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve)
+        {
+            Oasys.Collections.IList<IPoint> pts = Oasys.Collections.IList<IPoint>.Create();
+            IPoint pt = null;
+            for (int j = 0; j < curve.PointCount; j++)
+            {
+                Point3d point3d = curve.Point(j);
+                pt = IPoint.Create(
+                    new UnitsNet.Length(point3d.X, GhAdSec.DocumentUnits.LengthUnit),
+                    new UnitsNet.Length(point3d.Y, GhAdSec.DocumentUnits.LengthUnit));
+                pts.Add(pt);
+            }
+            return pts;
+        }
+        internal static Oasys.Collections.IList<IPoint> PtsFromPolyline(Polyline curve)
+        {
+            Oasys.Collections.IList<IPoint> pts = Oasys.Collections.IList<IPoint>.Create();
+            IPoint pt = null;
+            for (int j = 0; j < curve.Count; j++)
+            {
+                Point3d point3d = curve[j];
+                pt = IPoint.Create(
+                    new UnitsNet.Length(point3d.X, GhAdSec.DocumentUnits.LengthUnit),
+                    new UnitsNet.Length(point3d.Y, GhAdSec.DocumentUnits.LengthUnit));
+                pts.Add(pt);
+            }
+            return pts;
+        }
         private IPoint m_AdSecPoint;
         public IPoint AdSecPoint
         {

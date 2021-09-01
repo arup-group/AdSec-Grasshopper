@@ -87,7 +87,7 @@ namespace GhAdSec.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "T", "Web thickness", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Web thickness", GH_ParamAccess.item);
             _mode = FoldMode.Constant;
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -97,73 +97,25 @@ namespace GhAdSec.Components
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            // 0 first input
-            GH_UnitNumber thickness1 = null;
-            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(0, ref gh_typ))
+            switch (_mode)
             {
-                // try cast directly to quantity type
-                if (gh_typ.Value is GH_UnitNumber)
-                {
-                    thickness1 = (GH_UnitNumber)gh_typ.Value;
-                    // check that unit is of right type
-                    if (!thickness1.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 0: Wrong unit type supplied" 
-                            + System.Environment.NewLine + "Unit type is " + thickness1.Value.QuantityInfo.Name + " but must be Length");
-                        return;
-                    }
-                }
-                // try cast to double
-                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                {
-                    // create new quantity from default units
-                    thickness1 = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 0");
-                    return;
-                }
-            }
+                case FoldMode.Constant:
+                    
+                    AdSecProfileWebGoo webConst = new AdSecProfileWebGoo(
+                    IWebConstant.Create(
+                        GetInput.Length(this, DA, 0, lengthUnit)));
 
-            if (_mode == FoldMode.Constant)
-            {
-                AdSecProfileWebGoo web = new AdSecProfileWebGoo(IWebConstant.Create((UnitsNet.Length)thickness1.Value));
-                DA.SetData(0, web);
-            }
-            else
-            {
-                GH_UnitNumber thickness2 = null;
-                gh_typ = new GH_ObjectWrapper();
-                if (DA.GetData(1, ref gh_typ))
-                {
-                    // try cast directly to quantity type
-                    if (gh_typ.Value is GH_UnitNumber)
-                    {
-                        thickness2 = (GH_UnitNumber)gh_typ.Value;
-                        // check that unit is of right type
-                        if (!thickness2.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
-                                + System.Environment.NewLine + "Unit type is " + thickness2.Value.QuantityInfo.Name + " but must be Length");
-                            return;
-                        }
-                    }
-                    // try cast to double
-                    else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                    {
-                        // create new quantity from default units
-                        thickness2 = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
-                    }
-                    else
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 1");
-                        return;
-                    }
-                }
-                AdSecProfileWebGoo web = new AdSecProfileWebGoo(IWebTapered.Create((UnitsNet.Length)thickness1.Value, (UnitsNet.Length)thickness2.Value));
-                DA.SetData(0, web);
+                    DA.SetData(0, webConst);
+                    break;
+
+                case FoldMode.Tapered:
+                    AdSecProfileWebGoo webTaper = new AdSecProfileWebGoo(
+                    IWebTapered.Create(
+                        GetInput.Length(this, DA, 0, lengthUnit),
+                        GetInput.Length(this, DA, 1, lengthUnit)));
+
+                    DA.SetData(0, webTaper);
+                    break;
             }
         }
 
@@ -244,7 +196,7 @@ namespace GhAdSec.Components
             if (_mode == FoldMode.Constant)
             {
                 Params.Input[0].Name = "Thickness [" + unitAbbreviation + "]";
-                Params.Input[0].NickName = "T";
+                Params.Input[0].NickName = "t";
                 Params.Input[0].Description = "Web thickness";
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
@@ -253,13 +205,13 @@ namespace GhAdSec.Components
             if (_mode == FoldMode.Tapered)
             {
                 Params.Input[0].Name = "Top Thickness [" + unitAbbreviation + "]";
-                Params.Input[0].NickName = "T";
+                Params.Input[0].NickName = "Tt";
                 Params.Input[0].Description = "Web thickness at the top";
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
 
                 Params.Input[1].Name = "Bottom Thickness [" + unitAbbreviation + "]";
-                Params.Input[1].NickName = "B";
+                Params.Input[1].NickName = "Bt";
                 Params.Input[1].Description = "Web thickness at the bottom";
                 Params.Input[1].Access = GH_ParamAccess.item;
                 Params.Input[1].Optional = false;

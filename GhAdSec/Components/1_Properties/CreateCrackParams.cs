@@ -123,114 +123,11 @@ namespace GhAdSec.Components
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            UnitsNet.Pressure e = new UnitsNet.Pressure();
-            UnitsNet.Pressure fck = new UnitsNet.Pressure();
-            UnitsNet.Pressure ft = new UnitsNet.Pressure();
-
-            // 0 Elastic modulus
-            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(0, ref gh_typ))
-            {
-                GH_UnitNumber newElastic;
-
-                // try cast directly to quantity type
-                if (gh_typ.Value is GH_UnitNumber)
-                {
-                    newElastic = (GH_UnitNumber)gh_typ.Value;
-                    if (!newElastic.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
-                            + System.Environment.NewLine + "Unit type is " + newElastic.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
-                        return;
-                    }
-                }
-                // try cast to double
-                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                {
-                    // create new quantity from default units
-                    newElastic = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnitE));
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert E input");
-                    return;
-                }
-                e = (UnitsNet.Pressure)newElastic.Value.ToUnit(stressUnitE);
-            }
-
-            // 1 Compression strength
-            gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(1, ref gh_typ))
-            {
-                GH_UnitNumber newCompression;
-
-                // try cast directly to quantity type
-                if (gh_typ.Value is GH_UnitNumber)
-                {
-                    newCompression = (GH_UnitNumber)gh_typ.Value;
-                    if (!newCompression.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied"
-                            + System.Environment.NewLine + "Unit type is " + newCompression.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
-                        return;
-                    }
-                    fck = (UnitsNet.Pressure)newCompression.Value.ToUnit(strengthUnit);
-                    if (fck.Value > 0)
-                    {
-                        fck = new UnitsNet.Pressure(fck.Value * -1, fck.Unit);
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression (fc) must be negative; note that value has been multiplied by -1");
-                    }
-                }
-                // try cast to double
-                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                {
-                    // create new quantity from default units
-                    newCompression = new GH_UnitNumber(new UnitsNet.Pressure(Math.Abs(val) * -1, strengthUnit));
-                    fck = (UnitsNet.Pressure)newCompression.Value;
-                    if (val >= 0)
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression (fc) must be negative; note that value has been multiplied by -1");
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert fck input");
-                    return;
-                }
-            }
-
-            // 2 Compression strength
-            gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(2, ref gh_typ))
-            {
-                GH_UnitNumber newTensions;
-
-                // try cast directly to quantity type
-                if (gh_typ.Value is GH_UnitNumber)
-                {
-                    newTensions = (GH_UnitNumber)gh_typ.Value;
-                    if (!newTensions.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
-                            + System.Environment.NewLine + "Unit type is " + newTensions.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
-                        return;
-                    }
-                    ft = (UnitsNet.Pressure)newTensions.Value.ToUnit(strengthUnit);
-                }
-                // try cast to double
-                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                {
-                    // create new quantity from default units
-                    newTensions = new GH_UnitNumber(new UnitsNet.Pressure(val, strengthUnit));
-                    ft = (UnitsNet.Pressure)newTensions.Value;
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert ft input");
-                    return;
-                }
-            }
-
             // create new ccp
-            AdSecConcreteCrackCalculationParametersGoo ccp = new AdSecConcreteCrackCalculationParametersGoo(e, fck, ft);
+            AdSecConcreteCrackCalculationParametersGoo ccp = new AdSecConcreteCrackCalculationParametersGoo(
+                GetInput.Stress(this, DA, 0, stressUnitE),
+                GetInput.Stress(this, DA, 1, strengthUnit),
+                GetInput.Stress(this, DA, 2, strengthUnit));
 
             DA.SetData(0, ccp);
         }

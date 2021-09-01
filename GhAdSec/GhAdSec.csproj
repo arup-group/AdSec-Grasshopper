@@ -88,6 +88,7 @@
     <Compile Include="Components\2_Section\CreateProfileFlange.cs" />
     <Compile Include="GhAdSecInfo.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
+    <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
     <Compile Include="Helpers\_SqlReader.cs" />
     <Compile Include="Parameters\RebarGroupGoo.cs" />

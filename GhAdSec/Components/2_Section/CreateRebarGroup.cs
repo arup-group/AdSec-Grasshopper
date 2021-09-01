@@ -13,6 +13,7 @@ using UnitsNet.GH;
 using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement.Groups;
 using UnitsNet;
+using Oasys.AdSec.Reinforcement.Layers;
 
 namespace GhAdSec.Components
 {
@@ -141,340 +142,56 @@ namespace GhAdSec.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             AdSecRebarGroupGoo group = null;
-            
-            if (_mode != FoldMode.SingleBars)
+
+            switch (_mode)
             {
-                // get rebar layer first
-                // 0 rabar spacing
-                AdSecRebarLayerGoo spacing = null;
-                GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-                if (DA.GetData(0, ref gh_typ))
-                {
-                    if (gh_typ.Value is AdSecRebarLayerGoo)
-                    {
-                        spacing = (AdSecRebarLayerGoo)gh_typ.Value;
-                    }
-                    else
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in rebar spacing input - unable to cast from type " + gh_typ.Value.GetType().Name);
-                    }
-                }
-                if (spacing == null)
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in rebar spacing input");
-                    return;
-                }
-                
-                AdSecPointGoo pt1 = null;
-                AdSecPointGoo pt2 = null;
-                switch (_mode)
-                {
-                    case FoldMode.Line:
-                        // 1 position 1 input
-                        if (DA.GetData(1, ref gh_typ))
-                        {
-                            Point3d ghpt = new Point3d();
-                            if (gh_typ.Value is AdSecPointGoo)
-                            {
-                                gh_typ.CastTo(ref pt1);
-                            }
-                            else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
-                            {
-                                pt1 = new AdSecPointGoo(ghpt);
-                            }
-                            else
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in rebar spacing input - unable to cast from type " + gh_typ.Value.GetType().Name);
-                            }
-                        }
-                        // 2 position 2 input
-                        if (DA.GetData(2, ref gh_typ))
-                        {
-                            Point3d ghpt = new Point3d();
-                            if (gh_typ.Value is AdSecPointGoo)
-                            {
-                                gh_typ.CastTo(ref pt2);
-                            }
-                            else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
-                            {
-                                pt2 = new AdSecPointGoo(ghpt);
-                            }
-                            else
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in rebar spacing input - unable to cast from type " + gh_typ.Value.GetType().Name);
-                            }
-                        }
+                case FoldMode.Line:
 
-                        // create line group
-                        group = new AdSecRebarGroupGoo(ILineGroup.Create(pt1.AdSecPoint, pt2.AdSecPoint, spacing.Value));
-                        break;
+                    // create line group
+                    group = new AdSecRebarGroupGoo(
+                        ILineGroup.Create(
+                            GetInput.IPoint(this, DA, 1),
+                            GetInput.IPoint(this, DA, 2),
+                            GetInput.ILayer(this, DA, 0)));
+                    break;
 
-                    case FoldMode.Circle:
-                        // 1 centre input
-                        if (DA.GetData(1, ref gh_typ))
-                        {
-                            Point3d ghpt = new Point3d();
-                            if (gh_typ.Value is AdSecPointGoo)
-                            {
-                                gh_typ.CastTo(ref pt1);
-                            }
-                            else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
-                            {
-                                pt1 = new AdSecPointGoo(ghpt);
-                            }
-                            else
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in rebar spacing input - unable to cast from type " + gh_typ.Value.GetType().Name);
-                            }
-                        }
+                case FoldMode.Circle:
 
-                        // 2 radius input
-                        GH_UnitNumber r1 = null;
-                        gh_typ = new GH_ObjectWrapper();
-                        if (DA.GetData(2, ref gh_typ))
-                        {
-                            // try cast directly to quantity type
-                            if (gh_typ.Value is GH_UnitNumber)
-                            {
-                                r1 = (GH_UnitNumber)gh_typ.Value;
-                                // check that unit is of right type
-                                if (!r1.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
-                                {
-                                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
-                                        + System.Environment.NewLine + "Unit type is " + r1.Value.QuantityInfo.Name + " but must be Length");
-                                    return;
-                                }
-                            }
-                            // try cast to double
-                            else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                            {
-                                // create new quantity from default units
-                                r1 = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
-                            }
-                            else
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert r input");
-                                return;
-                            }
-                        }
+                    // create circle rebar group
+                    group = new AdSecRebarGroupGoo(
+                        ICircleGroup.Create(
+                            GetInput.IPoint(this, DA, 1),
+                            GetInput.Length(this, DA, 2, lengthUnit),
+                            GetInput.Angle(this, DA, 3, angleUnit),
+                            GetInput.ILayer(this, DA, 0)));
 
-                        // 3 angle input
-                        // default to 0
-                        GH_UnitNumber a1 = new GH_UnitNumber(new UnitsNet.Angle(0, angleUnit));
-                        gh_typ = new GH_ObjectWrapper();
-                        if (DA.GetData(3, ref gh_typ))
-                        {
-                            // try cast directly to quantity type
-                            if (gh_typ.Value is GH_UnitNumber)
-                            {
-                                a1 = (GH_UnitNumber)gh_typ.Value;
-                                // check that unit is of right type
-                                if (!a1.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.AngleUnit)))
-                                {
-                                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
-                                        + System.Environment.NewLine + "Unit type is " + a1.Value.QuantityInfo.Name + " but must be Length");
-                                    return;
-                                }
-                            }
-                            // try cast to double
-                            else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                            {
-                                // create new quantity from default units
-                                a1 = new GH_UnitNumber(new UnitsNet.Angle(val, angleUnit));
-                            }
-                            else
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert r input");
-                                return;
-                            }
-                        }
+                    break;
 
-                        // create circle rebar group
-                        group = new AdSecRebarGroupGoo(ICircleGroup.Create(pt1.AdSecPoint, (UnitsNet.Length)r1.Value, (UnitsNet.Angle)a1.Value, spacing.Value));
-                        
-                        break;
+                case FoldMode.Arc:
 
-                    case FoldMode.Arc:
+                    // create arc rebar grouup
+                    group = new AdSecRebarGroupGoo(
+                        IArcGroup.Create(
+                            GetInput.IPoint(this, DA, 1),
+                            GetInput.Length(this, DA, 2, lengthUnit),
+                            GetInput.Angle(this, DA, 3, angleUnit),
+                            GetInput.Angle(this, DA, 4, angleUnit),
+                            GetInput.ILayer(this, DA, 0)));
+                    break;
 
-                        // 1 centre input
-                        if (DA.GetData(1, ref gh_typ))
-                        {
-                            Point3d ghpt = new Point3d();
-                            if (gh_typ.Value is AdSecPointGoo)
-                            {
-                                gh_typ.CastTo(ref pt1);
-                            }
-                            else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
-                            {
-                                pt1 = new AdSecPointGoo(ghpt);
-                            }
-                            else
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in rebar spacing input - unable to cast from type " + gh_typ.Value.GetType().Name);
-                            }
-                        }
+                case FoldMode.SingleBars:
 
-                        // 2 radius input
-                        GH_UnitNumber r2 = null;
-                        gh_typ = new GH_ObjectWrapper();
-                        if (DA.GetData(2, ref gh_typ))
-                        {
-                            // try cast directly to quantity type
-                            if (gh_typ.Value is GH_UnitNumber)
-                            {
-                                r2 = (GH_UnitNumber)gh_typ.Value;
-                                // check that unit is of right type
-                                if (!r2.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
-                                {
-                                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
-                                        + System.Environment.NewLine + "Unit type is " + r2.Value.QuantityInfo.Name + " but must be Length");
-                                    return;
-                                }
-                            }
-                            // try cast to double
-                            else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                            {
-                                // create new quantity from default units
-                                r2 = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
-                            }
-                            else
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert r input");
-                                return;
-                            }
-                        }
+                    // create single rebar group
+                    ISingleBars bars = ISingleBars.Create(
+                        GetInput.IBarBundle(this, DA, 0));
 
-                        // 3 start angle input
-                        // default to 0
-                        GH_UnitNumber a2 = new GH_UnitNumber(new UnitsNet.Angle(0, angleUnit));
-                        gh_typ = new GH_ObjectWrapper();
-                        if (DA.GetData(3, ref gh_typ))
-                        {
-                            // try cast directly to quantity type
-                            if (gh_typ.Value is GH_UnitNumber)
-                            {
-                                a2 = (GH_UnitNumber)gh_typ.Value;
-                                // check that unit is of right type
-                                if (!a2.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.AngleUnit)))
-                                {
-                                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
-                                        + System.Environment.NewLine + "Unit type is " + a2.Value.QuantityInfo.Name + " but must be Length");
-                                    return;
-                                }
-                            }
-                            // try cast to double
-                            else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                            {
-                                // create new quantity from default units
-                                a2 = new GH_UnitNumber(new UnitsNet.Angle(val, angleUnit));
-                            }
-                            else
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert s° input");
-                                return;
-                            }
-                        }
+                    bars.Positions = GetInput.IPoints(this, DA, 1);
 
-                        // 4 end angle input
-                        // default to 0
-                        GH_UnitNumber e2 = new GH_UnitNumber(new UnitsNet.Angle(Math.PI/2, angleUnit));
-                        gh_typ = new GH_ObjectWrapper();
-                        if (DA.GetData(3, ref gh_typ))
-                        {
-                            // try cast directly to quantity type
-                            if (gh_typ.Value is GH_UnitNumber)
-                            {
-                                e2 = (GH_UnitNumber)gh_typ.Value;
-                                // check that unit is of right type
-                                if (!e2.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.AngleUnit)))
-                                {
-                                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 2: Wrong unit type supplied"
-                                        + System.Environment.NewLine + "Unit type is " + e2.Value.QuantityInfo.Name + " but must be Length");
-                                    return;
-                                }
-                            }
-                            // try cast to double
-                            else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                            {
-                                // create new quantity from default units
-                                e2 = new GH_UnitNumber(new UnitsNet.Angle(val, angleUnit));
-                            }
-                            else
-                            {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert e° input");
-                                return;
-                            }
-                        }
+                    group = new AdSecRebarGroupGoo(bars);
 
-                        // create arc rebar grouup
-                        group = new AdSecRebarGroupGoo(IArcGroup.Create(pt1.AdSecPoint, (UnitsNet.Length)r2.Value, (UnitsNet.Angle)a2.Value, (UnitsNet.Angle)e2.Value, spacing.Value));
-
-                        break;
-                }
+                    break;
             }
-            else
-            {
-                // 0 rebar input
-                AdSecRebarBundleGoo rebar = null;
-                GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-                if (DA.GetData(0, ref gh_typ))
-                {
-                    if (gh_typ.Value is AdSecRebarBundleGoo)
-                    {
-                        rebar = (AdSecRebarBundleGoo)gh_typ.Value;
-                    }
-                    else
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in rebar input - unable to cast from type " + gh_typ.Value.GetType().Name);
-                    }
-                }
-                if (rebar == null)
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in rebar input");
-                    return;
-                }
 
-                // 1 point list input
-                Oasys.Collections.IList<IPoint> pts = Oasys.Collections.IList<IPoint>.Create();
-                List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
-                if (DA.GetDataList(1, gh_typs))
-                {
-                    for (int i = 0; i < gh_typs.Count; i++)
-                    {
-                        Point3d ghpt = new Point3d();
-                        if (gh_typs[i].Value is IPoint)
-                        {
-                            pts.Add((IPoint)gh_typs[i].Value);
-                        }
-                        else if (gh_typs[i].Value is AdSecPointGoo)
-                        {
-                            AdSecPointGoo vertex = (AdSecPointGoo)gh_typs[i].Value;
-                            pts.Add(vertex.AdSecPoint);
-                        }
-                        else if (GH_Convert.ToPoint3d(gh_typs[i].Value, ref ghpt, GH_Conversion.Both))
-                        {
-                            pts.Add(GhAdSec.Parameters.AdSecPointGoo.CreateFromPoint3d(ghpt));
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert Vxs input index " + i + " to a Vertex point");
-                            return;
-                        }
-                    }
-                    if (pts.Count < 1)
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "No inputs were converted to vertex points. Unable to position bar(s)");
-                        return;
-                    }
-                }
-
-                // create single rebar group
-                ISingleBars bars = ISingleBars.Create(rebar.Value);
-                bars.Positions = pts;
-                group = new AdSecRebarGroupGoo(bars);
-
-            }
-            
             // set output
             DA.SetData(0, group);
         }

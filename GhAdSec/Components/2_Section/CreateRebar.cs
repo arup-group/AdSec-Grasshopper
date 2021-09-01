@@ -100,74 +100,32 @@ namespace GhAdSec.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // 0 material input
-            AdSecMaterial material = new AdSecMaterial();
-            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(0, ref gh_typ))
-            {
-                if (gh_typ.Value is AdSecMaterialGoo)
-                {
-                    gh_typ.CastTo(ref material);
-                    if (!(material.Type == AdSecMaterial.AdSecMaterialType.Rebar | material.Type == AdSecMaterial.AdSecMaterialType.Tendon))
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 0: Wrong material type supplied"
-                            + System.Environment.NewLine + "Material type is " + material.Type.ToString() + " but must be Reinforcement");
-                        return;
-                    }
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in material input - unable to cast from type " + gh_typ.Value.GetType().Name);
-                }
-            }
+            AdSecMaterial material = GetInput.AdSecMaterial(this, DA, 0);
 
-            GH_UnitNumber diameter = null;
-            gh_typ = new GH_ObjectWrapper();
-            if (DA.GetData(1, ref gh_typ))
+            switch (_mode)
             {
-                // try cast directly to quantity type
-                if (gh_typ.Value is GH_UnitNumber)
-                {
-                    diameter = (GH_UnitNumber)gh_typ.Value;
-                    // check that unit is of right type
-                    if (!diameter.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
-                    {
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in input index 1: Wrong unit type supplied" 
-                            + System.Environment.NewLine + "Unit type is " + diameter.Value.QuantityInfo.Name + " but must be Length");
-                        return;
-                    }
-                }
-                // try cast to double
-                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
-                {
-                    // create new quantity from default units
-                    diameter = new GH_UnitNumber(new UnitsNet.Length(val, lengthUnit));
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input index 1");
-                    return;
-                }
-            }
-
-            if (_mode == FoldMode.Single)
-            {
-                AdSecRebarBundleGoo rebar = new AdSecRebarBundleGoo(IBarBundle.Create((Oasys.AdSec.Materials.IReinforcement)material.Material, (UnitsNet.Length)diameter.Value));
-                DA.SetData(0, rebar);
-            }
-            else
-            {
-                int count = 1;
-                if (DA.GetData(2, ref count))
-                {
-                    //if (count > 4 | count < 1)
-                    //{
-                    //    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Number of bars in bundle must be between 1 and 4");
-                    //    return;
-                    //}
-
-                    AdSecRebarBundleGoo rebar = new AdSecRebarBundleGoo(IBarBundle.Create((Oasys.AdSec.Materials.IReinforcement)material.Material, (UnitsNet.Length)diameter.Value, count));
+                case FoldMode.Single:
+                    AdSecRebarBundleGoo rebar = new AdSecRebarBundleGoo(
+                        IBarBundle.Create(
+                            (Oasys.AdSec.Materials.IReinforcement)material.Material,
+                            GetInput.Length(this, DA, 1, lengthUnit)));
+                    
                     DA.SetData(0, rebar);
-                }
+
+                    break;
+
+                case FoldMode.Bundle:
+                    int count = 1;
+                    DA.GetData(2, ref count);
+
+                    AdSecRebarBundleGoo bundle = new AdSecRebarBundleGoo(
+                    IBarBundle.Create(
+                        (Oasys.AdSec.Materials.IReinforcement)material.Material,
+                        GetInput.Length(this, DA, 1, lengthUnit),
+                        count));
+
+                    DA.SetData(0, bundle);
+                    break;
             }
         }
 

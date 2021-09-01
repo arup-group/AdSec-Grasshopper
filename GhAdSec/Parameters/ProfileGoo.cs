@@ -22,34 +22,35 @@ using GH_IO;
 using GH_IO.Serialization;
 using Rhino.Display;
 using Oasys.Profiles;
+using UnitsNet.Units;
 
 
 namespace GhAdSec.Parameters
 {
     public class AdSecProfileGoo : GH_GeometricGoo<Polyline>, IGH_PreviewData
     {
-        public AdSecProfileGoo(Polyline polygon)
+        public AdSecProfileGoo(Polyline polygon, LengthUnit lengthUnit)
         : base(polygon)
-        {
-            // Create from polygon
-            IPolygon polyprofile = IPolygon.Create();
-            polyprofile.Points = PtsFromRhinoPolyline(polygon);
-
-            // create Profile
-            m_profile = (IProfile)polyprofile;
-            m_voidEdges = null;
-        }
-        public AdSecProfileGoo(Polyline solid, List<Polyline> voids)
         {
             // Create from polygon
             IPerimeterProfile perimprofile = IPerimeterProfile.Create();
 
-            perimprofile.SolidPolygon = PolygonFromRhinoPolyline(solid);
+            perimprofile.SolidPolygon = PolygonFromRhinoPolyline(polygon, lengthUnit);
+            // create Profile
+            m_profile = perimprofile;
+            m_voidEdges = null;
+        }
+        public AdSecProfileGoo(Polyline solid, List<Polyline> voids, LengthUnit lengthUnit)
+        {
+            // Create from polygon
+            IPerimeterProfile perimprofile = IPerimeterProfile.Create();
+
+            perimprofile.SolidPolygon = PolygonFromRhinoPolyline(solid, lengthUnit);
 
             Oasys.Collections.IList<IPolygon> adsecVoids = Oasys.Collections.IList<IPolygon>.Create();
             foreach (Polyline vdCrv in voids)
             {
-                adsecVoids.Add(PolygonFromRhinoPolyline(vdCrv));
+                adsecVoids.Add(PolygonFromRhinoPolyline(vdCrv, lengthUnit));
             }
             perimprofile.VoidPolygons = adsecVoids;
 
@@ -65,7 +66,7 @@ namespace GhAdSec.Parameters
             m_voidEdges = edges.Item2;
         }
 
-        public AdSecProfileGoo(Brep brep)
+        public AdSecProfileGoo(Brep brep, LengthUnit lengthUnit)
         {
             IPerimeterProfile profile = IPerimeterProfile.Create();
             // get edge curves from Brep
@@ -90,7 +91,7 @@ namespace GhAdSec.Parameters
                 solidpts.Add(pt3d);
             }
             Polyline solid = new Polyline(solidpts);
-            profile.SolidPolygon = PolygonFromRhinoPolyline(solid);
+            profile.SolidPolygon = PolygonFromRhinoPolyline(solid, lengthUnit);
 
             if (edges.Length > 1)
             {
@@ -120,7 +121,7 @@ namespace GhAdSec.Parameters
                         throw new Exception("Cannot convert internal edge  to Polyline");
                     }
                     Polyline voidCrv = new Polyline(voidpts);
-                    voids.Add(PolygonFromRhinoPolyline(voidCrv));
+                    voids.Add(PolygonFromRhinoPolyline(voidCrv, lengthUnit));
                     voidEdges.Add(voidCrv);
                 }
                 profile.VoidPolygons = voids;
@@ -166,29 +167,29 @@ namespace GhAdSec.Parameters
             }
         }
 
-        internal static Oasys.Collections.IList<IPoint> PtsFromRhinoPolyline(Polyline polyline)
+        internal static Oasys.Collections.IList<IPoint> PtsFromRhinoPolyline(Polyline polyline, LengthUnit lengthUnit)
         {
             if (polyline == null) { return null; }
 
             Oasys.Collections.IList<IPoint> pts = Oasys.Collections.IList<IPoint>.Create();
             IPoint pt = null;
 
-            for (int i = 0; i < polyline.Count + 1; i++)
+            for (int i = 0; i < polyline.Count; i++)
             {
                 Point3d point3d = polyline[i];
                 pt = IPoint.Create(
-                    new UnitsNet.Length(point3d.X, GhAdSec.DocumentUnits.LengthUnit),
-                    new UnitsNet.Length(point3d.Y, GhAdSec.DocumentUnits.LengthUnit));
+                    new UnitsNet.Length(point3d.X, lengthUnit),
+                    new UnitsNet.Length(point3d.Y, lengthUnit));
                 pts.Add(pt);
             }
 
             return pts;
         }
 
-        internal static IPolygon PolygonFromRhinoPolyline(Polyline polyline)
+        internal static IPolygon PolygonFromRhinoPolyline(Polyline polyline, LengthUnit lengthUnit)
         {
             IPolygon polygon = IPolygon.Create();
-            polygon.Points = PtsFromRhinoPolyline(polyline);
+            polygon.Points = PtsFromRhinoPolyline(polyline, lengthUnit);
             return polygon;
         }
 
@@ -481,7 +482,7 @@ namespace GhAdSec.Parameters
                 Polyline poly;
                 if (crv.TryGetPolyline(out poly))
                 {
-                    AdSecProfileGoo temp = new AdSecProfileGoo(poly);
+                    AdSecProfileGoo temp = new AdSecProfileGoo(poly, GhAdSec.DocumentUnits.LengthUnit);
                     this.m_value = temp.m_value;
                     this.m_profile = temp.m_profile;
                     this.m_voidEdges = temp.m_voidEdges;
