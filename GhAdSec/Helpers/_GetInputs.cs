@@ -573,21 +573,28 @@ namespace GhAdSec.Components
                         return null;
                     }
 
-
-                    // try get voids
-                    List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
-                    if (DA.GetDataList(inputid_Voids, gh_typs))
+                    if (inputid_Voids >= 0)
                     {
-                        List<Polyline> voids = new List<Polyline>();
-
-                        for (int i = 0; i < gh_typs.Count; i++)
+                        // try get voids
+                        List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
+                        if (DA.GetDataList(inputid_Voids, gh_typs))
                         {
-                            if (GH_Convert.ToCurve(gh_typs[i].Value, ref crv, GH_Conversion.Both))
+                            List<Polyline> voids = new List<Polyline>();
+
+                            for (int i = 0; i < gh_typs.Count; i++)
                             {
-                                Polyline voidCrv = null;
-                                if (crv.TryGetPolyline(out voidCrv))
+                                if (GH_Convert.ToCurve(gh_typs[i].Value, ref crv, GH_Conversion.Both))
                                 {
-                                    voids.Add(voidCrv);
+                                    Polyline voidCrv = null;
+                                    if (crv.TryGetPolyline(out voidCrv))
+                                    {
+                                        voids.Add(voidCrv);
+                                    }
+                                    else
+                                    {
+                                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].Name + " input (index " + inputid_Voids + "), index in input list: " + i + ", to Polyline");
+                                        return null;
+                                    }
                                 }
                                 else
                                 {
@@ -595,19 +602,14 @@ namespace GhAdSec.Components
                                     return null;
                                 }
                             }
-                            else
-                            {
-                                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].Name + " input (index " + inputid_Voids + "), index in input list: " + i + ", to Polyline");
-                                return null;
-                            }
-                        }
 
-                        perimeter = new AdSecProfileGoo(solid, voids, lengthUnit);
-                    }
-                    else if (owner.Params.Input[inputid_Voids].SourceCount > 0)
-                    {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].Name + " input (index " + inputid_Voids + ") to Polyline(s)");
-                        return null;
+                            perimeter = new AdSecProfileGoo(solid, voids, lengthUnit);
+                        }
+                        else if (owner.Params.Input[inputid_Voids].SourceCount > 0)
+                        {
+                            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].Name + " input (index " + inputid_Voids + ") to Polyline(s)");
+                            return null;
+                        }
                     }
                 }
                 else
@@ -620,6 +622,31 @@ namespace GhAdSec.Components
             else
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid_Boundary].Name + " input, index " + inputid_Boundary + " - Input required");
+                return null;
+            }
+        }
+        internal static IProfile Profile(GH_Component owner, IGH_DataAccess DA, int inputid)
+        {
+            IProfile prfl = null;
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(inputid, ref gh_typ))
+            {
+                // try cast directly to quantity type
+                if (gh_typ.Value is AdSecProfileGoo)
+                {
+                    AdSecProfileGoo a1 = (AdSecProfileGoo)gh_typ.Value;
+                    prfl = a1.Profile;
+                }
+                else
+                {
+                    prfl = Boundaries(owner, DA, inputid, -1, GhAdSec.DocumentUnits.LengthUnit);
+                }
+                
+                return prfl;
+            }
+            else
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
                 return null;
             }
         }

@@ -86,6 +86,7 @@
     <Compile Include="Components\2_Section\CreateRebarGroup.cs" />
     <Compile Include="Components\2_Section\CreateProfileWeb.cs" />
     <Compile Include="Components\2_Section\CreateProfileFlange.cs" />
+    <Compile Include="Components\2_Section\EditProfile.cs" />
     <Compile Include="GhAdSecInfo.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
