@@ -65,12 +65,15 @@ namespace GhAdSec.Components
             if (i == 0)
             {
                 _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[i]);
+                ToggleInput();
             }
             else
             {
                 lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
             }
-            ToggleInput();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
         #endregion
@@ -169,10 +172,6 @@ namespace GhAdSec.Components
 
                     break;
             }
-
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
         }
         #endregion
 
@@ -211,8 +210,6 @@ namespace GhAdSec.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            
-            
             if (_mode == FoldMode.Distance)
             {
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);

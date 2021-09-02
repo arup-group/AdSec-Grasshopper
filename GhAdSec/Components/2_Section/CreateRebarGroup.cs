@@ -93,6 +93,8 @@ namespace GhAdSec.Components
                             dropdownitems.RemoveAt(1);
                         break;
                 }
+
+                ToggleInput();
             }
             else
             {
@@ -107,7 +109,9 @@ namespace GhAdSec.Components
                         break;
                 }
             }
-            ToggleInput();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
         #endregion
@@ -117,7 +121,7 @@ namespace GhAdSec.Components
         List<string> selecteditems;
         List<string> spacerDescriptions = new List<string>(new string[]
         {
-            "Group Type",
+            "Layout Type",
             "Measure",
             "Angular measure"
         });
@@ -254,9 +258,7 @@ namespace GhAdSec.Components
                     break;
             }
 
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
+            
         }
         #endregion
 

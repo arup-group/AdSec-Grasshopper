@@ -308,6 +308,47 @@ namespace GhAdSec.Components
             }
             return Oasys.Units.Strain.Zero;
         }
+        internal static Curvature Curvature(GH_Component owner, IGH_DataAccess DA, int inputid, CurvatureUnit curvatureUnit, bool isOptional = false)
+        {
+            Oasys.Units.Curvature crvature = new Oasys.Units.Curvature();
+
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(inputid, ref gh_typ))
+            {
+                GH_UnitNumber inStrain;
+
+                // try cast directly to quantity type
+                if (gh_typ.Value is GH_UnitNumber)
+                {
+                    inStrain = (GH_UnitNumber)gh_typ.Value;
+                    if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.CurvatureUnit)))
+                    {
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].Name + " input, index " + inputid + ": Wrong unit type supplied"
+                            + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Curvature");
+                        return Oasys.Units.Curvature.Zero;
+                    }
+                    crvature = (Oasys.Units.Curvature)inStrain.Value.ToUnit(curvatureUnit);
+                }
+                // try cast to double
+                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                {
+                    // create new quantity from default units
+                    inStrain = new GH_UnitNumber(new Oasys.Units.Curvature(val, curvatureUnit));
+                    crvature = (Oasys.Units.Curvature)inStrain.Value;
+                }
+                else
+                {
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to a UnitNumber of Curvature");
+                    return Oasys.Units.Curvature.Zero;
+                }
+                return crvature;
+            }
+            else if (!isOptional)
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+            }
+            return Oasys.Units.Curvature.Zero;
+        }
         internal static Force Force(GH_Component owner, IGH_DataAccess DA, int inputid, UnitsNet.Units.ForceUnit forceUnit, bool isOptional = false)
         {
             UnitsNet.Force force = new UnitsNet.Force();

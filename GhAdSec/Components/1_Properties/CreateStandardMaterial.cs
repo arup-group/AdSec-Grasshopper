@@ -127,7 +127,8 @@ namespace GhAdSec.Components
                     dropdownitems.RemoveAt(1);
 
                 string prevSelectedCode = selecteditems[1].ToString();
-                
+                string prevSelectedNA = selecteditems[2].ToString();
+
                 // remove all selected items after the dropdown that has been changed
                 while (selecteditems.Count > i + 1)
                     selecteditems.RemoveAt(i + 1);
@@ -217,12 +218,17 @@ namespace GhAdSec.Components
                         // if kvp has values we add them to create a new dropdown list
                         dropdownitems.Add(materials.Keys.ToList());
                         // with first item being the selected
-                        if (selecteditems[1].StartsWith("EN1992"))
+                        if (selecteditems[1].StartsWith("EN199"))
                         {
                             if (materials.Keys.Count > 4)
-                                selecteditems.Add(materials.Keys.ElementAt(4));
+                            {
+                                selecteditems.Add(materials.Keys.ElementAt(4)); // C37
+
+                            }
                             else if (materials.Keys.Count == 3)
-                                selecteditems.Add(materials.Keys.ElementAt(2));
+                                selecteditems.Add(materials.Keys.ElementAt(1)); // B500B
+                            else if (materials.Keys.Count == 4)
+                                selecteditems.Add(materials.Keys.ElementAt(2)); // S355
                             else
                                 selecteditems.Add(materials.Keys.First());
                         }
@@ -232,6 +238,17 @@ namespace GhAdSec.Components
                         drill = false;
 
                         spacerDescriptions[selecteditems.Count - 1] = "Grade";
+                    }
+                }
+                if (prevSelectedCode.StartsWith("EN199"))
+                {
+                    foreach (string code in dropdownitems[2])
+                    {
+                        if (code.Equals(prevSelectedNA))
+                        {
+                            selecteditems[2] = code;
+                            break;
+                        }
                     }
                 }
             }

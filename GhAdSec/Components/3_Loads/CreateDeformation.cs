@@ -25,14 +25,14 @@ namespace GhAdSec.Components
     /// <summary>
     /// Component to create a new Stress Strain Point
     /// </summary>
-    public class CreateLoad : GH_Component, IGH_VariableParameterComponent
+    public class CreateDeformation : GH_Component, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
         // including name, exposure level and icon
-        public override Guid ComponentGuid => new Guid("cbab2b74-2a01-4f05-ba24-2c79827c7415");
-        public CreateLoad()
-          : base("Create Load", "Load", "Create an AdSec Load from an axial force and biaxial moments",
+        public override Guid ComponentGuid => new Guid("cbab2b58-2a01-4f05-ba24-2c79827c7415");
+        public CreateDeformation()
+          : base("Create Deformation Load", "Deformation", "Create an AdSec Deformation Load from an axial strain and biaxial curvatures",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat3())
         { this.Hidden = false; } // sets the initial state of the component to hidden
@@ -50,18 +50,18 @@ namespace GhAdSec.Components
                 dropdownitems = new List<List<string>>();
                 selecteditems = new List<string>();
 
-                // force
-                dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.ForceUnit)).ToList());
-                selecteditems.Add(forceUnit.ToString());
-                
-                // moment
-                dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.MomentUnit)).ToList());
-                selecteditems.Add(momentUnit.ToString());
+                // strain
+                dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                selecteditems.Add(strainUnit.ToString());
 
-                IQuantity force = new UnitsNet.Force(0, forceUnit);
-                forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-                IQuantity moment = new Oasys.Units.Moment(0, momentUnit);
-                momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
+                // curvature
+                dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.CurvatureUnit)).ToList());
+                selecteditems.Add(curvatureUnit.ToString());
+
+                IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
+                strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
+                IQuantity curvature = new Oasys.Units.Curvature(0, curvatureUnit);
+                curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
 
                 first = false;
             }
@@ -77,10 +77,10 @@ namespace GhAdSec.Components
             switch (i)
             {
                 case 0:
-                    forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[i]);
+                    strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
                     break;
                 case 1:
-                    momentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), selecteditems[i]);
+                    curvatureUnit = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), selecteditems[i]);
                     break;
             }
 
@@ -101,22 +101,22 @@ namespace GhAdSec.Components
         // list of descriptions 
         List<string> spacerDescriptions = new List<string>(new string[]
         {
-            "Force Unit",
-            "Moment Unit"
+            "Strain Unit",
+            "Curvature Unit"
         });
         private bool first = true;
 
-        private UnitsNet.Units.ForceUnit forceUnit = GhAdSec.DocumentUnits.ForceUnit;
-        private Oasys.Units.MomentUnit momentUnit = GhAdSec.DocumentUnits.MomentUnit;
-        string forceUnitAbbreviation;
-        string momentUnitAbbreviation;
+        private Oasys.Units.StrainUnit strainUnit = GhAdSec.DocumentUnits.StrainUnit;
+        private Oasys.Units.CurvatureUnit curvatureUnit = GhAdSec.DocumentUnits.CurvatureUnit;
+        string strainUnitAbbreviation;
+        string curvatureUnitAbbreviation;
         #endregion
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Fx [" + forceUnitAbbreviation + "]", "X", "The axial force. Positive x is tension.", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Myy [" + momentUnitAbbreviation + "]", "YY", "The moment about local y-axis. Positive yy is anti - clockwise moment about local y-axis.", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Mzz [" + momentUnitAbbreviation + "]", "ZZ", "The moment about local z-axis. Positive zz is anti - clockwise moment about local z-axis.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Δx [" + strainUnitAbbreviation + "]", "X", "The axial strain. Positive X indicates tension.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("δyy [" + curvatureUnitAbbreviation + "]", "YY", "The curvature about local y-axis. It follows the right hand grip rule about the axis. Positive YY is anti-clockwise curvature about local y-axis.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("δzz [" + curvatureUnitAbbreviation + "]", "ZZ", "The curvature about local z-axis. It follows the right hand grip rule about the axis. Positive ZZ is anti-clockwise curvature about local z-axis.", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -126,27 +126,26 @@ namespace GhAdSec.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // Create new load
-            ILoad load = ILoad.Create(
-                GetInput.Force(this, DA, 0, forceUnit),
-                GetInput.Moment(this, DA, 1, momentUnit),
-                GetInput.Moment(this, DA, 2, momentUnit));
+            IDeformation deformation = IDeformation.Create(
+                GetInput.Strain(this, DA, 0, strainUnit),
+                GetInput.Curvature(this, DA, 1, curvatureUnit),
+                GetInput.Curvature(this, DA, 2, curvatureUnit));
 
-            DA.SetData(0, new AdSecLoadGoo(load));
+            DA.SetData(0, new AdSecDeformationGoo(deformation));
         }
 
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
             GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
-
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
-            forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[0]);
-            momentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), selecteditems[1]);
+            strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
+            curvatureUnit = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), selecteditems[1]);
 
             first = false;
             return base.Read(reader);
@@ -172,13 +171,13 @@ namespace GhAdSec.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            IQuantity force = new UnitsNet.Force(0, forceUnit);
-            forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-            IQuantity moment = new Oasys.Units.Moment(0, momentUnit);
-            momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
-            Params.Input[0].Name = "Fx [" + forceUnitAbbreviation + "]";
-            Params.Input[1].Name = "Myy [" + momentUnitAbbreviation + "]";
-            Params.Input[2].Name = "Mzz [" + momentUnitAbbreviation + "]";
+            IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
+            strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
+            IQuantity curvature = new Oasys.Units.Curvature(0, curvatureUnit);
+            curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
+            Params.Input[0].Name = "Δx [" + strainUnitAbbreviation + "]";
+            Params.Input[1].Name = "δyy [" + curvatureUnitAbbreviation + "]";
+            Params.Input[2].Name = "δzz [" + curvatureUnitAbbreviation + "]";
         }
         #endregion
 
