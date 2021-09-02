@@ -28,12 +28,12 @@ namespace GhAdSec.Components
         // including name, exposure level and icon
         public override Guid ComponentGuid => new Guid("c182921f-0ace-49ca-8fb7-5722dbf2ba30");
         public CreateProfileFlange()
-          : base("Create Flange", "Flange", "Create a Flange Profile for AdSec Profile",
+          : base("Create Flange", "Flange", "Create a Flange for AdSec Profile",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat2())
         { this.Hidden = true; } // sets the initial state of the component to hidden
 
-        public override GH_Exposure Exposure => GH_Exposure.tertiary;
+        public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
         protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateFlange;
         #endregion

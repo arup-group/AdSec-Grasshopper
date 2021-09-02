@@ -253,6 +253,16 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap EditProfile {
+            get {
+                object obj = ResourceManager.GetObject("EditProfile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap EditSection {
             get {
                 object obj = ResourceManager.GetObject("EditSection", resourceCulture);
@@ -306,6 +316,16 @@ namespace GhAdSec.Properties {
         internal static System.Drawing.Bitmap StressStrainPoint {
             get {
                 object obj = ResourceManager.GetObject("StressStrainPoint", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SubComponent {
+            get {
+                object obj = ResourceManager.GetObject("SubComponent", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -1,0 +1,525 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
+using Rhino.Geometry;
+using Rhino;
+using Grasshopper.Documentation;
+using Rhino.Collections;
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
+using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.AdSec;
+using Oasys.AdSec.StandardMaterials;
+using Oasys.Profiles;
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Layers;
+using UnitsNet;
+using Oasys.Units;
+using System.Drawing;
+using Rhino.Display;
+
+namespace GhAdSec.Parameters
+{
+    /// <summary>
+    /// AdSec Material class, this class defines the basic properties and methods for any AdSec Material
+    /// </summary>
+    public class AdSecSection
+    {
+        public ISection Section
+        {
+            get { return m_section; }
+            set { m_section = value; }
+        }
+        public IDesignCode DesignCode
+        {
+            get { return m_code; }
+            set { m_code = value; }
+        }
+        #region fields
+        private IDesignCode m_code;
+        private ISection m_section;
+
+        #endregion
+        internal Brep SolidBrep => m_profile;
+        internal List<Brep> SubBreps => m_subProfiles;
+        #region constructors
+        
+        public AdSecSection(ISection section, AdSecDesignCode code)
+        {
+            m_section = section;
+            m_code = code.DesignCode;
+            CreatePreview(m_code, section, ref m_profile, ref m_subProfiles, ref m_rebars, ref m_profileColour, ref m_rebarColours, ref m_subColours);
+        }
+        public AdSecSection(ISection section, IDesignCode code, IPoint subComponentOffset = null)
+        {
+            m_section = section;
+            m_code = code;
+            CreatePreview(m_code, section, ref m_profile, ref m_subProfiles, ref m_rebars, ref m_profileColour, ref m_rebarColours, ref m_subColours, subComponentOffset);
+        }
+
+        public AdSecSection(Oasys.Profiles.IProfile profile, AdSecMaterial material)
+        {
+            m_code = material.DesignCode.Duplicate().DesignCode;
+            m_section = ISection.Create(profile, material.Material);
+            CreatePreview(m_code, m_section, ref m_profile, ref m_subProfiles, ref m_rebars, ref m_profileColour, ref m_rebarColours, ref m_subColours);
+        }
+
+        public AdSecSection(Oasys.Profiles.IProfile profile, AdSecMaterial material, 
+            Oasys.Collections.IList<Oasys.AdSec.Reinforcement.Groups.IGroup> reinforcement,
+            Oasys.Collections.IList<Oasys.AdSec.ISubComponent> subComponents)
+        {
+            m_code = material.DesignCode.Duplicate().DesignCode;
+            m_section = ISection.Create(profile, material.Material);
+            m_section.ReinforcementGroups = reinforcement;
+            m_section.SubComponents = subComponents;
+            CreatePreview(m_code, m_section, ref m_profile, ref m_subProfiles, ref m_rebars, ref m_profileColour, ref m_rebarColours, ref m_subColours);
+        }
+
+        // cache for preview
+        internal Brep m_profile;
+        internal DisplayMaterial m_profileColour;
+        internal List<Brep> m_rebars;
+        internal List<DisplayMaterial> m_rebarColours;
+        internal List<Brep> m_subProfiles;
+        internal List<DisplayMaterial> m_subColours;
+        internal void CreatePreview(IDesignCode code, ISection section, ref Brep profile, ref List<Brep> subProfiles, ref List<Brep> rebars,
+            ref DisplayMaterial profileColour, ref List<DisplayMaterial> rebarColours,
+            ref List<DisplayMaterial> subColours, IPoint offset = null)
+        {
+            ISection flat = null;
+            if (code != null) //{ code = Oasys.AdSec.DesignCode.EN1992.Part1_1.Edition_2004.NationalAnnex.NoNationalAnnex; }
+            {
+                IAdSec adSec = IAdSec.Create(code);
+                //= null; // adSec.DesignCode.
+
+                flat = section;
+            }
+            else
+            {
+                IPerimeterProfile prof = IPerimeterProfile.Create(section.Profile);
+                flat = ISection.Create(prof, section.Material);
+            }
+
+            // create offset if any
+            Vector3d offs = Vector3d.Zero;
+
+            if (offset != null)
+            {
+                offs = new Vector3d(
+                    offset.Y.As(GhAdSec.DocumentUnits.LengthUnit),
+                    offset.Z.As(GhAdSec.DocumentUnits.LengthUnit),
+                    0);
+            }
+
+            // primary profile
+            profile = CreateBrepFromProfile(new AdSecProfileGoo(flat.Profile));
+            profile.Transform(Transform.Translation(offs));
+
+            // get material
+            AdSecMaterial.AdSecMaterialType profileType;
+            string mat = section.Material.ToString();
+            mat = mat.Replace("Oasys.AdSec.Materials.I", "");
+            mat = mat.Replace("_Implementation", "");
+            Enum.TryParse(mat, out profileType); 
+            switch (profileType)
+            {
+                case AdSecMaterial.AdSecMaterialType.Concrete:
+                    profileColour = UI.Colour.Concrete;
+                    break;
+                case AdSecMaterial.AdSecMaterialType.Steel:
+                    profileColour = UI.Colour.Steel;
+                    break;
+            }
+
+            // sub components
+            subProfiles = new List<Brep>();
+            subColours = new List<DisplayMaterial>();
+            foreach (ISubComponent sub in flat.SubComponents)
+            {
+                Brep temp = CreateBrepFromProfile(new AdSecProfileGoo(sub.Section.Profile));
+                Vector3d trans = new Vector3d(
+                    sub.Offset.Y.As(GhAdSec.DocumentUnits.LengthUnit),
+                    sub.Offset.Z.As(GhAdSec.DocumentUnits.LengthUnit),
+                    0);
+                temp.Transform(Transform.Translation(trans));
+                temp.Transform(Transform.Translation(offs));
+                subProfiles.Add(temp);
+
+                string submat = section.Material.ToString();
+                submat = submat.Replace("Oasys.AdSec.Materials.I", "");
+                submat = submat.Replace("_Implementation", "");
+                AdSecMaterial.AdSecMaterialType subType;
+                Enum.TryParse(mat, out subType);
+                DisplayMaterial subColour = null;
+                switch (subType)
+                {
+                    case AdSecMaterial.AdSecMaterialType.Concrete:
+                        subColour = UI.Colour.Concrete;
+                        break;
+                    case AdSecMaterial.AdSecMaterialType.Steel:
+                        subColour = UI.Colour.Steel;
+                        break;
+                }
+                subColours.Add(subColour);
+            }
+
+            // rebars
+            rebars = new List<Brep>();
+            rebarColours = new List<DisplayMaterial>();
+            foreach (IGroup rebargrp in flat.ReinforcementGroups)
+            {
+                ISingleBars snglBrs = (ISingleBars)rebargrp;
+                rebars.AddRange(CreateBrepsFromSingleRebar(snglBrs, offs));
+                
+                string rebmat = snglBrs.BarBundle.Material.ToString();
+                rebmat = rebmat.Replace("Oasys.AdSec.Materials.I", "");
+                rebmat = rebmat.Replace("_Implementation", "");
+                AdSecMaterial.AdSecMaterialType rebarType;
+                Enum.TryParse(rebmat, out rebarType);
+                DisplayMaterial rebColour = UI.Colour.Reinforcement;
+                switch (rebarType)
+                {
+                    case AdSecMaterial.AdSecMaterialType.Rebar:
+                        rebColour = UI.Colour.Reinforcement;
+                        break;
+                    case AdSecMaterial.AdSecMaterialType.FRP:
+                        rebColour = UI.Colour.Reinforcement;
+                        break;
+                    case AdSecMaterial.AdSecMaterialType.Tendon:
+                        rebColour = UI.Colour.Reinforcement;
+                        break;
+                }
+                rebarColours.Add(rebColour);
+            }
+        }
+
+        private Brep CreateBrepFromProfile(AdSecProfileGoo profile)
+        {
+            List<Curve> crvs = new List<Curve>();
+            crvs.Add(profile.Value.ToPolylineCurve());
+            crvs.AddRange(profile.VoidEdges.Select(x => x.ToPolylineCurve()));
+            return Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelAbsoluteTolerance).First();
+        }
+
+        private List<Brep> CreateBrepsFromSingleRebar(ISingleBars bars, Vector3d offset)
+        {
+            List<Brep> rebarBreps = new List<Brep>();
+            for (int i = 0; i < bars.Positions.Count; i++)
+            {
+                Point3d center = new Point3d(
+                    bars.Positions[i].Y.As(GhAdSec.DocumentUnits.LengthUnit),
+                    bars.Positions[i].Z.As(GhAdSec.DocumentUnits.LengthUnit),
+                    0);
+                center.Transform(Transform.Translation(offset));
+                Circle circle = new Circle(center, bars.BarBundle.Diameter.As(GhAdSec.DocumentUnits.LengthUnit) / 2);
+                List<Curve> crvs = new List<Curve>() { circle.ToNurbsCurve() };
+                rebarBreps.Add(Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelRelativeTolerance).First());
+            }
+            return rebarBreps;
+        }
+
+        public AdSecSection Duplicate()
+        {
+            if (this == null) { return null; }
+            AdSecSection dup = (AdSecSection)this.MemberwiseClone();
+            return dup;
+        }
+        #endregion
+
+        #region properties
+        public bool IsValid
+        {
+            get
+            {
+                if (this.Section == null) { return false; }
+                return true;
+            }
+        }
+        #endregion
+
+        #region methods
+        public override string ToString()
+        {
+            return Section.Profile.Description();
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Geometry Goo wrapper class, makes sure class can be used and previewed in Grasshopper.
+    /// </summary>
+    public class AdSecSectionGoo : GH_GeometricGoo<AdSecSection>, IGH_PreviewData
+    {
+        #region constructors
+        public AdSecSectionGoo()
+        {
+            this.Value = null;
+        }
+        public AdSecSectionGoo(AdSecSection section)
+        {
+            if (section == null)
+                section = null;
+            else
+                this.Value = section.Duplicate();
+        }
+
+        public override IGH_GeometricGoo DuplicateGeometry()
+        {
+            return DuplicateAdSecSection();
+        }
+        public AdSecSectionGoo DuplicateAdSecSection()
+        {
+            if (Value == null)
+                return null;
+            else
+                return new AdSecSectionGoo(Value.Duplicate());
+        }
+        #endregion
+
+        #region properties
+        public override bool IsValid
+        {
+            get
+            {
+                if (Value == null) { return false; }
+                if (Value.SolidBrep == null || Value.IsValid == false) { return false; }
+                return true;
+            }
+        }
+        public override string IsValidWhyNot
+        {
+            get
+            {
+                if (Value.IsValid) { return string.Empty; }
+                return Value.IsValid.ToString(); 
+            }
+        }
+        public override string ToString()
+        {
+            if (Value == null)
+                return "Null AdSec Section";
+            else
+                return "AdSec " + TypeName + " {" + Value.ToString() + "}";
+        }
+        public override string TypeName => "Section";
+        public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+
+        public override BoundingBox Boundingbox
+        {
+            get
+            {
+                if (Value == null) { return BoundingBox.Empty; }
+                if (Value.SolidBrep == null) { return BoundingBox.Empty; }
+                return Value.SolidBrep.GetBoundingBox(false);
+            }
+        }
+        public override BoundingBox GetBoundingBox(Transform xform)
+        {
+            if (Value == null) { return BoundingBox.Empty; }
+            if (Value.SolidBrep == null) { return BoundingBox.Empty; }
+            return Value.SolidBrep.GetBoundingBox(xform);
+        }
+        #endregion
+
+        #region casting methods
+        public override bool CastTo<Q>(out Q target)
+        {
+            // This function is called when Grasshopper needs to convert this 
+            // AdSec type into some other type Q.            
+
+            if (typeof(Q).IsAssignableFrom(typeof(AdSecSectionGoo)))
+            {
+                if (Value == null)
+                    target = default;
+                else
+                    target = (Q)(object)Value.Duplicate();
+                return true;
+            }
+            if (typeof(Q).IsAssignableFrom(typeof(AdSecSection)))
+            {
+                if (Value == null)
+                    target = default;
+                else
+                    target = (Q)(object)new AdSecSection(Value.Section, Value.DesignCode);
+                return true;
+            }
+            if (typeof(Q).IsAssignableFrom(typeof(AdSecProfileGoo)))
+            {
+                if (Value == null)
+                    target = default;
+                else
+                    target = (Q)(object)new AdSecProfileGoo(Value.Section.Profile);
+                return true;
+            }
+            if (typeof(Q).IsAssignableFrom(typeof(Brep)))
+            {
+                if (Value == null)
+                    target = default;
+                else
+                    target = (Q)(object)Value.SolidBrep.DuplicateBrep();
+                return true;
+            }
+            if (typeof(Q).IsAssignableFrom(typeof(GH_Brep)))
+            {
+                if (Value == null)
+                    target = default;
+                else
+                    target = (Q)(object)Value.SolidBrep.DuplicateBrep();
+                return true;
+            }
+
+            target = default;
+            return false;
+        }
+        public override bool CastFrom(object source)
+        {
+            // This function is called when Grasshopper needs to convert other data 
+            // into this AdSec type.
+
+            if (source == null) { return false; }
+
+            return false;
+        }
+        #endregion
+
+        #region transformation methods
+        public override IGH_GeometricGoo Transform(Transform xform)
+        {
+            //return new AdSecSectionGoo(Value.Transform(xform));
+            return null;
+        }
+
+        public override IGH_GeometricGoo Morph(SpaceMorph xmorph)
+        {
+            //return new AdSecSectionGoo(Value.Morph(xmorph));
+            return null;
+        }
+
+        #endregion
+
+        #region drawing methods
+        public BoundingBox ClippingBox
+        {
+            get { return Boundingbox; }
+        }
+        public void DrawViewportMeshes(GH_PreviewMeshArgs args)
+        {
+            //Draw shape.
+            if (Value.SolidBrep != null)
+            {
+                // draw profile
+                args.Pipeline.DrawBrepShaded(Value.SolidBrep, Value.m_profileColour);
+                // draw subcomponents
+                for (int i = 0; i < Value.m_subProfiles.Count; i++)
+                {
+                    args.Pipeline.DrawBrepShaded(Value.m_subProfiles[i], Value.m_subColours[i]);
+                }
+                // draw rebars
+                for (int i = 0; i < Value.m_rebars.Count; i++)
+                {
+                    args.Pipeline.DrawBrepShaded(Value.m_rebars[i], Value.m_rebarColours[i]);
+                }
+            }
+        }
+        public void DrawViewportWires(GH_PreviewWireArgs args)
+        {
+            if (Value == null) { return; }
+
+            //Color colour = (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) ?
+            //        GhAdSec.UI.Colour.OasysBlue : GhAdSec.UI.Colour.OasysYellow;
+            //Color rebarColour = (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) ?
+            //        Color.Black : GhAdSec.UI.Colour.GsaLightGrey;
+
+            //args.Pipeline.DrawBrepWires(Value.SolidBrep, colour, 3);
+
+            //foreach (Brep sub in Value.m_subProfiles)
+            //    args.Pipeline.DrawBrepWires(sub, colour, 2);
+            
+            //foreach (Brep rebar in Value.m_rebars)
+            //    args.Pipeline.DrawBrepWires(rebar, rebarColour, 2);
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// This class provides a Parameter interface for the Data_GsaMember2d type.
+    /// </summary>
+    public class AdSecSectionParameter : GH_PersistentGeometryParam<AdSecSectionGoo>, IGH_PreviewObject
+    {
+        public AdSecSectionParameter()
+          : base(new GH_InstanceDescription("Section", "Sec", "Maintains a collection of AdSec Section data.", GhAdSec.Components.Ribbon.CategoryName.Name(), GhAdSec.Components.Ribbon.SubCategoryName.Cat9()))
+        {
+        }
+
+        public override Guid ComponentGuid => new Guid("fa647c2d-4767-49f1-a574-32bf66a66568");
+
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
+
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.AdSecSection;
+
+        //We do not allow users to pick parameter, 
+        //therefore the following 4 methods disable all this ui.
+        protected override GH_GetterResult Prompt_Plural(ref List<AdSecSectionGoo> values)
+        {
+            return GH_GetterResult.cancel;
+        }
+        protected override GH_GetterResult Prompt_Singular(ref AdSecSectionGoo value)
+        {
+            return GH_GetterResult.cancel;
+        }
+        protected override System.Windows.Forms.ToolStripMenuItem Menu_CustomSingleValueItem()
+        {
+            System.Windows.Forms.ToolStripMenuItem item = new System.Windows.Forms.ToolStripMenuItem
+            {
+                Text = "Not available",
+                Visible = false
+            };
+            return item;
+        }
+        protected override System.Windows.Forms.ToolStripMenuItem Menu_CustomMultiValueItem()
+        {
+            System.Windows.Forms.ToolStripMenuItem item = new System.Windows.Forms.ToolStripMenuItem
+            {
+                Text = "Not available",
+                Visible = false
+            };
+            return item;
+        }
+
+        #region preview methods
+        public BoundingBox ClippingBox
+        {
+            get
+            {
+                return Preview_ComputeClippingBox();
+            }
+        }
+        public void DrawViewportMeshes(IGH_PreviewArgs args)
+        {
+            //Use a standard method to draw gunk, you don't have to specifically implement this.
+            Preview_DrawMeshes(args);
+        }
+        public void DrawViewportWires(IGH_PreviewArgs args)
+        {
+            //Use a standard method to draw gunk, you don't have to specifically implement this.
+            Preview_DrawWires(args);
+        }
+
+        private bool m_hidden = false;
+        public bool Hidden
+        {
+            get { return m_hidden; }
+            set { m_hidden = value; }
+        }
+        public bool IsPreviewCapable
+        {
+            get { return true; }
+        }
+        #endregion
+    }
+}

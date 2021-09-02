@@ -86,12 +86,16 @@
     <Compile Include="Components\2_Section\CreateRebarGroup.cs" />
     <Compile Include="Components\2_Section\CreateProfileWeb.cs" />
     <Compile Include="Components\2_Section\CreateProfileFlange.cs" />
+    <Compile Include="Components\2_Section\CreateSection.cs" />
+    <Compile Include="Components\2_Section\CreateSubComponent.cs" />
     <Compile Include="Components\2_Section\EditProfile.cs" />
     <Compile Include="GhAdSecInfo.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
     <Compile Include="Helpers\_SqlReader.cs" />
+    <Compile Include="Parameters\AdSecSection.cs" />
+    <Compile Include="Parameters\SubComponentGoo.cs" />
     <Compile Include="Parameters\RebarGroupGoo.cs" />
     <Compile Include="Parameters\RebarLayerGoo.cs" />
     <Compile Include="Parameters\RebarBundleGoo.cs" />
@@ -224,6 +228,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\CreateProfile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\EditProfile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\SubComponent.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

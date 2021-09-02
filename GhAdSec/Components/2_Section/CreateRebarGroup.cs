@@ -21,12 +21,12 @@ namespace GhAdSec.Components
     {
         #region Name and Ribbon Layout
         public CreateReinforcementGroup()
-            : base("Create Reinforcement Layout", "Reinforcement Layout", "Create Reinforcement Layout for AdSec Section",
+            : base("Create Reinforcement Layout", "Reinforcement Layout", "Create a Reinforcement Layout for an AdSec Section",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat2())
         { this.Hidden = true; }
         public override Guid ComponentGuid => new Guid("1250f456-de99-4834-8d7f-4019cc0c70ba");
-        public override GH_Exposure Exposure => GH_Exposure.secondary;
+        public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
         protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.RebarLayout;
         #endregion

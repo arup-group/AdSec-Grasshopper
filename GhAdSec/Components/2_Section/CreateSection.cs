@@ -1,0 +1,92 @@
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
+using Oasys.Units;
+using UnitsNet;
+using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
+using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.AdSec.StandardMaterials;
+using Oasys.Profiles;
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Layers;
+using GhAdSec.Parameters;
+using Rhino.Geometry;
+using System.Collections.Generic;
+
+namespace GhAdSec.Components
+{
+    public class CreateSection : GH_Component
+    {
+        #region Name and Ribbon Layout
+        // This region handles how the component in displayed on the ribbon
+        // including name, exposure level and icon
+        public override Guid ComponentGuid => new Guid("af6a8179-5e5f-498c-a83c-e98b90d4464c");
+        public CreateSection()
+          : base("Section", "Section", "Create an AdSec Section",
+                Ribbon.CategoryName.Name(),
+                Ribbon.SubCategoryName.Cat2())
+        { this.Hidden = false; } // sets the initial state of the component to hidden
+
+        public override GH_Exposure Exposure => GH_Exposure.primary;
+
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateSection;
+        #endregion
+
+        #region Custom UI
+        //This region overrides the typical component layout
+        #endregion
+
+        #region Input and output
+
+        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        {
+            pManager.AddGenericParameter("Profile", "Pf", "AdSec Profile defining the Section solid boundary", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Material", "Mat", "AdSet Material for the section. The DesignCode of this material will be used for analysis", GH_ParamAccess.item);
+            pManager.AddGenericParameter("RebarLayout", "RbL", "[Optional] AdSec Reinforcement Layouts in the section (applicable for only concrete material).", GH_ParamAccess.list);
+            pManager.AddGenericParameter("SubComponent", "Sub", "[Optional] AdSet Subcomponents contained within the section", GH_ParamAccess.list);
+            
+            // make all from second input optional
+            for (int i = 2; i < pManager.ParamCount; i++)
+                pManager[i].Optional = true;
+        }
+
+        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        {
+            pManager.AddGenericParameter("Section", "Sec", "AdSet Section to create Subcomponent from", GH_ParamAccess.item);
+        }
+        #endregion
+
+        protected override void SolveInstance(IGH_DataAccess DA)
+        {
+            // 0 profile
+            IProfile profile = GetInput.Profile(this, DA, 0);
+
+            // 1 material
+            AdSecMaterial material = GetInput.AdSecMaterial(this, DA, 1);
+
+            // 2 Rebars
+            Oasys.Collections.IList<Oasys.AdSec.Reinforcement.Groups.IGroup> reinforcements = Oasys.Collections.IList<Oasys.AdSec.Reinforcement.Groups.IGroup>.Create();
+            if (Params.Input[2].SourceCount > 0)
+            {
+                reinforcements = GetInput.ReinforcementGroups(this, DA, 2, true);
+            }
+
+            // 3 Subcomponents
+            Oasys.Collections.IList<Oasys.AdSec.ISubComponent> subComponents = Oasys.Collections.IList<Oasys.AdSec.ISubComponent>.Create();
+            if (Params.Input[3].SourceCount > 0)
+            {
+                subComponents = GetInput.SubComponents(this, DA, 3, true);
+            }
+
+            // create section
+            AdSecSection section = new AdSecSection(profile, material, reinforcements, subComponents);
+
+            DA.SetData(0, new AdSecSectionGoo(section));
+        }
+    }
+}

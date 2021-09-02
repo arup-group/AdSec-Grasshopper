@@ -34,12 +34,12 @@ namespace GhAdSec.Components
         // including name, exposure level and icon
         public override Guid ComponentGuid => new Guid("ea0741e5-905e-4ecb-8270-a584e3f99aa3");
         public CreateProfile()
-          : base("Create Profile", "Profile", "Create Profile AdSec Section",
+          : base("Create Profile", "Profile", "Create Profile for AdSec Section",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat2())
         { this.Hidden = false; } // sets the initial state of the component to hidden
 
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         protected override string HtmlHelp_Source()
         {
@@ -928,7 +928,7 @@ namespace GhAdSec.Components
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
             GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
-            writer.SetString("enum", _mode.ToString());
+            writer.SetString("mode", _mode.ToString());
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)

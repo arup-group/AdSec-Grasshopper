@@ -19,12 +19,12 @@ namespace GhAdSec.Components
     {
         #region Name and Ribbon Layout
         public CreateProfileWeb()
-            : base("Create Web", "Web", "Create a Web Profile for AdSec Profile",
+            : base("Create Web", "Web", "Create a Web for AdSec Profile",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat2())
         { this.Hidden = true; }
         public override Guid ComponentGuid => new Guid("0f9a9223-e745-44b9-add2-8b2e5950e86a");
-        public override GH_Exposure Exposure => GH_Exposure.tertiary;
+        public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
         protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateWeb;
         #endregion

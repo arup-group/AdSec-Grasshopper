@@ -138,7 +138,10 @@ namespace GhAdSec.Parameters
         {
             get { return m_profile; }
         }
-
+        public List<Polyline> VoidEdges
+        {
+            get { return m_voidEdges; }
+        }
         public bool IsReflectedY
         {
             get { return m_profile.IsReflectedY; }

@@ -40,6 +40,46 @@ namespace GhAdSec.UI
         {
             get { return Color.FromArgb(255, 224, 126, 65); }
         }
+
+        public static DisplayMaterial Concrete
+        {
+            get
+            {
+                DisplayMaterial material = new DisplayMaterial
+                {
+                    Diffuse = Color.FromArgb(50, 73, 73, 73),
+                    Emission = Color.FromArgb(50, 45, 45, 45),
+                    Transparency = 0.6
+                };
+                return material;
+            }
+        }
+        public static DisplayMaterial Steel
+        {
+            get
+            {
+                DisplayMaterial material = new DisplayMaterial
+                {
+                    Diffuse = Color.FromArgb(50, 230, 28, 38),
+                    Emission = Color.FromArgb(50, 45, 45, 45),
+                    Transparency = 0.6
+                };
+                return material;
+            }
+        }
+        public static DisplayMaterial Reinforcement
+        {
+            get
+            {
+                DisplayMaterial material = new DisplayMaterial
+                {
+                    Diffuse = Color.FromArgb(50, 0, 0, 0),
+                    Emission = Color.FromArgb(50, 45, 45, 45),
+                    Transparency = 0.6
+                };
+                return material;
+            }
+        }
         // Colours for results
         public static Grasshopper.GUI.Gradient.GH_Gradient Stress_Gradient(List<System.Drawing.Color> colours = null)
         {

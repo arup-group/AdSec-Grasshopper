@@ -16,12 +16,14 @@ using Oasys.Units;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec;
+using Oasys.AdSec.Reinforcement.Groups;
 
 namespace GhAdSec.Components
 {
     class GetInput
     {
-        internal static Length Length(GH_Component owner, IGH_DataAccess DA, int inputid, UnitsNet.Units.LengthUnit docLengthUnit)
+        internal static Length Length(GH_Component owner, IGH_DataAccess DA, int inputid, UnitsNet.Units.LengthUnit docLengthUnit, bool isOptional = false)
         {
             GH_UnitNumber unitNumber = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -51,11 +53,11 @@ namespace GhAdSec.Components
                     return UnitsNet.Length.Zero;
                 }
             }
-            else
+            else if (!isOptional)
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
             return (UnitsNet.Length)unitNumber.Value;
         }
-        internal static IFlange Flange(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static IFlange Flange(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             AdSecProfileFlangeGoo flange = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -78,11 +80,11 @@ namespace GhAdSec.Components
                     return null;
                 }
             }
-            else
+            else if (!isOptional)
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
             return null;
         }
-        internal static IWeb Web(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static IWeb Web(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             AdSecProfileWebGoo web = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -105,11 +107,11 @@ namespace GhAdSec.Components
                     return null;
                 }
             }
-            else
+            else if (!isOptional)
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
             return null;
         }
-        internal static IStressStrainPoint StressStrainPoint(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static IStressStrainPoint StressStrainPoint(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             IStressStrainPoint pt1 = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -136,13 +138,13 @@ namespace GhAdSec.Components
                 }
                 return pt1;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return null;
             }
+            return null;
         }
-        internal static Oasys.Collections.IList<IStressStrainPoint> StressStrainPoints(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static Oasys.Collections.IList<IStressStrainPoint> StressStrainPoints(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
             {
             Oasys.Collections.IList<IStressStrainPoint> pts = Oasys.Collections.IList<IStressStrainPoint>.Create();
             List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
@@ -183,13 +185,13 @@ namespace GhAdSec.Components
                 }
                 return pts;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return null;
             }
+            return null;
         }
-        internal static AdSecStressStrainCurveGoo StressStrainCurveGoo(GH_Component owner, IGH_DataAccess DA, int inputid, bool compression)
+        internal static AdSecStressStrainCurveGoo StressStrainCurveGoo(GH_Component owner, IGH_DataAccess DA, int inputid, bool compression, bool isOptional = false)
         {
             AdSecStressStrainCurveGoo ssCrv = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -218,13 +220,13 @@ namespace GhAdSec.Components
                 }
                 return ssCrv;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return null;
             }
+            return null;
         }
-        internal static Pressure Stress(GH_Component owner, IGH_DataAccess DA, int inputid, UnitsNet.Units.PressureUnit stressUnit)
+        internal static Pressure Stress(GH_Component owner, IGH_DataAccess DA, int inputid, UnitsNet.Units.PressureUnit stressUnit, bool isOptional = false)
         {
             UnitsNet.Pressure stressFib = new UnitsNet.Pressure();
 
@@ -257,15 +259,15 @@ namespace GhAdSec.Components
                     owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to a UnitNumber of Stress");
                     return Pressure.Zero;
                 }
+                return stressFib;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return Pressure.Zero;
             }
-            return stressFib;
+            return Pressure.Zero;
         }
-        internal static Strain Strain(GH_Component owner, IGH_DataAccess DA, int inputid, StrainUnit strainUnit)
+        internal static Strain Strain(GH_Component owner, IGH_DataAccess DA, int inputid, StrainUnit strainUnit, bool isOptional = false)
         {
             Oasys.Units.Strain strainFib = new Oasys.Units.Strain();
 
@@ -300,13 +302,13 @@ namespace GhAdSec.Components
                 }
                 return strainFib;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return Oasys.Units.Strain.Zero;
             }
+            return Oasys.Units.Strain.Zero;
         }
-        internal static IConcreteCrackCalculationParameters ConcreteCrackCalculationParameters(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static IConcreteCrackCalculationParameters ConcreteCrackCalculationParameters(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             IConcreteCrackCalculationParameters concreteCrack = null;
 
@@ -329,13 +331,13 @@ namespace GhAdSec.Components
                 }
                 return concreteCrack;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return null;
             }
+            return null;
         }
-        internal static AdSecDesignCode AdSecDesignCode(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static AdSecDesignCode AdSecDesignCode(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             AdSecDesignCode designCode = new AdSecDesignCode();
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -352,13 +354,13 @@ namespace GhAdSec.Components
                 }
                 return designCode;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return null;
             }
+            return null;
         }
-        internal static AdSecMaterial AdSecMaterial(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static AdSecMaterial AdSecMaterial(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             AdSecMaterial material = new AdSecMaterial();
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -374,13 +376,13 @@ namespace GhAdSec.Components
                 }
                 return material.Duplicate();
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return null;
             }
+            return null;
         }
-        internal static AdSecRebarBundleGoo AdSecRebarBundleGoo(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static AdSecRebarBundleGoo AdSecRebarBundleGoo(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             AdSecRebarBundleGoo rebar = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -396,17 +398,17 @@ namespace GhAdSec.Components
                 }
                 return rebar;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return null;
             }
+            return null;
         }
-        internal static IBarBundle IBarBundle(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static IBarBundle IBarBundle(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
-            return AdSecRebarBundleGoo(owner, DA, inputid).Value;
+            return AdSecRebarBundleGoo(owner, DA, inputid, isOptional).Value;
         }
-        internal static AdSecRebarLayerGoo AdSecRebarLayerGoo(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static AdSecRebarLayerGoo AdSecRebarLayerGoo(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             AdSecRebarLayerGoo spacing = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -422,17 +424,50 @@ namespace GhAdSec.Components
                 }
                 return spacing;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return null;
             }
+            return null;
         }
-        internal static ILayer ILayer(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static ILayer ILayer(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
-            return AdSecRebarLayerGoo(owner, DA, inputid).Value;
+            return AdSecRebarLayerGoo(owner, DA, inputid, isOptional).Value;
         }
-        internal static AdSecPointGoo AdSecPointGoo(GH_Component owner, IGH_DataAccess DA, int inputid)
+
+        internal static Oasys.Collections.IList<IGroup> ReinforcementGroups(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        {
+            Oasys.Collections.IList<IGroup> subs = Oasys.Collections.IList<IGroup>.Create();
+            List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
+            if (DA.GetDataList(inputid, gh_typs))
+            {
+                for (int i = 0; i < gh_typs.Count; i++)
+                {
+                    if (gh_typs[i].Value is IGroup)
+                    {
+                        subs.Add((IGroup)gh_typs[i].Value);
+                    }
+                    else if (gh_typs[i].Value is AdSecRebarGroupGoo)
+                    {
+                        AdSecRebarGroupGoo bargroup = (AdSecRebarGroupGoo)gh_typs[i].Value;
+                        subs.Add(bargroup.Value);
+                    }
+                    else
+                    {
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + "), index in input list: " + i + ", to a SubComponent or a Section");
+                        return null;
+                    }
+                }
+                return subs;
+            }
+            else if (!isOptional)
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+            }
+            return null;
+        }
+
+        internal static AdSecPointGoo AdSecPointGoo(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             AdSecPointGoo pt = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -454,17 +489,20 @@ namespace GhAdSec.Components
 
                 return pt;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return null;
             }
+            return null;
+
         }
-        internal static IPoint IPoint(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static IPoint IPoint(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
-            return AdSecPointGoo(owner, DA, inputid).AdSecPoint;
+            AdSecPointGoo pt = AdSecPointGoo(owner, DA, inputid, isOptional);
+            if (pt == null) { return null; }
+            return pt.AdSecPoint;
         }
-        internal static Oasys.Collections.IList<IPoint> IPoints(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static Oasys.Collections.IList<IPoint> IPoints(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             Oasys.Collections.IList<IPoint> pts = Oasys.Collections.IList<IPoint>.Create();
             List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
@@ -474,7 +512,7 @@ namespace GhAdSec.Components
                 {
                     Curve polycurve = null;
                     Point3d ghpt = new Point3d();
-                    if (gh_typs[i].Value is IStressStrainPoint)
+                    if (gh_typs[i].Value is IPoint)
                     {
                         pts.Add((IPoint)gh_typs[i].Value);
                     }
@@ -498,20 +536,15 @@ namespace GhAdSec.Components
                         return null;
                     }
                 }
-                if (pts.Count < 2)
-                {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input must contain at least 2 points to create an Explicit Stress Strain Curve");
-                    return null;
-                }
                 return pts;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return null;
             }
+            return null;
         }
-        internal static Angle Angle(GH_Component owner, IGH_DataAccess DA, int inputid, UnitsNet.Units.AngleUnit angleUnit)
+        internal static Angle Angle(GH_Component owner, IGH_DataAccess DA, int inputid, UnitsNet.Units.AngleUnit angleUnit, bool isOptional = false)
         {
             GH_UnitNumber a1 = new GH_UnitNumber(new UnitsNet.Angle(0, angleUnit));
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -542,13 +575,13 @@ namespace GhAdSec.Components
                 }
                 return (UnitsNet.Angle)a1.Value;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return UnitsNet.Angle.Zero;
             }
+            return UnitsNet.Angle.Zero;
         }
-        internal static IPerimeterProfile Boundaries(GH_Component owner, IGH_DataAccess DA, int inputid_Boundary, int inputid_Voids, UnitsNet.Units.LengthUnit lengthUnit)
+        internal static IPerimeterProfile Boundaries(GH_Component owner, IGH_DataAccess DA, int inputid_Boundary, int inputid_Voids, UnitsNet.Units.LengthUnit lengthUnit, bool isOptional = false)
         {
             AdSecProfileGoo perimeter = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -619,13 +652,13 @@ namespace GhAdSec.Components
                 }
                 return (IPerimeterProfile)perimeter.Profile;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid_Boundary].Name + " input, index " + inputid_Boundary + " - Input required");
-                return null;
             }
+            return null;
         }
-        internal static IProfile Profile(GH_Component owner, IGH_DataAccess DA, int inputid)
+        internal static IProfile Profile(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             IProfile prfl = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -644,11 +677,72 @@ namespace GhAdSec.Components
                 
                 return prfl;
             }
-            else
+            else if (!isOptional)
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
-                return null;
             }
+            return null;
+        }
+        internal static AdSecSection Section(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        {
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(inputid, ref gh_typ))
+            {
+                // try cast directly to quantity type
+                if (gh_typ.Value is AdSecSectionGoo)
+                {
+                    AdSecSectionGoo a1 = (AdSecSectionGoo)gh_typ.Value;
+                    return a1.Value;
+                }
+                else
+                {
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an Section");
+                    return null;
+                }
+            }
+            else if (!isOptional)
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+            }
+            return null;
+        }
+        internal static Oasys.Collections.IList<ISubComponent> SubComponents(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        {
+            Oasys.Collections.IList<ISubComponent> subs = Oasys.Collections.IList<ISubComponent>.Create();
+            List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
+            if (DA.GetDataList(inputid, gh_typs))
+            {
+                for (int i = 0; i < gh_typs.Count; i++)
+                {
+                    if (gh_typs[i].Value is ISubComponent)
+                    {
+                        subs.Add((ISubComponent)gh_typs[i].Value);
+                    }
+                    else if (gh_typs[i].Value is AdSecSubComponentGoo)
+                    {
+                        AdSecSubComponentGoo subcomp = (AdSecSubComponentGoo)gh_typs[i].Value;
+                        subs.Add(subcomp.Value);
+                    }
+                    else if (gh_typs[i].Value is AdSecSectionGoo)
+                    {
+                        AdSecSectionGoo section = (AdSecSectionGoo)gh_typs[i].Value;
+                        IPoint offset = Oasys.Profiles.IPoint.Create(UnitsNet.Length.Zero, UnitsNet.Length.Zero);
+                        ISubComponent sub = ISubComponent.Create(section.Value.Section, offset);
+                        subs.Add(sub);
+                    }
+                    else
+                    {
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + "), index in input list: " + i + ", to a SubComponent or a Section");
+                        return null;
+                    }
+                }
+                return subs;
+            }
+            else if (!isOptional)
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+            }
+            return null;
         }
     }
 }

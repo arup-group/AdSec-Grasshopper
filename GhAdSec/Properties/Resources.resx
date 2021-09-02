@@ -175,6 +175,9 @@
   <data name="EditMaterial" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\EditMaterial.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="EditProfile" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\EditProfile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="EditSection" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\EditSection.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -192,6 +195,9 @@
   </data>
   <data name="StressStrainPoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\StressStrainPoint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SubComponent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\SubComponent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="UnitNumber" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\UnitNumber.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

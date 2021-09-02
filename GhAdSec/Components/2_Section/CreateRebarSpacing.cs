@@ -21,12 +21,12 @@ namespace GhAdSec.Components
     {
         #region Name and Ribbon Layout
         public CreateRebarSpacing()
-            : base("Create Rebar Spacing", "Spacing", "Create Rebar (single or bundle) for AdSec Section",
+            : base("Create Rebar Spacing", "Spacing", "Create Rebar spacing (by Count or Pitch) for an AdSec Section",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat2())
         { this.Hidden = true; }
         public override Guid ComponentGuid => new Guid("846d546a-4284-4d69-906b-0e6985d7ddd3");
-        public override GH_Exposure Exposure => GH_Exposure.secondary;
+        public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
         protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.RebarSpacing;
         #endregion
