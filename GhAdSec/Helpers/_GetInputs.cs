@@ -308,6 +308,88 @@ namespace GhAdSec.Components
             }
             return Oasys.Units.Strain.Zero;
         }
+        internal static Force Force(GH_Component owner, IGH_DataAccess DA, int inputid, UnitsNet.Units.ForceUnit forceUnit, bool isOptional = false)
+        {
+            UnitsNet.Force force = new UnitsNet.Force();
+
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(inputid, ref gh_typ))
+            {
+                GH_UnitNumber inForce;
+
+                // try cast directly to quantity type
+                if (gh_typ.Value is GH_UnitNumber)
+                {
+                    inForce = (GH_UnitNumber)gh_typ.Value;
+                    if (!inForce.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.ForceUnit)))
+                    {
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].Name + " input, index " + inputid + ": Wrong unit type supplied"
+                            + System.Environment.NewLine + "Unit type is " + inForce.Value.QuantityInfo.Name + " but must be Force");
+                        return UnitsNet.Force.Zero;
+                    }
+                    force = (UnitsNet.Force)inForce.Value.ToUnit(forceUnit);
+                }
+                // try cast to double
+                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                {
+                    // create new quantity from default units
+                    inForce = new GH_UnitNumber(new UnitsNet.Force(val, forceUnit));
+                    force = (UnitsNet.Force)inForce.Value;
+                }
+                else
+                {
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to a UnitNumber of Force");
+                    return UnitsNet.Force.Zero;
+                }
+                return force;
+            }
+            else if (!isOptional)
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+            }
+            return UnitsNet.Force.Zero;
+        }
+        internal static Moment Moment(GH_Component owner, IGH_DataAccess DA, int inputid, MomentUnit momentUnit, bool isOptional = false)
+        {
+            Oasys.Units.Moment moment = new Oasys.Units.Moment();
+
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(inputid, ref gh_typ))
+            {
+                GH_UnitNumber inMoment;
+
+                // try cast directly to quantity type
+                if (gh_typ.Value is GH_UnitNumber)
+                {
+                    inMoment = (GH_UnitNumber)gh_typ.Value;
+                    if (!inMoment.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.MomentUnit)))
+                    {
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].Name + " input, index " + inputid + ": Wrong unit type supplied"
+                            + System.Environment.NewLine + "Unit type is " + inMoment.Value.QuantityInfo.Name + " but must be Moment");
+                        return Oasys.Units.Moment.Zero;
+                    }
+                    moment = (Oasys.Units.Moment)inMoment.Value.ToUnit(momentUnit);
+                }
+                // try cast to double
+                else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
+                {
+                    // create new quantity from default units
+                    inMoment = new GH_UnitNumber(new Oasys.Units.Moment(val, momentUnit));
+                    moment = (Oasys.Units.Moment)inMoment.Value;
+                }
+                else
+                {
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to a UnitNumber of Moment");
+                    return Oasys.Units.Moment.Zero;
+                }
+                return moment;
+            }
+            else if (!isOptional)
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+            }
+            return Oasys.Units.Moment.Zero;
+        }
         internal static IConcreteCrackCalculationParameters ConcreteCrackCalculationParameters(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             IConcreteCrackCalculationParameters concreteCrack = null;

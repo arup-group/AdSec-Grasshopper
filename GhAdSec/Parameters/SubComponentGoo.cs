@@ -135,18 +135,76 @@ namespace GhAdSec.Parameters
         {
             if (m_sectionGoo == null) { return; }
 
-            Color colour = (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) ?
-                    GhAdSec.UI.Colour.OasysBlue : GhAdSec.UI.Colour.OasysYellow;
-            Color rebarColour = (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) ?
-                    Color.Black : GhAdSec.UI.Colour.GsaLightGrey;
-
-            args.Pipeline.DrawBrepWires(m_sectionGoo.SolidBrep, colour, 3);
-
-            foreach (Brep sub in m_sectionGoo.m_subProfiles)
-                args.Pipeline.DrawBrepWires(sub, colour, 2);
-
-            foreach (Brep rebar in m_sectionGoo.m_rebars)
-                args.Pipeline.DrawBrepWires(rebar, rebarColour, 2);
+            if (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) // not selected
+            {
+                args.Pipeline.DrawPolyline(m_sectionGoo.m_profileEdge, GhAdSec.UI.Colour.OasysBlue, 2);
+                if (m_sectionGoo.m_profileVoidEdges != null)
+                {
+                    foreach (Polyline crv in m_sectionGoo.m_profileVoidEdges)
+                    {
+                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                    }
+                }
+                if (m_sectionGoo.m_subEdges != null)
+                {
+                    foreach (Polyline crv in m_sectionGoo.m_subEdges)
+                    {
+                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                    }
+                }
+                if (m_sectionGoo.m_subVoidEdges != null)
+                {
+                    foreach (List<Polyline> crvs in m_sectionGoo.m_subVoidEdges)
+                    {
+                        foreach (Polyline crv in crvs)
+                        {
+                            args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                        }
+                    }
+                }
+                if (m_sectionGoo.m_rebarEdges != null)
+                {
+                    foreach (Circle crv in m_sectionGoo.m_rebarEdges)
+                    {
+                        args.Pipeline.DrawCircle(crv, Color.Black, 1);
+                    }
+                }
+            }
+            else // selected
+            {
+                args.Pipeline.DrawPolyline(m_sectionGoo.m_profileEdge, GhAdSec.UI.Colour.OasysYellow, 3);
+                if (m_sectionGoo.m_profileVoidEdges != null)
+                {
+                    foreach (Polyline crv in m_sectionGoo.m_profileVoidEdges)
+                    {
+                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                    }
+                }
+                if (m_sectionGoo.m_subEdges != null)
+                {
+                    foreach (Polyline crv in m_sectionGoo.m_subEdges)
+                    {
+                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                    }
+                }
+                if (m_sectionGoo.m_subVoidEdges != null)
+                {
+                    foreach (List<Polyline> crvs in m_sectionGoo.m_subVoidEdges)
+                    {
+                        foreach (Polyline crv in crvs)
+                        {
+                            args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                        }
+                    }
+                }
+                if (m_sectionGoo.m_rebarEdges != null)
+                {
+                    foreach (Circle crv in m_sectionGoo.m_rebarEdges)
+                    {
+                        args.Pipeline.DrawCircle(crv, GhAdSec.UI.Colour.GsaLightGrey, 2);
+                    }
+                }
+            }
         }
     }
 }

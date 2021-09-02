@@ -52,20 +52,26 @@ namespace GhAdSec.Parameters
         {
             m_section = section;
             m_code = code.DesignCode;
-            CreatePreview(m_code, section, ref m_profile, ref m_subProfiles, ref m_rebars, ref m_profileColour, ref m_rebarColours, ref m_subColours);
+            CreatePreview(m_code, m_section, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
+                ref m_rebars, ref m_rebarEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges,
+                ref m_subColours);
         }
         public AdSecSection(ISection section, IDesignCode code, IPoint subComponentOffset = null)
         {
             m_section = section;
             m_code = code;
-            CreatePreview(m_code, section, ref m_profile, ref m_subProfiles, ref m_rebars, ref m_profileColour, ref m_rebarColours, ref m_subColours, subComponentOffset);
+            CreatePreview(m_code, m_section, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
+                ref m_rebars, ref m_rebarEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges,
+                ref m_subColours, subComponentOffset);
         }
 
         public AdSecSection(Oasys.Profiles.IProfile profile, AdSecMaterial material)
         {
             m_code = material.DesignCode.Duplicate().DesignCode;
             m_section = ISection.Create(profile, material.Material);
-            CreatePreview(m_code, m_section, ref m_profile, ref m_subProfiles, ref m_rebars, ref m_profileColour, ref m_rebarColours, ref m_subColours);
+            CreatePreview(m_code, m_section, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
+                ref m_rebars, ref m_rebarEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges,
+                ref m_subColours);
         }
 
         public AdSecSection(Oasys.Profiles.IProfile profile, AdSecMaterial material, 
@@ -76,19 +82,28 @@ namespace GhAdSec.Parameters
             m_section = ISection.Create(profile, material.Material);
             m_section.ReinforcementGroups = reinforcement;
             m_section.SubComponents = subComponents;
-            CreatePreview(m_code, m_section, ref m_profile, ref m_subProfiles, ref m_rebars, ref m_profileColour, ref m_rebarColours, ref m_subColours);
+            CreatePreview(m_code, m_section, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
+                ref m_rebars, ref m_rebarEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges,
+                ref m_subColours);
         }
 
         // cache for preview
         internal Brep m_profile;
         internal DisplayMaterial m_profileColour;
+        internal Polyline m_profileEdge;
+        internal List<Polyline> m_profileVoidEdges;
         internal List<Brep> m_rebars;
+        internal List<Circle> m_rebarEdges;
         internal List<DisplayMaterial> m_rebarColours;
         internal List<Brep> m_subProfiles;
+        internal List<Polyline> m_subEdges;
+        internal List<List<Polyline>> m_subVoidEdges;
         internal List<DisplayMaterial> m_subColours;
-        internal void CreatePreview(IDesignCode code, ISection section, ref Brep profile, ref List<Brep> subProfiles, ref List<Brep> rebars,
-            ref DisplayMaterial profileColour, ref List<DisplayMaterial> rebarColours,
-            ref List<DisplayMaterial> subColours, IPoint offset = null)
+        internal void CreatePreview(IDesignCode code, ISection section, 
+            ref Brep profile, ref Polyline profileEdge, ref List<Polyline> profileVoidEdges, ref DisplayMaterial profileColour,
+            ref List<Brep> rebars, ref List<Circle> rebarEdges, ref List<DisplayMaterial> rebarColours,
+            ref List<Brep> subProfiles, ref List<Polyline> subEdges, ref List<List<Polyline>> subVoidEdges, ref List<DisplayMaterial> subColours,
+            IPoint offset = null)
         {
             ISection flat = null;
             if (code != null) //{ code = Oasys.AdSec.DesignCode.EN1992.Part1_1.Edition_2004.NationalAnnex.NoNationalAnnex; }
@@ -118,6 +133,10 @@ namespace GhAdSec.Parameters
             // primary profile
             profile = CreateBrepFromProfile(new AdSecProfileGoo(flat.Profile));
             profile.Transform(Transform.Translation(offs));
+            Tuple<Polyline, List<Polyline>> edges = AdSecProfileGoo.PolylinesFromAdSecProfile(flat.Profile);
+            profileEdge = edges.Item1;
+            profileEdge.Transform(Transform.Translation(offs));
+            profileVoidEdges = edges.Item2;
 
             // get material
             AdSecMaterial.AdSecMaterialType profileType;
@@ -138,6 +157,8 @@ namespace GhAdSec.Parameters
             // sub components
             subProfiles = new List<Brep>();
             subColours = new List<DisplayMaterial>();
+            subEdges = new List<Polyline>();
+            subVoidEdges = new List<List<Polyline>>();
             foreach (ISubComponent sub in flat.SubComponents)
             {
                 Brep temp = CreateBrepFromProfile(new AdSecProfileGoo(sub.Section.Profile));
@@ -149,11 +170,25 @@ namespace GhAdSec.Parameters
                 temp.Transform(Transform.Translation(offs));
                 subProfiles.Add(temp);
 
-                string submat = section.Material.ToString();
+                Tuple<Polyline, List<Polyline>> subedges = AdSecProfileGoo.PolylinesFromAdSecProfile(sub.Section.Profile);
+                Polyline subedge = subedges.Item1;
+                subedge.Transform(Transform.Translation(trans));
+                subedge.Transform(Transform.Translation(offs));
+                subEdges.Add(subedge);
+
+                List<Polyline> subvoids = subedges.Item2;
+                foreach (Polyline crv in subvoids)
+                {
+                    crv.Transform(Transform.Translation(trans));
+                    crv.Transform(Transform.Translation(offs));
+                }
+                subVoidEdges.Add(subvoids);
+
+                string submat = sub.Section.Material.ToString();
                 submat = submat.Replace("Oasys.AdSec.Materials.I", "");
                 submat = submat.Replace("_Implementation", "");
                 AdSecMaterial.AdSecMaterialType subType;
-                Enum.TryParse(mat, out subType);
+                Enum.TryParse(submat, out subType);
                 DisplayMaterial subColour = null;
                 switch (subType)
                 {
@@ -170,11 +205,14 @@ namespace GhAdSec.Parameters
             // rebars
             rebars = new List<Brep>();
             rebarColours = new List<DisplayMaterial>();
+            rebarEdges = new List<Circle>();
             foreach (IGroup rebargrp in flat.ReinforcementGroups)
             {
                 ISingleBars snglBrs = (ISingleBars)rebargrp;
-                rebars.AddRange(CreateBrepsFromSingleRebar(snglBrs, offs));
-                
+                Circle baredge = Circle.Unset;
+                rebars.AddRange(CreateBrepsFromSingleRebar(snglBrs, offs, ref baredge));
+                rebarEdges.Add(baredge);
+
                 string rebmat = snglBrs.BarBundle.Material.ToString();
                 rebmat = rebmat.Replace("Oasys.AdSec.Materials.I", "");
                 rebmat = rebmat.Replace("_Implementation", "");
@@ -205,7 +243,7 @@ namespace GhAdSec.Parameters
             return Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelAbsoluteTolerance).First();
         }
 
-        private List<Brep> CreateBrepsFromSingleRebar(ISingleBars bars, Vector3d offset)
+        private List<Brep> CreateBrepsFromSingleRebar(ISingleBars bars, Vector3d offset, ref Circle edgeCurve)
         {
             List<Brep> rebarBreps = new List<Brep>();
             for (int i = 0; i < bars.Positions.Count; i++)
@@ -215,8 +253,8 @@ namespace GhAdSec.Parameters
                     bars.Positions[i].Z.As(GhAdSec.DocumentUnits.LengthUnit),
                     0);
                 center.Transform(Transform.Translation(offset));
-                Circle circle = new Circle(center, bars.BarBundle.Diameter.As(GhAdSec.DocumentUnits.LengthUnit) / 2);
-                List<Curve> crvs = new List<Curve>() { circle.ToNurbsCurve() };
+                edgeCurve = new Circle(center, bars.BarBundle.Diameter.As(GhAdSec.DocumentUnits.LengthUnit) / 2);
+                List<Curve> crvs = new List<Curve>() { edgeCurve.ToNurbsCurve() };
                 rebarBreps.Add(Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelRelativeTolerance).First());
             }
             return rebarBreps;
@@ -430,18 +468,76 @@ namespace GhAdSec.Parameters
         {
             if (Value == null) { return; }
 
-            //Color colour = (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) ?
-            //        GhAdSec.UI.Colour.OasysBlue : GhAdSec.UI.Colour.OasysYellow;
-            //Color rebarColour = (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) ?
-            //        Color.Black : GhAdSec.UI.Colour.GsaLightGrey;
-
-            //args.Pipeline.DrawBrepWires(Value.SolidBrep, colour, 3);
-
-            //foreach (Brep sub in Value.m_subProfiles)
-            //    args.Pipeline.DrawBrepWires(sub, colour, 2);
-            
-            //foreach (Brep rebar in Value.m_rebars)
-            //    args.Pipeline.DrawBrepWires(rebar, rebarColour, 2);
+            if (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) // not selected
+            {
+                args.Pipeline.DrawPolyline(Value.m_profileEdge, GhAdSec.UI.Colour.OasysBlue, 2);
+                if (Value.m_profileVoidEdges != null)
+                {
+                    foreach (Polyline crv in Value.m_profileVoidEdges)
+                    {
+                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                    }
+                }
+                if (Value.m_subEdges != null)
+                {
+                    foreach (Polyline crv in Value.m_subEdges)
+                    {
+                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                    }
+                }
+                if (Value.m_subVoidEdges != null)
+                {
+                    foreach (List<Polyline> crvs in Value.m_subVoidEdges)
+                    {
+                        foreach (Polyline crv in crvs)
+                        {
+                            args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                        }
+                    }
+                }
+                if (Value.m_rebarEdges != null)
+                {
+                    foreach (Circle crv in Value.m_rebarEdges)
+                    {
+                        args.Pipeline.DrawCircle(crv, Color.Black, 1);
+                    }
+                }
+            }
+            else // selected
+            {
+                args.Pipeline.DrawPolyline(Value.m_profileEdge, GhAdSec.UI.Colour.OasysYellow, 3);
+                if (Value.m_profileVoidEdges != null)
+                {
+                    foreach (Polyline crv in Value.m_profileVoidEdges)
+                    {
+                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                    }
+                }
+                if (Value.m_subEdges != null)
+                {
+                    foreach (Polyline crv in Value.m_subEdges)
+                    {
+                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                    }
+                }
+                if (Value.m_subVoidEdges != null)
+                {
+                    foreach (List<Polyline> crvs in Value.m_subVoidEdges)
+                    {
+                        foreach (Polyline crv in crvs)
+                        {
+                            args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                        }
+                    }
+                }
+                if (Value.m_rebarEdges != null)
+                {
+                    foreach (Circle crv in Value.m_rebarEdges)
+                    {
+                        args.Pipeline.DrawCircle(crv, GhAdSec.UI.Colour.GsaLightGrey, 2);
+                    }
+                }
+            }
         }
         #endregion
     }
