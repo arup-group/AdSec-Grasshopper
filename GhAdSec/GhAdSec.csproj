@@ -90,6 +90,7 @@
     <Compile Include="Components\2_Section\CreateSubComponent.cs" />
     <Compile Include="Components\2_Section\EditProfile.cs" />
     <Compile Include="Components\3_Loads\CreateDeformation.cs" />
+    <Compile Include="Components\3_Loads\CreatePreLoad.cs" />
     <Compile Include="Components\3_Loads\CreateLoad.cs" />
     <Compile Include="GhAdSecInfo.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="Helpers\_SqlReader.cs" />
     <Compile Include="Parameters\AdSecSection.cs" />
     <Compile Include="Parameters\DeformationGoo.cs" />
+    <Compile Include="Parameters\PreLoadGoo_notused.cs" />
     <Compile Include="Parameters\LoadGoo.cs" />
     <Compile Include="Parameters\SubComponentGoo.cs" />
     <Compile Include="Parameters\RebarGroupGoo.cs" />

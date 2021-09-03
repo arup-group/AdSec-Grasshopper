@@ -176,7 +176,7 @@ namespace GhAdSec.Components
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-            _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
+            _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("enum"));
             first = false;
             return base.Read(reader);
         }

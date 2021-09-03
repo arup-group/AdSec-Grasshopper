@@ -99,6 +99,7 @@ namespace GhAdSec.Parameters
         internal List<Polyline> m_subEdges;
         internal List<List<Polyline>> m_subVoidEdges;
         internal List<DisplayMaterial> m_subColours;
+
         internal void CreatePreview(IDesignCode code, ISection section, 
             ref Brep profile, ref Polyline profileEdge, ref List<Polyline> profileVoidEdges, ref DisplayMaterial profileColour,
             ref List<Brep> rebars, ref List<Circle> rebarEdges, ref List<DisplayMaterial> rebarColours,

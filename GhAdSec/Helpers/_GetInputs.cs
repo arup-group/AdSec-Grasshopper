@@ -557,7 +557,29 @@ namespace GhAdSec.Components
         {
             return AdSecRebarLayerGoo(owner, DA, inputid, isOptional).Value;
         }
-
+        internal static IGroup ReinforcementGroup(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        {
+            AdSecRebarGroupGoo group = null;
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(inputid, ref gh_typ))
+            {
+                if (gh_typ.Value is AdSecRebarGroupGoo)
+                {
+                    group = (AdSecRebarGroupGoo)gh_typ.Value;
+                    return group.Value;
+                }
+                else
+                {
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an AdSec RebarLayout");
+                    return null;
+                }
+            }
+            else if (!isOptional)
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+            }
+            return null;
+        }
         internal static Oasys.Collections.IList<IGroup> ReinforcementGroups(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             Oasys.Collections.IList<IGroup> subs = Oasys.Collections.IList<IGroup>.Create();
