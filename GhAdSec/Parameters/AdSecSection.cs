@@ -209,9 +209,10 @@ namespace GhAdSec.Parameters
             foreach (IGroup rebargrp in flat.ReinforcementGroups)
             {
                 ISingleBars snglBrs = (ISingleBars)rebargrp;
-                Circle baredge = Circle.Unset;
-                rebars.AddRange(CreateBrepsFromSingleRebar(snglBrs, offs, ref baredge));
-                rebarEdges.Add(baredge);
+                List<Circle> baredges = new List<Circle>();
+                List<Brep> barbreps = CreateBrepsFromSingleRebar(snglBrs, offs, ref baredges);
+                rebars.AddRange(barbreps);
+                rebarEdges.AddRange(baredges);
 
                 string rebmat = snglBrs.BarBundle.Material.ToString();
                 rebmat = rebmat.Replace("Oasys.AdSec.Materials.I", "");
@@ -231,7 +232,8 @@ namespace GhAdSec.Parameters
                         rebColour = UI.Colour.Reinforcement;
                         break;
                 }
-                rebarColours.Add(rebColour);
+                for (int i = 0; i < barbreps.Count; i++)
+                    rebarColours.Add(rebColour);
             }
         }
 
@@ -243,7 +245,7 @@ namespace GhAdSec.Parameters
             return Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelAbsoluteTolerance).First();
         }
 
-        private List<Brep> CreateBrepsFromSingleRebar(ISingleBars bars, Vector3d offset, ref Circle edgeCurve)
+        private List<Brep> CreateBrepsFromSingleRebar(ISingleBars bars, Vector3d offset, ref List<Circle> edgeCurves)
         {
             List<Brep> rebarBreps = new List<Brep>();
             for (int i = 0; i < bars.Positions.Count; i++)
@@ -253,7 +255,8 @@ namespace GhAdSec.Parameters
                     bars.Positions[i].Z.As(GhAdSec.DocumentUnits.LengthUnit),
                     0);
                 center.Transform(Transform.Translation(offset));
-                edgeCurve = new Circle(center, bars.BarBundle.Diameter.As(GhAdSec.DocumentUnits.LengthUnit) / 2);
+                Circle edgeCurve = new Circle(center, bars.BarBundle.Diameter.As(GhAdSec.DocumentUnits.LengthUnit) / 2);
+                edgeCurves.Add(edgeCurve);
                 List<Curve> crvs = new List<Curve>() { edgeCurve.ToNurbsCurve() };
                 rebarBreps.Add(Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelRelativeTolerance).First());
             }
