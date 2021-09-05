@@ -109,7 +109,7 @@ namespace GhAdSec.Components
 
         public void SetSelected(int i, int j)
         {
-            // input -1 to force update of catalogue sections
+            // input -1 to force update of catalogue sections to include/exclude superseeded
             bool updateCat = false;
             if (i == -1)
             {
@@ -298,7 +298,7 @@ namespace GhAdSec.Components
                                 test = test.ToLower();
                                 if (test.Contains(search))
                                 {
-                                    filteredlist.Add(sectionList[i]);
+                                    filteredlist.Add(sectionList[k]);
                                 }
                             }
                         }
@@ -333,7 +333,7 @@ namespace GhAdSec.Components
                         dropdownitems.RemoveAt(1);
 
                     // add length measure dropdown list
-                    dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                    dropdownitems.Add(GhAdSec.DocumentUnits.FilteredLengthUnits);
 
                     // set selected length
                     selecteditems[1] = lengthUnit.ToString();
@@ -353,6 +353,48 @@ namespace GhAdSec.Components
             }
         }
 
+        private void UpdateUIFromSelectedItems()
+        {
+
+            if (selecteditems[0] == "Catalogue")
+            {
+                // update spacer description to match catalogue dropdowns
+                spacerDescriptions = new List<string>(new string[]
+                {
+                    "Profile type", "Catalogue", "Type", "Profile"
+                });
+
+                catalogueNames = cataloguedata.Item1;
+                catalogueNumbers = cataloguedata.Item2;
+                typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(GhAdSec.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                typeNames = typedata.Item1;
+                typeNumbers = typedata.Item2;
+
+                // call graphics update
+                comingFromSave = true;
+                Mode1Clicked();
+                comingFromSave = false;
+
+                profileString = selecteditems[3];
+            }
+            else
+            {
+                // update spacer description to match none-catalogue dropdowns
+                spacerDescriptions = new List<string>(new string[]
+                {
+                    "Profile type", "Measure", "Type", "Profile"
+                });
+
+                typ = profileTypes[selecteditems[0]];
+                Mode2Clicked();
+            }
+
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
         #endregion
 
 
@@ -405,9 +447,8 @@ namespace GhAdSec.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Width [" + unitAbbreviation + "]" , "B", "Profile width", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Profile width", GH_ParamAccess.item);
             pManager.AddGenericParameter("Depth [" + unitAbbreviation + "]", "H", "Profile depth", GH_ParamAccess.item);
-            pManager[0].Optional = true;
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -700,7 +741,7 @@ namespace GhAdSec.Components
         private void Mode1Clicked()
         {
             if (_mode == FoldMode.Catalogue)
-                return;
+                if (!comingFromSave) { return; }
 
             RecordUndoEvent("Catalogue Parameter");
 
@@ -929,45 +970,35 @@ namespace GhAdSec.Components
         {
             GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetString("mode", _mode.ToString());
+            writer.SetString("lengthUnit", lengthUnit.ToString());
+            writer.SetBoolean("inclSS", inclSS);
+            writer.SetInt32("NumberOfInputs", numberOfInputs);
+            writer.SetInt32("catalogueIndex", catalogueIndex);
+            writer.SetInt32("typeIndex", typeIndex);
+            writer.SetString("search", search);
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-            _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
-            
-            Dictionary<string, Type> profileTypesInitial = GhAdSec.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.Profiles");
-            profileTypes = new Dictionary<string, Type>();
-            foreach (KeyValuePair<string, Type> kvp in profileTypesInitial)
-            {
-                // filter out IProfile, IPoint, IFlange, IWeb and ITrapezoidProfileAbstractInterface
-                if (!excludedInterfaces.Contains(kvp.Key))
-                {
-                    // remove the "Profile" from name
-                    string key = kvp.Key.Replace("Profile", "");
-                    // rempove the "I" from name
-                    key = key.Remove(0, 1);
-                    // add whitespace in front of capital characters
-                    StringBuilder name = new StringBuilder(key.Length * 2);
-                    name.Append(key[0]);
-                    for (int i = 1; i < key.Length; i++)
-                    {
-                        if (char.IsUpper(key[i]))
-                            if ((key[i - 1] != ' ' && !char.IsUpper(key[i - 1])) ||
-                                (char.IsUpper(key[i - 1]) &&
-                                 i < key.Length - 1 && !char.IsUpper(key[i + 1])))
-                                name.Append(' ');
-                        name.Append(key[i]);
-                    }
-                    // add to final dictionary
-                    profileTypes.Add(name.ToString(), kvp.Value);
-                }
-            }
-
             first = false;
+
+            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            
+            _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
+            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), reader.GetString("lengthUnit"));
+
+            inclSS = reader.GetBoolean("inclSS");
+            numberOfInputs = reader.GetInt32("NumberOfInputs");
+
+            catalogueIndex = reader.GetInt32("catalogueIndex");
+            typeIndex = reader.GetInt32("typeIndex");
+            search = reader.GetString("search");
+
+            UpdateUIFromSelectedItems();
+
             return base.Read(reader);
         }
-
+        bool comingFromSave = false;
         bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
         {
             return false;

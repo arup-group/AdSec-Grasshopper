@@ -21,7 +21,7 @@ namespace GhAdSec.Components
     /// <summary>
     /// Component to lookup DesignCode for AdSec
     /// </summary>
-    public class DesignCode : GH_Component
+    public class DesignCode : GH_Component, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -134,23 +134,6 @@ namespace GhAdSec.Components
                 // get list of standard codes for the selected material
                 designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
                 
-                //// add codes for selected material to list of dropdowns
-                //dropdownitems.Add(designCodeKVP.Keys.ToList());
-                //if (selecteditems.Count == 1)
-                //    selecteditems.Add(designCodeKVP.Keys.First());
-
-                //if (selecteditems[1].StartsWith("EN1992"))
-                //{
-                //    spacerDescriptions[1] = "Design Code";
-                //    spacerDescriptions[2] = "National Annex";
-                //}
-                //else
-                //{
-                //    spacerDescriptions[1] = "Code Group";
-                //    spacerDescriptions[2] = "Design Code";
-                //}
-
-
                 // create string for selected item to use for type search while drilling
                 int level = 0;
                 string typeString = selecteditems[level];
@@ -207,7 +190,6 @@ namespace GhAdSec.Components
                         // stop drilling
                         drill = false;
 
-                        typeString = selecteditems.Last();
                         spacerDescriptions[selecteditems.Count - 1] = "Design Code";
                         if (typeString.StartsWith("Edition"))
                             spacerDescriptions[selecteditems.Count - 1] = "Edition";
@@ -218,6 +200,67 @@ namespace GhAdSec.Components
                     }
                 }
             }
+        }
+        private void UpdateUIFromSelectedItems()
+        {
+            // get list of standard codes for the selected material
+            designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+
+            // create string for selected item to use for type search while drilling
+            int level = 0;
+            string typeString = selecteditems[level];
+            bool drill = true;
+            while (drill)
+            {
+                // get the type of the most recent selected from level above
+                designCodeKVP.TryGetValue(typeString, out Type typ);
+
+                // update the KVP by reflecting the type
+                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+
+                // determine if we have reached the fields layer
+                if (designCodeKVP.Count > 1)
+                {
+                    level++;
+
+                    typeString = selecteditems[level];
+
+                    if (typeString.StartsWith("Edition"))
+                        spacerDescriptions[level] = "Edition";
+                    if (typeString.StartsWith("Part"))
+                        spacerDescriptions[level] = "Part";
+                    if (typeString.StartsWith("Metric") | typeString.StartsWith("US"))
+                        spacerDescriptions[level] = "Unit";
+                    if (typeString.StartsWith("National"))
+                        spacerDescriptions[level] = "National Annex";
+                }
+                else if (designCodeKVP.Count == 1)
+                {
+                    // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
+                    typeString = designCodeKVP.Keys.First();
+                }
+                else
+                {
+                    // if kvp is empty we have reached the field level
+                    // where we set the materials by reflecting the type
+                    designCodes = GhAdSec.Helpers.ReflectAdSecAPI.ReflectFields(typ);
+                    // stop drilling
+                    drill = false;
+
+                    spacerDescriptions[selecteditems.Count - 1] = "Design Code";
+                    if (typeString.StartsWith("Edition"))
+                        spacerDescriptions[selecteditems.Count - 1] = "Edition";
+                    if (typeString.StartsWith("Part"))
+                        spacerDescriptions[selecteditems.Count - 1] = "Part";
+                    if (typeString.StartsWith("Metric") | typeString.StartsWith("US"))
+                        spacerDescriptions[selecteditems.Count - 1] = "Unit";
+                }
+            }
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -276,9 +319,30 @@ namespace GhAdSec.Components
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
+            UpdateUIFromSelectedItems();
             first = false;
             return base.Read(reader);
+        }
+        bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
+        {
+            return null;
+        }
+        bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        #endregion
+        #region IGH_VariableParameterComponent null implementation
+        void IGH_VariableParameterComponent.VariableParameterMaintenance()
+        {
         }
         #endregion
     }

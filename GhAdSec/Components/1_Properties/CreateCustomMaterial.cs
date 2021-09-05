@@ -74,6 +74,15 @@ namespace GhAdSec.Components
             // update input params
             ChangeMode();
         }
+        private void UpdateUIFromSelectedItems()
+        {
+            ChangeMode();
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
         #endregion
 
         #region Input and output
@@ -207,6 +216,7 @@ namespace GhAdSec.Components
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             isConcrete = reader.GetBoolean("isConcrete");
+            UpdateUIFromSelectedItems();
             first = false;
             return base.Read(reader);
         }
@@ -240,8 +250,6 @@ namespace GhAdSec.Components
                 Params.Input[5].Access = GH_ParamAccess.item;
                 Params.Input[5].Optional = true;
             }
-
-            
         }
         #endregion
     }

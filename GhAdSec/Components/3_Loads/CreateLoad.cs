@@ -51,11 +51,11 @@ namespace GhAdSec.Components
                 selecteditems = new List<string>();
 
                 // force
-                dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.ForceUnit)).ToList());
+                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredForceUnits);
                 selecteditems.Add(forceUnit.ToString());
                 
                 // moment
-                dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.MomentUnit)).ToList());
+                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredMomentUnits);
                 selecteditems.Add(momentUnit.ToString());
 
                 IQuantity force = new UnitsNet.Force(0, forceUnit);
@@ -90,10 +90,22 @@ namespace GhAdSec.Components
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
+
+        private void UpdateUIFromSelectedItems()
+        {
+            forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[0]);
+            momentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), selecteditems[1]);
+
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
         #endregion
 
         #region Input and output
-        
+
         // list of lists with all dropdown lists conctent
         List<List<string>> dropdownitems;
         // list of selected items
@@ -145,8 +157,7 @@ namespace GhAdSec.Components
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
-            forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[0]);
-            momentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), selecteditems[1]);
+            UpdateUIFromSelectedItems();
 
             first = false;
             return base.Read(reader);

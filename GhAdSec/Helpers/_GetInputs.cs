@@ -515,6 +515,12 @@ namespace GhAdSec.Components
                 {
                     rebar = (AdSecRebarBundleGoo)gh_typ.Value;
                 }
+                else if (gh_typ.Value is AdSecRebarLayerGoo)
+                {
+                    AdSecRebarLayerGoo spacing = (AdSecRebarLayerGoo)gh_typ.Value;
+                    rebar = new AdSecRebarBundleGoo(spacing.Value.BarBundle);
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Converted " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") from RebarSpacing to an AdSec Rebar. All spacing information has been lost!");
+                }
                 else
                 {
                     owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an AdSec Rebar");

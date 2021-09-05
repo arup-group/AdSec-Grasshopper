@@ -70,27 +70,18 @@ namespace GhAdSec.Components
                 switch (_mode)
                 {
                     case FoldMode.Line:
+                    case FoldMode.SingleBars:
                         while (dropdownitems.Count > 1)
                             dropdownitems.RemoveAt(1);
                         spacerDescriptions[1] = "Measure";
                         break;
                     case FoldMode.Arc:
-                        if (dropdownitems.Count < 2)
-                            dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
-                        if (dropdownitems.Count < 3)
-                            dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.AngleUnit)).ToList());
-                        spacerDescriptions[1] = "Length measure";
-                        break;
                     case FoldMode.Circle:
                         if (dropdownitems.Count < 2)
-                            dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                            dropdownitems.Add(GhAdSec.DocumentUnits.FilteredLengthUnits);
                         if (dropdownitems.Count < 3)
-                            dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.AngleUnit)).ToList());
+                            dropdownitems.Add(GhAdSec.DocumentUnits.FilteredAngleUnits);
                         spacerDescriptions[1] = "Length measure";
-                        break;
-                    case FoldMode.SingleBars:
-                        while (dropdownitems.Count > 1)
-                            dropdownitems.RemoveAt(1);
                         break;
                 }
 
@@ -109,6 +100,18 @@ namespace GhAdSec.Components
                         break;
                 }
             }
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
+        private void UpdateUIFromSelectedItems()
+        {
+            _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
+            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
+            angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[2]);
+            CreateAttributes();
+            ToggleInput();
             ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
@@ -257,8 +260,6 @@ namespace GhAdSec.Components
                     Params.RegisterInputParam(new Param_GenericObject());
                     break;
             }
-
-            
         }
         #endregion
 
@@ -271,10 +272,9 @@ namespace GhAdSec.Components
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-            _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
-            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
-            angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[2]);
-            
+
+            UpdateUIFromSelectedItems();
+
             first = false;
 
             return base.Read(reader);

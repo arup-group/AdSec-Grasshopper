@@ -66,8 +66,8 @@ namespace GhAdSec.Parameters
         {
             // recreate pressure values with document units
             UnitsNet.Pressure e = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
-            UnitsNet.Pressure fck = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
-            UnitsNet.Pressure ftk = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
+            UnitsNet.Pressure fck = new UnitsNet.Pressure(this.Value.CharacteristicCompressiveStrength.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
+            UnitsNet.Pressure ftk = new UnitsNet.Pressure(this.Value.CharacteristicTensileStrength.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
             return "AdSec " + TypeName +
                 " {E:" + e.ToString() +
                 ", fc:" + fck.ToString() +

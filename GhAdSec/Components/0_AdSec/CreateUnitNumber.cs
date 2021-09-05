@@ -145,11 +145,71 @@ namespace GhAdSec.Components
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
+
+        private void UpdateUIFromSelectedItems()
+        {
+            // get selected unit
+            GhAdSec.DocumentUnits.AdSecUnits unit = (GhAdSec.DocumentUnits.AdSecUnits)Enum.Parse(typeof(GhAdSec.DocumentUnits.AdSecUnits), selecteditems[0]);
+
+            // switch case
+            switch (unit)
+            {
+                case GhAdSec.DocumentUnits.AdSecUnits.Length:
+                    quantity = new UnitsNet.Length(val, GhAdSec.DocumentUnits.LengthUnit);
+                    selectedUnit = quantity.Unit;
+                    break;
+                case GhAdSec.DocumentUnits.AdSecUnits.Force:
+                    quantity = new UnitsNet.Force(val, GhAdSec.DocumentUnits.ForceUnit);
+                    selectedUnit = quantity.Unit;
+                    break;
+                case GhAdSec.DocumentUnits.AdSecUnits.Moment:
+                    quantity = new Oasys.Units.Moment(val, GhAdSec.DocumentUnits.MomentUnit);
+                    selectedUnit = quantity.Unit;
+                    break;
+                case GhAdSec.DocumentUnits.AdSecUnits.Stress:
+                    quantity = new UnitsNet.Pressure(val, GhAdSec.DocumentUnits.StressUnit);
+                    selectedUnit = quantity.Unit;
+                    break;
+                case GhAdSec.DocumentUnits.AdSecUnits.Strain:
+                    quantity = new Oasys.Units.Strain(val, GhAdSec.DocumentUnits.StrainUnit);
+                    selectedUnit = quantity.Unit;
+                    break;
+                case GhAdSec.DocumentUnits.AdSecUnits.AxialStiffness:
+                    quantity = new Oasys.Units.AxialStiffness(val, GhAdSec.DocumentUnits.AxialStiffnessUnit);
+                    selectedUnit = quantity.Unit;
+                    break;
+                case GhAdSec.DocumentUnits.AdSecUnits.BendingStiffness:
+                    quantity = new Oasys.Units.BendingStiffness(val, GhAdSec.DocumentUnits.BendingStiffnessUnit);
+                    selectedUnit = quantity.Unit;
+                    break;
+                case GhAdSec.DocumentUnits.AdSecUnits.Curvature:
+                    quantity = new Oasys.Units.Curvature(val, GhAdSec.DocumentUnits.CurvatureUnit);
+                    selectedUnit = quantity.Unit;
+                    break;
+            }
+
+            // create new dictionary and set all unit measures from quantity to it
+            unitDict = new Dictionary<string, Enum>();
+            foreach (UnitsNet.UnitInfo unitype in quantity.QuantityInfo.UnitInfos)
+            {
+                unitDict.Add(unitype.Name, unitype.Value);
+            }
+            // update dropdown list
+            dropdownitems[1] = unitDict.Keys.ToList();
+
+            selectedUnit = unitDict[selecteditems.Last()];
+
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
         #endregion
 
         #region Input and output
         // get list of material types defined in material parameter
-        
+
         // list of materials
         Dictionary<string, Enum> unitDict;
         Enum selectedUnit;
@@ -231,7 +291,7 @@ namespace GhAdSec.Components
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
+            UpdateUIFromSelectedItems();
             first = false;
             return base.Read(reader);
         }

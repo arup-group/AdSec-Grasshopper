@@ -48,7 +48,8 @@ namespace GhAdSec.Components
                 selecteditems = new List<string>();
 
                 // length
-                dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
@@ -72,6 +73,20 @@ namespace GhAdSec.Components
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
+
+        private void UpdateUIFromSelectedItems()
+        {
+            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[0]);
+
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
+        #endregion
+
+        #region Input and output
         // list of lists with all dropdown lists conctent
         List<List<string>> dropdownitems;
         // list of selected items
@@ -79,14 +94,12 @@ namespace GhAdSec.Components
         // list of descriptions 
         List<string> spacerDescriptions = new List<string>(new string[]
         {
-            "Measure",
+            "Measure"
         });
         private bool first = true;
         private UnitsNet.Units.LengthUnit lengthUnit = GhAdSec.DocumentUnits.LengthUnit;
         string unitAbbreviation;
-        #endregion
 
-        #region Input and output
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
@@ -124,9 +137,7 @@ namespace GhAdSec.Components
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
-            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[0]);
-
+            UpdateUIFromSelectedItems();
             first = false;
             return base.Read(reader);
         }

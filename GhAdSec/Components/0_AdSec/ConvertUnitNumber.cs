@@ -22,7 +22,7 @@ namespace GhAdSec.Components
     /// <summary>
     /// Component to convert a UnitNumber
     /// </summary>
-    public class ConvertUnitNumber : GH_Component
+    public class ConvertUnitNumber : GH_Component, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -56,8 +56,7 @@ namespace GhAdSec.Components
                     dropdownitems = new List<List<string>>();
                     List<string> unitTypes = new List<string>(new string[]
                     {
-                        "Input some UnitNumber",
-                        "to populate this list"
+                        " ",
                     });
                     dropdownitems.Add(unitTypes);
                 }
@@ -77,11 +76,19 @@ namespace GhAdSec.Components
                 dropdownitems[0] = unitDict.Keys.ToList();
             }
         }
+        private void UpdateUIFromSelectedItems()
+        {
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
         #endregion
 
         #region Input and output
         // get list of material types defined in material parameter
-        
+
         // list of materials
         Dictionary<string, Enum> unitDict;
         Enum selectedUnit;
@@ -101,6 +108,7 @@ namespace GhAdSec.Components
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("UnitNumber", "UN", "Number with a unit to be converted into another unit", GH_ParamAccess.item);
+            pManager[0].Optional = true;
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -128,7 +136,14 @@ namespace GhAdSec.Components
                             unitDict.Add(unit.Name, unit.Value);
                         }
                         dropdownitems[0] = unitDict.Keys.ToList();
-                        selecteditems[0] = inUnitNumber.Value.Unit.ToString();
+                        if (!comingFromSave)
+                        {
+                            selecteditems[0] = inUnitNumber.Value.Unit.ToString();
+                        }
+                        else
+                        {
+                            comingFromSave = false;
+                        }
                     }
                 }
                 else
@@ -136,6 +151,11 @@ namespace GhAdSec.Components
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert UnitNumber input");
                     return;
                 }
+            }
+            else
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input UnitNumber to populate dropdown menu");
+                return;
             }
 
             // update selected material
@@ -158,9 +178,32 @@ namespace GhAdSec.Components
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
+            UpdateUIFromSelectedItems();
+            comingFromSave = true;
             first = false;
             return base.Read(reader);
+        }
+        bool comingFromSave = false;
+        bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
+        {
+            return null;
+        }
+        bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        #endregion
+        #region IGH_VariableParameterComponent null implementation
+        void IGH_VariableParameterComponent.VariableParameterMaintenance()
+        {
         }
         #endregion
     }

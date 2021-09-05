@@ -56,12 +56,14 @@ namespace GhAdSec.Components
         {
             // set selected item
             selecteditems[i] = dropdownitems[i][j];
-            // remove dropdown lists beyond first level
-            while (dropdownitems.Count > 1)
-                dropdownitems.RemoveAt(1);
+            
             // toggle case
             if (i == 0)
             {
+                // remove dropdown lists beyond first level
+                while (dropdownitems.Count > 1)
+                    dropdownitems.RemoveAt(1);
+
                 switch (j)
                 {
                     case 0:
@@ -72,11 +74,13 @@ namespace GhAdSec.Components
                         break;
                     case 2:
                         // add strain dropdown
-                        dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                        //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                        dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStrainUnits);
                         selecteditems.Add(strainUnit.ToString());
 
                         // add pressure dropdown
-                        dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+                        //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+                        dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStressUnits);
                         selecteditems.Add(stressUnit.ToString());
 
                         Mode2Clicked();
@@ -86,11 +90,13 @@ namespace GhAdSec.Components
                         break;
                     case 4:
                         // add strain dropdown
-                        dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                        //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                        dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStrainUnits);
                         selecteditems.Add(strainUnit.ToString());
 
                         // add pressure dropdown
-                        dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+                        //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+                        dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStressUnits);
                         selecteditems.Add(stressUnit.ToString());
 
                         Mode4Clicked();
@@ -100,7 +106,8 @@ namespace GhAdSec.Components
                         break;
                     case 6:
                         // add strain dropdown
-                        dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                        //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                        dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStrainUnits);
                         selecteditems.Add(strainUnit.ToString());
 
                         Mode6Clicked();
@@ -110,13 +117,15 @@ namespace GhAdSec.Components
                         break;
                     case 8:
                         // add strain dropdown
-                        dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                        //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                        dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStrainUnits);
                         selecteditems.Add(strainUnit.ToString());
                         Mode8Clicked();
                         break;
                     case 9:
                         // add strain dropdown
-                        dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                        //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                        dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStrainUnits);
                         selecteditems.Add(strainUnit.ToString());
                         Mode9Clicked();
                         break;
@@ -135,7 +144,52 @@ namespace GhAdSec.Components
                         break;
                 }
             }
-            
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
+        private void UpdateUIFromSelectedItems()
+        {
+            switch (_mode)
+            {
+                case (AdSecStressStrainCurveGoo.StressStrainCurveType)0:
+                    Mode0Clicked();
+                    break;
+                case (AdSecStressStrainCurveGoo.StressStrainCurveType)1:
+                    Mode1Clicked();
+                    break;
+                case (AdSecStressStrainCurveGoo.StressStrainCurveType)2:
+                    Mode2Clicked();
+                    break;
+                case (AdSecStressStrainCurveGoo.StressStrainCurveType)3:
+                    Mode3Clicked();
+                    break;
+                case (AdSecStressStrainCurveGoo.StressStrainCurveType)4:
+                    Mode4Clicked();
+                    break;
+                case (AdSecStressStrainCurveGoo.StressStrainCurveType)5:
+                    Mode5Clicked();
+                    break;
+                case (AdSecStressStrainCurveGoo.StressStrainCurveType)6:
+                    Mode6Clicked();
+                    break;
+                case (AdSecStressStrainCurveGoo.StressStrainCurveType)7:
+                    Mode7Clicked();
+                    break;
+                case (AdSecStressStrainCurveGoo.StressStrainCurveType)8:
+                    Mode8Clicked();
+                    break;
+                case (AdSecStressStrainCurveGoo.StressStrainCurveType)9:
+                    Mode9Clicked();
+                    break;
+            }
+
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -265,11 +319,11 @@ namespace GhAdSec.Components
         //}
         private bool first = true;
         private GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType _mode = GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType.Linear;
-
+        private bool comingFromSave = false;
         private void Mode0Clicked()
         {
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)0)
-                return;
+                if (!comingFromSave) { return; }
             
             bool cleanAll = false;
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
@@ -292,7 +346,7 @@ namespace GhAdSec.Components
         private void Mode1Clicked()
         {
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)1)
-                return;
+                if (!comingFromSave) { return; }
 
             bool cleanAll = false;
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
@@ -315,7 +369,7 @@ namespace GhAdSec.Components
         private void Mode2Clicked()
         {
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)2)
-                return;
+                if (!comingFromSave) { return; }
 
             bool cleanAll = false;
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
@@ -340,7 +394,7 @@ namespace GhAdSec.Components
         private void Mode3Clicked()
         {
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)3)
-                return;
+                if (!comingFromSave) { return; }
 
             bool cleanAll = false;
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
@@ -363,7 +417,7 @@ namespace GhAdSec.Components
         private void Mode4Clicked()
         {
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
-                return;
+                if (!comingFromSave) { return; }
 
             RecordUndoEvent("Changed dropdown");
             _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4;
@@ -381,7 +435,7 @@ namespace GhAdSec.Components
         private void Mode5Clicked()
         {
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)5)
-                return;
+                if (!comingFromSave) { return; }
 
             bool cleanAll = false;
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
@@ -406,7 +460,7 @@ namespace GhAdSec.Components
         private void Mode6Clicked()
         {
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)6)
-                return;
+                if (!comingFromSave) { return; }
 
             bool cleanAll = false;
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
@@ -431,7 +485,7 @@ namespace GhAdSec.Components
         private void Mode7Clicked()
         {
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)7)
-                return;
+                if (!comingFromSave) { return; }
 
             bool cleanAll = false;
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
@@ -454,7 +508,7 @@ namespace GhAdSec.Components
         private void Mode8Clicked()
         {
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)8)
-                return;
+                if (!comingFromSave) { return; }
 
             bool cleanAll = false;
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
@@ -479,7 +533,7 @@ namespace GhAdSec.Components
         private void Mode9Clicked()
         {
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)9)
-                return;
+                if (!comingFromSave) { return; }
 
             bool cleanAll = false;
             if (_mode == (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)4)
@@ -507,16 +561,23 @@ namespace GhAdSec.Components
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
             GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
-            writer.SetString("enum", _mode.ToString());
+            writer.SetString("mode", _mode.ToString());
+            writer.SetString("strain_mode", strainUnit.ToString());
+            writer.SetString("stress_mode", stressUnit.ToString());
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
-            strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
-            stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
-            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)Enum.Parse(typeof(GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType), reader.GetString("mode"));
+            
+            strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), reader.GetString("strain_mode"));
+            stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), reader.GetString("stress_mode"));
+            
+            _mode = (GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType)Enum.Parse(
+                typeof(GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainCurveType), reader.GetString("mode"));
+            comingFromSave = true;
+            UpdateUIFromSelectedItems();
+            comingFromSave = false;
             first = false;
             return base.Read(reader);
         }

@@ -40,8 +40,12 @@ namespace GhAdSec
             BendingStiffness,
             Curvature
         }
-
-        // length
+        internal static List<string> FilteredAngleUnits = new List<string>()
+        {
+            UnitsNet.Units.AngleUnit.Radian.ToString(),
+            UnitsNet.Units.AngleUnit.Degree.ToString()
+        };
+        #region length
         public static UnitsNet.Units.LengthUnit LengthUnit
         {
             get
@@ -67,71 +71,127 @@ namespace GhAdSec
             }
         }
         private static UnitsNet.Units.LengthUnit m_length;
+        internal static List<string> FilteredLengthUnits = new List<string>()
+        {
+            UnitsNet.Units.LengthUnit.Millimeter.ToString(),
+            UnitsNet.Units.LengthUnit.Centimeter.ToString(),
+            UnitsNet.Units.LengthUnit.Meter.ToString(),
+            UnitsNet.Units.LengthUnit.Inch.ToString(),
+            UnitsNet.Units.LengthUnit.Foot.ToString()
+        };
+        #endregion
 
-        // force
+        #region force
         public static UnitsNet.Units.ForceUnit ForceUnit
         {
             get { return m_force; }
             set { m_force = value; }
         }
         private static UnitsNet.Units.ForceUnit m_force = UnitsNet.Units.ForceUnit.Kilonewton;
+        internal static List<string> FilteredForceUnits = new List<string>()
+        {
+            UnitsNet.Units.ForceUnit.Newton.ToString(),
+            UnitsNet.Units.ForceUnit.Kilonewton.ToString(),
+            UnitsNet.Units.ForceUnit.Meganewton.ToString(),
+            UnitsNet.Units.ForceUnit.PoundForce.ToString(),
+            UnitsNet.Units.ForceUnit.KilopoundForce.ToString(),
+            UnitsNet.Units.ForceUnit.TonneForce.ToString()
+        };
+        #endregion
 
-        // moment
+        #region moment
         public static Oasys.Units.MomentUnit MomentUnit
         {
             get { return m_moment; }
             set { m_moment = value; }
         }
         private static Oasys.Units.MomentUnit m_moment = Oasys.Units.MomentUnit.KilonewtonMeter;
-
-        // stress
+        internal static List<string> FilteredMomentUnits = Enum.GetNames(typeof(Oasys.Units.MomentUnit)).ToList();
+        //    new List<string>()
+        //{
+        //    // to be implemented
+        //    Oasys.Units.MomentUnit.
+        //};
+        #endregion
+        #region stress
         public static UnitsNet.Units.PressureUnit StressUnit
         {
             get { return m_stress; }
             set { m_stress = value; }
         }
         private static UnitsNet.Units.PressureUnit m_stress = UnitsNet.Units.PressureUnit.Megapascal;
-
-        // strain
+        internal static List<string> FilteredStressUnits = new List<string>()
+        {
+            UnitsNet.Units.PressureUnit.Pascal.ToString(),
+            UnitsNet.Units.PressureUnit.Kilopascal.ToString(),
+            UnitsNet.Units.PressureUnit.Megapascal.ToString(),
+            UnitsNet.Units.PressureUnit.Gigapascal.ToString(),
+            UnitsNet.Units.PressureUnit.NewtonPerSquareMillimeter.ToString(),
+            UnitsNet.Units.PressureUnit.KilonewtonPerSquareCentimeter.ToString(),
+            UnitsNet.Units.PressureUnit.NewtonPerSquareMeter.ToString(),
+            UnitsNet.Units.PressureUnit.KilopoundForcePerSquareInch.ToString(),
+            UnitsNet.Units.PressureUnit.PoundForcePerSquareInch.ToString(),
+            UnitsNet.Units.PressureUnit.PoundForcePerSquareFoot.ToString(),
+            UnitsNet.Units.PressureUnit.KilopoundForcePerSquareInch.ToString(),
+            UnitsNet.Units.PressureUnit.KilopoundForcePerSquareFoot.ToString()
+        };
+        #endregion
+        #region strain
         public static Oasys.Units.StrainUnit StrainUnit
         {
             get { return m_strain; }
             set { m_strain = value; }
         }
         private static Oasys.Units.StrainUnit m_strain = Oasys.Units.StrainUnit.MilliStrain;
-
-        // axial stiffness
+        internal static List<string> FilteredStrainUnits = new List<string>()
+        {
+            Oasys.Units.StrainUnit.Ratio.ToString(),
+            Oasys.Units.StrainUnit.Percent.ToString(),
+            Oasys.Units.StrainUnit.MilliStrain.ToString(),
+            Oasys.Units.StrainUnit.MicroStrain.ToString()
+        };
+        #endregion
+        #region axial stiffness
         public static Oasys.Units.AxialStiffnessUnit AxialStiffnessUnit
         {
             get { return m_axialstiffness; }
             set { m_axialstiffness = value; }
         }
         private static Oasys.Units.AxialStiffnessUnit m_axialstiffness = Oasys.Units.AxialStiffnessUnit.Kilonewton;
-
-        // bending stiffness
+        #endregion
+        #region bending stiffness
         public static Oasys.Units.BendingStiffnessUnit BendingStiffnessUnit
         {
             get { return m_bendingstiffness; }
             set { m_bendingstiffness = value; }
         }
         private static Oasys.Units.BendingStiffnessUnit m_bendingstiffness = Oasys.Units.BendingStiffnessUnit.KilonewtonSquareMeter;
-
-        // curvature
+        #endregion
+        #region curvature
         public static Oasys.Units.CurvatureUnit CurvatureUnit
         {
             get { return m_curvature; }
             set { m_curvature = value; }
         }
         private static Oasys.Units.CurvatureUnit m_curvature = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), "Per" + LengthUnit.ToString());
-
-        // unit system
+        internal static List<string> FilteredCurvatureUnits = new List<string>()
+        {
+            Oasys.Units.CurvatureUnit.PerMillimeter.ToString(),
+            Oasys.Units.CurvatureUnit.PerCentimeter.ToString(),
+            Oasys.Units.CurvatureUnit.PerMeter.ToString(),
+            Oasys.Units.CurvatureUnit.PerInch.ToString(),
+            Oasys.Units.CurvatureUnit.PerFoot.ToString()
+        };
+        #endregion
+        #region unit system
         public static UnitsNet.UnitSystem UnitSystem
         {
             get { return m_units; }
             set { m_units = value; }
         }
         private static UnitsNet.UnitSystem m_units;
-
+        #endregion
+        #region methods
         internal static void SetupUnits()
         {
             // get SI units
@@ -195,5 +255,6 @@ namespace GhAdSec
                     return unit[i];
             return UnitsNet.Units.LengthUnit.Undefined;
         }
+        #endregion
     }
 }

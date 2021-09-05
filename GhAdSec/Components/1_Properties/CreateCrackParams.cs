@@ -50,11 +50,13 @@ namespace GhAdSec.Components
                 selecteditems = new List<string>();
 
                 // pressure E
-                dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+                //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStressUnits);
                 selecteditems.Add(strengthUnit.ToString());
 
                 // pressure stress
-                dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+                //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStressUnits);
                 selecteditems.Add(strengthUnit.ToString());
 
                 IQuantity quantityE = new UnitsNet.Pressure(0, stressUnitE);
@@ -89,10 +91,22 @@ namespace GhAdSec.Components
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
+
+        private void UpdateUIFromSelectedItems()
+        {
+            stressUnitE = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[0]);
+            strengthUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
+
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
         #endregion
 
         #region Input and output
-        
+
         // list of lists with all dropdown lists conctent
         List<List<string>> dropdownitems;
         // list of selected items
@@ -123,11 +137,30 @@ namespace GhAdSec.Components
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            Pressure modulus = GetInput.Stress(this, DA, 0, stressUnitE);
+            if (modulus.Value < 0)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
+                modulus = new Pressure(Math.Abs(modulus.Value), modulus.Unit);
+            }
+            Pressure compression = GetInput.Stress(this, DA, 1, strengthUnit);
+            if (compression.Value > 0)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
+                compression = new Pressure(compression.Value * -1, compression.Unit);
+            }
+            Pressure tension = GetInput.Stress(this, DA, 2, strengthUnit);
+            if (tension.Value < 0)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
+                tension = new Pressure(Math.Abs(tension.Value), tension.Unit);
+            }
+
             // create new ccp
             AdSecConcreteCrackCalculationParametersGoo ccp = new AdSecConcreteCrackCalculationParametersGoo(
-                GetInput.Stress(this, DA, 0, stressUnitE),
-                GetInput.Stress(this, DA, 1, strengthUnit),
-                GetInput.Stress(this, DA, 2, strengthUnit));
+                modulus,
+                compression,
+                tension);
 
             DA.SetData(0, ccp);
         }
@@ -142,10 +175,7 @@ namespace GhAdSec.Components
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
-            stressUnitE = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[0]);
-            strengthUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
-
+            UpdateUIFromSelectedItems();
             first = false;
             return base.Read(reader);
         }

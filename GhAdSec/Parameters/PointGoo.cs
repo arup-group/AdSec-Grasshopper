@@ -230,7 +230,10 @@ namespace GhAdSec.Parameters
         }
         public void DrawViewportWires(GH_PreviewWireArgs args)
         {
-            args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 3, GhAdSec.UI.Colour.OasysBlue);
+            if (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) // not selected
+                args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 3, GhAdSec.UI.Colour.OasysBlue);
+            else
+                args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 5, GhAdSec.UI.Colour.OasysYellow);
         }
         public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
     }

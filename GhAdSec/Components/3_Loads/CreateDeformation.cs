@@ -51,11 +51,11 @@ namespace GhAdSec.Components
                 selecteditems = new List<string>();
 
                 // strain
-                dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStrainUnits);
                 selecteditems.Add(strainUnit.ToString());
 
                 // curvature
-                dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.CurvatureUnit)).ToList());
+                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredCurvatureUnits);
                 selecteditems.Add(curvatureUnit.ToString());
 
                 IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
@@ -90,10 +90,22 @@ namespace GhAdSec.Components
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
+
+        private void UpdateUIFromSelectedItems()
+        {
+            strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
+            curvatureUnit = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), selecteditems[1]);
+
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
         #endregion
 
         #region Input and output
-        
+
         // list of lists with all dropdown lists conctent
         List<List<string>> dropdownitems;
         // list of selected items
@@ -114,9 +126,9 @@ namespace GhAdSec.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Δx [" + strainUnitAbbreviation + "]", "X", "The axial strain. Positive X indicates tension.", GH_ParamAccess.item);
-            pManager.AddGenericParameter("δyy [" + curvatureUnitAbbreviation + "]", "YY", "The curvature about local y-axis. It follows the right hand grip rule about the axis. Positive YY is anti-clockwise curvature about local y-axis.", GH_ParamAccess.item);
-            pManager.AddGenericParameter("δzz [" + curvatureUnitAbbreviation + "]", "ZZ", "The curvature about local z-axis. It follows the right hand grip rule about the axis. Positive ZZ is anti-clockwise curvature about local z-axis.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("εx [" + strainUnitAbbreviation + "]", "X", "The axial strain. Positive X indicates tension.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("κyy [" + curvatureUnitAbbreviation + "]", "YY", "The curvature about local y-axis. It follows the right hand grip rule about the axis. Positive YY is anti-clockwise curvature about local y-axis.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("κzz [" + curvatureUnitAbbreviation + "]", "ZZ", "The curvature about local z-axis. It follows the right hand grip rule about the axis. Positive ZZ is anti-clockwise curvature about local z-axis.", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -144,8 +156,7 @@ namespace GhAdSec.Components
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
-            strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
-            curvatureUnit = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), selecteditems[1]);
+            UpdateUIFromSelectedItems();
 
             first = false;
             return base.Read(reader);
@@ -175,9 +186,9 @@ namespace GhAdSec.Components
             strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
             IQuantity curvature = new Oasys.Units.Curvature(0, curvatureUnit);
             curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
-            Params.Input[0].Name = "Δx [" + strainUnitAbbreviation + "]";
-            Params.Input[1].Name = "δyy [" + curvatureUnitAbbreviation + "]";
-            Params.Input[2].Name = "δzz [" + curvatureUnitAbbreviation + "]";
+            Params.Input[0].Name = "εx [" + strainUnitAbbreviation + "]";
+            Params.Input[1].Name = "κyy [" + curvatureUnitAbbreviation + "]";
+            Params.Input[2].Name = "κzz [" + curvatureUnitAbbreviation + "]";
         }
         #endregion
 

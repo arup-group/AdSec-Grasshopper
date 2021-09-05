@@ -46,7 +46,8 @@ namespace GhAdSec.Components
                 selecteditems.Add(dropdownitems[0][0]);
 
                 // length
-                dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
@@ -71,6 +72,17 @@ namespace GhAdSec.Components
             {
                 lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
             }
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
+        private void UpdateUIFromSelectedItems()
+        {
+            _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
+            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
+            CreateAttributes();
+            ToggleInput();
             ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
@@ -179,13 +191,14 @@ namespace GhAdSec.Components
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
             GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
-            writer.SetString("enum", _mode.ToString());
+            writer.SetString("mode", _mode.ToString());
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
+            UpdateUIFromSelectedItems();
             first = false;
             return base.Read(reader);
         }

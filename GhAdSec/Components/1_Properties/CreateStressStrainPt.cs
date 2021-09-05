@@ -50,11 +50,13 @@ namespace GhAdSec.Components
                 selecteditems = new List<string>();
 
                 // strain
-                dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStrainUnits);
                 selecteditems.Add(strainUnit.ToString());
 
                 // pressure
-                dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+                //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStressUnits);
                 selecteditems.Add(stressUnit.ToString());
 
                 IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
@@ -89,10 +91,18 @@ namespace GhAdSec.Components
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
+        private void UpdateUIFromSelectedItems()
+        {
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
         #endregion
 
         #region Input and output
-        
+
         // list of lists with all dropdown lists conctent
         List<List<string>> dropdownitems;
         // list of selected items
@@ -145,7 +155,7 @@ namespace GhAdSec.Components
 
             strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
             stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
-
+            UpdateUIFromSelectedItems();
             first = false;
             return base.Read(reader);
         }

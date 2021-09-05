@@ -58,7 +58,7 @@ namespace GhAdSec.Components
                 selecteditems.Add(dropdownitems[0][0]);
 
                 // force
-                dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.ForceUnit)).ToList());
+                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredForceUnits);
                 selecteditems.Add(forceUnit.ToString());
 
                 IQuantity force = new UnitsNet.Force(0, forceUnit);
@@ -84,15 +84,15 @@ namespace GhAdSec.Components
                 switch (selecteditems[0])
                 {
                     case ("Force"):
-                        dropdownitems[0] = Enum.GetNames(typeof(UnitsNet.Units.ForceUnit)).ToList();
+                        dropdownitems[0] = GhAdSec.DocumentUnits.FilteredForceUnits;
                         selecteditems[0] = forceUnit.ToString();
                         break;
                     case ("Strain"):
-                        dropdownitems[0] = Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList();
+                        dropdownitems[0] = GhAdSec.DocumentUnits.FilteredStrainUnits;
                         selecteditems[0] = strainUnit.ToString();
                         break;
                     case ("Stress"):
-                        dropdownitems[0] = Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList();
+                        dropdownitems[0] = GhAdSec.DocumentUnits.FilteredStressUnits;
                         selecteditems[0] = stressUnit.ToString();
                         break;
                 }
@@ -119,10 +119,18 @@ namespace GhAdSec.Components
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
+        private void UpdateUIFromSelectedItems()
+        {
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
         #endregion
 
         #region Input and output
-        
+
         // list of lists with all dropdown lists conctent
         List<List<string>> dropdownitems;
         // list of selected items
@@ -194,7 +202,9 @@ namespace GhAdSec.Components
             forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), reader.GetString("force"));
             strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), reader.GetString("strain"));
             stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), reader.GetString("stress"));
-
+            
+            UpdateUIFromSelectedItems();
+            
             first = false;
             return base.Read(reader);
         }

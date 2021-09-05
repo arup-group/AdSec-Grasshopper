@@ -81,7 +81,7 @@ namespace GhAdSec.UI
                 }
 
                 float num = Math.Max(Math.Max(sp, bt), 90);
-                return num;
+                return Math.Min(num, 170);
             }
             set { MinWidth = value; }
         }

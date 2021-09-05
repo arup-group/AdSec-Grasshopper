@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 namespace GhAdSec.Components
 {
-    public class EditProfile : GH_Component
+    public class EditProfile : GH_Component, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -43,9 +43,8 @@ namespace GhAdSec.Components
         {
             if (first)
             {
-                List<string> list = Enum.GetNames(typeof(UnitsNet.Units.AngleUnit)).ToList();
                 dropdownitems = new List<List<string>>();
-                dropdownitems.Add(list);
+                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredAngleUnits);
 
                 IQuantity quantityAngle = new UnitsNet.Angle(0, angleUnit);
                 angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
@@ -63,6 +62,20 @@ namespace GhAdSec.Components
             // set selected item
             selecteditems[i] = dropdownitems[i][j];
             angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[i]);
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
+        }
+
+        private void UpdateUIFromSelectedItems()
+        {
+            angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[0]);
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -80,7 +93,7 @@ namespace GhAdSec.Components
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Profile", "Pf", "AdSet Profile to Edit or get information from", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Rotation", "R", "[Optional] The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Rotation [" + angleAbbreviation + "]", "R", "[Optional] The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.", GH_ParamAccess.item);
             pManager.AddBooleanParameter("isReflectedY", "rY", "[Optional] Reflects the profile over the y-axis in the local coordinate system.", GH_ParamAccess.item);
             pManager.AddBooleanParameter("isReflectedZ", "rZ", "[Optional] Reflects the profile over the z-axis in the local coordinate system.", GH_ParamAccess.item);
             
@@ -92,10 +105,6 @@ namespace GhAdSec.Components
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Profile", "Pf", "Modified AdSet Profile", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Rotation", "R", "The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.", GH_ParamAccess.item);
-            pManager.AddBooleanParameter("isReflectedY", "rY", "Reflects the profile over the y-axis in the local coordinate system.", GH_ParamAccess.item);
-            pManager.AddBooleanParameter("isReflectedZ", "rZ", "Reflects the profile over the z-axis in the local coordinate system.", GH_ParamAccess.item);
-
         }
         #endregion
 
@@ -144,10 +153,37 @@ namespace GhAdSec.Components
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-            angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[0]);
+            
+            UpdateUIFromSelectedItems();
+            
             first = false;
 
             return base.Read(reader);
+        }
+        bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
+        {
+            return null;
+        }
+        bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        #endregion
+
+        #region IGH_VariableParameterComponent null implementation
+        void IGH_VariableParameterComponent.VariableParameterMaintenance()
+        {
+            IQuantity quantityAngle = new UnitsNet.Angle(0, angleUnit);
+            angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
+            Params.Input[1].Name = "Rotation [" + angleAbbreviation + "]";
         }
         #endregion
     }

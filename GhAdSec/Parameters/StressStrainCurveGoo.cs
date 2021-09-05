@@ -94,7 +94,9 @@ namespace GhAdSec.Parameters
                 for (int i = 0; i < 100; i++)
                 {
                     Oasys.Units.Strain strain = new Oasys.Units.Strain((double)i / (double)100.0 * maxStrain, GhAdSec.DocumentUnits.StrainUnit);
+                    
                     UnitsNet.Pressure stress = stressStrainCurve.StressAt(strain);
+                        
                     polypts.Add(new Point3d(
                     strain.As(GhAdSec.DocumentUnits.StrainUnit) * direction,
                     stress.As(GhAdSec.DocumentUnits.StressUnit) * direction, 0));
