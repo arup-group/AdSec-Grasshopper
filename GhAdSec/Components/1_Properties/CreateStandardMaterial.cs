@@ -21,7 +21,7 @@ namespace GhAdSec.Components
     /// <summary>
     /// Component to create a new Standard Material for AdSec
     /// </summary>
-    public class StandardMaterial : GH_Component
+    public class StandardMaterial : GH_Component, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -43,6 +43,14 @@ namespace GhAdSec.Components
         {
             if (first)
             {
+                //GH_Document doc = Grasshopper.Instances.ActiveCanvas.Document;
+                //GH_IO.GH_ISerializable ioser = (GH_IO.GH_ISerializable)this;
+                //GH_DocumentIO io = new GH_DocumentIO(doc);
+                ////                GH_IO.Serialization.GH_IReader reader = GH_IO.Serialization.GH_IReader.
+                //GH_IO.Serialization.GH_Archive archive = (GH_IO.Serialization.GH_Archive)this.Read
+
+
+
                 if (selecteditems == null)
                 {
                     // create a new list of selected items and add the first material type
@@ -62,7 +70,7 @@ namespace GhAdSec.Components
                     dropdownitems.Add(designCodeKVP.Keys.ToList());
                     // select default code to EN1992
                     selecteditems.Add(designCodeKVP.Keys.ElementAt(4));
-                    
+
                     // create string for selected item to use for type search while drilling
                     string typeString = selecteditems.Last();
                     int level = 1;
@@ -71,10 +79,10 @@ namespace GhAdSec.Components
                     {
                         // get the type of the most recent selected from level above
                         designCodeKVP.TryGetValue(typeString, out Type typ);
-                        
+
                         // update the KVP by reflecting the type
                         designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
-                        
+
                         // determine if we have reached the fields layer
                         if (designCodeKVP.Count > 1)
                         {
@@ -193,7 +201,27 @@ namespace GhAdSec.Components
                         // with first item being the selected
                         if (selecteditems.Count - 1 < level)
                         {
-                            selecteditems.Add(designCodeKVP.Keys.First());
+                            if (level == 2)
+                            {
+                                if (prevSelectedCode.StartsWith("EN1992"))
+                                {
+                                    foreach (string code in dropdownitems[2])
+                                    {
+                                        if (code.Equals(prevSelectedNA))
+                                        {
+                                            selecteditems.Add(code);
+                                            typeString = selecteditems.Last();
+                                            break;
+                                        }
+                                    }
+                                }
+                                else
+                                    selecteditems.Add(designCodeKVP.Keys.First());
+
+                            }
+                            else
+                                selecteditems.Add(designCodeKVP.Keys.First());
+
                             // and set the next search item to this
                             typeString = selecteditems.Last();
                         }
@@ -218,7 +246,7 @@ namespace GhAdSec.Components
                         // if kvp has values we add them to create a new dropdown list
                         dropdownitems.Add(materials.Keys.ToList());
                         // with first item being the selected
-                        if (selecteditems[1].StartsWith("EN199"))
+                        if (selecteditems[1].StartsWith("EN1992"))
                         {
                             if (materials.Keys.Count > 4)
                             {
@@ -227,10 +255,13 @@ namespace GhAdSec.Components
                             }
                             else if (materials.Keys.Count == 3)
                                 selecteditems.Add(materials.Keys.ElementAt(1)); // B500B
-                            else if (materials.Keys.Count == 4)
-                                selecteditems.Add(materials.Keys.ElementAt(2)); // S355
+
                             else
                                 selecteditems.Add(materials.Keys.First());
+                        }
+                        else if (selecteditems[1].StartsWith("EN1993"))
+                        {
+                            selecteditems.Add(materials.Keys.ElementAt(2)); // S355
                         }
                         else
                             selecteditems.Add(materials.Keys.First());
@@ -240,18 +271,76 @@ namespace GhAdSec.Components
                         spacerDescriptions[selecteditems.Count - 1] = "Grade";
                     }
                 }
-                if (prevSelectedCode.StartsWith("EN199"))
-                {
-                    foreach (string code in dropdownitems[2])
-                    {
-                        if (code.Equals(prevSelectedNA))
-                        {
-                            selecteditems[2] = code;
-                            break;
-                        }
-                    }
-                }
+                
             }
+        }
+
+        private void UpdateUIFromSelectedItems()
+        {
+            // get the selected material and parse it to type enum
+            Enum.TryParse(selecteditems[0], out AdSecMaterial.AdSecMaterialType materialType);
+            // get list of standard codes for the selected material
+            designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.StandardCodes(materialType);
+            // add codes for selected material to list of dropdowns
+            //dropdownitems.Add(designCodeKVP.Keys.ToList());
+
+            // make the UI look more intelligent
+            if (selecteditems[1].StartsWith("EN1992"))
+            {
+                spacerDescriptions[1] = "Design Code";
+                spacerDescriptions[2] = "National Annex";
+            }
+            else
+            {
+                spacerDescriptions[1] = "Code Group";
+                spacerDescriptions[2] = "Design Code";
+            }
+
+            // create string for selected item to use for type search while drilling
+            int level = 1;
+            string typeString = selecteditems[level];
+            bool drill = true;
+            while (drill)
+            {
+                // get the type of the most recent selected from level above
+                designCodeKVP.TryGetValue(typeString, out Type typ);
+
+                // update the KVP by reflecting the type
+                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+
+                // determine if we have reached the fields layer
+                if (designCodeKVP.Count > 1)
+                {
+                    level++;
+                    typeString = selecteditems[level];
+
+                    if (typeString.StartsWith("Edition"))
+                        spacerDescriptions[level] = "Edition";
+                    if (typeString.StartsWith("Metric") | typeString.StartsWith("US"))
+                        spacerDescriptions[level] = "Unit";
+                }
+                else if (designCodeKVP.Count == 1)
+                {
+                    // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
+                    typeString = designCodeKVP.Keys.First();
+                }
+                else
+                {
+                    // if kvp is empty we have reached the field level
+                    // where we set the materials by reflecting the type
+                    materials = GhAdSec.Helpers.ReflectAdSecAPI.ReflectFields(typ);
+                   
+                    drill = false;
+
+                    spacerDescriptions[selecteditems.Count - 1] = "Grade";
+                }
+
+            }
+            CreateAttributes();
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -282,12 +371,12 @@ namespace GhAdSec.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            
+
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Material", "Mat", "AdSec Material", GH_ParamAccess.item);
-            
+
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
@@ -299,7 +388,7 @@ namespace GhAdSec.Components
             AdSecMaterial mat = new AdSecMaterial(selectedMaterial);
 
             DA.SetData(0, new GhAdSec.Parameters.AdSecMaterialGoo(mat));
-            
+
         }
 
         #region (de)serialization
@@ -312,9 +401,29 @@ namespace GhAdSec.Components
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
-            first = false;
+            UpdateUIFromSelectedItems();
             return base.Read(reader);
+        }
+        bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
+        {
+            return null;
+        }
+        bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
+        {
+            return false;
+        }
+        #endregion
+        #region IGH_VariableParameterComponent null implementation
+        void IGH_VariableParameterComponent.VariableParameterMaintenance()
+        {
         }
         #endregion
     }
