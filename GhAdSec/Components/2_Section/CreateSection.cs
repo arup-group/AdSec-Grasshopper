@@ -57,14 +57,14 @@ namespace GhAdSec.Components
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Section", "Sec", "AdSet Section to create Subcomponent from", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Section", "Sec", "AdSet Section", GH_ParamAccess.item);
         }
         #endregion
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // 0 profile
-            IProfile profile = GetInput.Profile(this, DA, 0);
+            AdSecProfileGoo profile = GetInput.AdSecProfileGoo(this, DA, 0);
 
             // 1 material
             AdSecMaterial material = GetInput.AdSecMaterial(this, DA, 1);
@@ -84,7 +84,7 @@ namespace GhAdSec.Components
             }
 
             // create section
-            AdSecSection section = new AdSecSection(profile, material, reinforcements, subComponents);
+            AdSecSection section = new AdSecSection(profile.Profile, profile.LocalPlane, material, reinforcements, subComponents);
 
             DA.SetData(0, new AdSecSectionGoo(section));
         }

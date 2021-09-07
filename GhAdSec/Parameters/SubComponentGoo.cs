@@ -30,21 +30,23 @@ namespace GhAdSec.Parameters
 {
     public class AdSecSubComponentGoo : GH_GeometricGoo<ISubComponent>, IGH_PreviewData
     {
-        public AdSecSubComponentGoo(ISubComponent subComponent, IDesignCode code)
+        public AdSecSubComponentGoo(ISubComponent subComponent, Plane local, IDesignCode code)
         : base(subComponent)
         {
             m_offset = subComponent.Offset;
-            m_sectionGoo = new AdSecSection(subComponent.Section, code, m_offset);
-            
+            m_sectionGoo = new AdSecSection(subComponent.Section, code, local, m_offset);
+            m_plane = local;
         }
         private AdSecSection m_sectionGoo;
         private IPoint m_offset;
+        private Plane m_plane;
         
-        public AdSecSubComponentGoo(ISection section, IPoint point, IDesignCode code)
+        public AdSecSubComponentGoo(ISection section, Plane local, IPoint point, IDesignCode code)
         {
             this.m_value = ISubComponent.Create(section, point);
             m_offset = point;
-            m_sectionGoo = new AdSecSection(section, code, m_offset);
+            m_sectionGoo = new AdSecSection(section, code, local, m_offset);
+            m_plane = local;
         }
 
         public override string ToString()
@@ -57,7 +59,7 @@ namespace GhAdSec.Parameters
 
         public override IGH_GeometricGoo DuplicateGeometry()
         {
-            return new AdSecSubComponentGoo(this.Value, this.m_sectionGoo.DesignCode);
+            return new AdSecSubComponentGoo(this.Value, this.m_plane, this.m_sectionGoo.DesignCode);
         }
         public override BoundingBox Boundingbox
         {

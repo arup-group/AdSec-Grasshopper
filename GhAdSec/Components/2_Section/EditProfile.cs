@@ -111,7 +111,7 @@ namespace GhAdSec.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // #### get material input and duplicate it ####
-            IProfile editPrf = GetInput.Profile(this, DA, 0);
+            AdSecProfileGoo editPrf = GetInput.AdSecProfileGoo(this, DA, 0);
 
             if (editPrf != null)
             {
@@ -137,10 +137,7 @@ namespace GhAdSec.Components
                     editPrf.IsReflectedZ = refZ;
                 }
 
-                DA.SetData(0, new AdSecProfileGoo(editPrf));
-                DA.SetData(1, editPrf.Rotation);
-                DA.SetData(2, editPrf.IsReflectedY);
-                DA.SetData(3, editPrf.IsReflectedZ);
+                DA.SetData(0, new AdSecProfileGoo(editPrf.Profile, editPrf.LocalPlane));
             }
         }
 

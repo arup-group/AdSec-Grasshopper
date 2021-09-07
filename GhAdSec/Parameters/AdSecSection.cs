@@ -39,50 +39,60 @@ namespace GhAdSec.Parameters
             get { return m_code; }
             set { m_code = value; }
         }
+        public Plane LocalPlane
+        {
+            get { return m_plane; }
+            set { m_plane = value; }
+        }
         #region fields
         private IDesignCode m_code;
         private ISection m_section;
-
+        private Plane m_plane;
         #endregion
         internal Brep SolidBrep => m_profile;
         internal List<Brep> SubBreps => m_subProfiles;
         #region constructors
         
-        public AdSecSection(ISection section, AdSecDesignCode code)
+        public AdSecSection(ISection section, AdSecDesignCode code, Plane local)
         {
             m_section = section;
             m_code = code.DesignCode;
-            CreatePreview(m_code, m_section, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
+            m_plane = local;
+            CreatePreview(m_code, m_section, m_plane, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
                 ref m_rebars, ref m_rebarEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges,
                 ref m_subColours);
         }
-        public AdSecSection(ISection section, IDesignCode code, IPoint subComponentOffset = null)
+        public AdSecSection(ISection section, IDesignCode code, Plane local, IPoint subComponentOffset = null)
         {
             m_section = section;
             m_code = code;
-            CreatePreview(m_code, m_section, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
+            m_plane = local;
+            CreatePreview(m_code, m_section, m_plane, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
                 ref m_rebars, ref m_rebarEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges,
                 ref m_subColours, subComponentOffset);
         }
 
-        public AdSecSection(Oasys.Profiles.IProfile profile, AdSecMaterial material)
+        public AdSecSection(Oasys.Profiles.IProfile profile, AdSecMaterial material, Plane local)
         {
             m_code = material.DesignCode.Duplicate().DesignCode;
             m_section = ISection.Create(profile, material.Material);
-            CreatePreview(m_code, m_section, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
+            m_plane = local;
+            CreatePreview(m_code, m_section, m_plane, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
                 ref m_rebars, ref m_rebarEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges,
                 ref m_subColours);
         }
 
-        public AdSecSection(Oasys.Profiles.IProfile profile, AdSecMaterial material, 
+        public AdSecSection(Oasys.Profiles.IProfile profile, Plane local, AdSecMaterial material, 
             Oasys.Collections.IList<Oasys.AdSec.Reinforcement.Groups.IGroup> reinforcement,
             Oasys.Collections.IList<Oasys.AdSec.ISubComponent> subComponents)
         {
             m_code = material.DesignCode.Duplicate().DesignCode;
             m_section = ISection.Create(profile, material.Material);
             m_section.ReinforcementGroups = reinforcement;
-            m_section.SubComponents = subComponents;
-            CreatePreview(m_code, m_section, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
+            if (subComponents != null)
+                m_section.SubComponents = subComponents;
+            m_plane = local;
+            CreatePreview(m_code, m_section, m_plane, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
                 ref m_rebars, ref m_rebarEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges,
                 ref m_subColours);
         }
@@ -100,7 +110,7 @@ namespace GhAdSec.Parameters
         internal List<List<Polyline>> m_subVoidEdges;
         internal List<DisplayMaterial> m_subColours;
 
-        internal void CreatePreview(IDesignCode code, ISection section, 
+        internal void CreatePreview(IDesignCode code, ISection section, Plane local, 
             ref Brep profile, ref Polyline profileEdge, ref List<Polyline> profileVoidEdges, ref DisplayMaterial profileColour,
             ref List<Brep> rebars, ref List<Circle> rebarEdges, ref List<DisplayMaterial> rebarColours,
             ref List<Brep> subProfiles, ref List<Polyline> subEdges, ref List<List<Polyline>> subVoidEdges, ref List<DisplayMaterial> subColours,
@@ -125,16 +135,16 @@ namespace GhAdSec.Parameters
 
             if (offset != null)
             {
-                offs = new Vector3d(
+                offs = new Vector3d(0,
                     offset.Y.As(GhAdSec.DocumentUnits.LengthUnit),
-                    offset.Z.As(GhAdSec.DocumentUnits.LengthUnit),
-                    0);
+                    offset.Z.As(GhAdSec.DocumentUnits.LengthUnit));
             }
+            
 
             // primary profile
-            profile = CreateBrepFromProfile(new AdSecProfileGoo(flat.Profile));
+            profile = CreateBrepFromProfile(new AdSecProfileGoo(flat.Profile, local));
             profile.Transform(Transform.Translation(offs));
-            Tuple<Polyline, List<Polyline>> edges = AdSecProfileGoo.PolylinesFromAdSecProfile(flat.Profile);
+            Tuple<Polyline, List<Polyline>> edges = AdSecProfileGoo.PolylinesFromAdSecProfile(flat.Profile, local);
             profileEdge = edges.Item1;
             profileEdge.Transform(Transform.Translation(offs));
             profileVoidEdges = edges.Item2;
@@ -162,16 +172,16 @@ namespace GhAdSec.Parameters
             subVoidEdges = new List<List<Polyline>>();
             foreach (ISubComponent sub in flat.SubComponents)
             {
-                Brep temp = CreateBrepFromProfile(new AdSecProfileGoo(sub.Section.Profile));
+                Brep temp = CreateBrepFromProfile(new AdSecProfileGoo(sub.Section.Profile, local));
                 Vector3d trans = new Vector3d(
+                    0,
                     sub.Offset.Y.As(GhAdSec.DocumentUnits.LengthUnit),
-                    sub.Offset.Z.As(GhAdSec.DocumentUnits.LengthUnit),
-                    0);
+                    sub.Offset.Z.As(GhAdSec.DocumentUnits.LengthUnit));
                 temp.Transform(Transform.Translation(trans));
                 temp.Transform(Transform.Translation(offs));
                 subProfiles.Add(temp);
 
-                Tuple<Polyline, List<Polyline>> subedges = AdSecProfileGoo.PolylinesFromAdSecProfile(sub.Section.Profile);
+                Tuple<Polyline, List<Polyline>> subedges = AdSecProfileGoo.PolylinesFromAdSecProfile(sub.Section.Profile, local);
                 Polyline subedge = subedges.Item1;
                 subedge.Transform(Transform.Translation(trans));
                 subedge.Transform(Transform.Translation(offs));
@@ -211,7 +221,7 @@ namespace GhAdSec.Parameters
             {
                 ISingleBars snglBrs = (ISingleBars)rebargrp;
                 List<Circle> baredges = new List<Circle>();
-                List<Brep> barbreps = CreateBrepsFromSingleRebar(snglBrs, offs, ref baredges);
+                List<Brep> barbreps = CreateBrepsFromSingleRebar(snglBrs, offs, ref baredges, local);
                 rebars.AddRange(barbreps);
                 rebarEdges.AddRange(baredges);
 
@@ -246,17 +256,22 @@ namespace GhAdSec.Parameters
             return Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelAbsoluteTolerance).First();
         }
 
-        private List<Brep> CreateBrepsFromSingleRebar(ISingleBars bars, Vector3d offset, ref List<Circle> edgeCurves)
+        private List<Brep> CreateBrepsFromSingleRebar(ISingleBars bars, Vector3d offset, ref List<Circle> edgeCurves, Plane local)
         {
+            // transform to local plane
+            Rhino.Geometry.Transform mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
+            //offs.Transform(mapToLocal);
             List<Brep> rebarBreps = new List<Brep>();
             for (int i = 0; i < bars.Positions.Count; i++)
             {
                 Point3d center = new Point3d(
+                    0,
                     bars.Positions[i].Y.As(GhAdSec.DocumentUnits.LengthUnit),
-                    bars.Positions[i].Z.As(GhAdSec.DocumentUnits.LengthUnit),
-                    0);
+                    bars.Positions[i].Z.As(GhAdSec.DocumentUnits.LengthUnit));
                 center.Transform(Transform.Translation(offset));
-                Circle edgeCurve = new Circle(center, bars.BarBundle.Diameter.As(GhAdSec.DocumentUnits.LengthUnit) / 2);
+                center.Transform(mapToLocal);
+                Plane localCenter = new Plane(center, local.Normal);
+                Circle edgeCurve = new Circle(localCenter, bars.BarBundle.Diameter.As(GhAdSec.DocumentUnits.LengthUnit) / 2);
                 edgeCurves.Add(edgeCurve);
                 List<Curve> crvs = new List<Curve>() { edgeCurve.ToNurbsCurve() };
                 rebarBreps.Add(Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelRelativeTolerance).First());
@@ -387,7 +402,7 @@ namespace GhAdSec.Parameters
                 if (Value == null)
                     target = default;
                 else
-                    target = (Q)(object)new AdSecSection(Value.Section, Value.DesignCode);
+                    target = (Q)(object)new AdSecSection(Value.Section, Value.DesignCode, Value.LocalPlane);
                 return true;
             }
             if (typeof(Q).IsAssignableFrom(typeof(AdSecProfileGoo)))
@@ -395,7 +410,7 @@ namespace GhAdSec.Parameters
                 if (Value == null)
                     target = default;
                 else
-                    target = (Q)(object)new AdSecProfileGoo(Value.Section.Profile);
+                    target = (Q)(object)new AdSecProfileGoo(Value.Section.Profile, Value.LocalPlane);
                 return true;
             }
             if (typeof(Q).IsAssignableFrom(typeof(Brep)))

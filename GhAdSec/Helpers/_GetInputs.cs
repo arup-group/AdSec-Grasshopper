@@ -497,7 +497,7 @@ namespace GhAdSec.Components
                 {
                     owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an AdSec Material");
                 }
-                return material.Duplicate();
+                return material;
             }
             else if (!isOptional)
             {
@@ -659,10 +659,12 @@ namespace GhAdSec.Components
             List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
             if (DA.GetDataList(inputid, gh_typs))
             {
+                List<Point3d> tempPts = new List<Point3d>();
                 for (int i = 0; i < gh_typs.Count; i++)
                 {
                     Curve polycurve = null;
                     Point3d ghpt = new Point3d();
+                    
                     if (gh_typs[i].Value is IPoint)
                     {
                         pts.Add((IPoint)gh_typs[i].Value);
@@ -674,7 +676,7 @@ namespace GhAdSec.Components
                     }
                     else if (GH_Convert.ToPoint3d(gh_typs[i].Value, ref ghpt, GH_Conversion.Both))
                     {
-                        pts.Add(GhAdSec.Parameters.AdSecPointGoo.CreateFromPoint3d(ghpt));
+                        tempPts.Add(ghpt);
                     }
                     else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both))
                     {
@@ -687,6 +689,25 @@ namespace GhAdSec.Components
                         return null;
                     }
                 }
+                if (tempPts.Count > 0)
+                {
+                    if (tempPts.Count == 1)
+                    {
+                        pts.Add(GhAdSec.Parameters.AdSecPointGoo.CreateFromPoint3d(tempPts[0], Plane.WorldYZ));
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Single Point converted to local point. Assumed that local coordinate system is in a YZ-Plane");
+                    }
+                    else
+                    {
+                        Plane.FitPlaneToPoints(tempPts, out Plane plane);
+                        //Polyline pol = new Polyline(tempPts);
+                        //plane.Origin = pol.CenterPoint();
+                        foreach (Point3d pt in tempPts)
+                            pts.Add(GhAdSec.Parameters.AdSecPointGoo.CreateFromPoint3d(pt, plane));
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "List of Points have been converted to local points. Assumed that local coordinate system is matching best-fit plane through points");
+                    }
+
+                }
+
                 return pts;
             }
             else if (!isOptional)
@@ -732,7 +753,7 @@ namespace GhAdSec.Components
             }
             return UnitsNet.Angle.Zero;
         }
-        internal static IPerimeterProfile Boundaries(GH_Component owner, IGH_DataAccess DA, int inputid_Boundary, int inputid_Voids, UnitsNet.Units.LengthUnit lengthUnit, bool isOptional = false)
+        internal static AdSecProfileGoo Boundaries(GH_Component owner, IGH_DataAccess DA, int inputid_Boundary, int inputid_Voids, UnitsNet.Units.LengthUnit lengthUnit, bool isOptional = false)
         {
             AdSecProfileGoo perimeter = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -801,7 +822,7 @@ namespace GhAdSec.Components
                     owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid_Boundary].Name + " input (index " + inputid_Boundary + ") to Boundary");
                     return null;
                 }
-                return (IPerimeterProfile)perimeter.Profile;
+                return (AdSecProfileGoo)perimeter;
             }
             else if (!isOptional)
             {
@@ -823,9 +844,32 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    prfl = Boundaries(owner, DA, inputid, -1, GhAdSec.DocumentUnits.LengthUnit);
+                    prfl = Boundaries(owner, DA, inputid, -1, GhAdSec.DocumentUnits.LengthUnit).Profile;
                 }
                 
+                return prfl;
+            }
+            else if (!isOptional)
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+            }
+            return null;
+        }
+        internal static AdSecProfileGoo AdSecProfileGoo(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        {
+            AdSecProfileGoo prfl = null;
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(inputid, ref gh_typ))
+            {
+                // try cast directly to quantity type
+                if (gh_typ.Value is AdSecProfileGoo)
+                {
+                    prfl = (AdSecProfileGoo)gh_typ.Value;
+                }
+                else
+                {
+                    prfl = Boundaries(owner, DA, inputid, -1, GhAdSec.DocumentUnits.LengthUnit);
+                }
                 return prfl;
             }
             else if (!isOptional)

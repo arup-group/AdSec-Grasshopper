@@ -33,8 +33,8 @@ namespace GhAdSec.Parameters
         {
             m_value = point;
             this.m_AdSecPoint = IPoint.Create(
-                new UnitsNet.Length(m_value.X, GhAdSec.DocumentUnits.LengthUnit), 
-                new UnitsNet.Length(m_value.Y, GhAdSec.DocumentUnits.LengthUnit));
+                new UnitsNet.Length(m_value.Y, GhAdSec.DocumentUnits.LengthUnit), 
+                new UnitsNet.Length(m_value.Z, GhAdSec.DocumentUnits.LengthUnit));
         }
         public AdSecPointGoo(AdSecPointGoo adsecPoint)
         {
@@ -45,32 +45,41 @@ namespace GhAdSec.Parameters
         {
             m_AdSecPoint = adsecPoint;
             this.m_value = new Point3d(
+                0,
                 m_AdSecPoint.Y.As(GhAdSec.DocumentUnits.LengthUnit),
-                m_AdSecPoint.Z.As(GhAdSec.DocumentUnits.LengthUnit),
-                0);
+                m_AdSecPoint.Z.As(GhAdSec.DocumentUnits.LengthUnit));
         }
         public AdSecPointGoo(UnitsNet.Length y, UnitsNet.Length z)
         {
             m_AdSecPoint = IPoint.Create(y, z);
             m_value = new Point3d(
+                0,
                 m_AdSecPoint.Y.As(GhAdSec.DocumentUnits.LengthUnit),
-                m_AdSecPoint.Z.As(GhAdSec.DocumentUnits.LengthUnit),
-                0);
+                m_AdSecPoint.Z.As(GhAdSec.DocumentUnits.LengthUnit));
         }
 
-        public static IPoint CreateFromPoint3d(Point3d point)
+        public static IPoint CreateFromPoint3d(Point3d point, Plane plane)
         {
+            // transform to local plane
+            Rhino.Geometry.Transform mapToLocal = Rhino.Geometry.Transform.ChangeBasis(Plane.WorldYZ, plane);
+            Point3d trans = new Point3d(point);
+            trans.Transform(mapToLocal);
             return IPoint.Create(
-                new UnitsNet.Length(point.X, GhAdSec.DocumentUnits.LengthUnit),
-                new UnitsNet.Length(point.Y, GhAdSec.DocumentUnits.LengthUnit));
+                new UnitsNet.Length(trans.Y, GhAdSec.DocumentUnits.LengthUnit),
+                new UnitsNet.Length(trans.Z, GhAdSec.DocumentUnits.LengthUnit));
         }
         internal static Oasys.Collections.IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve)
         {
+            curve.TryGetPolyline(out Polyline temp_crv);
+            Plane.FitPlaneToPoints(temp_crv.ToList(), out Plane plane);
+            Rhino.Geometry.Transform mapToLocal = Rhino.Geometry.Transform.ChangeBasis(Plane.WorldXY, plane);
+
             Oasys.Collections.IList<IPoint> pts = Oasys.Collections.IList<IPoint>.Create();
             IPoint pt = null;
             for (int j = 0; j < curve.PointCount; j++)
             {
                 Point3d point3d = curve.Point(j);
+                point3d.Transform(mapToLocal);
                 pt = IPoint.Create(
                     new UnitsNet.Length(point3d.X, GhAdSec.DocumentUnits.LengthUnit),
                     new UnitsNet.Length(point3d.Y, GhAdSec.DocumentUnits.LengthUnit));
@@ -80,11 +89,15 @@ namespace GhAdSec.Parameters
         }
         internal static Oasys.Collections.IList<IPoint> PtsFromPolyline(Polyline curve)
         {
+            Plane.FitPlaneToPoints(curve.ToList(), out Plane plane);
+            Rhino.Geometry.Transform mapToLocal = Rhino.Geometry.Transform.ChangeBasis(Plane.WorldXY, plane);
+
             Oasys.Collections.IList<IPoint> pts = Oasys.Collections.IList<IPoint>.Create();
             IPoint pt = null;
             for (int j = 0; j < curve.Count; j++)
             {
                 Point3d point3d = curve[j];
+                point3d.Transform(mapToLocal);
                 pt = IPoint.Create(
                     new UnitsNet.Length(point3d.X, GhAdSec.DocumentUnits.LengthUnit),
                     new UnitsNet.Length(point3d.Y, GhAdSec.DocumentUnits.LengthUnit));

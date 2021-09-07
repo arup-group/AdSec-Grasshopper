@@ -40,7 +40,32 @@ namespace GhAdSec.UI
         {
             get { return Color.FromArgb(255, 224, 126, 65); }
         }
-
+        public static DisplayMaterial FailureNormal
+        {
+            get
+            {
+                DisplayMaterial material = new DisplayMaterial
+                {
+                    Diffuse = Color.FromArgb(50, 73, 73, 73),
+                    Emission = OasysBlue,
+                    Transparency = 0.6
+                };
+                return material;
+            }
+        }
+        public static DisplayMaterial FailureSelected
+        {
+            get
+            {
+                DisplayMaterial material = new DisplayMaterial
+                {
+                    Diffuse = Color.FromArgb(50, 73, 73, 73),
+                    Emission = OasysYellow,
+                    Transparency = 0.6
+                };
+                return material;
+            }
+        }
         public static DisplayMaterial Concrete
         {
             get

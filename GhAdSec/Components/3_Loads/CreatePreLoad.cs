@@ -84,15 +84,15 @@ namespace GhAdSec.Components
                 switch (selecteditems[0])
                 {
                     case ("Force"):
-                        dropdownitems[0] = GhAdSec.DocumentUnits.FilteredForceUnits;
+                        dropdownitems[1] = GhAdSec.DocumentUnits.FilteredForceUnits;
                         selecteditems[0] = forceUnit.ToString();
                         break;
                     case ("Strain"):
-                        dropdownitems[0] = GhAdSec.DocumentUnits.FilteredStrainUnits;
+                        dropdownitems[1] = GhAdSec.DocumentUnits.FilteredStrainUnits;
                         selecteditems[0] = strainUnit.ToString();
                         break;
                     case ("Stress"):
-                        dropdownitems[0] = GhAdSec.DocumentUnits.FilteredStressUnits;
+                        dropdownitems[1] = GhAdSec.DocumentUnits.FilteredStressUnits;
                         selecteditems[0] = stressUnit.ToString();
                         break;
                 }

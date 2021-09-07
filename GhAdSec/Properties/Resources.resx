@@ -136,6 +136,9 @@
   <data name="AdSecUnits" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\AdSecUnits.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Analyse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\Analyse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ConvertUnitNumber" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\ConvertUnitNumber.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

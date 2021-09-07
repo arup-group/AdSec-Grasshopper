@@ -449,6 +449,8 @@ namespace GhAdSec.Components
         {
             pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Profile width", GH_ParamAccess.item);
             pManager.AddGenericParameter("Depth [" + unitAbbreviation + "]", "H", "Profile depth", GH_ParamAccess.item);
+            pManager.AddPlaneParameter("LocalPlane", "P", "[Optional] Plane representing local coordinate system, by default a YZ-plane is used", GH_ParamAccess.item, Plane.WorldYZ);
+            pManager.HideParameter(2);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -458,6 +460,7 @@ namespace GhAdSec.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             #region catalogue
+            this.ClearRuntimeMessages();
             if (_mode == FoldMode.Catalogue)
             {
                 // get user input filter search string
@@ -485,7 +488,12 @@ namespace GhAdSec.Components
                     this.ExpireSolution(true);
                 }
 
-                AdSecProfileGoo catalogueProfile = new AdSecProfileGoo(ICatalogueProfile.Create("CAT " + profileString));
+                Plane local = Plane.WorldYZ;
+                Plane temp = Plane.Unset;
+                if (DA.GetData(2, ref temp))
+                    local = temp;
+
+                AdSecProfileGoo catalogueProfile = new AdSecProfileGoo(ICatalogueProfile.Create("CAT " + profileString), local);
                 Oasys.Collections.IList<Oasys.AdSec.IWarning> warn = catalogueProfile.Profile.Validate();
                 foreach(Oasys.AdSec.IWarning warning in warn)
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning.Description);
@@ -698,7 +706,9 @@ namespace GhAdSec.Components
                 // IPerimeterProfile (last chance...)
                 else if(typ.Name.Equals(typeof(IPerimeterProfile).Name))
                 {
-                    profile = GetInput.Boundaries(this, DA, 0, 1, lengthUnit);
+                    //profile = GetInput.Boundaries(this, DA, 0, 1, lengthUnit);
+                    DA.SetData(0, GetInput.Boundaries(this, DA, 0, 1, lengthUnit));
+                    return;
                 }
                 else
                 {
@@ -717,9 +727,13 @@ namespace GhAdSec.Components
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
                     return;
                 }
-                
-                
-                DA.SetData(0, new AdSecProfileGoo(profile));
+
+                Plane local = Plane.WorldYZ;
+                Plane temp = Plane.Unset;
+                if (DA.GetData(Params.Input.Count - 1, ref temp))
+                    local = temp;
+
+                DA.SetData(0, new AdSecProfileGoo(profile, local));
                 return;
             }
 
@@ -745,6 +759,10 @@ namespace GhAdSec.Components
 
             RecordUndoEvent("Catalogue Parameter");
 
+            // remove plane
+            IGH_Param param_Plane = Params.Input[Params.Input.Count - 1];
+            Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
+
             //remove input parameters
             while (Params.Input.Count > 0)
                 Params.UnregisterInputParameter(Params.Input[0], true);
@@ -752,6 +770,9 @@ namespace GhAdSec.Components
             //register input parameter
             Params.RegisterInputParam(new Param_String());
             Params.RegisterInputParam(new Param_Boolean());
+
+            // add plane
+            Params.RegisterInputParam(param_Plane);
 
             _mode = FoldMode.Catalogue;
 
@@ -799,6 +820,10 @@ namespace GhAdSec.Components
         private void Mode2Clicked()
         {
             RecordUndoEvent("Dropdown changed");
+
+            // remove plane
+            IGH_Param param_Plane = Params.Input[Params.Input.Count - 1];
+            Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
 
             // check if mode is correct
             if (_mode != FoldMode.Other)
@@ -958,6 +983,9 @@ namespace GhAdSec.Components
                 //solidPolygon;
                 //voidPolygons;
             }
+
+            // add plane
+            Params.RegisterInputParam(param_Plane);
 
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
@@ -1589,10 +1617,6 @@ namespace GhAdSec.Components
                     Params.Input[i].Description = "The void polygons within the solid polygon of the perimeter profile. If first input is a BRep this input will be ignored.";
                     Params.Input[i].Access = GH_ParamAccess.list;
                     Params.Input[i].Optional = true;
-
-                    //dup = IPerimeterProfile.Create();
-                    //solidPolygon;
-                    //voidPolygons;
                 }
             }
         }

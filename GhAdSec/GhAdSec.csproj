@@ -67,6 +67,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncComponent\GH_AsyncComponent.cs" />
+    <Compile Include="AsyncComponent\WorkerInstance.cs" />
     <Compile Include="Components\0_AdSec\CreateUnitNumber.cs" />
     <Compile Include="Components\0_AdSec\ConvertUnitNumber.cs" />
     <Compile Include="Components\0_AdSec\EditUnits.cs" />
@@ -92,12 +94,17 @@
     <Compile Include="Components\3_Loads\CreateDeformation.cs" />
     <Compile Include="Components\3_Loads\CreatePreLoad.cs" />
     <Compile Include="Components\3_Loads\CreateLoad.cs" />
+    <Compile Include="Components\4_Solution\AnalyseSection.cs" />
+    <Compile Include="Components\4_Solution\AnalyseSlow.cs" />
+    <Compile Include="Components\5_Results\CheckULS.cs" />
     <Compile Include="GhAdSecInfo.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
     <Compile Include="Helpers\_SqlReader.cs" />
     <Compile Include="Parameters\AdSecSection.cs" />
+    <Compile Include="Parameters\PointGoo.cs" />
+    <Compile Include="Parameters\SolutionGoo.cs" />
     <Compile Include="Parameters\DeformationGoo.cs" />
     <Compile Include="Parameters\PreLoadGoo_notused.cs" />
     <Compile Include="Parameters\LoadGoo.cs" />
@@ -107,7 +114,7 @@
     <Compile Include="Parameters\RebarBundleGoo.cs" />
     <Compile Include="Parameters\ProfileWebGoo.cs" />
     <Compile Include="Parameters\ProfileFlangeGoo.cs" />
-    <Compile Include="Parameters\PointGoo.cs" />
+    <Compile Include="Parameters\FailureSurfaceGoo.cs" />
     <Compile Include="Parameters\GH_UnitNumber.cs" />
     <Compile Include="Parameters\AdSecDesignCode.cs" />
     <Compile Include="Parameters\AdSecMaterial.cs" />
@@ -132,10 +139,7 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Components\4_Solution\" />
-    <Folder Include="Components\5_Results\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <PackageReference Include="AdSec">
       <Version>1.0.1.1</Version>
@@ -239,6 +243,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\SubComponent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\Analyse.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

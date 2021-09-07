@@ -71,7 +71,7 @@ namespace GhAdSec.Components
                 offset = IPoint.Create(Length.Zero, Length.Zero);
             }
             ISubComponent subComponent = ISubComponent.Create(section.Section, offset);
-            AdSecSubComponentGoo subGoo = new AdSecSubComponentGoo(subComponent, section.DesignCode);
+            AdSecSubComponentGoo subGoo = new AdSecSubComponentGoo(subComponent, section.LocalPlane, section.DesignCode);
             DA.SetData(0, subGoo);
         }
     }
