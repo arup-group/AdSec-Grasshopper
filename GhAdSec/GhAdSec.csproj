@@ -94,15 +94,17 @@
     <Compile Include="Components\3_Loads\CreateDeformation.cs" />
     <Compile Include="Components\3_Loads\CreatePreLoad.cs" />
     <Compile Include="Components\3_Loads\CreateLoad.cs" />
-    <Compile Include="Components\4_Solution\AnalyseSection.cs" />
+    <Compile Include="Components\4_Solution\_AnalyseSection.cs" />
     <Compile Include="Components\4_Solution\AnalyseSlow.cs" />
-    <Compile Include="Components\5_Results\CheckULS.cs" />
+    <Compile Include="Components\5_Results\ResultsSLS.cs" />
+    <Compile Include="Components\5_Results\ResultsULS.cs" />
     <Compile Include="GhAdSecInfo.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
     <Compile Include="Helpers\_SqlReader.cs" />
     <Compile Include="Parameters\AdSecSection.cs" />
+    <Compile Include="Parameters\CrackGoo.cs" />
     <Compile Include="Parameters\PointGoo.cs" />
     <Compile Include="Parameters\SolutionGoo.cs" />
     <Compile Include="Parameters\DeformationGoo.cs" />
@@ -139,7 +141,6 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <PackageReference Include="AdSec">
       <Version>1.0.1.1</Version>
@@ -155,25 +156,19 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\AdSecDesignCode.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\AdSecInfo.png" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\AdSecLogo.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\AdSecMaterial.png" />
+    <None Include="Properties\Icons\Icons\ConvertUnit.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\AdSecSection.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\AdSecUnits.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\ConvertUnitNumber.png" />
+    <None Include="Properties\Icons\Icons\CreateCrackCalcParams.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\CreateCustomMaterial.png" />
@@ -182,22 +177,34 @@
     <None Include="Properties\Icons\Icons\CreateDesignCode.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateStandardMaterial.png" />
+    <None Include="Properties\Icons\Icons\CreateDesignCode2.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateUnitNumber.png" />
+    <None Include="Properties\Icons\Icons\CreateFlange.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\StressStrainCurve.png" />
+    <None Include="Properties\Icons\Icons\CreateProfile.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\StressStrainPoint.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\UnitNumber.png" />
+    <None Include="Properties\Icons\Icons\CreateRebar.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\CreateSection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateUnit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateWeb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\DesignCodeParam.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\DesignCodeParam2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\EditCrackCalcParams.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\EditMaterial.png" />
@@ -206,43 +213,43 @@
     <None Include="Properties\Icons\Icons\EditSection.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <None Include="Properties\Icons\Icons\MaterialParam.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateCrackParams.png" />
+    <None Include="Properties\Icons\Icons\PluginInfo.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateFlange.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateVertex.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateWeb.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\EditCrackParams.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\Rebar.png" />
+    <None Include="Properties\Icons\Icons\Prestress.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\RebarLayout.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\Icons\Icons\RebarLayout2.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Properties\Icons\Icons\RebarSpacing.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateProfile.png" />
+    <None Include="Properties\Icons\Icons\SectionParam.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\EditProfile.png" />
+    <None Include="Properties\Icons\Icons\StandardMaterial.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\SubComponent.png" />
+    <None Include="Properties\Icons\Icons\StressStrainCurve.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\StressStrainPoint.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\UnitParam.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\Units.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\VertexPoint.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\Analyse.png" />

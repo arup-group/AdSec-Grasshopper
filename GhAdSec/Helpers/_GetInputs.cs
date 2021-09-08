@@ -901,6 +901,29 @@ namespace GhAdSec.Components
             }
             return null;
         }
+        internal static AdSecSolutionGoo Solution(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        {
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(inputid, ref gh_typ))
+            {
+                // try cast directly to quantity type
+                if (gh_typ.Value is AdSecSolutionGoo)
+                {
+                    return (AdSecSolutionGoo)gh_typ.Value;
+                }
+                else
+                {
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an AdSec Results");
+                    return null;
+                }
+            }
+            else if (!isOptional)
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+            }
+            return null;
+        }
+
         internal static Oasys.Collections.IList<ISubComponent> SubComponents(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             Oasys.Collections.IList<ISubComponent> subs = Oasys.Collections.IList<ISubComponent>.Create();

@@ -61,7 +61,7 @@ namespace GhAdSec.Parameters
         public static IPoint CreateFromPoint3d(Point3d point, Plane plane)
         {
             // transform to local plane
-            Rhino.Geometry.Transform mapToLocal = Rhino.Geometry.Transform.ChangeBasis(Plane.WorldYZ, plane);
+            Rhino.Geometry.Transform mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, plane);
             Point3d trans = new Point3d(point);
             trans.Transform(mapToLocal);
             return IPoint.Create(
@@ -72,7 +72,7 @@ namespace GhAdSec.Parameters
         {
             curve.TryGetPolyline(out Polyline temp_crv);
             Plane.FitPlaneToPoints(temp_crv.ToList(), out Plane plane);
-            Rhino.Geometry.Transform mapToLocal = Rhino.Geometry.Transform.ChangeBasis(Plane.WorldXY, plane);
+            Rhino.Geometry.Transform mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
 
             Oasys.Collections.IList<IPoint> pts = Oasys.Collections.IList<IPoint>.Create();
             IPoint pt = null;
@@ -90,7 +90,7 @@ namespace GhAdSec.Parameters
         internal static Oasys.Collections.IList<IPoint> PtsFromPolyline(Polyline curve)
         {
             Plane.FitPlaneToPoints(curve.ToList(), out Plane plane);
-            Rhino.Geometry.Transform mapToLocal = Rhino.Geometry.Transform.ChangeBasis(Plane.WorldXY, plane);
+            Rhino.Geometry.Transform mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
 
             Oasys.Collections.IList<IPoint> pts = Oasys.Collections.IList<IPoint>.Create();
             IPoint pt = null;

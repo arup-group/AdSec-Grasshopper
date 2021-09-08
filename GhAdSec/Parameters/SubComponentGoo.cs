@@ -40,13 +40,28 @@ namespace GhAdSec.Parameters
         private AdSecSection m_sectionGoo;
         private IPoint m_offset;
         private Plane m_plane;
-        
+        private Line previewXaxis;
+        private Line previewYaxis;
+        private Line previewZaxis;
         public AdSecSubComponentGoo(ISection section, Plane local, IPoint point, IDesignCode code)
         {
             this.m_value = ISubComponent.Create(section, point);
             m_offset = point;
             m_sectionGoo = new AdSecSection(section, code, local, m_offset);
             m_plane = local;
+            // local axis
+            if (m_plane != null)
+            {
+                if (m_plane != Plane.WorldXY & local != Plane.WorldYZ & local != Plane.WorldZX)
+                {
+                    UnitsNet.Area area = this.m_sectionGoo.Section.Profile.Area();
+                    double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
+                    UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
+                    previewXaxis = new Line(local.Origin, local.XAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
+                    previewYaxis = new Line(local.Origin, local.YAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
+                    previewZaxis = new Line(local.Origin, local.ZAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
+                }
+            }
         }
 
         public override string ToString()
@@ -206,6 +221,14 @@ namespace GhAdSec.Parameters
                         args.Pipeline.DrawCircle(crv, GhAdSec.UI.Colour.GsaLightGrey, 2);
                     }
                 }
+            }
+
+            // local axis
+            if (previewXaxis != null)
+            {
+                args.Pipeline.DrawLine(previewZaxis, System.Drawing.Color.FromArgb(255, 244, 96, 96), 1);
+                args.Pipeline.DrawLine(previewXaxis, System.Drawing.Color.FromArgb(255, 96, 244, 96), 1);
+                args.Pipeline.DrawLine(previewYaxis, System.Drawing.Color.FromArgb(255, 96, 96, 234), 1);
             }
         }
     }

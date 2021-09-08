@@ -43,10 +43,14 @@ namespace GhAdSec.Parameters
             m_profile = perimprofile;
             m_voidEdges = null;
             m_plane = plane;
+            UpdatePreview();
         }
         private IProfile m_profile;
         private Plane m_plane = Plane.WorldYZ;
         private List<Polyline> m_voidEdges;
+        private Line previewXaxis;
+        private Line previewYaxis;
+        private Line previewZaxis;
         public Plane LocalPlane
         {
             get { return m_plane; }
@@ -86,6 +90,22 @@ namespace GhAdSec.Parameters
                 m_profile.Rotation = value;
             }
         }
+        private void UpdatePreview()
+        {
+            // local axis
+            if (m_plane != null)
+            {
+                if (m_plane != Plane.WorldXY & m_plane != Plane.WorldYZ & m_plane != Plane.WorldZX)
+                {
+                    UnitsNet.Area area = m_profile.Area();
+                    double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
+                    UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
+                    previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
+                    previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
+                    previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
+                }
+            }
+        }
         public AdSecProfileGoo(Polyline solid, List<Polyline> voids, LengthUnit lengthUnit)
         {
             // Create from polygon
@@ -107,6 +127,7 @@ namespace GhAdSec.Parameters
             m_profile = (IProfile)perimprofile;
             m_voidEdges = voids;
             m_plane = plane;
+            UpdatePreview();
         }
         public AdSecProfileGoo(IProfile profile, Plane local)
         {
@@ -115,6 +136,7 @@ namespace GhAdSec.Parameters
             m_value = edges.Item1;
             m_voidEdges = edges.Item2;
             m_plane = local;
+            UpdatePreview();
         }
 
         public AdSecProfileGoo(Brep brep, LengthUnit lengthUnit)
@@ -181,6 +203,7 @@ namespace GhAdSec.Parameters
             m_plane = plane;
             m_value = solid;
             m_profile = (IProfile)profile;
+            UpdatePreview();
         }
         internal static Oasys.Collections.IList<IPoint> PtsFromRhinoPolyline(Polyline polyline, LengthUnit lengthUnit, Plane local)
         {
@@ -551,6 +574,13 @@ namespace GhAdSec.Parameters
                             args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
                         }
                     }
+                }
+                // local axis
+                if (previewXaxis != null)
+                {
+                    args.Pipeline.DrawLine(previewZaxis, System.Drawing.Color.FromArgb(255, 244, 96, 96), 1);
+                    args.Pipeline.DrawLine(previewXaxis, System.Drawing.Color.FromArgb(255, 96, 244, 96), 1);
+                    args.Pipeline.DrawLine(previewYaxis, System.Drawing.Color.FromArgb(255, 96, 96, 234), 1);
                 }
             }
         }

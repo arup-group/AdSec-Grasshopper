@@ -30,20 +30,25 @@ namespace GhAdSec.Parameters
 {
     public class AdSecSolutionGoo : GH_Goo<ISolution>
     {
-        public AdSecSolutionGoo(ISolution solution)
+        public AdSecSolutionGoo(ISolution solution, Plane local)
         : base(solution)
         {
+            m_plane = local;
         }
-
+        private Plane m_plane;
+        internal Plane LocalPlane
+        {
+            get { return m_plane; }
+        }
         public override bool IsValid => true;
 
-        public override string TypeName => "Solution";
+        public override string TypeName => "Results";
 
         public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
         public override IGH_Goo Duplicate()
         {
-            return new AdSecSolutionGoo(this.Value);
+            return new AdSecSolutionGoo(this.Value, m_plane);
         }
         public override string ToString()
         {

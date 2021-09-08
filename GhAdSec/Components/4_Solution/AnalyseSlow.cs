@@ -50,7 +50,7 @@ namespace GhAdSec.Components
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Solution", "Sol", "AdSec Solution for a Section. A Solution allows to calculate strength and serviceability results.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Results", "Res", "AdSec Results for a Section. Results object allows to calculate strength (ULS) and serviceability (SLS) results.", GH_ParamAccess.item);
             pManager.AddGenericParameter("FailureSurface", "Fail", "Mesh representing the strength failure surface.", GH_ParamAccess.item);
         }
         #endregion
@@ -72,7 +72,7 @@ namespace GhAdSec.Components
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warn.Description);
 
             // set outputs
-            DA.SetData(0, new AdSecSolutionGoo(solution));
+            DA.SetData(0, new AdSecSolutionGoo(solution, section.LocalPlane));
             DA.SetData(1, new AdSecFailureSurfaceGoo(solution.Strength.GetFailureSurface(), section.LocalPlane));
         }
     }

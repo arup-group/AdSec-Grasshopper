@@ -243,7 +243,7 @@ namespace GhAdSec.Parameters
 
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.AdSecDesignCode;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.DesignCodeParam;
 
         protected override GH_GetterResult Prompt_Plural(ref List<AdSecDesignCodeGoo> values)
         {

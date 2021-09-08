@@ -134,7 +134,7 @@ namespace UnitsNet.GH
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.UnitNumber;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.UnitParam;
 
         protected override GH_GetterResult Prompt_Plural(ref List<GH_UnitNumber> values)
         {

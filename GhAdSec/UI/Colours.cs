@@ -29,8 +29,11 @@ namespace GhAdSec.UI
         }
         public static Color OasysBlue
         {
-            //R:0 G:97 B:160
             get { return Color.FromArgb(255, 0, 97, 160); }
+        }
+        public static Color ArupRed
+        {
+            get { return Color.FromArgb(255, 230, 30, 40); }
         }
         public static Color StressStrainCurve
         {

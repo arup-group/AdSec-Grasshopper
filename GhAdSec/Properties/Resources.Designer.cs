@@ -63,59 +63,9 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap AdSecDesignCode {
-            get {
-                object obj = ResourceManager.GetObject("AdSecDesignCode", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap AdSecInfo {
-            get {
-                object obj = ResourceManager.GetObject("AdSecInfo", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap AdSecLogo {
             get {
                 object obj = ResourceManager.GetObject("AdSecLogo", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap AdSecMaterial {
-            get {
-                object obj = ResourceManager.GetObject("AdSecMaterial", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap AdSecSection {
-            get {
-                object obj = ResourceManager.GetObject("AdSecSection", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap AdSecUnits {
-            get {
-                object obj = ResourceManager.GetObject("AdSecUnits", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,9 +83,9 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ConvertUnitNumber {
+        internal static System.Drawing.Bitmap ConvertUnit {
             get {
-                object obj = ResourceManager.GetObject("ConvertUnitNumber", resourceCulture);
+                object obj = ResourceManager.GetObject("ConvertUnit", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -143,9 +93,9 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap CreateCrackParams {
+        internal static System.Drawing.Bitmap CreateCrackCalcParams {
             get {
-                object obj = ResourceManager.GetObject("CreateCrackParams", resourceCulture);
+                object obj = ResourceManager.GetObject("CreateCrackCalcParams", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -173,6 +123,16 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CreateDesignCode2 {
+            get {
+                object obj = ResourceManager.GetObject("CreateDesignCode2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap CreateFlange {
             get {
                 object obj = ResourceManager.GetObject("CreateFlange", resourceCulture);
@@ -193,6 +153,16 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CreateRebar {
+            get {
+                object obj = ResourceManager.GetObject("CreateRebar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap CreateSection {
             get {
                 object obj = ResourceManager.GetObject("CreateSection", resourceCulture);
@@ -203,29 +173,9 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap CreateStandardMaterial {
+        internal static System.Drawing.Bitmap CreateUnit {
             get {
-                object obj = ResourceManager.GetObject("CreateStandardMaterial", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap CreateUnitNumber {
-            get {
-                object obj = ResourceManager.GetObject("CreateUnitNumber", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap CreateVertex {
-            get {
-                object obj = ResourceManager.GetObject("CreateVertex", resourceCulture);
+                object obj = ResourceManager.GetObject("CreateUnit", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -243,9 +193,29 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap EditCrackParams {
+        internal static System.Drawing.Bitmap DesignCodeParam {
             get {
-                object obj = ResourceManager.GetObject("EditCrackParams", resourceCulture);
+                object obj = ResourceManager.GetObject("DesignCodeParam", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DesignCodeParam2 {
+            get {
+                object obj = ResourceManager.GetObject("DesignCodeParam2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap EditCrackCalcParams {
+            get {
+                object obj = ResourceManager.GetObject("EditCrackCalcParams", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -263,16 +233,6 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap EditProfile {
-            get {
-                object obj = ResourceManager.GetObject("EditProfile", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap EditSection {
             get {
                 object obj = ResourceManager.GetObject("EditSection", resourceCulture);
@@ -283,9 +243,29 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Rebar {
+        internal static System.Drawing.Bitmap MaterialParam {
             get {
-                object obj = ResourceManager.GetObject("Rebar", resourceCulture);
+                object obj = ResourceManager.GetObject("MaterialParam", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PluginInfo {
+            get {
+                object obj = ResourceManager.GetObject("PluginInfo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Prestress {
+            get {
+                object obj = ResourceManager.GetObject("Prestress", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -313,6 +293,26 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap SectionParam {
+            get {
+                object obj = ResourceManager.GetObject("SectionParam", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap StandardMaterial {
+            get {
+                object obj = ResourceManager.GetObject("StandardMaterial", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap StressStrainCurve {
             get {
                 object obj = ResourceManager.GetObject("StressStrainCurve", resourceCulture);
@@ -333,9 +333,9 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap SubComponent {
+        internal static System.Drawing.Bitmap UnitParam {
             get {
-                object obj = ResourceManager.GetObject("SubComponent", resourceCulture);
+                object obj = ResourceManager.GetObject("UnitParam", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -343,9 +343,19 @@ namespace GhAdSec.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap UnitNumber {
+        internal static System.Drawing.Bitmap Units {
             get {
-                object obj = ResourceManager.GetObject("UnitNumber", resourceCulture);
+                object obj = ResourceManager.GetObject("Units", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap VertexPoint {
+            get {
+                object obj = ResourceManager.GetObject("VertexPoint", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

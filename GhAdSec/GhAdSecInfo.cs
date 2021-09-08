@@ -134,5 +134,12 @@ namespace GhAdSec
                 return "https://www.oasys-software.com/";
             }
         }
+        public override string Version
+        {
+            get
+            {
+                return "0.0.1-alpha";
+            }
+        }
     }
 }

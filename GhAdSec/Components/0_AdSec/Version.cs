@@ -30,7 +30,7 @@ namespace GhAdSec.Components
 
         public override GH_Exposure Exposure => GH_Exposure.septenary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.AdSecInfo;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.PluginInfo;
         #endregion
 
         #region Custom UI

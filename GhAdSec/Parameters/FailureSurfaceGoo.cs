@@ -1,29 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Rhino;
-using Rhino.Geometry;
-using Grasshopper;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
+﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using System.IO;
-using System.Linq;
-using System.Data;
-using System.Drawing;
-using System.Reflection;
-using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Linq;
-using System.Runtime.InteropServices;
-using Rhino.DocObjects;
-using Rhino.Collections;
-using GH_IO;
-using GH_IO.Serialization;
-using Rhino.Display;
-using Oasys.Profiles;
-using UnitsNet;
 using Oasys.AdSec.Mesh;
+using Rhino.Geometry;
+using System;
+using System.Linq;
 
 namespace GhAdSec.Parameters
 {
@@ -36,21 +16,98 @@ namespace GhAdSec.Parameters
                 this.m_value = MeshFromILoadSurface(loadsurface, local);
             m_loadsurface = loadsurface;
             m_plane = local;
+            UpdatePreview();
         }
         public AdSecFailureSurfaceGoo(ILoadSurface loadsurface, Plane local)
         {
             this.m_value = MeshFromILoadSurface(loadsurface, local);
             m_loadsurface = loadsurface;
             m_plane = local;
+            UpdatePreview();
         }
-        
+
         private ILoadSurface m_loadsurface;
         private Plane m_plane;
+        private Line previewPosXaxis;
+        private Line previewPosYaxis;
+        private Line previewPosZaxis;
+        private Line previewNegXaxis;
+        private Line previewNegYaxis;
+        private Line previewNegZaxis;
+        internal Rhino.Display.Text3d posN;
+        internal Rhino.Display.Text3d negN;
+        internal Rhino.Display.Text3d posMyy;
+        internal Rhino.Display.Text3d negMyy;
+        internal Rhino.Display.Text3d posMzz;
+        internal Rhino.Display.Text3d negMzz;
+        private BoundingBox bbox;
         public ILoadSurface FailureSurface
         {
             get { return m_loadsurface; }
         }
+        private void UpdatePreview()
+        {
+            // local axis
+            if (m_plane != null)
+            {
+                Rhino.Geometry.Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, m_plane);
 
+                double maxN = bbox.PointAt(1, 0.5, 0.5).X;
+                double minN = bbox.PointAt(0, 0.5, 0.5).X;
+
+                double maxMyy = bbox.PointAt(0.5, 0.5, 1).Z;
+                double minMyy = bbox.PointAt(0.5, 0.5, 0).Z;
+
+                double maxMzz = bbox.PointAt(0.5, 1, 0.5).Y;
+                double minMzz = bbox.PointAt(0.5, 0, 0.5).Y;
+
+                //UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
+                previewPosXaxis = new Line(m_plane.Origin, m_plane.ZAxis, maxN);
+                previewPosYaxis = new Line(m_plane.Origin, m_plane.YAxis, maxMyy);
+                previewPosZaxis = new Line(m_plane.Origin, m_plane.XAxis, maxMzz);
+                previewNegXaxis = new Line(m_plane.Origin, m_plane.ZAxis, minN);
+                previewNegYaxis = new Line(m_plane.Origin, m_plane.YAxis, minMyy);
+                previewNegZaxis = new Line(m_plane.Origin, m_plane.XAxis, minMzz);
+
+                double size = Math.Max(Math.Max(Math.Max(Math.Max(Math.Max(Math.Abs(maxN), Math.Abs(minN)), Math.Abs(maxMyy)), Math.Abs(minMyy)), Math.Abs(maxMzz)), Math.Abs(minMzz));
+                size = size / 50;
+                Plane plnPosN = new Plane(m_plane);
+                plnPosN.Origin = previewPosXaxis.PointAt(1.05);
+                posN = new Rhino.Display.Text3d("Tension", plnPosN, size);
+                posN.HorizontalAlignment = Rhino.DocObjects.TextHorizontalAlignment.Center;
+                posN.VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Bottom;
+
+                Plane plnNegN = new Plane(m_plane);
+                plnNegN.Origin = previewNegXaxis.PointAt(1.05);
+                negN = new Rhino.Display.Text3d("Compression", plnNegN, size);
+                negN.HorizontalAlignment = Rhino.DocObjects.TextHorizontalAlignment.Center;
+                negN.VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Bottom;
+
+                Plane plnPosMyy = new Plane(m_plane);
+                plnPosMyy.Origin = previewPosYaxis.PointAt(1.05);
+                posMyy = new Rhino.Display.Text3d("+Myy", plnPosMyy, size);
+                posMyy.HorizontalAlignment = Rhino.DocObjects.TextHorizontalAlignment.Center;
+                posMyy.VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Bottom;
+
+                Plane plnNegMyy = new Plane(m_plane);
+                plnNegMyy.Origin = previewNegYaxis.PointAt(1.05);
+                negMyy = new Rhino.Display.Text3d("-Myy", plnNegMyy, size);
+                negMyy.HorizontalAlignment = Rhino.DocObjects.TextHorizontalAlignment.Center;
+                negMyy.VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Top;
+
+                Plane plnPosMzz = new Plane(m_plane);
+                plnPosMzz.Origin = previewPosZaxis.PointAt(1.05);
+                posMzz = new Rhino.Display.Text3d("+Mzz", plnPosMzz, size);
+                posMzz.HorizontalAlignment = Rhino.DocObjects.TextHorizontalAlignment.Left;
+                posMzz.VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Middle;
+
+                Plane plnNegMzz = new Plane(m_plane);
+                plnNegMzz.Origin = previewNegZaxis.PointAt(1.05);
+                negMzz = new Rhino.Display.Text3d("-Mzz", plnNegMzz, size);
+                negMzz.HorizontalAlignment = Rhino.DocObjects.TextHorizontalAlignment.Right;
+                negMzz.VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Middle;
+            }
+        }
         internal Mesh MeshFromILoadSurface(ILoadSurface loadsurface, Plane local)
         {
             Mesh outMesh = new Mesh();
@@ -69,6 +126,9 @@ namespace GhAdSec.Parameters
             // transform to local plane
             Rhino.Geometry.Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
 
+            bbox = outMesh.GetBoundingBox(false);
+            bbox.Transform(Rhino.Geometry.Transform.Scale(new Point3d(0, 0, 0), 1.05));
+            //bbox.Transform(mapFromLocal);
             outMesh.Transform(mapFromLocal);
 
             return outMesh;
@@ -165,7 +225,24 @@ namespace GhAdSec.Parameters
         }
         public void DrawViewportWires(GH_PreviewWireArgs args)
         {
+            if (!Value.IsValid) { return; }
             args.Pipeline.DrawMeshWires(Value, GhAdSec.UI.Colour.GsaLightGrey, 1);
+            // local axis
+            if (previewPosXaxis != null)
+            {
+                args.Pipeline.DrawArrow(previewPosXaxis, System.Drawing.Color.FromArgb(255, 244, 96, 96), 15, 5);//red
+                args.Pipeline.DrawArrow(previewPosYaxis, System.Drawing.Color.FromArgb(255, 96, 244, 96), 15, 5);//green
+                args.Pipeline.DrawArrow(previewPosZaxis, System.Drawing.Color.FromArgb(255, 96, 96, 234), 15, 5);//blue
+                args.Pipeline.DrawArrow(previewNegXaxis, System.Drawing.Color.FromArgb(255, 244, 96, 96), 15, 5);//red
+                args.Pipeline.DrawArrow(previewNegYaxis, System.Drawing.Color.FromArgb(255, 96, 244, 96), 15, 5);//green
+                args.Pipeline.DrawArrow(previewNegZaxis, System.Drawing.Color.FromArgb(255, 96, 96, 234), 15, 5);//blue
+                args.Pipeline.Draw3dText(posN, System.Drawing.Color.FromArgb(255, 244, 96, 96));
+                args.Pipeline.Draw3dText(negN, System.Drawing.Color.FromArgb(255, 244, 96, 96));
+                args.Pipeline.Draw3dText(posMyy, System.Drawing.Color.FromArgb(255, 96, 244, 96));
+                args.Pipeline.Draw3dText(negMyy, System.Drawing.Color.FromArgb(255, 96, 244, 96));
+                args.Pipeline.Draw3dText(posMzz, System.Drawing.Color.FromArgb(255, 96, 96, 234));
+                args.Pipeline.Draw3dText(negMzz, System.Drawing.Color.FromArgb(255, 96, 96, 234));
+            }
         }
         public void DrawViewportMeshes(GH_PreviewMeshArgs args) 
         {

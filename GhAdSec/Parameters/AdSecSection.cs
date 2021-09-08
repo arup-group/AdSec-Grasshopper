@@ -48,6 +48,9 @@ namespace GhAdSec.Parameters
         private IDesignCode m_code;
         private ISection m_section;
         private Plane m_plane;
+        internal Line previewXaxis;
+        internal Line previewYaxis;
+        internal Line previewZaxis;
         #endregion
         internal Brep SolidBrep => m_profile;
         internal List<Brep> SubBreps => m_subProfiles;
@@ -245,6 +248,20 @@ namespace GhAdSec.Parameters
                 }
                 for (int i = 0; i < barbreps.Count; i++)
                     rebarColours.Add(rebColour);
+            }
+
+            // local axis
+            if (local != null)
+            {
+                if (local != Plane.WorldXY & local != Plane.WorldYZ & local != Plane.WorldZX)
+                {
+                    UnitsNet.Area area = this.m_section.Profile.Area();
+                    double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
+                    UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
+                    previewXaxis = new Line(local.Origin, local.XAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
+                    previewYaxis = new Line(local.Origin, local.YAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
+                    previewZaxis = new Line(local.Origin, local.ZAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
+                }
             }
         }
 
@@ -557,6 +574,13 @@ namespace GhAdSec.Parameters
                     }
                 }
             }
+            // local axis
+            if (Value.previewXaxis != null)
+            {
+                args.Pipeline.DrawLine(Value.previewZaxis, System.Drawing.Color.FromArgb(255, 244, 96, 96), 1);
+                args.Pipeline.DrawLine(Value.previewXaxis, System.Drawing.Color.FromArgb(255, 96, 244, 96), 1);
+                args.Pipeline.DrawLine(Value.previewYaxis, System.Drawing.Color.FromArgb(255, 96, 96, 234), 1);
+            }
         }
         #endregion
     }
@@ -573,9 +597,9 @@ namespace GhAdSec.Parameters
 
         public override Guid ComponentGuid => new Guid("fa647c2d-4767-49f1-a574-32bf66a66568");
 
-        public override GH_Exposure Exposure => GH_Exposure.secondary;
+        public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.AdSecSection;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.SectionParam;
 
         //We do not allow users to pick parameter, 
         //therefore the following 4 methods disable all this ui.

@@ -1,0 +1,167 @@
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
+using Oasys.Units;
+using UnitsNet;
+using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
+using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.AdSec.StandardMaterials;
+using Oasys.Profiles;
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Layers;
+using GhAdSec.Parameters;
+using Rhino.Geometry;
+using System.Collections.Generic;
+using UnitsNet.GH;
+
+namespace GhAdSec.Components
+{
+    public class ResultsSLS : GH_Component
+    {
+        #region Name and Ribbon Layout
+        // This region handles how the component in displayed on the ribbon
+        // including name, exposure level and icon
+        public override Guid ComponentGuid => new Guid("27ba3ec5-b94c-43ad-8623-087540413628");
+        public ResultsSLS()
+          : base("Serviceability Result", "SLS", "Performs serviceability analysis (SLS), for a given Load or Deformation.",
+                Ribbon.CategoryName.Name(),
+                Ribbon.SubCategoryName.Cat5())
+        { this.Hidden = false; } // sets the initial state of the component to hidden
+
+        public override GH_Exposure Exposure => GH_Exposure.primary;
+
+        //protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.Analyse;
+        #endregion
+
+        #region Custom UI
+        //This region overrides the typical component layout
+        #endregion
+
+        #region Input and output
+
+        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        {
+            pManager.AddGenericParameter("Results", "Res", "AdSec Results to perform serviceability check on.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Load", "Ld", "AdSec Load (Load or Deformation) for which the strength results are to be calculated.", GH_ParamAccess.item);
+        }
+
+        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        {
+            IQuantity strain = new Oasys.Units.Strain(0, GhAdSec.DocumentUnits.StrainUnit);
+            string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
+            IQuantity curvature = new Oasys.Units.Curvature(0, GhAdSec.DocumentUnits.CurvatureUnit);
+            string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
+            IQuantity axial = new Oasys.Units.AxialStiffness(0, GhAdSec.DocumentUnits.AxialStiffnessUnit);
+            string axialUnitAbbreviation = string.Concat(axial.ToString().Where(char.IsLetter));
+            IQuantity bending = new Oasys.Units.BendingStiffness(0, GhAdSec.DocumentUnits.BendingStiffnessUnit);
+            string bendingUnitAbbreviation = string.Concat(bending.ToString().Where(char.IsLetter));
+            IQuantity moment = new Oasys.Units.Moment(0, GhAdSec.DocumentUnits.MomentUnit);
+            string momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
+
+            pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." + 
+                System.Environment.NewLine + "If the applied deformation is outside the capacity range of the section, the returned load will be zero.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Cracks", "Cks", "Crack results are calculated at bar positions or section surfaces depending on the Design Code specifications." +
+                System.Environment.NewLine + "If the applied action is outside the capacity range of the section, the returned list will be empty. See MaximumCrack output " +
+                "for the crack result corresponding to the maximum crack width.", GH_ParamAccess.item);
+
+            pManager.AddGenericParameter("MaximumCrack", "Crk", "The crack result from Cracks that corresponds to the maximum crack width." +
+                System.Environment.NewLine + "If the applied action is outside the capacity range of the section, the returned maximum width crack result will be maximum " +
+                "double value.", GH_ParamAccess.item);
+
+            pManager.AddNumberParameter("CrackUtil", "Uc", "The ratio of the applied load (moment and axial) to the load (moment and axial) in the same direction that would " +
+                "cause the section to crack. Ratio > 1 means section is cracked." +
+                System.Environment.NewLine + "The section is cracked when the cracking utilisation ratio is greater than 1. If the applied load is outside the capacity range" +
+                " of the section, the cracking utilisation will be maximum double value.", GH_ParamAccess.item);
+
+            pManager.AddVectorParameter("Deformation", "Def", "The section deformation under the applied action. The output is a vector representing:"
+                + System.Environment.NewLine + "X: Strain [" + strainUnitAbbreviation + "],"
+                + System.Environment.NewLine + "Y: Curvature around zz (so in local y-direction) [" + curvatureUnitAbbreviation + "],"
+                + System.Environment.NewLine + "Z: Curvature around yy (so in local z-direction) [" + curvatureUnitAbbreviation + "]", GH_ParamAccess.item);
+
+            pManager.AddVectorParameter("SecantStiffness", "Es", "The secant stiffness under the applied action. The output is a vector representing:"
+                + System.Environment.NewLine + "X: Axial stiffness [" + axialUnitAbbreviation + "],"
+                + System.Environment.NewLine + "Y: The bending stiffness about the y-axis in the local coordinate system [" + bendingUnitAbbreviation + "],"
+                + System.Environment.NewLine + "Z: The bending stiffness about the z-axis in the local coordinate system [" + bendingUnitAbbreviation + "]", GH_ParamAccess.item);
+
+            pManager.AddIntervalParameter("Uncracked Moment Ranges", "MRs", "The range of moments (in the direction of the applied moment, assuming constant axial force) " +
+                "over which the section remains uncracked. Moment values are in [" + momentUnitAbbreviation + "]", GH_ParamAccess.list);
+        }
+        #endregion
+
+        protected override void SolveInstance(IGH_DataAccess DA)
+        {
+            // get solution input
+            AdSecSolutionGoo solution = GetInput.Solution(this, DA, 0);
+
+            IServiceabilityResult sls = null;
+
+            // get load - can be either load or deformation
+            GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+            if (DA.GetData(1, ref gh_typ))
+            {
+                // try cast directly to quantity type
+                if (gh_typ.Value is AdSecLoadGoo)
+                {
+                    AdSecLoadGoo load = (AdSecLoadGoo)gh_typ.Value;
+                    sls = solution.Value.Serviceability.Check(load.Value);
+                }
+                else if (gh_typ.Value is AdSecDeformationGoo)
+                {
+                    AdSecDeformationGoo def = (AdSecDeformationGoo)gh_typ.Value;
+                    sls = solution.Value.Serviceability.Check(def.Value);
+                }
+                else
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].Name + " input (index " + 1 + ") to an AdSec Load");
+                    return;
+                }
+            }
+            else
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + Params.Input[1].Name + " input, index " + 1 + " - Input required");
+                return;
+            }
+
+            DA.SetData(0, new AdSecLoadGoo(sls.Load, solution.LocalPlane));
+
+            List<AdSecCrackGoo> cracks = new List<AdSecCrackGoo>();
+            foreach (ICrack crack in sls.Cracks)
+            {
+                cracks.Add(new AdSecCrackGoo(crack, solution.LocalPlane));
+            }
+            DA.SetDataList(1, cracks);
+
+            DA.SetData(2, new AdSecCrackGoo(sls.MaximumWidthCrack, solution.LocalPlane));
+
+            double util = sls.CrackingUtilisation.As(UnitsNet.Units.RatioUnit.DecimalFraction);
+            DA.SetData(3, util);
+            if (util > 1)
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Crack utilisation is above 1!");
+
+            DA.SetData(4, new Vector3d(
+                sls.Deformation.X.As(GhAdSec.DocumentUnits.StrainUnit),
+                sls.Deformation.YY.As(GhAdSec.DocumentUnits.CurvatureUnit),
+                sls.Deformation.ZZ.As(GhAdSec.DocumentUnits.CurvatureUnit)));
+            
+            DA.SetData(5, new Vector3d(
+                sls.SecantStiffness.X.As(GhAdSec.DocumentUnits.AxialStiffnessUnit),
+                sls.SecantStiffness.YY.As(GhAdSec.DocumentUnits.BendingStiffnessUnit),
+                sls.SecantStiffness.ZZ.As(GhAdSec.DocumentUnits.BendingStiffnessUnit)));
+
+            List<GH_Interval> momentRanges = new List<GH_Interval>();
+            foreach (IMomentRange mrng in sls.UncrackedMomentRanges)
+            {
+                Rhino.Geometry.Interval interval = new Interval(
+                    mrng.Min.As(GhAdSec.DocumentUnits.MomentUnit),
+                    mrng.Max.As(GhAdSec.DocumentUnits.MomentUnit));
+                momentRanges.Add(new GH_Interval(interval));
+            }
+            DA.SetDataList(6, momentRanges);
+        }
+    }
+}

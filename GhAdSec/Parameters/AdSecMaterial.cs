@@ -259,7 +259,7 @@ namespace GhAdSec.Parameters
 
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.AdSecMaterial;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.MaterialParam;
 
         protected override GH_GetterResult Prompt_Plural(ref List<AdSecMaterialGoo> values)
         {

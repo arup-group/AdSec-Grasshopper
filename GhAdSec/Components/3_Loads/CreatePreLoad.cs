@@ -40,7 +40,7 @@ namespace GhAdSec.Components
         { this.Hidden = false; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        //protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.StressStrainPoint;
+        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.Prestress;
         #endregion
 
         #region Custom UI
@@ -153,7 +153,7 @@ namespace GhAdSec.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("RebarLayout", "RbL", "AdSec Reinforcement Layout to apply Preload to", GH_ParamAccess.list);
+            pManager.AddGenericParameter("RebarLayout", "RbL", "AdSec Reinforcement Layout to apply Preload to", GH_ParamAccess.item);
             pManager.AddGenericParameter("Force [" + forceUnitAbbreviation + "]", "P", "The pre-force per reinforcement bar. Positive force is tension.", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
