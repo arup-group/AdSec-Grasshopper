@@ -57,3 +57,4 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\System.Data
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\System.Data.SQLite.Linq.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\GhAdSec.Properties.Resources.resources
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\GhAdSec.csproj.GenerateResource.cache
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSec_IO.dll

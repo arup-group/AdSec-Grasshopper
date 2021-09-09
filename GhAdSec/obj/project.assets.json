@@ -2,17 +2,19 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.7.2": {
-      "AdSec/1.0.1.1": {
+      "AdSec/1.0.2.2": {
         "type": "package",
         "dependencies": {
           "UnitsNet": "4.89.0"
         },
         "compile": {
           "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/AdSec_IO.dll": {},
           "lib/netstandard2.0/OasysUnits.dll": {}
         },
         "runtime": {
           "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/AdSec_IO.dll": {},
           "lib/netstandard2.0/OasysUnits.dll": {}
         },
         "build": {
@@ -140,17 +142,19 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win": {
-      "AdSec/1.0.1.1": {
+      "AdSec/1.0.2.2": {
         "type": "package",
         "dependencies": {
           "UnitsNet": "4.89.0"
         },
         "compile": {
           "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/AdSec_IO.dll": {},
           "lib/netstandard2.0/OasysUnits.dll": {}
         },
         "runtime": {
           "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/AdSec_IO.dll": {},
           "lib/netstandard2.0/OasysUnits.dll": {}
         },
         "build": {
@@ -278,17 +282,19 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-x64": {
-      "AdSec/1.0.1.1": {
+      "AdSec/1.0.2.2": {
         "type": "package",
         "dependencies": {
           "UnitsNet": "4.89.0"
         },
         "compile": {
           "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/AdSec_IO.dll": {},
           "lib/netstandard2.0/OasysUnits.dll": {}
         },
         "runtime": {
           "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/AdSec_IO.dll": {},
           "lib/netstandard2.0/OasysUnits.dll": {}
         },
         "build": {
@@ -416,17 +422,19 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-x86": {
-      "AdSec/1.0.1.1": {
+      "AdSec/1.0.2.2": {
         "type": "package",
         "dependencies": {
           "UnitsNet": "4.89.0"
         },
         "compile": {
           "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/AdSec_IO.dll": {},
           "lib/netstandard2.0/OasysUnits.dll": {}
         },
         "runtime": {
           "lib/netstandard2.0/AdSec_API.dll": {},
+          "lib/netstandard2.0/AdSec_IO.dll": {},
           "lib/netstandard2.0/OasysUnits.dll": {}
         },
         "build": {
@@ -555,16 +563,15 @@
     }
   },
   "libraries": {
-    "AdSec/1.0.1.1": {
-      "sha512": "65wzH1uF/ths/pL2OfUE5s8EaaoqA/oRj4mZ1uwZTNSpqMsMyWjAC+o3iiFQi5Doe9U3OHDZaPz+HeT6pwPgTA==",
+    "AdSec/1.0.2.2": {
+      "sha512": "zFs6u5nF1sZk9V469tTOhdQsLBX92wl6GR4IJrJaP9vSzxJ+O94YE79QDoo0cAgTL0DNwnPdnsIiB3Ocq65XxA==",
       "type": "package",
-      "path": "adsec/1.0.1.1",
+      "path": "adsec/1.0.2.2",
       "files": [
         ".nupkg.metadata",
-        ".signature.p7s",
         "LICENCE.pdf",
         "LICENCE.txt",
-        "adsec.1.0.1.1.nupkg.sha512",
+        "adsec.1.0.2.2.nupkg.sha512",
         "adsec.nuspec",
         "build/AdSec.targets",
         "build/x64/AdSecLogic.dll",
@@ -612,6 +619,8 @@
         "lib/netstandard2.0/AdSec_API.pdb",
         "lib/netstandard2.0/AdSec_API.runtimeconfig.json",
         "lib/netstandard2.0/AdSec_API.xml",
+        "lib/netstandard2.0/AdSec_IO.dll",
+        "lib/netstandard2.0/AdSec_IO.xml",
         "lib/netstandard2.0/OasysUnits.dll",
         "lib/netstandard2.0/OasysUnits.xml"
       ]
@@ -905,7 +914,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.7.2": [
-      "AdSec >= 1.0.1.1",
+      "AdSec >= 1.0.2.2",
       "Grasshopper >= 6.27.20176.5001",
       "RhinoCommon >= 6.27.20176.5001",
       "System.Data.SQLite >= 1.0.115"
@@ -933,7 +942,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Users\\Kristjan.Nielsen\\source\\repos\\NuGet": {},
+        "C:\\Users\\Kristjan.Nielsen\\source\\repos\\NugetTestPackages": {},
         "https://api.nuget.org/v3/index.json": {},
         "https://pkgs.dev.azure.com/arupcomputedevops/_packaging/arupcomputedevops/nuget/v3/index.json": {}
       },
@@ -948,7 +957,7 @@
         "dependencies": {
           "AdSec": {
             "target": "Package",
-            "version": "[1.0.1.1, )"
+            "version": "[1.0.2.2, )"
           },
           "Grasshopper": {
             "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",

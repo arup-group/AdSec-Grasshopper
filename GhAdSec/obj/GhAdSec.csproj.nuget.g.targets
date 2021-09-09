@@ -8,6 +8,6 @@
     <Import Project="$(NuGetPackageRoot)stub.system.data.sqlite.core.netframework\1.0.115\buildTransitive\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('$(NuGetPackageRoot)stub.system.data.sqlite.core.netframework\1.0.115\buildTransitive\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
     <Import Project="$(NuGetPackageRoot)rhinocommon\6.27.20176.5001\build\net45\RhinoCommon.targets" Condition="Exists('$(NuGetPackageRoot)rhinocommon\6.27.20176.5001\build\net45\RhinoCommon.targets')" />
     <Import Project="$(NuGetPackageRoot)grasshopper\6.27.20176.5001\build\net45\Grasshopper.targets" Condition="Exists('$(NuGetPackageRoot)grasshopper\6.27.20176.5001\build\net45\Grasshopper.targets')" />
-    <Import Project="$(NuGetPackageRoot)adsec\1.0.1.1\build\AdSec.targets" Condition="Exists('$(NuGetPackageRoot)adsec\1.0.1.1\build\AdSec.targets')" />
+    <Import Project="$(NuGetPackageRoot)adsec\1.0.2.2\build\AdSec.targets" Condition="Exists('$(NuGetPackageRoot)adsec\1.0.2.2\build\AdSec.targets')" />
   </ImportGroup>
 </Project>

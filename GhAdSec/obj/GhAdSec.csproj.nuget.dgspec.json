@@ -23,7 +23,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Users\\Kristjan.Nielsen\\source\\repos\\NuGet": {},
+          "C:\\Users\\Kristjan.Nielsen\\source\\repos\\NugetTestPackages": {},
           "https://api.nuget.org/v3/index.json": {},
           "https://pkgs.dev.azure.com/arupcomputedevops/_packaging/arupcomputedevops/nuget/v3/index.json": {}
         },
@@ -38,7 +38,7 @@
           "dependencies": {
             "AdSec": {
               "target": "Package",
-              "version": "[1.0.1.1, )"
+              "version": "[1.0.2.2, )"
             },
             "Grasshopper": {
               "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",

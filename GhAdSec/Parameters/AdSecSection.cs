@@ -124,8 +124,8 @@ namespace GhAdSec.Parameters
             {
                 IAdSec adSec = IAdSec.Create(code);
                 //= null; // adSec.DesignCode.
-
-                flat = section;
+                flat = adSec.Flatten(section);
+                //flat = section;
             }
             else
             {
