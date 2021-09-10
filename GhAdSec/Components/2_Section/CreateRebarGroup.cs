@@ -169,7 +169,7 @@ namespace GhAdSec.Components
                         ICircleGroup.Create(
                             GetInput.IPoint(this, DA, 1),
                             GetInput.Length(this, DA, 2, lengthUnit),
-                            GetInput.Angle(this, DA, 3, angleUnit),
+                            GetInput.Angle(this, DA, 3, angleUnit, true),
                             GetInput.ILayer(this, DA, 0)));
 
                     break;
