@@ -126,10 +126,10 @@ namespace GhAdSec.Components
             if (selecteditems[0] == "Catalogue")
             {
                 // update spacer description to match catalogue dropdowns
-                spacerDescriptions = new List<string>(new string[]
-                {
-                    "Profile type", "Catalogue", "Type", "Profile"
-                });
+                spacerDescriptions[1] = "Catalogue"; //= new List<string>(new string[]
+                //{
+                //    "Profile type", "Catalogue", "Type", "Profile"
+                //});
 
                 // if FoldMode is not currently catalogue state, then we update all lists
                 if (_mode != FoldMode.Catalogue | updateCat)
@@ -317,14 +317,19 @@ namespace GhAdSec.Components
                     selecteditems[3] = filteredlist[j];
                 }
                 profileString = selecteditems[3];
+
+                ExpireSolution(true);
+                (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+                Params.OnParametersChanged();
+                this.OnDisplayExpired(true);
             }
             else
             {
                 // update spacer description to match none-catalogue dropdowns
-                spacerDescriptions = new List<string>(new string[]
-                {
-                    "Profile type", "Measure", "Type", "Profile"
-                });
+                spacerDescriptions[1] = "Measure";// = new List<string>(new string[]
+                //{
+                //    "Profile type", "Measure", "Type", "Profile"
+                //});
 
                 if (_mode != FoldMode.Other)
                 {
