@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.7.2": {
-      "AdSec/1.0.2.2": {
+      "AdSec/1.0.2.3": {
         "type": "package",
         "dependencies": {
           "UnitsNet": "4.89.0"
@@ -142,7 +142,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win": {
-      "AdSec/1.0.2.2": {
+      "AdSec/1.0.2.3": {
         "type": "package",
         "dependencies": {
           "UnitsNet": "4.89.0"
@@ -282,7 +282,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-x64": {
-      "AdSec/1.0.2.2": {
+      "AdSec/1.0.2.3": {
         "type": "package",
         "dependencies": {
           "UnitsNet": "4.89.0"
@@ -422,7 +422,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-x86": {
-      "AdSec/1.0.2.2": {
+      "AdSec/1.0.2.3": {
         "type": "package",
         "dependencies": {
           "UnitsNet": "4.89.0"
@@ -563,15 +563,16 @@
     }
   },
   "libraries": {
-    "AdSec/1.0.2.2": {
-      "sha512": "zFs6u5nF1sZk9V469tTOhdQsLBX92wl6GR4IJrJaP9vSzxJ+O94YE79QDoo0cAgTL0DNwnPdnsIiB3Ocq65XxA==",
+    "AdSec/1.0.2.3": {
+      "sha512": "m2RgZ31Lq2XS9+mYuSsZ70i5zY5NRwyBHMXauk6N3WTHhQdQX0qY6lSk2p6jYFJqalJIjmxJA6Wmyi7hHV/1Aw==",
       "type": "package",
-      "path": "adsec/1.0.2.2",
+      "path": "adsec/1.0.2.3",
       "files": [
         ".nupkg.metadata",
+        ".signature.p7s",
         "LICENCE.pdf",
         "LICENCE.txt",
-        "adsec.1.0.2.2.nupkg.sha512",
+        "adsec.1.0.2.3.nupkg.sha512",
         "adsec.nuspec",
         "build/AdSec.targets",
         "build/x64/AdSecLogic.dll",
@@ -914,7 +915,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.7.2": [
-      "AdSec >= 1.0.2.2",
+      "AdSec >= 1.0.2.3",
       "Grasshopper >= 6.27.20176.5001",
       "RhinoCommon >= 6.27.20176.5001",
       "System.Data.SQLite >= 1.0.115"
@@ -957,7 +958,7 @@
         "dependencies": {
           "AdSec": {
             "target": "Package",
-            "version": "[1.0.2.2, )"
+            "version": "[1.0.2.3, )"
           },
           "Grasshopper": {
             "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
