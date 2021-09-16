@@ -792,9 +792,12 @@ namespace GhAdSec.Components
             // if last input previously was a bool and we no longer need that
             if (lastInputWasSecant || isSecantPile)
             {
-                // make sure to remove last param
-                Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], true);
-                Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], true);
+                if (Params.Input.Count > 0)
+                {
+                    // make sure to remove last param
+                    Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], true);
+                    Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], true);
+                }
             }
 
             // remove any additional inputs
