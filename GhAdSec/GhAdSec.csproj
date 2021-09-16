@@ -143,7 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AdSec">
-      <Version>1.0.2.2</Version>
+      <Version>1.0.2.3</Version>
     </PackageReference>
     <PackageReference Include="Grasshopper">
       <Version>6.27.20176.5001</Version>

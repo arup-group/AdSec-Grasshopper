@@ -38,7 +38,7 @@
           "dependencies": {
             "AdSec": {
               "target": "Package",
-              "version": "[1.0.2.2, )"
+              "version": "[1.0.2.3, )"
             },
             "Grasshopper": {
               "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",

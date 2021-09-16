@@ -145,7 +145,8 @@ namespace GhAdSec
         {
             get
             {
-                return "0.0.1-alpha";
+                //return Oasys.AdSec.IVersion.Api() + "-beta"; //1.0.2.2
+                return "0.0.2-alpha";
             }
         }
     }
