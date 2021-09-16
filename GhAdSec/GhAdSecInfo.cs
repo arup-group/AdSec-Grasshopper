@@ -95,6 +95,13 @@ namespace GhAdSec
                 return null;
             }
         }
+        public string icon_url
+        {
+            get
+            {
+                return "https://raw.githubusercontent.com/arup-group/GSA-Grasshopper/master/Documentation/GettingStartedGuide/Icons/GsaGhLogo.jpg";
+            }
+        }
         public override Bitmap AssemblyIcon
         {
             get
