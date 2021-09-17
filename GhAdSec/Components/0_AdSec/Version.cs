@@ -46,16 +46,16 @@ namespace GhAdSec.Components
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddTextParameter("AdSec API version", "API", "AdSec Plugin Version", GH_ParamAccess.item);
-            pManager.AddTextParameter("AdSec GH version", "GH", "AdSec API Version", GH_ParamAccess.item);
-            pManager.AddTextParameter("API Version", "File", "AdSec API Version", GH_ParamAccess.item);
+            pManager.AddTextParameter("AdSec API version", "API", "AdSec API Version", GH_ParamAccess.item);
+            pManager.AddTextParameter("AdSec GH version", "GH", "AdSec Grasshopper Plugin Version", GH_ParamAccess.item);
+            pManager.AddTextParameter("Location", "File", "Folder location containing AdSec API and Grasshopper Plugin", GH_ParamAccess.item);
         }
         #endregion
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             GH_AssemblyInfo adsecPlugin = Grasshopper.Instances.ComponentServer.FindAssembly(new Guid("f815c29a-e1eb-4ca6-9e56-0554777ff9c9"));
-
+            
             DA.SetData(0, IVersion.Api());
             DA.SetData(1, adsecPlugin.Version);
             DA.SetData(2, adsecPlugin.Location);
