@@ -4,8 +4,9 @@ using Oasys.AdSec.Mesh;
 using Rhino.Geometry;
 using System;
 using System.Linq;
+using System.Drawing;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecFailureSurfaceGoo : GH_GeometricGoo<Mesh>, IGH_PreviewData
     {
@@ -114,9 +115,9 @@ namespace GhAdSec.Parameters
 
             outMesh.Vertices.AddVertices(
                 loadsurface.Vertices.Select(pt => new Point3d(
-                    pt.X.As(GhAdSec.DocumentUnits.ForceUnit),
-                    pt.ZZ.As(GhAdSec.DocumentUnits.MomentUnit),
-                    pt.YY.As(GhAdSec.DocumentUnits.MomentUnit)
+                    pt.X.As(AdSecGH.DocumentUnits.ForceUnit),
+                    pt.ZZ.As(AdSecGH.DocumentUnits.MomentUnit),
+                    pt.YY.As(AdSecGH.DocumentUnits.MomentUnit)
                     )));
 
             outMesh.Faces.AddFaces(
@@ -226,30 +227,32 @@ namespace GhAdSec.Parameters
         public void DrawViewportWires(GH_PreviewWireArgs args)
         {
             if (!Value.IsValid) { return; }
-            args.Pipeline.DrawMeshWires(Value, GhAdSec.UI.Colour.GsaLightGrey, 1);
+            args.Pipeline.DrawMeshWires(Value, AdSecGH.UI.Colour.GsaLightGrey, 1);
             // local axis
             if (previewPosXaxis != null)
             {
-                args.Pipeline.DrawArrow(previewPosXaxis, System.Drawing.Color.FromArgb(255, 244, 96, 96), 15, 5);//red
-                args.Pipeline.DrawArrow(previewPosYaxis, System.Drawing.Color.FromArgb(255, 96, 244, 96), 15, 5);//green
-                args.Pipeline.DrawArrow(previewPosZaxis, System.Drawing.Color.FromArgb(255, 96, 96, 234), 15, 5);//blue
-                args.Pipeline.DrawArrow(previewNegXaxis, System.Drawing.Color.FromArgb(255, 244, 96, 96), 15, 5);//red
-                args.Pipeline.DrawArrow(previewNegYaxis, System.Drawing.Color.FromArgb(255, 96, 244, 96), 15, 5);//green
-                args.Pipeline.DrawArrow(previewNegZaxis, System.Drawing.Color.FromArgb(255, 96, 96, 234), 15, 5);//blue
-                args.Pipeline.Draw3dText(posN, System.Drawing.Color.FromArgb(255, 244, 96, 96));
-                args.Pipeline.Draw3dText(negN, System.Drawing.Color.FromArgb(255, 244, 96, 96));
-                args.Pipeline.Draw3dText(posMyy, System.Drawing.Color.FromArgb(255, 96, 244, 96));
-                args.Pipeline.Draw3dText(negMyy, System.Drawing.Color.FromArgb(255, 96, 244, 96));
-                args.Pipeline.Draw3dText(posMzz, System.Drawing.Color.FromArgb(255, 96, 96, 234));
-                args.Pipeline.Draw3dText(negMzz, System.Drawing.Color.FromArgb(255, 96, 96, 234));
+                args.Pipeline.DrawArrow(previewPosXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5);//red
+                args.Pipeline.DrawArrow(previewPosYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5);//green
+                args.Pipeline.DrawArrow(previewPosZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5);//blue
+                args.Pipeline.DrawArrow(previewNegXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5);//red
+                args.Pipeline.DrawArrow(previewNegYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5);//green
+                args.Pipeline.DrawArrow(previewNegZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5);//blue
+                args.Pipeline.Draw3dText(posN, Color.FromArgb(255, 244, 96, 96));
+                args.Pipeline.Draw3dText(negN, Color.FromArgb(255, 244, 96, 96));
+                args.Pipeline.Draw3dText(posMyy, Color.FromArgb(255, 96, 244, 96));
+                args.Pipeline.Draw3dText(negMyy, Color.FromArgb(255, 96, 244, 96));
+                args.Pipeline.Draw3dText(posMzz, Color.FromArgb(255, 96, 96, 234));
+                args.Pipeline.Draw3dText(negMzz, Color.FromArgb(255, 96, 96, 234));
             }
         }
         public void DrawViewportMeshes(GH_PreviewMeshArgs args) 
         {
-            if (args.Material.Diffuse == System.Drawing.Color.FromArgb(255, 150, 0, 0)) // not selected
-                args.Pipeline.DrawMeshShaded(Value, GhAdSec.UI.Colour.FailureNormal);
+            Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+            if (args.Material.Diffuse.R == defaultCol.R && args.Material.Diffuse.G == defaultCol.G && args.Material.Diffuse.B == defaultCol.B) // not selected
+                args.Pipeline.DrawMeshShaded(Value, AdSecGH.UI.Colour.FailureNormal);
             else
-                args.Pipeline.DrawMeshShaded(Value, GhAdSec.UI.Colour.FailureSelected);
+                args.Pipeline.DrawMeshShaded(Value, AdSecGH.UI.Colour.FailureSelected);
+            
         }
     }
 }

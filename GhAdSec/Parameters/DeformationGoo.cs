@@ -26,7 +26,7 @@ using Oasys.Profiles;
 using Oasys.AdSec;
 using UnitsNet;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecDeformationGoo : GH_Goo<IDeformation>
     {
@@ -47,14 +47,14 @@ namespace GhAdSec.Parameters
         }
         public override string ToString()
         {
-            IQuantity strain = new Oasys.Units.Strain(0, GhAdSec.DocumentUnits.StrainUnit);
+            IQuantity strain = new Oasys.Units.Strain(0, AdSecGH.DocumentUnits.StrainUnit);
             string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-            IQuantity curvature = new Oasys.Units.Curvature(0, GhAdSec.DocumentUnits.CurvatureUnit);
+            IQuantity curvature = new Oasys.Units.Curvature(0, AdSecGH.DocumentUnits.CurvatureUnit);
             string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
             return "AdSec " + TypeName + " {"
-                + Math.Round(this.Value.X.As(GhAdSec.DocumentUnits.StrainUnit), 4) + strainUnitAbbreviation + ", "
-                + Math.Round(this.Value.YY.As(GhAdSec.DocumentUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + ", "
-                + Math.Round(this.Value.ZZ.As(GhAdSec.DocumentUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + "}";
+                + Math.Round(this.Value.X.As(AdSecGH.DocumentUnits.StrainUnit), 4) + strainUnitAbbreviation + ", "
+                + Math.Round(this.Value.YY.As(AdSecGH.DocumentUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + ", "
+                + Math.Round(this.Value.ZZ.As(AdSecGH.DocumentUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + "}";
         }
     }
 }

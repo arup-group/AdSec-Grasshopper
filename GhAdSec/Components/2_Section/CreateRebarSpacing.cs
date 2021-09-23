@@ -8,14 +8,14 @@ using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
 using Rhino.Geometry;
 using Oasys.AdSec.Materials.StressStrainCurves;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using UnitsNet.GH;
 using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Layers;
 using UnitsNet;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class CreateRebarSpacing : GH_Component, IGH_VariableParameterComponent
     {
@@ -28,7 +28,7 @@ namespace GhAdSec.Components
         public override Guid ComponentGuid => new Guid("846d546a-4284-4d69-906b-0e6985d7ddd3");
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.RebarSpacing;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.RebarSpacing;
         #endregion
 
         #region Custom UI
@@ -47,7 +47,7 @@ namespace GhAdSec.Components
 
                 // length
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredLengthUnits);
+                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
@@ -98,7 +98,7 @@ namespace GhAdSec.Components
             "Spacing method",
             "Measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = GhAdSec.DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = AdSecGH.DocumentUnits.LengthUnit;
         string unitAbbreviation;
         #endregion
 
@@ -190,13 +190,13 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetString("mode", _mode.ToString());
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
             UpdateUIFromSelectedItems();
             first = false;

@@ -1,4 +1,4 @@
-﻿using GhAdSec.Parameters;
+﻿using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec.Materials.StressStrainCurves;
@@ -19,7 +19,7 @@ using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement.Groups;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     class GetInput
     {
@@ -129,7 +129,7 @@ namespace GhAdSec.Components
                 }
                 else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                 {
-                    pt1 = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
+                    pt1 = AdSecGH.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
                 }
                 else
                 {
@@ -165,12 +165,12 @@ namespace GhAdSec.Components
                     }
                     else if (GH_Convert.ToPoint3d(gh_typs[i].Value, ref ghpt, GH_Conversion.Both))
                     {
-                        pts.Add(GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt));
+                        pts.Add(AdSecGH.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt));
                     }
                     else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both))
                     {
                         PolylineCurve curve = (PolylineCurve)polycurve;
-                        pts = GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
+                        pts = AdSecGH.Parameters.AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
                     }
                     else
                     {
@@ -207,10 +207,10 @@ namespace GhAdSec.Components
                 {
                     // try convert to polylinecurve
                     PolylineCurve curve = (PolylineCurve)polycurve;
-                    Oasys.Collections.IList<IStressStrainPoint> pts = GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
+                    Oasys.Collections.IList<IStressStrainPoint> pts = AdSecGH.Parameters.AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
                     IExplicitStressStrainCurve exCrv = IExplicitStressStrainCurve.Create();
                     exCrv.Points = pts;
-                    Tuple<Curve, List<Point3d>> tuple = GhAdSec.Parameters.AdSecStressStrainCurveGoo.Create(exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, compression);
+                    Tuple<Curve, List<Point3d>> tuple = AdSecGH.Parameters.AdSecStressStrainCurveGoo.Create(exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, compression);
                     ssCrv = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, tuple.Item2);
                 }
                 else
@@ -681,7 +681,7 @@ namespace GhAdSec.Components
                     else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both))
                     {
                         PolylineCurve curve = (PolylineCurve)polycurve;
-                        pts = GhAdSec.Parameters.AdSecPointGoo.PtsFromPolylineCurve(curve);
+                        pts = AdSecGH.Parameters.AdSecPointGoo.PtsFromPolylineCurve(curve);
                     }
                     else
                     {
@@ -693,7 +693,7 @@ namespace GhAdSec.Components
                 {
                     if (tempPts.Count == 1)
                     {
-                        pts.Add(GhAdSec.Parameters.AdSecPointGoo.CreateFromPoint3d(tempPts[0], Plane.WorldYZ));
+                        pts.Add(AdSecGH.Parameters.AdSecPointGoo.CreateFromPoint3d(tempPts[0], Plane.WorldYZ));
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Single Point converted to local point. Assumed that local coordinate system is in a YZ-Plane");
                     }
                     else
@@ -702,7 +702,7 @@ namespace GhAdSec.Components
                         //Polyline pol = new Polyline(tempPts);
                         //plane.Origin = pol.CenterPoint();
                         foreach (Point3d pt in tempPts)
-                            pts.Add(GhAdSec.Parameters.AdSecPointGoo.CreateFromPoint3d(pt, plane));
+                            pts.Add(AdSecGH.Parameters.AdSecPointGoo.CreateFromPoint3d(pt, plane));
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "List of Points have been converted to local points. Assumed that local coordinate system is matching best-fit plane through points");
                     }
 
@@ -844,7 +844,7 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    prfl = Boundaries(owner, DA, inputid, -1, GhAdSec.DocumentUnits.LengthUnit).Profile;
+                    prfl = Boundaries(owner, DA, inputid, -1, AdSecGH.DocumentUnits.LengthUnit).Profile;
                 }
                 
                 return prfl;
@@ -868,7 +868,7 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    prfl = Boundaries(owner, DA, inputid, -1, GhAdSec.DocumentUnits.LengthUnit);
+                    prfl = Boundaries(owner, DA, inputid, -1, AdSecGH.DocumentUnits.LengthUnit);
                 }
                 return prfl;
             }

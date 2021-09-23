@@ -11,7 +11,7 @@ using Rhino.Geometry;
 using System.Windows.Forms;
 using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -20,7 +20,7 @@ using UnitsNet.GH;
 using UnitsNet;
 using Oasys.AdSec;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     /// <summary>
     /// Component to create a new Stress Strain Point
@@ -51,11 +51,11 @@ namespace GhAdSec.Components
                 selecteditems = new List<string>();
 
                 // strain
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStrainUnits);
+                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredStrainUnits);
                 selecteditems.Add(strainUnit.ToString());
 
                 // curvature
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredCurvatureUnits);
+                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredCurvatureUnits);
                 selecteditems.Add(curvatureUnit.ToString());
 
                 IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
@@ -118,8 +118,8 @@ namespace GhAdSec.Components
         });
         private bool first = true;
 
-        private Oasys.Units.StrainUnit strainUnit = GhAdSec.DocumentUnits.StrainUnit;
-        private Oasys.Units.CurvatureUnit curvatureUnit = GhAdSec.DocumentUnits.CurvatureUnit;
+        private Oasys.Units.StrainUnit strainUnit = AdSecGH.DocumentUnits.StrainUnit;
+        private Oasys.Units.CurvatureUnit curvatureUnit = AdSecGH.DocumentUnits.CurvatureUnit;
         string strainUnitAbbreviation;
         string curvatureUnitAbbreviation;
         #endregion
@@ -149,12 +149,12 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             UpdateUIFromSelectedItems();
 

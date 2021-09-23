@@ -26,7 +26,7 @@ using UnitsNet.Units;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecSubComponentGoo : GH_GeometricGoo<ISubComponent>, IGH_PreviewData
     {
@@ -57,9 +57,9 @@ namespace GhAdSec.Parameters
                     UnitsNet.Area area = this.m_sectionGoo.Section.Profile.Area();
                     double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
                     UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
-                    previewXaxis = new Line(local.Origin, local.XAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
-                    previewYaxis = new Line(local.Origin, local.YAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
-                    previewZaxis = new Line(local.Origin, local.ZAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
+                    previewXaxis = new Line(local.Origin, local.XAxis, length.As(AdSecGH.DocumentUnits.LengthUnit));
+                    previewYaxis = new Line(local.Origin, local.YAxis, length.As(AdSecGH.DocumentUnits.LengthUnit));
+                    previewZaxis = new Line(local.Origin, local.ZAxis, length.As(AdSecGH.DocumentUnits.LengthUnit));
                 }
             }
         }
@@ -152,21 +152,22 @@ namespace GhAdSec.Parameters
         {
             if (m_sectionGoo == null) { return; }
 
-            if (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) // not selected
+            Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+            if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
             {
-                args.Pipeline.DrawPolyline(m_sectionGoo.m_profileEdge, GhAdSec.UI.Colour.OasysBlue, 2);
+                args.Pipeline.DrawPolyline(m_sectionGoo.m_profileEdge, AdSecGH.UI.Colour.OasysBlue, 2);
                 if (m_sectionGoo.m_profileVoidEdges != null)
                 {
                     foreach (Polyline crv in m_sectionGoo.m_profileVoidEdges)
                     {
-                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                        args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysBlue, 1);
                     }
                 }
                 if (m_sectionGoo.m_subEdges != null)
                 {
                     foreach (Polyline crv in m_sectionGoo.m_subEdges)
                     {
-                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                        args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysBlue, 1);
                     }
                 }
                 if (m_sectionGoo.m_subVoidEdges != null)
@@ -175,7 +176,7 @@ namespace GhAdSec.Parameters
                     {
                         foreach (Polyline crv in crvs)
                         {
-                            args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                            args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysBlue, 1);
                         }
                     }
                 }
@@ -189,19 +190,19 @@ namespace GhAdSec.Parameters
             }
             else // selected
             {
-                args.Pipeline.DrawPolyline(m_sectionGoo.m_profileEdge, GhAdSec.UI.Colour.OasysYellow, 3);
+                args.Pipeline.DrawPolyline(m_sectionGoo.m_profileEdge, AdSecGH.UI.Colour.OasysYellow, 3);
                 if (m_sectionGoo.m_profileVoidEdges != null)
                 {
                     foreach (Polyline crv in m_sectionGoo.m_profileVoidEdges)
                     {
-                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                        args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysYellow, 2);
                     }
                 }
                 if (m_sectionGoo.m_subEdges != null)
                 {
                     foreach (Polyline crv in m_sectionGoo.m_subEdges)
                     {
-                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                        args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysYellow, 2);
                     }
                 }
                 if (m_sectionGoo.m_subVoidEdges != null)
@@ -210,7 +211,7 @@ namespace GhAdSec.Parameters
                     {
                         foreach (Polyline crv in crvs)
                         {
-                            args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                            args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysYellow, 2);
                         }
                     }
                 }
@@ -218,7 +219,7 @@ namespace GhAdSec.Parameters
                 {
                     foreach (Circle crv in m_sectionGoo.m_rebarEdges)
                     {
-                        args.Pipeline.DrawCircle(crv, GhAdSec.UI.Colour.GsaLightGrey, 2);
+                        args.Pipeline.DrawCircle(crv, AdSecGH.UI.Colour.GsaLightGrey, 2);
                     }
                 }
             }

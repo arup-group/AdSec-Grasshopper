@@ -11,18 +11,18 @@ using Grasshopper.Kernel.Types;
 using System.Text.RegularExpressions;
 
 using Grasshopper.Kernel.Parameters;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using System.Resources;
 using System.Linq;
 using System.IO;
 using System.Text;
 using System.Reflection;
-using GhAdSec.Helpers;
+using AdSecGH.Helpers;
 using Oasys.Profiles;
 using UnitsNet;
 using UnitsNet.GH;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     /// <summary>
     /// Component to create AdSec profile
@@ -47,7 +47,7 @@ namespace GhAdSec.Components
             return help;
         }
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateProfile;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateProfile;
         #endregion
 
         #region Custom UI
@@ -56,7 +56,7 @@ namespace GhAdSec.Components
         {
             if (first)
             {
-                Dictionary<string, Type> profileTypesInitial = GhAdSec.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.Profiles");
+                Dictionary<string, Type> profileTypesInitial = AdSecGH.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.Profiles");
                 profileTypes = new Dictionary<string, Type>();
                 foreach (KeyValuePair<string, Type> kvp in profileTypesInitial)
                 {
@@ -97,7 +97,7 @@ namespace GhAdSec.Components
                 }
 
                 // length
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredLengthUnits);
+                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
@@ -147,12 +147,12 @@ namespace GhAdSec.Components
                     // set types to all
                     typeIndex = -1;
                     // update typelist with all catalogues
-                    typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(GhAdSec.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                    typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
                     typeNames = typedata.Item1;
                     typeNumbers = typedata.Item2;
 
                     // update section list to all types
-                    sectionList = SqlReader.GetSectionsDataFromSQLite(typeNumbers, Path.Combine(GhAdSec.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                    sectionList = SqlReader.GetSectionsDataFromSQLite(typeNumbers, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
 
                     // filter by search pattern
                     filteredlist = new List<string>();
@@ -208,14 +208,14 @@ namespace GhAdSec.Components
                     selecteditems[1] = catalogueNames[j];
 
                     // update typelist with selected input catalogue
-                    typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(GhAdSec.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                    typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
                     typeNames = typedata.Item1;
                     typeNumbers = typedata.Item2;
 
                     // update section list from new types (all new types in catalogue)
                     List<int> types = typeNumbers.ToList();
                     types.RemoveAt(0); // remove -1 from beginning of list
-                    sectionList = SqlReader.GetSectionsDataFromSQLite(types, Path.Combine(GhAdSec.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                    sectionList = SqlReader.GetSectionsDataFromSQLite(types, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
 
                     // filter by search pattern
                     filteredlist = new List<string>();
@@ -273,7 +273,7 @@ namespace GhAdSec.Components
 
 
                     // section list with selected types (only types in selected type)
-                    sectionList = SqlReader.GetSectionsDataFromSQLite(types, Path.Combine(GhAdSec.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                    sectionList = SqlReader.GetSectionsDataFromSQLite(types, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
 
                     // filter by search pattern
                     filteredlist = new List<string>();
@@ -338,7 +338,7 @@ namespace GhAdSec.Components
                         dropdownitems.RemoveAt(1);
 
                     // add length measure dropdown list
-                    dropdownitems.Add(GhAdSec.DocumentUnits.FilteredLengthUnits);
+                    dropdownitems.Add(AdSecGH.DocumentUnits.FilteredLengthUnits);
 
                     // set selected length
                     selecteditems[1] = lengthUnit.ToString();
@@ -371,7 +371,7 @@ namespace GhAdSec.Components
 
                 catalogueNames = cataloguedata.Item1;
                 catalogueNumbers = cataloguedata.Item2;
-                typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(GhAdSec.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
                 typeNames = typedata.Item1;
                 typeNumbers = typedata.Item2;
 
@@ -420,25 +420,25 @@ namespace GhAdSec.Components
         Dictionary<string, Type> profileTypes;
         Dictionary<string, FieldInfo> profileFields;
 
-        private UnitsNet.Units.LengthUnit lengthUnit = GhAdSec.DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = AdSecGH.DocumentUnits.LengthUnit;
         string unitAbbreviation;
 
         #region catalogue sections
         // for catalogue selection
         // Catalogues
-        readonly Tuple<List<string>, List<int>> cataloguedata = SqlReader.GetCataloguesDataFromSQLite(Path.Combine(GhAdSec.AddReferencePriority.PluginPath, "sectlib.db3"));
+        readonly Tuple<List<string>, List<int>> cataloguedata = SqlReader.GetCataloguesDataFromSQLite(Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"));
         List<int> catalogueNumbers = new List<int>(); // internal db catalogue numbers
         List<string> catalogueNames = new List<string>(); // list of displayed catalogues
         bool inclSS;
 
         // Types
-        Tuple<List<string>, List<int>> typedata = SqlReader.GetTypesDataFromSQLite(-1, Path.Combine(GhAdSec.AddReferencePriority.PluginPath, "sectlib.db3"), false);
+        Tuple<List<string>, List<int>> typedata = SqlReader.GetTypesDataFromSQLite(-1, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), false);
         List<int> typeNumbers = new List<int>(); //  internal db type numbers
         List<string> typeNames = new List<string>(); // list of displayed types
 
         // Sections
         // list of displayed sections
-        List<string> sectionList = SqlReader.GetSectionsDataFromSQLite(new List<int> { -1 }, Path.Combine(GhAdSec.AddReferencePriority.PluginPath, "sectlib.db3"), false);
+        List<string> sectionList = SqlReader.GetSectionsDataFromSQLite(new List<int> { -1 }, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), false);
         List<string> filteredlist = new List<string>();
         int catalogueIndex = -1; //-1 is all
         int typeIndex = -1;
@@ -1004,7 +1004,7 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetString("mode", _mode.ToString());
             writer.SetString("lengthUnit", lengthUnit.ToString());
             writer.SetBoolean("inclSS", inclSS);
@@ -1018,7 +1018,7 @@ namespace GhAdSec.Components
         {
             first = false;
 
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
             lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), reader.GetString("lengthUnit"));

@@ -14,12 +14,12 @@ using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using Rhino.Geometry;
 using System.Collections.Generic;
 using Grasshopper.Kernel.Parameters;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class CustomMaterial : GH_Component, IGH_VariableParameterComponent
     {
@@ -35,7 +35,7 @@ namespace GhAdSec.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateCustomMaterial;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateCustomMaterial;
         #endregion
 
         #region Custom UI
@@ -208,13 +208,13 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetBoolean("isConcrete", isConcrete);
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             isConcrete = reader.GetBoolean("isConcrete");
             UpdateUIFromSelectedItems();
             first = false;

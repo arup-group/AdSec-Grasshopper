@@ -20,9 +20,10 @@ using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
 using UnitsNet;
+using UnitsNet.Units;
 using Oasys.Units;
 
-namespace GhAdSec
+namespace AdSecGH
 {
     /// <summary>
     /// Class to hold units used in Grasshopper AdSec file. 
@@ -42,15 +43,16 @@ namespace GhAdSec
         }
         internal static List<string> FilteredAngleUnits = new List<string>()
         {
-            UnitsNet.Units.AngleUnit.Radian.ToString(),
-            UnitsNet.Units.AngleUnit.Degree.ToString()
+            AngleUnit.Radian.ToString(),
+            AngleUnit.Degree.ToString()
         };
         #region length
-        public static UnitsNet.Units.LengthUnit LengthUnit
+        internal static bool useRhinoLengthUnit;
+        public static LengthUnit LengthUnit
         {
             get
             {
-                if (m_units == null)
+                if (m_units == null || useRhinoLengthUnit)
                 {
                     m_length = GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
                 }
@@ -70,32 +72,32 @@ namespace GhAdSec
                 m_units = new UnitsNet.UnitSystem(units);
             }
         }
-        private static UnitsNet.Units.LengthUnit m_length;
+        private static LengthUnit m_length;
         internal static List<string> FilteredLengthUnits = new List<string>()
         {
-            UnitsNet.Units.LengthUnit.Millimeter.ToString(),
-            UnitsNet.Units.LengthUnit.Centimeter.ToString(),
-            UnitsNet.Units.LengthUnit.Meter.ToString(),
-            UnitsNet.Units.LengthUnit.Inch.ToString(),
-            UnitsNet.Units.LengthUnit.Foot.ToString()
+            LengthUnit.Millimeter.ToString(),
+            LengthUnit.Centimeter.ToString(),
+            LengthUnit.Meter.ToString(),
+            LengthUnit.Inch.ToString(),
+            LengthUnit.Foot.ToString()
         };
         #endregion
 
         #region force
-        public static UnitsNet.Units.ForceUnit ForceUnit
+        public static ForceUnit ForceUnit
         {
             get { return m_force; }
             set { m_force = value; }
         }
-        private static UnitsNet.Units.ForceUnit m_force = UnitsNet.Units.ForceUnit.Kilonewton;
+        private static ForceUnit m_force = ForceUnit.Kilonewton;
         internal static List<string> FilteredForceUnits = new List<string>()
         {
-            UnitsNet.Units.ForceUnit.Newton.ToString(),
-            UnitsNet.Units.ForceUnit.Kilonewton.ToString(),
-            UnitsNet.Units.ForceUnit.Meganewton.ToString(),
-            UnitsNet.Units.ForceUnit.PoundForce.ToString(),
-            UnitsNet.Units.ForceUnit.KilopoundForce.ToString(),
-            UnitsNet.Units.ForceUnit.TonneForce.ToString()
+            ForceUnit.Newton.ToString(),
+            ForceUnit.Kilonewton.ToString(),
+            ForceUnit.Meganewton.ToString(),
+            ForceUnit.PoundForce.ToString(),
+            ForceUnit.KilopoundForce.ToString(),
+            ForceUnit.TonneForce.ToString()
         };
         #endregion
 
@@ -114,26 +116,26 @@ namespace GhAdSec
         //};
         #endregion
         #region stress
-        public static UnitsNet.Units.PressureUnit StressUnit
+        public static PressureUnit StressUnit
         {
             get { return m_stress; }
             set { m_stress = value; }
         }
-        private static UnitsNet.Units.PressureUnit m_stress = UnitsNet.Units.PressureUnit.Megapascal;
+        private static PressureUnit m_stress = PressureUnit.Megapascal;
         internal static List<string> FilteredStressUnits = new List<string>()
         {
-            UnitsNet.Units.PressureUnit.Pascal.ToString(),
-            UnitsNet.Units.PressureUnit.Kilopascal.ToString(),
-            UnitsNet.Units.PressureUnit.Megapascal.ToString(),
-            UnitsNet.Units.PressureUnit.Gigapascal.ToString(),
-            UnitsNet.Units.PressureUnit.NewtonPerSquareMillimeter.ToString(),
-            UnitsNet.Units.PressureUnit.KilonewtonPerSquareCentimeter.ToString(),
-            UnitsNet.Units.PressureUnit.NewtonPerSquareMeter.ToString(),
-            UnitsNet.Units.PressureUnit.KilopoundForcePerSquareInch.ToString(),
-            UnitsNet.Units.PressureUnit.PoundForcePerSquareInch.ToString(),
-            UnitsNet.Units.PressureUnit.PoundForcePerSquareFoot.ToString(),
-            UnitsNet.Units.PressureUnit.KilopoundForcePerSquareInch.ToString(),
-            UnitsNet.Units.PressureUnit.KilopoundForcePerSquareFoot.ToString()
+            PressureUnit.Pascal.ToString(),
+            PressureUnit.Kilopascal.ToString(),
+            PressureUnit.Megapascal.ToString(),
+            PressureUnit.Gigapascal.ToString(),
+            PressureUnit.NewtonPerSquareMillimeter.ToString(),
+            PressureUnit.KilonewtonPerSquareCentimeter.ToString(),
+            PressureUnit.NewtonPerSquareMeter.ToString(),
+            PressureUnit.KilopoundForcePerSquareInch.ToString(),
+            PressureUnit.PoundForcePerSquareInch.ToString(),
+            PressureUnit.PoundForcePerSquareFoot.ToString(),
+            PressureUnit.KilopoundForcePerSquareInch.ToString(),
+            PressureUnit.KilopoundForcePerSquareFoot.ToString()
         };
         #endregion
         #region strain
@@ -194,18 +196,76 @@ namespace GhAdSec
         #region methods
         internal static void SetupUnits()
         {
+            bool settingsExist = ReadSettings();
+            LengthUnit length;
+            if (settingsExist)
+            {
+                length = m_length;
+            }
+            else
+            {
+                // get rhino document length unit
+                m_length = GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+                SaveSettings();
+            }
             // get SI units
             UnitsNet.UnitSystem si = UnitsNet.UnitSystem.SI;
 
-            // get rhino document length unit
-            UnitsNet.Units.LengthUnit length = GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
-
             UnitsNet.BaseUnits units = new UnitsNet.BaseUnits(
-                length,
+                m_length,
                 si.BaseUnits.Mass, si.BaseUnits.Time, si.BaseUnits.Current, si.BaseUnits.Temperature, si.BaseUnits.Amount, si.BaseUnits.LuminousIntensity);
             m_units = new UnitsNet.UnitSystem(units);
+
         }
-        internal static UnitsNet.Units.LengthUnit GetRhinoLengthUnit(Rhino.UnitSystem rhinoUnits)
+        internal static void SaveSettings()
+        {
+            Grasshopper.Instances.Settings.SetValue("AdSecLengthUnit", LengthUnit.ToString());
+            Grasshopper.Instances.Settings.SetValue("AdSecUseRhinoLengthUnit", useRhinoLengthUnit);
+            Grasshopper.Instances.Settings.SetValue("AdSecForceUnit", ForceUnit.ToString());
+            Grasshopper.Instances.Settings.SetValue("AdSecMomentUnit", MomentUnit.ToString());
+            Grasshopper.Instances.Settings.SetValue("AdSecStressUnit", StressUnit.ToString());
+            Grasshopper.Instances.Settings.SetValue("AdSecStrainUnit", StrainUnit.ToString());
+            Grasshopper.Instances.Settings.SetValue("AdSecAxialStiffnessUnit", AxialStiffnessUnit.ToString());
+            Grasshopper.Instances.Settings.SetValue("AdSecCurvatureUnit", CurvatureUnit.ToString());
+            Grasshopper.Instances.Settings.SetValue("AdSecBendingStiffnessUnit", BendingStiffnessUnit.ToString());
+            Grasshopper.Instances.Settings.WritePersistentSettings();
+        }
+        internal static bool ReadSettings()
+        {
+            if (!Grasshopper.Instances.Settings.ConstainsEntry("AdSecLengthUnit"))
+                return false;
+
+            string length = Grasshopper.Instances.Settings.GetValue("AdSecLengthUnit", string.Empty);
+            string force = Grasshopper.Instances.Settings.GetValue("AdSecForceUnit", string.Empty);
+            string moment = Grasshopper.Instances.Settings.GetValue("AdSecMomentUnit", string.Empty);
+            string stress = Grasshopper.Instances.Settings.GetValue("AdSecStressUnit", string.Empty);
+            string strain = Grasshopper.Instances.Settings.GetValue("AdSecStrainUnit", string.Empty);
+            string axialstiffness = Grasshopper.Instances.Settings.GetValue("AdSecAxialStiffnessUnit", string.Empty);
+            string curvature = Grasshopper.Instances.Settings.GetValue("AdSecCurvatureUnit", string.Empty);
+            string bendingstiffness = Grasshopper.Instances.Settings.GetValue("AdSecBendingStiffnessUnit", string.Empty);
+
+            useRhinoLengthUnit = Grasshopper.Instances.Settings.GetValue("AdSecUseRhinoLengthUnit", false);
+
+            if (useRhinoLengthUnit)
+            {
+                m_length = GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+            }
+            else
+            {
+                m_length = (LengthUnit)Enum.Parse(typeof(LengthUnit), length);
+            }
+
+            m_force = (ForceUnit)Enum.Parse(typeof(ForceUnit), force);
+            m_moment = (MomentUnit)Enum.Parse(typeof(MomentUnit), moment);
+            m_stress = (PressureUnit)Enum.Parse(typeof(PressureUnit), stress);
+            m_strain = (StrainUnit)Enum.Parse(typeof(StrainUnit), strain);
+            m_axialstiffness = (AxialStiffnessUnit)Enum.Parse(typeof(AxialStiffnessUnit), axialstiffness);
+            m_curvature = (CurvatureUnit)Enum.Parse(typeof(CurvatureUnit), curvature);
+            m_bendingstiffness = (BendingStiffnessUnit)Enum.Parse(typeof(BendingStiffnessUnit), bendingstiffness);
+
+            return true;
+        }
+        internal static LengthUnit GetRhinoLengthUnit(Rhino.UnitSystem rhinoUnits)
         {
             List<int> id = new List<int>(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
             List<string> name = new List<string>(new string[] {
@@ -229,31 +289,31 @@ namespace GhAdSec
                 "Megameters", 
                 "Gigameters", 
                 "Yards" });
-            List<UnitsNet.Units.LengthUnit> unit = new List<UnitsNet.Units.LengthUnit>(new UnitsNet.Units.LengthUnit[] {
-                UnitsNet.Units.LengthUnit.Undefined,
-                UnitsNet.Units.LengthUnit.Micrometer,
-                UnitsNet.Units.LengthUnit.Millimeter,
-                UnitsNet.Units.LengthUnit.Centimeter,
-                UnitsNet.Units.LengthUnit.Meter,
-                UnitsNet.Units.LengthUnit.Kilometer,
-                UnitsNet.Units.LengthUnit.Microinch,
-                UnitsNet.Units.LengthUnit.Mil,
-                UnitsNet.Units.LengthUnit.Inch,
-                UnitsNet.Units.LengthUnit.Foot,
-                UnitsNet.Units.LengthUnit.Mile,
-                UnitsNet.Units.LengthUnit.Undefined,
-                UnitsNet.Units.LengthUnit.Undefined,
-                UnitsNet.Units.LengthUnit.Nanometer,
-                UnitsNet.Units.LengthUnit.Decimeter,
-                UnitsNet.Units.LengthUnit.Undefined,
-                UnitsNet.Units.LengthUnit.Hectometer,
-                UnitsNet.Units.LengthUnit.Undefined,
-                UnitsNet.Units.LengthUnit.Undefined,
-                UnitsNet.Units.LengthUnit.Yard });
+            List<LengthUnit> unit = new List<LengthUnit>(new LengthUnit[] {
+                LengthUnit.Undefined,
+                LengthUnit.Micrometer,
+                LengthUnit.Millimeter,
+                LengthUnit.Centimeter,
+                LengthUnit.Meter,
+                LengthUnit.Kilometer,
+                LengthUnit.Microinch,
+                LengthUnit.Mil,
+                LengthUnit.Inch,
+                LengthUnit.Foot,
+                LengthUnit.Mile,
+                LengthUnit.Undefined,
+                LengthUnit.Undefined,
+                LengthUnit.Nanometer,
+                LengthUnit.Decimeter,
+                LengthUnit.Undefined,
+                LengthUnit.Hectometer,
+                LengthUnit.Undefined,
+                LengthUnit.Undefined,
+                LengthUnit.Yard });
             for (int i = 0; i < id.Count; i++)
                 if (rhinoUnits.GetHashCode() == id[i])
                     return unit[i];
-            return UnitsNet.Units.LengthUnit.Undefined;
+            return LengthUnit.Undefined;
         }
         #endregion
     }

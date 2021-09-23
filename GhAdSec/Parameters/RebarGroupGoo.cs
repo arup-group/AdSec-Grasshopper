@@ -26,7 +26,7 @@ using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.AdSec;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecRebarGroupGoo : GH_Goo<IGroup>
     {

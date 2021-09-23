@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 
-namespace GhAdSec.UI
+namespace AdSecGH.UI
 {
     /// <summary>
     /// Class to create custom component UI with multiple dropdowns

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace GhAdSec
+namespace AdSecGH
 {
     public class AddReferencePriority : GH_AssemblyPriority
     {
@@ -67,10 +67,10 @@ namespace GhAdSec
 
             // ### Create Ribbon Category name and icon ###
             Grasshopper.Instances.ComponentServer.AddCategorySymbolName("AdSec", 'A');
-            Grasshopper.Instances.ComponentServer.AddCategoryIcon("GSA", GhAdSec.Properties.Resources.AdSecLogo);
+            Grasshopper.Instances.ComponentServer.AddCategoryIcon("GSA", AdSecGH.Properties.Resources.AdSecLogo);
 
             // Setup units
-            GhAdSec.DocumentUnits.SetupUnits();
+            AdSecGH.DocumentUnits.SetupUnits();
 
             return GH_LoadingInstruction.Proceed;
         }

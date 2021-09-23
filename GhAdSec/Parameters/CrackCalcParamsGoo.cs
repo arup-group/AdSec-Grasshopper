@@ -23,7 +23,7 @@ using GH_IO.Serialization;
 using Rhino.Display;
 using Oasys.AdSec.Materials;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecConcreteCrackCalculationParametersGoo : GH_Goo<IConcreteCrackCalculationParameters>
     {
@@ -41,9 +41,9 @@ namespace GhAdSec.Parameters
         public AdSecConcreteCrackCalculationParametersGoo(double elasticModulus, double characteristicCompressiveStrength, double characteristicTensionStrength)
         {
             this.Value = IConcreteCrackCalculationParameters.Create(
-                new UnitsNet.Pressure(elasticModulus, GhAdSec.DocumentUnits.StressUnit),
-                new UnitsNet.Pressure(characteristicCompressiveStrength, GhAdSec.DocumentUnits.StressUnit),
-                new UnitsNet.Pressure(characteristicTensionStrength, GhAdSec.DocumentUnits.StressUnit));
+                new UnitsNet.Pressure(elasticModulus, AdSecGH.DocumentUnits.StressUnit),
+                new UnitsNet.Pressure(characteristicCompressiveStrength, AdSecGH.DocumentUnits.StressUnit),
+                new UnitsNet.Pressure(characteristicTensionStrength, AdSecGH.DocumentUnits.StressUnit));
         }
 
         public IConcreteCrackCalculationParameters ConcreteCrackCalculationParameters
@@ -65,9 +65,9 @@ namespace GhAdSec.Parameters
         public override string ToString()
         {
             // recreate pressure values with document units
-            UnitsNet.Pressure e = new UnitsNet.Pressure(this.Value.ElasticModulus.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
-            UnitsNet.Pressure fck = new UnitsNet.Pressure(this.Value.CharacteristicCompressiveStrength.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
-            UnitsNet.Pressure ftk = new UnitsNet.Pressure(this.Value.CharacteristicTensileStrength.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit);
+            UnitsNet.Pressure e = new UnitsNet.Pressure(this.Value.ElasticModulus.As(AdSecGH.DocumentUnits.StressUnit), AdSecGH.DocumentUnits.StressUnit);
+            UnitsNet.Pressure fck = new UnitsNet.Pressure(this.Value.CharacteristicCompressiveStrength.As(AdSecGH.DocumentUnits.StressUnit), AdSecGH.DocumentUnits.StressUnit);
+            UnitsNet.Pressure ftk = new UnitsNet.Pressure(this.Value.CharacteristicTensileStrength.As(AdSecGH.DocumentUnits.StressUnit), AdSecGH.DocumentUnits.StressUnit);
             return "AdSec " + TypeName +
                 " {E:" + e.ToString() +
                 ", fc:" + fck.ToString() +

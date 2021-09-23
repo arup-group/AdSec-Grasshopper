@@ -11,7 +11,7 @@ using Rhino.Geometry;
 using System.Windows.Forms;
 using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -19,7 +19,7 @@ using Oasys.AdSec.Materials.StressStrainCurves;
 using UnitsNet.GH;
 using UnitsNet;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     /// <summary>
     /// Component to create a new Concrete Crack Calculation Parameters
@@ -37,7 +37,7 @@ namespace GhAdSec.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateCrackCalcParams;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateCrackCalcParams;
         #endregion
 
         #region Custom UI
@@ -51,12 +51,12 @@ namespace GhAdSec.Components
 
                 // pressure E
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStressUnits);
+                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredStressUnits);
                 selecteditems.Add(strengthUnit.ToString());
 
                 // pressure stress
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStressUnits);
+                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredStressUnits);
                 selecteditems.Add(strengthUnit.ToString());
 
                 IQuantity quantityE = new UnitsNet.Pressure(0, stressUnitE);
@@ -118,8 +118,8 @@ namespace GhAdSec.Components
             "Strength Unit"
         });
         private bool first = true;
-        private UnitsNet.Units.PressureUnit stressUnitE = GhAdSec.DocumentUnits.StressUnit;
-        private UnitsNet.Units.PressureUnit strengthUnit = GhAdSec.DocumentUnits.StressUnit;
+        private UnitsNet.Units.PressureUnit stressUnitE = AdSecGH.DocumentUnits.StressUnit;
+        private UnitsNet.Units.PressureUnit strengthUnit = AdSecGH.DocumentUnits.StressUnit;
         string unitEAbbreviation;
         string unitSAbbreviation;
         #endregion
@@ -168,13 +168,13 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
 
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             UpdateUIFromSelectedItems();
             first = false;
             return base.Read(reader);

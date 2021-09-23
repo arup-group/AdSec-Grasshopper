@@ -22,7 +22,7 @@ using Oasys.Units;
 using System.Drawing;
 using Rhino.Display;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     /// <summary>
     /// AdSec Material class, this class defines the basic properties and methods for any AdSec Material
@@ -139,8 +139,8 @@ namespace GhAdSec.Parameters
             if (offset != null)
             {
                 offs = new Vector3d(0,
-                    offset.Y.As(GhAdSec.DocumentUnits.LengthUnit),
-                    offset.Z.As(GhAdSec.DocumentUnits.LengthUnit));
+                    offset.Y.As(AdSecGH.DocumentUnits.LengthUnit),
+                    offset.Z.As(AdSecGH.DocumentUnits.LengthUnit));
             }
             
 
@@ -178,8 +178,8 @@ namespace GhAdSec.Parameters
                 Brep temp = CreateBrepFromProfile(new AdSecProfileGoo(sub.Section.Profile, local));
                 Vector3d trans = new Vector3d(
                     0,
-                    sub.Offset.Y.As(GhAdSec.DocumentUnits.LengthUnit),
-                    sub.Offset.Z.As(GhAdSec.DocumentUnits.LengthUnit));
+                    sub.Offset.Y.As(AdSecGH.DocumentUnits.LengthUnit),
+                    sub.Offset.Z.As(AdSecGH.DocumentUnits.LengthUnit));
                 temp.Transform(Transform.Translation(trans));
                 temp.Transform(Transform.Translation(offs));
                 subProfiles.Add(temp);
@@ -258,9 +258,9 @@ namespace GhAdSec.Parameters
                     UnitsNet.Area area = this.m_section.Profile.Area();
                     double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
                     UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
-                    previewXaxis = new Line(local.Origin, local.XAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
-                    previewYaxis = new Line(local.Origin, local.YAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
-                    previewZaxis = new Line(local.Origin, local.ZAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
+                    previewXaxis = new Line(local.Origin, local.XAxis, length.As(AdSecGH.DocumentUnits.LengthUnit));
+                    previewYaxis = new Line(local.Origin, local.YAxis, length.As(AdSecGH.DocumentUnits.LengthUnit));
+                    previewZaxis = new Line(local.Origin, local.ZAxis, length.As(AdSecGH.DocumentUnits.LengthUnit));
                 }
             }
         }
@@ -283,12 +283,12 @@ namespace GhAdSec.Parameters
             {
                 Point3d center = new Point3d(
                     0,
-                    bars.Positions[i].Y.As(GhAdSec.DocumentUnits.LengthUnit),
-                    bars.Positions[i].Z.As(GhAdSec.DocumentUnits.LengthUnit));
+                    bars.Positions[i].Y.As(AdSecGH.DocumentUnits.LengthUnit),
+                    bars.Positions[i].Z.As(AdSecGH.DocumentUnits.LengthUnit));
                 center.Transform(Transform.Translation(offset));
                 center.Transform(mapToLocal);
                 Plane localCenter = new Plane(center, local.Normal);
-                Circle edgeCurve = new Circle(localCenter, bars.BarBundle.Diameter.As(GhAdSec.DocumentUnits.LengthUnit) / 2);
+                Circle edgeCurve = new Circle(localCenter, bars.BarBundle.Diameter.As(AdSecGH.DocumentUnits.LengthUnit) / 2);
                 edgeCurves.Add(edgeCurve);
                 List<Curve> crvs = new List<Curve>() { edgeCurve.ToNurbsCurve() };
                 rebarBreps.Add(Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelRelativeTolerance).First());
@@ -504,21 +504,22 @@ namespace GhAdSec.Parameters
         {
             if (Value == null) { return; }
 
-            if (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) // not selected
+            Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+            if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
             {
-                args.Pipeline.DrawPolyline(Value.m_profileEdge, GhAdSec.UI.Colour.OasysBlue, 2);
+                args.Pipeline.DrawPolyline(Value.m_profileEdge, AdSecGH.UI.Colour.OasysBlue, 2);
                 if (Value.m_profileVoidEdges != null)
                 {
                     foreach (Polyline crv in Value.m_profileVoidEdges)
                     {
-                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                        args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysBlue, 1);
                     }
                 }
                 if (Value.m_subEdges != null)
                 {
                     foreach (Polyline crv in Value.m_subEdges)
                     {
-                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                        args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysBlue, 1);
                     }
                 }
                 if (Value.m_subVoidEdges != null)
@@ -527,7 +528,7 @@ namespace GhAdSec.Parameters
                     {
                         foreach (Polyline crv in crvs)
                         {
-                            args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                            args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysBlue, 1);
                         }
                     }
                 }
@@ -541,19 +542,19 @@ namespace GhAdSec.Parameters
             }
             else // selected
             {
-                args.Pipeline.DrawPolyline(Value.m_profileEdge, GhAdSec.UI.Colour.OasysYellow, 3);
+                args.Pipeline.DrawPolyline(Value.m_profileEdge, AdSecGH.UI.Colour.OasysYellow, 3);
                 if (Value.m_profileVoidEdges != null)
                 {
                     foreach (Polyline crv in Value.m_profileVoidEdges)
                     {
-                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                        args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysYellow, 2);
                     }
                 }
                 if (Value.m_subEdges != null)
                 {
                     foreach (Polyline crv in Value.m_subEdges)
                     {
-                        args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                        args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysYellow, 2);
                     }
                 }
                 if (Value.m_subVoidEdges != null)
@@ -562,7 +563,7 @@ namespace GhAdSec.Parameters
                     {
                         foreach (Polyline crv in crvs)
                         {
-                            args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                            args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysYellow, 2);
                         }
                     }
                 }
@@ -570,7 +571,7 @@ namespace GhAdSec.Parameters
                 {
                     foreach (Circle crv in Value.m_rebarEdges)
                     {
-                        args.Pipeline.DrawCircle(crv, GhAdSec.UI.Colour.GsaLightGrey, 2);
+                        args.Pipeline.DrawCircle(crv, AdSecGH.UI.Colour.GsaLightGrey, 2);
                     }
                 }
             }
@@ -591,7 +592,7 @@ namespace GhAdSec.Parameters
     public class AdSecSectionParameter : GH_PersistentGeometryParam<AdSecSectionGoo>, IGH_PreviewObject
     {
         public AdSecSectionParameter()
-          : base(new GH_InstanceDescription("Section", "Sec", "Maintains a collection of AdSec Section data.", GhAdSec.Components.Ribbon.CategoryName.Name(), GhAdSec.Components.Ribbon.SubCategoryName.Cat9()))
+          : base(new GH_InstanceDescription("Section", "Sec", "Maintains a collection of AdSec Section data.", AdSecGH.Components.Ribbon.CategoryName.Name(), AdSecGH.Components.Ribbon.SubCategoryName.Cat9()))
         {
         }
 
@@ -599,7 +600,7 @@ namespace GhAdSec.Parameters
 
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.SectionParam;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.SectionParam;
 
         //We do not allow users to pick parameter, 
         //therefore the following 4 methods disable all this ui.

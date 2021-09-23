@@ -11,13 +11,13 @@ using Rhino.Geometry;
 using System.Windows.Forms;
 using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Rhino;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     /// <summary>
     /// Component to Edit AdSec Units used in current open Grasshopper instance 
@@ -35,7 +35,7 @@ namespace GhAdSec.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.Units;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.Units;
         #endregion
 
         #region Custom UI
@@ -60,7 +60,7 @@ namespace GhAdSec.Components
                 selecteditems = new List<string>();
 
                 // length
-                UnitsNet.Units.LengthUnit rhUnit = GhAdSec.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+                UnitsNet.Units.LengthUnit rhUnit = AdSecGH.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
                 
                 List<string> length = Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList();
                 for (int i = 0; i < length.Count; i++)
@@ -75,42 +75,42 @@ namespace GhAdSec.Components
                 }
 
                 dropdownitems.Add(length);
-                if (GhAdSec.DocumentUnits.LengthUnit.Equals(rhUnit))
+                if (AdSecGH.DocumentUnits.LengthUnit.Equals(rhUnit))
                 {
                     selecteditems.Add(length[0]);
                 }
                 else
                 {
-                    selecteditems.Add(GhAdSec.DocumentUnits.LengthUnit.ToString());
+                    selecteditems.Add(AdSecGH.DocumentUnits.LengthUnit.ToString());
                 }
 
                 // force
                 dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.ForceUnit)).ToList());
-                selecteditems.Add(GhAdSec.DocumentUnits.ForceUnit.ToString());
+                selecteditems.Add(AdSecGH.DocumentUnits.ForceUnit.ToString());
 
                 // moment
                 dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.MomentUnit)).ToList());
-                selecteditems.Add(GhAdSec.DocumentUnits.MomentUnit.ToString());
+                selecteditems.Add(AdSecGH.DocumentUnits.MomentUnit.ToString());
 
                 // stress
                 dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-                selecteditems.Add(GhAdSec.DocumentUnits.StressUnit.ToString());
+                selecteditems.Add(AdSecGH.DocumentUnits.StressUnit.ToString());
 
                 // strain
                 dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
-                selecteditems.Add(GhAdSec.DocumentUnits.StrainUnit.ToString());
+                selecteditems.Add(AdSecGH.DocumentUnits.StrainUnit.ToString());
 
                 // AxialStiffness
                 dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.AxialStiffnessUnit)).ToList());
-                selecteditems.Add(GhAdSec.DocumentUnits.AxialStiffnessUnit.ToString());
+                selecteditems.Add(AdSecGH.DocumentUnits.AxialStiffnessUnit.ToString());
 
                 // BendingStiffness
                 dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.BendingStiffnessUnit)).ToList());
-                selecteditems.Add(GhAdSec.DocumentUnits.BendingStiffnessUnit.ToString());
+                selecteditems.Add(AdSecGH.DocumentUnits.BendingStiffnessUnit.ToString());
 
                 // Curvature
                 dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.CurvatureUnit)).ToList());
-                selecteditems.Add(GhAdSec.DocumentUnits.CurvatureUnit.ToString());
+                selecteditems.Add(AdSecGH.DocumentUnits.CurvatureUnit.ToString());
 
                 first = false;
             }
@@ -122,36 +122,42 @@ namespace GhAdSec.Components
             // change selected item
             selecteditems[i] = dropdownitems[i][j];
 
-            UnitsNet.Units.LengthUnit rhUnit = GhAdSec.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+            UnitsNet.Units.LengthUnit rhUnit = AdSecGH.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
 
             switch (i)
             {
                 case 0: // length
                     if (j == 0)
-                        GhAdSec.DocumentUnits.LengthUnit = rhUnit;
+                    {
+                        AdSecGH.DocumentUnits.LengthUnit = rhUnit;
+                        AdSecGH.DocumentUnits.useRhinoLengthUnit = true;
+                    }
                     else
-                        GhAdSec.DocumentUnits.LengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+                    {
+                        AdSecGH.DocumentUnits.LengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+                        AdSecGH.DocumentUnits.useRhinoLengthUnit = false;
+                    }
                     break;
                 case 1: // force
-                    GhAdSec.DocumentUnits.ForceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[i]);
+                    AdSecGH.DocumentUnits.ForceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[i]);
                     break;
                 case 2: // moment
-                    GhAdSec.DocumentUnits.MomentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), selecteditems[i]);
+                    AdSecGH.DocumentUnits.MomentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), selecteditems[i]);
                     break;
                 case 3: // stress
-                    GhAdSec.DocumentUnits.StrainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
+                    AdSecGH.DocumentUnits.StrainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
                     break;
                 case 4: // strain
-                    GhAdSec.DocumentUnits.StressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
+                    AdSecGH.DocumentUnits.StressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
                     break;
                 case 5: // axial stiffness
-                    GhAdSec.DocumentUnits.AxialStiffnessUnit = (Oasys.Units.AxialStiffnessUnit)Enum.Parse(typeof(Oasys.Units.AxialStiffnessUnit), selecteditems[i]);
+                    AdSecGH.DocumentUnits.AxialStiffnessUnit = (Oasys.Units.AxialStiffnessUnit)Enum.Parse(typeof(Oasys.Units.AxialStiffnessUnit), selecteditems[i]);
                     break;
                 case 6: // bending stiffness
-                    GhAdSec.DocumentUnits.BendingStiffnessUnit = (Oasys.Units.BendingStiffnessUnit)Enum.Parse(typeof(Oasys.Units.BendingStiffnessUnit), selecteditems[i]);
+                    AdSecGH.DocumentUnits.BendingStiffnessUnit = (Oasys.Units.BendingStiffnessUnit)Enum.Parse(typeof(Oasys.Units.BendingStiffnessUnit), selecteditems[i]);
                     break;
                 case 7: // curvature
-                    GhAdSec.DocumentUnits.CurvatureUnit = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), selecteditems[i]);
+                    AdSecGH.DocumentUnits.CurvatureUnit = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), selecteditems[i]);
                     break;
             }
 
@@ -167,6 +173,8 @@ namespace GhAdSec.Components
                 }
             }
             dropdownitems[0] = length;
+
+            AdSecGH.DocumentUnits.SaveSettings();
         }
 
         UnitSystem cachedUnitSystem = Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem;
@@ -177,7 +185,7 @@ namespace GhAdSec.Components
             {
                 cachedUnitSystem = e.Document.ModelUnitSystem;
                 if (selecteditems[0].StartsWith("Use Rhino unit: "))
-                    GhAdSec.DocumentUnits.LengthUnit = GhAdSec.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+                    AdSecGH.DocumentUnits.LengthUnit = AdSecGH.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
                 first = true;
                 this.ExpireSolution(true);
                 ReDrawComponent();
@@ -242,13 +250,13 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
 
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             //Length,
             //Force,
             //Moment,
@@ -258,17 +266,17 @@ namespace GhAdSec.Components
             //BendingStiffness,
             //Curvature
             if (selecteditems[0].StartsWith("Use Rhino unit: "))
-                GhAdSec.DocumentUnits.LengthUnit = GhAdSec.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+                AdSecGH.DocumentUnits.LengthUnit = AdSecGH.DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
             else
-                GhAdSec.DocumentUnits.LengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[0]);
+                AdSecGH.DocumentUnits.LengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[0]);
 
-            GhAdSec.DocumentUnits.ForceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[1]);
-            GhAdSec.DocumentUnits.MomentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), selecteditems[2]);
-            GhAdSec.DocumentUnits.StressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[3]);
-            GhAdSec.DocumentUnits.StrainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[4]);
-            GhAdSec.DocumentUnits.AxialStiffnessUnit = (Oasys.Units.AxialStiffnessUnit)Enum.Parse(typeof(Oasys.Units.AxialStiffnessUnit), selecteditems[5]);
-            GhAdSec.DocumentUnits.BendingStiffnessUnit = (Oasys.Units.BendingStiffnessUnit)Enum.Parse(typeof(Oasys.Units.BendingStiffnessUnit), selecteditems[6]);
-            GhAdSec.DocumentUnits.CurvatureUnit = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), selecteditems[7]);
+            AdSecGH.DocumentUnits.ForceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[1]);
+            AdSecGH.DocumentUnits.MomentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), selecteditems[2]);
+            AdSecGH.DocumentUnits.StressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[3]);
+            AdSecGH.DocumentUnits.StrainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[4]);
+            AdSecGH.DocumentUnits.AxialStiffnessUnit = (Oasys.Units.AxialStiffnessUnit)Enum.Parse(typeof(Oasys.Units.AxialStiffnessUnit), selecteditems[5]);
+            AdSecGH.DocumentUnits.BendingStiffnessUnit = (Oasys.Units.BendingStiffnessUnit)Enum.Parse(typeof(Oasys.Units.BendingStiffnessUnit), selecteditems[6]);
+            AdSecGH.DocumentUnits.CurvatureUnit = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), selecteditems[7]);
             this.Attributes.ExpireLayout();
             this.Attributes.PerformLayout();
             this.OnDisplayExpired(true);

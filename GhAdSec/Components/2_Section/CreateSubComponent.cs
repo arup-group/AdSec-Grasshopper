@@ -14,11 +14,11 @@ using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using Rhino.Geometry;
 using System.Collections.Generic;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class CreateSubcomponent : GH_Component
     {

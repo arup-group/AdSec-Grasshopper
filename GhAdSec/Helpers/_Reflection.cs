@@ -7,7 +7,7 @@ using System.Reflection;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 
-namespace GhAdSec.Helpers
+namespace AdSecGH.Helpers
 {
     public static class ReflectAdSecAPI
     {
@@ -39,20 +39,6 @@ namespace GhAdSec.Helpers
             }
             return dict;
         }
-        internal static Dictionary<List<string>, Type> ReflectMethods(Type type)
-        {
-            Dictionary<List<string>, Type> dict = new Dictionary<List<string>, Type>();
-            var subClasses = type.FindInterfaces(null, null);
-            //foreach (MemberInfo subClass in subClasses)
-            //{
-            //    subClass.CustomAttributes.ToList();
-            //    List<string> nameSummary = new List<string>();
-            //    nameSummary.Add(subClass.Name);
-            //    nameSummary.Add(subClass.Name);
-            //    dict.Add(nameSummary, (Type)subClass);
-            //}
-            return dict;
-        }
         internal static Dictionary<string, FieldInfo> ReflectFields(Type type)
         {
             Dictionary<string, FieldInfo> materials = new Dictionary<string, FieldInfo>();
@@ -68,7 +54,7 @@ namespace GhAdSec.Helpers
 
         internal static Dictionary<string, Type> ReflectAdSecNamespace(string nspace)
         {
-            Assembly adsecAPI = GhAdSec.AddReferencePriority.AdSecAPI;
+            Assembly adsecAPI = AdSecGH.AddReferencePriority.AdSecAPI;
             var q = from t in adsecAPI.GetTypes()
                     where t.IsInterface && t.Namespace == nspace
                     select t;
@@ -80,5 +66,7 @@ namespace GhAdSec.Helpers
             }
             return dict;
         }
+
+
     }
 }

@@ -7,11 +7,11 @@ using Rhino.Geometry;
 using Grasshopper;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using System.Data.SQLite;
 using System.Data;
 
-namespace GhAdSec.Helpers
+namespace AdSecGH.Helpers
 {
     /// <summary>
     /// Class containing functions to interface with SQLite db files.

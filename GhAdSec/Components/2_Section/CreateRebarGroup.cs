@@ -8,14 +8,14 @@ using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
 using Rhino.Geometry;
 using Oasys.AdSec.Materials.StressStrainCurves;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using UnitsNet.GH;
 using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement.Groups;
 using UnitsNet;
 using Oasys.AdSec.Reinforcement.Layers;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class CreateReinforcementGroup : GH_Component, IGH_VariableParameterComponent
     {
@@ -28,7 +28,7 @@ namespace GhAdSec.Components
         public override Guid ComponentGuid => new Guid("1250f456-de99-4834-8d7f-4019cc0c70ba");
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.RebarLayout;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.RebarLayout;
         #endregion
 
         #region Custom UI
@@ -78,9 +78,9 @@ namespace GhAdSec.Components
                     case FoldMode.Arc:
                     case FoldMode.Circle:
                         if (dropdownitems.Count < 2)
-                            dropdownitems.Add(GhAdSec.DocumentUnits.FilteredLengthUnits);
+                            dropdownitems.Add(AdSecGH.DocumentUnits.FilteredLengthUnits);
                         if (dropdownitems.Count < 3)
-                            dropdownitems.Add(GhAdSec.DocumentUnits.FilteredAngleUnits);
+                            dropdownitems.Add(AdSecGH.DocumentUnits.FilteredAngleUnits);
                         spacerDescriptions[1] = "Length measure";
                         break;
                 }
@@ -128,7 +128,7 @@ namespace GhAdSec.Components
             "Measure",
             "Angular measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = GhAdSec.DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = AdSecGH.DocumentUnits.LengthUnit;
         private UnitsNet.Units.AngleUnit angleUnit = UnitsNet.Units.AngleUnit.Radian;
         string unitAbbreviation;
         string angleAbbreviation;
@@ -266,12 +266,12 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             UpdateUIFromSelectedItems();
 

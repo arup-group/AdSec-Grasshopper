@@ -14,11 +14,11 @@ using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using Rhino.Geometry;
 using System.Collections.Generic;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class EditMaterial : GH_Component
     {
@@ -34,7 +34,7 @@ namespace GhAdSec.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.EditMaterial;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.EditMaterial;
         #endregion
 
         #region Custom UI
@@ -98,7 +98,7 @@ namespace GhAdSec.Components
                 else
                 {
                     // rebuild from existing material
-                    Tuple<Curve, List<Point3d>> ulsComp = GhAdSec.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Compression, true);
+                    Tuple<Curve, List<Point3d>> ulsComp = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Compression, true);
                     ulsCompCrv = new AdSecStressStrainCurveGoo(ulsComp.Item1, editMat.Material.Strength.Compression,
                         AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsComp.Item2);
                 }
@@ -114,7 +114,7 @@ namespace GhAdSec.Components
                 else
                 {
                     // rebuild from existing material
-                    Tuple<Curve, List<Point3d>> ulsTens = GhAdSec.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Tension, false);
+                    Tuple<Curve, List<Point3d>> ulsTens = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Tension, false);
                     ulsTensCrv = new AdSecStressStrainCurveGoo(ulsTens.Item1, editMat.Material.Strength.Tension,
                         AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsTens.Item2);
                 }
@@ -130,7 +130,7 @@ namespace GhAdSec.Components
                 else
                 {
                     // rebuild from existing material
-                    Tuple<Curve, List<Point3d>> slsComp = GhAdSec.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Compression, true);
+                    Tuple<Curve, List<Point3d>> slsComp = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Compression, true);
                     slsCompCrv = new AdSecStressStrainCurveGoo(slsComp.Item1, editMat.Material.Serviceability.Compression,
                         AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsComp.Item2);
                 }
@@ -146,7 +146,7 @@ namespace GhAdSec.Components
                 else
                 {
                     // rebuild from existing material
-                    Tuple<Curve, List<Point3d>> slsTens = GhAdSec.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Tension, false);
+                    Tuple<Curve, List<Point3d>> slsTens = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Tension, false);
                     slsTensCrv = new AdSecStressStrainCurveGoo(slsTens.Item1, editMat.Material.Serviceability.Tension,
                         AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsTens.Item2);
                 }

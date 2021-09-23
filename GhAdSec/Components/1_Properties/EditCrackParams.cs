@@ -15,11 +15,11 @@ using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using Rhino.Geometry;
 using System.Collections.Generic;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class EditConcreteCrackCalculationParameters : GH_Component
     {
@@ -34,7 +34,7 @@ namespace GhAdSec.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.EditCrackCalcParams;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.EditCrackCalcParams;
         #endregion
 
         #region Custom UI
@@ -45,7 +45,7 @@ namespace GhAdSec.Components
 
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            IQuantity quantity = new UnitsNet.Pressure(0, GhAdSec.DocumentUnits.StressUnit);
+            IQuantity quantity = new UnitsNet.Pressure(0, AdSecGH.DocumentUnits.StressUnit);
             string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
 
             pManager.AddGenericParameter("CrackCalcParams", "CCP", "AdSec ConcreteCrackCalculationParameters", GH_ParamAccess.item);
@@ -84,7 +84,7 @@ namespace GhAdSec.Components
                 if (Params.Input[1].SourceCount > 0)
                 {
                     
-                    e = GetInput.Stress(this, DA, 1, GhAdSec.DocumentUnits.StressUnit);
+                    e = GetInput.Stress(this, DA, 1, AdSecGH.DocumentUnits.StressUnit);
                     if (e.Value < 0)
                     {
                         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
@@ -96,7 +96,7 @@ namespace GhAdSec.Components
                 // 2 Compression
                 if (Params.Input[2].SourceCount > 0)
                 {
-                    fck = GetInput.Stress(this, DA, 2, GhAdSec.DocumentUnits.StressUnit);
+                    fck = GetInput.Stress(this, DA, 2, AdSecGH.DocumentUnits.StressUnit);
                     if (fck.Value > 0)
                     {
                         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
@@ -108,7 +108,7 @@ namespace GhAdSec.Components
                 // 3 Tension
                 if (Params.Input[3].SourceCount > 0)
                 {
-                    ft = GetInput.Stress(this, DA, 3, GhAdSec.DocumentUnits.StressUnit);
+                    ft = GetInput.Stress(this, DA, 3, AdSecGH.DocumentUnits.StressUnit);
                     if (ft.Value < 0)
                     {
                         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
@@ -122,9 +122,9 @@ namespace GhAdSec.Components
 
                 // #### set outputs ####
                 DA.SetData(0, concreteCrack);
-                DA.SetData(1, new GH_UnitNumber(new UnitsNet.Pressure(e.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit)));
-                DA.SetData(2, new GH_UnitNumber(new UnitsNet.Pressure(fck.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit)));
-                DA.SetData(3, new GH_UnitNumber(new UnitsNet.Pressure(ft.As(GhAdSec.DocumentUnits.StressUnit), GhAdSec.DocumentUnits.StressUnit)));
+                DA.SetData(1, new GH_UnitNumber(new UnitsNet.Pressure(e.As(AdSecGH.DocumentUnits.StressUnit), AdSecGH.DocumentUnits.StressUnit)));
+                DA.SetData(2, new GH_UnitNumber(new UnitsNet.Pressure(fck.As(AdSecGH.DocumentUnits.StressUnit), AdSecGH.DocumentUnits.StressUnit)));
+                DA.SetData(3, new GH_UnitNumber(new UnitsNet.Pressure(ft.As(AdSecGH.DocumentUnits.StressUnit), AdSecGH.DocumentUnits.StressUnit)));
 
             }
             else

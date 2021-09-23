@@ -20,7 +20,7 @@ using Oasys.AdSec.Reinforcement.Layers;
 using UnitsNet;
 using Oasys.Units;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     /// <summary>
     /// AdSec Material class, this class defines the basic properties and methods for any AdSec Material
@@ -251,7 +251,7 @@ namespace GhAdSec.Parameters
     public class AdSecMaterialParameter : GH_PersistentParam<AdSecMaterialGoo>
     {
         public AdSecMaterialParameter()
-          : base(new GH_InstanceDescription("Material", "Mat", "AdSec Material Parameter", GhAdSec.Components.Ribbon.CategoryName.Name(), GhAdSec.Components.Ribbon.SubCategoryName.Cat9()))
+          : base(new GH_InstanceDescription("Material", "Mat", "AdSec Material Parameter", AdSecGH.Components.Ribbon.CategoryName.Name(), AdSecGH.Components.Ribbon.SubCategoryName.Cat9()))
         {
         }
 
@@ -259,7 +259,7 @@ namespace GhAdSec.Parameters
 
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.MaterialParam;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.MaterialParam;
 
         protected override GH_GetterResult Prompt_Plural(ref List<AdSecMaterialGoo> values)
         {

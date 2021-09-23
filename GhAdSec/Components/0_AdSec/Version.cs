@@ -14,7 +14,7 @@ using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class AdSecVersion : GH_Component
     {
@@ -30,7 +30,7 @@ namespace GhAdSec.Components
 
         public override GH_Exposure Exposure => GH_Exposure.septenary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.PluginInfo;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.PluginInfo;
         #endregion
 
         #region Custom UI

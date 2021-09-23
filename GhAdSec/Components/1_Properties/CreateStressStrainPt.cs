@@ -11,7 +11,7 @@ using Rhino.Geometry;
 using System.Windows.Forms;
 using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -19,7 +19,7 @@ using Oasys.AdSec.Materials.StressStrainCurves;
 using UnitsNet.GH;
 using UnitsNet;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     /// <summary>
     /// Component to create a new Stress Strain Point
@@ -37,7 +37,7 @@ namespace GhAdSec.Components
         { this.Hidden = false; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.StressStrainPoint;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.StressStrainPoint;
         #endregion
 
         #region Custom UI
@@ -51,12 +51,12 @@ namespace GhAdSec.Components
 
                 // strain
                 //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStrainUnits);
+                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredStrainUnits);
                 selecteditems.Add(strainUnit.ToString());
 
                 // pressure
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStressUnits);
+                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredStressUnits);
                 selecteditems.Add(stressUnit.ToString());
 
                 IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
@@ -115,8 +115,8 @@ namespace GhAdSec.Components
         });
         private bool first = true;
 
-        private Oasys.Units.StrainUnit strainUnit = GhAdSec.DocumentUnits.StrainUnit;
-        private UnitsNet.Units.PressureUnit stressUnit = GhAdSec.DocumentUnits.StressUnit;
+        private Oasys.Units.StrainUnit strainUnit = AdSecGH.DocumentUnits.StrainUnit;
+        private UnitsNet.Units.PressureUnit stressUnit = AdSecGH.DocumentUnits.StressUnit;
         string strainUnitAbbreviation;
         string stressUnitAbbreviation;
         #endregion
@@ -145,13 +145,13 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
 
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
             stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);

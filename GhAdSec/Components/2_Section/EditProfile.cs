@@ -14,11 +14,11 @@ using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using Rhino.Geometry;
 using System.Collections.Generic;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class EditProfile : GH_Component, IGH_VariableParameterComponent
     {
@@ -44,7 +44,7 @@ namespace GhAdSec.Components
             if (first)
             {
                 dropdownitems = new List<List<string>>();
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredAngleUnits);
+                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredAngleUnits);
 
                 IQuantity quantityAngle = new UnitsNet.Angle(0, angleUnit);
                 angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
@@ -144,12 +144,12 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             
             UpdateUIFromSelectedItems();
             

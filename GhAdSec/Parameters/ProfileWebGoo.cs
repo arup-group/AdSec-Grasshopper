@@ -24,7 +24,7 @@ using Rhino.Display;
 using Oasys.AdSec.Materials;
 using Oasys.Profiles;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecProfileWebGoo : GH_Goo<IWeb>
     {
@@ -48,13 +48,13 @@ namespace GhAdSec.Parameters
             string web = "AdSec Web {"; 
             if (this.Value.BottomThickness.Value == this.Value.TopThickness.Value)
             {
-                UnitsNet.Length thk = this.Value.BottomThickness.ToUnit(GhAdSec.DocumentUnits.LengthUnit);
+                UnitsNet.Length thk = this.Value.BottomThickness.ToUnit(AdSecGH.DocumentUnits.LengthUnit);
                 web += "Constant " + thk.ToString() + "}";
             }
             else
             {
-                UnitsNet.Length thk1 = this.Value.TopThickness.ToUnit(GhAdSec.DocumentUnits.LengthUnit);
-                UnitsNet.Length thk2 = this.Value.BottomThickness.ToUnit(GhAdSec.DocumentUnits.LengthUnit);
+                UnitsNet.Length thk1 = this.Value.TopThickness.ToUnit(AdSecGH.DocumentUnits.LengthUnit);
+                UnitsNet.Length thk2 = this.Value.BottomThickness.ToUnit(AdSecGH.DocumentUnits.LengthUnit);
                 web += "Tapered: Top:" + thk1.ToString() + ", Bottom:" + thk2.ToString() + "}";
             }
             return web;

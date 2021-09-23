@@ -27,7 +27,7 @@ using Oasys.AdSec;
 using UnitsNet;
 using Oasys.AdSec.Reinforcement.Preloads;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecPreLoadGoo : GH_Goo<IPreload>
     {
@@ -51,26 +51,26 @@ namespace GhAdSec.Parameters
             string str = "";
             try
             {
-                IQuantity force = new UnitsNet.Force(0, GhAdSec.DocumentUnits.ForceUnit);
+                IQuantity force = new UnitsNet.Force(0, AdSecGH.DocumentUnits.ForceUnit);
                 string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
                 IPreForce frs = (IPreForce)Value;
-                str = Math.Round(frs.Force.As(GhAdSec.DocumentUnits.ForceUnit), 4) + forceUnitAbbreviation;
+                str = Math.Round(frs.Force.As(AdSecGH.DocumentUnits.ForceUnit), 4) + forceUnitAbbreviation;
             }
             catch (Exception)
             {
                 try
                 {
-                    IQuantity strain = new Oasys.Units.Strain(0, GhAdSec.DocumentUnits.StrainUnit);
+                    IQuantity strain = new Oasys.Units.Strain(0, AdSecGH.DocumentUnits.StrainUnit);
                     string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
                     IPreStrain stra = (IPreStrain)Value;
-                    str = Math.Round(stra.Strain.As(GhAdSec.DocumentUnits.StrainUnit), 4) + strainUnitAbbreviation;
+                    str = Math.Round(stra.Strain.As(AdSecGH.DocumentUnits.StrainUnit), 4) + strainUnitAbbreviation;
                 }
                 catch (Exception)
                 {
-                    IQuantity stress = new UnitsNet.Pressure(0, GhAdSec.DocumentUnits.StressUnit);
+                    IQuantity stress = new UnitsNet.Pressure(0, AdSecGH.DocumentUnits.StressUnit);
                     string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
                     IPreStress stre = (IPreStress)Value;
-                    str = Math.Round(stre.Stress.As(GhAdSec.DocumentUnits.StressUnit), 4) + stressUnitAbbreviation;
+                    str = Math.Round(stre.Stress.As(AdSecGH.DocumentUnits.StressUnit), 4) + stressUnitAbbreviation;
                 }
             }
 

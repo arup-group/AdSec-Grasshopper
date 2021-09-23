@@ -100,12 +100,14 @@
     <Compile Include="Components\5_Results\ResultsULS.cs" />
     <Compile Include="GhAdSecInfo.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
+    <Compile Include="Helpers\_DocUnits.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
     <Compile Include="Helpers\_SqlReader.cs" />
     <Compile Include="Parameters\AdSecSection.cs" />
     <Compile Include="Parameters\CrackGoo.cs" />
     <Compile Include="Parameters\PointGoo.cs" />
+    <Compile Include="Helpers\_Settings.cs" />
     <Compile Include="Parameters\SolutionGoo.cs" />
     <Compile Include="Parameters\DeformationGoo.cs" />
     <Compile Include="Parameters\PreLoadGoo_notused.cs" />

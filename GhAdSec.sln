@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhAdSec", "GhAdSec\GhAdSec.csproj", "{1B0D92BF-3C51-45D4-8197-696C357F5C7D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecGH", "GhAdSec\AdSecGH.csproj", "{1B0D92BF-3C51-45D4-8197-696C357F5C7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

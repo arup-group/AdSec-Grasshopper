@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GhAdSec.Properties {
+namespace AdSecGH.Properties {
     using System;
     
     
