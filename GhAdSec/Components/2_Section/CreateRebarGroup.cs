@@ -100,6 +100,7 @@ namespace AdSecGH.Components
                         break;
                 }
             }
+            this.ClearRuntimeMessages();
             ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
@@ -167,7 +168,7 @@ namespace AdSecGH.Components
                     // create circle rebar group
                     group = new AdSecRebarGroupGoo(
                         ICircleGroup.Create(
-                            GetInput.IPoint(this, DA, 1),
+                            GetInput.IPoint(this, DA, 1, true),
                             GetInput.Length(this, DA, 2, lengthUnit),
                             GetInput.Angle(this, DA, 3, angleUnit, true),
                             GetInput.ILayer(this, DA, 0)));
@@ -179,7 +180,7 @@ namespace AdSecGH.Components
                     // create arc rebar grouup
                     group = new AdSecRebarGroupGoo(
                         IArcGroup.Create(
-                            GetInput.IPoint(this, DA, 1),
+                            GetInput.IPoint(this, DA, 1, true),
                             GetInput.Length(this, DA, 2, lengthUnit),
                             GetInput.Angle(this, DA, 3, angleUnit),
                             GetInput.Angle(this, DA, 4, angleUnit),
@@ -300,14 +301,8 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            
-
             if (_mode == FoldMode.Line)
             {
-                //pManager.AddGenericParameter("Spaced Rebars", "RbS", "AdSec Rebars Spaced in a Layer", GH_ParamAccess.item);
-                //pManager.AddGenericParameter("Position 1", "P1", "First bar position", GH_ParamAccess.item);
-                //pManager.AddGenericParameter("Position 2", "P2", "Last bar position", GH_ParamAccess.item);
-
                 Params.Input[0].Name = "Spaced Rebars";
                 Params.Input[0].NickName = "RbS";
                 Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
@@ -353,7 +348,7 @@ namespace AdSecGH.Components
                 Params.Input[1].NickName = "CVx";
                 Params.Input[1].Description = "Vertex Point representing the centre of the circle";
                 Params.Input[1].Access = GH_ParamAccess.item;
-                Params.Input[1].Optional = false;
+                Params.Input[1].Optional = true;
 
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
@@ -371,6 +366,8 @@ namespace AdSecGH.Components
                 Params.Input[3].Description = "[Optional] The starting angle (in " + angleAbbreviation + ") of the circle. Positive angle is considered anti-clockwise. Default is 0";
                 Params.Input[3].Access = GH_ParamAccess.item;
                 Params.Input[3].Optional = true;
+
+                this.ClearRuntimeMessages();
             }
             if (_mode == FoldMode.Arc)
             {
@@ -384,7 +381,7 @@ namespace AdSecGH.Components
                 Params.Input[1].NickName = "CVx";
                 Params.Input[1].Description = "Vertex Point representing the centre of the circle";
                 Params.Input[1].Access = GH_ParamAccess.item;
-                Params.Input[1].Optional = false;
+                Params.Input[1].Optional = true;
 
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));

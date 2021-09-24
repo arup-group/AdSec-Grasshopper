@@ -1,9 +1,6 @@
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.csproj.AssemblyReference.cache
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\GhAdSec.Properties.Resources.resources
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.csproj.GenerateResource.cache
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.csproj.CoreCompileInputs.cache
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\GhAdSec.dll
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\GhAdSec.pdb
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\addata.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSecLogic.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSec_SDK_Implementation.dll
@@ -42,9 +39,6 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\vccorlib140
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\vcomp140.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\vcruntime140.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\vcruntime140_1.dll
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\GhAdSec.dll.config
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\GhAdSec.dll
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\GhAdSec.pdb
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSec_API.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSec_API.pdb
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSec_IO.dll
@@ -58,3 +52,11 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\System.Valu
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\UnitsNet.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\UnitsNet.pdb
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.csproj.CopyComplete
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSecGH.dll.config
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSecGH.dll
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSecGH.pdb
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.Properties.Resources.resources
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.dll
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.pdb
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.UI.AboutAdSecBox.resources
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.UI.UnitSettingsBox.resources

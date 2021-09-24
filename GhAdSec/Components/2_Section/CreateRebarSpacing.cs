@@ -66,11 +66,30 @@ namespace AdSecGH.Components
             if (i == 0)
             {
                 _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[i]);
+                if (_mode == FoldMode.Count)
+                {
+                    // remove the second dropdown (length)
+                    while (dropdownitems.Count > 1)
+                        dropdownitems.RemoveAt(dropdownitems.Count - 1);
+                    while (selecteditems.Count > 1)
+                        selecteditems.RemoveAt(selecteditems.Count - 1);
+                }
+                else
+                {
+                    // add second dropdown (length)
+                    if (dropdownitems.Count != 2)
+                    {
+                        dropdownitems.Add(AdSecGH.DocumentUnits.FilteredLengthUnits);
+                        selecteditems.Add(lengthUnit.ToString());
+                    }
+                }
+
                 ToggleInput();
             }
             else
             {
                 lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+                
             }
             ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();

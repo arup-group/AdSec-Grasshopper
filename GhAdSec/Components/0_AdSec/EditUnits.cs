@@ -22,18 +22,18 @@ namespace AdSecGH.Components
     /// <summary>
     /// Component to Edit AdSec Units used in current open Grasshopper instance 
     /// </summary>
-    public class EditUnits : GH_Component
+    public class EditUnits_OBSOLETE : GH_Component
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
         // including name, exposure level and icon
         public override Guid ComponentGuid => new Guid("f422b2ba-f171-4ba6-a4da-86a0f3fa9a16");
-        public EditUnits()
+        public EditUnits_OBSOLETE()
           : base("Set AdSec GH Units", "Units", "Edit units for AdSec in Grasshopper instance",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat0())
         { this.Hidden = true; } // sets the initial state of the component to hidden
-        public override GH_Exposure Exposure => GH_Exposure.tertiary;
+        public override GH_Exposure Exposure => GH_Exposure.hidden;
 
         protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.Units;
         #endregion

@@ -63,8 +63,7 @@ namespace AdSecGH.Components
 
                 IQuantity force = new UnitsNet.Force(0, forceUnit);
                 forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-                IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
-                strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
+                strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
                 IQuantity stress = new UnitsNet.Pressure(0, stressUnit);
                 stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 
@@ -231,8 +230,7 @@ namespace AdSecGH.Components
         {
             IQuantity force = new UnitsNet.Force(0, forceUnit);
             forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-            IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
-            strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
+            strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
             IQuantity stress = new UnitsNet.Pressure(0, stressUnit);
             stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 

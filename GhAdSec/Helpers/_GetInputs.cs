@@ -644,6 +644,12 @@ namespace AdSecGH.Components
             {
                 owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
             }
+            else if (isOptional)
+            {
+                return new AdSecPointGoo(Oasys.Profiles.IPoint.Create(
+                new UnitsNet.Length(0, AdSecGH.DocumentUnits.LengthUnit),
+                new UnitsNet.Length(0, AdSecGH.DocumentUnits.LengthUnit)));
+            }
             return null;
 
         }

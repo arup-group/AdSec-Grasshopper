@@ -59,8 +59,7 @@ namespace AdSecGH.Components
                 dropdownitems.Add(AdSecGH.DocumentUnits.FilteredStressUnits);
                 selecteditems.Add(stressUnit.ToString());
 
-                IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
-                strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
+                strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
                 IQuantity stress = new UnitsNet.Pressure(0, stressUnit);
                 stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 
@@ -180,8 +179,7 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
-            strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
+            strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
             IQuantity stress = new UnitsNet.Pressure(0, stressUnit);
             stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
             Params.Input[0].Name = "Strain [" + strainUnitAbbreviation + "]";

@@ -109,11 +109,6 @@ namespace AdSecGH
         }
         private static Oasys.Units.MomentUnit m_moment = Oasys.Units.MomentUnit.KilonewtonMeter;
         internal static List<string> FilteredMomentUnits = Enum.GetNames(typeof(Oasys.Units.MomentUnit)).ToList();
-        //    new List<string>()
-        //{
-        //    // to be implemented
-        //    Oasys.Units.MomentUnit.
-        //};
         #endregion
         #region stress
         public static PressureUnit StressUnit
@@ -160,6 +155,7 @@ namespace AdSecGH
             set { m_axialstiffness = value; }
         }
         private static Oasys.Units.AxialStiffnessUnit m_axialstiffness = Oasys.Units.AxialStiffnessUnit.Kilonewton;
+        internal static List<string> FilteredAxialStiffnessUnits = Enum.GetNames(typeof(Oasys.Units.AxialStiffnessUnit)).ToList();
         #endregion
         #region bending stiffness
         public static Oasys.Units.BendingStiffnessUnit BendingStiffnessUnit
@@ -168,6 +164,7 @@ namespace AdSecGH
             set { m_bendingstiffness = value; }
         }
         private static Oasys.Units.BendingStiffnessUnit m_bendingstiffness = Oasys.Units.BendingStiffnessUnit.KilonewtonSquareMeter;
+        internal static List<string> FilteredBendingStiffnessUnits = Enum.GetNames(typeof(Oasys.Units.BendingStiffnessUnit)).ToList();
         #endregion
         #region curvature
         public static Oasys.Units.CurvatureUnit CurvatureUnit
@@ -264,6 +261,10 @@ namespace AdSecGH
             m_bendingstiffness = (BendingStiffnessUnit)Enum.Parse(typeof(BendingStiffnessUnit), bendingstiffness);
 
             return true;
+        }
+        internal static LengthUnit GetRhinoLengthUnit()
+        {
+            return GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
         }
         internal static LengthUnit GetRhinoLengthUnit(Rhino.UnitSystem rhinoUnits)
         {

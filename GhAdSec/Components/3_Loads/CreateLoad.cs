@@ -59,9 +59,9 @@ namespace AdSecGH.Components
                 selecteditems.Add(momentUnit.ToString());
 
                 IQuantity force = new UnitsNet.Force(0, forceUnit);
+                
                 forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-                IQuantity moment = new Oasys.Units.Moment(0, momentUnit);
-                momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
+                momentUnitAbbreviation = Oasys.Units.Moment.GetAbbreviation(momentUnit);
 
                 first = false;
             }
@@ -185,8 +185,7 @@ namespace AdSecGH.Components
         {
             IQuantity force = new UnitsNet.Force(0, forceUnit);
             forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-            IQuantity moment = new Oasys.Units.Moment(0, momentUnit);
-            momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
+            momentUnitAbbreviation = Oasys.Units.Moment.GetAbbreviation(momentUnit);
             Params.Input[0].Name = "Fx [" + forceUnitAbbreviation + "]";
             Params.Input[1].Name = "Myy [" + momentUnitAbbreviation + "]";
             Params.Input[2].Name = "Mzz [" + momentUnitAbbreviation + "]";

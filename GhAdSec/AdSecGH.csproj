@@ -8,8 +8,8 @@
     <ProjectGuid>{1B0D92BF-3C51-45D4-8197-696C357F5C7D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GhAdSec</RootNamespace>
-    <AssemblyName>GhAdSec</AssemblyName>
+    <RootNamespace>AdSecGH</RootNamespace>
+    <AssemblyName>AdSecGH</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -100,7 +100,7 @@
     <Compile Include="Components\5_Results\ResultsULS.cs" />
     <Compile Include="GhAdSecInfo.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
-    <Compile Include="Helpers\_DocUnits.cs" />
+    <Compile Include="Helpers\_NotUsedDocUnits.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
     <Compile Include="Helpers\_SqlReader.cs" />
@@ -134,6 +134,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UnitSettingsBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\UnitSettingsBox.Designer.cs">
+      <DependentUpon>UnitSettingsBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\DropDownAttributesCustomCapsule.cs" />
     <Compile Include="UI\GraphicButtons.cs" />
     <Compile Include="UI\WidthFix.cs" />
@@ -161,6 +173,12 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\UnitSettingsBox.resx">
+      <DependentUpon>UnitSettingsBox.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -255,6 +273,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\Analyse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\AdSec 128 x 128.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

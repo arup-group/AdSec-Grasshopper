@@ -643,8 +643,7 @@ namespace AdSecGH.Components
                 Params.Input[1].Access = GH_ParamAccess.item;
                 Params.Input[1].Optional = false;
 
-                IQuantity quantityStrain = new Oasys.Units.Strain(0, strainUnit);
-                unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
+                unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
 
                 Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
                 Params.Input[2].NickName = "εu";
@@ -685,8 +684,7 @@ namespace AdSecGH.Components
                 Params.Input[2].Access = GH_ParamAccess.item;
                 Params.Input[2].Optional = false;
 
-                IQuantity quantityStrain = new Oasys.Units.Strain(0, strainUnit);
-                unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
+                unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
 
                 Params.Input[3].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
                 Params.Input[3].NickName = "εu";
@@ -712,8 +710,7 @@ namespace AdSecGH.Components
                 Params.Input[1].Access = GH_ParamAccess.item;
                 Params.Input[1].Optional = false;
 
-                IQuantity quantityStrain = new Oasys.Units.Strain(0, strainUnit);
-                unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
+                unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
 
                 Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
                 Params.Input[2].NickName = "εu";
@@ -730,8 +727,7 @@ namespace AdSecGH.Components
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
 
-                IQuantity quantityStrain = new Oasys.Units.Strain(0, strainUnit);
-                unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
+                unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
 
                 Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
                 Params.Input[1].NickName = "εu";
@@ -757,8 +753,7 @@ namespace AdSecGH.Components
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
 
-                IQuantity quantityStrain = new Oasys.Units.Strain(0, strainUnit);
-                unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
+                unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
 
                 Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
                 Params.Input[1].NickName = "εu";
@@ -775,8 +770,7 @@ namespace AdSecGH.Components
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
 
-                IQuantity quantityStrain = new Oasys.Units.Strain(0, strainUnit);
-                unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
+                unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
 
                 Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
                 Params.Input[1].NickName = "εu";

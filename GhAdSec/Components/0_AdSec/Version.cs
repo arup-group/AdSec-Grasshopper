@@ -16,19 +16,19 @@ using Oasys.AdSec.Reinforcement.Layers;
 
 namespace AdSecGH.Components
 {
-    public class AdSecVersion : GH_Component
+    public class AdSecVersion_OBSOLETE : GH_Component
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
         // including name, exposure level and icon
         public override Guid ComponentGuid => new Guid("1b1758e2-3818-42e3-8f79-4b98a7187ca3");
-        public AdSecVersion()
+        public AdSecVersion_OBSOLETE()
           : base("AdSec Plugin Version", "Version", "Get the version of this plugin.",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat0())
         { this.Hidden = true; } // sets the initial state of the component to hidden
 
-        public override GH_Exposure Exposure => GH_Exposure.septenary;
+        public override GH_Exposure Exposure => GH_Exposure.hidden;
 
         protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.PluginInfo;
         #endregion
