@@ -21,6 +21,7 @@ using UnitsNet;
 using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement.Preloads;
 using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement;
 
 namespace AdSecGH.Components
 {
@@ -58,7 +59,7 @@ namespace AdSecGH.Components
                 selecteditems.Add(dropdownitems[0][0]);
 
                 // force
-                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredForceUnits);
+                dropdownitems.Add(DocumentUnits.FilteredForceUnits);
                 selecteditems.Add(forceUnit.ToString());
 
                 IQuantity force = new UnitsNet.Force(0, forceUnit);
@@ -83,15 +84,15 @@ namespace AdSecGH.Components
                 switch (selecteditems[0])
                 {
                     case ("Force"):
-                        dropdownitems[1] = AdSecGH.DocumentUnits.FilteredForceUnits;
+                        dropdownitems[1] = DocumentUnits.FilteredForceUnits;
                         selecteditems[0] = forceUnit.ToString();
                         break;
                     case ("Strain"):
-                        dropdownitems[1] = AdSecGH.DocumentUnits.FilteredStrainUnits;
+                        dropdownitems[1] = DocumentUnits.FilteredStrainUnits;
                         selecteditems[0] = strainUnit.ToString();
                         break;
                     case ("Stress"):
-                        dropdownitems[1] = AdSecGH.DocumentUnits.FilteredStressUnits;
+                        dropdownitems[1] = DocumentUnits.FilteredStressUnits;
                         selecteditems[0] = stressUnit.ToString();
                         break;
                 }
@@ -142,9 +143,9 @@ namespace AdSecGH.Components
         });
         private bool first = true;
 
-        private UnitsNet.Units.ForceUnit forceUnit = AdSecGH.DocumentUnits.ForceUnit;
-        private Oasys.Units.StrainUnit strainUnit = AdSecGH.DocumentUnits.StrainUnit;
-        private UnitsNet.Units.PressureUnit stressUnit = AdSecGH.DocumentUnits.StressUnit;
+        private UnitsNet.Units.ForceUnit forceUnit = DocumentUnits.ForceUnit;
+        private Oasys.Units.StrainUnit strainUnit = DocumentUnits.StrainUnit;
+        private UnitsNet.Units.PressureUnit stressUnit = DocumentUnits.StressUnit;
         string forceUnitAbbreviation;
         string strainUnitAbbreviation;
         string stressUnitAbbreviation;
@@ -152,18 +153,18 @@ namespace AdSecGH.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("RebarLayout", "RbL", "AdSec Reinforcement Layout to apply Preload to", GH_ParamAccess.item);
+            pManager.AddGenericParameter("RebarGroup", "RbG", "AdSec Reinforcement Group to apply Preload to", GH_ParamAccess.item);
             pManager.AddGenericParameter("Force [" + forceUnitAbbreviation + "]", "P", "The pre-force per reinforcement bar. Positive force is tension.", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Layout", "RbL", "Preloaded Rebar Layout for AdSec Section", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Prestressed RebarGroup", "RbG", "Preloaded Rebar Group for AdSec Section", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // get rebargroup
-            IGroup rebar = GetInput.ReinforcementGroup(this, DA, 0);
+            AdSecRebarGroupGoo in_rebar = GetInput.ReinforcementGroup(this, DA, 0);
 
             IPreload load = null;
             // Create new load
@@ -179,10 +180,13 @@ namespace AdSecGH.Components
                     load = IPreStress.Create(GetInput.Stress(this, DA, 1, stressUnit));
                     break;
             }
-            ILongitudinalGroup longitudinal = (ILongitudinalGroup)rebar;
+            ILongitudinalGroup longitudinal = (ILongitudinalGroup)in_rebar.Value;
             longitudinal.Preload = load;
-            rebar = (IGroup)longitudinal;
-            DA.SetData(0, new AdSecRebarGroupGoo(rebar));
+            AdSecRebarGroupGoo out_rebar = new AdSecRebarGroupGoo(longitudinal);
+            if (in_rebar.Cover != null)
+                out_rebar.Cover = ICover.Create(in_rebar.Cover.UniformCover);
+
+            DA.SetData(0, out_rebar);
         }
 
         #region (de)serialization

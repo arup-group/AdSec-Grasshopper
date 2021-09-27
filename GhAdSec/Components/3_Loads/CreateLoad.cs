@@ -51,11 +51,11 @@ namespace AdSecGH.Components
                 selecteditems = new List<string>();
 
                 // force
-                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredForceUnits);
+                dropdownitems.Add(DocumentUnits.FilteredForceUnits);
                 selecteditems.Add(forceUnit.ToString());
                 
                 // moment
-                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredMomentUnits);
+                dropdownitems.Add(DocumentUnits.FilteredMomentUnits);
                 selecteditems.Add(momentUnit.ToString());
 
                 IQuantity force = new UnitsNet.Force(0, forceUnit);
@@ -118,8 +118,8 @@ namespace AdSecGH.Components
         });
         private bool first = true;
 
-        private UnitsNet.Units.ForceUnit forceUnit = AdSecGH.DocumentUnits.ForceUnit;
-        private Oasys.Units.MomentUnit momentUnit = AdSecGH.DocumentUnits.MomentUnit;
+        private UnitsNet.Units.ForceUnit forceUnit = DocumentUnits.ForceUnit;
+        private Oasys.Units.MomentUnit momentUnit = DocumentUnits.MomentUnit;
         string forceUnitAbbreviation;
         string momentUnitAbbreviation;
         #endregion

@@ -70,7 +70,7 @@ namespace AdSecGH
             Grasshopper.Instances.ComponentServer.AddCategoryIcon("GSA", AdSecGH.Properties.Resources.AdSecLogo);
 
             // Setup units
-            AdSecGH.DocumentUnits.SetupUnits();
+            DocumentUnits.SetupUnits();
 
             return GH_LoadingInstruction.Proceed;
         }

@@ -44,7 +44,7 @@ namespace AdSecGH.Components
             if (first)
             {
                 dropdownitems = new List<List<string>>();
-                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredAngleUnits);
+                dropdownitems.Add(DocumentUnits.FilteredAngleUnits);
 
                 IQuantity quantityAngle = new UnitsNet.Angle(0, angleUnit);
                 angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));

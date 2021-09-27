@@ -51,11 +51,11 @@ namespace AdSecGH.Components
                 selecteditems = new List<string>();
 
                 // strain
-                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredStrainUnits);
+                dropdownitems.Add(DocumentUnits.FilteredStrainUnits);
                 selecteditems.Add(strainUnit.ToString());
 
                 // curvature
-                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredCurvatureUnits);
+                dropdownitems.Add(DocumentUnits.FilteredCurvatureUnits);
                 selecteditems.Add(curvatureUnit.ToString());
 
                 strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
@@ -116,8 +116,8 @@ namespace AdSecGH.Components
         });
         private bool first = true;
 
-        private Oasys.Units.StrainUnit strainUnit = AdSecGH.DocumentUnits.StrainUnit;
-        private Oasys.Units.CurvatureUnit curvatureUnit = AdSecGH.DocumentUnits.CurvatureUnit;
+        private Oasys.Units.StrainUnit strainUnit = DocumentUnits.StrainUnit;
+        private Oasys.Units.CurvatureUnit curvatureUnit = DocumentUnits.CurvatureUnit;
         string strainUnitAbbreviation;
         string curvatureUnitAbbreviation;
         #endregion

@@ -47,7 +47,7 @@ namespace AdSecGH.Components
         {
             pManager.AddGenericParameter("Profile", "Pf", "AdSec Profile defining the Section solid boundary", GH_ParamAccess.item);
             pManager.AddGenericParameter("Material", "Mat", "AdSet Material for the section. The DesignCode of this material will be used for analysis", GH_ParamAccess.item);
-            pManager.AddGenericParameter("RebarLayout", "RbL", "[Optional] AdSec Reinforcement Layouts in the section (applicable for only concrete material).", GH_ParamAccess.list);
+            pManager.AddGenericParameter("RebarGroup", "RbG", "[Optional] AdSec Reinforcement Groups in the section (applicable for only concrete material).", GH_ParamAccess.list);
             pManager.AddGenericParameter("SubComponent", "Sub", "[Optional] AdSet Subcomponents contained within the section", GH_ParamAccess.list);
             
             // make all from second input optional
@@ -70,7 +70,7 @@ namespace AdSecGH.Components
             AdSecMaterial material = GetInput.AdSecMaterial(this, DA, 1);
 
             // 2 Rebars
-            Oasys.Collections.IList<Oasys.AdSec.Reinforcement.Groups.IGroup> reinforcements = Oasys.Collections.IList<Oasys.AdSec.Reinforcement.Groups.IGroup>.Create();
+            List<AdSecRebarGroupGoo> reinforcements = new List<AdSecRebarGroupGoo>();
             if (Params.Input[2].SourceCount > 0)
             {
                 reinforcements = GetInput.ReinforcementGroups(this, DA, 2, true);

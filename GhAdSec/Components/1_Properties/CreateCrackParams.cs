@@ -51,12 +51,12 @@ namespace AdSecGH.Components
 
                 // pressure E
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredStressUnits);
+                dropdownitems.Add(DocumentUnits.FilteredStressUnits);
                 selecteditems.Add(strengthUnit.ToString());
 
                 // pressure stress
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredStressUnits);
+                dropdownitems.Add(DocumentUnits.FilteredStressUnits);
                 selecteditems.Add(strengthUnit.ToString());
 
                 IQuantity quantityE = new UnitsNet.Pressure(0, stressUnitE);
@@ -118,8 +118,8 @@ namespace AdSecGH.Components
             "Strength Unit"
         });
         private bool first = true;
-        private UnitsNet.Units.PressureUnit stressUnitE = AdSecGH.DocumentUnits.StressUnit;
-        private UnitsNet.Units.PressureUnit strengthUnit = AdSecGH.DocumentUnits.StressUnit;
+        private UnitsNet.Units.PressureUnit stressUnitE = DocumentUnits.StressUnit;
+        private UnitsNet.Units.PressureUnit strengthUnit = DocumentUnits.StressUnit;
         string unitEAbbreviation;
         string unitSAbbreviation;
         #endregion

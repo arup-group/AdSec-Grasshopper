@@ -51,11 +51,11 @@ namespace AdSecGH.Components
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            IQuantity strain = new Oasys.Units.Strain(0, AdSecGH.DocumentUnits.StrainUnit);
+            IQuantity strain = new Oasys.Units.Strain(0, DocumentUnits.StrainUnit);
             string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-            IQuantity curvature = new Oasys.Units.Curvature(0, AdSecGH.DocumentUnits.CurvatureUnit);
+            IQuantity curvature = new Oasys.Units.Curvature(0, DocumentUnits.CurvatureUnit);
             string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
-            IQuantity moment = new Oasys.Units.Moment(0, AdSecGH.DocumentUnits.MomentUnit);
+            IQuantity moment = new Oasys.Units.Moment(0, DocumentUnits.MomentUnit);
             string momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
 
             pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." + 
@@ -122,9 +122,9 @@ namespace AdSecGH.Components
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Utilisation is above 1!");
 
             DA.SetData(2, new Vector3d(
-                uls.Deformation.X.As(AdSecGH.DocumentUnits.StrainUnit),
-                uls.Deformation.YY.As(AdSecGH.DocumentUnits.CurvatureUnit),
-                uls.Deformation.ZZ.As(AdSecGH.DocumentUnits.CurvatureUnit)));
+                uls.Deformation.X.As(DocumentUnits.StrainUnit),
+                uls.Deformation.YY.As(DocumentUnits.CurvatureUnit),
+                uls.Deformation.ZZ.As(DocumentUnits.CurvatureUnit)));
             double defUtil = uls.DeformationUtilisation.As(UnitsNet.Units.RatioUnit.DecimalFraction);
             DA.SetData(3, defUtil);
             if (defUtil > 1)
@@ -134,8 +134,8 @@ namespace AdSecGH.Components
             foreach (IMomentRange mrng in uls.MomentRanges)
             {
                 Rhino.Geometry.Interval interval = new Interval(
-                    mrng.Min.As(AdSecGH.DocumentUnits.MomentUnit),
-                    mrng.Max.As(AdSecGH.DocumentUnits.MomentUnit));
+                    mrng.Min.As(DocumentUnits.MomentUnit),
+                    mrng.Max.As(DocumentUnits.MomentUnit));
                 momentRanges.Add(new GH_Interval(interval));
             }
             DA.SetDataList(4, momentRanges);

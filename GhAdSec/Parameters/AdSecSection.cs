@@ -85,13 +85,16 @@ namespace AdSecGH.Parameters
                 ref m_subColours);
         }
 
-        public AdSecSection(Oasys.Profiles.IProfile profile, Plane local, AdSecMaterial material, 
-            Oasys.Collections.IList<Oasys.AdSec.Reinforcement.Groups.IGroup> reinforcement,
+        public AdSecSection(Oasys.Profiles.IProfile profile, Plane local, AdSecMaterial material,
+            List<AdSecRebarGroupGoo> reinforcement,
             Oasys.Collections.IList<Oasys.AdSec.ISubComponent> subComponents)
         {
             m_code = material.DesignCode.Duplicate().DesignCode;
             m_section = ISection.Create(profile, material.Material);
-            m_section.ReinforcementGroups = reinforcement;
+            Tuple<Oasys.Collections.IList<IGroup>, ICover> rebarAndCover = CreateReinforcementGroupsWithMaxCover(reinforcement);
+            m_section.ReinforcementGroups = rebarAndCover.Item1;
+            if (rebarAndCover.Item2 != null)
+                m_section.Cover = rebarAndCover.Item2;
             if (subComponents != null)
                 m_section.SubComponents = subComponents;
             m_plane = local;
@@ -123,9 +126,7 @@ namespace AdSecGH.Parameters
             if (code != null) //{ code = Oasys.AdSec.DesignCode.EN1992.Part1_1.Edition_2004.NationalAnnex.NoNationalAnnex; }
             {
                 IAdSec adSec = IAdSec.Create(code);
-                //= null; // adSec.DesignCode.
                 flat = adSec.Flatten(section);
-                //flat = section;
             }
             else
             {
@@ -139,8 +140,8 @@ namespace AdSecGH.Parameters
             if (offset != null)
             {
                 offs = new Vector3d(0,
-                    offset.Y.As(AdSecGH.DocumentUnits.LengthUnit),
-                    offset.Z.As(AdSecGH.DocumentUnits.LengthUnit));
+                    offset.Y.As(DocumentUnits.LengthUnit),
+                    offset.Z.As(DocumentUnits.LengthUnit));
             }
             
 
@@ -178,8 +179,8 @@ namespace AdSecGH.Parameters
                 Brep temp = CreateBrepFromProfile(new AdSecProfileGoo(sub.Section.Profile, local));
                 Vector3d trans = new Vector3d(
                     0,
-                    sub.Offset.Y.As(AdSecGH.DocumentUnits.LengthUnit),
-                    sub.Offset.Z.As(AdSecGH.DocumentUnits.LengthUnit));
+                    sub.Offset.Y.As(DocumentUnits.LengthUnit),
+                    sub.Offset.Z.As(DocumentUnits.LengthUnit));
                 temp.Transform(Transform.Translation(trans));
                 temp.Transform(Transform.Translation(offs));
                 subProfiles.Add(temp);
@@ -258,9 +259,9 @@ namespace AdSecGH.Parameters
                     UnitsNet.Area area = this.m_section.Profile.Area();
                     double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
                     UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
-                    previewXaxis = new Line(local.Origin, local.XAxis, length.As(AdSecGH.DocumentUnits.LengthUnit));
-                    previewYaxis = new Line(local.Origin, local.YAxis, length.As(AdSecGH.DocumentUnits.LengthUnit));
-                    previewZaxis = new Line(local.Origin, local.ZAxis, length.As(AdSecGH.DocumentUnits.LengthUnit));
+                    previewXaxis = new Line(local.Origin, local.XAxis, length.As(DocumentUnits.LengthUnit));
+                    previewYaxis = new Line(local.Origin, local.YAxis, length.As(DocumentUnits.LengthUnit));
+                    previewZaxis = new Line(local.Origin, local.ZAxis, length.As(DocumentUnits.LengthUnit));
                 }
             }
         }
@@ -283,17 +284,38 @@ namespace AdSecGH.Parameters
             {
                 Point3d center = new Point3d(
                     0,
-                    bars.Positions[i].Y.As(AdSecGH.DocumentUnits.LengthUnit),
-                    bars.Positions[i].Z.As(AdSecGH.DocumentUnits.LengthUnit));
+                    bars.Positions[i].Y.As(DocumentUnits.LengthUnit),
+                    bars.Positions[i].Z.As(DocumentUnits.LengthUnit));
                 center.Transform(Transform.Translation(offset));
                 center.Transform(mapToLocal);
                 Plane localCenter = new Plane(center, local.Normal);
-                Circle edgeCurve = new Circle(localCenter, bars.BarBundle.Diameter.As(AdSecGH.DocumentUnits.LengthUnit) / 2);
+                Circle edgeCurve = new Circle(localCenter, bars.BarBundle.Diameter.As(DocumentUnits.LengthUnit) / 2);
                 edgeCurves.Add(edgeCurve);
                 List<Curve> crvs = new List<Curve>() { edgeCurve.ToNurbsCurve() };
                 rebarBreps.Add(Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelRelativeTolerance).First());
             }
             return rebarBreps;
+        }
+
+        private Tuple<Oasys.Collections.IList<IGroup>, ICover> CreateReinforcementGroupsWithMaxCover(List<AdSecRebarGroupGoo> reinforcement)
+        {
+            Oasys.Collections.IList<IGroup> groups = Oasys.Collections.IList<IGroup>.Create();
+            ICover cover = null;
+            foreach(AdSecRebarGroupGoo grp in reinforcement)
+            {
+                // add group to list of groups
+                groups.Add(grp.Value);
+
+                // check if cover of group is bigger than any previous ones
+                if(grp.Cover != null)
+                {
+                    if(cover == null || grp.Cover.UniformCover > cover.UniformCover)
+                    {
+                        cover = grp.Cover;
+                    }
+                }
+            }
+            return new Tuple<Oasys.Collections.IList<IGroup>, ICover>(groups, cover);
         }
 
         public AdSecSection Duplicate()

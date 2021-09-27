@@ -47,14 +47,14 @@ namespace AdSecGH.Parameters
         }
         public override string ToString()
         {
-            IQuantity strain = new Oasys.Units.Strain(0, AdSecGH.DocumentUnits.StrainUnit);
+            IQuantity strain = new Oasys.Units.Strain(0, DocumentUnits.StrainUnit);
             string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-            IQuantity curvature = new Oasys.Units.Curvature(0, AdSecGH.DocumentUnits.CurvatureUnit);
+            IQuantity curvature = new Oasys.Units.Curvature(0, DocumentUnits.CurvatureUnit);
             string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
             return "AdSec " + TypeName + " {"
-                + Math.Round(this.Value.X.As(AdSecGH.DocumentUnits.StrainUnit), 4) + strainUnitAbbreviation + ", "
-                + Math.Round(this.Value.YY.As(AdSecGH.DocumentUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + ", "
-                + Math.Round(this.Value.ZZ.As(AdSecGH.DocumentUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + "}";
+                + Math.Round(this.Value.X.As(DocumentUnits.StrainUnit), 4) + strainUnitAbbreviation + ", "
+                + Math.Round(this.Value.YY.As(DocumentUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + ", "
+                + Math.Round(this.Value.ZZ.As(DocumentUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + "}";
         }
     }
 }

@@ -97,7 +97,7 @@ namespace AdSecGH.Components
                 }
 
                 // length
-                dropdownitems.Add(AdSecGH.DocumentUnits.FilteredLengthUnits);
+                dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
@@ -338,7 +338,7 @@ namespace AdSecGH.Components
                         dropdownitems.RemoveAt(1);
 
                     // add length measure dropdown list
-                    dropdownitems.Add(AdSecGH.DocumentUnits.FilteredLengthUnits);
+                    dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
 
                     // set selected length
                     selecteditems[1] = lengthUnit.ToString();
@@ -420,7 +420,7 @@ namespace AdSecGH.Components
         Dictionary<string, Type> profileTypes;
         Dictionary<string, FieldInfo> profileFields;
 
-        private UnitsNet.Units.LengthUnit lengthUnit = AdSecGH.DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
         string unitAbbreviation;
 
         #region catalogue sections

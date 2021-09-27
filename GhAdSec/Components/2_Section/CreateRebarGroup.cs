@@ -14,6 +14,7 @@ using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement.Groups;
 using UnitsNet;
 using Oasys.AdSec.Reinforcement.Layers;
+using Oasys.AdSec.Reinforcement;
 
 namespace AdSecGH.Components
 {
@@ -21,13 +22,18 @@ namespace AdSecGH.Components
     {
         #region Name and Ribbon Layout
         public CreateReinforcementGroup()
-            : base("Create Reinforcement Layout", "Reinforcement Layout", "Create a Reinforcement Layout for an AdSec Section",
+            : base("Create Reinforcement Group", "Reinforcement Group", "Create a Template Reinforcement Group for an AdSec Section",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat2())
         { this.Hidden = true; }
-        public override Guid ComponentGuid => new Guid("1250f456-de99-4834-8d7f-4019cc0c70ba");
+        public override Guid ComponentGuid => new Guid("9876f456-de99-4834-8d7f-4019cc0c70ba");
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
-
+        //
+        protected override string HtmlHelp_Source()
+        {
+            string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Reinforcement.Groups.ITemplateGroup.Face.html";
+            return help;
+        }
         protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.RebarLayout;
         #endregion
 
@@ -49,10 +55,6 @@ namespace AdSecGH.Components
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
                 selecteditems.Add(lengthUnit.ToString());
 
-                IQuantity quantityAngle = new UnitsNet.Angle(0, angleUnit);
-                angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
-                selecteditems.Add(angleUnit.ToString());
-
                 first = false;
             }
 
@@ -67,40 +69,12 @@ namespace AdSecGH.Components
             {
                 _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[i]);
 
-                switch (_mode)
-                {
-                    case FoldMode.Line:
-                    case FoldMode.SingleBars:
-                        while (dropdownitems.Count > 1)
-                            dropdownitems.RemoveAt(1);
-                        spacerDescriptions[1] = "Measure";
-                        break;
-                    case FoldMode.Arc:
-                    case FoldMode.Circle:
-                        if (dropdownitems.Count < 2)
-                            dropdownitems.Add(AdSecGH.DocumentUnits.FilteredLengthUnits);
-                        if (dropdownitems.Count < 3)
-                            dropdownitems.Add(AdSecGH.DocumentUnits.FilteredAngleUnits);
-                        spacerDescriptions[1] = "Length measure";
-                        break;
-                }
-
                 ToggleInput();
             }
             else
             {
-                switch (i)
-                {
-                    case 1:
-                        lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
-                        break;
-
-                    case 2:
-                        angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[i]);
-                        break;
-                }
+                lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
             }
-            this.ClearRuntimeMessages();
             ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
@@ -110,7 +84,6 @@ namespace AdSecGH.Components
         {
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
             lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
-            angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[2]);
             CreateAttributes();
             ToggleInput();
             ExpireSolution(true);
@@ -125,83 +98,119 @@ namespace AdSecGH.Components
         List<string> selecteditems;
         List<string> spacerDescriptions = new List<string>(new string[]
         {
-            "Layout Type",
+            "Group Type",
             "Measure",
-            "Angular measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = AdSecGH.DocumentUnits.LengthUnit;
-        private UnitsNet.Units.AngleUnit angleUnit = UnitsNet.Units.AngleUnit.Radian;
+        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
         string unitAbbreviation;
-        string angleAbbreviation;
         #endregion
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Spaced Rebars", "RbS", "AdSec Rebars Spaced in a Layer", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Position 1", "Vx1", "First bar position", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Position 2", "Vx2", "Last bar position", GH_ParamAccess.item);
-            _mode = FoldMode.Line;
+            pManager.AddGenericParameter("Top Rebars", "TRs", "Top Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Left Side Rebars", "LRs", "Left Side Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Right Side Rebars", "RRs", "Right Side Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Bottom Rebars", "BRs", "Bottom Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Cover [" + unitAbbreviation + "]", "Cov", "The reinforcement-free zone around the faces of a profile.", GH_ParamAccess.item);
+            _mode = FoldMode.Template;
+            // make all but last input optional
+            for (int i = 0; i < pManager.ParamCount - 1; i++)
+                pManager[i].Optional = true;
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Layout", "RbL", "Rebar Layout for AdSec Section", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Layout", "RbG", "Rebar Groups for AdSec Section", GH_ParamAccess.list);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            AdSecRebarGroupGoo group = null;
+            List<AdSecRebarGroupGoo> groups = new List<AdSecRebarGroupGoo>();
+
+            // cover
+            ICover cover = ICover.Create(GetInput.Length(this, DA, this.Params.Input.Count - 1, lengthUnit));
 
             switch (_mode)
             {
-                case FoldMode.Line:
-
-                    // create line group
-                    group = new AdSecRebarGroupGoo(
-                        ILineGroup.Create(
-                            GetInput.IPoint(this, DA, 1),
-                            GetInput.IPoint(this, DA, 2),
-                            GetInput.ILayer(this, DA, 0)));
+                case FoldMode.Template:
+                    // check for enough input parameters
+                    if (this.Params.Input[0].SourceCount == 0 && this.Params.Input[1].SourceCount == 0 
+                        && this.Params.Input[2].SourceCount == 0 && this.Params.Input[3].SourceCount == 0)
+                    {
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameters " + this.Params.Input[0].NickName + ", " +
+                            this.Params.Input[1].NickName + ", " + this.Params.Input[2].NickName + ", and " + this.Params.Input[3].NickName + " failed to collect data!");
+                        return;
+                    }
+                    // top
+                    if (this.Params.Input[0].SourceCount != 0)
+                    {
+                        ITemplateGroup grp = ITemplateGroup.Create(ITemplateGroup.Face.Top);
+                        grp.Layers.Add(GetInput.ILayer(this, DA, 0));
+                        groups.Add(new AdSecRebarGroupGoo(grp));
+                        groups.Last().Cover = cover;
+                    }
+                    // left
+                    if (this.Params.Input[1].SourceCount != 0)
+                    {
+                        ITemplateGroup grp = ITemplateGroup.Create(ITemplateGroup.Face.LeftSide);
+                        grp.Layers.Add(GetInput.ILayer(this, DA, 1));
+                        groups.Add(new AdSecRebarGroupGoo(grp));
+                        groups.Last().Cover = cover;
+                    }
+                    // right
+                    if (this.Params.Input[2].SourceCount != 0)
+                    {
+                        ITemplateGroup grp = ITemplateGroup.Create(ITemplateGroup.Face.RightSide);
+                        grp.Layers.Add(GetInput.ILayer(this, DA, 2));
+                        groups.Add(new AdSecRebarGroupGoo(grp));
+                        groups.Last().Cover = cover;
+                    }
+                    // bottom
+                    if (this.Params.Input[3].SourceCount != 0)
+                    {
+                        ITemplateGroup grp = ITemplateGroup.Create(ITemplateGroup.Face.Bottom);
+                        grp.Layers.Add(GetInput.ILayer(this, DA, 3));
+                        groups.Add(new AdSecRebarGroupGoo(grp));
+                        groups.Last().Cover = cover;
+                    }
+                    
                     break;
 
-                case FoldMode.Circle:
-
-                    // create circle rebar group
-                    group = new AdSecRebarGroupGoo(
-                        ICircleGroup.Create(
-                            GetInput.IPoint(this, DA, 1, true),
-                            GetInput.Length(this, DA, 2, lengthUnit),
-                            GetInput.Angle(this, DA, 3, angleUnit, true),
-                            GetInput.ILayer(this, DA, 0)));
-
+                case FoldMode.Perimeter:
+                    // check for enough input parameters
+                    if (this.Params.Input[0].SourceCount == 0)
+                    {
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + this.Params.Input[0].NickName + " failed to collect data!");
+                        return;
+                    }
+                    // top
+                    if (this.Params.Input[0].SourceCount != 0)
+                    {
+                        IPerimeterGroup grp = IPerimeterGroup.Create();
+                        grp.Layers.Add(GetInput.ILayer(this, DA, 0));
+                        groups.Add(new AdSecRebarGroupGoo(grp));
+                        groups.Last().Cover = cover;
+                    }
                     break;
 
-                case FoldMode.Arc:
-
-                    // create arc rebar grouup
-                    group = new AdSecRebarGroupGoo(
-                        IArcGroup.Create(
-                            GetInput.IPoint(this, DA, 1, true),
-                            GetInput.Length(this, DA, 2, lengthUnit),
-                            GetInput.Angle(this, DA, 3, angleUnit),
-                            GetInput.Angle(this, DA, 4, angleUnit),
-                            GetInput.ILayer(this, DA, 0)));
-                    break;
-
-                case FoldMode.SingleBars:
-
-                    // create single rebar group
-                    ISingleBars bars = ISingleBars.Create(
-                        GetInput.IBarBundle(this, DA, 0));
-
-                    bars.Positions = GetInput.IPoints(this, DA, 1);
-
-                    group = new AdSecRebarGroupGoo(bars);
-
+                case FoldMode.Link:
+                    // check for enough input parameters
+                    if (this.Params.Input[0].SourceCount == 0)
+                    {
+                        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + this.Params.Input[0].NickName + " failed to collect data!");
+                        return;
+                    }
+                    // top
+                    if (this.Params.Input[0].SourceCount != 0)
+                    {
+                        ILinkGroup grp = ILinkGroup.Create(GetInput.IBarBundle(this, DA, 0));
+                        groups.Add(new AdSecRebarGroupGoo(grp));
+                        groups.Last().Cover = cover;
+                    }
                     break;
             }
 
             // set output
-            DA.SetData(0, group);
+            DA.SetDataList(0, groups);
         }
 
         #region menu override
@@ -209,38 +218,24 @@ namespace AdSecGH.Components
         private bool first = true;
         private enum FoldMode
         {
-            Line,
-            SingleBars,
-            Circle,
-            Arc,
+            Template,
+            Perimeter,
+            Link
         }
 
-        private FoldMode _mode = FoldMode.Line;
+        private FoldMode _mode = FoldMode.Template;
 
         private void ToggleInput()
         {
             RecordUndoEvent("Changed dropdown");
 
+            // remove cover temporarily
+            IGH_Param param_Cover = Params.Input[Params.Input.Count - 1];
+            Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
+
             switch (_mode)
             {
-                case FoldMode.Line:
-                    // remove any additional input parameters
-                    while (Params.Input.Count > 1)
-                        Params.UnregisterInputParameter(Params.Input[1], true);
-                    // register 2 generic
-                    Params.RegisterInputParam(new Param_GenericObject());
-                    Params.RegisterInputParam(new Param_GenericObject());
-                    break;
-
-                case FoldMode.SingleBars:
-                    // remove any additional input parameters
-                    while (Params.Input.Count > 1)
-                        Params.UnregisterInputParameter(Params.Input[1], true);
-                    // register 1 generic
-                    Params.RegisterInputParam(new Param_GenericObject());
-                    break;
-
-                case FoldMode.Circle:
+                case FoldMode.Template:
                     // remove any additional input parameters
                     while (Params.Input.Count > 1)
                         Params.UnregisterInputParameter(Params.Input[1], true);
@@ -250,17 +245,15 @@ namespace AdSecGH.Components
                     Params.RegisterInputParam(new Param_GenericObject());
                     break;
 
-                case FoldMode.Arc:
+                case FoldMode.Perimeter:
+                case FoldMode.Link:
                     // remove any additional input parameters
                     while (Params.Input.Count > 1)
                         Params.UnregisterInputParameter(Params.Input[1], true);
-                    // register 4 generic
-                    Params.RegisterInputParam(new Param_GenericObject());
-                    Params.RegisterInputParam(new Param_GenericObject());
-                    Params.RegisterInputParam(new Param_GenericObject());
-                    Params.RegisterInputParam(new Param_GenericObject());
                     break;
             }
+            // add cover back
+            Params.RegisterInputParam(param_Cover);
         }
         #endregion
 
@@ -273,7 +266,6 @@ namespace AdSecGH.Components
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
             UpdateUIFromSelectedItems();
 
             first = false;
@@ -301,111 +293,57 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            if (_mode == FoldMode.Line)
+            if (_mode == FoldMode.Template)
+            {
+                Params.Input[0].Name = "Top Rebars";
+                Params.Input[0].NickName = "TRs";
+                Params.Input[0].Description = "Top Face AdSec Rebars Spaced in a Layer";
+                Params.Input[0].Access = GH_ParamAccess.item;
+                Params.Input[0].Optional = true;
+
+                Params.Input[1].Name = "Left Side Rebars";
+                Params.Input[1].NickName = "LRs";
+                Params.Input[1].Description = "Left Side Face AdSec Rebars Spaced in a Layer";
+                Params.Input[1].Access = GH_ParamAccess.item;
+                Params.Input[1].Optional = true;
+
+                Params.Input[2].Name = "Right Side Rebars";
+                Params.Input[2].NickName = "RRs";
+                Params.Input[2].Description = "Right Side Face AdSec Rebars Spaced in a Layer";
+                Params.Input[2].Access = GH_ParamAccess.item;
+                Params.Input[2].Optional = true;
+
+                Params.Input[3].Name = "Bottom Rebars";
+                Params.Input[3].NickName = "BRs";
+                Params.Input[3].Description = "Bottom Face AdSec Rebars Spaced in a Layer";
+                Params.Input[3].Access = GH_ParamAccess.item;
+                Params.Input[3].Optional = true;
+            }
+            if (_mode == FoldMode.Perimeter)
             {
                 Params.Input[0].Name = "Spaced Rebars";
                 Params.Input[0].NickName = "RbS";
                 Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
-
-                Params.Input[1].Name = "Position 1";
-                Params.Input[1].NickName = "Vx1";
-                Params.Input[1].Description = "First bar position";
-                Params.Input[1].Access = GH_ParamAccess.item;
-                Params.Input[1].Optional = false;
-
-                Params.Input[2].Name = "Position 2";
-                Params.Input[2].NickName = "Vx2";
-                Params.Input[2].Description = "Last bar position";
-                Params.Input[2].Access = GH_ParamAccess.item;
-                Params.Input[2].Optional = false;
-
             }
-            if (_mode == FoldMode.SingleBars)
+            if (_mode == FoldMode.Link)
             {
                 Params.Input[0].Name = "Rebar";
                 Params.Input[0].NickName = "Rb";
                 Params.Input[0].Description = "AdSec Rebar (single or bundle)";
                 Params.Input[0].Access = GH_ParamAccess.item;
                 Params.Input[0].Optional = false;
-
-                Params.Input[1].Name = "Position(s)";
-                Params.Input[1].NickName = "Vxs";
-                Params.Input[1].Description = "List of bar positions";
-                Params.Input[1].Access = GH_ParamAccess.list;
-                Params.Input[1].Optional = false;
             }
-            if (_mode == FoldMode.Circle)
-            {
-                Params.Input[0].Name = "Spaced Rebars";
-                Params.Input[0].NickName = "RbS";
-                Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
-                Params.Input[0].Access = GH_ParamAccess.item;
-                Params.Input[0].Optional = false;
 
-                Params.Input[1].Name = "Centre";
-                Params.Input[1].NickName = "CVx";
-                Params.Input[1].Description = "Vertex Point representing the centre of the circle";
-                Params.Input[1].Access = GH_ParamAccess.item;
-                Params.Input[1].Optional = true;
+            IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+            unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
 
-                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
-                unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
-                IQuantity quantityAngle = new UnitsNet.Angle(0, angleUnit);
-                angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
-
-                Params.Input[2].Name = "Radius [" + unitAbbreviation + "]";
-                Params.Input[2].NickName = "r";
-                Params.Input[2].Description = "Distance representing the radius of the circle";
-                Params.Input[2].Access = GH_ParamAccess.item;
-                Params.Input[2].Optional = false;
-
-                Params.Input[3].Name = "StartAngle [" + angleAbbreviation + "]";
-                Params.Input[3].NickName = "s°";
-                Params.Input[3].Description = "[Optional] The starting angle (in " + angleAbbreviation + ") of the circle. Positive angle is considered anti-clockwise. Default is 0";
-                Params.Input[3].Access = GH_ParamAccess.item;
-                Params.Input[3].Optional = true;
-
-                this.ClearRuntimeMessages();
-            }
-            if (_mode == FoldMode.Arc)
-            {
-                Params.Input[0].Name = "Spaced Rebars";
-                Params.Input[0].NickName = "RbS";
-                Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
-                Params.Input[0].Access = GH_ParamAccess.item;
-                Params.Input[0].Optional = false;
-
-                Params.Input[1].Name = "Centre";
-                Params.Input[1].NickName = "CVx";
-                Params.Input[1].Description = "Vertex Point representing the centre of the circle";
-                Params.Input[1].Access = GH_ParamAccess.item;
-                Params.Input[1].Optional = true;
-
-                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
-                unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
-                IQuantity quantityAngle = new UnitsNet.Angle(0, angleUnit);
-                angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
-
-                Params.Input[2].Name = "Radius [" + unitAbbreviation + "]";
-                Params.Input[2].NickName = "r";
-                Params.Input[2].Description = "Distance representing the radius of the circle";
-                Params.Input[2].Access = GH_ParamAccess.item;
-                Params.Input[2].Optional = false;
-
-                Params.Input[3].Name = "StartAngle [" + angleAbbreviation + "]";
-                Params.Input[3].NickName = "s°";
-                Params.Input[3].Description = "[Optional] The starting angle (in " + angleAbbreviation + ")) of the circle. Positive angle is considered anti-clockwise. Default is 0";
-                Params.Input[3].Access = GH_ParamAccess.item;
-                Params.Input[3].Optional = true;
-
-                Params.Input[4].Name = "SweepAngle [" + angleAbbreviation + "]";
-                Params.Input[4].NickName = "e°";
-                Params.Input[4].Description = "The angle (in " + angleAbbreviation + ") sweeped by the arc from its start angle. Positive angle is considered anti-clockwise. Default is π/2";
-                Params.Input[4].Access = GH_ParamAccess.item;
-                Params.Input[4].Optional = true;
-            }
+            Params.Input[Params.Input.Count - 1].Name = "Cover [" + unitAbbreviation + "]";
+            Params.Input[Params.Input.Count - 1].NickName = "Cov";
+            Params.Input[Params.Input.Count - 1].Description = "AdSec Rebars Spaced in a Layer";
+            Params.Input[Params.Input.Count - 1].Access = GH_ParamAccess.item;
+            Params.Input[Params.Input.Count - 1].Optional = false;
         }
         #endregion
     }

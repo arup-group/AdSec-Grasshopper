@@ -33,8 +33,8 @@ namespace AdSecGH.Parameters
         {
             m_value = point;
             this.m_AdSecPoint = IPoint.Create(
-                new UnitsNet.Length(m_value.Y, AdSecGH.DocumentUnits.LengthUnit), 
-                new UnitsNet.Length(m_value.Z, AdSecGH.DocumentUnits.LengthUnit));
+                new UnitsNet.Length(m_value.Y, DocumentUnits.LengthUnit), 
+                new UnitsNet.Length(m_value.Z, DocumentUnits.LengthUnit));
         }
         public AdSecPointGoo(AdSecPointGoo adsecPoint)
         {
@@ -46,16 +46,16 @@ namespace AdSecGH.Parameters
             m_AdSecPoint = adsecPoint;
             this.m_value = new Point3d(
                 0,
-                m_AdSecPoint.Y.As(AdSecGH.DocumentUnits.LengthUnit),
-                m_AdSecPoint.Z.As(AdSecGH.DocumentUnits.LengthUnit));
+                m_AdSecPoint.Y.As(DocumentUnits.LengthUnit),
+                m_AdSecPoint.Z.As(DocumentUnits.LengthUnit));
         }
         public AdSecPointGoo(UnitsNet.Length y, UnitsNet.Length z)
         {
             m_AdSecPoint = IPoint.Create(y, z);
             m_value = new Point3d(
                 0,
-                m_AdSecPoint.Y.As(AdSecGH.DocumentUnits.LengthUnit),
-                m_AdSecPoint.Z.As(AdSecGH.DocumentUnits.LengthUnit));
+                m_AdSecPoint.Y.As(DocumentUnits.LengthUnit),
+                m_AdSecPoint.Z.As(DocumentUnits.LengthUnit));
         }
 
         public static IPoint CreateFromPoint3d(Point3d point, Plane plane)
@@ -65,8 +65,8 @@ namespace AdSecGH.Parameters
             Point3d trans = new Point3d(point);
             trans.Transform(mapToLocal);
             return IPoint.Create(
-                new UnitsNet.Length(trans.Y, AdSecGH.DocumentUnits.LengthUnit),
-                new UnitsNet.Length(trans.Z, AdSecGH.DocumentUnits.LengthUnit));
+                new UnitsNet.Length(trans.Y, DocumentUnits.LengthUnit),
+                new UnitsNet.Length(trans.Z, DocumentUnits.LengthUnit));
         }
         internal static Oasys.Collections.IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve)
         {
@@ -81,8 +81,8 @@ namespace AdSecGH.Parameters
                 Point3d point3d = curve.Point(j);
                 point3d.Transform(mapToLocal);
                 pt = IPoint.Create(
-                    new UnitsNet.Length(point3d.X, AdSecGH.DocumentUnits.LengthUnit),
-                    new UnitsNet.Length(point3d.Y, AdSecGH.DocumentUnits.LengthUnit));
+                    new UnitsNet.Length(point3d.X, DocumentUnits.LengthUnit),
+                    new UnitsNet.Length(point3d.Y, DocumentUnits.LengthUnit));
                 pts.Add(pt);
             }
             return pts;
@@ -99,8 +99,8 @@ namespace AdSecGH.Parameters
                 Point3d point3d = curve[j];
                 point3d.Transform(mapToLocal);
                 pt = IPoint.Create(
-                    new UnitsNet.Length(point3d.X, AdSecGH.DocumentUnits.LengthUnit),
-                    new UnitsNet.Length(point3d.Y, AdSecGH.DocumentUnits.LengthUnit));
+                    new UnitsNet.Length(point3d.X, DocumentUnits.LengthUnit),
+                    new UnitsNet.Length(point3d.Y, DocumentUnits.LengthUnit));
                 pts.Add(pt);
             }
             return pts;
@@ -113,11 +113,11 @@ namespace AdSecGH.Parameters
 
         public override string ToString()
         {
-            IQuantity quantity = new UnitsNet.Length(0, AdSecGH.DocumentUnits.LengthUnit);
+            IQuantity quantity = new UnitsNet.Length(0, DocumentUnits.LengthUnit);
             string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
             return "AdSec " + TypeName + " {"
-                + Math.Round(AdSecPoint.Y.As(AdSecGH.DocumentUnits.LengthUnit), 4) + unitAbbreviation + ", "
-                + Math.Round(AdSecPoint.Z.As(AdSecGH.DocumentUnits.LengthUnit), 4) + unitAbbreviation + "}";
+                + Math.Round(AdSecPoint.Y.As(DocumentUnits.LengthUnit), 4) + unitAbbreviation + ", "
+                + Math.Round(AdSecPoint.Z.As(DocumentUnits.LengthUnit), 4) + unitAbbreviation + "}";
         }
         public override string TypeName => "Vertex";
 
@@ -186,8 +186,8 @@ namespace AdSecGH.Parameters
             if (typeof(TQ).IsAssignableFrom(typeof(IPoint)))
             {
                 target = (TQ)(object)IPoint.Create(
-                    new UnitsNet.Length(Value.X, AdSecGH.DocumentUnits.LengthUnit),
-                    new UnitsNet.Length(Value.Y, AdSecGH.DocumentUnits.LengthUnit));
+                    new UnitsNet.Length(Value.X, DocumentUnits.LengthUnit),
+                    new UnitsNet.Length(Value.Y, DocumentUnits.LengthUnit));
                 return true;
             }
 

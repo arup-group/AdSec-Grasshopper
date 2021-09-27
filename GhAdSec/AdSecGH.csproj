@@ -83,9 +83,10 @@
     <Compile Include="Components\1_Properties\EditMaterial.cs" />
     <Compile Include="Components\2_Section\CreateProfile.cs" />
     <Compile Include="Components\2_Section\CreatePoint.cs" />
+    <Compile Include="Components\2_Section\CreateRebarGroup.cs" />
     <Compile Include="Components\2_Section\CreateRebarSpacing.cs" />
     <Compile Include="Components\2_Section\CreateRebar.cs" />
-    <Compile Include="Components\2_Section\CreateRebarGroup.cs" />
+    <Compile Include="Components\2_Section\CreateRebarLayout.cs" />
     <Compile Include="Components\2_Section\CreateProfileWeb.cs" />
     <Compile Include="Components\2_Section\CreateProfileFlange.cs" />
     <Compile Include="Components\2_Section\CreateSection.cs" />
@@ -110,10 +111,9 @@
     <Compile Include="Helpers\_Settings.cs" />
     <Compile Include="Parameters\SolutionGoo.cs" />
     <Compile Include="Parameters\DeformationGoo.cs" />
-    <Compile Include="Parameters\PreLoadGoo_notused.cs" />
     <Compile Include="Parameters\LoadGoo.cs" />
     <Compile Include="Parameters\SubComponentGoo.cs" />
-    <Compile Include="Parameters\RebarGroupGoo.cs" />
+    <Compile Include="Parameters\AdSecRebarGroup.cs" />
     <Compile Include="Parameters\RebarLayerGoo.cs" />
     <Compile Include="Parameters\RebarBundleGoo.cs" />
     <Compile Include="Parameters\ProfileWebGoo.cs" />

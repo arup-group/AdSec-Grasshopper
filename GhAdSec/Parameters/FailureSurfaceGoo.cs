@@ -115,9 +115,9 @@ namespace AdSecGH.Parameters
 
             outMesh.Vertices.AddVertices(
                 loadsurface.Vertices.Select(pt => new Point3d(
-                    pt.X.As(AdSecGH.DocumentUnits.ForceUnit),
-                    pt.ZZ.As(AdSecGH.DocumentUnits.MomentUnit),
-                    pt.YY.As(AdSecGH.DocumentUnits.MomentUnit)
+                    pt.X.As(DocumentUnits.ForceUnit),
+                    pt.ZZ.As(DocumentUnits.MomentUnit),
+                    pt.YY.As(DocumentUnits.MomentUnit)
                     )));
 
             outMesh.Faces.AddFaces(
