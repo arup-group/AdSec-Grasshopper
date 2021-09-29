@@ -97,6 +97,7 @@
     <Compile Include="Components\3_Loads\CreateLoad.cs" />
     <Compile Include="Components\4_Solution\_AnalyseSection.cs" />
     <Compile Include="Components\4_Solution\AnalyseSlow.cs" />
+    <Compile Include="Components\5_Results\NM-diagram.cs" />
     <Compile Include="Components\5_Results\ResultsSLS.cs" />
     <Compile Include="Components\5_Results\ResultsULS.cs" />
     <Compile Include="GhAdSecInfo.cs" />

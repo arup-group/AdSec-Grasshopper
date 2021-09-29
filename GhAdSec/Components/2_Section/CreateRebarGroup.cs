@@ -68,17 +68,13 @@ namespace AdSecGH.Components
             if (i == 0)
             {
                 _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[i]);
-
                 ToggleInput();
             }
             else
             {
                 lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
             }
-            ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
+            
         }
         private void UpdateUIFromSelectedItems()
         {
@@ -86,10 +82,6 @@ namespace AdSecGH.Components
             lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
             CreateAttributes();
             ToggleInput();
-            ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -227,33 +219,28 @@ namespace AdSecGH.Components
 
         private void ToggleInput()
         {
-            RecordUndoEvent("Changed dropdown");
-
             // remove cover temporarily
             IGH_Param param_Cover = Params.Input[Params.Input.Count - 1];
             Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
-
-            switch (_mode)
+            
+            // remove any additional input parameters
+            while (Params.Input.Count > 1)
+                Params.UnregisterInputParameter(Params.Input[1]);
+            
+            if (_mode == FoldMode.Template)
             {
-                case FoldMode.Template:
-                    // remove any additional input parameters
-                    while (Params.Input.Count > 1)
-                        Params.UnregisterInputParameter(Params.Input[1], true);
-                    // register 3 generic
-                    Params.RegisterInputParam(new Param_GenericObject());
-                    Params.RegisterInputParam(new Param_GenericObject());
-                    Params.RegisterInputParam(new Param_GenericObject());
-                    break;
-
-                case FoldMode.Perimeter:
-                case FoldMode.Link:
-                    // remove any additional input parameters
-                    while (Params.Input.Count > 1)
-                        Params.UnregisterInputParameter(Params.Input[1], true);
-                    break;
+                // register 3 generic
+                Params.RegisterInputParam(new Param_GenericObject());
+                Params.RegisterInputParam(new Param_GenericObject());
+                Params.RegisterInputParam(new Param_GenericObject());
             }
             // add cover back
             Params.RegisterInputParam(param_Cover);
+
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -267,7 +254,6 @@ namespace AdSecGH.Components
         {
             AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             UpdateUIFromSelectedItems();
-
             first = false;
 
             return base.Read(reader);

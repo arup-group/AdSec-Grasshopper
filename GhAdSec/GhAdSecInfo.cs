@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
 
 namespace AdSecGH
 {
@@ -64,6 +66,19 @@ namespace AdSecGH
                 return GH_LoadingInstruction.Abort;
             }
 
+            // try create solution for license check
+            try
+            {
+                IAdSec ad = IAdSec.Create(EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014);
+            }
+            catch (Exception e)
+            {
+                string message = e.Message;
+                Exception exception = new Exception(message);
+                Grasshopper.Kernel.GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec", exception);
+                Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
+                return GH_LoadingInstruction.Abort;
+            }
 
             // ### Create Ribbon Category name and icon ###
             Grasshopper.Instances.ComponentServer.AddCategorySymbolName("AdSec", 'A');

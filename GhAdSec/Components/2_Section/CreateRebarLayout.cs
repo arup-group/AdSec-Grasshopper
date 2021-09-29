@@ -100,10 +100,7 @@ namespace AdSecGH.Components
                         break;
                 }
             }
-            ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
+            
         }
         private void UpdateUIFromSelectedItems()
         {
@@ -112,10 +109,6 @@ namespace AdSecGH.Components
             angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[2]);
             CreateAttributes();
             ToggleInput();
-            ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -212,8 +205,6 @@ namespace AdSecGH.Components
 
         private void ToggleInput()
         {
-            RecordUndoEvent("Changed dropdown");
-
             switch (_mode)
             {
                 case FoldMode.Line:
@@ -254,6 +245,11 @@ namespace AdSecGH.Components
                     Params.RegisterInputParam(new Param_GenericObject());
                     break;
             }
+
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -266,11 +262,8 @@ namespace AdSecGH.Components
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
             AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
             UpdateUIFromSelectedItems();
-
             first = false;
-
             return base.Read(reader);
         }
 

@@ -73,13 +73,15 @@ namespace AdSecGH.Components
 
             // update input params
             ChangeMode();
+            ExpireSolution(true);
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         private void UpdateUIFromSelectedItems()
         {
-            ChangeMode();
             CreateAttributes();
+            ChangeMode();
             ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -201,8 +203,6 @@ namespace AdSecGH.Components
                 Params.UnregisterInputParameter(Params.Input[5], true);
 
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
         }
 
         #region (de)serialization

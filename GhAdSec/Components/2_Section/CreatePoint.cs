@@ -68,8 +68,8 @@ namespace AdSecGH.Components
             lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
 
             // update name of inputs (to display unit on sliders)
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -79,8 +79,8 @@ namespace AdSecGH.Components
             lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[0]);
 
             CreateAttributes();
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }

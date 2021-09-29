@@ -114,8 +114,8 @@ namespace AdSecGH.Components
             }
 
             // update name of inputs (to display unit on sliders)
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -154,7 +154,7 @@ namespace AdSecGH.Components
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("RebarGroup", "RbG", "AdSec Reinforcement Group to apply Preload to", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Force [" + forceUnitAbbreviation + "]", "P", "The pre-force per reinforcement bar. Positive force is tension.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Force [" + forceUnitAbbreviation + "]", "P", "The pre-load per reinforcement bar. Positive value is tension.", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {

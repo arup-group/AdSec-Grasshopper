@@ -144,8 +144,8 @@ namespace AdSecGH.Components
                         break;
                 }
             }
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -184,10 +184,9 @@ namespace AdSecGH.Components
                     Mode9Clicked();
                     break;
             }
-
             CreateAttributes();
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -338,10 +337,6 @@ namespace AdSecGH.Components
                 Params.UnregisterInputParameter(Params.Input[i], true);
             while (Params.Input.Count != 2)
                 Params.RegisterInputParam(new Param_GenericObject());
-
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
         }
         private void Mode1Clicked()
         {
@@ -361,10 +356,6 @@ namespace AdSecGH.Components
                 Params.UnregisterInputParameter(Params.Input[i], true);
             if (cleanAll)
                 Params.RegisterInputParam(new Param_GenericObject());
-
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
         }
         private void Mode2Clicked()
         {
@@ -386,10 +377,6 @@ namespace AdSecGH.Components
                 Params.RegisterInputParam(new Param_GenericObject());
             while (Params.Input.Count != 3)
                 Params.RegisterInputParam(new Param_GenericObject());
-
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
         }
         private void Mode3Clicked()
         {
@@ -409,10 +396,6 @@ namespace AdSecGH.Components
                 Params.UnregisterInputParameter(Params.Input[i], true);
             if (cleanAll)
                 Params.RegisterInputParam(new Param_GenericObject());
-
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
         }
         private void Mode4Clicked()
         {
@@ -427,10 +410,6 @@ namespace AdSecGH.Components
                 Params.UnregisterInputParameter(Params.Input[0], true);
             while (Params.Input.Count != 4)
                 Params.RegisterInputParam(new Param_GenericObject());
-
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
         }
         private void Mode5Clicked()
         {
@@ -452,10 +431,6 @@ namespace AdSecGH.Components
                 Params.RegisterInputParam(new Param_GenericObject());
             while (Params.Input.Count != 3)
                 Params.RegisterInputParam(new Param_GenericObject());
-
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
         }
         private void Mode6Clicked()
         {
@@ -477,10 +452,6 @@ namespace AdSecGH.Components
                 Params.RegisterInputParam(new Param_GenericObject());
             while (Params.Input.Count != 2)
                 Params.RegisterInputParam(new Param_GenericObject());
-
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
         }
         private void Mode7Clicked()
         {
@@ -500,10 +471,6 @@ namespace AdSecGH.Components
                 Params.UnregisterInputParameter(Params.Input[i], true);
             if (cleanAll)
                 Params.RegisterInputParam(new Param_GenericObject());
-
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
         }
         private void Mode8Clicked()
         {
@@ -525,10 +492,6 @@ namespace AdSecGH.Components
                 Params.RegisterInputParam(new Param_GenericObject());
             while (Params.Input.Count != 2)
                 Params.RegisterInputParam(new Param_GenericObject());
-
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
         }
         private void Mode9Clicked()
         {
@@ -550,10 +513,6 @@ namespace AdSecGH.Components
                 Params.RegisterInputParam(new Param_GenericObject());
             while (Params.Input.Count != 2)
                 Params.RegisterInputParam(new Param_GenericObject());
-
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            ExpireSolution(true);
         }
         #endregion
 

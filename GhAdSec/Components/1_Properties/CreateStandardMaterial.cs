@@ -271,7 +271,6 @@ namespace AdSecGH.Components
                         spacerDescriptions[selecteditems.Count - 1] = "Grade";
                     }
                 }
-                
             }
         }
 
@@ -337,8 +336,8 @@ namespace AdSecGH.Components
 
             }
             CreateAttributes();
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }

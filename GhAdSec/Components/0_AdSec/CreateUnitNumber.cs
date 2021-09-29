@@ -140,8 +140,8 @@ namespace AdSecGH.Components
             }
 
             // update name of input (to display unit on sliders)
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -316,7 +316,30 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
+            if (quantity.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.MomentUnit)))
+            {
+                unitAbbreviation = Oasys.Units.Moment.GetAbbreviation((Oasys.Units.MomentUnit)selectedUnit);
+            }
+            else if (quantity.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.StrainUnit)))
+            {
+                unitAbbreviation = Oasys.Units.Strain.GetAbbreviation((Oasys.Units.StrainUnit)selectedUnit);
+            }
+            else if (quantity.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.AxialStiffnessUnit)))
+            {
+                unitAbbreviation = Oasys.Units.AxialStiffness.GetAbbreviation((Oasys.Units.AxialStiffnessUnit)selectedUnit);
+            }
+            else if (quantity.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.BendingStiffnessUnit)))
+            {
+                unitAbbreviation = Oasys.Units.BendingStiffness.GetAbbreviation((Oasys.Units.BendingStiffnessUnit)selectedUnit);
+            }
+            else if (quantity.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.CurvatureUnit)))
+            {
+                unitAbbreviation = Oasys.Units.Curvature.GetAbbreviation((Oasys.Units.CurvatureUnit)selectedUnit);
+            }
+            else
+            {
+                unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
+            }
             Params.Input[0].Name = "Number [" + unitAbbreviation + "]";
         }
         #endregion

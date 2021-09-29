@@ -35,7 +35,6 @@ namespace AdSecGH.Components
         //This region overrides the typical component layout
         public override void CreateAttributes()
         {
-            
             if (first)
             {
                 List<string> list = Enum.GetNames(typeof(FoldMode)).ToList();
@@ -91,21 +90,14 @@ namespace AdSecGH.Components
                 lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
                 
             }
-            ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
         }
         private void UpdateUIFromSelectedItems()
         {
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
-            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
+            if (_mode == FoldMode.Distance)
+                lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
             CreateAttributes();
             ToggleInput();
-            ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -181,8 +173,6 @@ namespace AdSecGH.Components
 
         private void ToggleInput()
         {
-            RecordUndoEvent("Changed dropdown");
-
             switch (_mode)
             {
                 case FoldMode.Distance:
@@ -203,6 +193,10 @@ namespace AdSecGH.Components
 
                     break;
             }
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         #endregion
 

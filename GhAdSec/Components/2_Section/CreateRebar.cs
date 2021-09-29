@@ -66,23 +66,17 @@ namespace AdSecGH.Components
             {
                 _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[i]);
                 ToggleInput();
-
             }
             else
             {
                 lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
             }
-            ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
         }
         private void UpdateUIFromSelectedItems()
         {
             lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
             CreateAttributes();
             ToggleInput();
-            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -170,7 +164,10 @@ namespace AdSecGH.Components
                         Params.RegisterInputParam(new Param_Integer());
                     break;
             }
-
+            ExpireSolution(true);
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         #endregion
 

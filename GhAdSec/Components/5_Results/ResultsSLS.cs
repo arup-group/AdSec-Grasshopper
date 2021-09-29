@@ -117,13 +117,13 @@ namespace AdSecGH.Components
                 }
                 else
                 {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].Name + " input (index " + 1 + ") to an AdSec Load");
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
                     return;
                 }
             }
             else
             {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + Params.Input[1].Name + " input, index " + 1 + " - Input required");
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
                 return;
             }
 

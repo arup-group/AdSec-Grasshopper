@@ -39,14 +39,8 @@ namespace AdSecGH.Parameters
         }
         internal ICover Cover
         {
-            get
-            {
-                return m_cover;
-            }
-            set
-            {
-                m_cover = value;
-            }
+            get { return m_cover; }
+            set { m_cover = value; }
         }
         ICover m_cover;
         public override bool IsValid => true;
@@ -60,7 +54,103 @@ namespace AdSecGH.Parameters
                 dup.m_cover = ICover.Create(m_cover.UniformCover);
             return dup;
         }
+        //public AdSecRebarGroupGoo Duplicate()
+        //{
+        //    AdSecRebarGroupGoo dup;
+        //    ICover cover;
+        //    try
+        //    {
+        //        // try longitudinal group first
+        //        ILongitudinalGroup longitudinal = (ILongitudinalGroup)Value;
 
+        //        try
+        //        {
+        //            ITemplateGroup temp = (ITemplateGroup)Value;
+
+        //            dup = new AdSecRebarGroupGoo(new ITemplateGroup.)
+        //        }
+        //        catch (Exception)
+        //        {
+        //            try
+        //            {
+        //                IPerimeterGroup perimeter = (IPerimeterGroup)Value;
+        //                m_ToString = "Perimeter Group, " + m_cover.UniformCover.ToUnit(DocumentUnits.LengthUnit) + " cover";
+        //            }
+        //            catch (Exception)
+        //            {
+        //                try
+        //                {
+        //                    IArcGroup arc = (IArcGroup)Value;
+        //                    m_ToString = "Arc Type Layout";
+        //                }
+        //                catch (Exception)
+        //                {
+        //                    try
+        //                    {
+        //                        ICircleGroup cir = (ICircleGroup)Value;
+        //                        m_ToString = "Circle Type Layout";
+        //                    }
+        //                    catch (Exception)
+        //                    {
+        //                        try
+        //                        {
+        //                            ILineGroup lin = (ILineGroup)Value;
+        //                            m_ToString = "Line Type Layout";
+        //                        }
+        //                        catch (Exception)
+        //                        {
+        //                            try
+        //                            {
+        //                                ISingleBars sin = (ISingleBars)Value;
+        //                                m_ToString = "SingleBars Type Layout";
+        //                            }
+        //                            catch (Exception)
+        //                            {
+
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        // get any preload
+        //        if (longitudinal.Preload != null)
+        //        {
+        //            try
+        //            {
+        //                IPreForce force = (IPreForce)longitudinal.Preload;
+
+        //            }
+        //            catch (Exception)
+        //            {
+        //                try
+        //                {
+        //                    IPreStress stress = (IPreStress)longitudinal.Preload;
+
+        //                }
+        //                catch (Exception)
+        //                {
+        //                    IPreStrain strain = (IPreStrain)longitudinal.Preload;
+
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        try
+        //        {
+        //            ILinkGroup link = (ILinkGroup)Value;
+        //            m_ToString = "Link, " + m_cover.UniformCover.ToUnit(DocumentUnits.LengthUnit) + " cover";
+        //        }
+        //        catch (Exception)
+        //        {
+
+        //        }
+
+        //    }
+        //}
         public override string ToString()
         {
             string m_ToString = "";

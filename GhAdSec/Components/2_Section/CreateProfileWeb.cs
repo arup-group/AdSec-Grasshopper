@@ -70,14 +70,12 @@ namespace AdSecGH.Components
                 lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
             }
             ToggleInput();
-            this.OnDisplayExpired(true);
         }
         private void UpdateUIFromSelectedItems()
         {
             lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
             CreateAttributes();
             ToggleInput();
-            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -140,8 +138,6 @@ namespace AdSecGH.Components
 
         private void ToggleInput()
         {
-            RecordUndoEvent("Changed dropdown");
-
             switch (_mode)
             {
                 case FoldMode.Constant:
@@ -160,6 +156,7 @@ namespace AdSecGH.Components
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
             ExpireSolution(true);
+            this.OnDisplayExpired(true);
         }
         #endregion
 

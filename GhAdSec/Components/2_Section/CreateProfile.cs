@@ -318,8 +318,8 @@ namespace AdSecGH.Components
                 }
                 profileString = selecteditems[3];
 
-                ExpireSolution(true);
                 (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+                ExpireSolution(true);
                 Params.OnParametersChanged();
                 this.OnDisplayExpired(true);
             }
@@ -762,8 +762,6 @@ namespace AdSecGH.Components
             if (_mode == FoldMode.Catalogue)
                 if (!comingFromSave) { return; }
 
-            RecordUndoEvent("Catalogue Parameter");
-
             // remove plane
             IGH_Param param_Plane = Params.Input[Params.Input.Count - 1];
             Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
@@ -827,8 +825,6 @@ namespace AdSecGH.Components
         private Type typ = typeof(IRectangleProfile);
         private void Mode2Clicked()
         {
-            RecordUndoEvent("Dropdown changed");
-
             // remove plane
             IGH_Param param_Plane = Params.Input[Params.Input.Count - 1];
             Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
