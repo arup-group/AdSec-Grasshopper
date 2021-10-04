@@ -73,6 +73,16 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AdSecInfo {
+            get {
+                object obj = ResourceManager.GetObject("AdSecInfo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap AdSecLogo {
             get {
                 object obj = ResourceManager.GetObject("AdSecLogo", resourceCulture);
@@ -93,9 +103,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ConvertUnit {
+        internal static System.Drawing.Bitmap ConvertUnitNumber {
             get {
-                object obj = ResourceManager.GetObject("ConvertUnit", resourceCulture);
+                object obj = ResourceManager.GetObject("ConvertUnitNumber", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,9 +143,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap CreateDesignCode2 {
+        internal static System.Drawing.Bitmap CreateFlange {
             get {
-                object obj = ResourceManager.GetObject("CreateDesignCode2", resourceCulture);
+                object obj = ResourceManager.GetObject("CreateFlange", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -143,9 +153,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap CreateFlange {
+        internal static System.Drawing.Bitmap CreateLoad {
             get {
-                object obj = ResourceManager.GetObject("CreateFlange", resourceCulture);
+                object obj = ResourceManager.GetObject("CreateLoad", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,29 +173,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap CreateRebar {
+        internal static System.Drawing.Bitmap CreateUnitNumber {
             get {
-                object obj = ResourceManager.GetObject("CreateRebar", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap CreateSection {
-            get {
-                object obj = ResourceManager.GetObject("CreateSection", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap CreateUnit {
-            get {
-                object obj = ResourceManager.GetObject("CreateUnit", resourceCulture);
+                object obj = ResourceManager.GetObject("CreateUnitNumber", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -203,9 +193,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap DesignCodeParam {
+        internal static System.Drawing.Bitmap DeformationLoad {
             get {
-                object obj = ResourceManager.GetObject("DesignCodeParam", resourceCulture);
+                object obj = ResourceManager.GetObject("DeformationLoad", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -213,9 +203,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap DesignCodeParam2 {
+        internal static System.Drawing.Bitmap DesignCodeParameter {
             get {
-                object obj = ResourceManager.GetObject("DesignCodeParam2", resourceCulture);
+                object obj = ResourceManager.GetObject("DesignCodeParameter", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -243,9 +233,29 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap EditProfile {
+            get {
+                object obj = ResourceManager.GetObject("EditProfile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap EditSection {
             get {
                 object obj = ResourceManager.GetObject("EditSection", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap LoadParam {
+            get {
+                object obj = ResourceManager.GetObject("LoadParam", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -263,9 +273,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PluginInfo {
+        internal static System.Drawing.Bitmap N_M {
             get {
-                object obj = ResourceManager.GetObject("PluginInfo", resourceCulture);
+                object obj = ResourceManager.GetObject("N_M", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -276,6 +286,36 @@ namespace AdSecGH.Properties {
         internal static System.Drawing.Bitmap Prestress {
             get {
                 object obj = ResourceManager.GetObject("Prestress", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Rebar {
+            get {
+                object obj = ResourceManager.GetObject("Rebar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RebarGroup {
+            get {
+                object obj = ResourceManager.GetObject("RebarGroup", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RebarGroupParam {
+            get {
+                object obj = ResourceManager.GetObject("RebarGroupParam", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -303,9 +343,39 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Section {
+            get {
+                object obj = ResourceManager.GetObject("Section", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SectionParam {
             get {
                 object obj = ResourceManager.GetObject("SectionParam", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SLS {
+            get {
+                object obj = ResourceManager.GetObject("SLS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SolutionParam {
+            get {
+                object obj = ResourceManager.GetObject("SolutionParam", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -323,9 +393,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap StressStrainCurve {
+        internal static System.Drawing.Bitmap StressStrainCrv {
             get {
-                object obj = ResourceManager.GetObject("StressStrainCurve", resourceCulture);
+                object obj = ResourceManager.GetObject("StressStrainCrv", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -333,9 +403,29 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap StressStrainPoint {
+        internal static System.Drawing.Bitmap StressStrainPt {
             get {
-                object obj = ResourceManager.GetObject("StressStrainPoint", resourceCulture);
+                object obj = ResourceManager.GetObject("StressStrainPt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SubComponent {
+            get {
+                object obj = ResourceManager.GetObject("SubComponent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ULS {
+            get {
+                object obj = ResourceManager.GetObject("ULS", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

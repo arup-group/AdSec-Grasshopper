@@ -30,7 +30,7 @@ namespace AdSecGH.Components
             string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Materials.StressStrainCurves.html";
             return help;
         }
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.StressStrainCurve;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.StressStrainCrv;
         #endregion
 
         #region Custom UI

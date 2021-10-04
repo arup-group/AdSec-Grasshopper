@@ -71,8 +71,6 @@
     <Compile Include="AsyncComponent\WorkerInstance.cs" />
     <Compile Include="Components\0_AdSec\CreateUnitNumber.cs" />
     <Compile Include="Components\0_AdSec\ConvertUnitNumber.cs" />
-    <Compile Include="Components\0_AdSec\EditUnits.cs" />
-    <Compile Include="Components\0_AdSec\Version.cs" />
     <Compile Include="Components\1_Properties\CreateCrackParams.cs" />
     <Compile Include="Components\1_Properties\CreateStressStrainPt.cs" />
     <Compile Include="Components\1_Properties\CreateDesignCode.cs" />
@@ -113,6 +111,7 @@
     <Compile Include="Parameters\SolutionGoo.cs" />
     <Compile Include="Parameters\DeformationGoo.cs" />
     <Compile Include="Parameters\LoadGoo.cs" />
+    <Compile Include="Parameters\NM_DiagramGoo.cs" />
     <Compile Include="Parameters\SubComponentGoo.cs" />
     <Compile Include="Parameters\AdSecRebarGroup.cs" />
     <Compile Include="Parameters\RebarLayerGoo.cs" />
@@ -277,6 +276,63 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\AdSec 128 x 128.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\AdSecInfo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\ConvertUnitNumber.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateLoad.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateUnitNumber.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\DeformationLoad.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\DesignCodeParameter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\EditProfile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\LoadParam.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\N-M.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\Rebar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\RebarGroup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\RebarGroupParam.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\Section.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\SLS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\SolutionParam.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\StressStrainCrv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\StressStrainPt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\SubComponent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\ULS.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

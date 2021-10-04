@@ -10,7 +10,7 @@ using Oasys.AdSec;
 
 namespace AdSecGH.Helpers
 {
-    public class Loader : GH_AssemblyPriority
+    public class Loader
     {
         System.Timers.Timer loadTimer;
         System.Timers.Timer trimTimer;
@@ -18,14 +18,13 @@ namespace AdSecGH.Helpers
 
         public Loader() { }
 
-        public override GH_LoadingInstruction PriorityLoad()
+        public void CreateMainMenuItem()
         {
             loadTimer = new System.Timers.Timer(500);
             loadTimer.Start();
             loadTimer.Elapsed += AddMenuItem;
             trimTimer = new System.Timers.Timer(500);
             trimTimer.Elapsed += TrimMenuItem;
-            return GH_LoadingInstruction.Proceed;
         }
         private void TrimMenuItem(object sender, ElapsedEventArgs e)
         {
@@ -69,7 +68,7 @@ namespace AdSecGH.Helpers
                 unitBox.Show();
             });
             // add info
-            adSecMenu.DropDown.Items.Add("AdSec Info", Properties.Resources.PluginInfo, (s, a) =>
+            adSecMenu.DropDown.Items.Add("AdSec Info", Properties.Resources.AdSecInfo, (s, a) =>
             {
                 AdSecGH.UI.AboutAdSecBox aboutBox = new UI.AboutAdSecBox();
                 aboutBox.Show();

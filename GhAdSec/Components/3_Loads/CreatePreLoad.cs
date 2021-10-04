@@ -187,6 +187,10 @@ namespace AdSecGH.Components
                 out_rebar.Cover = ICover.Create(in_rebar.Cover.UniformCover);
 
             DA.SetData(0, out_rebar);
+            
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Applying prestress will change the up-stream (backwards) rebar object as well " +
+                "- please make a copy of the input if you want to have both a rebar with and without prestress. " +
+                "This will change in future releases, apologies for the inconvenience...");
         }
 
         #region (de)serialization

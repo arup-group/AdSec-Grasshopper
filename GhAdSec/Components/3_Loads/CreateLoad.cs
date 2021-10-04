@@ -38,7 +38,7 @@ namespace AdSecGH.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        //protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.StressStrainPoint;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateLoad;
         #endregion
 
         #region Custom UI
@@ -129,6 +129,9 @@ namespace AdSecGH.Components
             pManager.AddGenericParameter("Fx [" + forceUnitAbbreviation + "]", "X", "The axial force. Positive x is tension.", GH_ParamAccess.item);
             pManager.AddGenericParameter("Myy [" + momentUnitAbbreviation + "]", "YY", "The moment about local y-axis. Positive yy is anti - clockwise moment about local y-axis.", GH_ParamAccess.item);
             pManager.AddGenericParameter("Mzz [" + momentUnitAbbreviation + "]", "ZZ", "The moment about local z-axis. Positive zz is anti - clockwise moment about local z-axis.", GH_ParamAccess.item);
+            // make all but last input optional
+            for (int i = 0; i < pManager.ParamCount - 1; i++)
+                pManager[i].Optional = true;
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -139,9 +142,18 @@ namespace AdSecGH.Components
         {
             // Create new load
             ILoad load = ILoad.Create(
-                GetInput.Force(this, DA, 0, forceUnit),
-                GetInput.Moment(this, DA, 1, momentUnit),
-                GetInput.Moment(this, DA, 2, momentUnit));
+                GetInput.Force(this, DA, 0, forceUnit, true),
+                GetInput.Moment(this, DA, 1, momentUnit, true),
+                GetInput.Moment(this, DA, 2, momentUnit, true));
+
+            // check for enough input parameters
+            if (this.Params.Input[0].SourceCount == 0 && this.Params.Input[1].SourceCount == 0
+                && this.Params.Input[2].SourceCount == 0)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameters " + this.Params.Input[0].NickName + ", " +
+                    this.Params.Input[1].NickName + ", and " + this.Params.Input[2].NickName + " failed to collect data!");
+                return;
+            }
 
             DA.SetData(0, new AdSecLoadGoo(load));
         }

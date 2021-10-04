@@ -282,7 +282,7 @@ namespace AdSecGH.Parameters
 
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        //protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.RebarLayout;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.RebarGroupParam;
 
         protected override GH_GetterResult Prompt_Plural(ref List<AdSecRebarGroupGoo> values)
         {

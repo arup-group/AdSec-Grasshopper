@@ -77,12 +77,17 @@ namespace AdSecGH
                 Exception exception = new Exception(message);
                 Grasshopper.Kernel.GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec", exception);
                 Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
+
                 return GH_LoadingInstruction.Abort;
             }
 
             // ### Create Ribbon Category name and icon ###
             Grasshopper.Instances.ComponentServer.AddCategorySymbolName("AdSec", 'A');
-            Grasshopper.Instances.ComponentServer.AddCategoryIcon("GSA", AdSecGH.Properties.Resources.AdSecLogo);
+            Grasshopper.Instances.ComponentServer.AddCategoryIcon("AdSec", AdSecGH.Properties.Resources.AdSecLogo);
+
+            // create main menu dropdown
+            AdSecGH.Helpers.Loader menuLoad = new Helpers.Loader();
+            menuLoad.CreateMainMenuItem();
 
             // Setup units
             DocumentUnits.SetupUnits();

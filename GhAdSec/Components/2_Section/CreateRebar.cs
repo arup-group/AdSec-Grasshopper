@@ -27,7 +27,7 @@ namespace AdSecGH.Components
         public override Guid ComponentGuid => new Guid("024d241a-b6cc-4134-9f5c-ac9a6dcb2c4b");
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateRebar;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.Rebar;
         #endregion
 
         #region Custom UI

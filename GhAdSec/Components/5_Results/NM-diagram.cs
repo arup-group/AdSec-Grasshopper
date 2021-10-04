@@ -41,7 +41,7 @@ namespace AdSecGH.Components
         { this.Hidden = false; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.Prestress;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.N_M;
         #endregion
 
         #region Custom UI
@@ -83,12 +83,15 @@ namespace AdSecGH.Components
                 switch (selecteditems[0])
                 {
                     case ("N-M"):
+                        _mode = FoldMode.NM;
                         dropdownitems[1] = DocumentUnits.FilteredAngleUnits;
-                        selecteditems[0] = angleUnit.ToString();
+                        selecteditems[1] = angleUnit.ToString();
                         break;
+
                     case ("M-M"):
+                        _mode = FoldMode.MM;
                         dropdownitems[1] = DocumentUnits.FilteredForceUnits;
-                        selecteditems[0] = forceUnit.ToString();
+                        selecteditems[1] = forceUnit.ToString();
                         break;
                 }
             }
@@ -104,7 +107,6 @@ namespace AdSecGH.Components
                         break;
                 }
             }
-
             // update name of inputs (to display unit on sliders)
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             ExpireSolution(true);
@@ -114,8 +116,8 @@ namespace AdSecGH.Components
         private void UpdateUIFromSelectedItems()
         {
             CreateAttributes();
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -144,17 +146,49 @@ namespace AdSecGH.Components
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Results", "Res", "AdSec Results to calculate interaction diagram from", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Moment Angle [" + angleUnitAbbreviation + "]", "A", "The moment angle, which must be in the range -180 degrees to +180 degrees.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Moment Angle [" + angleUnitAbbreviation + "]", "A", "[Default 0] The moment angle, which must be in the range -180 degrees to +180 degrees. Angle of zero equals Nx-Myy diagram.", GH_ParamAccess.item);
+            pManager[1].Optional = true;
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Prestressed RebarGroup", "RbG", "Preloaded Rebar Group for AdSec Section", GH_ParamAccess.item);
+            pManager.AddGenericParameter("N-M Curve", "NM", "AdSec Force-Moment (N-M) interaction diagram", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            
+            // get solution input
+            AdSecSolutionGoo solution = GetInput.Solution(this, DA, 0);
+
+            if (_mode == FoldMode.NM)
+            {
+                // get angle input
+                Angle angle = GetInput.Angle(this, DA, 1, angleUnit, true);
+
+                // get loadcurve
+                Oasys.Collections.IList<Oasys.AdSec.Mesh.ILoadCurve> loadCurve = solution.Value.Strength.GetForceMomentInteractionCurve(angle);
+
+                // create output
+                DA.SetData(0, new AdSecNMMCurveGoo(loadCurve[0], angle));
+            }
+            else
+            {
+                // get force input
+                Force force = GetInput.Force(this, DA, 1, forceUnit, true);
+
+                // get loadcurve
+                Oasys.Collections.IList<Oasys.AdSec.Mesh.ILoadCurve> loadCurve = solution.Value.Strength.GetMomentMomentInteractionCurve(force);
+
+                // create output
+                DA.SetData(0, new AdSecNMMCurveGoo(loadCurve[0]));
+            }
         }
+
+        private enum FoldMode
+        {
+            NM,
+            MM
+        }
+        private FoldMode _mode = FoldMode.NM;
 
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
@@ -197,9 +231,6 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            
-            
-
             switch (selecteditems[0])
             {
                 case ("N-M"):
@@ -207,14 +238,20 @@ namespace AdSecGH.Components
                     angleUnitAbbreviation = string.Concat(angle.ToString().Where(char.IsLetter));
                     Params.Input[1].Name = "Moment Angle [" + angleUnitAbbreviation + "]";
                     Params.Input[1].NickName = "A";
-                    Params.Input[1].Description = "The moment angle, which must be in the range -180 degrees to +180 degrees.";
+                    Params.Input[1].Description = "[Default 0] The moment angle, which must be in the range -180 degrees to +180 degrees. Angle of zero equals Nx-Myy diagram.";
+                    Params.Output[0].Name = "N-M Curve";
+                    Params.Output[0].NickName = "NM";
+                    Params.Output[0].Description = "AdSec Force-Moment (N-M) interaction diagram";
                     break;
                 case ("M-M"):
                     IQuantity force = new UnitsNet.Force(0, forceUnit);
                     forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
                     Params.Input[1].Name = "Axial Force [" + forceUnitAbbreviation + "]";
                     Params.Input[1].NickName = "F";
-                    Params.Input[1].Description = "The axial force to calculate the moment-moment diagram for.";
+                    Params.Input[1].Description = "[Default 0] The axial force to calculate the moment-moment diagram for.";
+                    Params.Output[0].Name = "M-M Curve";
+                    Params.Output[0].NickName = "MM";
+                    Params.Output[0].Description = "AdSec Moment-Moment (M-M) interaction diagram";
                     break;
             }
         }

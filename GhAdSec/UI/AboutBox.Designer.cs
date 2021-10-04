@@ -188,7 +188,7 @@ namespace AdSecGH.UI
             // 
             // Check
             // 
-            this.Check.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.Check.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Check.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.Check.Location = new System.Drawing.Point(302, 30);
             this.Check.Name = "Check";

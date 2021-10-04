@@ -34,7 +34,7 @@ namespace AdSecGH.Components
             string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Reinforcement.Groups.ITemplateGroup.Face.html";
             return help;
         }
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.RebarLayout;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.RebarGroup;
         #endregion
 
         #region Custom UI
