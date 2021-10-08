@@ -20,7 +20,7 @@ using Oasys.AdSec.Reinforcement.Layers;
 using UnitsNet;
 using Oasys.Units;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     /// <summary>
     /// AdSec DesignCode class, this class defines the basic properties and methods for any AdSec DesignCode
@@ -60,7 +60,7 @@ namespace GhAdSec.Parameters
         private bool CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false)
         {
             // Get all DesignCodes in DLL under namespace
-            Dictionary<string, Type> designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+            Dictionary<string, Type> designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
             // Loop through DesignCodes types to find the DesignCode type matching our input list of levels
             string designcodeName = "";
@@ -70,7 +70,7 @@ namespace GhAdSec.Parameters
                 designcodeName = designcodeName + designCodeReflectedLevels[i] + " ";
                 designCodeKVP.TryGetValue(designCodeReflectedLevels[i], out typ);
                 if (typ == null) { return false; }
-                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+                designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
             }
             if (designCodeReflectedLevels.Count == 1)
             {
@@ -235,7 +235,7 @@ namespace GhAdSec.Parameters
     public class AdSecDesignCodeParameter : GH_PersistentParam<AdSecDesignCodeGoo>
     {
         public AdSecDesignCodeParameter()
-          : base(new GH_InstanceDescription("DesignCode", "Code", "AdSec DesignCode Parameter", GhAdSec.Components.Ribbon.CategoryName.Name(), GhAdSec.Components.Ribbon.SubCategoryName.Cat9()))
+          : base(new GH_InstanceDescription("DesignCode", "Code", "AdSec DesignCode Parameter", AdSecGH.Components.Ribbon.CategoryName.Name(), AdSecGH.Components.Ribbon.SubCategoryName.Cat9()))
         {
         }
 
@@ -243,7 +243,7 @@ namespace GhAdSec.Parameters
 
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.DesignCodeParam;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.DesignCodeParameter;
 
         protected override GH_GetterResult Prompt_Plural(ref List<AdSecDesignCodeGoo> values)
         {

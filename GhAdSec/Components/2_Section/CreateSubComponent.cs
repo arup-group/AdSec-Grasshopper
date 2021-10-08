@@ -14,11 +14,11 @@ using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using Rhino.Geometry;
 using System.Collections.Generic;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class CreateSubcomponent : GH_Component
     {
@@ -34,7 +34,7 @@ namespace GhAdSec.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        //protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.SubComponent;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.SubComponent;
         #endregion
 
         #region Custom UI

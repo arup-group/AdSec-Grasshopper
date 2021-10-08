@@ -26,7 +26,7 @@ using Oasys.Profiles;
 using Oasys.AdSec;
 using UnitsNet;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecSolutionGoo : GH_Goo<ISolution>
     {

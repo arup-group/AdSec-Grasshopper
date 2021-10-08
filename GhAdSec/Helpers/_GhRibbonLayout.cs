@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 
-namespace GhAdSec.Components.Ribbon
+namespace AdSecGH.Components.Ribbon
 {
 	/// <summary>
 	/// Class containing the ribbon tab display name

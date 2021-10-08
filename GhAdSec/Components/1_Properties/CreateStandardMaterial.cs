@@ -11,12 +11,12 @@ using Rhino.Geometry;
 using System.Windows.Forms;
 using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     /// <summary>
     /// Component to create a new Standard Material for AdSec
@@ -34,7 +34,7 @@ namespace GhAdSec.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.StandardMaterial;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.StandardMaterial;
         #endregion
 
         #region Custom UI
@@ -66,7 +66,7 @@ namespace GhAdSec.Components
                 if (dropdownitems.Count == 1)
                 {
                     //Enum.TryParse(selecteditems[0], out AdSecMaterial.AdSecMaterialType materialType);
-                    designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.StandardCodes(AdSecMaterial.AdSecMaterialType.Concrete);
+                    designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.StandardCodes(AdSecMaterial.AdSecMaterialType.Concrete);
                     dropdownitems.Add(designCodeKVP.Keys.ToList());
                     // select default code to EN1992
                     selecteditems.Add(designCodeKVP.Keys.ElementAt(4));
@@ -81,7 +81,7 @@ namespace GhAdSec.Components
                         designCodeKVP.TryGetValue(typeString, out Type typ);
 
                         // update the KVP by reflecting the type
-                        designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+                        designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
 
                         // determine if we have reached the fields layer
                         if (designCodeKVP.Count > 1)
@@ -106,7 +106,7 @@ namespace GhAdSec.Components
                         {
                             // if kvp is empty we have reached the field level
                             // where we set the materials by reflecting the type
-                            materials = GhAdSec.Helpers.ReflectAdSecAPI.ReflectFields(typ);
+                            materials = AdSecGH.Helpers.ReflectAdSecAPI.ReflectFields(typ);
                             // if kvp has values we add them to create a new dropdown list
                             dropdownitems.Add(materials.Keys.ToList());
                             // with first item being the selected
@@ -144,7 +144,7 @@ namespace GhAdSec.Components
                 // get the selected material and parse it to type enum
                 Enum.TryParse(selecteditems[0], out AdSecMaterial.AdSecMaterialType materialType);
                 // get list of standard codes for the selected material
-                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.StandardCodes(materialType);
+                designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.StandardCodes(materialType);
                 // add codes for selected material to list of dropdowns
                 dropdownitems.Add(designCodeKVP.Keys.ToList());
                 if (selecteditems.Count == 1)
@@ -188,7 +188,7 @@ namespace GhAdSec.Components
                     designCodeKVP.TryGetValue(typeString, out Type typ);
 
                     // update the KVP by reflecting the type
-                    designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+                    designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
 
                     // determine if we have reached the fields layer
                     if (designCodeKVP.Count > 1)
@@ -242,7 +242,7 @@ namespace GhAdSec.Components
                     {
                         // if kvp is empty we have reached the field level
                         // where we set the materials by reflecting the type
-                        materials = GhAdSec.Helpers.ReflectAdSecAPI.ReflectFields(typ);
+                        materials = AdSecGH.Helpers.ReflectAdSecAPI.ReflectFields(typ);
                         // if kvp has values we add them to create a new dropdown list
                         dropdownitems.Add(materials.Keys.ToList());
                         // with first item being the selected
@@ -271,7 +271,6 @@ namespace GhAdSec.Components
                         spacerDescriptions[selecteditems.Count - 1] = "Grade";
                     }
                 }
-                
             }
         }
 
@@ -280,7 +279,7 @@ namespace GhAdSec.Components
             // get the selected material and parse it to type enum
             Enum.TryParse(selecteditems[0], out AdSecMaterial.AdSecMaterialType materialType);
             // get list of standard codes for the selected material
-            designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.StandardCodes(materialType);
+            designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.StandardCodes(materialType);
             // add codes for selected material to list of dropdowns
             //dropdownitems.Add(designCodeKVP.Keys.ToList());
 
@@ -306,7 +305,7 @@ namespace GhAdSec.Components
                 designCodeKVP.TryGetValue(typeString, out Type typ);
 
                 // update the KVP by reflecting the type
-                designCodeKVP = GhAdSec.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+                designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
 
                 // determine if we have reached the fields layer
                 if (designCodeKVP.Count > 1)
@@ -328,7 +327,7 @@ namespace GhAdSec.Components
                 {
                     // if kvp is empty we have reached the field level
                     // where we set the materials by reflecting the type
-                    materials = GhAdSec.Helpers.ReflectAdSecAPI.ReflectFields(typ);
+                    materials = AdSecGH.Helpers.ReflectAdSecAPI.ReflectFields(typ);
                    
                     drill = false;
 
@@ -337,8 +336,8 @@ namespace GhAdSec.Components
 
             }
             CreateAttributes();
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -387,20 +386,20 @@ namespace GhAdSec.Components
             // create new material
             AdSecMaterial mat = new AdSecMaterial(selectedMaterial);
 
-            DA.SetData(0, new GhAdSec.Parameters.AdSecMaterialGoo(mat));
+            DA.SetData(0, new AdSecGH.Parameters.AdSecMaterialGoo(mat));
 
         }
 
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
 
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             UpdateUIFromSelectedItems();
             return base.Read(reader);
         }

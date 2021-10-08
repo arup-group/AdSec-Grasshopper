@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace GhAdSec.UI.ButtonsUI
+namespace AdSecGH.UI.ButtonsUI
 {
     /// <summary>
     /// Class holding custom UI graphical buttons/boxes

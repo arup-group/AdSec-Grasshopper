@@ -13,7 +13,7 @@
 //using Oasys.Profiles;
 //using Oasys.AdSec.Materials;
 
-//namespace GhAdSec.Components
+//namespace AdSecGH.Components
 //{
 //    public class AnalyseSection : GH_AsyncComponent
 //    {

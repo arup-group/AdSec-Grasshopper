@@ -1,4 +1,4 @@
-﻿using GhAdSec.Parameters;
+﻿using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec.Materials.StressStrainCurves;
@@ -19,7 +19,7 @@ using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement.Groups;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     class GetInput
     {
@@ -36,7 +36,7 @@ namespace GhAdSec.Components
                     // check that unit is of right type
                     if (!unitNumber.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].Name + " input, index " + inputid + ": Wrong unit type supplied"
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
                             + System.Environment.NewLine + "Unit type is " + unitNumber.Value.QuantityInfo.Name + " but must be Length");
                         return UnitsNet.Length.Zero;
                     }
@@ -49,12 +49,12 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to UnitNumber");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to UnitNumber");
                     return UnitsNet.Length.Zero;
                 }
             }
             else if (!isOptional)
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!"); 
             return (UnitsNet.Length)unitNumber.Value;
         }
         internal static IFlange Flange(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
@@ -72,16 +72,16 @@ namespace GhAdSec.Components
                 // try cast from web
                 else if (gh_typ.Value is AdSecProfileWebGoo)
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") from Web to Flange");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " from Web to Flange");
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to Flange");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to Flange");
                     return null;
                 }
             }
             else if (!isOptional)
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             return null;
         }
         internal static IWeb Web(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
@@ -99,16 +99,16 @@ namespace GhAdSec.Components
                 // try cast from web
                 else if (gh_typ.Value is AdSecProfileFlangeGoo)
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") from Flange to Web");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " from Flange to Web");
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to Web");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to Web");
                     return null;
                 }
             }
             else if (!isOptional)
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             return null;
         }
         internal static IStressStrainPoint StressStrainPoint(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
@@ -129,18 +129,18 @@ namespace GhAdSec.Components
                 }
                 else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                 {
-                    pt1 = GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
+                    pt1 = AdSecGH.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to StressStrainPoint");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainPoint");
                     return null;
                 }
                 return pt1;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -165,16 +165,16 @@ namespace GhAdSec.Components
                     }
                     else if (GH_Convert.ToPoint3d(gh_typs[i].Value, ref ghpt, GH_Conversion.Both))
                     {
-                        pts.Add(GhAdSec.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt));
+                        pts.Add(AdSecGH.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt));
                     }
                     else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both))
                     {
                         PolylineCurve curve = (PolylineCurve)polycurve;
-                        pts = GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
+                        pts = AdSecGH.Parameters.AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + "), index in input list: " + i + ", to a StressStrainPoint or a Polyline");
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainPoint or a Polyline");
                         return null;
                     }
                 }
@@ -187,7 +187,7 @@ namespace GhAdSec.Components
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -207,22 +207,22 @@ namespace GhAdSec.Components
                 {
                     // try convert to polylinecurve
                     PolylineCurve curve = (PolylineCurve)polycurve;
-                    Oasys.Collections.IList<IStressStrainPoint> pts = GhAdSec.Parameters.AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
+                    Oasys.Collections.IList<IStressStrainPoint> pts = AdSecGH.Parameters.AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
                     IExplicitStressStrainCurve exCrv = IExplicitStressStrainCurve.Create();
                     exCrv.Points = pts;
-                    Tuple<Curve, List<Point3d>> tuple = GhAdSec.Parameters.AdSecStressStrainCurveGoo.Create(exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, compression);
+                    Tuple<Curve, List<Point3d>> tuple = AdSecGH.Parameters.AdSecStressStrainCurveGoo.Create(exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, compression);
                     ssCrv = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, tuple.Item2);
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to StressStrainCurve");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainCurve");
                     return null;
                 }
                 return ssCrv;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -241,7 +241,7 @@ namespace GhAdSec.Components
                     inStress = (GH_UnitNumber)gh_typ.Value;
                     if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].Name + " input, index " + inputid + ": Wrong unit type supplied"
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
                             + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
                         return Pressure.Zero;
                     }
@@ -256,14 +256,14 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to a UnitNumber of Stress");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to UnitNumber of Stress");
                     return Pressure.Zero;
                 }
                 return stressFib;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return Pressure.Zero;
         }
@@ -282,7 +282,7 @@ namespace GhAdSec.Components
                     inStrain = (GH_UnitNumber)gh_typ.Value;
                     if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.StrainUnit)))
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].Name + " input, index " + inputid + ": Wrong unit type supplied"
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
                             + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Strain");
                         return Oasys.Units.Strain.Zero;
                     }
@@ -297,14 +297,14 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to a UnitNumber of Strain");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to UnitNumber of Strain");
                     return Oasys.Units.Strain.Zero;
                 }
                 return strainFib;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return Oasys.Units.Strain.Zero;
         }
@@ -323,7 +323,7 @@ namespace GhAdSec.Components
                     inStrain = (GH_UnitNumber)gh_typ.Value;
                     if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.CurvatureUnit)))
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].Name + " input, index " + inputid + ": Wrong unit type supplied"
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
                             + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Curvature");
                         return Oasys.Units.Curvature.Zero;
                     }
@@ -338,14 +338,14 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to a UnitNumber of Curvature");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to UnitNumber of Curvature");
                     return Oasys.Units.Curvature.Zero;
                 }
                 return crvature;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return Oasys.Units.Curvature.Zero;
         }
@@ -364,7 +364,7 @@ namespace GhAdSec.Components
                     inForce = (GH_UnitNumber)gh_typ.Value;
                     if (!inForce.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.ForceUnit)))
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].Name + " input, index " + inputid + ": Wrong unit type supplied"
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
                             + System.Environment.NewLine + "Unit type is " + inForce.Value.QuantityInfo.Name + " but must be Force");
                         return UnitsNet.Force.Zero;
                     }
@@ -379,14 +379,14 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to a UnitNumber of Force");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to UnitNumber of Force");
                     return UnitsNet.Force.Zero;
                 }
                 return force;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return UnitsNet.Force.Zero;
         }
@@ -405,7 +405,7 @@ namespace GhAdSec.Components
                     inMoment = (GH_UnitNumber)gh_typ.Value;
                     if (!inMoment.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.MomentUnit)))
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].Name + " input, index " + inputid + ": Wrong unit type supplied"
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
                             + System.Environment.NewLine + "Unit type is " + inMoment.Value.QuantityInfo.Name + " but must be Moment");
                         return Oasys.Units.Moment.Zero;
                     }
@@ -420,14 +420,14 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to a UnitNumber of Moment");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to UnitNumber of Moment");
                     return Oasys.Units.Moment.Zero;
                 }
                 return moment;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return Oasys.Units.Moment.Zero;
         }
@@ -449,14 +449,14 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to ConcreteCrackCalculationParameters");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to ConcreteCrackCalculationParameters");
                     return null;
                 }
                 return concreteCrack;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -472,14 +472,14 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to a DesignCode");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to DesignCode");
                     return null;
                 }
                 return designCode;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -495,13 +495,13 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an AdSec Material");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to an AdSec Material");
                 }
                 return material;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -519,17 +519,17 @@ namespace GhAdSec.Components
                 {
                     AdSecRebarLayerGoo spacing = (AdSecRebarLayerGoo)gh_typ.Value;
                     rebar = new AdSecRebarBundleGoo(spacing.Value.BarBundle);
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Converted " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") from RebarSpacing to an AdSec Rebar. All spacing information has been lost!");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Converted " + owner.Params.Input[inputid].NickName + " from RebarSpacing to an AdSec Rebar. All spacing information has been lost!");
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an AdSec Rebar");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to Rebar");
                 }
                 return rebar;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -549,13 +549,13 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an AdSec RebarSpacing");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarSpacing");
                 }
                 return spacing;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -563,32 +563,30 @@ namespace GhAdSec.Components
         {
             return AdSecRebarLayerGoo(owner, DA, inputid, isOptional).Value;
         }
-        internal static IGroup ReinforcementGroup(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        internal static AdSecRebarGroupGoo ReinforcementGroup(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
-            AdSecRebarGroupGoo group = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(inputid, ref gh_typ))
             {
                 if (gh_typ.Value is AdSecRebarGroupGoo)
                 {
-                    group = (AdSecRebarGroupGoo)gh_typ.Value;
-                    return group.Value;
+                    return (AdSecRebarGroupGoo)gh_typ.Value;
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an AdSec RebarLayout");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarLayout");
                     return null;
                 }
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
-        internal static Oasys.Collections.IList<IGroup> ReinforcementGroups(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        internal static List<AdSecRebarGroupGoo> ReinforcementGroups(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
-            Oasys.Collections.IList<IGroup> subs = Oasys.Collections.IList<IGroup>.Create();
+            List<AdSecRebarGroupGoo> grps = new List<AdSecRebarGroupGoo>();
             List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
             if (DA.GetDataList(inputid, gh_typs))
             {
@@ -596,24 +594,23 @@ namespace GhAdSec.Components
                 {
                     if (gh_typs[i].Value is IGroup)
                     {
-                        subs.Add((IGroup)gh_typs[i].Value);
+                        grps.Add(new AdSecRebarGroupGoo((IGroup)gh_typs[i].Value));
                     }
                     else if (gh_typs[i].Value is AdSecRebarGroupGoo)
                     {
-                        AdSecRebarGroupGoo bargroup = (AdSecRebarGroupGoo)gh_typs[i].Value;
-                        subs.Add(bargroup.Value);
+                        grps.Add((AdSecRebarGroupGoo)gh_typs[i].Value);
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + "), index in input list: " + i + ", to a SubComponent or a Section");
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarGroup");
                         return null;
                     }
                 }
-                return subs;
+                return grps;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -635,14 +632,20 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an Vertex Point");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to an Vertex Point");
                 }
 
                 return pt;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+            }
+            else if (isOptional)
+            {
+                return new AdSecPointGoo(Oasys.Profiles.IPoint.Create(
+                new UnitsNet.Length(0, DocumentUnits.LengthUnit),
+                new UnitsNet.Length(0, DocumentUnits.LengthUnit)));
             }
             return null;
 
@@ -681,11 +684,11 @@ namespace GhAdSec.Components
                     else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both))
                     {
                         PolylineCurve curve = (PolylineCurve)polycurve;
-                        pts = GhAdSec.Parameters.AdSecPointGoo.PtsFromPolylineCurve(curve);
+                        pts = AdSecGH.Parameters.AdSecPointGoo.PtsFromPolylineCurve(curve);
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + "), index in input list: " + i + ", to a StressStrainPoint or a Polyline");
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainPoint or Polyline");
                         return null;
                     }
                 }
@@ -693,7 +696,7 @@ namespace GhAdSec.Components
                 {
                     if (tempPts.Count == 1)
                     {
-                        pts.Add(GhAdSec.Parameters.AdSecPointGoo.CreateFromPoint3d(tempPts[0], Plane.WorldYZ));
+                        pts.Add(AdSecGH.Parameters.AdSecPointGoo.CreateFromPoint3d(tempPts[0], Plane.WorldYZ));
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Single Point converted to local point. Assumed that local coordinate system is in a YZ-Plane");
                     }
                     else
@@ -702,7 +705,7 @@ namespace GhAdSec.Components
                         //Polyline pol = new Polyline(tempPts);
                         //plane.Origin = pol.CenterPoint();
                         foreach (Point3d pt in tempPts)
-                            pts.Add(GhAdSec.Parameters.AdSecPointGoo.CreateFromPoint3d(pt, plane));
+                            pts.Add(AdSecGH.Parameters.AdSecPointGoo.CreateFromPoint3d(pt, plane));
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "List of Points have been converted to local points. Assumed that local coordinate system is matching best-fit plane through points");
                     }
 
@@ -712,7 +715,7 @@ namespace GhAdSec.Components
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -729,7 +732,7 @@ namespace GhAdSec.Components
                     // check that unit is of right type
                     if (!a1.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.AngleUnit)))
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].Name + " input, index " + inputid + ": Wrong unit type supplied"
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
                             + System.Environment.NewLine + "Unit type is " + a1.Value.QuantityInfo.Name + " but must be Angle");
                         return UnitsNet.Angle.Zero;
                     }
@@ -742,14 +745,14 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an Angle");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to Angle");
                     return UnitsNet.Angle.Zero;
                 }
                 return (UnitsNet.Angle)a1.Value;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return UnitsNet.Angle.Zero;
         }
@@ -774,7 +777,7 @@ namespace GhAdSec.Components
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert Curve in " + owner.Params.Input[inputid_Boundary].Name + " input (index " + inputid_Boundary + ") to Polyline");
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Boundary].NickName + " to Polyline");
                         return null;
                     }
 
@@ -797,13 +800,13 @@ namespace GhAdSec.Components
                                     }
                                     else
                                     {
-                                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].Name + " input (index " + inputid_Voids + "), index in input list: " + i + ", to Polyline");
+                                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + ", index in input list: " + i + ", to Polyline");
                                         return null;
                                     }
                                 }
                                 else
                                 {
-                                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].Name + " input (index " + inputid_Voids + "), index in input list: " + i + ", to Polyline");
+                                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + ", index in input list: " + i + ", to Polyline");
                                     return null;
                                 }
                             }
@@ -812,21 +815,21 @@ namespace GhAdSec.Components
                         }
                         else if (owner.Params.Input[inputid_Voids].SourceCount > 0)
                         {
-                            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].Name + " input (index " + inputid_Voids + ") to Polyline(s)");
+                            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " input to Polyline(s)");
                             return null;
                         }
                     }
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid_Boundary].Name + " input (index " + inputid_Boundary + ") to Boundary");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid_Boundary].NickName + " to Boundary");
                     return null;
                 }
                 return (AdSecProfileGoo)perimeter;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid_Boundary].Name + " input, index " + inputid_Boundary + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid_Boundary].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -844,14 +847,14 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    prfl = Boundaries(owner, DA, inputid, -1, GhAdSec.DocumentUnits.LengthUnit).Profile;
+                    prfl = Boundaries(owner, DA, inputid, -1, DocumentUnits.LengthUnit).Profile;
                 }
                 
                 return prfl;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -868,13 +871,13 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    prfl = Boundaries(owner, DA, inputid, -1, GhAdSec.DocumentUnits.LengthUnit);
+                    prfl = Boundaries(owner, DA, inputid, -1, DocumentUnits.LengthUnit);
                 }
                 return prfl;
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -891,13 +894,13 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an Section");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to Section");
                     return null;
                 }
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -913,13 +916,13 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + ") to an AdSec Results");
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to AdSec Results");
                     return null;
                 }
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }
@@ -950,7 +953,7 @@ namespace GhAdSec.Components
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].Name + " input (index " + inputid + "), index in input list: " + i + ", to a SubComponent or a Section");
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to SubComponent or Section");
                         return null;
                     }
                 }
@@ -958,7 +961,7 @@ namespace GhAdSec.Components
             }
             else if (!isOptional)
             {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + owner.Params.Input[inputid].Name + " input, index " + inputid + " - Input required");
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
             }
             return null;
         }

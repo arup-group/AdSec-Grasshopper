@@ -24,7 +24,7 @@ using Rhino.Display;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement.Layers;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecRebarLayerGoo : GH_Goo<ILayer>
     {
@@ -46,7 +46,7 @@ namespace GhAdSec.Parameters
         public override string ToString()
         {
             string bar = "";
-            UnitsNet.Length dia = this.Value.BarBundle.Diameter.ToUnit(GhAdSec.DocumentUnits.LengthUnit);
+            UnitsNet.Length dia = this.Value.BarBundle.Diameter.ToUnit(DocumentUnits.LengthUnit);
             bar += "Ø" + dia.ToString();
             if (this.Value.BarBundle.CountPerBundle > 1)
             {
@@ -64,7 +64,7 @@ namespace GhAdSec.Parameters
                 try
                 {
                     ILayerByBarPitch byBarPitch = (ILayerByBarPitch)Value;
-                    UnitsNet.Length spacing = byBarPitch.Pitch.ToUnit(GhAdSec.DocumentUnits.LengthUnit);
+                    UnitsNet.Length spacing = byBarPitch.Pitch.ToUnit(DocumentUnits.LengthUnit);
                     str = bar + " bars / " + spacing.ToString();
                 }
                 catch (Exception)

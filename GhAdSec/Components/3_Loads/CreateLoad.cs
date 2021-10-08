@@ -11,7 +11,7 @@ using Rhino.Geometry;
 using System.Windows.Forms;
 using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -20,7 +20,7 @@ using UnitsNet.GH;
 using UnitsNet;
 using Oasys.AdSec;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     /// <summary>
     /// Component to create a new Stress Strain Point
@@ -38,7 +38,7 @@ namespace GhAdSec.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        //protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.StressStrainPoint;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateLoad;
         #endregion
 
         #region Custom UI
@@ -51,17 +51,17 @@ namespace GhAdSec.Components
                 selecteditems = new List<string>();
 
                 // force
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredForceUnits);
+                dropdownitems.Add(DocumentUnits.FilteredForceUnits);
                 selecteditems.Add(forceUnit.ToString());
                 
                 // moment
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredMomentUnits);
+                dropdownitems.Add(DocumentUnits.FilteredMomentUnits);
                 selecteditems.Add(momentUnit.ToString());
 
                 IQuantity force = new UnitsNet.Force(0, forceUnit);
+                
                 forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-                IQuantity moment = new Oasys.Units.Moment(0, momentUnit);
-                momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
+                momentUnitAbbreviation = Oasys.Units.Moment.GetAbbreviation(momentUnit);
 
                 first = false;
             }
@@ -85,8 +85,8 @@ namespace GhAdSec.Components
             }
 
             // update name of inputs (to display unit on sliders)
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -97,8 +97,8 @@ namespace GhAdSec.Components
             momentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), selecteditems[1]);
 
             CreateAttributes();
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -118,8 +118,8 @@ namespace GhAdSec.Components
         });
         private bool first = true;
 
-        private UnitsNet.Units.ForceUnit forceUnit = GhAdSec.DocumentUnits.ForceUnit;
-        private Oasys.Units.MomentUnit momentUnit = GhAdSec.DocumentUnits.MomentUnit;
+        private UnitsNet.Units.ForceUnit forceUnit = DocumentUnits.ForceUnit;
+        private Oasys.Units.MomentUnit momentUnit = DocumentUnits.MomentUnit;
         string forceUnitAbbreviation;
         string momentUnitAbbreviation;
         #endregion
@@ -129,6 +129,9 @@ namespace GhAdSec.Components
             pManager.AddGenericParameter("Fx [" + forceUnitAbbreviation + "]", "X", "The axial force. Positive x is tension.", GH_ParamAccess.item);
             pManager.AddGenericParameter("Myy [" + momentUnitAbbreviation + "]", "YY", "The moment about local y-axis. Positive yy is anti - clockwise moment about local y-axis.", GH_ParamAccess.item);
             pManager.AddGenericParameter("Mzz [" + momentUnitAbbreviation + "]", "ZZ", "The moment about local z-axis. Positive zz is anti - clockwise moment about local z-axis.", GH_ParamAccess.item);
+            // make all but last input optional
+            for (int i = 0; i < pManager.ParamCount - 1; i++)
+                pManager[i].Optional = true;
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -139,9 +142,18 @@ namespace GhAdSec.Components
         {
             // Create new load
             ILoad load = ILoad.Create(
-                GetInput.Force(this, DA, 0, forceUnit),
-                GetInput.Moment(this, DA, 1, momentUnit),
-                GetInput.Moment(this, DA, 2, momentUnit));
+                GetInput.Force(this, DA, 0, forceUnit, true),
+                GetInput.Moment(this, DA, 1, momentUnit, true),
+                GetInput.Moment(this, DA, 2, momentUnit, true));
+
+            // check for enough input parameters
+            if (this.Params.Input[0].SourceCount == 0 && this.Params.Input[1].SourceCount == 0
+                && this.Params.Input[2].SourceCount == 0)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameters " + this.Params.Input[0].NickName + ", " +
+                    this.Params.Input[1].NickName + ", and " + this.Params.Input[2].NickName + " failed to collect data!");
+                return;
+            }
 
             DA.SetData(0, new AdSecLoadGoo(load));
         }
@@ -149,13 +161,13 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
 
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             UpdateUIFromSelectedItems();
 
@@ -185,8 +197,7 @@ namespace GhAdSec.Components
         {
             IQuantity force = new UnitsNet.Force(0, forceUnit);
             forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-            IQuantity moment = new Oasys.Units.Moment(0, momentUnit);
-            momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
+            momentUnitAbbreviation = Oasys.Units.Moment.GetAbbreviation(momentUnit);
             Params.Input[0].Name = "Fx [" + forceUnitAbbreviation + "]";
             Params.Input[1].Name = "Myy [" + momentUnitAbbreviation + "]";
             Params.Input[2].Name = "Mzz [" + momentUnitAbbreviation + "]";

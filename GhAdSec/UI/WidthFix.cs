@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace GhAdSec.UI
+namespace AdSecGH.UI
 {
     /// <summary>
     /// Class holding custom UI graphical buttons/boxes

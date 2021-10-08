@@ -11,7 +11,7 @@ using Rhino.Geometry;
 using System.Windows.Forms;
 using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -21,8 +21,9 @@ using UnitsNet;
 using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement.Preloads;
 using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     /// <summary>
     /// Component to create a new Stress Strain Point
@@ -40,7 +41,7 @@ namespace GhAdSec.Components
         { this.Hidden = false; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.Prestress;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.Prestress;
         #endregion
 
         #region Custom UI
@@ -58,13 +59,12 @@ namespace GhAdSec.Components
                 selecteditems.Add(dropdownitems[0][0]);
 
                 // force
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredForceUnits);
+                dropdownitems.Add(DocumentUnits.FilteredForceUnits);
                 selecteditems.Add(forceUnit.ToString());
 
                 IQuantity force = new UnitsNet.Force(0, forceUnit);
                 forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-                IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
-                strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
+                strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
                 IQuantity stress = new UnitsNet.Pressure(0, stressUnit);
                 stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 
@@ -84,15 +84,15 @@ namespace GhAdSec.Components
                 switch (selecteditems[0])
                 {
                     case ("Force"):
-                        dropdownitems[1] = GhAdSec.DocumentUnits.FilteredForceUnits;
+                        dropdownitems[1] = DocumentUnits.FilteredForceUnits;
                         selecteditems[0] = forceUnit.ToString();
                         break;
                     case ("Strain"):
-                        dropdownitems[1] = GhAdSec.DocumentUnits.FilteredStrainUnits;
+                        dropdownitems[1] = DocumentUnits.FilteredStrainUnits;
                         selecteditems[0] = strainUnit.ToString();
                         break;
                     case ("Stress"):
-                        dropdownitems[1] = GhAdSec.DocumentUnits.FilteredStressUnits;
+                        dropdownitems[1] = DocumentUnits.FilteredStressUnits;
                         selecteditems[0] = stressUnit.ToString();
                         break;
                 }
@@ -114,8 +114,8 @@ namespace GhAdSec.Components
             }
 
             // update name of inputs (to display unit on sliders)
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -143,9 +143,9 @@ namespace GhAdSec.Components
         });
         private bool first = true;
 
-        private UnitsNet.Units.ForceUnit forceUnit = GhAdSec.DocumentUnits.ForceUnit;
-        private Oasys.Units.StrainUnit strainUnit = GhAdSec.DocumentUnits.StrainUnit;
-        private UnitsNet.Units.PressureUnit stressUnit = GhAdSec.DocumentUnits.StressUnit;
+        private UnitsNet.Units.ForceUnit forceUnit = DocumentUnits.ForceUnit;
+        private Oasys.Units.StrainUnit strainUnit = DocumentUnits.StrainUnit;
+        private UnitsNet.Units.PressureUnit stressUnit = DocumentUnits.StressUnit;
         string forceUnitAbbreviation;
         string strainUnitAbbreviation;
         string stressUnitAbbreviation;
@@ -153,18 +153,18 @@ namespace GhAdSec.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("RebarLayout", "RbL", "AdSec Reinforcement Layout to apply Preload to", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Force [" + forceUnitAbbreviation + "]", "P", "The pre-force per reinforcement bar. Positive force is tension.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("RebarGroup", "RbG", "AdSec Reinforcement Group to apply Preload to", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Force [" + forceUnitAbbreviation + "]", "P", "The pre-load per reinforcement bar. Positive value is tension.", GH_ParamAccess.item);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Layout", "RbL", "Preloaded Rebar Layout for AdSec Section", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Prestressed RebarGroup", "RbG", "Preloaded Rebar Group for AdSec Section", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // get rebargroup
-            IGroup rebar = GetInput.ReinforcementGroup(this, DA, 0);
+            AdSecRebarGroupGoo in_rebar = GetInput.ReinforcementGroup(this, DA, 0);
 
             IPreload load = null;
             // Create new load
@@ -180,16 +180,23 @@ namespace GhAdSec.Components
                     load = IPreStress.Create(GetInput.Stress(this, DA, 1, stressUnit));
                     break;
             }
-            ILongitudinalGroup longitudinal = (ILongitudinalGroup)rebar;
+            ILongitudinalGroup longitudinal = (ILongitudinalGroup)in_rebar.Value;
             longitudinal.Preload = load;
-            rebar = (IGroup)longitudinal;
-            DA.SetData(0, new AdSecRebarGroupGoo(rebar));
+            AdSecRebarGroupGoo out_rebar = new AdSecRebarGroupGoo(longitudinal);
+            if (in_rebar.Cover != null)
+                out_rebar.Cover = ICover.Create(in_rebar.Cover.UniformCover);
+
+            DA.SetData(0, out_rebar);
+            
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Applying prestress will change the up-stream (backwards) rebar object as well " +
+                "- please make a copy of the input if you want to have both a rebar with and without prestress. " +
+                "This will change in future releases, apologies for the inconvenience...");
         }
 
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetString("force", forceUnit.ToString());
             writer.SetString("strain", strainUnit.ToString());
             writer.SetString("stress", stressUnit.ToString());
@@ -197,7 +204,7 @@ namespace GhAdSec.Components
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), reader.GetString("force"));
             strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), reader.GetString("strain"));
@@ -231,8 +238,7 @@ namespace GhAdSec.Components
         {
             IQuantity force = new UnitsNet.Force(0, forceUnit);
             forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-            IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
-            strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
+            strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
             IQuantity stress = new UnitsNet.Pressure(0, stressUnit);
             stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 

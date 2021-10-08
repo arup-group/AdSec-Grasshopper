@@ -11,7 +11,7 @@ using Rhino.Geometry;
 using System.Windows.Forms;
 using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -20,7 +20,7 @@ using UnitsNet.GH;
 using UnitsNet;
 using Oasys.AdSec;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     /// <summary>
     /// Component to create a new Stress Strain Point
@@ -38,7 +38,7 @@ namespace GhAdSec.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        //protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.StressStrainPoint;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.DeformationLoad;
         #endregion
 
         #region Custom UI
@@ -51,17 +51,15 @@ namespace GhAdSec.Components
                 selecteditems = new List<string>();
 
                 // strain
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredStrainUnits);
+                dropdownitems.Add(DocumentUnits.FilteredStrainUnits);
                 selecteditems.Add(strainUnit.ToString());
 
                 // curvature
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredCurvatureUnits);
+                dropdownitems.Add(DocumentUnits.FilteredCurvatureUnits);
                 selecteditems.Add(curvatureUnit.ToString());
 
-                IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
-                strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-                IQuantity curvature = new Oasys.Units.Curvature(0, curvatureUnit);
-                curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
+                strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+                curvatureUnitAbbreviation = Oasys.Units.Curvature.GetAbbreviation(curvatureUnit);
 
                 first = false;
             }
@@ -85,8 +83,8 @@ namespace GhAdSec.Components
             }
 
             // update name of inputs (to display unit on sliders)
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -97,8 +95,8 @@ namespace GhAdSec.Components
             curvatureUnit = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), selecteditems[1]);
 
             CreateAttributes();
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -118,8 +116,8 @@ namespace GhAdSec.Components
         });
         private bool first = true;
 
-        private Oasys.Units.StrainUnit strainUnit = GhAdSec.DocumentUnits.StrainUnit;
-        private Oasys.Units.CurvatureUnit curvatureUnit = GhAdSec.DocumentUnits.CurvatureUnit;
+        private Oasys.Units.StrainUnit strainUnit = DocumentUnits.StrainUnit;
+        private Oasys.Units.CurvatureUnit curvatureUnit = DocumentUnits.CurvatureUnit;
         string strainUnitAbbreviation;
         string curvatureUnitAbbreviation;
         #endregion
@@ -149,12 +147,12 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             UpdateUIFromSelectedItems();
 
@@ -182,10 +180,8 @@ namespace GhAdSec.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            IQuantity strain = new Oasys.Units.Strain(0, strainUnit);
-            strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-            IQuantity curvature = new Oasys.Units.Curvature(0, curvatureUnit);
-            curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
+            strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+            curvatureUnitAbbreviation = Oasys.Units.Curvature.GetAbbreviation(curvatureUnit);
             Params.Input[0].Name = "εx [" + strainUnitAbbreviation + "]";
             Params.Input[1].Name = "κyy [" + curvatureUnitAbbreviation + "]";
             Params.Input[2].Name = "κzz [" + curvatureUnitAbbreviation + "]";

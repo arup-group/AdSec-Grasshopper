@@ -24,7 +24,7 @@ using Rhino.Display;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecRebarBundleGoo : GH_Goo<IBarBundle>
     {
@@ -46,7 +46,7 @@ namespace GhAdSec.Parameters
         public override string ToString()
         {
             string bar = "Rebar {";
-            UnitsNet.Length thk1 = this.Value.Diameter.ToUnit(GhAdSec.DocumentUnits.LengthUnit);
+            UnitsNet.Length thk1 = this.Value.Diameter.ToUnit(DocumentUnits.LengthUnit);
             bar += "Ø" + thk1.ToString();
             if (this.Value.CountPerBundle > 1)
             {

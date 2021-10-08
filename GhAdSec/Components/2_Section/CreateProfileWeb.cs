@@ -8,12 +8,12 @@ using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
 using Rhino.Geometry;
 using Oasys.AdSec.Materials.StressStrainCurves;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using UnitsNet.GH;
 using Oasys.Profiles;
 using UnitsNet;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class CreateProfileWeb : GH_Component, IGH_VariableParameterComponent
     {
@@ -26,7 +26,7 @@ namespace GhAdSec.Components
         public override Guid ComponentGuid => new Guid("0f9a9223-e745-44b9-add2-8b2e5950e86a");
         public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateWeb;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateWeb;
         #endregion
 
         #region Custom UI
@@ -45,7 +45,7 @@ namespace GhAdSec.Components
 
                 // length
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredLengthUnits);
+                dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
@@ -70,14 +70,12 @@ namespace GhAdSec.Components
                 lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
             }
             ToggleInput();
-            this.OnDisplayExpired(true);
         }
         private void UpdateUIFromSelectedItems()
         {
             lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
             CreateAttributes();
             ToggleInput();
-            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -89,7 +87,7 @@ namespace GhAdSec.Components
             "Web Type",
             "Measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = GhAdSec.DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
         string unitAbbreviation;
         #endregion
 
@@ -140,8 +138,6 @@ namespace GhAdSec.Components
 
         private void ToggleInput()
         {
-            RecordUndoEvent("Changed dropdown");
-
             switch (_mode)
             {
                 case FoldMode.Constant:
@@ -160,19 +156,20 @@ namespace GhAdSec.Components
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
             ExpireSolution(true);
+            this.OnDisplayExpired(true);
         }
         #endregion
 
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetString("mode", _mode.ToString());
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
             UpdateUIFromSelectedItems();
             first = false;

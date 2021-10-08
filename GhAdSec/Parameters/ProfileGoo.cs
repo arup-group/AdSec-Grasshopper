@@ -25,7 +25,7 @@ using Oasys.Profiles;
 using UnitsNet.Units;
 
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecProfileGoo : GH_GeometricGoo<Polyline>, IGH_PreviewData
     {
@@ -100,9 +100,9 @@ namespace GhAdSec.Parameters
                     UnitsNet.Area area = m_profile.Area();
                     double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
                     UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
-                    previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
-                    previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
-                    previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(GhAdSec.DocumentUnits.LengthUnit));
+                    previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(DocumentUnits.LengthUnit));
+                    previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(DocumentUnits.LengthUnit));
+                    previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(DocumentUnits.LengthUnit));
                 }
             }
         }
@@ -253,8 +253,8 @@ namespace GhAdSec.Parameters
             foreach (IPoint apt in apts)
             {
                 Point3d pt = new Point3d(0,
-                    apt.Y.As(GhAdSec.DocumentUnits.LengthUnit), 
-                    apt.Z.As(GhAdSec.DocumentUnits.LengthUnit)
+                    apt.Y.As(DocumentUnits.LengthUnit), 
+                    apt.Z.As(DocumentUnits.LengthUnit)
                     );
                 pt.Transform(maptToLocal);
                 rhPts.Add(pt);
@@ -534,7 +534,7 @@ namespace GhAdSec.Parameters
                 Polyline poly;
                 if (crv.TryGetPolyline(out poly))
                 {
-                    AdSecProfileGoo temp = new AdSecProfileGoo(poly, GhAdSec.DocumentUnits.LengthUnit);
+                    AdSecProfileGoo temp = new AdSecProfileGoo(poly, DocumentUnits.LengthUnit);
                     this.m_value = temp.m_value;
                     this.m_profile = temp.m_profile;
                     this.m_voidEdges = temp.m_voidEdges;
@@ -553,25 +553,26 @@ namespace GhAdSec.Parameters
         {
             if (Value != null)
             {
-                if (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) // not selected
+                Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+                if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
                 {
-                    args.Pipeline.DrawPolyline(Value, GhAdSec.UI.Colour.OasysBlue, 2);
+                    args.Pipeline.DrawPolyline(Value, AdSecGH.UI.Colour.OasysBlue, 2);
                     if (this.m_voidEdges != null)
                     {
                         foreach (Polyline crv in m_voidEdges)
                         {
-                            args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysBlue, 1);
+                            args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysBlue, 1);
                         }
                     }
                 }
                 else // selected
                 {
-                    args.Pipeline.DrawPolyline(Value, GhAdSec.UI.Colour.OasysYellow, 3);
+                    args.Pipeline.DrawPolyline(Value, AdSecGH.UI.Colour.OasysYellow, 3);
                     if (this.m_voidEdges != null)
                     {
                         foreach (Polyline crv in m_voidEdges)
                         {
-                            args.Pipeline.DrawPolyline(crv, GhAdSec.UI.Colour.OasysYellow, 2);
+                            args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysYellow, 2);
                         }
                     }
                 }

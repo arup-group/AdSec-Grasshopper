@@ -24,7 +24,7 @@ using Rhino.Display;
 using Oasys.AdSec.Materials;
 using Oasys.Profiles;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecProfileFlangeGoo : GH_Goo<IFlange>
     {
@@ -46,8 +46,8 @@ namespace GhAdSec.Parameters
         public override string ToString()
         {
             string flange = "AdSec Flange {";
-            UnitsNet.Length thk1 = this.Value.Width.ToUnit(GhAdSec.DocumentUnits.LengthUnit);
-            UnitsNet.Length thk2 = this.Value.Thickness.ToUnit(GhAdSec.DocumentUnits.LengthUnit);
+            UnitsNet.Length thk1 = this.Value.Width.ToUnit(DocumentUnits.LengthUnit);
+            UnitsNet.Length thk2 = this.Value.Thickness.ToUnit(DocumentUnits.LengthUnit);
             flange += "Width:" + thk1.ToString() + ", Thk:" + thk2.ToString() + "}";
             return flange;
         }

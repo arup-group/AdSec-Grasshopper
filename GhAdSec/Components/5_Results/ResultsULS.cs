@@ -14,11 +14,11 @@ using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using Rhino.Geometry;
 using System.Collections.Generic;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class ResultsULS : GH_Component
     {
@@ -34,7 +34,7 @@ namespace GhAdSec.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        //protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.Analyse;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.ULS;
         #endregion
 
         #region Custom UI
@@ -51,11 +51,11 @@ namespace GhAdSec.Components
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            IQuantity strain = new Oasys.Units.Strain(0, GhAdSec.DocumentUnits.StrainUnit);
+            IQuantity strain = new Oasys.Units.Strain(0, DocumentUnits.StrainUnit);
             string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-            IQuantity curvature = new Oasys.Units.Curvature(0, GhAdSec.DocumentUnits.CurvatureUnit);
+            IQuantity curvature = new Oasys.Units.Curvature(0, DocumentUnits.CurvatureUnit);
             string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
-            IQuantity moment = new Oasys.Units.Moment(0, GhAdSec.DocumentUnits.MomentUnit);
+            IQuantity moment = new Oasys.Units.Moment(0, DocumentUnits.MomentUnit);
             string momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
 
             pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." + 
@@ -105,13 +105,13 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].Name + " input (index " + 1 + ") to an AdSec Load");
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
                     return;
                 }
             }
             else
             {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + Params.Input[1].Name + " input, index " + 1 + " - Input required");
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
                 return;
             }
 
@@ -122,9 +122,9 @@ namespace GhAdSec.Components
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Utilisation is above 1!");
 
             DA.SetData(2, new Vector3d(
-                uls.Deformation.X.As(GhAdSec.DocumentUnits.StrainUnit),
-                uls.Deformation.YY.As(GhAdSec.DocumentUnits.CurvatureUnit),
-                uls.Deformation.ZZ.As(GhAdSec.DocumentUnits.CurvatureUnit)));
+                uls.Deformation.X.As(DocumentUnits.StrainUnit),
+                uls.Deformation.YY.As(DocumentUnits.CurvatureUnit),
+                uls.Deformation.ZZ.As(DocumentUnits.CurvatureUnit)));
             double defUtil = uls.DeformationUtilisation.As(UnitsNet.Units.RatioUnit.DecimalFraction);
             DA.SetData(3, defUtil);
             if (defUtil > 1)
@@ -134,8 +134,8 @@ namespace GhAdSec.Components
             foreach (IMomentRange mrng in uls.MomentRanges)
             {
                 Rhino.Geometry.Interval interval = new Interval(
-                    mrng.Min.As(GhAdSec.DocumentUnits.MomentUnit),
-                    mrng.Max.As(GhAdSec.DocumentUnits.MomentUnit));
+                    mrng.Min.As(DocumentUnits.MomentUnit),
+                    mrng.Max.As(DocumentUnits.MomentUnit));
                 momentRanges.Add(new GH_Interval(interval));
             }
             DA.SetDataList(4, momentRanges);

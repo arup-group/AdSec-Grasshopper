@@ -125,7 +125,7 @@ namespace UnitsNet.GH
     public class UnitNumber : GH_PersistentParam<GH_UnitNumber>
     {
         public UnitNumber()
-          : base(new GH_InstanceDescription("UnitNumber", "UNum", "Quantity = number + unit", GhAdSec.Components.Ribbon.CategoryName.Name(), GhAdSec.Components.Ribbon.SubCategoryName.Cat9()))
+          : base(new GH_InstanceDescription("UnitNumber", "UNum", "Quantity = number + unit", AdSecGH.Components.Ribbon.CategoryName.Name(), AdSecGH.Components.Ribbon.SubCategoryName.Cat9()))
         {
         }
 
@@ -134,7 +134,7 @@ namespace UnitsNet.GH
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.UnitParam;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.UnitParam;
 
         protected override GH_GetterResult Prompt_Plural(ref List<GH_UnitNumber> values)
         {

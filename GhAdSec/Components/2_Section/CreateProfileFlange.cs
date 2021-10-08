@@ -14,12 +14,12 @@ using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using Rhino.Geometry;
 using System.Collections.Generic;
 using UnitsNet.GH;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class CreateProfileFlange : GH_Component, IGH_VariableParameterComponent
     {
@@ -35,7 +35,7 @@ namespace GhAdSec.Components
 
         public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.CreateFlange;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateFlange;
         #endregion
 
         #region Custom UI
@@ -49,7 +49,7 @@ namespace GhAdSec.Components
 
                 // length
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredLengthUnits);
+                dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
@@ -68,8 +68,8 @@ namespace GhAdSec.Components
             lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
 
             // update name of inputs (to display unit on sliders)
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -78,8 +78,8 @@ namespace GhAdSec.Components
             lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[0]);
 
             CreateAttributes();
-            ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
             Params.OnParametersChanged();
             this.OnDisplayExpired(true);
         }
@@ -93,7 +93,7 @@ namespace GhAdSec.Components
             "Measure"
         });
         private bool first = true;
-        private UnitsNet.Units.LengthUnit lengthUnit = GhAdSec.DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
         string unitAbbreviation;
         #endregion
 
@@ -123,13 +123,13 @@ namespace GhAdSec.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
 
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             UpdateUIFromSelectedItems();
 

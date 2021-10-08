@@ -24,7 +24,7 @@ using Rhino.Display;
 using Oasys.Profiles;
 using UnitsNet;
 
-namespace GhAdSec.Parameters
+namespace AdSecGH.Parameters
 {
     public class AdSecPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData
     {
@@ -33,8 +33,8 @@ namespace GhAdSec.Parameters
         {
             m_value = point;
             this.m_AdSecPoint = IPoint.Create(
-                new UnitsNet.Length(m_value.Y, GhAdSec.DocumentUnits.LengthUnit), 
-                new UnitsNet.Length(m_value.Z, GhAdSec.DocumentUnits.LengthUnit));
+                new UnitsNet.Length(m_value.Y, DocumentUnits.LengthUnit), 
+                new UnitsNet.Length(m_value.Z, DocumentUnits.LengthUnit));
         }
         public AdSecPointGoo(AdSecPointGoo adsecPoint)
         {
@@ -46,16 +46,16 @@ namespace GhAdSec.Parameters
             m_AdSecPoint = adsecPoint;
             this.m_value = new Point3d(
                 0,
-                m_AdSecPoint.Y.As(GhAdSec.DocumentUnits.LengthUnit),
-                m_AdSecPoint.Z.As(GhAdSec.DocumentUnits.LengthUnit));
+                m_AdSecPoint.Y.As(DocumentUnits.LengthUnit),
+                m_AdSecPoint.Z.As(DocumentUnits.LengthUnit));
         }
         public AdSecPointGoo(UnitsNet.Length y, UnitsNet.Length z)
         {
             m_AdSecPoint = IPoint.Create(y, z);
             m_value = new Point3d(
                 0,
-                m_AdSecPoint.Y.As(GhAdSec.DocumentUnits.LengthUnit),
-                m_AdSecPoint.Z.As(GhAdSec.DocumentUnits.LengthUnit));
+                m_AdSecPoint.Y.As(DocumentUnits.LengthUnit),
+                m_AdSecPoint.Z.As(DocumentUnits.LengthUnit));
         }
 
         public static IPoint CreateFromPoint3d(Point3d point, Plane plane)
@@ -65,8 +65,8 @@ namespace GhAdSec.Parameters
             Point3d trans = new Point3d(point);
             trans.Transform(mapToLocal);
             return IPoint.Create(
-                new UnitsNet.Length(trans.Y, GhAdSec.DocumentUnits.LengthUnit),
-                new UnitsNet.Length(trans.Z, GhAdSec.DocumentUnits.LengthUnit));
+                new UnitsNet.Length(trans.Y, DocumentUnits.LengthUnit),
+                new UnitsNet.Length(trans.Z, DocumentUnits.LengthUnit));
         }
         internal static Oasys.Collections.IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve)
         {
@@ -81,8 +81,8 @@ namespace GhAdSec.Parameters
                 Point3d point3d = curve.Point(j);
                 point3d.Transform(mapToLocal);
                 pt = IPoint.Create(
-                    new UnitsNet.Length(point3d.X, GhAdSec.DocumentUnits.LengthUnit),
-                    new UnitsNet.Length(point3d.Y, GhAdSec.DocumentUnits.LengthUnit));
+                    new UnitsNet.Length(point3d.X, DocumentUnits.LengthUnit),
+                    new UnitsNet.Length(point3d.Y, DocumentUnits.LengthUnit));
                 pts.Add(pt);
             }
             return pts;
@@ -99,8 +99,8 @@ namespace GhAdSec.Parameters
                 Point3d point3d = curve[j];
                 point3d.Transform(mapToLocal);
                 pt = IPoint.Create(
-                    new UnitsNet.Length(point3d.X, GhAdSec.DocumentUnits.LengthUnit),
-                    new UnitsNet.Length(point3d.Y, GhAdSec.DocumentUnits.LengthUnit));
+                    new UnitsNet.Length(point3d.X, DocumentUnits.LengthUnit),
+                    new UnitsNet.Length(point3d.Y, DocumentUnits.LengthUnit));
                 pts.Add(pt);
             }
             return pts;
@@ -113,11 +113,11 @@ namespace GhAdSec.Parameters
 
         public override string ToString()
         {
-            IQuantity quantity = new UnitsNet.Length(0, GhAdSec.DocumentUnits.LengthUnit);
+            IQuantity quantity = new UnitsNet.Length(0, DocumentUnits.LengthUnit);
             string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
             return "AdSec " + TypeName + " {"
-                + Math.Round(AdSecPoint.Y.As(GhAdSec.DocumentUnits.LengthUnit), 4) + unitAbbreviation + ", "
-                + Math.Round(AdSecPoint.Z.As(GhAdSec.DocumentUnits.LengthUnit), 4) + unitAbbreviation + "}";
+                + Math.Round(AdSecPoint.Y.As(DocumentUnits.LengthUnit), 4) + unitAbbreviation + ", "
+                + Math.Round(AdSecPoint.Z.As(DocumentUnits.LengthUnit), 4) + unitAbbreviation + "}";
         }
         public override string TypeName => "Vertex";
 
@@ -186,8 +186,8 @@ namespace GhAdSec.Parameters
             if (typeof(TQ).IsAssignableFrom(typeof(IPoint)))
             {
                 target = (TQ)(object)IPoint.Create(
-                    new UnitsNet.Length(Value.X, GhAdSec.DocumentUnits.LengthUnit),
-                    new UnitsNet.Length(Value.Y, GhAdSec.DocumentUnits.LengthUnit));
+                    new UnitsNet.Length(Value.X, DocumentUnits.LengthUnit),
+                    new UnitsNet.Length(Value.Y, DocumentUnits.LengthUnit));
                 return true;
             }
 
@@ -243,10 +243,10 @@ namespace GhAdSec.Parameters
         }
         public void DrawViewportWires(GH_PreviewWireArgs args)
         {
-            if (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) // not selected
-                args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 3, GhAdSec.UI.Colour.OasysBlue);
+            if (args.Color == Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", System.Drawing.Color.White)) //Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", System.Drawing.Color.White)) // not selected
+                args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 3, AdSecGH.UI.Colour.OasysBlue);
             else
-                args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 5, GhAdSec.UI.Colour.OasysYellow);
+                args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 5, AdSecGH.UI.Colour.OasysYellow);
         }
         public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Rhino.Display;
 
-namespace GhAdSec.UI
+namespace AdSecGH.UI
 {
     /// <summary>
     /// Colour class holding the main colours used in colour scheme. 

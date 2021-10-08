@@ -8,14 +8,14 @@ using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
 using Rhino.Geometry;
 using Oasys.AdSec.Materials.StressStrainCurves;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using UnitsNet.GH;
 using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Layers;
 using UnitsNet;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class CreateRebarSpacing : GH_Component, IGH_VariableParameterComponent
     {
@@ -28,14 +28,13 @@ namespace GhAdSec.Components
         public override Guid ComponentGuid => new Guid("846d546a-4284-4d69-906b-0e6985d7ddd3");
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.RebarSpacing;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.RebarSpacing;
         #endregion
 
         #region Custom UI
         //This region overrides the typical component layout
         public override void CreateAttributes()
         {
-            
             if (first)
             {
                 List<string> list = Enum.GetNames(typeof(FoldMode)).ToList();
@@ -47,7 +46,7 @@ namespace GhAdSec.Components
 
                 // length
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
-                dropdownitems.Add(GhAdSec.DocumentUnits.FilteredLengthUnits);
+                dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
@@ -66,27 +65,39 @@ namespace GhAdSec.Components
             if (i == 0)
             {
                 _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[i]);
+                if (_mode == FoldMode.Count)
+                {
+                    // remove the second dropdown (length)
+                    while (dropdownitems.Count > 1)
+                        dropdownitems.RemoveAt(dropdownitems.Count - 1);
+                    while (selecteditems.Count > 1)
+                        selecteditems.RemoveAt(selecteditems.Count - 1);
+                }
+                else
+                {
+                    // add second dropdown (length)
+                    if (dropdownitems.Count != 2)
+                    {
+                        dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
+                        selecteditems.Add(lengthUnit.ToString());
+                    }
+                }
+
                 ToggleInput();
             }
             else
             {
                 lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+                
             }
-            ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
         }
         private void UpdateUIFromSelectedItems()
         {
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
-            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
+            if (_mode == FoldMode.Distance)
+                lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
             CreateAttributes();
             ToggleInput();
-            ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -98,7 +109,7 @@ namespace GhAdSec.Components
             "Spacing method",
             "Measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = GhAdSec.DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
         string unitAbbreviation;
         #endregion
 
@@ -162,8 +173,6 @@ namespace GhAdSec.Components
 
         private void ToggleInput()
         {
-            RecordUndoEvent("Changed dropdown");
-
             switch (_mode)
             {
                 case FoldMode.Distance:
@@ -184,19 +193,23 @@ namespace GhAdSec.Components
 
                     break;
             }
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
         #endregion
 
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            GhAdSec.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetString("mode", _mode.ToString());
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            GhAdSec.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
             UpdateUIFromSelectedItems();
             first = false;

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GhAdSec")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("AdSecGH")]
+[assembly: AssemblyDescription("AdSec plugin for Grasshopper")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GhAdSec")]
-[assembly: AssemblyCopyright("Copyright ©  2021")]
+[assembly: AssemblyCompany("Oasys")]
+[assembly: AssemblyProduct("AdSecGH")]
+[assembly: AssemblyCopyright("Copyright © Oasys 1985 - 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

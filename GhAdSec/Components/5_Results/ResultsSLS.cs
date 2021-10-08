@@ -14,12 +14,12 @@ using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using GhAdSec.Parameters;
+using AdSecGH.Parameters;
 using Rhino.Geometry;
 using System.Collections.Generic;
 using UnitsNet.GH;
 
-namespace GhAdSec.Components
+namespace AdSecGH.Components
 {
     public class ResultsSLS : GH_Component
     {
@@ -35,7 +35,7 @@ namespace GhAdSec.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        //protected override System.Drawing.Bitmap Icon => GhAdSec.Properties.Resources.Analyse;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.SLS;
         #endregion
 
         #region Custom UI
@@ -52,15 +52,15 @@ namespace GhAdSec.Components
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            IQuantity strain = new Oasys.Units.Strain(0, GhAdSec.DocumentUnits.StrainUnit);
+            IQuantity strain = new Oasys.Units.Strain(0, DocumentUnits.StrainUnit);
             string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-            IQuantity curvature = new Oasys.Units.Curvature(0, GhAdSec.DocumentUnits.CurvatureUnit);
+            IQuantity curvature = new Oasys.Units.Curvature(0, DocumentUnits.CurvatureUnit);
             string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
-            IQuantity axial = new Oasys.Units.AxialStiffness(0, GhAdSec.DocumentUnits.AxialStiffnessUnit);
+            IQuantity axial = new Oasys.Units.AxialStiffness(0, DocumentUnits.AxialStiffnessUnit);
             string axialUnitAbbreviation = string.Concat(axial.ToString().Where(char.IsLetter));
-            IQuantity bending = new Oasys.Units.BendingStiffness(0, GhAdSec.DocumentUnits.BendingStiffnessUnit);
+            IQuantity bending = new Oasys.Units.BendingStiffness(0, DocumentUnits.BendingStiffnessUnit);
             string bendingUnitAbbreviation = string.Concat(bending.ToString().Where(char.IsLetter));
-            IQuantity moment = new Oasys.Units.Moment(0, GhAdSec.DocumentUnits.MomentUnit);
+            IQuantity moment = new Oasys.Units.Moment(0, DocumentUnits.MomentUnit);
             string momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
 
             pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." + 
@@ -117,13 +117,13 @@ namespace GhAdSec.Components
                 }
                 else
                 {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].Name + " input (index " + 1 + ") to an AdSec Load");
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
                     return;
                 }
             }
             else
             {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error with " + Params.Input[1].Name + " input, index " + 1 + " - Input required");
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
                 return;
             }
 
@@ -144,21 +144,21 @@ namespace GhAdSec.Components
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Crack utilisation is above 1!");
 
             DA.SetData(4, new Vector3d(
-                sls.Deformation.X.As(GhAdSec.DocumentUnits.StrainUnit),
-                sls.Deformation.YY.As(GhAdSec.DocumentUnits.CurvatureUnit),
-                sls.Deformation.ZZ.As(GhAdSec.DocumentUnits.CurvatureUnit)));
+                sls.Deformation.X.As(DocumentUnits.StrainUnit),
+                sls.Deformation.YY.As(DocumentUnits.CurvatureUnit),
+                sls.Deformation.ZZ.As(DocumentUnits.CurvatureUnit)));
             
             DA.SetData(5, new Vector3d(
-                sls.SecantStiffness.X.As(GhAdSec.DocumentUnits.AxialStiffnessUnit),
-                sls.SecantStiffness.YY.As(GhAdSec.DocumentUnits.BendingStiffnessUnit),
-                sls.SecantStiffness.ZZ.As(GhAdSec.DocumentUnits.BendingStiffnessUnit)));
+                sls.SecantStiffness.X.As(DocumentUnits.AxialStiffnessUnit),
+                sls.SecantStiffness.YY.As(DocumentUnits.BendingStiffnessUnit),
+                sls.SecantStiffness.ZZ.As(DocumentUnits.BendingStiffnessUnit)));
 
             List<GH_Interval> momentRanges = new List<GH_Interval>();
             foreach (IMomentRange mrng in sls.UncrackedMomentRanges)
             {
                 Rhino.Geometry.Interval interval = new Interval(
-                    mrng.Min.As(GhAdSec.DocumentUnits.MomentUnit),
-                    mrng.Max.As(GhAdSec.DocumentUnits.MomentUnit));
+                    mrng.Min.As(DocumentUnits.MomentUnit),
+                    mrng.Max.As(DocumentUnits.MomentUnit));
                 momentRanges.Add(new GH_Interval(interval));
             }
             DA.SetDataList(6, momentRanges);

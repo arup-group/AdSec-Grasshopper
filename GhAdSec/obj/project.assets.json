@@ -927,9 +927,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\GhAdSec.csproj",
-      "projectName": "GhAdSec",
-      "projectPath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\GhAdSec.csproj",
+      "projectUniqueName": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\AdSecGH.csproj",
+      "projectName": "AdSecGH",
+      "projectPath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\AdSecGH.csproj",
       "packagesPath": "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\obj\\",
       "projectStyle": "PackageReference",
