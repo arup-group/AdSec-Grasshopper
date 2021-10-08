@@ -98,7 +98,7 @@
     <Compile Include="Components\5_Results\NM-diagram.cs" />
     <Compile Include="Components\5_Results\ResultsSLS.cs" />
     <Compile Include="Components\5_Results\ResultsULS.cs" />
-    <Compile Include="GhAdSecInfo.cs" />
+    <Compile Include="AdSecGHInfo.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\_NotUsedDocUnits.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />

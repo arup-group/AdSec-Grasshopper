@@ -156,6 +156,8 @@ namespace AdSecGH.Components
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "This component is WIP and currently does not place the NM diagram on an XY plane");
+            
             // get solution input
             AdSecSolutionGoo solution = GetInput.Solution(this, DA, 0);
 
