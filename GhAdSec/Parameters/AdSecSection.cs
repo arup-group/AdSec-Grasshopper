@@ -700,14 +700,14 @@ namespace AdSecGH.Parameters
                 {
                     foreach (Circle crv in Value.m_rebarEdges)
                     {
-                        args.Pipeline.DrawCircle(crv, AdSecGH.UI.Colour.GsaLightGrey, 2);
+                        args.Pipeline.DrawCircle(crv, AdSecGH.UI.Colour.UILightGrey, 2);
                     }
                 }
                 if (Value.m_linkEdges != null)
                 {
                     foreach (Curve crv in Value.m_linkEdges)
                     {
-                        args.Pipeline.DrawCurve(crv, AdSecGH.UI.Colour.GsaLightGrey, 2);
+                        args.Pipeline.DrawCurve(crv, AdSecGH.UI.Colour.UILightGrey, 2);
                     }
                 }
             }

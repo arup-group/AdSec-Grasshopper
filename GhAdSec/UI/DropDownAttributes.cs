@@ -293,7 +293,7 @@ namespace AdSecGH.UI
                     }
 
                     // background
-                    Brush background = new SolidBrush(UI.Colour.GsaLightGrey);
+                    Brush background = new SolidBrush(UI.Colour.UILightGrey);
                     // background
                     graphics.FillRectangle(background, BorderBound[i]);
                     // border
@@ -311,7 +311,7 @@ namespace AdSecGH.UI
                     if (unfolded[i])
                     {
                         Pen penborder = new Pen(Brushes.Gray);
-                        Brush dropdownbackground = new SolidBrush(UI.Colour.GsaLightGrey);
+                        Brush dropdownbackground = new SolidBrush(UI.Colour.UILightGrey);
                         penborder.Width = 0.3f;
                         for (int j = 0; j < dropdownBounds[i].Count; j++)
                         {

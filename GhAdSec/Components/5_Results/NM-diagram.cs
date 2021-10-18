@@ -148,6 +148,10 @@ namespace AdSecGH.Components
             pManager.AddGenericParameter("Results", "Res", "AdSec Results to calculate interaction diagram from", GH_ParamAccess.item);
             pManager.AddGenericParameter("Moment Angle [" + angleUnitAbbreviation + "]", "A", "[Default 0] The moment angle, which must be in the range -180 degrees to +180 degrees. Angle of zero equals Nx-Myy diagram.", GH_ParamAccess.item);
             pManager[1].Optional = true;
+            // create default rectangle as 1/2 meter square
+            Length sz = Length.FromMeters(0.5);
+            Rectangle3d rect = new Rectangle3d(Plane.WorldXY, sz.As(DocumentUnits.LengthUnit), sz.As(DocumentUnits.LengthUnit));
+            pManager.AddRectangleParameter("Plot", "R", "Rectangle for plot boundary", GH_ParamAccess.item, rect);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
@@ -156,10 +160,18 @@ namespace AdSecGH.Components
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "This component is WIP and currently does not place the NM diagram on an XY plane");
+            //AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "This component is WIP and currently does not place the NM diagram on an XY plane");
             
             // get solution input
             AdSecSolutionGoo solution = GetInput.Solution(this, DA, 0);
+
+            // Get boundary input
+            Rectangle3d rect = new Rectangle3d();
+            if (!DA.GetData(2, ref rect))
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[2].NickName + " to Rectangle");
+                return;
+            }
 
             if (_mode == FoldMode.NM)
             {
@@ -170,7 +182,7 @@ namespace AdSecGH.Components
                 Oasys.Collections.IList<Oasys.AdSec.Mesh.ILoadCurve> loadCurve = solution.Value.Strength.GetForceMomentInteractionCurve(angle);
 
                 // create output
-                DA.SetData(0, new AdSecNMMCurveGoo(loadCurve[0], angle));
+                DA.SetData(0, new AdSecNMMCurveGoo(loadCurve[0], angle, rect));
             }
             else
             {
@@ -179,9 +191,16 @@ namespace AdSecGH.Components
 
                 // get loadcurve
                 Oasys.Collections.IList<Oasys.AdSec.Mesh.ILoadCurve> loadCurve = solution.Value.Strength.GetMomentMomentInteractionCurve(force);
+                
+                // check if curve is valid
+                if (loadCurve.Count == 0)
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "The input axial force is outside the capacity range of the section");
+                    return;
+                }
 
                 // create output
-                DA.SetData(0, new AdSecNMMCurveGoo(loadCurve[0]));
+                DA.SetData(0, new AdSecNMMCurveGoo(loadCurve[0], rect));
             }
         }
 

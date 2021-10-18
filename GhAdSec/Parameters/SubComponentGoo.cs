@@ -219,7 +219,7 @@ namespace AdSecGH.Parameters
                 {
                     foreach (Circle crv in m_sectionGoo.m_rebarEdges)
                     {
-                        args.Pipeline.DrawCircle(crv, AdSecGH.UI.Colour.GsaLightGrey, 2);
+                        args.Pipeline.DrawCircle(crv, AdSecGH.UI.Colour.UILightGrey, 2);
                     }
                 }
             }
