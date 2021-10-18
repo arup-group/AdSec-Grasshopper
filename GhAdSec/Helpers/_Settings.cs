@@ -74,18 +74,6 @@ namespace AdSecGH.Helpers
                 aboutBox.Show();
             });
 
-            //adSecMenu.DropDown.Items.Add(new ToolStripSeparator());
-
-            //adSecMenu.DropDown.Items.Add("AdSec API Documentation", null, (s, a) =>
-            //{
-            //    Process.Start(@"https://arup-group.github.io/oasys-combined/adsec-api/api/");
-            //});
-
-            //adSecMenu.DropDown.Items.Add("Oasys website", null, (s, a) =>
-            //{
-            //    Process.Start(@"https://www.oasys-software.com/");
-            //});
-
             var mainMenu = Grasshopper.Instances.DocumentEditor.MainMenuStrip;
             try
             {

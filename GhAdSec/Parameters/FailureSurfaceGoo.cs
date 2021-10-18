@@ -227,7 +227,7 @@ namespace AdSecGH.Parameters
         public void DrawViewportWires(GH_PreviewWireArgs args)
         {
             if (!Value.IsValid) { return; }
-            args.Pipeline.DrawMeshWires(Value, AdSecGH.UI.Colour.GsaLightGrey, 1);
+            args.Pipeline.DrawMeshWires(Value, AdSecGH.UI.Colour.UILightGrey, 1);
             // local axis
             if (previewPosXaxis != null)
             {

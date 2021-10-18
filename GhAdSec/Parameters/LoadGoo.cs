@@ -169,7 +169,7 @@ namespace AdSecGH.Parameters
                 if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
                     args.Pipeline.DrawPoint(m_point, PointStyle.X, 7, AdSecGH.UI.Colour.ArupRed);
                 else
-                    args.Pipeline.DrawPoint(m_point, PointStyle.X, 8, AdSecGH.UI.Colour.GsaLightGrey);
+                    args.Pipeline.DrawPoint(m_point, PointStyle.X, 8, AdSecGH.UI.Colour.UILightGrey);
             }
         }
 

@@ -103,6 +103,7 @@
     <Compile Include="Helpers\_NotUsedDocUnits.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
+    <Compile Include="Helpers\_ResultsHelper.cs" />
     <Compile Include="Helpers\_SqlReader.cs" />
     <Compile Include="Parameters\AdSecSection.cs" />
     <Compile Include="Parameters\CrackGoo.cs" />

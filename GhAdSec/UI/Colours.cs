@@ -21,7 +21,14 @@ namespace AdSecGH.UI
         {
             get { return Brushes.Black; }
         }
-
+        public static Color BorderColour
+        {
+            get { return UILightGrey; }
+        }
+        public static Color UILightGrey
+        {
+            get { return Color.FromArgb(255, 244, 244, 244); }
+        }
         // Colours for custom geometry
         public static Color OasysYellow
         {
@@ -42,6 +49,10 @@ namespace AdSecGH.UI
         public static Color StreszzzsStrainPoint
         {
             get { return Color.FromArgb(255, 224, 126, 65); }
+        }
+        public static Color OasysDarkGrey
+        {
+            get { return Color.FromArgb(255, 73, 73, 73); }
         }
         public static DisplayMaterial FailureNormal
         {
@@ -159,10 +170,7 @@ namespace AdSecGH.UI
         //    get { return Color.FromArgb(255, 130, 169, 241); }
         //}
 
-        public static Color GsaLightGrey
-        {
-            get { return Color.FromArgb(255, 244, 244, 244); }
-        }
+        
 
         //public static Color GsaDarkGrey
         //{
@@ -193,10 +201,7 @@ namespace AdSecGH.UI
         //    get { return new SolidBrush(Color.FromArgb(255, 216, 216, 216)); }
         //}
 
-        public static Color BorderColour
-        {
-            get { return GsaLightGrey; }
-        }
+        
 
         //public static Color ClickedBorderColour
         //{

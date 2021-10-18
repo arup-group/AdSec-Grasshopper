@@ -51,7 +51,6 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\System.Data
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\System.ValueTuple.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\UnitsNet.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\UnitsNet.pdb
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.csproj.CopyComplete
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSecGH.dll.config
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSecGH.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSecGH.pdb

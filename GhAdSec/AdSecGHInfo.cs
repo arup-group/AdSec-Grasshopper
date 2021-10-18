@@ -145,7 +145,11 @@ namespace AdSecGH
             get
             {
                 //Return a short string describing the purpose of this GHA library.
-                return "AdSec Plugin";
+                return "Official Oasys AdSec Grasshopper Plugin" + System.Environment.NewLine
+                + System.Environment.NewLine + "The plugin requires an AdSec 10 license to load."
+                + System.Environment.NewLine
+                + System.Environment.NewLine + "Contact oasys@arup.com to request a free trial version."
+                + System.Environment.NewLine + System.Environment.NewLine + "Copyright © Oasys 1985 - 2021";
             }
         }
         public override Guid Id
@@ -176,7 +180,7 @@ namespace AdSecGH
         {
             get
             {
-                return "0.0.4-beta";
+                return "0.0.5-beta";
             }
         }
     }
