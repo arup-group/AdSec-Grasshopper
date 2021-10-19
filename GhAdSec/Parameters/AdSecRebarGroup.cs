@@ -31,18 +31,83 @@ using Oasys.AdSec.Reinforcement.Preloads;
 
 namespace AdSecGH.Parameters
 {
-    public class AdSecRebarGroupGoo : GH_Goo<IGroup>
+    public class AdSecRebarGroup
     {
-        public AdSecRebarGroupGoo(IGroup group)
-        : base(group)
+        public IGroup Group
         {
+            get { return m_group; }
+            set { m_group = value; }
         }
-        internal ICover Cover
+        public ICover Cover
         {
             get { return m_cover; }
             set { m_cover = value; }
         }
-        ICover m_cover;
+
+        #region fields
+        private ICover m_cover;
+        private IGroup m_group;
+        #endregion
+
+        #region constructors
+        public AdSecRebarGroup()
+        {
+        }
+        
+        public AdSecRebarGroup(IGroup group)
+        {
+            m_group = group;
+        }
+        
+        public AdSecRebarGroup Duplicate()
+        {
+            if (this == null) { return null; }
+            AdSecRebarGroup dup = (AdSecRebarGroup)this.MemberwiseClone();
+            return dup;
+        }
+        #endregion
+
+        #region properties
+        public bool IsValid
+        {
+            get
+            {
+                if (this.Group == null) { return false; }
+                return true;
+            }
+        }
+        #endregion
+
+        #region methods
+        public override string ToString()
+        {
+            return Group.ToString();
+        }
+
+        #endregion
+    }
+
+    public class AdSecRebarGroupGoo : GH_Goo<AdSecRebarGroup>
+    {
+        public AdSecRebarGroupGoo()
+        {
+            this.Value = null;
+        }
+        public AdSecRebarGroupGoo(IGroup group)
+        {
+            this.Value = new AdSecRebarGroup(group);
+        }
+        public AdSecRebarGroupGoo(AdSecRebarGroup goo)
+        {
+            if (goo == null)
+                goo = new AdSecRebarGroup();
+            this.Value = goo; // goo.Duplicate(); 
+        }
+        internal ICover Cover
+        {
+            get { return Value.Cover; }
+            set { Value.Cover = value; }
+        }
         public override bool IsValid => true;
         public override string TypeName => "Rebar Group";
         public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
@@ -50,8 +115,8 @@ namespace AdSecGH.Parameters
         public override IGH_Goo Duplicate()
         {
             AdSecRebarGroupGoo dup = new AdSecRebarGroupGoo(this.Value);
-            if (m_cover != null)
-                dup.m_cover = ICover.Create(m_cover.UniformCover);
+            if (Value.Cover != null)
+                dup.Value.Cover = ICover.Create(Value.Cover.UniformCover);
             return dup;
         }
         //public AdSecRebarGroupGoo Duplicate()
@@ -158,7 +223,7 @@ namespace AdSecGH.Parameters
             try
             {
                 // try longitudinal group first
-                ILongitudinalGroup longitudinal = (ILongitudinalGroup)Value;
+                ILongitudinalGroup longitudinal = (ILongitudinalGroup)Value.Group;
                 
                 // get any preload
                 if (longitudinal.Preload != null)
@@ -200,42 +265,42 @@ namespace AdSecGH.Parameters
 
                 try
                 {
-                    ITemplateGroup temp = (ITemplateGroup)Value;
-                    m_ToString = "Template Group, " + m_cover.UniformCover.ToUnit(DocumentUnits.LengthUnit) + " cover";
+                    ITemplateGroup temp = (ITemplateGroup)Value.Group;
+                    m_ToString = "Template Group, " + Value.Cover.UniformCover.ToUnit(DocumentUnits.LengthUnit) + " cover";
                 }
                 catch (Exception)
                 {
                     try
                     {
-                        IPerimeterGroup perimeter = (IPerimeterGroup)Value;
-                        m_ToString = "Perimeter Group, " + m_cover.UniformCover.ToUnit(DocumentUnits.LengthUnit) + " cover";
+                        IPerimeterGroup perimeter = (IPerimeterGroup)Value.Group;
+                        m_ToString = "Perimeter Group, " + Value.Cover.UniformCover.ToUnit(DocumentUnits.LengthUnit) + " cover";
                     }
                     catch (Exception)
                     {
                         try
                         {
-                            IArcGroup arc = (IArcGroup)Value;
+                            IArcGroup arc = (IArcGroup)Value.Group;
                             m_ToString = "Arc Type Layout";
                         }
                         catch (Exception)
                         {
                             try
                             {
-                                ICircleGroup cir = (ICircleGroup)Value;
+                                ICircleGroup cir = (ICircleGroup)Value.Group;
                                 m_ToString = "Circle Type Layout";
                             }
                             catch (Exception)
                             {
                                 try
                                 {
-                                    ILineGroup lin = (ILineGroup)Value;
+                                    ILineGroup lin = (ILineGroup)Value.Group;
                                     m_ToString = "Line Type Layout";
                                 }
                                 catch (Exception)
                                 {
                                     try
                                     {
-                                        ISingleBars sin = (ISingleBars)Value;
+                                        ISingleBars sin = (ISingleBars)Value.Group;
                                         m_ToString = "SingleBars Type Layout";
                                     }
                                     catch (Exception)
@@ -252,8 +317,8 @@ namespace AdSecGH.Parameters
             {
                 try
                 {
-                    ILinkGroup link = (ILinkGroup)Value;
-                    m_ToString = "Link, " + m_cover.UniformCover.ToUnit(DocumentUnits.LengthUnit) + " cover";
+                    ILinkGroup link = (ILinkGroup)Value.Group;
+                    m_ToString = "Link, " + Value.Cover.UniformCover.ToUnit(DocumentUnits.LengthUnit) + " cover";
                 }
                 catch (Exception)
                 {
@@ -264,9 +329,45 @@ namespace AdSecGH.Parameters
 
             return "AdSec " + TypeName + " {" + m_ToString + m_preLoad + "}";
         }
+
+        #region casting methods
+        public override bool CastTo<Q>(ref Q target)
+        {
+            // This function is called when Grasshopper needs to convert this 
+            // instance of GsaBool6 into some other type Q.            
+
+
+            if (typeof(Q).IsAssignableFrom(typeof(AdSecRebarGroup)))
+            {
+                if (Value == null)
+                    target = default;
+                else
+                    target = (Q)(object)Value.Duplicate();
+                return true;
+            }
+
+            target = default;
+            return false;
+        }
+        public override bool CastFrom(object source)
+        {
+            // This function is called when Grasshopper needs to convert other data 
+            // into this parameter.
+
+            if (source == null) { return false; }
+
+            //Cast from own type
+            if (typeof(AdSecRebarGroup).IsAssignableFrom(source.GetType()))
+            {
+                Value = (AdSecRebarGroup)source;
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
     }
 
-    
 
     /// <summary>
     /// This class provides a Parameter interface for the Data_GsaBool6 type.

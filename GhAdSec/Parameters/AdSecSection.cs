@@ -404,7 +404,7 @@ namespace AdSecGH.Parameters
             foreach(AdSecRebarGroupGoo grp in reinforcement)
             {
                 // add group to list of groups
-                groups.Add(grp.Value);
+                groups.Add(grp.Value.Group);
 
                 // check if cover of group is bigger than any previous ones
                 if(grp.Cover != null)
