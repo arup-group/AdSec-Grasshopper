@@ -136,12 +136,18 @@ namespace AdSecGH.Components
             }
             DA.SetDataList(1, cracks);
 
-            DA.SetData(2, new AdSecCrackGoo(sls.MaximumWidthCrack, solution.LocalPlane));
+            if (sls.MaximumWidthCrack.Width.Meters < 1)
+                DA.SetData(2, new AdSecCrackGoo(sls.MaximumWidthCrack, solution.LocalPlane));
 
             double util = sls.CrackingUtilisation.As(UnitsNet.Units.RatioUnit.DecimalFraction);
             DA.SetData(3, util);
             if (util > 1)
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Crack utilisation is above 1!");
+            {
+                if (cracks.Count == 0)
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "The section is failing and the cracks are so large we can't even compute them!");
+                else
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "The section is cracked");
+            }
 
             DA.SetData(4, new Vector3d(
                 sls.Deformation.X.As(DocumentUnits.StrainUnit),

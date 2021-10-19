@@ -22,15 +22,61 @@ using Oasys.Units;
 
 namespace UnitsNet.GH
 {
+    //public class UnitNumber
+    //{
+    //    #region fields
+    //    public IQuantity Quantity
+    //    {
+    //        get { return m_value; }
+    //        set { m_value = value; }
+    //    }
+    //    private IQuantity m_value;
+    //    #endregion
+    //    #region constructors
+    //    public UnitNumber()
+    //    {
+    //        this.m_value = null;
+    //    }
+    //    public UnitNumber(IQuantity quantity)
+    //    {
+    //        this.m_value = quantity;
+    //    }
+    //    #endregion
+    //    #region properties
+    //    public bool IsValid
+    //    {
+    //        get
+    //        {
+    //            if (this.Quantity == null) { return false; }
+    //            return true;
+    //        }
+    //    }
+    //    #endregion
+
+    //    #region methods
+    //    public override string ToString()
+    //    {
+    //        return this.Quantity.ToString();
+    //    }
+    //}
+    
     /// <summary>
     /// Goo wrapper class, makes sure this can be used in Grasshopper.
     /// </summary>
-    public class GH_UnitNumber : GH_Goo<UnitsNet.IQuantity>
+    public class GH_UnitNumber : GH_Goo<IQuantity>
     {
         #region constructors
-        public GH_UnitNumber(UnitsNet.IQuantity quantity)
-        : base(quantity)
+        public GH_UnitNumber()
         {
+            this.Value = null;
+        }
+        public GH_UnitNumber(IQuantity quantity)
+        {
+            this.Value = quantity;
+        }
+        public GH_UnitNumber(GH_UnitNumber unitNumber)
+        {
+            this.Value = unitNumber.Value;
         }
 
         public override IGH_Goo Duplicate()
@@ -122,9 +168,9 @@ namespace UnitsNet.GH
     /// <summary>
     /// This class provides a Parameter interface for the Data_GsaBool6 type.
     /// </summary>
-    public class UnitNumber : GH_PersistentParam<GH_UnitNumber>
+    public class GH_UnitNumberParameter : GH_PersistentParam<GH_UnitNumber>
     {
-        public UnitNumber()
+        public GH_UnitNumberParameter()
           : base(new GH_InstanceDescription("UnitNumber", "UNum", "Quantity = number + unit", AdSecGH.Components.Ribbon.CategoryName.Name(), AdSecGH.Components.Ribbon.SubCategoryName.Cat9()))
         {
         }

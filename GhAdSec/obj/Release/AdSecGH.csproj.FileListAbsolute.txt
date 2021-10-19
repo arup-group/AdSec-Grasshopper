@@ -57,6 +57,5 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.UI.Ab
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.UI.UnitSettingsBox.resources
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.csproj.GenerateResource.cache
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.csproj.CoreCompileInputs.cache
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.csproj.CopyComplete
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.pdb
