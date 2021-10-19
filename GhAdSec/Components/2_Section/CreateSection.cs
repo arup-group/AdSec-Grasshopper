@@ -57,7 +57,7 @@ namespace AdSecGH.Components
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Section", "Sec", "AdSet Section", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Section", "Sec", "AdSec Section", GH_ParamAccess.item);
         }
         #endregion
 
