@@ -70,7 +70,7 @@ namespace AdSecGH.Components
             AdSecMaterial material = GetInput.AdSecMaterial(this, DA, 1);
 
             // 2 Rebars
-            List<AdSecRebarGroupGoo> reinforcements = new List<AdSecRebarGroupGoo>();
+            List<AdSecRebarGroup> reinforcements = new List<AdSecRebarGroup>();
             if (Params.Input[2].SourceCount > 0)
             {
                 reinforcements = GetInput.ReinforcementGroups(this, DA, 2, true);

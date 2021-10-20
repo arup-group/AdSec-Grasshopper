@@ -87,6 +87,7 @@
     <Compile Include="Components\2_Section\CreateRebarLayout.cs" />
     <Compile Include="Components\2_Section\CreateProfileWeb.cs" />
     <Compile Include="Components\2_Section\CreateProfileFlange.cs" />
+    <Compile Include="Components\2_Section\EditSection.cs" />
     <Compile Include="Components\2_Section\CreateSection.cs" />
     <Compile Include="Components\2_Section\CreateSubComponent.cs" />
     <Compile Include="Components\2_Section\EditProfile.cs" />

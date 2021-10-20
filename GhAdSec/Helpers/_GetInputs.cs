@@ -584,9 +584,9 @@ namespace AdSecGH.Components
             }
             return null;
         }
-        internal static List<AdSecRebarGroupGoo> ReinforcementGroups(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        internal static List<AdSecRebarGroup> ReinforcementGroups(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
-            List<AdSecRebarGroupGoo> grps = new List<AdSecRebarGroupGoo>();
+            List<AdSecRebarGroup> grps = new List<AdSecRebarGroup>();
             List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
             if (DA.GetDataList(inputid, gh_typs))
             {
@@ -594,11 +594,12 @@ namespace AdSecGH.Components
                 {
                     if (gh_typs[i].Value is IGroup)
                     {
-                        grps.Add(new AdSecRebarGroupGoo((IGroup)gh_typs[i].Value));
+                        grps.Add(new AdSecRebarGroup((IGroup)gh_typs[i].Value));
                     }
                     else if (gh_typs[i].Value is AdSecRebarGroupGoo)
                     {
-                        grps.Add((AdSecRebarGroupGoo)gh_typs[i].Value);
+                        AdSecRebarGroupGoo rebarGoo = (AdSecRebarGroupGoo)gh_typs[i].Value;
+                        grps.Add(rebarGoo.Value);
                     }
                     else
                     {
