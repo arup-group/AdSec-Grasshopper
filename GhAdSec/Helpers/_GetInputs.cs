@@ -893,6 +893,11 @@ namespace AdSecGH.Components
                     AdSecSectionGoo a1 = (AdSecSectionGoo)gh_typ.Value;
                     return a1.Value;
                 }
+                else if (gh_typ.Value is AdSecSubComponentGoo)
+                {
+                    AdSecSubComponentGoo a2 = (AdSecSubComponentGoo)gh_typ.Value;
+                    return a2.section;
+                }
                 else
                 {
                     owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to Section");

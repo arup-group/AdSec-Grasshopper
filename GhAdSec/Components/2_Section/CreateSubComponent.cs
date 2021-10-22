@@ -65,6 +65,7 @@ namespace AdSecGH.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             AdSecSection section = GetInput.Section(this, DA, 0);
+            if (section == null) { return;  }
             IPoint offset = GetInput.IPoint(this, DA, 1, true);
             if (offset == null)
             {

@@ -72,7 +72,11 @@ namespace AdSecGH.Components
         {
             // 0 section 
             AdSecSection in_section = GetInput.Section(this, DA, 0);
-
+            if (in_section == null)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
+                return;
+            }
             // 1 profile
             AdSecProfileGoo profile = null;
             if (Params.Input[1].SourceCount > 0)
