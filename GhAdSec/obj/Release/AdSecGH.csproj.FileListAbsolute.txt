@@ -59,3 +59,4 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.cspro
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.csproj.CoreCompileInputs.cache
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.pdb
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.csproj.CopyComplete

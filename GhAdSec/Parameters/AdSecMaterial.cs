@@ -64,9 +64,7 @@ namespace AdSecGH.Parameters
             get { return m_type; }
             set { m_type = value; }
         }
-        #region Material AdSecAPI members
-
-        #endregion
+        
         #region fields
         private AdSecDesignCode m_designCode;
         private IMaterial m_material;
@@ -78,7 +76,77 @@ namespace AdSecGH.Parameters
         public AdSecMaterial()
         {
         }
+        public AdSecMaterial(IMaterial material, string materialGradeName )
+        {
+            if (materialGradeName != null)
+                m_materialGradeName = materialGradeName;
 
+            // StressStrain ULS Compression
+            Tuple<Curve, List<Point3d>> ulsComp = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Compression, true);
+            AdSecStressStrainCurveGoo ulsCompCrv = new AdSecStressStrainCurveGoo(ulsComp.Item1, material.Strength.Compression,
+                AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsComp.Item2);
+            // StressStrain ULS Tension
+            Tuple<Curve, List<Point3d>> ulsTens = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Tension, false);
+            AdSecStressStrainCurveGoo ulsTensCrv = new AdSecStressStrainCurveGoo(ulsTens.Item1, material.Strength.Tension,
+                AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsTens.Item2);
+            // StressStrain SLS Compression
+            Tuple<Curve, List<Point3d>> slsComp = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Compression, true);
+            AdSecStressStrainCurveGoo slsCompCrv = new AdSecStressStrainCurveGoo(slsComp.Item1, material.Serviceability.Compression,
+                AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsComp.Item2);
+            // StressStrain SLS Tension
+            Tuple<Curve, List<Point3d>> slsTens = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Tension, false);
+            AdSecStressStrainCurveGoo slsTensCrv = new AdSecStressStrainCurveGoo(slsTens.Item1, material.Serviceability.Tension,
+                AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsTens.Item2);
+            // combine compression and tension
+            ITensionCompressionCurve ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.StressStrainCurve, ulsCompCrv.StressStrainCurve);
+            ITensionCompressionCurve slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
+
+            try
+            {
+                // try cast to concrete material
+                IConcrete concrete = (IConcrete)material;
+                if (concrete.ConcreteCrackCalculationParameters == null)
+                    m_material = IConcrete.Create(ulsTC, slsTC);
+                else
+                    m_material = IConcrete.Create(ulsTC, slsTC, concrete.ConcreteCrackCalculationParameters);
+                m_type = AdSecMaterialType.Concrete;
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    // try cast to steel material
+                    ISteel steel = (ISteel)material;
+                    m_material = ISteel.Create(ulsTC, slsTC);
+                    m_type = AdSecMaterialType.Steel;
+                }
+                catch (Exception)
+                {
+                    try
+                    {
+                        // try cast to rebar material
+                        IReinforcement reinforcement = (IReinforcement)material;
+                        m_material = IReinforcement.Create(ulsTC, slsTC);
+                        m_type = AdSecMaterialType.Rebar;
+                    }
+                    catch (Exception)
+                    {
+                        try
+                        {
+                            // try cast to frp material
+                            IFrp frp = (IFrp)material;
+                            m_material = IFrp.Create(ulsTC, slsTC);
+                            m_type = AdSecMaterialType.FRP;
+                        }
+                        catch (Exception)
+                        {
+
+                            throw new Exception("unable to cast to known material type");
+                        }
+                    }
+                }
+            }
+        }
         internal AdSecMaterial(FieldInfo fieldGrade)
         {
             // convert reflected interface to member

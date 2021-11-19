@@ -69,7 +69,7 @@ namespace AdSecGH
             // try create solution for license check
             try
             {
-                IAdSec ad = IAdSec.Create(EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014);
+                //IAdSec ad = IAdSec.Create(EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014);
             }
             catch (Exception e)
             {
@@ -180,7 +180,7 @@ namespace AdSecGH
         {
             get
             {
-                return "0.0.6-beta";
+                return "0.0.7-beta";
             }
         }
     }

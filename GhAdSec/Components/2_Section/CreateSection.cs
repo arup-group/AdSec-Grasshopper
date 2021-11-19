@@ -57,7 +57,7 @@ namespace AdSecGH.Components
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Section", "Sec", "AdSet Section", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Section", "Sec", "AdSec Section", GH_ParamAccess.item);
         }
         #endregion
 
@@ -70,7 +70,7 @@ namespace AdSecGH.Components
             AdSecMaterial material = GetInput.AdSecMaterial(this, DA, 1);
 
             // 2 Rebars
-            List<AdSecRebarGroupGoo> reinforcements = new List<AdSecRebarGroupGoo>();
+            List<AdSecRebarGroup> reinforcements = new List<AdSecRebarGroup>();
             if (Params.Input[2].SourceCount > 0)
             {
                 reinforcements = GetInput.ReinforcementGroups(this, DA, 2, true);

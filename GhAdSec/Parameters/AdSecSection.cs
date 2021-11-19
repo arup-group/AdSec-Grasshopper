@@ -47,6 +47,8 @@ namespace AdSecGH.Parameters
         }
         #region fields
         private IDesignCode m_code;
+        internal string codeName;
+        internal string materialName;
         private ISection m_section;
         private Plane m_plane;
         internal Line previewXaxis;
@@ -56,41 +58,25 @@ namespace AdSecGH.Parameters
         internal Brep SolidBrep => m_profile;
         internal List<Brep> SubBreps => m_subProfiles;
         #region constructors
-        
-        public AdSecSection(ISection section, AdSecDesignCode code, Plane local)
+        public AdSecSection(ISection section, IDesignCode code, string codeName, string materialName, Plane local, IPoint subComponentOffset = null)
         {
-            m_section = section;
-            m_code = code.DesignCode;
-            m_plane = local;
-            CreatePreview(m_code, m_section, m_plane, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
-                ref m_rebars, ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges,
-                ref m_subColours);
-        }
-        public AdSecSection(ISection section, IDesignCode code, Plane local, IPoint subComponentOffset = null)
-        {
+            this.materialName = materialName;
             m_section = section;
             m_code = code;
+            this.codeName = codeName;
             m_plane = local;
             CreatePreview(m_code, m_section, m_plane, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
                 ref m_rebars, ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges,
                 ref m_subColours, subComponentOffset);
         }
 
-        public AdSecSection(Oasys.Profiles.IProfile profile, AdSecMaterial material, Plane local)
-        {
-            m_code = material.DesignCode.Duplicate().DesignCode;
-            m_section = ISection.Create(profile, material.Material);
-            m_plane = local;
-            CreatePreview(m_code, m_section, m_plane, ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour,
-                ref m_rebars, ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges,
-                ref m_subColours);
-        }
-
-        public AdSecSection(Oasys.Profiles.IProfile profile, Plane local, AdSecMaterial material,
-            List<AdSecRebarGroupGoo> reinforcement,
+        public AdSecSection(IProfile profile, Plane local, AdSecMaterial material,
+            List<AdSecRebarGroup> reinforcement,
             Oasys.Collections.IList<Oasys.AdSec.ISubComponent> subComponents)
         {
             m_code = material.DesignCode.Duplicate().DesignCode;
+            codeName = material.DesignCodeName;
+            materialName = material.GradeName;
             m_section = ISection.Create(profile, material.Material);
             Tuple<Oasys.Collections.IList<IGroup>, ICover> rebarAndCover = CreateReinforcementGroupsWithMaxCover(reinforcement);
             m_section.ReinforcementGroups = rebarAndCover.Item1;
@@ -397,14 +383,14 @@ namespace AdSecGH.Parameters
             return rebarBreps;
         }
 
-        private Tuple<Oasys.Collections.IList<IGroup>, ICover> CreateReinforcementGroupsWithMaxCover(List<AdSecRebarGroupGoo> reinforcement)
+        private Tuple<Oasys.Collections.IList<IGroup>, ICover> CreateReinforcementGroupsWithMaxCover(List<AdSecRebarGroup> reinforcement)
         {
             Oasys.Collections.IList<IGroup> groups = Oasys.Collections.IList<IGroup>.Create();
             ICover cover = null;
-            foreach(AdSecRebarGroupGoo grp in reinforcement)
+            foreach(AdSecRebarGroup grp in reinforcement)
             {
                 // add group to list of groups
-                groups.Add(grp.Value.Group);
+                groups.Add(grp.Group);
 
                 // check if cover of group is bigger than any previous ones
                 if(grp.Cover != null)
@@ -541,7 +527,7 @@ namespace AdSecGH.Parameters
                 if (Value == null)
                     target = default;
                 else
-                    target = (Q)(object)new AdSecSection(Value.Section, Value.DesignCode, Value.LocalPlane);
+                    target = (Q)(object)new AdSecSection(Value.Section, Value.DesignCode, Value.codeName, Value.materialName, Value.LocalPlane);
                 return true;
             }
             if (typeof(Q).IsAssignableFrom(typeof(AdSecProfileGoo)))

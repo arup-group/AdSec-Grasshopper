@@ -47,6 +47,11 @@ namespace AdSecGH.Parameters
         public AdSecDesignCode()
         {
         }
+        public AdSecDesignCode(IDesignCode designCode, string designCodeName)
+        {
+            m_designCode = designCode;
+            m_designCodeName = designCodeName;
+        }
         internal AdSecDesignCode(FieldInfo fieldDesignCode)
         {
             string designCodeReflectedLevels = fieldDesignCode.DeclaringType.FullName.Replace("Oasys.AdSec.DesignCode.", "");

@@ -87,6 +87,7 @@
     <Compile Include="Components\2_Section\CreateRebarLayout.cs" />
     <Compile Include="Components\2_Section\CreateProfileWeb.cs" />
     <Compile Include="Components\2_Section\CreateProfileFlange.cs" />
+    <Compile Include="Components\2_Section\EditSection.cs" />
     <Compile Include="Components\2_Section\CreateSection.cs" />
     <Compile Include="Components\2_Section\CreateSubComponent.cs" />
     <Compile Include="Components\2_Section\EditProfile.cs" />
@@ -100,7 +101,6 @@
     <Compile Include="Components\5_Results\ResultsULS.cs" />
     <Compile Include="AdSecGHInfo.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
-    <Compile Include="Helpers\_NotUsedDocUnits.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
     <Compile Include="Helpers\_ResultsHelper.cs" />
@@ -147,7 +147,6 @@
     <Compile Include="UI\UnitSettingsBox.Designer.cs">
       <DependentUpon>UnitSettingsBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\DropDownAttributesCustomCapsule.cs" />
     <Compile Include="UI\GraphicButtons.cs" />
     <Compile Include="UI\WidthFix.cs" />
     <Compile Include="UI\DropDownAttributes.cs" />

@@ -43,14 +43,6 @@ namespace AdSecGH.Components
         {
             if (first)
             {
-                //GH_Document doc = Grasshopper.Instances.ActiveCanvas.Document;
-                //GH_IO.GH_ISerializable ioser = (GH_IO.GH_ISerializable)this;
-                //GH_DocumentIO io = new GH_DocumentIO(doc);
-                ////                GH_IO.Serialization.GH_IReader reader = GH_IO.Serialization.GH_IReader.
-                //GH_IO.Serialization.GH_Archive archive = (GH_IO.Serialization.GH_Archive)this.Read
-
-
-
                 if (selecteditems == null)
                 {
                     // create a new list of selected items and add the first material type
