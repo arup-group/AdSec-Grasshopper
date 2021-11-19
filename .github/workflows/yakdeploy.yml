@@ -34,6 +34,6 @@ jobs:
           $yakCurrentVersName = Get-ChildItem -Path . -Filter "*.yak"
           $yakRh7Name =  $yakCurrentVersName -Replace "rh6_27", "rh7_0"
           Rename-Item -Path $yakCurrentVersName -NewName $yakRh7Name
-          ..\yak build -- platform win
+          ..\yak build --platform win
           cd ..
           ls Release\*.yak |% {.\yak push $_.FullName}
