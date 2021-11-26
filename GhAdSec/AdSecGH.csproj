@@ -275,9 +275,6 @@
     <None Include="Properties\Icons\Icons\Analyse.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\AdSec 128 x 128.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Properties\Icons\Icons\AdSecInfo.png" />
   </ItemGroup>
   <ItemGroup>
@@ -333,6 +330,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\ULS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\AdSecLogo128.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\Solution.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

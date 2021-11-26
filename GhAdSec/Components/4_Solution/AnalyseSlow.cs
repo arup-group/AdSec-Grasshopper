@@ -34,7 +34,7 @@ namespace AdSecGH.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.Analyse;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.Solution;
         #endregion
 
         #region Custom UI

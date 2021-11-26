@@ -124,11 +124,8 @@
   <data name="AdSecLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\AdSecLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="AdSec_128_x_128" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\AdSec 128 x 128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Analyse" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Icons\Analyse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="AdSecLogo128" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\AdSecLogo128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ConvertUnitNumber" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\ConvertUnitNumber.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -210,6 +207,9 @@
   </data>
   <data name="SLS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\SLS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Solution" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\Solution.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SolutionParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\SolutionParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
