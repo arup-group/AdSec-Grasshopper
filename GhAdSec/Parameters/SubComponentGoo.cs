@@ -57,9 +57,9 @@ namespace AdSecGH.Parameters
                     UnitsNet.Area area = this.section.Section.Profile.Area();
                     double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
                     UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
-                    previewXaxis = new Line(local.Origin, local.XAxis, length.As(DocumentUnits.LengthUnit));
-                    previewYaxis = new Line(local.Origin, local.YAxis, length.As(DocumentUnits.LengthUnit));
-                    previewZaxis = new Line(local.Origin, local.ZAxis, length.As(DocumentUnits.LengthUnit));
+                    previewXaxis = new Line(local.Origin, local.XAxis, length.As(Units.LengthUnit));
+                    previewYaxis = new Line(local.Origin, local.YAxis, length.As(Units.LengthUnit));
+                    previewZaxis = new Line(local.Origin, local.ZAxis, length.As(Units.LengthUnit));
                 }
             }
         }

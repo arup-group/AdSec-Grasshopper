@@ -45,7 +45,7 @@ namespace AdSecGH.Components
 
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            IQuantity quantity = new UnitsNet.Pressure(0, DocumentUnits.StressUnit);
+            IQuantity quantity = new UnitsNet.Pressure(0, Units.StressUnit);
             string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
 
             pManager.AddGenericParameter("CrackCalcParams", "CCP", "AdSec ConcreteCrackCalculationParameters", GH_ParamAccess.item);
@@ -84,7 +84,7 @@ namespace AdSecGH.Components
                 if (Params.Input[1].SourceCount > 0)
                 {
                     
-                    e = GetInput.Stress(this, DA, 1, DocumentUnits.StressUnit);
+                    e = GetInput.Stress(this, DA, 1, Units.StressUnit);
                     if (e.Value < 0)
                     {
                         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
@@ -96,7 +96,7 @@ namespace AdSecGH.Components
                 // 2 Compression
                 if (Params.Input[2].SourceCount > 0)
                 {
-                    fck = GetInput.Stress(this, DA, 2, DocumentUnits.StressUnit);
+                    fck = GetInput.Stress(this, DA, 2, Units.StressUnit);
                     if (fck.Value > 0)
                     {
                         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
@@ -108,7 +108,7 @@ namespace AdSecGH.Components
                 // 3 Tension
                 if (Params.Input[3].SourceCount > 0)
                 {
-                    ft = GetInput.Stress(this, DA, 3, DocumentUnits.StressUnit);
+                    ft = GetInput.Stress(this, DA, 3, Units.StressUnit);
                     if (ft.Value < 0)
                     {
                         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
@@ -122,9 +122,9 @@ namespace AdSecGH.Components
 
                 // #### set outputs ####
                 DA.SetData(0, concreteCrack);
-                DA.SetData(1, new GH_UnitNumber(new UnitsNet.Pressure(e.As(DocumentUnits.StressUnit), DocumentUnits.StressUnit)));
-                DA.SetData(2, new GH_UnitNumber(new UnitsNet.Pressure(fck.As(DocumentUnits.StressUnit), DocumentUnits.StressUnit)));
-                DA.SetData(3, new GH_UnitNumber(new UnitsNet.Pressure(ft.As(DocumentUnits.StressUnit), DocumentUnits.StressUnit)));
+                DA.SetData(1, new GH_UnitNumber(new UnitsNet.Pressure(e.As(Units.StressUnit), Units.StressUnit)));
+                DA.SetData(2, new GH_UnitNumber(new UnitsNet.Pressure(fck.As(Units.StressUnit), Units.StressUnit)));
+                DA.SetData(3, new GH_UnitNumber(new UnitsNet.Pressure(ft.As(Units.StressUnit), Units.StressUnit)));
 
             }
             else

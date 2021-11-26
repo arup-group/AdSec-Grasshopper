@@ -59,7 +59,7 @@ namespace AdSecGH.Components
                 selecteditems.Add(dropdownitems[0][0]);
 
                 // force
-                dropdownitems.Add(DocumentUnits.FilteredForceUnits);
+                dropdownitems.Add(Units.FilteredForceUnits);
                 selecteditems.Add(forceUnit.ToString());
 
                 IQuantity force = new UnitsNet.Force(0, forceUnit);
@@ -84,15 +84,15 @@ namespace AdSecGH.Components
                 switch (selecteditems[0])
                 {
                     case ("Force"):
-                        dropdownitems[1] = DocumentUnits.FilteredForceUnits;
+                        dropdownitems[1] = Units.FilteredForceUnits;
                         selecteditems[0] = forceUnit.ToString();
                         break;
                     case ("Strain"):
-                        dropdownitems[1] = DocumentUnits.FilteredStrainUnits;
+                        dropdownitems[1] = Units.FilteredStrainUnits;
                         selecteditems[0] = strainUnit.ToString();
                         break;
                     case ("Stress"):
-                        dropdownitems[1] = DocumentUnits.FilteredStressUnits;
+                        dropdownitems[1] = Units.FilteredStressUnits;
                         selecteditems[0] = stressUnit.ToString();
                         break;
                 }
@@ -143,9 +143,9 @@ namespace AdSecGH.Components
         });
         private bool first = true;
 
-        private UnitsNet.Units.ForceUnit forceUnit = DocumentUnits.ForceUnit;
-        private Oasys.Units.StrainUnit strainUnit = DocumentUnits.StrainUnit;
-        private UnitsNet.Units.PressureUnit stressUnit = DocumentUnits.StressUnit;
+        private UnitsNet.Units.ForceUnit forceUnit = Units.ForceUnit;
+        private Oasys.Units.StrainUnit strainUnit = Units.StrainUnit;
+        private UnitsNet.Units.PressureUnit stressUnit = Units.StressUnit;
         string forceUnitAbbreviation;
         string strainUnitAbbreviation;
         string stressUnitAbbreviation;

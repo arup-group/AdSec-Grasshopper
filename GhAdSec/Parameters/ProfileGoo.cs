@@ -100,9 +100,9 @@ namespace AdSecGH.Parameters
                     UnitsNet.Area area = m_profile.Area();
                     double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
                     UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
-                    previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(DocumentUnits.LengthUnit));
-                    previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(DocumentUnits.LengthUnit));
-                    previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(DocumentUnits.LengthUnit));
+                    previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(Units.LengthUnit));
+                    previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(Units.LengthUnit));
+                    previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(Units.LengthUnit));
                 }
             }
         }
@@ -253,8 +253,8 @@ namespace AdSecGH.Parameters
             foreach (IPoint apt in apts)
             {
                 Point3d pt = new Point3d(0,
-                    apt.Y.As(DocumentUnits.LengthUnit), 
-                    apt.Z.As(DocumentUnits.LengthUnit)
+                    apt.Y.As(Units.LengthUnit), 
+                    apt.Z.As(Units.LengthUnit)
                     );
                 pt.Transform(maptToLocal);
                 rhPts.Add(pt);
@@ -534,7 +534,7 @@ namespace AdSecGH.Parameters
                 Polyline poly;
                 if (crv.TryGetPolyline(out poly))
                 {
-                    AdSecProfileGoo temp = new AdSecProfileGoo(poly, DocumentUnits.LengthUnit);
+                    AdSecProfileGoo temp = new AdSecProfileGoo(poly, Units.LengthUnit);
                     this.m_value = temp.m_value;
                     this.m_profile = temp.m_profile;
                     this.m_voidEdges = temp.m_voidEdges;

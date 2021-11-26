@@ -46,7 +46,7 @@ namespace AdSecGH.Components
 
                 // length
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
-                dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
+                dropdownitems.Add(Units.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
@@ -88,7 +88,7 @@ namespace AdSecGH.Components
             "Rebar Type",
             "Measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
         string unitAbbreviation;
         #endregion
 

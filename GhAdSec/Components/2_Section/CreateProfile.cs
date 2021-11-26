@@ -97,7 +97,7 @@ namespace AdSecGH.Components
                 }
 
                 // length
-                dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
+                dropdownitems.Add(Units.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
                 IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
@@ -126,10 +126,7 @@ namespace AdSecGH.Components
             if (selecteditems[0] == "Catalogue")
             {
                 // update spacer description to match catalogue dropdowns
-                spacerDescriptions[1] = "Catalogue"; //= new List<string>(new string[]
-                //{
-                //    "Profile type", "Catalogue", "Type", "Profile"
-                //});
+                spacerDescriptions[1] = "Catalogue"; 
 
                 // if FoldMode is not currently catalogue state, then we update all lists
                 if (_mode != FoldMode.Catalogue | updateCat)
@@ -338,7 +335,7 @@ namespace AdSecGH.Components
                         dropdownitems.RemoveAt(1);
 
                     // add length measure dropdown list
-                    dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
+                    dropdownitems.Add(Units.FilteredLengthUnits);
 
                     // set selected length
                     selecteditems[1] = lengthUnit.ToString();
@@ -420,7 +417,7 @@ namespace AdSecGH.Components
         Dictionary<string, Type> profileTypes;
         Dictionary<string, FieldInfo> profileFields;
 
-        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
         string unitAbbreviation;
 
         #region catalogue sections
@@ -1000,7 +997,7 @@ namespace AdSecGH.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetString("mode", _mode.ToString());
             writer.SetString("lengthUnit", lengthUnit.ToString());
             writer.SetBoolean("inclSS", inclSS);
@@ -1014,7 +1011,7 @@ namespace AdSecGH.Components
         {
             first = false;
 
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
             lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), reader.GetString("lengthUnit"));

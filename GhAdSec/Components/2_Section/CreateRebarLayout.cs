@@ -78,9 +78,9 @@ namespace AdSecGH.Components
                     case FoldMode.Arc:
                     case FoldMode.Circle:
                         if (dropdownitems.Count < 2)
-                            dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
+                            dropdownitems.Add(Units.FilteredLengthUnits);
                         if (dropdownitems.Count < 3)
-                            dropdownitems.Add(DocumentUnits.FilteredAngleUnits);
+                            dropdownitems.Add(Units.FilteredAngleUnits);
                         spacerDescriptions[1] = "Length measure";
                         break;
                 }
@@ -121,7 +121,7 @@ namespace AdSecGH.Components
             "Measure",
             "Angular measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
         private UnitsNet.Units.AngleUnit angleUnit = UnitsNet.Units.AngleUnit.Radian;
         string unitAbbreviation;
         string angleAbbreviation;

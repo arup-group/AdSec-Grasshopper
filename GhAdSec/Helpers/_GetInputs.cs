@@ -54,7 +54,13 @@ namespace AdSecGH.Components
                 }
             }
             else if (!isOptional)
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!"); 
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+            else
+            {
+                if (unitNumber == null)
+                    return UnitsNet.Length.Zero;
+            }
+
             return (UnitsNet.Length)unitNumber.Value;
         }
         internal static IFlange Flange(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
@@ -645,8 +651,8 @@ namespace AdSecGH.Components
             else if (isOptional)
             {
                 return new AdSecPointGoo(Oasys.Profiles.IPoint.Create(
-                new UnitsNet.Length(0, DocumentUnits.LengthUnit),
-                new UnitsNet.Length(0, DocumentUnits.LengthUnit)));
+                new UnitsNet.Length(0, Units.LengthUnit),
+                new UnitsNet.Length(0, Units.LengthUnit)));
             }
             return null;
 
@@ -848,7 +854,7 @@ namespace AdSecGH.Components
                 }
                 else
                 {
-                    prfl = Boundaries(owner, DA, inputid, -1, DocumentUnits.LengthUnit).Profile;
+                    prfl = Boundaries(owner, DA, inputid, -1, Units.LengthUnit).Profile;
                 }
                 
                 return prfl;
@@ -872,7 +878,7 @@ namespace AdSecGH.Components
                 }
                 else
                 {
-                    prfl = Boundaries(owner, DA, inputid, -1, DocumentUnits.LengthUnit);
+                    prfl = Boundaries(owner, DA, inputid, -1, Units.LengthUnit);
                 }
                 return prfl;
             }

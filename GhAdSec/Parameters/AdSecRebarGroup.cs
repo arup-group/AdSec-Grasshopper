@@ -233,9 +233,9 @@ namespace AdSecGH.Parameters
                         IPreForce force = (IPreForce)longitudinal.Preload;
                         if (force.Force.Value != 0)
                         {
-                            IQuantity quantityForce = new UnitsNet.Force(0, DocumentUnits.ForceUnit);
+                            IQuantity quantityForce = new UnitsNet.Force(0, Units.ForceUnit);
                             string unitforceAbbreviation = string.Concat(quantityForce.ToString().Where(char.IsLetter));
-                            m_preLoad = ", " + Math.Round(force.Force.As(DocumentUnits.ForceUnit), 4) + unitforceAbbreviation + " prestress";
+                            m_preLoad = ", " + Math.Round(force.Force.As(Units.ForceUnit), 4) + unitforceAbbreviation + " prestress";
                         }
                     }
                     catch (Exception)
@@ -245,9 +245,9 @@ namespace AdSecGH.Parameters
                             IPreStress stress = (IPreStress)longitudinal.Preload;
                             if (stress.Stress.Value != 0)
                             {
-                                IQuantity quantityStress = new UnitsNet.Pressure(0, DocumentUnits.StressUnit);
+                                IQuantity quantityStress = new UnitsNet.Pressure(0, Units.StressUnit);
                                 string unitstressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
-                                m_preLoad = ", " + Math.Round(stress.Stress.As(DocumentUnits.StressUnit), 4) + unitstressAbbreviation + " prestress";
+                                m_preLoad = ", " + Math.Round(stress.Stress.As(Units.StressUnit), 4) + unitstressAbbreviation + " prestress";
                             }
                         }
                         catch (Exception)
@@ -255,8 +255,8 @@ namespace AdSecGH.Parameters
                             IPreStrain strain = (IPreStrain)longitudinal.Preload;
                             if (strain.Strain.Value != 0)
                             {
-                                string unitstrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(DocumentUnits.StrainUnit);
-                                m_preLoad = ", " + Math.Round(strain.Strain.As(DocumentUnits.StrainUnit), 4) + unitstrainAbbreviation + " prestress";
+                                string unitstrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
+                                m_preLoad = ", " + Math.Round(strain.Strain.As(Units.StrainUnit), 4) + unitstrainAbbreviation + " prestress";
                             }
                         }
                     }
@@ -266,14 +266,14 @@ namespace AdSecGH.Parameters
                 try
                 {
                     ITemplateGroup temp = (ITemplateGroup)Value.Group;
-                    m_ToString = "Template Group, " + Value.Cover.UniformCover.ToUnit(DocumentUnits.LengthUnit) + " cover";
+                    m_ToString = "Template Group, " + Value.Cover.UniformCover.ToUnit(Units.LengthUnit) + " cover";
                 }
                 catch (Exception)
                 {
                     try
                     {
                         IPerimeterGroup perimeter = (IPerimeterGroup)Value.Group;
-                        m_ToString = "Perimeter Group, " + Value.Cover.UniformCover.ToUnit(DocumentUnits.LengthUnit) + " cover";
+                        m_ToString = "Perimeter Group, " + Value.Cover.UniformCover.ToUnit(Units.LengthUnit) + " cover";
                     }
                     catch (Exception)
                     {
@@ -318,7 +318,7 @@ namespace AdSecGH.Parameters
                 try
                 {
                     ILinkGroup link = (ILinkGroup)Value.Group;
-                    m_ToString = "Link, " + Value.Cover.UniformCover.ToUnit(DocumentUnits.LengthUnit) + " cover";
+                    m_ToString = "Link, " + Value.Cover.UniformCover.ToUnit(Units.LengthUnit) + " cover";
                 }
                 catch (Exception)
                 {

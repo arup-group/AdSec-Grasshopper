@@ -93,7 +93,7 @@ namespace AdSecGH.Components
             "Group Type",
             "Measure",
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
         string unitAbbreviation;
         #endregion
 

@@ -49,15 +49,15 @@ namespace AdSecGH.Components
                 selecteditems = new List<string>();
 
                 // unit types
-                dropdownitems.Add(Enum.GetNames(typeof(DocumentUnits.AdSecUnits)).ToList());
+                dropdownitems.Add(Enum.GetNames(typeof(Units.AdSecUnits)).ToList());
                 selecteditems.Add(dropdownitems[0][0]);
 
                 // first type
                 dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
-                selecteditems.Add(DocumentUnits.LengthUnit.ToString());
+                selecteditems.Add(Units.LengthUnit.ToString());
 
                 // set selected unit to
-                quantity = new UnitsNet.Length(0, DocumentUnits.LengthUnit);
+                quantity = new UnitsNet.Length(0, Units.LengthUnit);
                 selectedUnit = quantity.Unit;
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
 
@@ -83,41 +83,41 @@ namespace AdSecGH.Components
             if (i == 0)
             {
                 // get selected unit
-                DocumentUnits.AdSecUnits unit = (DocumentUnits.AdSecUnits)Enum.Parse(typeof(DocumentUnits.AdSecUnits), selecteditems[0]);
+                Units.AdSecUnits unit = (Units.AdSecUnits)Enum.Parse(typeof(Units.AdSecUnits), selecteditems[0]);
 
                 // switch case
                 switch (unit)
                 {
-                    case DocumentUnits.AdSecUnits.Length:
-                        quantity = new UnitsNet.Length(val, DocumentUnits.LengthUnit);
+                    case Units.AdSecUnits.Length:
+                        quantity = new UnitsNet.Length(val, Units.LengthUnit);
                         selectedUnit = quantity.Unit;
                         break;
-                    case DocumentUnits.AdSecUnits.Force:
-                        quantity = new UnitsNet.Force(val, DocumentUnits.ForceUnit);
+                    case Units.AdSecUnits.Force:
+                        quantity = new UnitsNet.Force(val, Units.ForceUnit);
                         selectedUnit = quantity.Unit;
                         break;
-                    case DocumentUnits.AdSecUnits.Moment:
-                        quantity = new Oasys.Units.Moment(val, DocumentUnits.MomentUnit);
+                    case Units.AdSecUnits.Moment:
+                        quantity = new Oasys.Units.Moment(val, Units.MomentUnit);
                         selectedUnit = quantity.Unit;
                         break;
-                    case DocumentUnits.AdSecUnits.Stress:
-                        quantity = new UnitsNet.Pressure(val, DocumentUnits.StressUnit);
+                    case Units.AdSecUnits.Stress:
+                        quantity = new UnitsNet.Pressure(val, Units.StressUnit);
                         selectedUnit = quantity.Unit;
                         break;
-                    case DocumentUnits.AdSecUnits.Strain:
-                        quantity = new Oasys.Units.Strain(val, DocumentUnits.StrainUnit);
+                    case Units.AdSecUnits.Strain:
+                        quantity = new Oasys.Units.Strain(val, Units.StrainUnit);
                         selectedUnit = quantity.Unit;
                         break;
-                    case DocumentUnits.AdSecUnits.AxialStiffness:
-                        quantity = new Oasys.Units.AxialStiffness(val, DocumentUnits.AxialStiffnessUnit);
+                    case Units.AdSecUnits.AxialStiffness:
+                        quantity = new Oasys.Units.AxialStiffness(val, Units.AxialStiffnessUnit);
                         selectedUnit = quantity.Unit;
                         break;
-                    case DocumentUnits.AdSecUnits.BendingStiffness:
-                        quantity = new Oasys.Units.BendingStiffness(val, DocumentUnits.BendingStiffnessUnit);
+                    case Units.AdSecUnits.BendingStiffness:
+                        quantity = new Oasys.Units.BendingStiffness(val, Units.BendingStiffnessUnit);
                         selectedUnit = quantity.Unit;
                         break;
-                    case DocumentUnits.AdSecUnits.Curvature:
-                        quantity = new Oasys.Units.Curvature(val, DocumentUnits.CurvatureUnit);
+                    case Units.AdSecUnits.Curvature:
+                        quantity = new Oasys.Units.Curvature(val, Units.CurvatureUnit);
                         selectedUnit = quantity.Unit;
                         break;
                 }
@@ -149,41 +149,41 @@ namespace AdSecGH.Components
         private void UpdateUIFromSelectedItems()
         {
             // get selected unit
-            DocumentUnits.AdSecUnits unit = (DocumentUnits.AdSecUnits)Enum.Parse(typeof(DocumentUnits.AdSecUnits), selecteditems[0]);
+            Units.AdSecUnits unit = (Units.AdSecUnits)Enum.Parse(typeof(Units.AdSecUnits), selecteditems[0]);
 
             // switch case
             switch (unit)
             {
-                case DocumentUnits.AdSecUnits.Length:
-                    quantity = new UnitsNet.Length(val, DocumentUnits.LengthUnit);
+                case Units.AdSecUnits.Length:
+                    quantity = new UnitsNet.Length(val, Units.LengthUnit);
                     selectedUnit = quantity.Unit;
                     break;
-                case DocumentUnits.AdSecUnits.Force:
-                    quantity = new UnitsNet.Force(val, DocumentUnits.ForceUnit);
+                case Units.AdSecUnits.Force:
+                    quantity = new UnitsNet.Force(val, Units.ForceUnit);
                     selectedUnit = quantity.Unit;
                     break;
-                case DocumentUnits.AdSecUnits.Moment:
-                    quantity = new Oasys.Units.Moment(val, DocumentUnits.MomentUnit);
+                case Units.AdSecUnits.Moment:
+                    quantity = new Oasys.Units.Moment(val, Units.MomentUnit);
                     selectedUnit = quantity.Unit;
                     break;
-                case DocumentUnits.AdSecUnits.Stress:
-                    quantity = new UnitsNet.Pressure(val, DocumentUnits.StressUnit);
+                case Units.AdSecUnits.Stress:
+                    quantity = new UnitsNet.Pressure(val, Units.StressUnit);
                     selectedUnit = quantity.Unit;
                     break;
-                case DocumentUnits.AdSecUnits.Strain:
-                    quantity = new Oasys.Units.Strain(val, DocumentUnits.StrainUnit);
+                case Units.AdSecUnits.Strain:
+                    quantity = new Oasys.Units.Strain(val, Units.StrainUnit);
                     selectedUnit = quantity.Unit;
                     break;
-                case DocumentUnits.AdSecUnits.AxialStiffness:
-                    quantity = new Oasys.Units.AxialStiffness(val, DocumentUnits.AxialStiffnessUnit);
+                case Units.AdSecUnits.AxialStiffness:
+                    quantity = new Oasys.Units.AxialStiffness(val, Units.AxialStiffnessUnit);
                     selectedUnit = quantity.Unit;
                     break;
-                case DocumentUnits.AdSecUnits.BendingStiffness:
-                    quantity = new Oasys.Units.BendingStiffness(val, DocumentUnits.BendingStiffnessUnit);
+                case Units.AdSecUnits.BendingStiffness:
+                    quantity = new Oasys.Units.BendingStiffness(val, Units.BendingStiffnessUnit);
                     selectedUnit = quantity.Unit;
                     break;
-                case DocumentUnits.AdSecUnits.Curvature:
-                    quantity = new Oasys.Units.Curvature(val, DocumentUnits.CurvatureUnit);
+                case Units.AdSecUnits.Curvature:
+                    quantity = new Oasys.Units.Curvature(val, Units.CurvatureUnit);
                     selectedUnit = quantity.Unit;
                     break;
             }
@@ -242,33 +242,33 @@ namespace AdSecGH.Components
         {
             if (DA.GetData(0, ref val))
             {
-                DocumentUnits.AdSecUnits unit = (DocumentUnits.AdSecUnits)Enum.Parse(typeof(DocumentUnits.AdSecUnits), selecteditems[0]);
+                Units.AdSecUnits unit = (Units.AdSecUnits)Enum.Parse(typeof(Units.AdSecUnits), selecteditems[0]);
 
                 // switch case
                 switch (unit)
                 {
-                    case DocumentUnits.AdSecUnits.Length:
+                    case Units.AdSecUnits.Length:
                         quantity = new UnitsNet.Length(val, (UnitsNet.Units.LengthUnit)selectedUnit);
                         break;
-                    case DocumentUnits.AdSecUnits.Force:
+                    case Units.AdSecUnits.Force:
                         quantity = new UnitsNet.Force(val, (UnitsNet.Units.ForceUnit)selectedUnit);
                         break;
-                    case DocumentUnits.AdSecUnits.Moment:
+                    case Units.AdSecUnits.Moment:
                         quantity = new Oasys.Units.Moment(val, (Oasys.Units.MomentUnit)selectedUnit);
                         break;
-                    case DocumentUnits.AdSecUnits.Stress:
+                    case Units.AdSecUnits.Stress:
                         quantity = new UnitsNet.Pressure(val, (UnitsNet.Units.PressureUnit)selectedUnit);
                         break;
-                    case DocumentUnits.AdSecUnits.Strain:
+                    case Units.AdSecUnits.Strain:
                         quantity = new Oasys.Units.Strain(val, (Oasys.Units.StrainUnit)selectedUnit);
                         break;
-                    case DocumentUnits.AdSecUnits.AxialStiffness:
+                    case Units.AdSecUnits.AxialStiffness:
                         quantity = new Oasys.Units.AxialStiffness(val, (Oasys.Units.AxialStiffnessUnit)selectedUnit);
                         break;
-                    case DocumentUnits.AdSecUnits.BendingStiffness:
+                    case Units.AdSecUnits.BendingStiffness:
                         quantity = new Oasys.Units.BendingStiffness(val, (Oasys.Units.BendingStiffnessUnit)selectedUnit);
                         break;
-                    case DocumentUnits.AdSecUnits.Curvature:
+                    case Units.AdSecUnits.Curvature:
                         quantity = new Oasys.Units.Curvature(val, (Oasys.Units.CurvatureUnit)selectedUnit);
                         break;
                 }

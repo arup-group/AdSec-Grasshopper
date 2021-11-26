@@ -20,81 +20,81 @@ namespace AdSecGH.UI
             this.labelDescription.Text = "Settings will be saved as default AdSecGH Units";
 
             this.labelLength.Text = "Length";
-            lengthdropdown.Insert(0, "Use Rhino unit: " + DocumentUnits.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem).ToString());
+            lengthdropdown.Insert(0, "Use Rhino unit: " + Units.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem).ToString());
             this.comboBoxLength.DataSource = lengthdropdown;
             this.comboBoxLength.DropDownStyle = ComboBoxStyle.DropDownList;
-            if (!DocumentUnits.useRhinoLengthUnit)
-                this.comboBoxLength.SelectedIndex = lengthdropdown.IndexOf(DocumentUnits.LengthUnit.ToString());
+            if (!Units.useRhinoLengthUnit)
+                this.comboBoxLength.SelectedIndex = lengthdropdown.IndexOf(Units.LengthUnit.ToString());
 
             this.labelForce.Text = "Force";
-            this.comboBoxForce.DataSource = DocumentUnits.FilteredForceUnits;
+            this.comboBoxForce.DataSource = Units.FilteredForceUnits;
             this.comboBoxForce.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.comboBoxForce.SelectedIndex = DocumentUnits.FilteredForceUnits.IndexOf(DocumentUnits.ForceUnit.ToString());
+            this.comboBoxForce.SelectedIndex = Units.FilteredForceUnits.IndexOf(Units.ForceUnit.ToString());
 
             this.labelMoment.Text = "Moment";
-            this.comboBoxMoment.DataSource = DocumentUnits.FilteredMomentUnits;
+            this.comboBoxMoment.DataSource = Units.FilteredMomentUnits;
             this.comboBoxMoment.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.comboBoxMoment.SelectedIndex = DocumentUnits.FilteredMomentUnits.IndexOf(DocumentUnits.MomentUnit.ToString());
+            this.comboBoxMoment.SelectedIndex = Units.FilteredMomentUnits.IndexOf(Units.MomentUnit.ToString());
 
             this.labelStress.Text = "Stress";
-            this.comboBoxStress.DataSource = DocumentUnits.FilteredStressUnits;
+            this.comboBoxStress.DataSource = Units.FilteredStressUnits;
             this.comboBoxStress.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.comboBoxStress.SelectedIndex = DocumentUnits.FilteredStressUnits.IndexOf(DocumentUnits.StressUnit.ToString());
+            this.comboBoxStress.SelectedIndex = Units.FilteredStressUnits.IndexOf(Units.StressUnit.ToString());
 
             this.labelStrain.Text = "Strain";
-            this.comboBoxStrain.DataSource = DocumentUnits.FilteredStrainUnits;
+            this.comboBoxStrain.DataSource = Units.FilteredStrainUnits;
             this.comboBoxStrain.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.comboBoxStrain.SelectedIndex = DocumentUnits.FilteredStrainUnits.IndexOf(DocumentUnits.StrainUnit.ToString());
+            this.comboBoxStrain.SelectedIndex = Units.FilteredStrainUnits.IndexOf(Units.StrainUnit.ToString());
 
             this.labelAxialStiffness.Text = "Axial Stiffness";
-            this.comboBoxAxialStiffness.DataSource = DocumentUnits.FilteredAxialStiffnessUnits;
+            this.comboBoxAxialStiffness.DataSource = Units.FilteredAxialStiffnessUnits;
             this.comboBoxAxialStiffness.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.comboBoxAxialStiffness.SelectedIndex = DocumentUnits.FilteredAxialStiffnessUnits.IndexOf(DocumentUnits.AxialStiffnessUnit.ToString());
+            this.comboBoxAxialStiffness.SelectedIndex = Units.FilteredAxialStiffnessUnits.IndexOf(Units.AxialStiffnessUnit.ToString());
 
             this.labelBendingStiffness.Text = "Bending Stiffness";
-            this.comboBoxBendingStiffness.DataSource = DocumentUnits.FilteredBendingStiffnessUnits;
+            this.comboBoxBendingStiffness.DataSource = Units.FilteredBendingStiffnessUnits;
             this.comboBoxBendingStiffness.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.comboBoxBendingStiffness.SelectedIndex = DocumentUnits.FilteredBendingStiffnessUnits.IndexOf(DocumentUnits.BendingStiffnessUnit.ToString());
+            this.comboBoxBendingStiffness.SelectedIndex = Units.FilteredBendingStiffnessUnits.IndexOf(Units.BendingStiffnessUnit.ToString());
             
             this.labelCurvature.Text = "Curvature";
-            this.comboBoxCurvature.DataSource = DocumentUnits.FilteredCurvatureUnits;
+            this.comboBoxCurvature.DataSource = Units.FilteredCurvatureUnits;
             this.comboBoxCurvature.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.comboBoxCurvature.SelectedIndex = DocumentUnits.FilteredCurvatureUnits.IndexOf(DocumentUnits.CurvatureUnit.ToString());
+            this.comboBoxCurvature.SelectedIndex = Units.FilteredCurvatureUnits.IndexOf(Units.CurvatureUnit.ToString());
         }
 
         #region Temporary units
-        List<string> lengthdropdown = DocumentUnits.FilteredLengthUnits.ToList();
-        string length = DocumentUnits.LengthUnit.ToString();
-        bool useRhinoUnits = DocumentUnits.useRhinoLengthUnit;
-        string force = DocumentUnits.ForceUnit.ToString();
-        string moment = DocumentUnits.MomentUnit.ToString();
-        string stress = DocumentUnits.StressUnit.ToString();
-        string strain = DocumentUnits.StrainUnit.ToString();
-        string axialstiffness = DocumentUnits.AxialStiffnessUnit.ToString();
-        string curvature = DocumentUnits.CurvatureUnit.ToString();
-        string bendingstiffness = DocumentUnits.BendingStiffnessUnit.ToString();
+        List<string> lengthdropdown = Units.FilteredLengthUnits.ToList();
+        string length = Units.LengthUnit.ToString();
+        bool useRhinoUnits = Units.useRhinoLengthUnit;
+        string force = Units.ForceUnit.ToString();
+        string moment = Units.MomentUnit.ToString();
+        string stress = Units.StressUnit.ToString();
+        string strain = Units.StrainUnit.ToString();
+        string axialstiffness = Units.AxialStiffnessUnit.ToString();
+        string curvature = Units.CurvatureUnit.ToString();
+        string bendingstiffness = Units.BendingStiffnessUnit.ToString();
         internal void SetUnits()
         {
             if (useRhinoUnits)
             {
-                DocumentUnits.useRhinoLengthUnit = true;
-                DocumentUnits.LengthUnit = DocumentUnits.GetRhinoLengthUnit();
+                Units.useRhinoLengthUnit = true;
+                Units.LengthUnit = Units.GetRhinoLengthUnit();
             }
             else
             {
-                DocumentUnits.useRhinoLengthUnit = false;
-                DocumentUnits.LengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), length);
+                Units.useRhinoLengthUnit = false;
+                Units.LengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), length);
             }
 
-            DocumentUnits.ForceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), force);
-            DocumentUnits.MomentUnit = (MomentUnit)Enum.Parse(typeof(MomentUnit), moment);
-            DocumentUnits.StressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), stress);
-            DocumentUnits.StrainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), strain);
-            DocumentUnits.AxialStiffnessUnit = (AxialStiffnessUnit)Enum.Parse(typeof(AxialStiffnessUnit), axialstiffness);
-            DocumentUnits.CurvatureUnit = (CurvatureUnit)Enum.Parse(typeof(CurvatureUnit), curvature);
-            DocumentUnits.BendingStiffnessUnit = (BendingStiffnessUnit)Enum.Parse(typeof(BendingStiffnessUnit), bendingstiffness);
+            Units.ForceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), force);
+            Units.MomentUnit = (MomentUnit)Enum.Parse(typeof(MomentUnit), moment);
+            Units.StressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), stress);
+            Units.StrainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), strain);
+            Units.AxialStiffnessUnit = (AxialStiffnessUnit)Enum.Parse(typeof(AxialStiffnessUnit), axialstiffness);
+            Units.CurvatureUnit = (CurvatureUnit)Enum.Parse(typeof(CurvatureUnit), curvature);
+            Units.BendingStiffnessUnit = (BendingStiffnessUnit)Enum.Parse(typeof(BendingStiffnessUnit), bendingstiffness);
 
-            DocumentUnits.SaveSettings();
+            Units.SaveSettings();
         }
         #endregion
 
@@ -164,13 +164,13 @@ namespace AdSecGH.UI
                 this.comboBoxLength.SelectedIndex = lengthdropdown.IndexOf(length);
             else
                 this.comboBoxLength.SelectedIndex = 0;
-            this.comboBoxForce.SelectedIndex = DocumentUnits.FilteredForceUnits.IndexOf(force);
-            this.comboBoxMoment.SelectedIndex = DocumentUnits.FilteredMomentUnits.IndexOf(moment);
-            this.comboBoxStress.SelectedIndex = DocumentUnits.FilteredStressUnits.IndexOf(stress);
-            this.comboBoxStrain.SelectedIndex = DocumentUnits.FilteredStrainUnits.IndexOf(strain);
-            this.comboBoxAxialStiffness.SelectedIndex = DocumentUnits.FilteredAxialStiffnessUnits.IndexOf(axialstiffness);
-            this.comboBoxBendingStiffness.SelectedIndex = DocumentUnits.FilteredBendingStiffnessUnits.IndexOf(bendingstiffness);
-            this.comboBoxCurvature.SelectedIndex = DocumentUnits.FilteredCurvatureUnits.IndexOf(curvature);
+            this.comboBoxForce.SelectedIndex = Units.FilteredForceUnits.IndexOf(force);
+            this.comboBoxMoment.SelectedIndex = Units.FilteredMomentUnits.IndexOf(moment);
+            this.comboBoxStress.SelectedIndex = Units.FilteredStressUnits.IndexOf(stress);
+            this.comboBoxStrain.SelectedIndex = Units.FilteredStrainUnits.IndexOf(strain);
+            this.comboBoxAxialStiffness.SelectedIndex = Units.FilteredAxialStiffnessUnits.IndexOf(axialstiffness);
+            this.comboBoxBendingStiffness.SelectedIndex = Units.FilteredBendingStiffnessUnits.IndexOf(bendingstiffness);
+            this.comboBoxCurvature.SelectedIndex = Units.FilteredCurvatureUnits.IndexOf(curvature);
         }
         private void buttonSI_Click(object sender, EventArgs e)
         {

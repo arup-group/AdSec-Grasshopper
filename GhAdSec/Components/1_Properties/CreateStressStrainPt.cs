@@ -51,12 +51,12 @@ namespace AdSecGH.Components
 
                 // strain
                 //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
-                dropdownitems.Add(DocumentUnits.FilteredStrainUnits);
+                dropdownitems.Add(Units.FilteredStrainUnits);
                 selecteditems.Add(strainUnit.ToString());
 
                 // pressure
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-                dropdownitems.Add(DocumentUnits.FilteredStressUnits);
+                dropdownitems.Add(Units.FilteredStressUnits);
                 selecteditems.Add(stressUnit.ToString());
 
                 strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
@@ -114,8 +114,8 @@ namespace AdSecGH.Components
         });
         private bool first = true;
 
-        private Oasys.Units.StrainUnit strainUnit = DocumentUnits.StrainUnit;
-        private UnitsNet.Units.PressureUnit stressUnit = DocumentUnits.StressUnit;
+        private Oasys.Units.StrainUnit strainUnit = Units.StrainUnit;
+        private UnitsNet.Units.PressureUnit stressUnit = Units.StressUnit;
         string strainUnitAbbreviation;
         string stressUnitAbbreviation;
         #endregion

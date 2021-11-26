@@ -33,8 +33,8 @@ namespace AdSecGH.Parameters
         {
             m_value = point;
             this.m_SSpoint = IStressStrainPoint.Create(
-                new UnitsNet.Pressure(m_value.Y, DocumentUnits.StressUnit), 
-                new Oasys.Units.Strain(m_value.X, DocumentUnits.StrainUnit));
+                new UnitsNet.Pressure(m_value.Y, Units.StressUnit), 
+                new Oasys.Units.Strain(m_value.X, Units.StrainUnit));
         }
         public AdSecStressStrainPointGoo(AdSecStressStrainPointGoo stressstrainPoint)
         {
@@ -45,24 +45,24 @@ namespace AdSecGH.Parameters
         {
             m_SSpoint = stressstrainPoint;
             this.m_value = new Point3d(
-                m_SSpoint.Strain.As(DocumentUnits.StrainUnit),
-                m_SSpoint.Stress.As(DocumentUnits.StressUnit),
+                m_SSpoint.Strain.As(Units.StrainUnit),
+                m_SSpoint.Stress.As(Units.StressUnit),
                 0);
         }
         public AdSecStressStrainPointGoo(UnitsNet.Pressure stress, Oasys.Units.Strain strain)
         {
             m_SSpoint = IStressStrainPoint.Create(stress, strain);
             m_value = new Point3d(
-                m_SSpoint.Strain.As(DocumentUnits.StrainUnit),
-                m_SSpoint.Stress.As(DocumentUnits.StressUnit),
+                m_SSpoint.Strain.As(Units.StrainUnit),
+                m_SSpoint.Stress.As(Units.StressUnit),
                 0);
         }
 
         public static IStressStrainPoint CreateFromPoint3d(Point3d point)
         {
             return IStressStrainPoint.Create(
-                new UnitsNet.Pressure(point.Y, DocumentUnits.StressUnit),
-                new Oasys.Units.Strain(point.X, DocumentUnits.StrainUnit)); 
+                new UnitsNet.Pressure(point.Y, Units.StressUnit),
+                new Oasys.Units.Strain(point.X, Units.StrainUnit)); 
         }
 
         private IStressStrainPoint m_SSpoint;
@@ -73,13 +73,13 @@ namespace AdSecGH.Parameters
 
         public override string ToString()
         {
-            IQuantity quantityStrain = new Oasys.Units.Strain(0, DocumentUnits.StrainUnit);
+            IQuantity quantityStrain = new Oasys.Units.Strain(0, Units.StrainUnit);
             string unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
-            IQuantity quantityStress = new UnitsNet.Pressure(0, DocumentUnits.StressUnit);
+            IQuantity quantityStress = new UnitsNet.Pressure(0, Units.StressUnit);
             string unitStressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
             return "AdSec " + TypeName + " {"
-                + Math.Round(StressStrainPoint.Strain.As(DocumentUnits.StrainUnit), 4) + unitStrainAbbreviation + ", "
-                + Math.Round(StressStrainPoint.Stress.As(DocumentUnits.StressUnit), 4) + unitStressAbbreviation + "}";
+                + Math.Round(StressStrainPoint.Strain.As(Units.StrainUnit), 4) + unitStrainAbbreviation + ", "
+                + Math.Round(StressStrainPoint.Stress.As(Units.StressUnit), 4) + unitStressAbbreviation + "}";
         }
         public override string TypeName => "StressStrainPoint";
 
@@ -148,8 +148,8 @@ namespace AdSecGH.Parameters
             if (typeof(TQ).IsAssignableFrom(typeof(IStressStrainPoint)))
             {
                 target = (TQ)(object) IStressStrainPoint.Create(
-                    new UnitsNet.Pressure(Value.Y, DocumentUnits.StressUnit),
-                    new Oasys.Units.Strain(Value.X, DocumentUnits.StrainUnit));
+                    new UnitsNet.Pressure(Value.Y, Units.StressUnit),
+                    new Oasys.Units.Strain(Value.X, Units.StrainUnit));
                 return true;
             }
 

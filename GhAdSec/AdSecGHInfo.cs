@@ -101,7 +101,7 @@ namespace AdSecGH
             menuLoad.CreateMainMenuItem();
 
             // Setup units
-            DocumentUnits.SetupUnits();
+            Units.SetupUnits();
 
             return GH_LoadingInstruction.Proceed;
         }

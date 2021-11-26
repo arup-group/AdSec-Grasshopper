@@ -128,8 +128,8 @@ namespace AdSecGH.Parameters
             if (offset != null)
             {
                 offs = new Vector3d(0,
-                    offset.Y.As(DocumentUnits.LengthUnit),
-                    offset.Z.As(DocumentUnits.LengthUnit));
+                    offset.Y.As(Units.LengthUnit),
+                    offset.Z.As(Units.LengthUnit));
             }
             
 
@@ -167,8 +167,8 @@ namespace AdSecGH.Parameters
                 Brep temp = CreateBrepFromProfile(new AdSecProfileGoo(sub.Section.Profile, local));
                 Vector3d trans = new Vector3d(
                     0,
-                    sub.Offset.Y.As(DocumentUnits.LengthUnit),
-                    sub.Offset.Z.As(DocumentUnits.LengthUnit));
+                    sub.Offset.Y.As(Units.LengthUnit),
+                    sub.Offset.Z.As(Units.LengthUnit));
                 temp.Transform(Transform.Translation(trans));
                 temp.Transform(Transform.Translation(offs));
                 subProfiles.Add(temp);
@@ -263,9 +263,9 @@ namespace AdSecGH.Parameters
                     UnitsNet.Area area = this.m_section.Profile.Area();
                     double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
                     UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
-                    previewXaxis = new Line(local.Origin, local.XAxis, length.As(DocumentUnits.LengthUnit));
-                    previewYaxis = new Line(local.Origin, local.YAxis, length.As(DocumentUnits.LengthUnit));
-                    previewZaxis = new Line(local.Origin, local.ZAxis, length.As(DocumentUnits.LengthUnit));
+                    previewXaxis = new Line(local.Origin, local.XAxis, length.As(Units.LengthUnit));
+                    previewYaxis = new Line(local.Origin, local.YAxis, length.As(Units.LengthUnit));
+                    previewZaxis = new Line(local.Origin, local.ZAxis, length.As(Units.LengthUnit));
                 }
             }
         }
@@ -285,8 +285,8 @@ namespace AdSecGH.Parameters
             // get start point
             Point3d startPt = new Point3d(
                     0,
-                    linkGroup.LinkPath.StartPoint.Y.As(DocumentUnits.LengthUnit),
-                    linkGroup.LinkPath.StartPoint.Z.As(DocumentUnits.LengthUnit));
+                    linkGroup.LinkPath.StartPoint.Y.As(Units.LengthUnit),
+                    linkGroup.LinkPath.StartPoint.Z.As(Units.LengthUnit));
             startPt.Transform(mapToLocal);
 
             PolyCurve centreline = new PolyCurve();
@@ -300,8 +300,8 @@ namespace AdSecGH.Parameters
                     // get next point member and transform to local plane
                     Point3d nextPt = new Point3d(
                     0,
-                    line.NextPoint.Y.As(DocumentUnits.LengthUnit),
-                    line.NextPoint.Z.As(DocumentUnits.LengthUnit));
+                    line.NextPoint.Y.As(Units.LengthUnit),
+                    line.NextPoint.Z.As(Units.LengthUnit));
                     nextPt.Transform(mapToLocal);
 
                     // create rhino line segments
@@ -321,8 +321,8 @@ namespace AdSecGH.Parameters
                     // centrepoint
                     Point3d centrePt = new Point3d(
                         0,
-                        arc.Centre.Y.As(DocumentUnits.LengthUnit),
-                        arc.Centre.Z.As(DocumentUnits.LengthUnit));
+                        arc.Centre.Y.As(Units.LengthUnit),
+                        arc.Centre.Z.As(Units.LengthUnit));
                     centrePt.Transform(mapToLocal);
 
                     // calculate radius from startPt/previousPt
@@ -349,7 +349,7 @@ namespace AdSecGH.Parameters
             }
 
             // offset curves by link radius
-            double barDiameter = linkGroup.BarBundle.Diameter.As(DocumentUnits.LengthUnit);
+            double barDiameter = linkGroup.BarBundle.Diameter.As(Units.LengthUnit);
             Curve[] offset1 = centreline.Offset(local, barDiameter / 2, 0.001, CurveOffsetCornerStyle.Sharp);
             Curve[] offset2 = centreline.Offset(local, barDiameter / 2 * -1, 0.001, CurveOffsetCornerStyle.Sharp);
 
@@ -370,12 +370,12 @@ namespace AdSecGH.Parameters
             {
                 Point3d center = new Point3d(
                     0,
-                    bars.Positions[i].Y.As(DocumentUnits.LengthUnit),
-                    bars.Positions[i].Z.As(DocumentUnits.LengthUnit));
+                    bars.Positions[i].Y.As(Units.LengthUnit),
+                    bars.Positions[i].Z.As(Units.LengthUnit));
                 center.Transform(Transform.Translation(offset));
                 center.Transform(mapToLocal);
                 Plane localCenter = new Plane(center, local.Normal);
-                Circle edgeCurve = new Circle(localCenter, bars.BarBundle.Diameter.As(DocumentUnits.LengthUnit) / 2);
+                Circle edgeCurve = new Circle(localCenter, bars.BarBundle.Diameter.As(Units.LengthUnit) / 2);
                 edgeCurves.Add(edgeCurve);
                 List<Curve> crvs = new List<Curve>() { edgeCurve.ToNurbsCurve() };
                 rebarBreps.Add(Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelRelativeTolerance).First());

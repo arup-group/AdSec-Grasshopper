@@ -30,15 +30,21 @@ namespace AdSecGH.Parameters
 {
     public class AdSecSolutionGoo : GH_Goo<ISolution>
     {
-        public AdSecSolutionGoo(ISolution solution, Plane local)
+        public AdSecSolutionGoo(ISolution solution, Plane local, Polyline profileEdge)
         : base(solution)
         {
             m_plane = local;
+            m_profile = profileEdge;
         }
         private Plane m_plane;
         internal Plane LocalPlane
         {
             get { return m_plane; }
+        }
+        private Polyline m_profile;
+        internal Polyline ProfileEdge
+        {
+            get { return m_profile ; }
         }
         public override bool IsValid => true;
 
@@ -48,7 +54,7 @@ namespace AdSecGH.Parameters
 
         public override IGH_Goo Duplicate()
         {
-            return new AdSecSolutionGoo(this.Value, m_plane);
+            return new AdSecSolutionGoo(this.Value, m_plane, m_profile);
         }
         public override string ToString()
         {

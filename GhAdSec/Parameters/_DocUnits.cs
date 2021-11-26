@@ -28,7 +28,7 @@ namespace AdSecGH
     /// <summary>
     /// Class to hold units used in Grasshopper AdSec file. 
     /// </summary>
-    public static class DocumentUnits
+    public static class Units
     {
         public enum AdSecUnits
         {
