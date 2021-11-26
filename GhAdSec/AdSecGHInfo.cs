@@ -69,7 +69,7 @@ namespace AdSecGH
             // try create solution for license check
             try
             {
-                //IAdSec ad = IAdSec.Create(EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014);
+                IAdSec ad = IAdSec.Create(EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014);
             }
             catch (Exception e)
             {
@@ -90,6 +90,17 @@ namespace AdSecGH
                 Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
 
                 return GH_LoadingInstruction.Abort;
+            }
+
+            try
+            {
+                // ### Reference System.ValueTuple.dll from .gha assembly path ###
+                Assembly assTuple = Assembly.LoadFile(PluginPath + "\\System.ValueTuple.dll");
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
 
             // ### Create Ribbon Category name and icon ###
