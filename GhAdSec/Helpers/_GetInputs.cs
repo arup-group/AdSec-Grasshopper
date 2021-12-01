@@ -888,7 +888,7 @@ namespace AdSecGH.Components
             }
             return null;
         }
-        internal static AdSecSection Section(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        internal static AdSecSection AdSecSection(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(inputid, ref gh_typ))

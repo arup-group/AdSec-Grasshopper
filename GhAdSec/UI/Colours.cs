@@ -149,71 +149,70 @@ namespace AdSecGH.UI
 
         #region unused GSA scheme
         // GSA colour scheme
-        //public static Color GsaGreen
-        //{
-        //    get { return Color.FromArgb(255, 48, 170, 159); }
-        //}
-        //public static Color GsaDarkGreen
-        //{
-        //    get { return Color.FromArgb(255, 27, 141, 133); }
-        //}
-        //public static Color GsaBlue
-        //{
-        //    get { return Color.FromArgb(255, 99, 148, 237); }
-        //}
+        
         public static Color GsaDarkBlue
         {
             get { return Color.FromArgb(255, 0, 92, 175); }
         }
-        //public static Color GsaLightBlue
-        //{
-        //    get { return Color.FromArgb(255, 130, 169, 241); }
-        //}
+        public static Color GsaLightBlue
+        {
+            get { return Color.FromArgb(255, 130, 169, 241); }
+        }
 
-        
+        //Set colours for Component UI
+        public static Brush ButtonColour
+        {
+            get { return new SolidBrush(GsaDarkBlue); }
+        }
+        public static Brush ClickedButtonColour
+        {
+            get { return new SolidBrush(UI.Colour.WhiteOverlay(GsaDarkBlue, 0.32)); }
+        }
+        public static Brush HoverButtonColour
+        {
+            get { return new SolidBrush(UI.Colour.WhiteOverlay(GsaDarkBlue, 0.16)); }
+        }
+        public static Brush InactiveButtonColour
+        {
+            get { return new SolidBrush(UILightGrey); }
+        }
+        public static Brush HoverInactiveButtonColour
+        {
+            get { return new SolidBrush(Color.FromArgb(255, 216, 216, 216)); }
+        }
 
-        //public static Color GsaDarkGrey
-        //{
-        //    get { return Color.FromArgb(255, 164, 164, 164); }
-        //}
+        public static Color ButtonBorderColour
+        {
+            get { return UILightGrey; }
+        }
+        public static Color ClickedBorderColour
+        {
+            get { return Color.White; }
+        }
+        public static Color HoverBorderColour
+        {
+            get { return Color.White; }
+        }
+        public static Brush AnnotationTextBright
+        {
+            get { return Brushes.White; }
+        }
 
-        //public static Color GsaDarkPurple
-        //{
-        //    get { return Color.FromArgb(255, 136, 0, 136); }
-        //}
-
-        //public static Color GsaGold
-        //{
-        //    get { return Color.FromArgb(255, 255, 183, 0); }
-        //}
-
-        ////Set colours for Component UI
-        //public static Brush ButtonColor
-        //{
-        //    get { return new SolidBrush(GsaDarkBlue); }
-        //}
-        //public static Brush ClickedButtonColor
-        //{
-        //    get { return new SolidBrush(GsaLightBlue); }
-        //}
-        //public static Brush InactiveButtonColor
-        //{
-        //    get { return new SolidBrush(Color.FromArgb(255, 216, 216, 216)); }
-        //}
-
-        
-
-        //public static Color ClickedBorderColour
-        //{
-        //    get { return Color.Black; }
-        //}
-
-        //public static Brush InactiveBorderColor
-        //{
-        //    get { return new SolidBrush(Color.FromArgb(0, 216, 216, 216)); }
-        //}
-
-
+        public static Color WhiteOverlay(Color original, double ratio)
+        {
+            Color white = Color.White;
+            return Color.FromArgb(255,
+                (int)(ratio * white.R + (1 - ratio) * original.R),
+                (int)(ratio * white.G + (1 - ratio) * original.G),
+                (int)(ratio * white.B + (1 - ratio) * original.B));
+        }
+        public static Color Overlay(Color original, Color overlay, double ratio)
+        {
+            return Color.FromArgb(255,
+                (int)(ratio * overlay.R + (1 - ratio) * original.R),
+                (int)(ratio * overlay.G + (1 - ratio) * original.G),
+                (int)(ratio * overlay.B + (1 - ratio) * original.B));
+        }
 
         //public static Brush AnnotationTextDarkGrey
         //{

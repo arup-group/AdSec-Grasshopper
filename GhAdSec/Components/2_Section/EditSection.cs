@@ -71,7 +71,7 @@ namespace AdSecGH.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // 0 section 
-            AdSecSection in_section = GetInput.Section(this, DA, 0);
+            AdSecSection in_section = GetInput.AdSecSection(this, DA, 0);
             if (in_section == null)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
