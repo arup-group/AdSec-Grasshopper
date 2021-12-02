@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="AsyncComponent\GH_AsyncComponent.cs" />
     <Compile Include="AsyncComponent\WorkerInstance.cs" />
+    <Compile Include="Components\0_AdSec\SectionSVG.cs" />
     <Compile Include="Components\0_AdSec\SaveAdSec.cs" />
     <Compile Include="Components\0_AdSec\CreateUnitNumber.cs" />
     <Compile Include="Components\0_AdSec\ConvertUnitNumber.cs" />
@@ -308,6 +309,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\SaveAdSec.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\SVG.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

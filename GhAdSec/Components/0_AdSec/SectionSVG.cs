@@ -10,35 +10,38 @@ using Rhino.Geometry;
 using System.Windows.Forms;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec.IO;
-using Oasys.AdSec.IO.Serialization;
+using Oasys.AdSec.IO.Graphics;
 using AdSecGH.Parameters;
+using Oasys.AdSec.IO.Graphics.Section;
+using Oasys.AdSec;
+using Oasys.Profiles;
 
 namespace AdSecGH.Components
 {
     /// <summary>
     /// Component to open an existing GSA model
     /// </summary>
-    public class SaveAdSec : GH_Component, IGH_VariableParameterComponent
+    public class SectionSVG : GH_Component, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
         // including name, exposure level and icon
-        public override Guid ComponentGuid => new Guid("6bba517c-3ec1-45da-a520-ea117f7f901a");
-        public SaveAdSec()
-          : base("Save AdSec", "Save", "Saves your AdSec Section with loads from this parametric nightmare",
+        public override Guid ComponentGuid => new Guid("baf1ad7d-efca-4851-a6a3-21a65471a041");
+        public SectionSVG()
+          : base("Section SVG", "SVG", "Creates a SVG file from an AdSec Section",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat0())
         { this.Hidden = true; } // sets the initial state of the component to hidden
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.SaveAdSec;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.SVG;
         #endregion
 
         #region Custom UI
         //This region overrides the typical component layout
         public override void CreateAttributes()
         {
-            m_attributes = new UI.Button3ComponentUI(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile, OpenAdSecexe, true, "Save AdSec file");
+            m_attributes = new UI.Button3ComponentUI(this, "Save", "Save As", "Open SVG", SaveFile, SaveAsFile, OpenSVGexe, true, "Save SVG file");
         }
 
         public void SaveFile()
@@ -48,28 +51,28 @@ namespace AdSecGH.Components
             else
             {
                 // write to file
-                File.WriteAllText(fileName, jsonString);
+                File.WriteAllText(fileName, imageSVG);
                 canOpen = true;
             }
         }
 
         public void SaveAsFile()
         {
-            var fdi = new Rhino.UI.SaveFileDialog { Filter = "AdSec File (*.ads)|*.ads|All files (*.*)|*.*" };
+            var fdi = new Rhino.UI.SaveFileDialog { Filter = "SVG File (*.svg)|*.svg|All files (*.*)|*.*" };
             var res = fdi.ShowSaveDialog();
             if (res) // == DialogResult.OK)
             {
                 fileName = fdi.FileName;
                 usersetFileName = true;
                 // write to file
-                File.WriteAllText(fileName, jsonString);
+                File.WriteAllText(fileName, imageSVG);
 
                 canOpen = true;
 
                 //add panel input with string
                 //delete existing inputs if any
-                while (Params.Input[3].Sources.Count > 0)
-                    Grasshopper.Instances.ActiveCanvas.Document.RemoveObject(Params.Input[3].Sources[0], false);
+                while (Params.Input[2].Sources.Count > 0)
+                    Grasshopper.Instances.ActiveCanvas.Document.RemoveObject(Params.Input[2].Sources[0], false);
 
                 //instantiate  new panel
                 var panel = new Grasshopper.Kernel.Special.GH_Panel();
@@ -86,13 +89,13 @@ namespace AdSecGH.Components
                 Grasshopper.Instances.ActiveCanvas.Document.AddObject(panel, false);
 
                 //Connect the new slider to this component
-                Params.Input[3].AddSource(panel);
+                Params.Input[2].AddSource(panel);
                 Params.OnParametersChanged();
                 ExpireSolution(true);
             }
         }
 
-        public void OpenAdSecexe()
+        public void OpenSVGexe()
         {
             if (fileName != null)
             {
@@ -110,20 +113,19 @@ namespace AdSecGH.Components
 
         string fileName = null;
         bool usersetFileName = false;
-        static string jsonString;
+        static string imageSVG;
         bool canOpen = false;
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Section", "Sec", "AdSec Section to save", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Loads", "Lds", "[Optional] List of AdSec Loads (consistent Load or Deformation type)", GH_ParamAccess.list);
             pManager.AddBooleanParameter("Save?", "Save", "Input 'True' to save or use button", GH_ParamAccess.item, false);
             pManager.AddTextParameter("File and Path", "File", "Filename and path", GH_ParamAccess.item);
             pManager[1].Optional = true;
             pManager[2].Optional = true;
-            pManager[3].Optional = true;
         }
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
+            pManager.AddTextParameter("SVG string", "SVG", "Text string representing the SVG file", GH_ParamAccess.item);
         }
         #region IGH_VariableParameterComponent null implementation
         //This sub region handles any changes to the component after it has been placed on the canvas
@@ -176,64 +178,26 @@ namespace AdSecGH.Components
             if (section == null)
                 return;
 
-            // construct json converter
-            JsonConverter json = new JsonConverter(section.DesignCode);
-            
-            List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
-            if (DA.GetDataList(1, gh_typs))
+            // create a flattened section
+            ISection flat = null;
+            if (section.DesignCode != null) 
             {
-                if (gh_typs[0].Value is AdSecLoadGoo)
-                {
-                    // create new list of loads
-                    Oasys.Collections.IList<Oasys.AdSec.ILoad> lds = Oasys.Collections.IList<Oasys.AdSec.ILoad>.Create();
-                    // loop through input list
-                    for (int i = 0; i < gh_typs.Count; i++)
-                    {
-                        // check if item is load type
-                        if (gh_typs[i].Value is AdSecLoadGoo)
-                        {
-                            AdSecLoadGoo load = (AdSecLoadGoo)gh_typs[i].Value;
-                            lds.Add(load.Value);
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + Params.Input[1].NickName + " index " + i + " to AdSec Load. Section will be saved without this load.");
-                        }
-                    }
-                    // convert to json with load method
-                    jsonString = json.SectionToJson(section.Section, lds);
-                }
-                else if (gh_typs[0].Value is AdSecDeformationGoo)
-                {
-                    // create new list of deformations
-                    Oasys.Collections.IList<Oasys.AdSec.IDeformation> defs = Oasys.Collections.IList<Oasys.AdSec.IDeformation>.Create();
-                    // loop through input list
-                    for (int i = 0; i < gh_typs.Count; i++)
-                    {
-                        // check if item is load type
-                        if (gh_typs[i].Value is AdSecDeformationGoo)
-                        {
-                            AdSecDeformationGoo def = (AdSecDeformationGoo)gh_typs[i].Value;
-                            defs.Add(def.Value);
-                        }
-                        else
-                        {
-                            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + Params.Input[1].NickName + " index " + i + " to AdSec Load. Section will be saved without this load.");
-                        }
-                    }
-                    // convert to json with load method
-                    jsonString = json.SectionToJson(section.Section, defs);
-                }
-                else
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load. Section will be saved without loads.");
-                }
+                IAdSec adSec = IAdSec.Create(section.DesignCode);
+                flat = adSec.Flatten(section.Section);
             }
             else
             {
-                // if no loads are inputted then just convert section
-                jsonString = json.SectionToJson(section.Section);
+                IPerimeterProfile prof = IPerimeterProfile.Create(section.Section.Profile);
+                flat = ISection.Create(prof, section.Section.Material);
             }
+
+            // construct image converter
+            SectionImageBuilder sectionImageBuilder = new SectionImageBuilder(flat);
+
+            // create svg string
+            imageSVG = sectionImageBuilder.Svg();
+
+            DA.SetData(0, imageSVG);
 
         }
     }
