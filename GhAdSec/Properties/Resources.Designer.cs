@@ -273,6 +273,16 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap OpenAdSec {
+            get {
+                object obj = ResourceManager.GetObject("OpenAdSec", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Prestress {
             get {
                 object obj = ResourceManager.GetObject("Prestress", resourceCulture);
@@ -326,6 +336,16 @@ namespace AdSecGH.Properties {
         internal static System.Drawing.Bitmap RebarSpacing {
             get {
                 object obj = ResourceManager.GetObject("RebarSpacing", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SaveAdSec {
+            get {
+                object obj = ResourceManager.GetObject("SaveAdSec", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

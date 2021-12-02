@@ -31,14 +31,14 @@ namespace AdSecGH.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        //protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.SaveModel;
+        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.SaveAdSec;
         #endregion
 
         #region Custom UI
         //This region overrides the typical component layout
         public override void CreateAttributes()
         {
-            m_attributes = new UI.Button3ComponentUI(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile, OpenAdSecexe, true, "Save GSA file");
+            m_attributes = new UI.Button3ComponentUI(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile, OpenAdSecexe, true, "Save AdSec file");
         }
 
         public void SaveFile()
