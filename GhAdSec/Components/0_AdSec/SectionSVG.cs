@@ -197,8 +197,18 @@ namespace AdSecGH.Components
             // create svg string
             imageSVG = sectionImageBuilder.Svg();
 
-            DA.SetData(0, imageSVG);
+            // replace colours:
+            string concrete = "#CDCDCD";
+            string steel = "#0061A0";
+            string rebar = "#2D2D2D";
+            string link = "#969696";
+            
+            imageSVG = imageSVG.Replace("#84D0FF", steel);
+            imageSVG = imageSVG.Replace("#ABABAB", rebar);
+            imageSVG = imageSVG.Replace("#CDCDCD", link);
+            imageSVG = imageSVG.Replace("#8EFB8E", concrete);
 
+            DA.SetData(0, imageSVG);
         }
     }
 }
