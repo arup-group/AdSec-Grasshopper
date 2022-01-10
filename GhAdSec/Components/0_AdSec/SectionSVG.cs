@@ -41,6 +41,8 @@ namespace AdSecGH.Components
         //This region overrides the typical component layout
         public override void CreateAttributes()
         {
+            if (Grasshopper.Instances.DocumentEditor == null) { base.CreateAttributes(); return; } // skip this class during GH loading
+
             m_attributes = new UI.Button3ComponentUI(this, "Save", "Save As", "Open SVG", SaveFile, SaveAsFile, OpenSVGexe, true, "Save SVG file");
         }
 
@@ -165,6 +167,8 @@ namespace AdSecGH.Components
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
+            if (Grasshopper.Instances.DocumentEditor == null) { return base.Read(reader); } // skip this class during GH loading
+
             //_mode = (FoldMode)reader.GetInt32("Mode");
             fileName = (string)reader.GetString("File");
             //advanced = (bool)reader.GetBoolean("Advanced");

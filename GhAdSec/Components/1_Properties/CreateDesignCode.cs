@@ -41,8 +41,13 @@ namespace AdSecGH.Components
         //This region overrides the typical component layout
         public override void CreateAttributes()
         {
+            if (Grasshopper.Instances.DocumentEditor == null) { base.CreateAttributes(); return; } // skip this class during GH loading
+
             if (first)
             {
+                if (designCodeGroups == null)
+                    designCodeGroups = AdSecGH.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
+
                 List<string> tempList = new List<string>();
                 foreach (string dc in designCodeGroups)
                 {
@@ -50,7 +55,7 @@ namespace AdSecGH.Components
                         tempList.Add(dc);
                 }
                 designCodeGroups = tempList;
-                
+
                 if (selecteditems == null)
                 {
                     // create a new list of selected items and add the first material type
@@ -74,10 +79,10 @@ namespace AdSecGH.Components
                     {
                         // get the type of the most recent selected from level above
                         designCodeKVP.TryGetValue(typeString, out Type typ);
-                        
+
                         // update the KVP by reflecting the type
                         designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
-                        
+
                         // determine if we have reached the fields layer
                         if (designCodeKVP.Count > 1)
                         {
@@ -111,6 +116,7 @@ namespace AdSecGH.Components
             }
 
             m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+
         }
 
         public void SetSelected(int i, int j)
@@ -266,7 +272,7 @@ namespace AdSecGH.Components
 
         #region Input and output
         // get list of material types defined in material parameter
-        List<string> designCodeGroups = AdSecGH.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
+        List<string> designCodeGroups;
         // list of materials
         Dictionary<string, FieldInfo> designCodes;
         FieldInfo selectedCode;
@@ -318,6 +324,8 @@ namespace AdSecGH.Components
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
+            if (Grasshopper.Instances.DocumentEditor == null) { return base.Read(reader); } // skip this class during GH loading
+
             AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             UpdateUIFromSelectedItems();
             first = false;

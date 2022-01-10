@@ -54,6 +54,8 @@ namespace AdSecGH.Components
         //This region overrides the typical component layout
         public override void CreateAttributes()
         {
+            if (Grasshopper.Instances.DocumentEditor == null) { base.CreateAttributes(); return; } // skip this class during GH loading
+
             if (first)
             {
                 Dictionary<string, Type> profileTypesInitial = AdSecGH.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.Profiles");
@@ -105,6 +107,7 @@ namespace AdSecGH.Components
             }
 
             m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+
         }
 
         public void SetSelected(int i, int j)
@@ -137,7 +140,9 @@ namespace AdSecGH.Components
                     
                     // set catalogue selection to all
                     catalogueIndex = -1;
-
+                    
+                    if (cataloguedata == null)
+                        cataloguedata = SqlReader.GetCataloguesDataFromSQLite(Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"));
                     catalogueNames = cataloguedata.Item1;
                     catalogueNumbers = cataloguedata.Item2;
 
@@ -365,9 +370,13 @@ namespace AdSecGH.Components
                 {
                     "Profile type", "Catalogue", "Type", "Profile"
                 });
-
+                if (cataloguedata == null)
+                    cataloguedata = SqlReader.GetCataloguesDataFromSQLite(Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"));
                 catalogueNames = cataloguedata.Item1;
                 catalogueNumbers = cataloguedata.Item2;
+
+                if (typedata == null)
+                    typedata = SqlReader.GetTypesDataFromSQLite(-1, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), false);
                 typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
                 typeNames = typedata.Item1;
                 typeNumbers = typedata.Item2;
@@ -423,19 +432,19 @@ namespace AdSecGH.Components
         #region catalogue sections
         // for catalogue selection
         // Catalogues
-        readonly Tuple<List<string>, List<int>> cataloguedata = SqlReader.GetCataloguesDataFromSQLite(Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"));
+        Tuple<List<string>, List<int>> cataloguedata;
         List<int> catalogueNumbers = new List<int>(); // internal db catalogue numbers
         List<string> catalogueNames = new List<string>(); // list of displayed catalogues
         bool inclSS;
 
         // Types
-        Tuple<List<string>, List<int>> typedata = SqlReader.GetTypesDataFromSQLite(-1, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), false);
+        Tuple<List<string>, List<int>> typedata;
         List<int> typeNumbers = new List<int>(); //  internal db type numbers
         List<string> typeNames = new List<string>(); // list of displayed types
 
         // Sections
         // list of displayed sections
-        List<string> sectionList = SqlReader.GetSectionsDataFromSQLite(new List<int> { -1 }, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), false);
+        List<string> sectionList;
         List<string> filteredlist = new List<string>();
         int catalogueIndex = -1; //-1 is all
         int typeIndex = -1;
@@ -1009,6 +1018,8 @@ namespace AdSecGH.Components
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
+            if (Grasshopper.Instances.DocumentEditor == null) { return base.Read(reader); } // skip this class during GH loading
+
             first = false;
 
             DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
