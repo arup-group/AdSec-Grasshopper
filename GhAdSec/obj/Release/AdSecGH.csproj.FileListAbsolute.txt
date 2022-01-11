@@ -1,7 +1,4 @@
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\addata.dll
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\AdSecLogic.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\AdSec_SDK_Implementation.dll
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\AdSol.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\application.avf
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\clrcompression.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\concrt140.dll
@@ -26,9 +23,6 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\msvcp140_
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\msvcp140_2.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\msvcp140_atomic_wait.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\msvcp140_codecvt_ids.dll
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\OaData.dll
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\OaNumeric.dll
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\OaUtil.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\sectlib.db3
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\sentry.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\vcamp140.dll
@@ -59,3 +53,11 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.cspro
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.csproj.CoreCompileInputs.cache
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.pdb
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\addata_AdSec_API.dll
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\AdSecLogic_AdSec_API.dll
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\AdSol_AdSec_API.dll
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\OaData_AdSec_API.dll
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\OaNumeric_AdSec_API.dll
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\OaUtil_AdSec_API.dll
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Release\AdSec_IO.pdb
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\Release\AdSecGH.csproj.CopyComplete

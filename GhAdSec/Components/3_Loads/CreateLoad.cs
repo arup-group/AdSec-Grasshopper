@@ -45,8 +45,6 @@ namespace AdSecGH.Components
         //This region overrides the typical component layout
         public override void CreateAttributes()
         {
-            if (Grasshopper.Instances.DocumentEditor == null) { base.CreateAttributes(); return; } // skip this class during GH loading
-
             if (first)
             {
                 dropdownitems = new List<List<string>>();
@@ -169,8 +167,6 @@ namespace AdSecGH.Components
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            if (Grasshopper.Instances.DocumentEditor == null) { return base.Read(reader); } // skip this class during GH loading
-
             AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             UpdateUIFromSelectedItems();

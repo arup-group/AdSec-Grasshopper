@@ -313,7 +313,6 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            
             Params.Input[0].Name = "Number [" + unitAbbreviation + "]";
         }
         #endregion

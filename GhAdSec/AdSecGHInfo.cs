@@ -22,15 +22,81 @@ namespace AdSecGH
         /// <returns></returns>
         public override GH_LoadingInstruction PriorityLoad()
         {
+            // ### Search for plugin path ###
+            
+            // initially look in %appdata% folder where package manager will store the plugin
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            path = Path.Combine(path, "McNeel", "Rhinoceros", "Packages", Rhino.RhinoApp.ExeVersion + ".0", "AdSec");
+            
+            if (!File.Exists(Path.Combine(path, "AdSec.gha"))) // if no plugin file is found there continue search
+            {
+                // look in all the other Grasshopper assembly (plugin) folders
+                foreach(GH_AssemblyFolderInfo pluginFolder in Grasshopper.Folders.AssemblyFolders)
+                {
+                    if (File.Exists(Path.Combine(pluginFolder.Folder, "AdSec.gha"))) // if the folder contains the plugin
+                    {
+                        path = pluginFolder.Folder;
+                        break;
+                    }    
+                }
+            }
+            PluginPath = Path.GetDirectoryName(path);
+
+            // ### Set system environment variables to allow user rights to read above dll ###
+            const string name = "PATH";
+            string pathvar = System.Environment.GetEnvironmentVariable(name);
+            var value = pathvar + ";" + PluginPath;
+            var target = EnvironmentVariableTarget.Process;
+            System.Environment.SetEnvironmentVariable(name, value, target);
+
+
+            // ### Reference AdSecAPI and SQLite dlls ###
+            try
+            {
+                AdSecAPI = Assembly.LoadFile(PluginPath + "\\AdSec_API.dll");
+                //Assembly assTuple = Assembly.LoadFile(PluginPath + "\\System.ValueTuple.dll");
+                //Assembly assSQL = Assembly.LoadFile(PluginPath + "\\System.Data.SQLite.dll");
+            }
+            catch (Exception ex)
+            {
+
+                string message = ex.Message
+                    + System.Environment.NewLine + System.Environment.NewLine +
+                    "Error loading the file AdSec_API.dll from path " + PluginPath + " - check if the file exist."
+                    + System.Environment.NewLine + "The plugin cannot be loaded.";
+                Exception exception = new Exception(message);
+                Grasshopper.Kernel.GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec: AdSec_API.dll loading", exception);
+                Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
+                return GH_LoadingInstruction.Abort;
+            }
+
+
+            // ### Trigger a license check ###
+            try
+            {
+                IAdSec ad = IAdSec.Create(EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014);
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                Exception exception = new Exception(message);
+                Grasshopper.Kernel.GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec: License", exception);
+                Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
+
+                return GH_LoadingInstruction.Abort;
+            }
+
+
             // ### Create Ribbon Category name and icon ###
             Grasshopper.Instances.ComponentServer.AddCategorySymbolName("AdSec", 'A');
             Grasshopper.Instances.ComponentServer.AddCategoryIcon("AdSec", AdSecGH.Properties.Resources.AdSecLogo);
 
-            // create main menu dropdown
+
+            // ### Queue up Main menu loader ###
             AdSecGH.Helpers.Loader menuLoad = new Helpers.Loader();
             menuLoad.LoadingAdSecMenuAndReferences();
 
-            // Setup units
+            // ### Setup units ###
             Units.SetupUnits();
 
             return GH_LoadingInstruction.Proceed;

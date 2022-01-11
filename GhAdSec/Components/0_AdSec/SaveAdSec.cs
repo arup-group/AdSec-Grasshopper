@@ -38,8 +38,6 @@ namespace AdSecGH.Components
         //This region overrides the typical component layout
         public override void CreateAttributes()
         {
-            if (Grasshopper.Instances.DocumentEditor == null) { base.CreateAttributes(); return; } // skip this class during GH loading
-
             m_attributes = new UI.Button3ComponentUI(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile, OpenAdSecexe, true, "Save AdSec file");
         }
 
@@ -158,18 +156,12 @@ namespace AdSecGH.Components
         // component states will be remembered when reopening GH script
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            //writer.SetInt32("Mode", (int)_mode);
             writer.SetString("File", (string)fileName);
-            //writer.SetBoolean("Advanced", (bool)advanced);
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            if (Grasshopper.Instances.DocumentEditor == null) { return base.Read(reader); } // skip this class during GH loading
-
-            //_mode = (FoldMode)reader.GetInt32("Mode");
             fileName = (string)reader.GetString("File");
-            //advanced = (bool)reader.GetBoolean("Advanced");
             return base.Read(reader);
         }
         #endregion
