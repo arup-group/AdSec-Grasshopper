@@ -246,6 +246,8 @@ namespace AdSecGH.Components
             IQuantity stress = new UnitsNet.Pressure(0, stressUnit);
             stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 
+            if (selecteditems == null) return; // skip this during GH loading
+
             switch (selecteditems[0])
             {
                 case ("Force"):
