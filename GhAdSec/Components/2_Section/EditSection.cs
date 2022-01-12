@@ -65,6 +65,8 @@ namespace AdSecGH.Components
             pManager.AddGenericParameter("DesignCode", "Code", "Section DesignCode", GH_ParamAccess.item);
             pManager.AddGenericParameter("RebarGroup", "RbG", "Reinforcement Groups in the section (applicable for only concrete material).", GH_ParamAccess.list);
             pManager.AddGenericParameter("SubComponent", "Sub", "Subcomponents contained within the section", GH_ParamAccess.list);
+            pManager.AddGenericParameter("SectionCurves", "CAD", "All curves used for displaying the section - useful for making CAD drawings", GH_ParamAccess.list);
+            pManager.HideParameter(7);
         }
         #endregion
 
@@ -153,6 +155,69 @@ namespace AdSecGH.Components
             AdSecSection out_section = new AdSecSection(profile.Profile, profile.LocalPlane, material, reinforcements, subComponents);
 
             DA.SetData(0, new AdSecSectionGoo(out_section));
+
+            // ### output section geometry ###
+            // collect all curves in this list
+            List<GH_Curve> curves = new List<GH_Curve>();
+
+            GH_Curve ghProfileEdge = null;
+            if (GH_Convert.ToGHCurve(out_section.m_profileEdge, GH_Conversion.Both, ref ghProfileEdge))
+                curves.Add(ghProfileEdge);
+
+            if (out_section.m_profileVoidEdges != null && out_section.m_profileVoidEdges.Count > 0)
+            {
+                foreach (Polyline voidEdge in out_section.m_profileVoidEdges)
+                {
+                    GH_Curve ghVoidEdge = null;
+                    if (GH_Convert.ToGHCurve(voidEdge, GH_Conversion.Both, ref ghVoidEdge))
+                        curves.Add(ghVoidEdge);
+                }
+            }
+
+            if (out_section.m_rebarEdges != null && out_section.m_rebarEdges.Count > 0)
+            {
+                foreach (Circle rebar in out_section.m_rebarEdges)
+                {
+                    GH_Curve ghRebar = null;
+                    if (GH_Convert.ToGHCurve(rebar, GH_Conversion.Both, ref ghRebar))
+                        curves.Add(ghRebar);
+                }
+            }
+
+            if (out_section.m_linkEdges != null && out_section.m_linkEdges.Count > 0)
+            {
+                foreach (Curve link in out_section.m_linkEdges)
+                {
+                    GH_Curve ghLink = null;
+                    if (GH_Convert.ToGHCurve(link, GH_Conversion.Both, ref ghLink))
+                        curves.Add(ghLink);
+                }
+            }
+
+            if (out_section.m_subEdges != null && out_section.m_subEdges.Count > 0)
+            {
+                foreach (Polyline subEdge in out_section.m_subEdges)
+                {
+                    GH_Curve ghSubEdge = null;
+                    if (GH_Convert.ToGHCurve(subEdge, GH_Conversion.Both, ref ghSubEdge))
+                        curves.Add(ghSubEdge);
+                }
+            }
+
+            if (out_section.m_subVoidEdges != null && out_section.m_subVoidEdges.Count > 0)
+            {
+                foreach (List<Polyline> subVoidEdges in out_section.m_subVoidEdges)
+                {
+                    foreach (Polyline subVoidEdge in subVoidEdges)
+                    {
+                        GH_Curve ghSubEdge = null;
+                        if (GH_Convert.ToGHCurve(subVoidEdge, GH_Conversion.Both, ref ghSubEdge))
+                            curves.Add(ghSubEdge);
+                    }
+                }
+            }
+
+            DA.SetDataList(6, curves);
         }
     }
 }
