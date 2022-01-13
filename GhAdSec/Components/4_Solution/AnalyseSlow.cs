@@ -72,7 +72,7 @@ namespace AdSecGH.Components
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warn.Description);
 
             // set outputs
-            DA.SetData(0, new AdSecSolutionGoo(solution, section.LocalPlane, section.m_profileEdge));
+            DA.SetData(0, new AdSecSolutionGoo(solution, section));
             DA.SetData(1, new AdSecFailureSurfaceGoo(solution.Strength.GetFailureSurface(), section.LocalPlane));
         }
     }

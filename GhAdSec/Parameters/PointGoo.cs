@@ -191,8 +191,6 @@ namespace AdSecGH.Parameters
                 return true;
             }
 
-            
-
             target = default(TQ);
             return false;
         }

@@ -260,7 +260,6 @@ namespace AdSecGH.Parameters
                             }
                         }
                     }
-                    
                 }
 
                 try
