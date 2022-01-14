@@ -67,8 +67,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncComponent\GH_AsyncComponent.cs" />
-    <Compile Include="AsyncComponent\WorkerInstance.cs" />
+    <Compile Include="Components\0_AdSec\SectionSVG.cs" />
+    <Compile Include="Components\0_AdSec\SaveAdSec.cs" />
     <Compile Include="Components\0_AdSec\CreateUnitNumber.cs" />
     <Compile Include="Components\0_AdSec\ConvertUnitNumber.cs" />
     <Compile Include="Components\1_Properties\CreateCrackParams.cs" />
@@ -94,9 +94,11 @@
     <Compile Include="Components\3_Loads\CreateDeformation.cs" />
     <Compile Include="Components\3_Loads\CreatePreLoad.cs" />
     <Compile Include="Components\3_Loads\CreateLoad.cs" />
-    <Compile Include="Components\4_Solution\_AnalyseSection.cs" />
-    <Compile Include="Components\4_Solution\AnalyseSlow.cs" />
+    <Compile Include="Components\4_Solution\Analyse.cs" />
     <Compile Include="Components\5_Results\NM-diagram.cs" />
+    <Compile Include="Components\2_Section\FlattenRebar.cs" />
+    <Compile Include="Components\5_Results\RebarStressStrain.cs" />
+    <Compile Include="Components\5_Results\ConcreteStressStrain.cs" />
     <Compile Include="Components\5_Results\ResultsSLS.cs" />
     <Compile Include="Components\5_Results\ResultsULS.cs" />
     <Compile Include="AdSecGHInfo.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="UI\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\TripleButtonAttributes.cs" />
     <Compile Include="UI\UnitSettingsBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -157,7 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AdSec">
-      <Version>1.0.2.3</Version>
+      <Version>1.0.2.720</Version>
     </PackageReference>
     <PackageReference Include="Grasshopper">
       <Version>6.27.20176.5001</Version>
@@ -185,9 +188,6 @@
     <None Include="Properties\Icons\Icons\AdSecLogo.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\ConvertUnit.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Properties\Icons\Icons\CreateCrackCalcParams.png" />
   </ItemGroup>
   <ItemGroup>
@@ -197,31 +197,13 @@
     <None Include="Properties\Icons\Icons\CreateDesignCode.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateDesignCode2.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Properties\Icons\Icons\CreateFlange.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\CreateProfile.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateRebar.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateSection.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateUnit.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Properties\Icons\Icons\CreateWeb.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\DesignCodeParam.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\DesignCodeParam2.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\EditCrackCalcParams.png" />
@@ -236,16 +218,10 @@
     <None Include="Properties\Icons\Icons\MaterialParam.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\PluginInfo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Properties\Icons\Icons\Prestress.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\RebarLayout.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\RebarLayout2.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\RebarSpacing.png" />
@@ -257,12 +233,6 @@
     <None Include="Properties\Icons\Icons\StandardMaterial.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\StressStrainCurve.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\StressStrainPoint.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Properties\Icons\Icons\UnitParam.png" />
   </ItemGroup>
   <ItemGroup>
@@ -270,12 +240,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\VertexPoint.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\Analyse.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\AdSec 128 x 128.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\AdSecInfo.png" />
@@ -333,6 +297,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\ULS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\AdSecLogo128.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\Solution.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\OpenAdSec.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\SaveAdSec.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\SVG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\FlattenRebar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\StressStrainConcrete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\StressStrainRebar.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

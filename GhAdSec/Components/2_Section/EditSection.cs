@@ -34,7 +34,7 @@ namespace AdSecGH.Components
 
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.EditSection;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.EditSection;
         #endregion
 
         #region Custom UI
@@ -43,7 +43,7 @@ namespace AdSecGH.Components
 
         #region Input and output
 
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Section", "Sec", "AdSec Section to edit or get information from", GH_ParamAccess.item);
             pManager.AddGenericParameter("Profile", "Pf", "[Optional] Edit the Profile defining the Section solid boundary", GH_ParamAccess.item);
@@ -57,7 +57,7 @@ namespace AdSecGH.Components
                 pManager[i].Optional = true;
         }
 
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Section", "Sec", "Edited AdSec Section", GH_ParamAccess.item);
             pManager.AddGenericParameter("Profile", "Pf", "Profile defining the Section solid boundary", GH_ParamAccess.item);
@@ -65,13 +65,15 @@ namespace AdSecGH.Components
             pManager.AddGenericParameter("DesignCode", "Code", "Section DesignCode", GH_ParamAccess.item);
             pManager.AddGenericParameter("RebarGroup", "RbG", "Reinforcement Groups in the section (applicable for only concrete material).", GH_ParamAccess.list);
             pManager.AddGenericParameter("SubComponent", "Sub", "Subcomponents contained within the section", GH_ParamAccess.list);
+            pManager.AddGenericParameter("SectionCurves", "CAD", "All curves used for displaying the section - useful for making CAD drawings", GH_ParamAccess.list);
+            pManager.HideParameter(7);
         }
         #endregion
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // 0 section 
-            AdSecSection in_section = GetInput.Section(this, DA, 0);
+            AdSecSection in_section = GetInput.AdSecSection(this, DA, 0);
             if (in_section == null)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
@@ -132,7 +134,7 @@ namespace AdSecGH.Components
             DA.SetDataList(4, out_rebars);
 
             // 5 Subcomponents
-            Oasys.Collections.IList<Oasys.AdSec.ISubComponent> subComponents = Oasys.Collections.IList<Oasys.AdSec.ISubComponent>.Create();
+            Oasys.Collections.IList<ISubComponent> subComponents = Oasys.Collections.IList<ISubComponent>.Create();
             if (Params.Input[5].SourceCount > 0)
             {
                 subComponents = GetInput.SubComponents(this, DA, 5, true);
@@ -153,6 +155,69 @@ namespace AdSecGH.Components
             AdSecSection out_section = new AdSecSection(profile.Profile, profile.LocalPlane, material, reinforcements, subComponents);
 
             DA.SetData(0, new AdSecSectionGoo(out_section));
+
+            // ### output section geometry ###
+            // collect all curves in this list
+            List<GH_Curve> curves = new List<GH_Curve>();
+
+            GH_Curve ghProfileEdge = null;
+            if (GH_Convert.ToGHCurve(out_section.m_profileEdge, GH_Conversion.Both, ref ghProfileEdge))
+                curves.Add(ghProfileEdge);
+
+            if (out_section.m_profileVoidEdges != null && out_section.m_profileVoidEdges.Count > 0)
+            {
+                foreach (Polyline voidEdge in out_section.m_profileVoidEdges)
+                {
+                    GH_Curve ghVoidEdge = null;
+                    if (GH_Convert.ToGHCurve(voidEdge, GH_Conversion.Both, ref ghVoidEdge))
+                        curves.Add(ghVoidEdge);
+                }
+            }
+
+            if (out_section.m_rebarEdges != null && out_section.m_rebarEdges.Count > 0)
+            {
+                foreach (Circle rebar in out_section.m_rebarEdges)
+                {
+                    GH_Curve ghRebar = null;
+                    if (GH_Convert.ToGHCurve(rebar, GH_Conversion.Both, ref ghRebar))
+                        curves.Add(ghRebar);
+                }
+            }
+
+            if (out_section.m_linkEdges != null && out_section.m_linkEdges.Count > 0)
+            {
+                foreach (Curve link in out_section.m_linkEdges)
+                {
+                    GH_Curve ghLink = null;
+                    if (GH_Convert.ToGHCurve(link, GH_Conversion.Both, ref ghLink))
+                        curves.Add(ghLink);
+                }
+            }
+
+            if (out_section.m_subEdges != null && out_section.m_subEdges.Count > 0)
+            {
+                foreach (Polyline subEdge in out_section.m_subEdges)
+                {
+                    GH_Curve ghSubEdge = null;
+                    if (GH_Convert.ToGHCurve(subEdge, GH_Conversion.Both, ref ghSubEdge))
+                        curves.Add(ghSubEdge);
+                }
+            }
+
+            if (out_section.m_subVoidEdges != null && out_section.m_subVoidEdges.Count > 0)
+            {
+                foreach (List<Polyline> subVoidEdges in out_section.m_subVoidEdges)
+                {
+                    foreach (Polyline subVoidEdge in subVoidEdges)
+                    {
+                        GH_Curve ghSubEdge = null;
+                        if (GH_Convert.ToGHCurve(subVoidEdge, GH_Conversion.Both, ref ghSubEdge))
+                            curves.Add(ghSubEdge);
+                    }
+                }
+            }
+
+            DA.SetDataList(6, curves);
         }
     }
 }

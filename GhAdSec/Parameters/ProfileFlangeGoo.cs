@@ -46,8 +46,8 @@ namespace AdSecGH.Parameters
         public override string ToString()
         {
             string flange = "AdSec Flange {";
-            UnitsNet.Length thk1 = this.Value.Width.ToUnit(DocumentUnits.LengthUnit);
-            UnitsNet.Length thk2 = this.Value.Thickness.ToUnit(DocumentUnits.LengthUnit);
+            UnitsNet.Length thk1 = this.Value.Width.ToUnit(Units.LengthUnit);
+            UnitsNet.Length thk2 = this.Value.Thickness.ToUnit(Units.LengthUnit);
             flange += "Width:" + thk1.ToString() + ", Thk:" + thk2.ToString() + "}";
             return flange;
         }

@@ -47,14 +47,19 @@ namespace AdSecGH.Parameters
         }
         public override string ToString()
         {
-            IQuantity strain = new Oasys.Units.Strain(0, DocumentUnits.StrainUnit);
+            IQuantity strain = new Oasys.Units.Strain(0, Units.StrainUnit);
             string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-            IQuantity curvature = new Oasys.Units.Curvature(0, DocumentUnits.CurvatureUnit);
+            if (strainUnitAbbreviation == "")
+            {
+                strainUnitAbbreviation = strain.ToString();
+                strainUnitAbbreviation = strainUnitAbbreviation[strainUnitAbbreviation.Length - 1].ToString();
+            }
+            IQuantity curvature = new Oasys.Units.Curvature(0, Units.CurvatureUnit);
             string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
             return "AdSec " + TypeName + " {"
-                + Math.Round(this.Value.X.As(DocumentUnits.StrainUnit), 4) + strainUnitAbbreviation + ", "
-                + Math.Round(this.Value.YY.As(DocumentUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + ", "
-                + Math.Round(this.Value.ZZ.As(DocumentUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + "}";
+                + Math.Round(this.Value.X.As(Units.StrainUnit), 4) + strainUnitAbbreviation + ", "
+                + Math.Round(this.Value.YY.As(Units.CurvatureUnit), 4) + curvatureUnitAbbreviation + ", "
+                + Math.Round(this.Value.ZZ.As(Units.CurvatureUnit), 4) + curvatureUnitAbbreviation + "}";
         }
     }
 }

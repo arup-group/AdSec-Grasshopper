@@ -41,7 +41,7 @@ namespace AdSecGH.Components
         { this.Hidden = false; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.Prestress;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.Prestress;
         #endregion
 
         #region Custom UI
@@ -59,13 +59,13 @@ namespace AdSecGH.Components
                 selecteditems.Add(dropdownitems[0][0]);
 
                 // force
-                dropdownitems.Add(DocumentUnits.FilteredForceUnits);
+                dropdownitems.Add(Units.FilteredForceUnits);
                 selecteditems.Add(forceUnit.ToString());
 
-                IQuantity force = new UnitsNet.Force(0, forceUnit);
+                IQuantity force = new Force(0, forceUnit);
                 forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
                 strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
-                IQuantity stress = new UnitsNet.Pressure(0, stressUnit);
+                IQuantity stress = new Pressure(0, stressUnit);
                 stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 
                 first = false;
@@ -84,15 +84,15 @@ namespace AdSecGH.Components
                 switch (selecteditems[0])
                 {
                     case ("Force"):
-                        dropdownitems[1] = DocumentUnits.FilteredForceUnits;
+                        dropdownitems[1] = Units.FilteredForceUnits;
                         selecteditems[0] = forceUnit.ToString();
                         break;
                     case ("Strain"):
-                        dropdownitems[1] = DocumentUnits.FilteredStrainUnits;
+                        dropdownitems[1] = Units.FilteredStrainUnits;
                         selecteditems[0] = strainUnit.ToString();
                         break;
                     case ("Stress"):
-                        dropdownitems[1] = DocumentUnits.FilteredStressUnits;
+                        dropdownitems[1] = Units.FilteredStressUnits;
                         selecteditems[0] = stressUnit.ToString();
                         break;
                 }
@@ -143,9 +143,9 @@ namespace AdSecGH.Components
         });
         private bool first = true;
 
-        private UnitsNet.Units.ForceUnit forceUnit = DocumentUnits.ForceUnit;
-        private Oasys.Units.StrainUnit strainUnit = DocumentUnits.StrainUnit;
-        private UnitsNet.Units.PressureUnit stressUnit = DocumentUnits.StressUnit;
+        private UnitsNet.Units.ForceUnit forceUnit = Units.ForceUnit;
+        private Oasys.Units.StrainUnit strainUnit = Units.StrainUnit;
+        private UnitsNet.Units.PressureUnit stressUnit = Units.StressUnit;
         string forceUnitAbbreviation;
         string strainUnitAbbreviation;
         string stressUnitAbbreviation;
@@ -196,7 +196,7 @@ namespace AdSecGH.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetString("force", forceUnit.ToString());
             writer.SetString("strain", strainUnit.ToString());
             writer.SetString("stress", stressUnit.ToString());
@@ -204,7 +204,7 @@ namespace AdSecGH.Components
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), reader.GetString("force"));
             strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), reader.GetString("strain"));
@@ -236,11 +236,13 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            IQuantity force = new UnitsNet.Force(0, forceUnit);
+            IQuantity force = new Force(0, forceUnit);
             forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
             strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
-            IQuantity stress = new UnitsNet.Pressure(0, stressUnit);
+            IQuantity stress = new Pressure(0, stressUnit);
             stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
+
+            if (selecteditems == null) return; // skip this during GH loading
 
             switch (selecteditems[0])
             {

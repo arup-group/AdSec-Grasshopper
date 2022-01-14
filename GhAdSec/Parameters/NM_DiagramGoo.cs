@@ -152,10 +152,10 @@ namespace AdSecGH.Parameters
             m_axes.AddRange(plotBoundary.ToPolyline().GetSegments());
 
             // Create axis labels
-            string momentAxis = "Moment [" + Oasys.Units.Moment.GetAbbreviation(DocumentUnits.MomentUnit) + "]";
-            string myyAxis = "Myy [" + Oasys.Units.Moment.GetAbbreviation(DocumentUnits.MomentUnit) + "]";
-            string mzzAxis = "Mzz [" + Oasys.Units.Moment.GetAbbreviation(DocumentUnits.MomentUnit) + "]";
-            IQuantity force = new UnitsNet.Force(0, DocumentUnits.ForceUnit);
+            string momentAxis = "Moment [" + Oasys.Units.Moment.GetAbbreviation(Units.MomentUnit) + "]";
+            string myyAxis = "Myy [" + Oasys.Units.Moment.GetAbbreviation(Units.MomentUnit) + "]";
+            string mzzAxis = "Mzz [" + Oasys.Units.Moment.GetAbbreviation(Units.MomentUnit) + "]";
+            IQuantity force = new Force(0, Units.ForceUnit);
             string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
             string forceAxis = "Axial force [" + forceUnitAbbreviation + "]";
 
@@ -200,8 +200,8 @@ namespace AdSecGH.Parameters
             foreach (ILoad load in loadCurve.Points)
             {
                 Point3d pt = new Point3d(
-                    load.YY.As(DocumentUnits.MomentUnit), // plot yy on x-axis
-                    load.ZZ.As(DocumentUnits.MomentUnit), // plot zz on y-axis
+                    load.YY.As(Units.MomentUnit), // plot yy on x-axis
+                    load.ZZ.As(Units.MomentUnit), // plot zz on y-axis
                     0);
                 pts.Add(pt);
             }
@@ -228,9 +228,9 @@ namespace AdSecGH.Parameters
             foreach (ILoad load in loadCurve.Points)
             {
                 Point3d pt = new Point3d(
-                    load.ZZ.As(DocumentUnits.MomentUnit),
-                    load.YY.As(DocumentUnits.MomentUnit),
-                    load.X.As(DocumentUnits.ForceUnit) * -1); // flip y-axis for NM-diagram
+                    load.ZZ.As(Units.MomentUnit),
+                    load.YY.As(Units.MomentUnit),
+                    load.X.As(Units.ForceUnit) * -1); // flip y-axis for NM-diagram
                 pts.Add(pt);
             }
             // add first point to the end to make a closed curve
@@ -341,7 +341,7 @@ namespace AdSecGH.Parameters
             if (Value != null)
             {
                 // draw diagram polyline
-                if (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) //Grasshopper.Instances.Settings.GetValue("DefaultPreviewColourSelected", System.Drawing.Color.White))
+                if (args.Color == Color.FromArgb(255, 150, 0, 0)) //Grasshopper.Instances.Settings.GetValue("DefaultPreviewColourSelected", System.Drawing.Color.White))
                     args.Pipeline.DrawPolyline(Value, UI.Colour.OasysBlue, 2);
                 else
                     args.Pipeline.DrawPolyline(Value, UI.Colour.OasysYellow, 2);

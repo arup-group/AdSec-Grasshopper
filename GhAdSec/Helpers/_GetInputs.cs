@@ -23,7 +23,7 @@ namespace AdSecGH.Components
 {
     class GetInput
     {
-        internal static Length Length(GH_Component owner, IGH_DataAccess DA, int inputid, UnitsNet.Units.LengthUnit docLengthUnit, bool isOptional = false)
+        internal static Length Length(GH_Component owner, IGH_DataAccess DA, int inputid, LengthUnit docLengthUnit, bool isOptional = false)
         {
             GH_UnitNumber unitNumber = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -34,10 +34,10 @@ namespace AdSecGH.Components
                 {
                     unitNumber = (GH_UnitNumber)gh_typ.Value;
                     // check that unit is of right type
-                    if (!unitNumber.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.LengthUnit)))
+                    if (!unitNumber.Value.QuantityInfo.UnitType.Equals(typeof(LengthUnit)))
                     {
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
-                            + System.Environment.NewLine + "Unit type is " + unitNumber.Value.QuantityInfo.Name + " but must be Length");
+                            + Environment.NewLine + "Unit type is " + unitNumber.Value.QuantityInfo.Name + " but must be Length");
                         return UnitsNet.Length.Zero;
                     }
                 }
@@ -45,7 +45,7 @@ namespace AdSecGH.Components
                 else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                 {
                     // create new quantity from default units
-                    unitNumber = new GH_UnitNumber(new UnitsNet.Length(val, docLengthUnit));
+                    unitNumber = new GH_UnitNumber(new Length(val, docLengthUnit));
                 }
                 else
                 {
@@ -54,8 +54,14 @@ namespace AdSecGH.Components
                 }
             }
             else if (!isOptional)
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!"); 
-            return (UnitsNet.Length)unitNumber.Value;
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+            else
+            {
+                if (unitNumber == null)
+                    return UnitsNet.Length.Zero;
+            }
+
+            return (Length)unitNumber.Value;
         }
         internal static IFlange Flange(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
@@ -129,7 +135,7 @@ namespace AdSecGH.Components
                 }
                 else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both))
                 {
-                    pt1 = AdSecGH.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
+                    pt1 = AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
                 }
                 else
                 {
@@ -165,12 +171,12 @@ namespace AdSecGH.Components
                     }
                     else if (GH_Convert.ToPoint3d(gh_typs[i].Value, ref ghpt, GH_Conversion.Both))
                     {
-                        pts.Add(AdSecGH.Parameters.AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt));
+                        pts.Add(AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt));
                     }
                     else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both))
                     {
                         PolylineCurve curve = (PolylineCurve)polycurve;
-                        pts = AdSecGH.Parameters.AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
+                        pts = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
                     }
                     else
                     {
@@ -207,10 +213,10 @@ namespace AdSecGH.Components
                 {
                     // try convert to polylinecurve
                     PolylineCurve curve = (PolylineCurve)polycurve;
-                    Oasys.Collections.IList<IStressStrainPoint> pts = AdSecGH.Parameters.AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
+                    Oasys.Collections.IList<IStressStrainPoint> pts = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
                     IExplicitStressStrainCurve exCrv = IExplicitStressStrainCurve.Create();
                     exCrv.Points = pts;
-                    Tuple<Curve, List<Point3d>> tuple = AdSecGH.Parameters.AdSecStressStrainCurveGoo.Create(exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, compression);
+                    Tuple<Curve, List<Point3d>> tuple = AdSecStressStrainCurveGoo.Create(exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, compression);
                     ssCrv = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, tuple.Item2);
                 }
                 else
@@ -226,9 +232,9 @@ namespace AdSecGH.Components
             }
             return null;
         }
-        internal static Pressure Stress(GH_Component owner, IGH_DataAccess DA, int inputid, UnitsNet.Units.PressureUnit stressUnit, bool isOptional = false)
+        internal static Pressure Stress(GH_Component owner, IGH_DataAccess DA, int inputid, PressureUnit stressUnit, bool isOptional = false)
         {
-            UnitsNet.Pressure stressFib = new UnitsNet.Pressure();
+            Pressure stressFib = new Pressure();
 
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(inputid, ref gh_typ))
@@ -239,20 +245,20 @@ namespace AdSecGH.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     inStress = (GH_UnitNumber)gh_typ.Value;
-                    if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.PressureUnit)))
+                    if (!inStress.Value.QuantityInfo.UnitType.Equals(typeof(PressureUnit)))
                     {
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
-                            + System.Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
+                            + Environment.NewLine + "Unit type is " + inStress.Value.QuantityInfo.Name + " but must be Stress (Pressure)");
                         return Pressure.Zero;
                     }
-                    stressFib = (UnitsNet.Pressure)inStress.Value.ToUnit(stressUnit);
+                    stressFib = (Pressure)inStress.Value.ToUnit(stressUnit);
                 }
                 // try cast to double
                 else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                 {
                     // create new quantity from default units
-                    inStress = new GH_UnitNumber(new UnitsNet.Pressure(val, stressUnit));
-                    stressFib = (UnitsNet.Pressure)inStress.Value;
+                    inStress = new GH_UnitNumber(new Pressure(val, stressUnit));
+                    stressFib = (Pressure)inStress.Value;
                 }
                 else
                 {
@@ -269,7 +275,7 @@ namespace AdSecGH.Components
         }
         internal static Strain Strain(GH_Component owner, IGH_DataAccess DA, int inputid, StrainUnit strainUnit, bool isOptional = false)
         {
-            Oasys.Units.Strain strainFib = new Oasys.Units.Strain();
+            Strain strainFib = new Strain();
 
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(inputid, ref gh_typ))
@@ -280,20 +286,20 @@ namespace AdSecGH.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     inStrain = (GH_UnitNumber)gh_typ.Value;
-                    if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.StrainUnit)))
+                    if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(StrainUnit)))
                     {
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
-                            + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Strain");
+                            + Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Strain");
                         return Oasys.Units.Strain.Zero;
                     }
-                    strainFib = (Oasys.Units.Strain)inStrain.Value.ToUnit(strainUnit);
+                    strainFib = (Strain)inStrain.Value.ToUnit(strainUnit);
                 }
                 // try cast to double
                 else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                 {
                     // create new quantity from default units
-                    inStrain = new GH_UnitNumber(new Oasys.Units.Strain(val, strainUnit));
-                    strainFib = (Oasys.Units.Strain)inStrain.Value;
+                    inStrain = new GH_UnitNumber(new Strain(val, strainUnit));
+                    strainFib = (Strain)inStrain.Value;
                 }
                 else
                 {
@@ -310,7 +316,7 @@ namespace AdSecGH.Components
         }
         internal static Curvature Curvature(GH_Component owner, IGH_DataAccess DA, int inputid, CurvatureUnit curvatureUnit, bool isOptional = false)
         {
-            Oasys.Units.Curvature crvature = new Oasys.Units.Curvature();
+            Curvature crvature = new Curvature();
 
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(inputid, ref gh_typ))
@@ -321,20 +327,20 @@ namespace AdSecGH.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     inStrain = (GH_UnitNumber)gh_typ.Value;
-                    if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.CurvatureUnit)))
+                    if (!inStrain.Value.QuantityInfo.UnitType.Equals(typeof(CurvatureUnit)))
                     {
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
-                            + System.Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Curvature");
+                            + Environment.NewLine + "Unit type is " + inStrain.Value.QuantityInfo.Name + " but must be Curvature");
                         return Oasys.Units.Curvature.Zero;
                     }
-                    crvature = (Oasys.Units.Curvature)inStrain.Value.ToUnit(curvatureUnit);
+                    crvature = (Curvature)inStrain.Value.ToUnit(curvatureUnit);
                 }
                 // try cast to double
                 else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                 {
                     // create new quantity from default units
-                    inStrain = new GH_UnitNumber(new Oasys.Units.Curvature(val, curvatureUnit));
-                    crvature = (Oasys.Units.Curvature)inStrain.Value;
+                    inStrain = new GH_UnitNumber(new Curvature(val, curvatureUnit));
+                    crvature = (Curvature)inStrain.Value;
                 }
                 else
                 {
@@ -349,9 +355,9 @@ namespace AdSecGH.Components
             }
             return Oasys.Units.Curvature.Zero;
         }
-        internal static Force Force(GH_Component owner, IGH_DataAccess DA, int inputid, UnitsNet.Units.ForceUnit forceUnit, bool isOptional = false)
+        internal static Force Force(GH_Component owner, IGH_DataAccess DA, int inputid, ForceUnit forceUnit, bool isOptional = false)
         {
-            UnitsNet.Force force = new UnitsNet.Force();
+            Force force = new Force();
 
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(inputid, ref gh_typ))
@@ -362,20 +368,20 @@ namespace AdSecGH.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     inForce = (GH_UnitNumber)gh_typ.Value;
-                    if (!inForce.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.ForceUnit)))
+                    if (!inForce.Value.QuantityInfo.UnitType.Equals(typeof(ForceUnit)))
                     {
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
-                            + System.Environment.NewLine + "Unit type is " + inForce.Value.QuantityInfo.Name + " but must be Force");
+                            + Environment.NewLine + "Unit type is " + inForce.Value.QuantityInfo.Name + " but must be Force");
                         return UnitsNet.Force.Zero;
                     }
-                    force = (UnitsNet.Force)inForce.Value.ToUnit(forceUnit);
+                    force = (Force)inForce.Value.ToUnit(forceUnit);
                 }
                 // try cast to double
                 else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                 {
                     // create new quantity from default units
-                    inForce = new GH_UnitNumber(new UnitsNet.Force(val, forceUnit));
-                    force = (UnitsNet.Force)inForce.Value;
+                    inForce = new GH_UnitNumber(new Force(val, forceUnit));
+                    force = (Force)inForce.Value;
                 }
                 else
                 {
@@ -392,7 +398,7 @@ namespace AdSecGH.Components
         }
         internal static Moment Moment(GH_Component owner, IGH_DataAccess DA, int inputid, MomentUnit momentUnit, bool isOptional = false)
         {
-            Oasys.Units.Moment moment = new Oasys.Units.Moment();
+            Moment moment = new Moment();
 
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(inputid, ref gh_typ))
@@ -403,20 +409,20 @@ namespace AdSecGH.Components
                 if (gh_typ.Value is GH_UnitNumber)
                 {
                     inMoment = (GH_UnitNumber)gh_typ.Value;
-                    if (!inMoment.Value.QuantityInfo.UnitType.Equals(typeof(Oasys.Units.MomentUnit)))
+                    if (!inMoment.Value.QuantityInfo.UnitType.Equals(typeof(MomentUnit)))
                     {
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
-                            + System.Environment.NewLine + "Unit type is " + inMoment.Value.QuantityInfo.Name + " but must be Moment");
+                            + Environment.NewLine + "Unit type is " + inMoment.Value.QuantityInfo.Name + " but must be Moment");
                         return Oasys.Units.Moment.Zero;
                     }
-                    moment = (Oasys.Units.Moment)inMoment.Value.ToUnit(momentUnit);
+                    moment = (Moment)inMoment.Value.ToUnit(momentUnit);
                 }
                 // try cast to double
                 else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                 {
                     // create new quantity from default units
-                    inMoment = new GH_UnitNumber(new Oasys.Units.Moment(val, momentUnit));
-                    moment = (Oasys.Units.Moment)inMoment.Value;
+                    inMoment = new GH_UnitNumber(new Moment(val, momentUnit));
+                    moment = (Moment)inMoment.Value;
                 }
                 else
                 {
@@ -645,8 +651,8 @@ namespace AdSecGH.Components
             else if (isOptional)
             {
                 return new AdSecPointGoo(Oasys.Profiles.IPoint.Create(
-                new UnitsNet.Length(0, DocumentUnits.LengthUnit),
-                new UnitsNet.Length(0, DocumentUnits.LengthUnit)));
+                new Length(0, Units.LengthUnit),
+                new Length(0, Units.LengthUnit)));
             }
             return null;
 
@@ -685,7 +691,7 @@ namespace AdSecGH.Components
                     else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both))
                     {
                         PolylineCurve curve = (PolylineCurve)polycurve;
-                        pts = AdSecGH.Parameters.AdSecPointGoo.PtsFromPolylineCurve(curve);
+                        pts = Parameters.AdSecPointGoo.PtsFromPolylineCurve(curve);
                     }
                     else
                     {
@@ -697,7 +703,7 @@ namespace AdSecGH.Components
                 {
                     if (tempPts.Count == 1)
                     {
-                        pts.Add(AdSecGH.Parameters.AdSecPointGoo.CreateFromPoint3d(tempPts[0], Plane.WorldYZ));
+                        pts.Add(Parameters.AdSecPointGoo.CreateFromPoint3d(tempPts[0], Plane.WorldYZ));
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Single Point converted to local point. Assumed that local coordinate system is in a YZ-Plane");
                     }
                     else
@@ -706,7 +712,7 @@ namespace AdSecGH.Components
                         //Polyline pol = new Polyline(tempPts);
                         //plane.Origin = pol.CenterPoint();
                         foreach (Point3d pt in tempPts)
-                            pts.Add(AdSecGH.Parameters.AdSecPointGoo.CreateFromPoint3d(pt, plane));
+                            pts.Add(Parameters.AdSecPointGoo.CreateFromPoint3d(pt, plane));
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "List of Points have been converted to local points. Assumed that local coordinate system is matching best-fit plane through points");
                     }
 
@@ -720,9 +726,9 @@ namespace AdSecGH.Components
             }
             return null;
         }
-        internal static Angle Angle(GH_Component owner, IGH_DataAccess DA, int inputid, UnitsNet.Units.AngleUnit angleUnit, bool isOptional = false)
+        internal static Angle Angle(GH_Component owner, IGH_DataAccess DA, int inputid, AngleUnit angleUnit, bool isOptional = false)
         {
-            GH_UnitNumber a1 = new GH_UnitNumber(new UnitsNet.Angle(0, angleUnit));
+            GH_UnitNumber a1 = new GH_UnitNumber(new Angle(0, angleUnit));
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(inputid, ref gh_typ))
             {
@@ -731,10 +737,10 @@ namespace AdSecGH.Components
                 {
                     a1 = (GH_UnitNumber)gh_typ.Value;
                     // check that unit is of right type
-                    if (!a1.Value.QuantityInfo.UnitType.Equals(typeof(UnitsNet.Units.AngleUnit)))
+                    if (!a1.Value.QuantityInfo.UnitType.Equals(typeof(AngleUnit)))
                     {
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Error in " + owner.Params.Input[inputid].NickName + " input: Wrong unit type"
-                            + System.Environment.NewLine + "Unit type is " + a1.Value.QuantityInfo.Name + " but must be Angle");
+                            + Environment.NewLine + "Unit type is " + a1.Value.QuantityInfo.Name + " but must be Angle");
                         return UnitsNet.Angle.Zero;
                     }
                 }
@@ -742,14 +748,14 @@ namespace AdSecGH.Components
                 else if (GH_Convert.ToDouble(gh_typ.Value, out double val, GH_Conversion.Both))
                 {
                     // create new quantity from default units
-                    a1 = new GH_UnitNumber(new UnitsNet.Angle(val, angleUnit));
+                    a1 = new GH_UnitNumber(new Angle(val, angleUnit));
                 }
                 else
                 {
                     owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to Angle");
                     return UnitsNet.Angle.Zero;
                 }
-                return (UnitsNet.Angle)a1.Value;
+                return (Angle)a1.Value;
             }
             else if (!isOptional)
             {
@@ -757,7 +763,7 @@ namespace AdSecGH.Components
             }
             return UnitsNet.Angle.Zero;
         }
-        internal static AdSecProfileGoo Boundaries(GH_Component owner, IGH_DataAccess DA, int inputid_Boundary, int inputid_Voids, UnitsNet.Units.LengthUnit lengthUnit, bool isOptional = false)
+        internal static AdSecProfileGoo Boundaries(GH_Component owner, IGH_DataAccess DA, int inputid_Boundary, int inputid_Voids, LengthUnit lengthUnit, bool isOptional = false)
         {
             AdSecProfileGoo perimeter = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -848,7 +854,7 @@ namespace AdSecGH.Components
                 }
                 else
                 {
-                    prfl = Boundaries(owner, DA, inputid, -1, DocumentUnits.LengthUnit).Profile;
+                    prfl = Boundaries(owner, DA, inputid, -1, Units.LengthUnit).Profile;
                 }
                 
                 return prfl;
@@ -872,7 +878,7 @@ namespace AdSecGH.Components
                 }
                 else
                 {
-                    prfl = Boundaries(owner, DA, inputid, -1, DocumentUnits.LengthUnit);
+                    prfl = Boundaries(owner, DA, inputid, -1, Units.LengthUnit);
                 }
                 return prfl;
             }
@@ -882,7 +888,7 @@ namespace AdSecGH.Components
             }
             return null;
         }
-        internal static AdSecSection Section(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        internal static AdSecSection AdSecSection(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(inputid, ref gh_typ))

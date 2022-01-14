@@ -98,11 +98,11 @@ namespace AdSecGH.Parameters
                 if (m_plane != Plane.WorldXY & m_plane != Plane.WorldYZ & m_plane != Plane.WorldZX)
                 {
                     UnitsNet.Area area = m_profile.Area();
-                    double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
-                    UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
-                    previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(DocumentUnits.LengthUnit));
-                    previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(DocumentUnits.LengthUnit));
-                    previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(DocumentUnits.LengthUnit));
+                    double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
+                    UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, LengthUnit.Meter);
+                    previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(Units.LengthUnit));
+                    previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(Units.LengthUnit));
+                    previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(Units.LengthUnit));
                 }
             }
         }
@@ -216,7 +216,7 @@ namespace AdSecGH.Parameters
             IPoint pt = null;
 
             // map points to XY plane so we can create local points from x and y coordinates
-            Rhino.Geometry.Transform xform = Rhino.Geometry.Transform.PlaneToPlane(local, Plane.WorldXY);
+            Transform xform = Rhino.Geometry.Transform.PlaneToPlane(local, Plane.WorldXY);
 
             for (int i = 0; i < polyline.Count - 1; i++) 
                 // -1 on count because the profile is always closed and thus doesnt
@@ -245,7 +245,7 @@ namespace AdSecGH.Parameters
             Plane adsecLocal = new Plane(new Point3d(0, 0, 0), new Vector3d(1, 0, 0));
 
             // transform to local plane
-            Rhino.Geometry.Transform maptToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
+            Transform maptToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
 
             Oasys.Collections.IList<IPoint> apts = polygon.Points;
             List<Point3d> rhPts = new List<Point3d>();
@@ -253,8 +253,8 @@ namespace AdSecGH.Parameters
             foreach (IPoint apt in apts)
             {
                 Point3d pt = new Point3d(0,
-                    apt.Y.As(DocumentUnits.LengthUnit), 
-                    apt.Z.As(DocumentUnits.LengthUnit)
+                    apt.Y.As(Units.LengthUnit), 
+                    apt.Z.As(Units.LengthUnit)
                     );
                 pt.Transform(maptToLocal);
                 rhPts.Add(pt);
@@ -534,7 +534,7 @@ namespace AdSecGH.Parameters
                 Polyline poly;
                 if (crv.TryGetPolyline(out poly))
                 {
-                    AdSecProfileGoo temp = new AdSecProfileGoo(poly, DocumentUnits.LengthUnit);
+                    AdSecProfileGoo temp = new AdSecProfileGoo(poly, Units.LengthUnit);
                     this.m_value = temp.m_value;
                     this.m_profile = temp.m_profile;
                     this.m_voidEdges = temp.m_voidEdges;
@@ -553,35 +553,35 @@ namespace AdSecGH.Parameters
         {
             if (Value != null)
             {
-                Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+                Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
                 if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
                 {
-                    args.Pipeline.DrawPolyline(Value, AdSecGH.UI.Colour.OasysBlue, 2);
+                    args.Pipeline.DrawPolyline(Value, UI.Colour.OasysBlue, 2);
                     if (this.m_voidEdges != null)
                     {
                         foreach (Polyline crv in m_voidEdges)
                         {
-                            args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysBlue, 1);
+                            args.Pipeline.DrawPolyline(crv, UI.Colour.OasysBlue, 1);
                         }
                     }
                 }
                 else // selected
                 {
-                    args.Pipeline.DrawPolyline(Value, AdSecGH.UI.Colour.OasysYellow, 3);
+                    args.Pipeline.DrawPolyline(Value, UI.Colour.OasysYellow, 3);
                     if (this.m_voidEdges != null)
                     {
                         foreach (Polyline crv in m_voidEdges)
                         {
-                            args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysYellow, 2);
+                            args.Pipeline.DrawPolyline(crv, UI.Colour.OasysYellow, 2);
                         }
                     }
                 }
                 // local axis
                 if (previewXaxis != null)
                 {
-                    args.Pipeline.DrawLine(previewZaxis, System.Drawing.Color.FromArgb(255, 244, 96, 96), 1);
-                    args.Pipeline.DrawLine(previewXaxis, System.Drawing.Color.FromArgb(255, 96, 244, 96), 1);
-                    args.Pipeline.DrawLine(previewYaxis, System.Drawing.Color.FromArgb(255, 96, 96, 234), 1);
+                    args.Pipeline.DrawLine(previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
+                    args.Pipeline.DrawLine(previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
+                    args.Pipeline.DrawLine(previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
                 }
             }
         }

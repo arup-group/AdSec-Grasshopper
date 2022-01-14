@@ -54,7 +54,7 @@ namespace AdSecGH.Helpers
 
         internal static Dictionary<string, Type> ReflectAdSecNamespace(string nspace)
         {
-            Assembly adsecAPI = AdSecGH.AddReferencePriority.AdSecAPI;
+            Assembly adsecAPI = AddReferencePriority.AdSecAPI;
             var q = from t in adsecAPI.GetTypes()
                     where t.IsInterface && t.Namespace == nspace
                     select t;

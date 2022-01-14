@@ -1,5 +1,6 @@
 ﻿using Grasshopper.Kernel;
 using System;
+using System.IO;
 using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -21,87 +22,82 @@ namespace AdSecGH
         /// <returns></returns>
         public override GH_LoadingInstruction PriorityLoad()
         {
-            // ## Get plugin assembly file location
-            PluginPath = Assembly.GetExecutingAssembly().Location; // full path+name
-            PluginPath = PluginPath.Replace("AdSec.gha", "");
+            // ### Search for plugin path ###
             
+            // initially look in %appdata% folder where package manager will store the plugin
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            path = Path.Combine(path, "McNeel", "Rhinoceros", "Packages", Rhino.RhinoApp.ExeVersion + ".0", "AdSec");
+            
+            if (!File.Exists(Path.Combine(path, "AdSec.gha"))) // if no plugin file is found there continue search
+            {
+                // look in all the other Grasshopper assembly (plugin) folders
+                foreach(GH_AssemblyFolderInfo pluginFolder in Grasshopper.Folders.AssemblyFolders)
+                {
+                    if (File.Exists(Path.Combine(pluginFolder.Folder, "AdSec.gha"))) // if the folder contains the plugin
+                    {
+                        path = pluginFolder.Folder;
+                        break;
+                    }    
+                }
+            }
+            PluginPath = Path.GetDirectoryName(path);
+
             // ### Set system environment variables to allow user rights to read above dll ###
             const string name = "PATH";
-            string pathvar = System.Environment.GetEnvironmentVariable(name);
+            string pathvar = Environment.GetEnvironmentVariable(name);
             var value = pathvar + ";" + PluginPath;
             var target = EnvironmentVariableTarget.Process;
-            System.Environment.SetEnvironmentVariable(name, value, target);
+            Environment.SetEnvironmentVariable(name, value, target);
 
-            // ### Try Reference AdSecAPI and SQLite dlls ###
-            // set folder to latest GSA version.
+
+            // ### Reference AdSecAPI and SQLite dlls ###
             try
             {
-                // ### Reference AdSec API dlls from .gha assembly path ###
                 AdSecAPI = Assembly.LoadFile(PluginPath + "\\AdSec_API.dll");
+                //Assembly assTuple = Assembly.LoadFile(PluginPath + "\\System.ValueTuple.dll");
+                //Assembly assSQL = Assembly.LoadFile(PluginPath + "\\System.Data.SQLite.dll");
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                // check other plugins?
-                string loadedPlugins = "";
-                ReadOnlyCollection<GH_AssemblyInfo> plugins = Grasshopper.Instances.ComponentServer.Libraries;
-                foreach (GH_AssemblyInfo plugin in plugins)
-                {
-                    if (!plugin.IsCoreLibrary)
-                    {
-                        if (!plugin.Name.StartsWith("Kangaroo"))
-                        {
-                            loadedPlugins = loadedPlugins + "-" + plugin.Name + System.Environment.NewLine;
-                        }
-                    }
-                }
-                string message = e.Message
-                    + System.Environment.NewLine + System.Environment.NewLine +
-                    "This may be due to clash with other referenced dll files by one of these plugins that's already been loaded: "
-                    + System.Environment.NewLine + loadedPlugins
-                    + System.Environment.NewLine + "You may try disable the above plugins to solve the issue."
-                    + System.Environment.NewLine + "The plugin cannot be loaded.";
+
+                string message = ex.Message
+                    + Environment.NewLine + Environment.NewLine +
+                    "Error loading the file AdSec_API.dll from path " + PluginPath + " - check if the file exist."
+                    + Environment.NewLine + "The plugin cannot be loaded.";
                 Exception exception = new Exception(message);
-                Grasshopper.Kernel.GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec: AdSec_API.dll loading", exception);
+                GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec: AdSec_API.dll loading", exception);
                 Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
                 return GH_LoadingInstruction.Abort;
             }
 
-            // try create solution for license check
+
+            // ### Trigger a license check ###
             try
             {
-                //IAdSec ad = IAdSec.Create(EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014);
+                IAdSec ad = IAdSec.Create(EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                ReadOnlyCollection<GH_AssemblyInfo> plugins = Grasshopper.Instances.ComponentServer.Libraries;
-                Guid gsa_guid = new Guid("a3b08c32-f7de-4b00-b415-f8b466f05e9f");
-                string msg = "";
-                foreach (GH_AssemblyInfo assemblyInfo in plugins)
-                {
-                    if (assemblyInfo.Id == gsa_guid)
-                    {
-                        msg = System.Environment.NewLine + "Known license retrieval error; please uninstall GSA plugin and try loading AdSec plugin again";
-                    }
-                }
-
-                string message = e.Message + msg;
+                string message = ex.Message;
                 Exception exception = new Exception(message);
-                Grasshopper.Kernel.GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec", exception);
+                GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec: License", exception);
                 Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
 
                 return GH_LoadingInstruction.Abort;
             }
+
 
             // ### Create Ribbon Category name and icon ###
             Grasshopper.Instances.ComponentServer.AddCategorySymbolName("AdSec", 'A');
-            Grasshopper.Instances.ComponentServer.AddCategoryIcon("AdSec", AdSecGH.Properties.Resources.AdSecLogo);
+            Grasshopper.Instances.ComponentServer.AddCategoryIcon("AdSec", Properties.Resources.AdSecLogo);
 
-            // create main menu dropdown
-            AdSecGH.Helpers.Loader menuLoad = new Helpers.Loader();
-            menuLoad.CreateMainMenuItem();
 
-            // Setup units
-            DocumentUnits.SetupUnits();
+            // ### Queue up Main menu loader ###
+            Helpers.Loader menuLoad = new Helpers.Loader();
+            menuLoad.LoadingAdSecMenuAndReferences();
+
+            // ### Setup units ###
+            Units.SetupUnits();
 
             return GH_LoadingInstruction.Proceed;
         }
@@ -145,11 +141,11 @@ namespace AdSecGH
             get
             {
                 //Return a short string describing the purpose of this GHA library.
-                return "Official Oasys AdSec Grasshopper Plugin" + System.Environment.NewLine
-                + System.Environment.NewLine + "The plugin requires an AdSec 10 license to load."
-                + System.Environment.NewLine
-                + System.Environment.NewLine + "Contact oasys@arup.com to request a free trial version."
-                + System.Environment.NewLine + System.Environment.NewLine + "Copyright © Oasys 1985 - 2021";
+                return "Official Oasys AdSec Grasshopper Plugin" + Environment.NewLine
+                + Environment.NewLine + "The plugin requires an AdSec 10 license to load."
+                + Environment.NewLine
+                + Environment.NewLine + "Contact oasys@arup.com to request a free trial version."
+                + Environment.NewLine + Environment.NewLine + "Copyright © Oasys 1985 - 2021";
             }
         }
         public override Guid Id
@@ -180,7 +176,7 @@ namespace AdSecGH
         {
             get
             {
-                return "0.0.7-beta";
+                return "0.0.8-beta";
             }
         }
     }

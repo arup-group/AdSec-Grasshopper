@@ -34,19 +34,21 @@ namespace AdSecGH.Components
 
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.EditProfile;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.EditProfile;
         #endregion
 
         #region Custom UI
         //This region overrides the typical component layout
         public override void CreateAttributes()
         {
+            if (Grasshopper.Instances.DocumentEditor == null) { base.CreateAttributes(); return; } // skip this class during GH loading
+
             if (first)
             {
                 dropdownitems = new List<List<string>>();
-                dropdownitems.Add(DocumentUnits.FilteredAngleUnits);
+                dropdownitems.Add(Units.FilteredAngleUnits);
 
-                IQuantity quantityAngle = new UnitsNet.Angle(0, angleUnit);
+                IQuantity quantityAngle = new Angle(0, angleUnit);
                 angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
 
                 selecteditems = new List<string>();
@@ -90,7 +92,7 @@ namespace AdSecGH.Components
         private UnitsNet.Units.AngleUnit angleUnit = UnitsNet.Units.AngleUnit.Radian;
         string angleAbbreviation;
         bool first = true;
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Profile", "Pf", "AdSet Profile to Edit or get information from", GH_ParamAccess.item);
             pManager.AddGenericParameter("Rotation [" + angleAbbreviation + "]", "R", "[Optional] The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.", GH_ParamAccess.item);
@@ -102,7 +104,7 @@ namespace AdSecGH.Components
                 pManager[i].Optional = true;
         }
 
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Profile", "Pf", "Modified AdSet Profile", GH_ParamAccess.item);
         }
@@ -144,12 +146,14 @@ namespace AdSecGH.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            if (Grasshopper.Instances.DocumentEditor == null) { return base.Read(reader); } // skip this class during GH loading
+
+            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             
             UpdateUIFromSelectedItems();
             
@@ -178,7 +182,7 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            IQuantity quantityAngle = new UnitsNet.Angle(0, angleUnit);
+            IQuantity quantityAngle = new Angle(0, angleUnit);
             angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
             Params.Input[1].Name = "Rotation [" + angleAbbreviation + "]";
         }

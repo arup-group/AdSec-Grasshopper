@@ -124,11 +124,8 @@
   <data name="AdSecLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\AdSecLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="AdSec_128_x_128" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\AdSec 128 x 128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Analyse" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Icons\Analyse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="AdSecLogo128" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\AdSecLogo128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ConvertUnitNumber" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\ConvertUnitNumber.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -175,6 +172,9 @@
   <data name="EditSection" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\EditSection.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="FlattenRebar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\FlattenRebar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="LoadParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\LoadParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -183,6 +183,9 @@
   </data>
   <data name="N_M" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\N-M.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OpenAdSec" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\OpenAdSec.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Prestress" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\Prestress.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -202,6 +205,9 @@
   <data name="RebarSpacing" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\RebarSpacing.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="SaveAdSec" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\SaveAdSec.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Section" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\Section.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -211,11 +217,17 @@
   <data name="SLS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\SLS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Solution" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\Solution.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="SolutionParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\SolutionParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="StandardMaterial" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\StandardMaterial.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="StressStrainConcrete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\StressStrainConcrete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="StressStrainCrv" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\StressStrainCrv.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -223,8 +235,14 @@
   <data name="StressStrainPt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\StressStrainPt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="StressStrainRebar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\StressStrainRebar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="SubComponent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\SubComponent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SVG" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\SVG.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ULS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\ULS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

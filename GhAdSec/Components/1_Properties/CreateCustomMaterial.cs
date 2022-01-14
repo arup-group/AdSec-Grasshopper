@@ -35,7 +35,7 @@ namespace AdSecGH.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateCustomMaterial;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateCustomMaterial;
         #endregion
 
         #region Custom UI
@@ -100,7 +100,7 @@ namespace AdSecGH.Components
         private bool first = true;
         private AdSecMaterial.AdSecMaterialType type = AdSecMaterial.AdSecMaterialType.Concrete;
         private bool isConcrete = true;
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("DesignCode", "Code", "[Optional] Set the Material's DesignCode", GH_ParamAccess.item);
             pManager[0].Optional = true;
@@ -112,7 +112,7 @@ namespace AdSecGH.Components
             pManager[5].Optional = true;
         }
 
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Material", "Mat", "Custom AdSec Material", GH_ParamAccess.item);
         }
@@ -208,13 +208,13 @@ namespace AdSecGH.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetBoolean("isConcrete", isConcrete);
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             isConcrete = reader.GetBoolean("isConcrete");
             UpdateUIFromSelectedItems();
             first = false;

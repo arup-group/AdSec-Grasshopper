@@ -41,7 +41,7 @@ namespace AdSecGH.Components
         { this.Hidden = false; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.N_M;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.N_M;
         #endregion
 
         #region Custom UI
@@ -59,12 +59,12 @@ namespace AdSecGH.Components
                 selecteditems.Add(dropdownitems[0][0]);
 
                 // force
-                dropdownitems.Add(DocumentUnits.FilteredAngleUnits);
+                dropdownitems.Add(Units.FilteredAngleUnits);
                 selecteditems.Add(angleUnit.ToString());
 
-                IQuantity force = new UnitsNet.Force(0, forceUnit);
+                IQuantity force = new Force(0, forceUnit);
                 forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-                IQuantity angle = new UnitsNet.Angle(0, angleUnit);
+                IQuantity angle = new Angle(0, angleUnit);
                 angleUnitAbbreviation = string.Concat(angle.ToString().Where(char.IsLetter));
 
                 first = false;
@@ -84,13 +84,13 @@ namespace AdSecGH.Components
                 {
                     case ("N-M"):
                         _mode = FoldMode.NM;
-                        dropdownitems[1] = DocumentUnits.FilteredAngleUnits;
+                        dropdownitems[1] = Units.FilteredAngleUnits;
                         selecteditems[1] = angleUnit.ToString();
                         break;
 
                     case ("M-M"):
                         _mode = FoldMode.MM;
-                        dropdownitems[1] = DocumentUnits.FilteredForceUnits;
+                        dropdownitems[1] = Units.FilteredForceUnits;
                         selecteditems[1] = forceUnit.ToString();
                         break;
                 }
@@ -137,7 +137,7 @@ namespace AdSecGH.Components
         });
         private bool first = true;
 
-        private UnitsNet.Units.ForceUnit forceUnit = DocumentUnits.ForceUnit;
+        private UnitsNet.Units.ForceUnit forceUnit = Units.ForceUnit;
         private UnitsNet.Units.AngleUnit angleUnit = UnitsNet.Units.AngleUnit.Radian;
         string forceUnitAbbreviation;
         string angleUnitAbbreviation;
@@ -150,7 +150,7 @@ namespace AdSecGH.Components
             pManager[1].Optional = true;
             // create default rectangle as 1/2 meter square
             Length sz = Length.FromMeters(0.5);
-            Rectangle3d rect = new Rectangle3d(Plane.WorldXY, sz.As(DocumentUnits.LengthUnit), sz.As(DocumentUnits.LengthUnit));
+            Rectangle3d rect = new Rectangle3d(Plane.WorldXY, sz.As(Units.LengthUnit), sz.As(Units.LengthUnit));
             pManager.AddRectangleParameter("Plot", "R", "Rectangle for plot boundary", GH_ParamAccess.item, rect);
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -214,14 +214,14 @@ namespace AdSecGH.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetString("force", forceUnit.ToString());
             writer.SetString("angle", angleUnit.ToString());
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), reader.GetString("force"));
             angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), reader.GetString("angle"));
@@ -252,10 +252,12 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
+            if (selecteditems == null) return;
+
             switch (selecteditems[0])
             {
                 case ("N-M"):
-                    IQuantity angle = new UnitsNet.Angle(0, angleUnit);
+                    IQuantity angle = new Angle(0, angleUnit);
                     angleUnitAbbreviation = string.Concat(angle.ToString().Where(char.IsLetter));
                     Params.Input[1].Name = "Moment Angle [" + angleUnitAbbreviation + "]";
                     Params.Input[1].NickName = "A";
@@ -265,7 +267,7 @@ namespace AdSecGH.Components
                     Params.Output[0].Description = "AdSec Force-Moment (N-M) interaction diagram";
                     break;
                 case ("M-M"):
-                    IQuantity force = new UnitsNet.Force(0, forceUnit);
+                    IQuantity force = new Force(0, forceUnit);
                     forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
                     Params.Input[1].Name = "Axial Force [" + forceUnitAbbreviation + "]";
                     Params.Input[1].NickName = "F";

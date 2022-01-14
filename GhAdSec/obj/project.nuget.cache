@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "XuEdxMwPS2+U6UhZzDLeOkJFngMA/T77PSwvjiLZB2E9V3VKsKkKCyfMO5tx+UtgQ1gFKtpp/CoCBzAgTkIyPw==",
+  "dgSpecHash": "nfn/syOQz0MWx1ZQh37GazQKRRXFbeQOlu1CllFKOp/TcZbJit+vmshgqdSN61wWHH8RRbZszSAaW2G4OneUWg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\AdSecGH.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\adsec\\1.0.2.3\\adsec.1.0.2.3.nupkg.sha512",
+    "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\adsec\\1.0.2.720\\adsec.1.0.2.720.nupkg.sha512",
     "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
     "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\grasshopper\\6.27.20176.5001\\grasshopper.6.27.20176.5001.nupkg.sha512",
     "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\rhinocommon\\6.27.20176.5001\\rhinocommon.6.27.20176.5001.nupkg.sha512",

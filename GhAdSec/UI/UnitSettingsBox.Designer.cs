@@ -232,6 +232,7 @@ namespace AdSecGH.UI
             this.comboBoxStress.Name = "comboBoxStress";
             this.comboBoxStress.Size = new System.Drawing.Size(166, 21);
             this.comboBoxStress.TabIndex = 33;
+            this.comboBoxStress.SelectedIndexChanged += new System.EventHandler(this.comboBoxStress_SelectedIndexChanged);
             // 
             // comboBoxMoment
             // 

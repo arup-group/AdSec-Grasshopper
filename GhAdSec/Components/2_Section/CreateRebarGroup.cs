@@ -34,7 +34,7 @@ namespace AdSecGH.Components
             string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Reinforcement.Groups.ITemplateGroup.Face.html";
             return help;
         }
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.RebarGroup;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.RebarGroup;
         #endregion
 
         #region Custom UI
@@ -51,7 +51,7 @@ namespace AdSecGH.Components
                 selecteditems.Add(dropdownitems[0][0]);
 
                 // populate unit abbriviations and add to selected items to have list length of 3 always
-                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+                IQuantity quantity = new Length(0, lengthUnit);
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
                 selecteditems.Add(lengthUnit.ToString());
 
@@ -93,7 +93,7 @@ namespace AdSecGH.Components
             "Group Type",
             "Measure",
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
         string unitAbbreviation;
         #endregion
 
@@ -247,12 +247,12 @@ namespace AdSecGH.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             UpdateUIFromSelectedItems();
             first = false;
 
@@ -322,7 +322,7 @@ namespace AdSecGH.Components
                 Params.Input[0].Optional = false;
             }
 
-            IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+            IQuantity quantity = new Length(0, lengthUnit);
             unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
 
             Params.Input[Params.Input.Count - 1].Name = "Cover [" + unitAbbreviation + "]";

@@ -43,8 +43,8 @@ namespace AdSecGH.Parameters
             {
                 Point3d point3d = curve.Point(j);
                 pt = IStressStrainPoint.Create(
-                    new UnitsNet.Pressure(point3d.Y, DocumentUnits.StressUnit),
-                    new Oasys.Units.Strain(point3d.X, DocumentUnits.StrainUnit));
+                    new UnitsNet.Pressure(point3d.Y, Units.StressUnit),
+                    new Oasys.Units.Strain(point3d.X, Units.StrainUnit));
                 pts.Add(pt);
             }
             return pts;
@@ -60,11 +60,11 @@ namespace AdSecGH.Parameters
                 IBilinearStressStrainCurve crv1 = (IBilinearStressStrainCurve)stressStrainCurve;
                 pts.Add(new Point3d(0, 0, 0));
                 pts.Add(new Point3d(
-                    crv1.YieldPoint.Strain.As(DocumentUnits.StrainUnit) * direction,
-                    crv1.YieldPoint.Stress.As(DocumentUnits.StressUnit) * direction, 0));
+                    crv1.YieldPoint.Strain.As(Units.StrainUnit) * direction,
+                    crv1.YieldPoint.Stress.As(Units.StressUnit) * direction, 0));
                 pts.Add(new Point3d(
-                    crv1.FailurePoint.Strain.As(DocumentUnits.StrainUnit) * direction,
-                    crv1.FailurePoint.Stress.As(DocumentUnits.StressUnit) * direction, 0));
+                    crv1.FailurePoint.Strain.As(Units.StrainUnit) * direction,
+                    crv1.FailurePoint.Stress.As(Units.StressUnit) * direction, 0));
                 crvOut = new Polyline(pts).ToPolylineCurve();
             }
             else if (type == StressStrainCurveType.Explicit)
@@ -73,8 +73,8 @@ namespace AdSecGH.Parameters
                 foreach (IStressStrainPoint pt in crv2.Points)
                 {
                     pts.Add(new Point3d(
-                    pt.Strain.As(DocumentUnits.StrainUnit) * direction,
-                    pt.Stress.As(DocumentUnits.StressUnit) * direction, 0));
+                    pt.Strain.As(Units.StrainUnit) * direction,
+                    pt.Stress.As(Units.StressUnit) * direction, 0));
                 }
                 crvOut = new Polyline(pts).ToPolylineCurve();
             }
@@ -83,23 +83,23 @@ namespace AdSecGH.Parameters
                 ILinearStressStrainCurve crv3 = (ILinearStressStrainCurve)stressStrainCurve;
                 pts.Add(new Point3d(0, 0, 0));
                 pts.Add(new Point3d(
-                    crv3.FailurePoint.Strain.As(DocumentUnits.StrainUnit) * direction,
-                    crv3.FailurePoint.Stress.As(DocumentUnits.StressUnit) * direction, 0));
+                    crv3.FailurePoint.Strain.As(Units.StrainUnit) * direction,
+                    crv3.FailurePoint.Stress.As(Units.StressUnit) * direction, 0));
                 crvOut = new Polyline(pts).ToPolylineCurve();
             }
             else
             {
-                double maxStrain = stressStrainCurve.FailureStrain.As(DocumentUnits.StrainUnit);
+                double maxStrain = stressStrainCurve.FailureStrain.As(Units.StrainUnit);
                 List<Point3d> polypts = new List<Point3d>();
                 for (int i = 0; i < 100; i++)
                 {
-                    Oasys.Units.Strain strain = new Oasys.Units.Strain((double)i / (double)100.0 * maxStrain, DocumentUnits.StrainUnit);
+                    Oasys.Units.Strain strain = new Oasys.Units.Strain((double)i / (double)100.0 * maxStrain, Units.StrainUnit);
                     
                     UnitsNet.Pressure stress = stressStrainCurve.StressAt(strain);
                         
                     polypts.Add(new Point3d(
-                    strain.As(DocumentUnits.StrainUnit) * direction,
-                    stress.As(DocumentUnits.StressUnit) * direction, 0));
+                    strain.As(Units.StrainUnit) * direction,
+                    stress.As(Units.StressUnit) * direction, 0));
 
                 }
                 crvOut = new Polyline(polypts).ToPolylineCurve();
@@ -109,48 +109,48 @@ namespace AdSecGH.Parameters
                     IFibModelCodeStressStrainCurve crv = (IFibModelCodeStressStrainCurve)stressStrainCurve;
                     pts.Add(new Point3d(0, 0, 0));
                     pts.Add(new Point3d(
-                        crv.PeakPoint.Strain.As(DocumentUnits.StrainUnit) * direction,
-                        crv.PeakPoint.Stress.As(DocumentUnits.StressUnit) * direction, 0));
+                        crv.PeakPoint.Strain.As(Units.StrainUnit) * direction,
+                        crv.PeakPoint.Stress.As(Units.StressUnit) * direction, 0));
                 }
                 if (type == StressStrainCurveType.Mander)
                 {
                     IManderStressStrainCurve crv = (IManderStressStrainCurve)stressStrainCurve;
                     pts.Add(new Point3d(0, 0, 0));
                     pts.Add(new Point3d(
-                        crv.PeakPoint.Strain.As(DocumentUnits.StrainUnit) * direction,
-                        crv.PeakPoint.Stress.As(DocumentUnits.StressUnit) * direction, 0));
+                        crv.PeakPoint.Strain.As(Units.StrainUnit) * direction,
+                        crv.PeakPoint.Stress.As(Units.StressUnit) * direction, 0));
                 }
                 if (type == StressStrainCurveType.ParabolaRectangle)
                 {
                     IParabolaRectangleStressStrainCurve crv = (IParabolaRectangleStressStrainCurve)stressStrainCurve;
                     pts.Add(new Point3d(0, 0, 0));
                     pts.Add(new Point3d(
-                        crv.YieldPoint.Strain.As(DocumentUnits.StrainUnit) * direction,
-                        crv.YieldPoint.Stress.As(DocumentUnits.StressUnit) * direction, 0));
+                        crv.YieldPoint.Strain.As(Units.StrainUnit) * direction,
+                        crv.YieldPoint.Stress.As(Units.StressUnit) * direction, 0));
                 }
                 if (type == StressStrainCurveType.Park)
                 {
                     IParkStressStrainCurve crv = (IParkStressStrainCurve)stressStrainCurve;
                     pts.Add(new Point3d(0, 0, 0));
                     pts.Add(new Point3d(
-                        crv.YieldPoint.Strain.As(DocumentUnits.StrainUnit) * direction,
-                        crv.YieldPoint.Stress.As(DocumentUnits.StressUnit) * direction, 0));
+                        crv.YieldPoint.Strain.As(Units.StrainUnit) * direction,
+                        crv.YieldPoint.Stress.As(Units.StressUnit) * direction, 0));
                 }
                 if (type == StressStrainCurveType.Popovics)
                 {
                     IPopovicsStressStrainCurve crv = (IPopovicsStressStrainCurve)stressStrainCurve;
                     pts.Add(new Point3d(0, 0, 0));
                     pts.Add(new Point3d(
-                        crv.PeakPoint.Strain.As(DocumentUnits.StrainUnit) * direction,
-                        crv.PeakPoint.Stress.As(DocumentUnits.StressUnit) * direction, 0));
+                        crv.PeakPoint.Strain.As(Units.StrainUnit) * direction,
+                        crv.PeakPoint.Stress.As(Units.StressUnit) * direction, 0));
                 }
                 if (type == StressStrainCurveType.Rectangular)
                 {
                     IRectangularStressStrainCurve crv = (IRectangularStressStrainCurve)stressStrainCurve;
                     pts.Add(new Point3d(0, 0, 0));
                     pts.Add(new Point3d(
-                        crv.YieldPoint.Strain.As(DocumentUnits.StrainUnit) * direction,
-                        crv.YieldPoint.Stress.As(DocumentUnits.StressUnit) * direction, 0));
+                        crv.YieldPoint.Strain.As(Units.StrainUnit) * direction,
+                        crv.YieldPoint.Stress.As(Units.StressUnit) * direction, 0));
                 }
             }
 
@@ -162,15 +162,15 @@ namespace AdSecGH.Parameters
             Curve crvOut = null;
             List<Point3d> pts = new List<Point3d>();
 
-            double maxStrain = stressStrainCurve.FailureStrain.As(DocumentUnits.StrainUnit);
+            double maxStrain = stressStrainCurve.FailureStrain.As(Units.StrainUnit);
             List<Point3d> polypts = new List<Point3d>();
             for (int i = 0; i < 100; i++)
             {
-                Oasys.Units.Strain strain = new Oasys.Units.Strain((double)i / (double)100.0 * maxStrain, DocumentUnits.StrainUnit);
+                Oasys.Units.Strain strain = new Oasys.Units.Strain((double)i / (double)100.0 * maxStrain, Units.StrainUnit);
                 UnitsNet.Pressure stress = stressStrainCurve.StressAt(strain);
                 polypts.Add(new Point3d(
-                strain.As(DocumentUnits.StrainUnit) * direction,
-                stress.As(DocumentUnits.StressUnit) * direction, 0));
+                strain.As(Units.StrainUnit) * direction,
+                stress.As(Units.StressUnit) * direction, 0));
             }
             crvOut = new Polyline(polypts).ToPolylineCurve();
             pts.Add(polypts.First());
@@ -329,10 +329,10 @@ namespace AdSecGH.Parameters
         {
             if (Value != null)
             {
-                args.Pipeline.DrawCurve(Value, AdSecGH.UI.Colour.OasysBlue, 2);
+                args.Pipeline.DrawCurve(Value, UI.Colour.OasysBlue, 2);
                 foreach (Point3d pt in m_pts)
                 {
-                    args.Pipeline.DrawCircle(new Circle(pt, 0.5), AdSecGH.UI.Colour.OasysYellow, 1);
+                    args.Pipeline.DrawCircle(new Circle(pt, 0.5), UI.Colour.OasysYellow, 1);
                 }
             }
         }

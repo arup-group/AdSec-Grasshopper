@@ -35,7 +35,7 @@ namespace AdSecGH.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.SLS;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.SLS;
         #endregion
 
         #region Custom UI
@@ -44,49 +44,54 @@ namespace AdSecGH.Components
 
         #region Input and output
 
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Results", "Res", "AdSec Results to perform serviceability check on.", GH_ParamAccess.item);
             pManager.AddGenericParameter("Load", "Ld", "AdSec Load (Load or Deformation) for which the strength results are to be calculated.", GH_ParamAccess.item);
         }
 
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            IQuantity strain = new Oasys.Units.Strain(0, DocumentUnits.StrainUnit);
+            IQuantity strain = new Strain(0, Units.StrainUnit);
             string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-            IQuantity curvature = new Oasys.Units.Curvature(0, DocumentUnits.CurvatureUnit);
+            if (strainUnitAbbreviation == "")
+            {
+                strainUnitAbbreviation = strain.ToString();
+                strainUnitAbbreviation = strainUnitAbbreviation[strainUnitAbbreviation.Length - 1].ToString();
+            }
+            IQuantity curvature = new Curvature(0, Units.CurvatureUnit);
             string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
-            IQuantity axial = new Oasys.Units.AxialStiffness(0, DocumentUnits.AxialStiffnessUnit);
+            IQuantity axial = new AxialStiffness(0, Units.AxialStiffnessUnit);
             string axialUnitAbbreviation = string.Concat(axial.ToString().Where(char.IsLetter));
-            IQuantity bending = new Oasys.Units.BendingStiffness(0, DocumentUnits.BendingStiffnessUnit);
+            IQuantity bending = new BendingStiffness(0, Units.BendingStiffnessUnit);
             string bendingUnitAbbreviation = string.Concat(bending.ToString().Where(char.IsLetter));
-            IQuantity moment = new Oasys.Units.Moment(0, DocumentUnits.MomentUnit);
+            IQuantity moment = new Moment(0, Units.MomentUnit);
             string momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
 
-            pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." + 
-                System.Environment.NewLine + "If the applied deformation is outside the capacity range of the section, the returned load will be zero.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." +
+                Environment.NewLine + "If the applied deformation is outside the capacity range of the section, the returned load will be zero.", GH_ParamAccess.item);
             pManager.AddGenericParameter("Cracks", "Cks", "Crack results are calculated at bar positions or section surfaces depending on the Design Code specifications." +
-                System.Environment.NewLine + "If the applied action is outside the capacity range of the section, the returned list will be empty. See MaximumCrack output " +
+                Environment.NewLine + "If the applied action is outside the capacity range of the section, the returned list will be empty. See MaximumCrack output " +
                 "for the crack result corresponding to the maximum crack width.", GH_ParamAccess.item);
 
             pManager.AddGenericParameter("MaximumCrack", "Crk", "The crack result from Cracks that corresponds to the maximum crack width." +
-                System.Environment.NewLine + "If the applied action is outside the capacity range of the section, the returned maximum width crack result will be maximum " +
+                Environment.NewLine + "If the applied action is outside the capacity range of the section, the returned maximum width crack result will be maximum " +
                 "double value.", GH_ParamAccess.item);
 
             pManager.AddNumberParameter("CrackUtil", "Uc", "The ratio of the applied load (moment and axial) to the load (moment and axial) in the same direction that would " +
                 "cause the section to crack. Ratio > 1 means section is cracked." +
-                System.Environment.NewLine + "The section is cracked when the cracking utilisation ratio is greater than 1. If the applied load is outside the capacity range" +
+                Environment.NewLine + "The section is cracked when the cracking utilisation ratio is greater than 1. If the applied load is outside the capacity range" +
                 " of the section, the cracking utilisation will be maximum double value.", GH_ParamAccess.item);
 
             pManager.AddVectorParameter("Deformation", "Def", "The section deformation under the applied action. The output is a vector representing:"
-                + System.Environment.NewLine + "X: Strain [" + strainUnitAbbreviation + "],"
-                + System.Environment.NewLine + "Y: Curvature around zz (so in local y-direction) [" + curvatureUnitAbbreviation + "],"
-                + System.Environment.NewLine + "Z: Curvature around yy (so in local z-direction) [" + curvatureUnitAbbreviation + "]", GH_ParamAccess.item);
+                + Environment.NewLine + "X: Strain [" + strainUnitAbbreviation + "],"
+                + Environment.NewLine + "Y: Curvature around zz (so in local y-direction) [" + curvatureUnitAbbreviation + "],"
+                + Environment.NewLine + "Z: Curvature around yy (so in local z-direction) [" + curvatureUnitAbbreviation + "]", GH_ParamAccess.item);
 
             pManager.AddVectorParameter("SecantStiffness", "Es", "The secant stiffness under the applied action. The output is a vector representing:"
-                + System.Environment.NewLine + "X: Axial stiffness [" + axialUnitAbbreviation + "],"
-                + System.Environment.NewLine + "Y: The bending stiffness about the y-axis in the local coordinate system [" + bendingUnitAbbreviation + "],"
-                + System.Environment.NewLine + "Z: The bending stiffness about the z-axis in the local coordinate system [" + bendingUnitAbbreviation + "]", GH_ParamAccess.item);
+                + Environment.NewLine + "X: Axial stiffness [" + axialUnitAbbreviation + "],"
+                + Environment.NewLine + "Y: The bending stiffness about the y-axis in the local coordinate system [" + bendingUnitAbbreviation + "],"
+                + Environment.NewLine + "Z: The bending stiffness about the z-axis in the local coordinate system [" + bendingUnitAbbreviation + "]", GH_ParamAccess.item);
 
             pManager.AddIntervalParameter("Uncracked Moment Ranges", "MRs", "The range of moments (in the direction of the applied moment, assuming constant axial force) " +
                 "over which the section remains uncracked. Moment values are in [" + momentUnitAbbreviation + "]", GH_ParamAccess.list);
@@ -150,21 +155,21 @@ namespace AdSecGH.Components
             }
 
             DA.SetData(4, new Vector3d(
-                sls.Deformation.X.As(DocumentUnits.StrainUnit),
-                sls.Deformation.YY.As(DocumentUnits.CurvatureUnit),
-                sls.Deformation.ZZ.As(DocumentUnits.CurvatureUnit)));
+                sls.Deformation.X.As(Units.StrainUnit),
+                sls.Deformation.YY.As(Units.CurvatureUnit),
+                sls.Deformation.ZZ.As(Units.CurvatureUnit)));
             
             DA.SetData(5, new Vector3d(
-                sls.SecantStiffness.X.As(DocumentUnits.AxialStiffnessUnit),
-                sls.SecantStiffness.YY.As(DocumentUnits.BendingStiffnessUnit),
-                sls.SecantStiffness.ZZ.As(DocumentUnits.BendingStiffnessUnit)));
+                sls.SecantStiffness.X.As(Units.AxialStiffnessUnit),
+                sls.SecantStiffness.YY.As(Units.BendingStiffnessUnit),
+                sls.SecantStiffness.ZZ.As(Units.BendingStiffnessUnit)));
 
             List<GH_Interval> momentRanges = new List<GH_Interval>();
             foreach (IMomentRange mrng in sls.UncrackedMomentRanges)
             {
-                Rhino.Geometry.Interval interval = new Interval(
-                    mrng.Min.As(DocumentUnits.MomentUnit),
-                    mrng.Max.As(DocumentUnits.MomentUnit));
+                Interval interval = new Interval(
+                    mrng.Min.As(Units.MomentUnit),
+                    mrng.Max.As(Units.MomentUnit));
                 momentRanges.Add(new GH_Interval(interval));
             }
             DA.SetDataList(6, momentRanges);

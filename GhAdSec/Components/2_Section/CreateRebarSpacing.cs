@@ -28,7 +28,7 @@ namespace AdSecGH.Components
         public override Guid ComponentGuid => new Guid("846d546a-4284-4d69-906b-0e6985d7ddd3");
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.RebarSpacing;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.RebarSpacing;
         #endregion
 
         #region Custom UI
@@ -46,10 +46,10 @@ namespace AdSecGH.Components
 
                 // length
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
-                dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
+                dropdownitems.Add(Units.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
-                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+                IQuantity quantity = new Length(0, lengthUnit);
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
 
                 first = false;
@@ -78,7 +78,7 @@ namespace AdSecGH.Components
                     // add second dropdown (length)
                     if (dropdownitems.Count != 2)
                     {
-                        dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
+                        dropdownitems.Add(Units.FilteredLengthUnits);
                         selecteditems.Add(lengthUnit.ToString());
                     }
                 }
@@ -109,7 +109,7 @@ namespace AdSecGH.Components
             "Spacing method",
             "Measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
         string unitAbbreviation;
         #endregion
 
@@ -203,13 +203,13 @@ namespace AdSecGH.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetString("mode", _mode.ToString());
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
             UpdateUIFromSelectedItems();
             first = false;
@@ -238,7 +238,7 @@ namespace AdSecGH.Components
         {
             if (_mode == FoldMode.Distance)
             {
-                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+                IQuantity quantity = new Length(0, lengthUnit);
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
                 Params.Input[1].Name = "Spacing [" + unitAbbreviation + "]";
                 Params.Input[1].NickName = "S";

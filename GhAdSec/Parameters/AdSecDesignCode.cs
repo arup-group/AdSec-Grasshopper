@@ -65,7 +65,7 @@ namespace AdSecGH.Parameters
         private bool CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false)
         {
             // Get all DesignCodes in DLL under namespace
-            Dictionary<string, Type> designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+            Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
             // Loop through DesignCodes types to find the DesignCode type matching our input list of levels
             string designcodeName = "";
@@ -75,7 +75,7 @@ namespace AdSecGH.Parameters
                 designcodeName = designcodeName + designCodeReflectedLevels[i] + " ";
                 designCodeKVP.TryGetValue(designCodeReflectedLevels[i], out typ);
                 if (typ == null) { return false; }
-                designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+                designCodeKVP = Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
             }
             if (designCodeReflectedLevels.Count == 1)
             {
@@ -90,7 +90,7 @@ namespace AdSecGH.Parameters
             string searchFor = (fromDesignCode) ? typ.FullName + "+" + designCodeReflectedLevels.Last() : typ.FullName;
 
             // loop through all types in Oasys.AdSec.IAdsec and cast to IDesignCode if match with above string
-            foreach (var type in Assembly.GetAssembly(typeof(Oasys.AdSec.IAdSec)).GetTypes())
+            foreach (var type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes())
             {
                 if (type.IsInterface && type.Namespace == "Oasys.AdSec.DesignCode")
                 {
@@ -240,7 +240,7 @@ namespace AdSecGH.Parameters
     public class AdSecDesignCodeParameter : GH_PersistentParam<AdSecDesignCodeGoo>
     {
         public AdSecDesignCodeParameter()
-          : base(new GH_InstanceDescription("DesignCode", "Code", "AdSec DesignCode Parameter", AdSecGH.Components.Ribbon.CategoryName.Name(), AdSecGH.Components.Ribbon.SubCategoryName.Cat9()))
+          : base(new GH_InstanceDescription("DesignCode", "Code", "AdSec DesignCode Parameter", Components.Ribbon.CategoryName.Name(), Components.Ribbon.SubCategoryName.Cat9()))
         {
         }
 
@@ -248,7 +248,7 @@ namespace AdSecGH.Parameters
 
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.DesignCodeParameter;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.DesignCodeParameter;
 
         protected override GH_GetterResult Prompt_Plural(ref List<AdSecDesignCodeGoo> values)
         {

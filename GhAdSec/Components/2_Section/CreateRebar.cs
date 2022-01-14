@@ -27,14 +27,13 @@ namespace AdSecGH.Components
         public override Guid ComponentGuid => new Guid("024d241a-b6cc-4134-9f5c-ac9a6dcb2c4b");
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.Rebar;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.Rebar;
         #endregion
 
         #region Custom UI
         //This region overrides the typical component layout
         public override void CreateAttributes()
         {
-            
             if (first)
             {
                 List<string> list = Enum.GetNames(typeof(FoldMode)).ToList();
@@ -46,10 +45,10 @@ namespace AdSecGH.Components
 
                 // length
                 //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
-                dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
+                dropdownitems.Add(Units.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
-                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+                IQuantity quantity = new Length(0, lengthUnit);
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
 
                 first = false;
@@ -88,14 +87,14 @@ namespace AdSecGH.Components
             "Rebar Type",
             "Measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
         string unitAbbreviation;
         #endregion
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Material", "Mat", "AdSec Reinforcement Material", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Diameter [" + unitAbbreviation + "]", "Ø", "Diameter", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Diameter [" + unitAbbreviation + "]", "Ø", "Bar Diameter", GH_ParamAccess.item);
             _mode = FoldMode.Single;
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -174,13 +173,13 @@ namespace AdSecGH.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             writer.SetString("mode", _mode.ToString());
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
             UpdateUIFromSelectedItems();
             first = false;
@@ -207,7 +206,7 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+            IQuantity quantity = new Length(0, lengthUnit);
             unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
             Params.Input[1].Name = "Diameter [" + unitAbbreviation + "]";
 

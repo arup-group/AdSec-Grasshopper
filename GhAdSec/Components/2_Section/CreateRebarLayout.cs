@@ -28,7 +28,7 @@ namespace AdSecGH.Components
         public override Guid ComponentGuid => new Guid("1250f456-de99-4834-8d7f-4019cc0c70ba");
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.RebarLayout;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.RebarLayout;
         #endregion
 
         #region Custom UI
@@ -45,11 +45,11 @@ namespace AdSecGH.Components
                 selecteditems.Add(dropdownitems[0][0]);
 
                 // populate unit abbriviations and add to selected items to have list length of 3 always
-                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+                IQuantity quantity = new Length(0, lengthUnit);
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
                 selecteditems.Add(lengthUnit.ToString());
 
-                IQuantity quantityAngle = new UnitsNet.Angle(0, angleUnit);
+                IQuantity quantityAngle = new Angle(0, angleUnit);
                 angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
                 selecteditems.Add(angleUnit.ToString());
 
@@ -78,9 +78,9 @@ namespace AdSecGH.Components
                     case FoldMode.Arc:
                     case FoldMode.Circle:
                         if (dropdownitems.Count < 2)
-                            dropdownitems.Add(DocumentUnits.FilteredLengthUnits);
+                            dropdownitems.Add(Units.FilteredLengthUnits);
                         if (dropdownitems.Count < 3)
-                            dropdownitems.Add(DocumentUnits.FilteredAngleUnits);
+                            dropdownitems.Add(Units.FilteredAngleUnits);
                         spacerDescriptions[1] = "Length measure";
                         break;
                 }
@@ -121,7 +121,7 @@ namespace AdSecGH.Components
             "Measure",
             "Angular measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = DocumentUnits.LengthUnit;
+        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
         private UnitsNet.Units.AngleUnit angleUnit = UnitsNet.Units.AngleUnit.Radian;
         string unitAbbreviation;
         string angleAbbreviation;
@@ -256,12 +256,12 @@ namespace AdSecGH.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             UpdateUIFromSelectedItems();
             first = false;
             return base.Read(reader);
@@ -336,9 +336,9 @@ namespace AdSecGH.Components
                 Params.Input[1].Access = GH_ParamAccess.item;
                 Params.Input[1].Optional = true;
 
-                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+                IQuantity quantity = new Length(0, lengthUnit);
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
-                IQuantity quantityAngle = new UnitsNet.Angle(0, angleUnit);
+                IQuantity quantityAngle = new Angle(0, angleUnit);
                 angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
 
                 Params.Input[2].Name = "Radius [" + unitAbbreviation + "]";
@@ -367,9 +367,9 @@ namespace AdSecGH.Components
                 Params.Input[1].Access = GH_ParamAccess.item;
                 Params.Input[1].Optional = true;
 
-                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+                IQuantity quantity = new Length(0, lengthUnit);
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
-                IQuantity quantityAngle = new UnitsNet.Angle(0, angleUnit);
+                IQuantity quantityAngle = new Angle(0, angleUnit);
                 angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
 
                 Params.Input[2].Name = "Radius [" + unitAbbreviation + "]";

@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.7.2": {
-      "AdSec/1.0.2.3": {
+      "AdSec/1.0.2.720": {
         "type": "package",
         "dependencies": {
           "UnitsNet": "4.89.0"
@@ -142,7 +142,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win": {
-      "AdSec/1.0.2.3": {
+      "AdSec/1.0.2.720": {
         "type": "package",
         "dependencies": {
           "UnitsNet": "4.89.0"
@@ -282,7 +282,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-x64": {
-      "AdSec/1.0.2.3": {
+      "AdSec/1.0.2.720": {
         "type": "package",
         "dependencies": {
           "UnitsNet": "4.89.0"
@@ -422,7 +422,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-x86": {
-      "AdSec/1.0.2.3": {
+      "AdSec/1.0.2.720": {
         "type": "package",
         "dependencies": {
           "UnitsNet": "4.89.0"
@@ -563,25 +563,24 @@
     }
   },
   "libraries": {
-    "AdSec/1.0.2.3": {
-      "sha512": "m2RgZ31Lq2XS9+mYuSsZ70i5zY5NRwyBHMXauk6N3WTHhQdQX0qY6lSk2p6jYFJqalJIjmxJA6Wmyi7hHV/1Aw==",
+    "AdSec/1.0.2.720": {
+      "sha512": "Ido3oBnLEKvw7QOUe790zCYk7BEhwxSFTMcmgpKXzaE6N48THHGNI2xGimsWOgD5ZPlIsfkkScGashO+vXeCKg==",
       "type": "package",
-      "path": "adsec/1.0.2.3",
+      "path": "adsec/1.0.2.720",
       "files": [
         ".nupkg.metadata",
-        ".signature.p7s",
         "LICENCE.pdf",
         "LICENCE.txt",
-        "adsec.1.0.2.3.nupkg.sha512",
+        "adsec.1.0.2.720.nupkg.sha512",
         "adsec.nuspec",
         "build/AdSec.targets",
-        "build/x64/AdSecLogic.dll",
+        "build/x64/AdSecLogic_AdSec_API.dll",
         "build/x64/AdSec_SDK_Implementation.dll",
-        "build/x64/AdSol.dll",
-        "build/x64/OaData.dll",
-        "build/x64/OaNumeric.dll",
-        "build/x64/OaUtil.dll",
-        "build/x64/addata.dll",
+        "build/x64/AdSol_AdSec_API.dll",
+        "build/x64/OaData_AdSec_API.dll",
+        "build/x64/OaNumeric_AdSec_API.dll",
+        "build/x64/OaUtil_AdSec_API.dll",
+        "build/x64/addata_AdSec_API.dll",
         "build/x64/application.avf",
         "build/x64/clrcompression.dll",
         "build/x64/concrt140.dll",
@@ -615,12 +614,15 @@
         "build/x64/vcruntime140_1.dll",
         "icon.png",
         "lib/netstandard2.0/AdSec_API.dll",
+        "lib/netstandard2.0/AdSec_API.dll.metagen",
         "lib/netstandard2.0/AdSec_API.exp",
         "lib/netstandard2.0/AdSec_API.lib",
         "lib/netstandard2.0/AdSec_API.pdb",
         "lib/netstandard2.0/AdSec_API.runtimeconfig.json",
         "lib/netstandard2.0/AdSec_API.xml",
+        "lib/netstandard2.0/AdSec_IO.deps.json",
         "lib/netstandard2.0/AdSec_IO.dll",
+        "lib/netstandard2.0/AdSec_IO.pdb",
         "lib/netstandard2.0/AdSec_IO.xml",
         "lib/netstandard2.0/OasysUnits.dll",
         "lib/netstandard2.0/OasysUnits.xml"
@@ -915,7 +917,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.7.2": [
-      "AdSec >= 1.0.2.3",
+      "AdSec >= 1.0.2.720",
       "Grasshopper >= 6.27.20176.5001",
       "RhinoCommon >= 6.27.20176.5001",
       "System.Data.SQLite >= 1.0.115"
@@ -958,7 +960,7 @@
         "dependencies": {
           "AdSec": {
             "target": "Package",
-            "version": "[1.0.2.3, )"
+            "version": "[1.0.2.720, )"
           },
           "Grasshopper": {
             "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",

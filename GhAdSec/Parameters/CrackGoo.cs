@@ -38,12 +38,12 @@ namespace AdSecGH.Parameters
 
             // create point from crack position in global axis
             Point3d point = new Point3d(
-                crack.Position.Y.As(DocumentUnits.LengthUnit),
-                crack.Position.Z.As(DocumentUnits.LengthUnit),
+                crack.Position.Y.As(Units.LengthUnit),
+                crack.Position.Z.As(Units.LengthUnit),
                 0);
 
             // remap to local coordinate system
-            Rhino.Geometry.Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
+            Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
             point.Transform(mapFromLocal);
             m_point = point;
 
@@ -51,9 +51,9 @@ namespace AdSecGH.Parameters
             Vector3d halfCrack = new Vector3d(local.ZAxis);
             halfCrack.Unitize();
             halfCrack = new Vector3d(
-                halfCrack.X * crack.Width.As(DocumentUnits.LengthUnit) / 2,
-                halfCrack.Y * crack.Width.As(DocumentUnits.LengthUnit) / 2,
-                halfCrack.Z * crack.Width.As(DocumentUnits.LengthUnit) / 2);
+                halfCrack.X * crack.Width.As(Units.LengthUnit) / 2,
+                halfCrack.Y * crack.Width.As(Units.LengthUnit) / 2,
+                halfCrack.Z * crack.Width.As(Units.LengthUnit) / 2);
 
             Transform move = Rhino.Geometry.Transform.Translation(halfCrack);
             Point3d crackStart = new Point3d(m_point);
@@ -63,9 +63,9 @@ namespace AdSecGH.Parameters
             Vector3d crackWidth = new Vector3d(halfCrack);
             crackWidth.Unitize();
             crackWidth = new Vector3d(
-                crackWidth.X * crack.Width.As(DocumentUnits.LengthUnit) * -1,
-                crackWidth.Y * crack.Width.As(DocumentUnits.LengthUnit) * -1,
-                crackWidth.Z * crack.Width.As(DocumentUnits.LengthUnit) * -1);
+                crackWidth.X * crack.Width.As(Units.LengthUnit) * -1,
+                crackWidth.Y * crack.Width.As(Units.LengthUnit) * -1,
+                crackWidth.Z * crack.Width.As(Units.LengthUnit) * -1);
 
             m_line = new Line(crackStart, crackWidth);
         }
@@ -101,12 +101,12 @@ namespace AdSecGH.Parameters
         }
         public override string ToString()
         {
-            IQuantity length = new UnitsNet.Length(0, DocumentUnits.LengthUnit);
+            IQuantity length = new Length(0, Units.LengthUnit);
             string unitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
             return "AdSec " + TypeName + " {"
-                + "Y:" + Math.Round(this.Value.Position.Y.As(DocumentUnits.LengthUnit), 4) + unitAbbreviation + ", "
-                + "Z:" + Math.Round(this.Value.Position.Z.As(DocumentUnits.LengthUnit), 4) + unitAbbreviation + ", "
-                + "Width:" + Math.Round(this.Value.Width.As(DocumentUnits.LengthUnit), 4) + unitAbbreviation + "}";
+                + "Y:" + Math.Round(this.Value.Position.Y.As(Units.LengthUnit), 4) + unitAbbreviation + ", "
+                + "Z:" + Math.Round(this.Value.Position.Z.As(Units.LengthUnit), 4) + unitAbbreviation + ", "
+                + "Width:" + Math.Round(this.Value.Width.As(Units.LengthUnit), 4) + unitAbbreviation + "}";
         }
         public override bool CastTo<TQ>(out TQ target)
         {
@@ -153,11 +153,11 @@ namespace AdSecGH.Parameters
         {
             if (m_point.IsValid)
             {
-                Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+                Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
                 if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
-                    args.Pipeline.DrawLine(m_line, AdSecGH.UI.Colour.OasysBlue, 5);
+                    args.Pipeline.DrawLine(m_line, UI.Colour.OasysBlue, 5);
                 else
-                    args.Pipeline.DrawLine(m_line, AdSecGH.UI.Colour.OasysYellow, 7);
+                    args.Pipeline.DrawLine(m_line, UI.Colour.OasysYellow, 7);
             }
         }
 
