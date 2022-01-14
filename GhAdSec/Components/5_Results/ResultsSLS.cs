@@ -140,8 +140,8 @@ namespace AdSecGH.Components
                 cracks.Add(new AdSecCrackGoo(crack, solution.LocalPlane));
             }
             DA.SetDataList(1, cracks);
-
-            if (sls.MaximumWidthCrack.Width.Meters < 1)
+            
+            if (sls.MaximumWidthCrack != null && sls.MaximumWidthCrack.Width.Meters < 1)
                 DA.SetData(2, new AdSecCrackGoo(sls.MaximumWidthCrack, solution.LocalPlane));
 
             double util = sls.CrackingUtilisation.As(UnitsNet.Units.RatioUnit.DecimalFraction);
