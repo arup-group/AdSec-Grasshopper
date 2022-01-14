@@ -108,7 +108,23 @@ namespace UnitsNet.GH
                 return "Null";
             else
             {
-                return Value.ToString();
+                string type = Value.GetType().ToString();
+                if (type.StartsWith("Oasys"))
+                {
+                    string abbr = string.Concat(Value.ToString().Where(char.IsLetter));
+                    if (abbr == "")
+                    {
+                        abbr = Value.ToString();
+                        abbr = abbr[abbr.Length - 1].ToString();
+                    }
+                    if (Value.Value == 0)
+                        return 0 + abbr;
+
+                    double scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(Value.Value))) + 1);
+                    return scale * Math.Round(Value.Value / scale, 5) + " " + abbr;
+                }
+                else
+                    return Value.ToString();
             }
         }
         public override string TypeName

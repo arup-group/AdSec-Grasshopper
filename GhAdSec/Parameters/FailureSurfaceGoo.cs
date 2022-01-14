@@ -51,7 +51,7 @@ namespace AdSecGH.Parameters
             // local axis
             if (m_plane != null)
             {
-                Rhino.Geometry.Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, m_plane);
+                Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, m_plane);
 
                 double maxN = bbox.PointAt(1, 0.5, 0.5).X;
                 double minN = bbox.PointAt(0, 0.5, 0.5).X;
@@ -123,9 +123,9 @@ namespace AdSecGH.Parameters
             outMesh.Faces.AddFaces(
                 loadsurface.Faces.Select(face => new MeshFace(
                     face.Vertex1, face.Vertex2, face.Vertex3)));
-            
+
             // transform to local plane
-            Rhino.Geometry.Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
+            Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
 
             bbox = outMesh.GetBoundingBox(false);
             bbox.Transform(Rhino.Geometry.Transform.Scale(new Point3d(0, 0, 0), 1.05));
@@ -227,7 +227,7 @@ namespace AdSecGH.Parameters
         public void DrawViewportWires(GH_PreviewWireArgs args)
         {
             if (!Value.IsValid) { return; }
-            args.Pipeline.DrawMeshWires(Value, AdSecGH.UI.Colour.UILightGrey, 1);
+            args.Pipeline.DrawMeshWires(Value, UI.Colour.UILightGrey, 1);
             // local axis
             if (previewPosXaxis != null)
             {
@@ -249,9 +249,9 @@ namespace AdSecGH.Parameters
         {
             Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
             if (args.Material.Diffuse.R == defaultCol.R && args.Material.Diffuse.G == defaultCol.G && args.Material.Diffuse.B == defaultCol.B) // not selected
-                args.Pipeline.DrawMeshShaded(Value, AdSecGH.UI.Colour.FailureNormal);
+                args.Pipeline.DrawMeshShaded(Value, UI.Colour.FailureNormal);
             else
-                args.Pipeline.DrawMeshShaded(Value, AdSecGH.UI.Colour.FailureSelected);
+                args.Pipeline.DrawMeshShaded(Value, UI.Colour.FailureSelected);
             
         }
     }

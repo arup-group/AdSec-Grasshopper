@@ -120,20 +120,20 @@ namespace AdSecGH.UI
             }
         }
         // Colours for results
-        public static Grasshopper.GUI.Gradient.GH_Gradient Stress_Gradient(List<System.Drawing.Color> colours = null)
+        public static Grasshopper.GUI.Gradient.GH_Gradient Stress_Gradient(List<Color> colours = null)
         {
 
             Grasshopper.GUI.Gradient.GH_Gradient gH_Gradient = new Grasshopper.GUI.Gradient.GH_Gradient();
 
             if (colours.Count < 2 || colours == null)
             {
-                gH_Gradient.AddGrip(-1, System.Drawing.Color.FromArgb(0, 0, 206));
-                gH_Gradient.AddGrip(-0.666, System.Drawing.Color.FromArgb(0, 127, 229));
-                gH_Gradient.AddGrip(-0.333, System.Drawing.Color.FromArgb(90, 220, 186));
-                gH_Gradient.AddGrip(0, System.Drawing.Color.FromArgb(205, 254, 114));
-                gH_Gradient.AddGrip(0.333, System.Drawing.Color.FromArgb(255, 220, 71));
-                gH_Gradient.AddGrip(0.666, System.Drawing.Color.FromArgb(255, 127, 71));
-                gH_Gradient.AddGrip(1, System.Drawing.Color.FromArgb(205, 0, 71));
+                gH_Gradient.AddGrip(-1, Color.FromArgb(0, 0, 206));
+                gH_Gradient.AddGrip(-0.666, Color.FromArgb(0, 127, 229));
+                gH_Gradient.AddGrip(-0.333, Color.FromArgb(90, 220, 186));
+                gH_Gradient.AddGrip(0, Color.FromArgb(205, 254, 114));
+                gH_Gradient.AddGrip(0.333, Color.FromArgb(255, 220, 71));
+                gH_Gradient.AddGrip(0.666, Color.FromArgb(255, 127, 71));
+                gH_Gradient.AddGrip(1, Color.FromArgb(205, 0, 71));
             }
             else
             {
@@ -166,11 +166,11 @@ namespace AdSecGH.UI
         }
         public static Brush ClickedButtonColour
         {
-            get { return new SolidBrush(UI.Colour.WhiteOverlay(GsaDarkBlue, 0.32)); }
+            get { return new SolidBrush(WhiteOverlay(GsaDarkBlue, 0.32)); }
         }
         public static Brush HoverButtonColour
         {
-            get { return new SolidBrush(UI.Colour.WhiteOverlay(GsaDarkBlue, 0.16)); }
+            get { return new SolidBrush(WhiteOverlay(GsaDarkBlue, 0.16)); }
         }
         public static Brush InactiveButtonColour
         {

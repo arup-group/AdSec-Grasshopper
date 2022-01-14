@@ -34,7 +34,7 @@ namespace AdSecGH.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateDesignCode;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateDesignCode;
         #endregion
 
         #region Custom UI
@@ -44,7 +44,7 @@ namespace AdSecGH.Components
             if (first)
             {
                 if (designCodeGroups == null)
-                    designCodeGroups = AdSecGH.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
+                    designCodeGroups = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
 
                 List<string> tempList = new List<string>();
                 foreach (string dc in designCodeGroups)
@@ -68,7 +68,7 @@ namespace AdSecGH.Components
                 }
                 if (dropdownitems.Count == 1)
                 {
-                    designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+                    designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
                     // create string for selected item to use for type search while drilling
                     string typeString = selecteditems.Last();
@@ -79,7 +79,7 @@ namespace AdSecGH.Components
                         designCodeKVP.TryGetValue(typeString, out Type typ);
 
                         // update the KVP by reflecting the type
-                        designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+                        designCodeKVP = Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
 
                         // determine if we have reached the fields layer
                         if (designCodeKVP.Count > 1)
@@ -100,7 +100,7 @@ namespace AdSecGH.Components
                         {
                             // if kvp is empty we have reached the field level
                             // where we set the materials by reflecting the type
-                            designCodes = AdSecGH.Helpers.ReflectAdSecAPI.ReflectFields(typ);
+                            designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
                             // if kvp has values we add them to create a new dropdown list
                             dropdownitems.Add(designCodes.Keys.ToList());
                             // with first item being the selected
@@ -136,7 +136,7 @@ namespace AdSecGH.Components
                 }
                 
                 // get list of standard codes for the selected material
-                designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+                designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
                 
                 // create string for selected item to use for type search while drilling
                 int level = 0;
@@ -148,7 +148,7 @@ namespace AdSecGH.Components
                     designCodeKVP.TryGetValue(typeString, out Type typ);
 
                     // update the KVP by reflecting the type
-                    designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+                    designCodeKVP = Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
 
                     // determine if we have reached the fields layer
                     if (designCodeKVP.Count > 1)
@@ -186,7 +186,7 @@ namespace AdSecGH.Components
                     {
                         // if kvp is empty we have reached the field level
                         // where we set the materials by reflecting the type
-                        designCodes = AdSecGH.Helpers.ReflectAdSecAPI.ReflectFields(typ);
+                        designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
                         // if kvp has values we add them to create a new dropdown list
                         dropdownitems.Add(designCodes.Keys.ToList());
                         // with first item being the selected
@@ -208,7 +208,7 @@ namespace AdSecGH.Components
         private void UpdateUIFromSelectedItems()
         {
             // get list of standard codes for the selected material
-            designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+            designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
             // create string for selected item to use for type search while drilling
             int level = 0;
@@ -220,7 +220,7 @@ namespace AdSecGH.Components
                 designCodeKVP.TryGetValue(typeString, out Type typ);
 
                 // update the KVP by reflecting the type
-                designCodeKVP = AdSecGH.Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+                designCodeKVP = Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
 
                 // determine if we have reached the fields layer
                 if (designCodeKVP.Count > 1)
@@ -247,7 +247,7 @@ namespace AdSecGH.Components
                 {
                     // if kvp is empty we have reached the field level
                     // where we set the materials by reflecting the type
-                    designCodes = AdSecGH.Helpers.ReflectAdSecAPI.ReflectFields(typ);
+                    designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
                     // stop drilling
                     drill = false;
 
@@ -310,19 +310,19 @@ namespace AdSecGH.Components
             // create new material
             AdSecDesignCode dc = new AdSecDesignCode(selectedCode);
 
-            DA.SetData(0, new AdSecGH.Parameters.AdSecDesignCodeGoo(dc));
+            DA.SetData(0, new AdSecDesignCodeGoo(dc));
         }
 
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
 
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             UpdateUIFromSelectedItems();
             first = false;
             return base.Read(reader);

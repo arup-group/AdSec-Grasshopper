@@ -38,7 +38,7 @@ namespace AdSecGH.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateLoad;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateLoad;
         #endregion
 
         #region Custom UI
@@ -58,7 +58,7 @@ namespace AdSecGH.Components
                 dropdownitems.Add(Units.FilteredMomentUnits);
                 selecteditems.Add(momentUnit.ToString());
 
-                IQuantity force = new UnitsNet.Force(0, forceUnit);
+                IQuantity force = new Force(0, forceUnit);
                 
                 forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
                 momentUnitAbbreviation = Oasys.Units.Moment.GetAbbreviation(momentUnit);
@@ -161,13 +161,13 @@ namespace AdSecGH.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
 
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
             UpdateUIFromSelectedItems();
 
@@ -195,7 +195,7 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            IQuantity force = new UnitsNet.Force(0, forceUnit);
+            IQuantity force = new Force(0, forceUnit);
             forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
             momentUnitAbbreviation = Oasys.Units.Moment.GetAbbreviation(momentUnit);
             Params.Input[0].Name = "Fx [" + forceUnitAbbreviation + "]";

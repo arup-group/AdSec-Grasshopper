@@ -33,7 +33,7 @@ namespace AdSecGH.Parameters
         {
             m_value = point;
             this.m_SSpoint = IStressStrainPoint.Create(
-                new UnitsNet.Pressure(m_value.Y, Units.StressUnit), 
+                new Pressure(m_value.Y, Units.StressUnit), 
                 new Oasys.Units.Strain(m_value.X, Units.StrainUnit));
         }
         public AdSecStressStrainPointGoo(AdSecStressStrainPointGoo stressstrainPoint)
@@ -49,7 +49,7 @@ namespace AdSecGH.Parameters
                 m_SSpoint.Stress.As(Units.StressUnit),
                 0);
         }
-        public AdSecStressStrainPointGoo(UnitsNet.Pressure stress, Oasys.Units.Strain strain)
+        public AdSecStressStrainPointGoo(Pressure stress, Oasys.Units.Strain strain)
         {
             m_SSpoint = IStressStrainPoint.Create(stress, strain);
             m_value = new Point3d(
@@ -61,7 +61,7 @@ namespace AdSecGH.Parameters
         public static IStressStrainPoint CreateFromPoint3d(Point3d point)
         {
             return IStressStrainPoint.Create(
-                new UnitsNet.Pressure(point.Y, Units.StressUnit),
+                new Pressure(point.Y, Units.StressUnit),
                 new Oasys.Units.Strain(point.X, Units.StrainUnit)); 
         }
 
@@ -75,7 +75,7 @@ namespace AdSecGH.Parameters
         {
             IQuantity quantityStrain = new Oasys.Units.Strain(0, Units.StrainUnit);
             string unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
-            IQuantity quantityStress = new UnitsNet.Pressure(0, Units.StressUnit);
+            IQuantity quantityStress = new Pressure(0, Units.StressUnit);
             string unitStressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
             return "AdSec " + TypeName + " {"
                 + Math.Round(StressStrainPoint.Strain.As(Units.StrainUnit), 4) + unitStrainAbbreviation + ", "
@@ -148,7 +148,7 @@ namespace AdSecGH.Parameters
             if (typeof(TQ).IsAssignableFrom(typeof(IStressStrainPoint)))
             {
                 target = (TQ)(object) IStressStrainPoint.Create(
-                    new UnitsNet.Pressure(Value.Y, Units.StressUnit),
+                    new Pressure(Value.Y, Units.StressUnit),
                     new Oasys.Units.Strain(Value.X, Units.StrainUnit));
                 return true;
             }
@@ -205,7 +205,7 @@ namespace AdSecGH.Parameters
         {
             if (Value != null)
             {
-                args.Pipeline.DrawCircle(new Circle(Value, 0.5), AdSecGH.UI.Colour.OasysYellow, 1);
+                args.Pipeline.DrawCircle(new Circle(Value, 0.5), UI.Colour.OasysYellow, 1);
             }
         }
         public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }

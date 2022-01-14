@@ -34,7 +34,7 @@ namespace AdSecGH.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.Section;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.Section;
         #endregion
 
         #region Custom UI
@@ -43,7 +43,7 @@ namespace AdSecGH.Components
 
         #region Input and output
 
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Profile", "Pf", "AdSec Profile defining the Section solid boundary", GH_ParamAccess.item);
             pManager.AddGenericParameter("Material", "Mat", "AdSet Material for the section. The DesignCode of this material will be used for analysis", GH_ParamAccess.item);
@@ -55,7 +55,7 @@ namespace AdSecGH.Components
                 pManager[i].Optional = true;
         }
 
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Section", "Sec", "AdSec Section", GH_ParamAccess.item);
         }
@@ -77,7 +77,7 @@ namespace AdSecGH.Components
             }
 
             // 3 Subcomponents
-            Oasys.Collections.IList<Oasys.AdSec.ISubComponent> subComponents = Oasys.Collections.IList<Oasys.AdSec.ISubComponent>.Create();
+            Oasys.Collections.IList<ISubComponent> subComponents = Oasys.Collections.IList<ISubComponent>.Create();
             if (Params.Input[3].SourceCount > 0)
             {
                 subComponents = GetInput.SubComponents(this, DA, 3, true);

@@ -72,7 +72,7 @@ namespace AdSecGH.Parameters
 
         public AdSecSection(IProfile profile, Plane local, AdSecMaterial material,
             List<AdSecRebarGroup> reinforcement,
-            Oasys.Collections.IList<Oasys.AdSec.ISubComponent> subComponents)
+            Oasys.Collections.IList<ISubComponent> subComponents)
         {
             m_code = material.DesignCode.Duplicate().DesignCode;
             codeName = material.DesignCodeName;
@@ -260,9 +260,9 @@ namespace AdSecGH.Parameters
             {
                 if (local != Plane.WorldXY & local != Plane.WorldYZ & local != Plane.WorldZX)
                 {
-                    UnitsNet.Area area = this.m_section.Profile.Area();
+                    Area area = this.m_section.Profile.Area();
                     double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
-                    UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
+                    Length length = new Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
                     previewXaxis = new Line(local.Origin, local.XAxis, length.As(Units.LengthUnit));
                     previewYaxis = new Line(local.Origin, local.YAxis, length.As(Units.LengthUnit));
                     previewZaxis = new Line(local.Origin, local.ZAxis, length.As(Units.LengthUnit));
@@ -275,12 +275,12 @@ namespace AdSecGH.Parameters
             List<Curve> crvs = new List<Curve>();
             crvs.Add(profile.Value.ToPolylineCurve());
             crvs.AddRange(profile.VoidEdges.Select(x => x.ToPolylineCurve()));
-            return Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelAbsoluteTolerance).First();
+            return Brep.CreatePlanarBreps(crvs, RhinoDoc.ActiveDoc.ModelAbsoluteTolerance).First();
         }
         private void CreateCurvesFromLinkGroup(IPerimeterLinkGroup linkGroup, ref List<Curve> linkEdges, Plane local)
         {
             // transform to local plane
-            Transform mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
+            Transform mapToLocal = Transform.PlaneToPlane(Plane.WorldYZ, local);
             
             // get start point
             Point3d startPt = new Point3d(
@@ -363,7 +363,7 @@ namespace AdSecGH.Parameters
         private List<Brep> CreateBrepsFromSingleRebar(ISingleBars bars, Vector3d offset, ref List<Circle> edgeCurves, Plane local)
         {
             // transform to local plane
-            Rhino.Geometry.Transform mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
+            Transform mapToLocal = Transform.PlaneToPlane(Plane.WorldYZ, local);
             //offs.Transform(mapToLocal);
             List<Brep> rebarBreps = new List<Brep>();
             for (int i = 0; i < bars.Positions.Count; i++)
@@ -378,7 +378,7 @@ namespace AdSecGH.Parameters
                 Circle edgeCurve = new Circle(localCenter, bars.BarBundle.Diameter.As(Units.LengthUnit) / 2);
                 edgeCurves.Add(edgeCurve);
                 List<Curve> crvs = new List<Curve>() { edgeCurve.ToNurbsCurve() };
-                rebarBreps.Add(Brep.CreatePlanarBreps(crvs, Rhino.RhinoDoc.ActiveDoc.ModelRelativeTolerance).First());
+                rebarBreps.Add(Brep.CreatePlanarBreps(crvs, RhinoDoc.ActiveDoc.ModelRelativeTolerance).First());
             }
             return rebarBreps;
         }
@@ -615,19 +615,19 @@ namespace AdSecGH.Parameters
             Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
             if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
             {
-                args.Pipeline.DrawPolyline(Value.m_profileEdge, AdSecGH.UI.Colour.OasysBlue, 2);
+                args.Pipeline.DrawPolyline(Value.m_profileEdge, UI.Colour.OasysBlue, 2);
                 if (Value.m_profileVoidEdges != null)
                 {
                     foreach (Polyline crv in Value.m_profileVoidEdges)
                     {
-                        args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysBlue, 1);
+                        args.Pipeline.DrawPolyline(crv, UI.Colour.OasysBlue, 1);
                     }
                 }
                 if (Value.m_subEdges != null)
                 {
                     foreach (Polyline crv in Value.m_subEdges)
                     {
-                        args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysBlue, 1);
+                        args.Pipeline.DrawPolyline(crv, UI.Colour.OasysBlue, 1);
                     }
                 }
                 if (Value.m_subVoidEdges != null)
@@ -636,7 +636,7 @@ namespace AdSecGH.Parameters
                     {
                         foreach (Polyline crv in crvs)
                         {
-                            args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysBlue, 1);
+                            args.Pipeline.DrawPolyline(crv, UI.Colour.OasysBlue, 1);
                         }
                     }
                 }
@@ -657,19 +657,19 @@ namespace AdSecGH.Parameters
             }
             else // selected
             {
-                args.Pipeline.DrawPolyline(Value.m_profileEdge, AdSecGH.UI.Colour.OasysYellow, 3);
+                args.Pipeline.DrawPolyline(Value.m_profileEdge, UI.Colour.OasysYellow, 3);
                 if (Value.m_profileVoidEdges != null)
                 {
                     foreach (Polyline crv in Value.m_profileVoidEdges)
                     {
-                        args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysYellow, 2);
+                        args.Pipeline.DrawPolyline(crv, UI.Colour.OasysYellow, 2);
                     }
                 }
                 if (Value.m_subEdges != null)
                 {
                     foreach (Polyline crv in Value.m_subEdges)
                     {
-                        args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysYellow, 2);
+                        args.Pipeline.DrawPolyline(crv, UI.Colour.OasysYellow, 2);
                     }
                 }
                 if (Value.m_subVoidEdges != null)
@@ -678,7 +678,7 @@ namespace AdSecGH.Parameters
                     {
                         foreach (Polyline crv in crvs)
                         {
-                            args.Pipeline.DrawPolyline(crv, AdSecGH.UI.Colour.OasysYellow, 2);
+                            args.Pipeline.DrawPolyline(crv, UI.Colour.OasysYellow, 2);
                         }
                     }
                 }
@@ -686,23 +686,23 @@ namespace AdSecGH.Parameters
                 {
                     foreach (Circle crv in Value.m_rebarEdges)
                     {
-                        args.Pipeline.DrawCircle(crv, AdSecGH.UI.Colour.UILightGrey, 2);
+                        args.Pipeline.DrawCircle(crv, UI.Colour.UILightGrey, 2);
                     }
                 }
                 if (Value.m_linkEdges != null)
                 {
                     foreach (Curve crv in Value.m_linkEdges)
                     {
-                        args.Pipeline.DrawCurve(crv, AdSecGH.UI.Colour.UILightGrey, 2);
+                        args.Pipeline.DrawCurve(crv, UI.Colour.UILightGrey, 2);
                     }
                 }
             }
             // local axis
             if (Value.previewXaxis != null)
             {
-                args.Pipeline.DrawLine(Value.previewZaxis, System.Drawing.Color.FromArgb(255, 244, 96, 96), 1);
-                args.Pipeline.DrawLine(Value.previewXaxis, System.Drawing.Color.FromArgb(255, 96, 244, 96), 1);
-                args.Pipeline.DrawLine(Value.previewYaxis, System.Drawing.Color.FromArgb(255, 96, 96, 234), 1);
+                args.Pipeline.DrawLine(Value.previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
+                args.Pipeline.DrawLine(Value.previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
+                args.Pipeline.DrawLine(Value.previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
             }
         }
         #endregion
@@ -714,7 +714,7 @@ namespace AdSecGH.Parameters
     public class AdSecSectionParameter : GH_PersistentGeometryParam<AdSecSectionGoo>, IGH_PreviewObject
     {
         public AdSecSectionParameter()
-          : base(new GH_InstanceDescription("Section", "Sec", "Maintains a collection of AdSec Section data.", AdSecGH.Components.Ribbon.CategoryName.Name(), AdSecGH.Components.Ribbon.SubCategoryName.Cat9()))
+          : base(new GH_InstanceDescription("Section", "Sec", "Maintains a collection of AdSec Section data.", Components.Ribbon.CategoryName.Name(), Components.Ribbon.SubCategoryName.Cat9()))
         {
         }
 
@@ -722,7 +722,7 @@ namespace AdSecGH.Parameters
 
         public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.SectionParam;
+        protected override Bitmap Icon => Properties.Resources.SectionParam;
 
         //We do not allow users to pick parameter, 
         //therefore the following 4 methods disable all this ui.

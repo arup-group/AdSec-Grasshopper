@@ -43,7 +43,7 @@ namespace AdSecGH.Parameters
                 0);
 
             // remap to local coordinate system
-            Rhino.Geometry.Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
+            Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
             point.Transform(mapFromLocal);
             m_point = point;
 
@@ -101,7 +101,7 @@ namespace AdSecGH.Parameters
         }
         public override string ToString()
         {
-            IQuantity length = new UnitsNet.Length(0, Units.LengthUnit);
+            IQuantity length = new Length(0, Units.LengthUnit);
             string unitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
             return "AdSec " + TypeName + " {"
                 + "Y:" + Math.Round(this.Value.Position.Y.As(Units.LengthUnit), 4) + unitAbbreviation + ", "
@@ -153,11 +153,11 @@ namespace AdSecGH.Parameters
         {
             if (m_point.IsValid)
             {
-                Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+                Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
                 if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
-                    args.Pipeline.DrawLine(m_line, AdSecGH.UI.Colour.OasysBlue, 5);
+                    args.Pipeline.DrawLine(m_line, UI.Colour.OasysBlue, 5);
                 else
-                    args.Pipeline.DrawLine(m_line, AdSecGH.UI.Colour.OasysYellow, 7);
+                    args.Pipeline.DrawLine(m_line, UI.Colour.OasysYellow, 7);
             }
         }
 

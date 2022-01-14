@@ -67,8 +67,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncComponent\GH_AsyncComponent.cs" />
-    <Compile Include="AsyncComponent\WorkerInstance.cs" />
     <Compile Include="Components\0_AdSec\SectionSVG.cs" />
     <Compile Include="Components\0_AdSec\SaveAdSec.cs" />
     <Compile Include="Components\0_AdSec\CreateUnitNumber.cs" />
@@ -96,12 +94,11 @@
     <Compile Include="Components\3_Loads\CreateDeformation.cs" />
     <Compile Include="Components\3_Loads\CreatePreLoad.cs" />
     <Compile Include="Components\3_Loads\CreateLoad.cs" />
-    <Compile Include="Components\4_Solution\_AnalyseSection.cs" />
-    <Compile Include="Components\4_Solution\AnalyseSlow.cs" />
+    <Compile Include="Components\4_Solution\Analyse.cs" />
     <Compile Include="Components\5_Results\NM-diagram.cs" />
     <Compile Include="Components\2_Section\FlattenRebar.cs" />
-    <Compile Include="Components\5_Results\ResultsRebarStressStrain.cs" />
-    <Compile Include="Components\5_Results\ResultsStrain.cs" />
+    <Compile Include="Components\5_Results\RebarStressStrain.cs" />
+    <Compile Include="Components\5_Results\ConcreteStressStrain.cs" />
     <Compile Include="Components\5_Results\ResultsSLS.cs" />
     <Compile Include="Components\5_Results\ResultsULS.cs" />
     <Compile Include="AdSecGHInfo.cs" />
@@ -318,6 +315,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\FlattenRebar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\StressStrainConcrete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\StressStrainRebar.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

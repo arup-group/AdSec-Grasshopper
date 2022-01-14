@@ -155,7 +155,7 @@ namespace AdSecGH.Parameters
             string momentAxis = "Moment [" + Oasys.Units.Moment.GetAbbreviation(Units.MomentUnit) + "]";
             string myyAxis = "Myy [" + Oasys.Units.Moment.GetAbbreviation(Units.MomentUnit) + "]";
             string mzzAxis = "Mzz [" + Oasys.Units.Moment.GetAbbreviation(Units.MomentUnit) + "]";
-            IQuantity force = new UnitsNet.Force(0, Units.ForceUnit);
+            IQuantity force = new Force(0, Units.ForceUnit);
             string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
             string forceAxis = "Axial force [" + forceUnitAbbreviation + "]";
 
@@ -341,7 +341,7 @@ namespace AdSecGH.Parameters
             if (Value != null)
             {
                 // draw diagram polyline
-                if (args.Color == System.Drawing.Color.FromArgb(255, 150, 0, 0)) //Grasshopper.Instances.Settings.GetValue("DefaultPreviewColourSelected", System.Drawing.Color.White))
+                if (args.Color == Color.FromArgb(255, 150, 0, 0)) //Grasshopper.Instances.Settings.GetValue("DefaultPreviewColourSelected", System.Drawing.Color.White))
                     args.Pipeline.DrawPolyline(Value, UI.Colour.OasysBlue, 2);
                 else
                     args.Pipeline.DrawPolyline(Value, UI.Colour.OasysYellow, 2);

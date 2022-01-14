@@ -42,7 +42,7 @@ namespace AdSecGH.Parameters
                 load.ZZ.As(Units.MomentUnit),
                 load.YY.As(Units.MomentUnit),
                 load.X.As(Units.ForceUnit));
-            Rhino.Geometry.Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
+            Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
             point.Transform(mapFromLocal);
             m_point = point;
         }
@@ -81,7 +81,7 @@ namespace AdSecGH.Parameters
         {
             IQuantity quantityMoment = new Oasys.Units.Moment(0, Units.MomentUnit);
             string unitMomentAbbreviation = string.Concat(quantityMoment.ToString().Where(char.IsLetter));
-            IQuantity quantityForce = new UnitsNet.Force(0, Units.ForceUnit);
+            IQuantity quantityForce = new Force(0, Units.ForceUnit);
             string unitforceAbbreviation = string.Concat(quantityForce.ToString().Where(char.IsLetter));
             return "AdSec " + TypeName + " {"
                 + Math.Round(this.Value.X.As(Units.ForceUnit), 4) + unitforceAbbreviation + ", "
@@ -125,7 +125,7 @@ namespace AdSecGH.Parameters
             {
                 Point3d point = (Point3d)source;
                 ILoad load = ILoad.Create(
-                    new UnitsNet.Force(point.X, Units.ForceUnit),
+                    new Force(point.X, Units.ForceUnit),
                     new Oasys.Units.Moment(point.Y, Units.MomentUnit),
                     new Oasys.Units.Moment(point.Z, Units.MomentUnit));
                 AdSecLoadGoo temp = new AdSecLoadGoo(load);
@@ -138,7 +138,7 @@ namespace AdSecGH.Parameters
             {
                 Point3d point = ptGoo.Value;
                 ILoad load = ILoad.Create(
-                    new UnitsNet.Force(point.X, Units.ForceUnit),
+                    new Force(point.X, Units.ForceUnit),
                     new Oasys.Units.Moment(point.Y, Units.MomentUnit),
                     new Oasys.Units.Moment(point.Z, Units.MomentUnit));
                 AdSecLoadGoo temp = new AdSecLoadGoo(load);
@@ -151,7 +151,7 @@ namespace AdSecGH.Parameters
             {
                 Point3d point = pt;
                 ILoad load = ILoad.Create(
-                    new UnitsNet.Force(point.X, Units.ForceUnit),
+                    new Force(point.X, Units.ForceUnit),
                     new Oasys.Units.Moment(point.Y, Units.MomentUnit),
                     new Oasys.Units.Moment(point.Z, Units.MomentUnit));
                 AdSecLoadGoo temp = new AdSecLoadGoo(load);
@@ -165,11 +165,11 @@ namespace AdSecGH.Parameters
         {
             if (m_point.IsValid)
             {
-                Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+                Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
                 if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
-                    args.Pipeline.DrawPoint(m_point, PointStyle.X, 7, AdSecGH.UI.Colour.ArupRed);
+                    args.Pipeline.DrawPoint(m_point, PointStyle.X, 7, UI.Colour.ArupRed);
                 else
-                    args.Pipeline.DrawPoint(m_point, PointStyle.X, 8, AdSecGH.UI.Colour.UILightGrey);
+                    args.Pipeline.DrawPoint(m_point, PointStyle.X, 8, UI.Colour.UILightGrey);
             }
         }
 

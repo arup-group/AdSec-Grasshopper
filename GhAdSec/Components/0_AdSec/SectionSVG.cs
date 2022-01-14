@@ -34,7 +34,7 @@ namespace AdSecGH.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.SVG;
+        protected override Bitmap Icon => Properties.Resources.SVG;
         #endregion
 
         #region Custom UI
@@ -115,7 +115,7 @@ namespace AdSecGH.Components
         bool usersetFileName = false;
         static string imageSVG;
         bool canOpen = false;
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Section", "Sec", "AdSec Section to save", GH_ParamAccess.item);
             pManager.AddBooleanParameter("Save?", "Save", "Input 'True' to save or use button", GH_ParamAccess.item, false);
@@ -123,7 +123,7 @@ namespace AdSecGH.Components
             pManager[1].Optional = true;
             pManager[2].Optional = true;
         }
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddTextParameter("SVG string", "SVG", "Text string representing the SVG file", GH_ParamAccess.item);
         }

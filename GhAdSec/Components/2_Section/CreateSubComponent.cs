@@ -34,7 +34,7 @@ namespace AdSecGH.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.SubComponent;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.SubComponent;
         #endregion
 
         #region Custom UI
@@ -43,10 +43,10 @@ namespace AdSecGH.Components
 
         #region Input and output
 
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Section", "Sec", "AdSec Section to create Subcomponent from", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Offset", "Off", "[Optional] Section offset (Vertex Point)." + System.Environment.NewLine + 
+            pManager.AddGenericParameter("Offset", "Off", "[Optional] Section offset (Vertex Point)." + Environment.NewLine + 
                 "Offset is applied between origins of containing section and sub-component. The offset of the profile is in " +
                 "the containing section's Profile Coordinate System. Any rotation applied to the containing section's profile " +
                 "will be applied to its sub-components. Sub-components can also have an additional rotation for their profiles.", GH_ParamAccess.item);
@@ -56,7 +56,7 @@ namespace AdSecGH.Components
                 pManager[i].Optional = true;
         }
 
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("SubComponent", "Sub", "AdSet Subcomponent", GH_ParamAccess.item);
         }

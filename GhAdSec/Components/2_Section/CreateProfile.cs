@@ -47,7 +47,7 @@ namespace AdSecGH.Components
             return help;
         }
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateProfile;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateProfile;
         #endregion
 
         #region Custom UI
@@ -56,7 +56,7 @@ namespace AdSecGH.Components
         {
             if (first)
             {
-                Dictionary<string, Type> profileTypesInitial = AdSecGH.Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.Profiles");
+                Dictionary<string, Type> profileTypesInitial = ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.Profiles");
                 profileTypes = new Dictionary<string, Type>();
                 foreach (KeyValuePair<string, Type> kvp in profileTypesInitial)
                 {
@@ -100,7 +100,7 @@ namespace AdSecGH.Components
                 dropdownitems.Add(Units.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
-                IQuantity quantity = new UnitsNet.Length(0, lengthUnit);
+                IQuantity quantity = new Length(0, lengthUnit);
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
             }
 
@@ -140,19 +140,19 @@ namespace AdSecGH.Components
                     catalogueIndex = -1;
                     
                     if (cataloguedata == null)
-                        cataloguedata = SqlReader.GetCataloguesDataFromSQLite(Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"));
+                        cataloguedata = SqlReader.GetCataloguesDataFromSQLite(Path.Combine(AddReferencePriority.PluginPath, "sectlib.db3"));
                     catalogueNames = cataloguedata.Item1;
                     catalogueNumbers = cataloguedata.Item2;
 
                     // set types to all
                     typeIndex = -1;
                     // update typelist with all catalogues
-                    typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                    typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
                     typeNames = typedata.Item1;
                     typeNumbers = typedata.Item2;
 
                     // update section list to all types
-                    sectionList = SqlReader.GetSectionsDataFromSQLite(typeNumbers, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                    sectionList = SqlReader.GetSectionsDataFromSQLite(typeNumbers, Path.Combine(AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
 
                     // filter by search pattern
                     filteredlist = new List<string>();
@@ -208,14 +208,14 @@ namespace AdSecGH.Components
                     selecteditems[1] = catalogueNames[j];
 
                     // update typelist with selected input catalogue
-                    typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                    typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
                     typeNames = typedata.Item1;
                     typeNumbers = typedata.Item2;
 
                     // update section list from new types (all new types in catalogue)
                     List<int> types = typeNumbers.ToList();
                     types.RemoveAt(0); // remove -1 from beginning of list
-                    sectionList = SqlReader.GetSectionsDataFromSQLite(types, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                    sectionList = SqlReader.GetSectionsDataFromSQLite(types, Path.Combine(AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
 
                     // filter by search pattern
                     filteredlist = new List<string>();
@@ -273,7 +273,7 @@ namespace AdSecGH.Components
 
 
                     // section list with selected types (only types in selected type)
-                    sectionList = SqlReader.GetSectionsDataFromSQLite(types, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                    sectionList = SqlReader.GetSectionsDataFromSQLite(types, Path.Combine(AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
 
                     // filter by search pattern
                     filteredlist = new List<string>();
@@ -369,13 +369,13 @@ namespace AdSecGH.Components
                     "Profile type", "Catalogue", "Type", "Profile"
                 });
                 if (cataloguedata == null)
-                    cataloguedata = SqlReader.GetCataloguesDataFromSQLite(Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"));
+                    cataloguedata = SqlReader.GetCataloguesDataFromSQLite(Path.Combine(AddReferencePriority.PluginPath, "sectlib.db3"));
                 catalogueNames = cataloguedata.Item1;
                 catalogueNumbers = cataloguedata.Item2;
 
                 if (typedata == null)
-                    typedata = SqlReader.GetTypesDataFromSQLite(-1, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), false);
-                typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(AdSecGH.AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
+                    typedata = SqlReader.GetTypesDataFromSQLite(-1, Path.Combine(AddReferencePriority.PluginPath, "sectlib.db3"), false);
+                typedata = SqlReader.GetTypesDataFromSQLite(catalogueIndex, Path.Combine(AddReferencePriority.PluginPath, "sectlib.db3"), inclSS);
                 typeNames = typedata.Item1;
                 typeNumbers = typedata.Item2;
 

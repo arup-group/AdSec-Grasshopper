@@ -34,7 +34,7 @@ namespace AdSecGH.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.EditMaterial;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.EditMaterial;
         #endregion
 
         #region Custom UI
@@ -43,7 +43,7 @@ namespace AdSecGH.Components
 
         #region Input and output
 
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Material", "Mat", "AdSet Material to Edit or get information from", GH_ParamAccess.item);
             pManager.AddGenericParameter("DesignCode", "Code", "[Optional] Overwrite the Material's DesignCode", GH_ParamAccess.item);
@@ -58,7 +58,7 @@ namespace AdSecGH.Components
                 pManager[i].Optional = true;
         }
 
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Material", "Mat", "Modified AdSec Material", GH_ParamAccess.item);
             pManager.AddGenericParameter("DesignCode", "Code", "DesignCode", GH_ParamAccess.item);
@@ -98,7 +98,7 @@ namespace AdSecGH.Components
                 else
                 {
                     // rebuild from existing material
-                    Tuple<Curve, List<Point3d>> ulsComp = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Compression, true);
+                    Tuple<Curve, List<Point3d>> ulsComp = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Compression, true);
                     ulsCompCrv = new AdSecStressStrainCurveGoo(ulsComp.Item1, editMat.Material.Strength.Compression,
                         AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsComp.Item2);
                 }
@@ -114,7 +114,7 @@ namespace AdSecGH.Components
                 else
                 {
                     // rebuild from existing material
-                    Tuple<Curve, List<Point3d>> ulsTens = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Tension, false);
+                    Tuple<Curve, List<Point3d>> ulsTens = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Tension, false);
                     ulsTensCrv = new AdSecStressStrainCurveGoo(ulsTens.Item1, editMat.Material.Strength.Tension,
                         AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsTens.Item2);
                 }
@@ -130,7 +130,7 @@ namespace AdSecGH.Components
                 else
                 {
                     // rebuild from existing material
-                    Tuple<Curve, List<Point3d>> slsComp = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Compression, true);
+                    Tuple<Curve, List<Point3d>> slsComp = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Compression, true);
                     slsCompCrv = new AdSecStressStrainCurveGoo(slsComp.Item1, editMat.Material.Serviceability.Compression,
                         AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsComp.Item2);
                 }
@@ -146,7 +146,7 @@ namespace AdSecGH.Components
                 else
                 {
                     // rebuild from existing material
-                    Tuple<Curve, List<Point3d>> slsTens = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Tension, false);
+                    Tuple<Curve, List<Point3d>> slsTens = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Tension, false);
                     slsTensCrv = new AdSecStressStrainCurveGoo(slsTens.Item1, editMat.Material.Serviceability.Tension,
                         AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsTens.Item2);
                 }

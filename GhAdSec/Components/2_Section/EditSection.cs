@@ -34,7 +34,7 @@ namespace AdSecGH.Components
 
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.EditSection;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.EditSection;
         #endregion
 
         #region Custom UI
@@ -43,7 +43,7 @@ namespace AdSecGH.Components
 
         #region Input and output
 
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Section", "Sec", "AdSec Section to edit or get information from", GH_ParamAccess.item);
             pManager.AddGenericParameter("Profile", "Pf", "[Optional] Edit the Profile defining the Section solid boundary", GH_ParamAccess.item);
@@ -57,7 +57,7 @@ namespace AdSecGH.Components
                 pManager[i].Optional = true;
         }
 
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Section", "Sec", "Edited AdSec Section", GH_ParamAccess.item);
             pManager.AddGenericParameter("Profile", "Pf", "Profile defining the Section solid boundary", GH_ParamAccess.item);
@@ -134,7 +134,7 @@ namespace AdSecGH.Components
             DA.SetDataList(4, out_rebars);
 
             // 5 Subcomponents
-            Oasys.Collections.IList<Oasys.AdSec.ISubComponent> subComponents = Oasys.Collections.IList<Oasys.AdSec.ISubComponent>.Create();
+            Oasys.Collections.IList<ISubComponent> subComponents = Oasys.Collections.IList<ISubComponent>.Create();
             if (Params.Input[5].SourceCount > 0)
             {
                 subComponents = GetInput.SubComponents(this, DA, 5, true);

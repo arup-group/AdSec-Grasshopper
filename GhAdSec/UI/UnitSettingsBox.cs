@@ -1,4 +1,5 @@
-﻿using Oasys.Units;
+﻿using Grasshopper.Kernel;
+using Oasys.Units;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -101,11 +102,9 @@ namespace AdSecGH.UI
 
         private void UnitSettingsBox_Load(object sender, EventArgs e)
         {
-
         }
         private void cancelButton_Click(object sender, EventArgs e)
         {
-            
             this.Close();
         }
 
@@ -113,6 +112,12 @@ namespace AdSecGH.UI
         {
             SetUnits();
             this.Close();
+            // force recalculation of all open grasshopper documents
+            GH_DocumentServer documents = Grasshopper.Instances.DocumentServer;
+            foreach (GH_Document doc in documents)
+            {
+                doc.NewSolution(true);
+            }
         }
 
         private void comboBoxLength_SelectedIndexChanged(object sender, EventArgs e)

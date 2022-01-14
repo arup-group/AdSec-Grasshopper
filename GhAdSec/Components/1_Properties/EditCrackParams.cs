@@ -34,7 +34,7 @@ namespace AdSecGH.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.EditCrackCalcParams;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.EditCrackCalcParams;
         #endregion
 
         #region Custom UI
@@ -43,9 +43,9 @@ namespace AdSecGH.Components
 
         #region Input and output
 
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            IQuantity quantity = new UnitsNet.Pressure(0, Units.StressUnit);
+            IQuantity quantity = new Pressure(0, Units.StressUnit);
             string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
 
             pManager.AddGenericParameter("CrackCalcParams", "CCP", "AdSec ConcreteCrackCalculationParameters", GH_ParamAccess.item);
@@ -75,9 +75,9 @@ namespace AdSecGH.Components
             if (concreteCrack != null && concreteCrack.ConcreteCrackCalculationParameters != null)
             {
                 // #### get the remaining inputs ####
-                UnitsNet.Pressure e = concreteCrack.Value.ElasticModulus;
-                UnitsNet.Pressure fck = concreteCrack.Value.CharacteristicCompressiveStrength;
-                UnitsNet.Pressure ft = concreteCrack.Value.CharacteristicTensileStrength;
+                Pressure e = concreteCrack.Value.ElasticModulus;
+                Pressure fck = concreteCrack.Value.CharacteristicCompressiveStrength;
+                Pressure ft = concreteCrack.Value.CharacteristicTensileStrength;
                 bool reCreate = false;
 
                 // 1 Elastic modulus
@@ -122,9 +122,9 @@ namespace AdSecGH.Components
 
                 // #### set outputs ####
                 DA.SetData(0, concreteCrack);
-                DA.SetData(1, new GH_UnitNumber(new UnitsNet.Pressure(e.As(Units.StressUnit), Units.StressUnit)));
-                DA.SetData(2, new GH_UnitNumber(new UnitsNet.Pressure(fck.As(Units.StressUnit), Units.StressUnit)));
-                DA.SetData(3, new GH_UnitNumber(new UnitsNet.Pressure(ft.As(Units.StressUnit), Units.StressUnit)));
+                DA.SetData(1, new GH_UnitNumber(new Pressure(e.As(Units.StressUnit), Units.StressUnit)));
+                DA.SetData(2, new GH_UnitNumber(new Pressure(fck.As(Units.StressUnit), Units.StressUnit)));
+                DA.SetData(3, new GH_UnitNumber(new Pressure(ft.As(Units.StressUnit), Units.StressUnit)));
 
             }
             else

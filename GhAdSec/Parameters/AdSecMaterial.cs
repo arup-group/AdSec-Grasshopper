@@ -82,19 +82,19 @@ namespace AdSecGH.Parameters
                 m_materialGradeName = materialGradeName;
 
             // StressStrain ULS Compression
-            Tuple<Curve, List<Point3d>> ulsComp = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Compression, true);
+            Tuple<Curve, List<Point3d>> ulsComp = AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Compression, true);
             AdSecStressStrainCurveGoo ulsCompCrv = new AdSecStressStrainCurveGoo(ulsComp.Item1, material.Strength.Compression,
                 AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsComp.Item2);
             // StressStrain ULS Tension
-            Tuple<Curve, List<Point3d>> ulsTens = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Tension, false);
+            Tuple<Curve, List<Point3d>> ulsTens = AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Tension, false);
             AdSecStressStrainCurveGoo ulsTensCrv = new AdSecStressStrainCurveGoo(ulsTens.Item1, material.Strength.Tension,
                 AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsTens.Item2);
             // StressStrain SLS Compression
-            Tuple<Curve, List<Point3d>> slsComp = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Compression, true);
+            Tuple<Curve, List<Point3d>> slsComp = AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Compression, true);
             AdSecStressStrainCurveGoo slsCompCrv = new AdSecStressStrainCurveGoo(slsComp.Item1, material.Serviceability.Compression,
                 AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsComp.Item2);
             // StressStrain SLS Tension
-            Tuple<Curve, List<Point3d>> slsTens = AdSecGH.Parameters.AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Tension, false);
+            Tuple<Curve, List<Point3d>> slsTens = AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Tension, false);
             AdSecStressStrainCurveGoo slsTensCrv = new AdSecStressStrainCurveGoo(slsTens.Item1, material.Serviceability.Tension,
                 AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsTens.Item2);
             // combine compression and tension
@@ -319,7 +319,7 @@ namespace AdSecGH.Parameters
     public class AdSecMaterialParameter : GH_PersistentParam<AdSecMaterialGoo>
     {
         public AdSecMaterialParameter()
-          : base(new GH_InstanceDescription("Material", "Mat", "AdSec Material Parameter", AdSecGH.Components.Ribbon.CategoryName.Name(), AdSecGH.Components.Ribbon.SubCategoryName.Cat9()))
+          : base(new GH_InstanceDescription("Material", "Mat", "AdSec Material Parameter", Components.Ribbon.CategoryName.Name(), Components.Ribbon.SubCategoryName.Cat9()))
         {
         }
 
@@ -327,7 +327,7 @@ namespace AdSecGH.Parameters
 
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.MaterialParam;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.MaterialParam;
 
         protected override GH_GetterResult Prompt_Plural(ref List<AdSecMaterialGoo> values)
         {

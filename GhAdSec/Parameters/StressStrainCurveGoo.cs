@@ -329,10 +329,10 @@ namespace AdSecGH.Parameters
         {
             if (Value != null)
             {
-                args.Pipeline.DrawCurve(Value, AdSecGH.UI.Colour.OasysBlue, 2);
+                args.Pipeline.DrawCurve(Value, UI.Colour.OasysBlue, 2);
                 foreach (Point3d pt in m_pts)
                 {
-                    args.Pipeline.DrawCircle(new Circle(pt, 0.5), AdSecGH.UI.Colour.OasysYellow, 1);
+                    args.Pipeline.DrawCircle(new Circle(pt, 0.5), UI.Colour.OasysYellow, 1);
                 }
             }
         }

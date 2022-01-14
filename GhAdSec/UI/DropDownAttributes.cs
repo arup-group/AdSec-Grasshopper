@@ -71,11 +71,11 @@ namespace AdSecGH.UI
         {
             get
             {
-                float sp = UI.ComponentUI.MaxTextWidth(spacerTxts, GH_FontServer.Standard);
+                float sp = ComponentUI.MaxTextWidth(spacerTxts, GH_FontServer.Standard);
                 float bt = 0;
                 for (int i = 0; i < dropdownlists.Count; i++)
                 {
-                    float tbt = UI.ComponentUI.MaxTextWidth(dropdownlists[i], new Font(GH_FontServer.FamilyStandard, 8));
+                    float tbt = ComponentUI.MaxTextWidth(dropdownlists[i], new Font(GH_FontServer.FamilyStandard, 8));
                     if (tbt > bt)
                         bt = tbt;
                 }
@@ -250,14 +250,14 @@ namespace AdSecGH.UI
         }
 
 
-        protected override void Render(GH_Canvas canvas, System.Drawing.Graphics graphics, GH_CanvasChannel channel)
+        protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
         {
             base.Render(canvas, graphics, channel);
 
             if (channel == GH_CanvasChannel.Objects)
             {
-                Pen spacer = new Pen(UI.Colour.SpacerColour);
-                Pen pen = new Pen(UI.Colour.GsaDarkBlue)
+                Pen spacer = new Pen(Colour.SpacerColour);
+                Pen pen = new Pen(Colour.GsaDarkBlue)
                 {
                     Width = 0.5f
                 };
@@ -271,7 +271,7 @@ namespace AdSecGH.UI
                     //Draw divider line
                     if (spacerTxts[i] != "")
                     {
-                        graphics.DrawString(spacerTxts[i], sml, UI.Colour.AnnotationTextDark, SpacerBounds[i], GH_TextRenderingConstants.CenterCenter);
+                        graphics.DrawString(spacerTxts[i], sml, Colour.AnnotationTextDark, SpacerBounds[i], GH_TextRenderingConstants.CenterCenter);
                         graphics.DrawLine(spacer, SpacerBounds[i].X, SpacerBounds[i].Y + SpacerBounds[i].Height / 2, SpacerBounds[i].X + (SpacerBounds[i].Width - GH_FontServer.StringWidth(spacerTxts[i], sml)) / 2 - 4, SpacerBounds[i].Y + SpacerBounds[i].Height / 2);
                         graphics.DrawLine(spacer, SpacerBounds[i].X + (SpacerBounds[i].Width - GH_FontServer.StringWidth(spacerTxts[i], sml)) / 2 + GH_FontServer.StringWidth(spacerTxts[i], sml) + 4, SpacerBounds[i].Y + SpacerBounds[i].Height / 2, SpacerBounds[i].X + SpacerBounds[i].Width, SpacerBounds[i].Y + SpacerBounds[i].Height / 2);
                     }
@@ -281,19 +281,19 @@ namespace AdSecGH.UI
                     Font font = new Font(GH_FontServer.FamilyStandard, 7);
                     // adjust fontsize to high resolution displays
                     font = new Font(font.FontFamily, font.Size / GH_GraphicsUtil.UiScale, FontStyle.Regular);
-                    Brush fontColour = UI.Colour.AnnotationTextDark;
+                    Brush fontColour = Colour.AnnotationTextDark;
                     if (initialTxts != null)
                     {
                         if (displayTexts[i] == initialTxts[i])
                         {
-                            pen = new Pen(UI.Colour.BorderColour);
+                            pen = new Pen(Colour.BorderColour);
                             font = sml;
                             fontColour = Brushes.Gray;
                         }
                     }
 
                     // background
-                    Brush background = new SolidBrush(UI.Colour.UILightGrey);
+                    Brush background = new SolidBrush(Colour.UILightGrey);
                     // background
                     graphics.FillRectangle(background, BorderBound[i]);
                     // border
@@ -301,17 +301,17 @@ namespace AdSecGH.UI
                     // text
                     graphics.DrawString(displayTexts[i], font, fontColour, TextBound[i], GH_TextRenderingConstants.NearCenter);
                     // draw dropdown arrow
-                    ButtonsUI.DropDownArrow.DrawDropDownButton(graphics, new PointF(ButtonBound[i].X + ButtonBound[i].Width / 2, ButtonBound[i].Y + ButtonBound[i].Height / 2), UI.Colour.GsaDarkBlue, 15);
+                    ButtonsUI.DropDownArrow.DrawDropDownButton(graphics, new PointF(ButtonBound[i].X + ButtonBound[i].Width / 2, ButtonBound[i].Y + ButtonBound[i].Height / 2), Colour.GsaDarkBlue, 15);
 
                     // draw dropdown list
                     font = new Font(GH_FontServer.FamilyStandard, 7);
                     // adjust fontsize to high resolution displays
                     font = new Font(font.FontFamily, font.Size / GH_GraphicsUtil.UiScale, FontStyle.Regular);
-                    fontColour = UI.Colour.AnnotationTextDark;
+                    fontColour = Colour.AnnotationTextDark;
                     if (unfolded[i])
                     {
                         Pen penborder = new Pen(Brushes.Gray);
-                        Brush dropdownbackground = new SolidBrush(UI.Colour.UILightGrey);
+                        Brush dropdownbackground = new SolidBrush(Colour.UILightGrey);
                         penborder.Width = 0.3f;
                         for (int j = 0; j < dropdownBounds[i].Count; j++)
                         {
@@ -368,7 +368,7 @@ namespace AdSecGH.UI
         }
         public override GH_ObjectResponse RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 GH_Component comp = Owner as GH_Component;
                 if (drag)
@@ -383,7 +383,7 @@ namespace AdSecGH.UI
 
                 for (int i = 0; i < dropdownlists.Count; i++)
                 {
-                    System.Drawing.RectangleF rec = BorderBound[i];
+                    RectangleF rec = BorderBound[i];
                     if (rec.Contains(e.CanvasLocation))
                     {
                         unfolded[i] = !unfolded[i];
@@ -400,12 +400,12 @@ namespace AdSecGH.UI
 
                     if (unfolded[i])
                     {
-                        System.Drawing.RectangleF rec2 = dropdownBound[i];
+                        RectangleF rec2 = dropdownBound[i];
                         if (rec2.Contains(e.CanvasLocation))
                         {
                             for (int j = 0; j < dropdownBounds[i].Count; j++)
                             {
-                                System.Drawing.RectangleF rec3 = dropdownBounds[i][j];
+                                RectangleF rec3 = dropdownBounds[i][j];
                                 if (rec3.Contains(e.CanvasLocation))
                                 {
                                     if (displayTexts[i] != dropdownlists[i][j])
@@ -458,9 +458,9 @@ namespace AdSecGH.UI
             {
                 if (unfolded[i])
                 {
-                    if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                    if (e.Button == MouseButtons.Left)
                     {
-                        System.Drawing.RectangleF rec = scrollBar;
+                        RectangleF rec = scrollBar;
                         GH_Component comp = Owner as GH_Component;
                         if (rec.Contains(e.CanvasLocation))
                         {
@@ -491,7 +491,7 @@ namespace AdSecGH.UI
                 if (ButtonBound[i].Contains(e.CanvasLocation))
                 {
                     mouseOver = true;
-                    sender.Cursor = System.Windows.Forms.Cursors.Hand;
+                    sender.Cursor = Cursors.Hand;
                     return GH_ObjectResponse.Capture;
                 }
             }
@@ -527,7 +527,7 @@ namespace AdSecGH.UI
             // secondly update position of input and output parameter text
             // first find the maximum text width of parameters
 
-            foreach (IGH_Param item in base.Owner.Params.Output)
+            foreach (IGH_Param item in Owner.Params.Output)
             {
                 PointF pivot = item.Attributes.Pivot; // original anchor location of output
                 RectangleF bounds = item.Attributes.Bounds; // text box itself
@@ -542,12 +542,12 @@ namespace AdSecGH.UI
             }
             // for input params first find the widest input text box as these are right-aligned
             float inputwidth = 0f;
-            foreach (IGH_Param item in base.Owner.Params.Input)
+            foreach (IGH_Param item in Owner.Params.Input)
             {
                 if (inputwidth < item.Attributes.Bounds.Width)
                     inputwidth = item.Attributes.Bounds.Width;
             }
-            foreach (IGH_Param item2 in base.Owner.Params.Input)
+            foreach (IGH_Param item2 in Owner.Params.Input)
             {
                 PointF pivot2 = item2.Attributes.Pivot; // original anchor location of input
                 RectangleF bounds2 = item2.Attributes.Bounds;

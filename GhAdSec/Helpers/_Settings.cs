@@ -76,13 +76,13 @@ namespace AdSecGH.Helpers
             // add units
             oasysMenu.DropDown.Items.Add("AdSec Units", Properties.Resources.Units, (s, a) =>
             {
-                AdSecGH.UI.UnitSettingsBox unitBox = new UI.UnitSettingsBox();
+                UI.UnitSettingsBox unitBox = new UI.UnitSettingsBox();
                 unitBox.Show();
             });
             // add info
             oasysMenu.DropDown.Items.Add("AdSec Info", Properties.Resources.AdSecInfo, (s, a) =>
             {
-                AdSecGH.UI.AboutAdSecBox aboutBox = new UI.AboutAdSecBox();
+                UI.AboutAdSecBox aboutBox = new UI.AboutAdSecBox();
                 aboutBox.Show();
             });
 

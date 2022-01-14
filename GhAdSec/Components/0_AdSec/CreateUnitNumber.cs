@@ -36,7 +36,7 @@ namespace AdSecGH.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateUnitNumber;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateUnitNumber;
         #endregion
 
         #region Custom UI
@@ -57,13 +57,13 @@ namespace AdSecGH.Components
                 selecteditems.Add(Units.LengthUnit.ToString());
 
                 // set selected unit to
-                quantity = new UnitsNet.Length(0, Units.LengthUnit);
+                quantity = new Length(0, Units.LengthUnit);
                 selectedMeasure = quantity.Unit;
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
 
                 // create new dictionary and set all unit measures from quantity to it
                 measureDictionary = new Dictionary<string, Enum>();
-                foreach (UnitsNet.UnitInfo unit in quantity.QuantityInfo.UnitInfos)
+                foreach (UnitInfo unit in quantity.QuantityInfo.UnitInfos)
                 {
                     measureDictionary.Add(unit.Name, unit.Value);
                 }
@@ -106,11 +106,11 @@ namespace AdSecGH.Components
             switch ((Units.AdSecUnits)Enum.Parse(typeof(Units.AdSecUnits), selecteditems[0]))
             {
                 case Units.AdSecUnits.Length:
-                    quantity = new UnitsNet.Length(val, (UnitsNet.Units.LengthUnit)selectedMeasure);
+                    quantity = new Length(val, (UnitsNet.Units.LengthUnit)selectedMeasure);
                     unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
                     break;
                 case Units.AdSecUnits.Force:
-                    quantity = new UnitsNet.Force(val, (UnitsNet.Units.ForceUnit)selectedMeasure);
+                    quantity = new Force(val, (UnitsNet.Units.ForceUnit)selectedMeasure);
                     unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
                     break;
                 case Units.AdSecUnits.Moment:
@@ -118,7 +118,7 @@ namespace AdSecGH.Components
                     unitAbbreviation = Oasys.Units.Moment.GetAbbreviation((Oasys.Units.MomentUnit)selectedMeasure);
                     break;
                 case Units.AdSecUnits.Stress:
-                    quantity = new UnitsNet.Pressure(val, (UnitsNet.Units.PressureUnit)selectedMeasure);
+                    quantity = new Pressure(val, (UnitsNet.Units.PressureUnit)selectedMeasure);
                     unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
                     break;
                 case Units.AdSecUnits.Strain:
@@ -146,16 +146,16 @@ namespace AdSecGH.Components
             switch (unit)
             {
                 case Units.AdSecUnits.Length:
-                    quantity = new UnitsNet.Length(val, Units.LengthUnit);
+                    quantity = new Length(val, Units.LengthUnit);
                     break;
                 case Units.AdSecUnits.Force:
-                    quantity = new UnitsNet.Force(val, Units.ForceUnit);
+                    quantity = new Force(val, Units.ForceUnit);
                     break;
                 case Units.AdSecUnits.Moment:
                     quantity = new Oasys.Units.Moment(val, Units.MomentUnit);
                     break;
                 case Units.AdSecUnits.Stress:
-                    quantity = new UnitsNet.Pressure(val, Units.StressUnit);
+                    quantity = new Pressure(val, Units.StressUnit);
                     break;
                 case Units.AdSecUnits.Strain:
                     quantity = new Oasys.Units.Strain(val, Units.StrainUnit);
@@ -178,7 +178,7 @@ namespace AdSecGH.Components
         {
             // create new dictionary and set all unit measures from quantity to it
             measureDictionary = new Dictionary<string, Enum>();
-            foreach (UnitsNet.UnitInfo unitype in quantity.QuantityInfo.UnitInfos)
+            foreach (UnitInfo unitype in quantity.QuantityInfo.UnitInfos)
             {
                 measureDictionary.Add(unitype.Name, unitype.Value);
             }
@@ -245,16 +245,16 @@ namespace AdSecGH.Components
                 switch (unit)
                 {
                     case Units.AdSecUnits.Length:
-                        quantity = new UnitsNet.Length(val, (UnitsNet.Units.LengthUnit)selectedMeasure);
+                        quantity = new Length(val, (UnitsNet.Units.LengthUnit)selectedMeasure);
                         break;
                     case Units.AdSecUnits.Force:
-                        quantity = new UnitsNet.Force(val, (UnitsNet.Units.ForceUnit)selectedMeasure);
+                        quantity = new Force(val, (UnitsNet.Units.ForceUnit)selectedMeasure);
                         break;
                     case Units.AdSecUnits.Moment:
                         quantity = new Oasys.Units.Moment(val, (Oasys.Units.MomentUnit)selectedMeasure);
                         break;
                     case Units.AdSecUnits.Stress:
-                        quantity = new UnitsNet.Pressure(val, (UnitsNet.Units.PressureUnit)selectedMeasure);
+                        quantity = new Pressure(val, (UnitsNet.Units.PressureUnit)selectedMeasure);
                         break;
                     case Units.AdSecUnits.Strain:
                         quantity = new Oasys.Units.Strain(val, (Oasys.Units.StrainUnit)selectedMeasure);
@@ -281,13 +281,13 @@ namespace AdSecGH.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
 
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             UpdateUIFromSelectedItems();
             first = false;
             return base.Read(reader);

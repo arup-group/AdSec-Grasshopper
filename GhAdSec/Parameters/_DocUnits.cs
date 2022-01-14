@@ -54,7 +54,7 @@ namespace AdSecGH
             {
                 if (m_units == null || useRhinoLengthUnit)
                 {
-                    m_length = GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+                    m_length = GetRhinoLengthUnit(RhinoDoc.ActiveDoc.ModelUnitSystem);
                 }
                 else
                 {
@@ -66,7 +66,7 @@ namespace AdSecGH
             {
                 m_length = value;
                 // update unit system
-                UnitsNet.BaseUnits units = new UnitsNet.BaseUnits(
+                BaseUnits units = new BaseUnits(
                     m_length,
                     m_units.BaseUnits.Mass, m_units.BaseUnits.Time, m_units.BaseUnits.Current, m_units.BaseUnits.Temperature, m_units.BaseUnits.Amount, m_units.BaseUnits.LuminousIntensity);
                 m_units = new UnitsNet.UnitSystem(units);
@@ -102,13 +102,13 @@ namespace AdSecGH
         #endregion
 
         #region moment
-        public static Oasys.Units.MomentUnit MomentUnit
+        public static MomentUnit MomentUnit
         {
             get { return m_moment; }
             set { m_moment = value; }
         }
-        private static Oasys.Units.MomentUnit m_moment = Oasys.Units.MomentUnit.KilonewtonMeter;
-        internal static List<string> FilteredMomentUnits = Enum.GetNames(typeof(Oasys.Units.MomentUnit)).ToList();
+        private static MomentUnit m_moment = MomentUnit.KilonewtonMeter;
+        internal static List<string> FilteredMomentUnits = Enum.GetNames(typeof(MomentUnit)).ToList();
         #endregion
         #region stress
         public static PressureUnit StressUnit
@@ -134,52 +134,52 @@ namespace AdSecGH
         };
         #endregion
         #region strain
-        public static Oasys.Units.StrainUnit StrainUnit
+        public static StrainUnit StrainUnit
         {
             get { return m_strain; }
             set { m_strain = value; }
         }
-        private static Oasys.Units.StrainUnit m_strain = Oasys.Units.StrainUnit.MilliStrain;
+        private static StrainUnit m_strain = StrainUnit.MilliStrain;
         internal static List<string> FilteredStrainUnits = new List<string>()
         {
-            Oasys.Units.StrainUnit.Ratio.ToString(),
-            Oasys.Units.StrainUnit.Percent.ToString(),
-            Oasys.Units.StrainUnit.MilliStrain.ToString(),
-            Oasys.Units.StrainUnit.MicroStrain.ToString()
+            StrainUnit.Ratio.ToString(),
+            StrainUnit.Percent.ToString(),
+            StrainUnit.MilliStrain.ToString(),
+            StrainUnit.MicroStrain.ToString()
         };
         #endregion
         #region axial stiffness
-        public static Oasys.Units.AxialStiffnessUnit AxialStiffnessUnit
+        public static AxialStiffnessUnit AxialStiffnessUnit
         {
             get { return m_axialstiffness; }
             set { m_axialstiffness = value; }
         }
-        private static Oasys.Units.AxialStiffnessUnit m_axialstiffness = Oasys.Units.AxialStiffnessUnit.Kilonewton;
-        internal static List<string> FilteredAxialStiffnessUnits = Enum.GetNames(typeof(Oasys.Units.AxialStiffnessUnit)).ToList();
+        private static AxialStiffnessUnit m_axialstiffness = AxialStiffnessUnit.Kilonewton;
+        internal static List<string> FilteredAxialStiffnessUnits = Enum.GetNames(typeof(AxialStiffnessUnit)).ToList();
         #endregion
         #region bending stiffness
-        public static Oasys.Units.BendingStiffnessUnit BendingStiffnessUnit
+        public static BendingStiffnessUnit BendingStiffnessUnit
         {
             get { return m_bendingstiffness; }
             set { m_bendingstiffness = value; }
         }
-        private static Oasys.Units.BendingStiffnessUnit m_bendingstiffness = Oasys.Units.BendingStiffnessUnit.KilonewtonSquareMeter;
-        internal static List<string> FilteredBendingStiffnessUnits = Enum.GetNames(typeof(Oasys.Units.BendingStiffnessUnit)).ToList();
+        private static BendingStiffnessUnit m_bendingstiffness = BendingStiffnessUnit.KilonewtonSquareMeter;
+        internal static List<string> FilteredBendingStiffnessUnits = Enum.GetNames(typeof(BendingStiffnessUnit)).ToList();
         #endregion
         #region curvature
-        public static Oasys.Units.CurvatureUnit CurvatureUnit
+        public static CurvatureUnit CurvatureUnit
         {
             get { return m_curvature; }
             set { m_curvature = value; }
         }
-        private static Oasys.Units.CurvatureUnit m_curvature = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), "Per" + LengthUnit.ToString());
+        private static CurvatureUnit m_curvature = (CurvatureUnit)Enum.Parse(typeof(CurvatureUnit), "Per" + LengthUnit.ToString());
         internal static List<string> FilteredCurvatureUnits = new List<string>()
         {
-            Oasys.Units.CurvatureUnit.PerMillimeter.ToString(),
-            Oasys.Units.CurvatureUnit.PerCentimeter.ToString(),
-            Oasys.Units.CurvatureUnit.PerMeter.ToString(),
-            Oasys.Units.CurvatureUnit.PerInch.ToString(),
-            Oasys.Units.CurvatureUnit.PerFoot.ToString()
+            CurvatureUnit.PerMillimeter.ToString(),
+            CurvatureUnit.PerCentimeter.ToString(),
+            CurvatureUnit.PerMeter.ToString(),
+            CurvatureUnit.PerInch.ToString(),
+            CurvatureUnit.PerFoot.ToString()
         };
         #endregion
         #region unit system
@@ -194,21 +194,16 @@ namespace AdSecGH
         internal static void SetupUnits()
         {
             bool settingsExist = ReadSettings();
-            LengthUnit length;
-            if (settingsExist)
-            {
-                length = m_length;
-            }
-            else
+            if (!settingsExist)
             {
                 // get rhino document length unit
-                m_length = GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+                m_length = GetRhinoLengthUnit(RhinoDoc.ActiveDoc.ModelUnitSystem);
                 SaveSettings();
             }
             // get SI units
             UnitsNet.UnitSystem si = UnitsNet.UnitSystem.SI;
 
-            UnitsNet.BaseUnits units = new UnitsNet.BaseUnits(
+            BaseUnits units = new BaseUnits(
                 m_length,
                 si.BaseUnits.Mass, si.BaseUnits.Time, si.BaseUnits.Current, si.BaseUnits.Temperature, si.BaseUnits.Amount, si.BaseUnits.LuminousIntensity);
             m_units = new UnitsNet.UnitSystem(units);
@@ -245,7 +240,7 @@ namespace AdSecGH
 
             if (useRhinoLengthUnit)
             {
-                m_length = GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+                m_length = GetRhinoLengthUnit(RhinoDoc.ActiveDoc.ModelUnitSystem);
             }
             else
             {
@@ -264,7 +259,7 @@ namespace AdSecGH
         }
         internal static LengthUnit GetRhinoLengthUnit()
         {
-            return GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem);
+            return GetRhinoLengthUnit(RhinoDoc.ActiveDoc.ModelUnitSystem);
         }
         internal static LengthUnit GetRhinoLengthUnit(Rhino.UnitSystem rhinoUnits)
         {

@@ -34,7 +34,7 @@ namespace AdSecGH.Components
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.ULS;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.ULS;
         #endregion
 
         #region Custom UI
@@ -43,37 +43,42 @@ namespace AdSecGH.Components
 
         #region Input and output
 
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Results", "Res", "AdSec Results to perform strenght check on.", GH_ParamAccess.item);
             pManager.AddGenericParameter("Load", "Ld", "AdSec Load (Load or Deformation) for which the strength results are to be calculated.", GH_ParamAccess.item);
         }
 
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            IQuantity strain = new Oasys.Units.Strain(0, Units.StrainUnit);
+            IQuantity strain = new Strain(0, Units.StrainUnit);
             string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-            IQuantity curvature = new Oasys.Units.Curvature(0, Units.CurvatureUnit);
+            if (strainUnitAbbreviation == "")
+            {
+                strainUnitAbbreviation = strain.ToString();
+                strainUnitAbbreviation = strainUnitAbbreviation[strainUnitAbbreviation.Length - 1].ToString();
+            }
+            IQuantity curvature = new Curvature(0, Units.CurvatureUnit);
             string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
-            IQuantity moment = new Oasys.Units.Moment(0, Units.MomentUnit);
+            IQuantity moment = new Moment(0, Units.MomentUnit);
             string momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
 
-            pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." + 
-                System.Environment.NewLine + "If the applied deformation is outside the capacity range of the section, the returned load will be zero.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." +
+                Environment.NewLine + "If the applied deformation is outside the capacity range of the section, the returned load will be zero.", GH_ParamAccess.item);
 
             pManager.AddNumberParameter("LoadUtil", "Ul", "The strength load utilisation is the ratio of the applied load to the load in the same direction that would cause the " +
                 "section to reach its capacity. Utilisation > 1 means the applied load exceeds the section capacity." +
-                System.Environment.NewLine + "If the applied load is outside the capacity range of the section, the utilisation will be greater than 1. Whereas, if the applied " +
+                Environment.NewLine + "If the applied load is outside the capacity range of the section, the utilisation will be greater than 1. Whereas, if the applied " +
                 "deformation exceeds the capacity, the load utilisation will be zero.", GH_ParamAccess.item);
 
             pManager.AddVectorParameter("Deformation", "Def", "The section deformation under the applied action. The output is a vector representing:"
-                + System.Environment.NewLine + "X: Strain [" + strainUnitAbbreviation + "],"
-                + System.Environment.NewLine + "Y: Curvature around zz (so in local y-direction) [" + curvatureUnitAbbreviation + "],"
-                + System.Environment.NewLine + "Z: Curvature around yy (so in local z-direction) [" + curvatureUnitAbbreviation + "]", GH_ParamAccess.item);
+                + Environment.NewLine + "X: Strain [" + strainUnitAbbreviation + "],"
+                + Environment.NewLine + "Y: Curvature around zz (so in local y-direction) [" + curvatureUnitAbbreviation + "],"
+                + Environment.NewLine + "Z: Curvature around yy (so in local z-direction) [" + curvatureUnitAbbreviation + "]", GH_ParamAccess.item);
 
             pManager.AddNumberParameter("DeformationUtil", "Ud", "The strength deformation utilisation is the ratio of the applied deformation to the deformation in the same direction" +
                 " that would cause the section to reach its capacity. Utilisation > 1 means capacity has been exceeded." +
-                System.Environment.NewLine + "Capacity has been exceeded when the utilisation is greater than 1. If the applied load is outside the capacity range of the section, the " +
+                Environment.NewLine + "Capacity has been exceeded when the utilisation is greater than 1. If the applied load is outside the capacity range of the section, the " +
                 "deformation utilisation will be the maximum double value.", GH_ParamAccess.item);
 
             pManager.AddIntervalParameter("Moment Ranges", "MRs", "The range of moments (in the direction of the applied moment, assuming constant axial force) that are within the " +
@@ -136,7 +141,7 @@ namespace AdSecGH.Components
             List<GH_Interval> momentRanges = new List<GH_Interval>();
             foreach (IMomentRange mrng in uls.MomentRanges)
             {
-                Rhino.Geometry.Interval interval = new Interval(
+                Interval interval = new Interval(
                     mrng.Min.As(Units.MomentUnit),
                     mrng.Max.As(Units.MomentUnit));
                 momentRanges.Add(new GH_Interval(interval));
@@ -149,9 +154,9 @@ namespace AdSecGH.Components
         private Line CreateNeutralLine(IDeformation ulsDeformationResult, Plane local, Polyline profile)
         {
             // neutral line
-            double defX = ulsDeformationResult.X.As(Oasys.Units.StrainUnit.Ratio);
-            double kYY = ulsDeformationResult.YY.As(Oasys.Units.CurvatureUnit.PerMeter);
-            double kZZ = ulsDeformationResult.ZZ.As(Oasys.Units.CurvatureUnit.PerMeter);
+            double defX = ulsDeformationResult.X.As(StrainUnit.Ratio);
+            double kYY = ulsDeformationResult.YY.As(CurvatureUnit.PerMeter);
+            double kZZ = ulsDeformationResult.ZZ.As(CurvatureUnit.PerMeter);
 
             // compute offset
             double offsetSI = -defX / Math.Sqrt(Math.Pow(kYY, 2) + Math.Pow(kZZ, 2));

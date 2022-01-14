@@ -31,7 +31,7 @@ namespace AdSecGH.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.SaveAdSec;
+        protected override Bitmap Icon => Properties.Resources.SaveAdSec;
         #endregion
 
         #region Custom UI
@@ -112,7 +112,7 @@ namespace AdSecGH.Components
         bool usersetFileName = false;
         static string jsonString;
         bool canOpen = false;
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Section", "Sec", "AdSec Section to save", GH_ParamAccess.item);
             pManager.AddGenericParameter("Loads", "Lds", "[Optional] List of AdSec Loads (consistent Load or Deformation type)", GH_ParamAccess.list);
@@ -122,7 +122,7 @@ namespace AdSecGH.Components
             pManager[2].Optional = true;
             pManager[3].Optional = true;
         }
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
         }
         #region IGH_VariableParameterComponent null implementation

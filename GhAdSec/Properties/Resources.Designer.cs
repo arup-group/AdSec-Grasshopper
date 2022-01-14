@@ -423,6 +423,16 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap StressStrainConcrete {
+            get {
+                object obj = ResourceManager.GetObject("StressStrainConcrete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap StressStrainCrv {
             get {
                 object obj = ResourceManager.GetObject("StressStrainCrv", resourceCulture);
@@ -436,6 +446,16 @@ namespace AdSecGH.Properties {
         internal static System.Drawing.Bitmap StressStrainPt {
             get {
                 object obj = ResourceManager.GetObject("StressStrainPt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap StressStrainRebar {
+            get {
+                object obj = ResourceManager.GetObject("StressStrainRebar", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

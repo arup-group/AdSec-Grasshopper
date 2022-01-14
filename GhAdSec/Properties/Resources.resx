@@ -226,11 +226,17 @@
   <data name="StandardMaterial" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\StandardMaterial.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="StressStrainConcrete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\StressStrainConcrete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="StressStrainCrv" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\StressStrainCrv.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="StressStrainPt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\StressStrainPt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="StressStrainRebar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\StressStrainRebar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SubComponent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\SubComponent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

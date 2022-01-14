@@ -36,7 +36,7 @@ namespace AdSecGH.Components
 
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.FlattenRebar;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.FlattenRebar;
         #endregion
 
         #region Custom UI
@@ -45,23 +45,29 @@ namespace AdSecGH.Components
 
         #region Input and output
 
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Section", "Sec", "AdSec Section to get single rebars from", GH_ParamAccess.item);
         }
 
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            IQuantity length = new UnitsNet.Length(0, Units.LengthUnit);
+            IQuantity length = new Length(0, Units.LengthUnit);
             string lengthUnitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
-            IQuantity stress = new UnitsNet.Pressure(0, Units.StressUnit);
+            IQuantity stress = new Pressure(0, Units.StressUnit);
             string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
-            IQuantity strain = new Oasys.Units.Strain(0, Units.StrainUnit);
+            IQuantity strain = new Strain(0, Units.StrainUnit);
             string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-            IQuantity force = new UnitsNet.Force(0, Units.ForceUnit);
+            if (strainUnitAbbreviation == "")
+            {
+                strainUnitAbbreviation = strain.ToString();
+                strainUnitAbbreviation = strainUnitAbbreviation[strainUnitAbbreviation.Length - 1].ToString();
+            }
+            IQuantity force = new Force(0, Units.ForceUnit);
             string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
 
             pManager.AddGenericParameter("Position [" + lengthUnitAbbreviation + "]", "Vx", "Rebar position as 2D vertex in the section's local yz-plane ", GH_ParamAccess.list);
+            pManager.HideParameter(0);
             pManager.AddGenericParameter("Diameter [" + lengthUnitAbbreviation + "]", "Ø", "Bar Diameter", GH_ParamAccess.list);
             pManager.AddIntegerParameter("Bundle Count", "N", "Count per bundle (1, 2, 3 or 4)", GH_ParamAccess.list);
             pManager.AddGenericParameter("PreLoad", "P", "The pre-load per reinforcement bar. Positive value is tension.", GH_ParamAccess.list);
@@ -105,7 +111,7 @@ namespace AdSecGH.Components
                         pointGoos.Add(new AdSecPointGoo(pos));
                         
                         // diameter
-                        diameters.Add(new GH_UnitNumber(new UnitsNet.Length(snglBrs.BarBundle.Diameter.As(Units.LengthUnit), Units.LengthUnit)));
+                        diameters.Add(new GH_UnitNumber(new Length(snglBrs.BarBundle.Diameter.As(Units.LengthUnit), Units.LengthUnit)));
                         
                         // bundle count
                         counts.Add(snglBrs.BarBundle.CountPerBundle);
@@ -116,19 +122,19 @@ namespace AdSecGH.Components
                             try
                             {
                                 IPreForce force = (IPreForce)snglBrs.Preload;
-                                prestresses.Add(new GH_UnitNumber(new UnitsNet.Force(force.Force.As(Units.ForceUnit), Units.ForceUnit)));
+                                prestresses.Add(new GH_UnitNumber(new Force(force.Force.As(Units.ForceUnit), Units.ForceUnit)));
                             }
                             catch (Exception)
                             {
                                 try
                                 {
                                     IPreStress stress = (IPreStress)snglBrs.Preload;
-                                    prestresses.Add(new GH_UnitNumber(new UnitsNet.Pressure(stress.Stress.As(Units.StressUnit), Units.StressUnit)));
+                                    prestresses.Add(new GH_UnitNumber(new Pressure(stress.Stress.As(Units.StressUnit), Units.StressUnit)));
                                 }
                                 catch (Exception)
                                 {
                                     IPreStrain strain = (IPreStrain)snglBrs.Preload;
-                                    prestresses.Add(new GH_UnitNumber(new Oasys.Units.Strain(strain.Strain.As(Units.StrainUnit), Units.StrainUnit)));
+                                    prestresses.Add(new GH_UnitNumber(new Strain(strain.Strain.As(Units.StrainUnit), Units.StrainUnit)));
                                 }
                             }
                         }

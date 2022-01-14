@@ -37,7 +37,7 @@ namespace AdSecGH.Components
         { this.Hidden = true; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.CreateCrackCalcParams;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateCrackCalcParams;
         #endregion
 
         #region Custom UI
@@ -59,9 +59,9 @@ namespace AdSecGH.Components
                 dropdownitems.Add(Units.FilteredStressUnits);
                 selecteditems.Add(strengthUnit.ToString());
 
-                IQuantity quantityE = new UnitsNet.Pressure(0, stressUnitE);
+                IQuantity quantityE = new Pressure(0, stressUnitE);
                 unitEAbbreviation = string.Concat(quantityE.ToString().Where(char.IsLetter));
-                IQuantity quantityS = new UnitsNet.Pressure(0, strengthUnit);
+                IQuantity quantityS = new Pressure(0, strengthUnit);
                 unitSAbbreviation = string.Concat(quantityS.ToString().Where(char.IsLetter));
 
                 first = false;
@@ -168,13 +168,13 @@ namespace AdSecGH.Components
         #region (de)serialization
         public override bool Write(GH_IO.Serialization.GH_IWriter writer)
         {
-            AdSecGH.Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
 
             return base.Write(writer);
         }
         public override bool Read(GH_IO.Serialization.GH_IReader reader)
         {
-            AdSecGH.Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             UpdateUIFromSelectedItems();
             first = false;
             return base.Read(reader);
@@ -200,9 +200,9 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
-            IQuantity quantityE = new UnitsNet.Pressure(0, stressUnitE);
+            IQuantity quantityE = new Pressure(0, stressUnitE);
             unitEAbbreviation = string.Concat(quantityE.ToString().Where(char.IsLetter));
-            IQuantity quantityS = new UnitsNet.Pressure(0, strengthUnit);
+            IQuantity quantityS = new Pressure(0, strengthUnit);
             unitSAbbreviation = string.Concat(quantityS.ToString().Where(char.IsLetter));
             Params.Input[0].Name = "Elastic Modulus [" + unitEAbbreviation + "]";
             Params.Input[1].Name = "Compression [" + unitSAbbreviation + "]";
