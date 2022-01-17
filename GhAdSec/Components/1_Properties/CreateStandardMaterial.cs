@@ -235,28 +235,37 @@ namespace AdSecGH.Components
                         // if kvp is empty we have reached the field level
                         // where we set the materials by reflecting the type
                         materials = Helpers.ReflectAdSecAPI.ReflectFields(typ);
-                        // if kvp has values we add them to create a new dropdown list
-                        dropdownitems.Add(materials.Keys.ToList());
-                        // with first item being the selected
-                        if (selecteditems[1].StartsWith("EN1992"))
+                        if (materials.Count == 0)
                         {
-                            if (materials.Keys.Count > 4)
+                            dropdownitems.Add(new List<string>() { "No material" });
+                            selecteditems.Add("No material");
+                        }
+                        else
+                        {
+                            // if kvp has values we add them to create a new dropdown list
+                            dropdownitems.Add(materials.Keys.ToList());
+                            // with first item being the selected
+                            if (selecteditems[1].StartsWith("EN1992"))
                             {
-                                selecteditems.Add(materials.Keys.ElementAt(4)); // C37
+                                if (materials.Keys.Count > 4)
+                                {
+                                    selecteditems.Add(materials.Keys.ElementAt(4)); // C37
 
+                                }
+                                else if (materials.Keys.Count == 3)
+                                    selecteditems.Add(materials.Keys.ElementAt(1)); // B500B
+
+                                else
+                                    selecteditems.Add(materials.Keys.First());
                             }
-                            else if (materials.Keys.Count == 3)
-                                selecteditems.Add(materials.Keys.ElementAt(1)); // B500B
-
+                            else if (selecteditems[1].StartsWith("EN1993"))
+                            {
+                                selecteditems.Add(materials.Keys.ElementAt(2)); // S355
+                            }
                             else
                                 selecteditems.Add(materials.Keys.First());
                         }
-                        else if (selecteditems[1].StartsWith("EN1993"))
-                        {
-                            selecteditems.Add(materials.Keys.ElementAt(2)); // S355
-                        }
-                        else
-                            selecteditems.Add(materials.Keys.First());
+                        
                         // stop drilling
                         drill = false;
 
