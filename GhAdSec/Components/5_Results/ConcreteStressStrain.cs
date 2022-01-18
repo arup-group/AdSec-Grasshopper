@@ -53,13 +53,7 @@ namespace AdSecGH.Components
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            IQuantity strain = new Strain(0, Units.StrainUnit);
-            string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-            if (strainUnitAbbreviation == "")
-            {
-                strainUnitAbbreviation = strain.ToString();
-                strainUnitAbbreviation = strainUnitAbbreviation[strainUnitAbbreviation.Length - 1].ToString();
-            }
+            string strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
             IQuantity stress = new Pressure(0, Units.StressUnit);
             string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 

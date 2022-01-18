@@ -56,13 +56,7 @@ namespace AdSecGH.Components
             string lengthUnitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
             IQuantity stress = new Pressure(0, Units.StressUnit);
             string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
-            IQuantity strain = new Strain(0, Units.StrainUnit);
-            string strainUnitAbbreviation = string.Concat(strain.ToString().Where(char.IsLetter));
-            if (strainUnitAbbreviation == "")
-            {
-                strainUnitAbbreviation = strain.ToString();
-                strainUnitAbbreviation = strainUnitAbbreviation[strainUnitAbbreviation.Length - 1].ToString();
-            }
+            string strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
             IQuantity force = new Force(0, Units.ForceUnit);
             string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
 

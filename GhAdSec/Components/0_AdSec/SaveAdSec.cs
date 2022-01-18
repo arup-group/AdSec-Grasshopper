@@ -240,4 +240,3 @@ namespace AdSecGH.Components
         }
     }
 }
-
