@@ -18,7 +18,7 @@ namespace AdSecGH.UI
         {
             InitializeComponent();
             this.Text = "Default AdSec Units";
-            this.labelDescription.Text = "Settings will be saved as default AdSecGH Units";
+            this.labelDescription.Text = "Settings will apply to new components and display";
 
             this.labelLength.Text = "Length";
             lengthdropdown.Insert(0, "Use Rhino unit: " + Units.GetRhinoLengthUnit(Rhino.RhinoDoc.ActiveDoc.ModelUnitSystem).ToString());
@@ -233,5 +233,9 @@ namespace AdSecGH.UI
             updateSelections();
         }
 
+        private void labelDescription_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
