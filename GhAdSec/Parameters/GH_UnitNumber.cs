@@ -166,16 +166,16 @@ namespace UnitsNet.GH
             // This function is called when Grasshopper needs to convert other data 
             // into this parameter.
 
+            if (source == null) { return false; }
 
-            //if (source == null) { return false; }
+            //Cast from own type
+            if (typeof(GH_UnitNumber).IsAssignableFrom(source.GetType()))
+            {
+                GH_UnitNumber num = (GH_UnitNumber)source;
+                Value = num.m_value;
+                return true;
+            }
 
-            ////Cast from own type
-            //if (typeof(GhUnitNumber).IsAssignableFrom(source.GetType()))
-            //{
-            //    Value = (GhUnitNumber)source;
-            //    return true;
-            //}
-            
             return false;
         }
         #endregion
