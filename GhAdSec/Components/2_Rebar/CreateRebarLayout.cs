@@ -23,10 +23,10 @@ namespace AdSecGH.Components
         public CreateReinforcementLayout()
             : base("Create Reinforcement Layout", "Reinforcement Layout", "Create a Reinforcement Layout for an AdSec Section",
                 Ribbon.CategoryName.Name(),
-                Ribbon.SubCategoryName.Cat2())
+                Ribbon.SubCategoryName.Cat3())
         { this.Hidden = true; }
         public override Guid ComponentGuid => new Guid("1250f456-de99-4834-8d7f-4019cc0c70ba");
-        public override GH_Exposure Exposure => GH_Exposure.tertiary;
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         protected override System.Drawing.Bitmap Icon => Properties.Resources.RebarLayout;
         #endregion

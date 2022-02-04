@@ -30,7 +30,7 @@ namespace AdSecGH.Components
         public ConcreteStressStrain()
           : base("Concrete Stress/Strain", "CSS", "Calculate the Concrete Stress/Strain at a point on the Section for a given Load or Deformation.",
                 Ribbon.CategoryName.Name(),
-                Ribbon.SubCategoryName.Cat5())
+                Ribbon.SubCategoryName.Cat7())
         { this.Hidden = true; } // sets the initial state of the component to hidden
 
         public override GH_Exposure Exposure => GH_Exposure.tertiary;

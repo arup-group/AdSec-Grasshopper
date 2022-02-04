@@ -37,7 +37,7 @@ namespace AdSecGH.Components
         public NMDiagram()
           : base("N-M Diagram", "N-M", "Calculates a force-moment (N-M) or moment-moment (M-M) interaction curve.",
                 Ribbon.CategoryName.Name(),
-                Ribbon.SubCategoryName.Cat5())
+                Ribbon.SubCategoryName.Cat7())
         { this.Hidden = false; } // sets the initial state of the component to hidden
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 

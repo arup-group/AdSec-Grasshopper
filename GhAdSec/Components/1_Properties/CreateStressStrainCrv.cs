@@ -23,7 +23,7 @@ namespace AdSecGH.Components
                 Ribbon.SubCategoryName.Cat1())
         { this.Hidden = false; }
         public override Guid ComponentGuid => new Guid("b2ddf545-2a4c-45ac-ba1c-cb0f3da5b37f");
-        public override GH_Exposure Exposure => GH_Exposure.tertiary;
+        public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
         protected override string HtmlHelp_Source()
         {

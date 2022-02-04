@@ -176,7 +176,7 @@ namespace AdSecGH
         {
             get
             {
-                return "0.0.8-beta";
+                return "0.0.9-beta";
             }
         }
     }

@@ -30,7 +30,7 @@ namespace AdSecGH.Components
         public ResultsSLS()
           : base("Serviceability Result", "SLS", "Performs serviceability analysis (SLS), for a given Load or Deformation.",
                 Ribbon.CategoryName.Name(),
-                Ribbon.SubCategoryName.Cat5())
+                Ribbon.SubCategoryName.Cat7())
         { this.Hidden = false; } // sets the initial state of the component to hidden
 
         public override GH_Exposure Exposure => GH_Exposure.primary;

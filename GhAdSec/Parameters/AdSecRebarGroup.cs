@@ -380,7 +380,7 @@ namespace AdSecGH.Parameters
 
         public override Guid ComponentGuid => new Guid("6d666276-61f6-47ce-81bc-9fabdd39edc2");
 
-        public override GH_Exposure Exposure => GH_Exposure.tertiary;
+        public override GH_Exposure Exposure => GH_Exposure.primary;
 
         protected override Bitmap Icon => Properties.Resources.RebarGroupParam;
 

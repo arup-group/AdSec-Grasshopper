@@ -325,7 +325,7 @@ namespace AdSecGH.Parameters
 
         public override Guid ComponentGuid => new Guid("cf5636e2-628d-4794-ab29-97f83002db34");
 
-        public override GH_Exposure Exposure => GH_Exposure.secondary;
+        public override GH_Exposure Exposure => GH_Exposure.primary | GH_Exposure.obscure;
 
         protected override System.Drawing.Bitmap Icon => Properties.Resources.MaterialParam;
 

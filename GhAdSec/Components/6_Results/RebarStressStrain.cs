@@ -30,7 +30,7 @@ namespace AdSecGH.Components
         public RebarStressStrain()
           : base("Rebar Stress/Strain", "RSS", "Calculate the Rebar Stress/Strains in the Section for a given Load or Deformation.",
                 Ribbon.CategoryName.Name(),
-                Ribbon.SubCategoryName.Cat5())
+                Ribbon.SubCategoryName.Cat7())
         { this.Hidden = true; } // sets the initial state of the component to hidden
 
         public override GH_Exposure Exposure => GH_Exposure.tertiary;

@@ -120,6 +120,10 @@ namespace AdSecGH.Parameters
             {
                 IPerimeterProfile prof = IPerimeterProfile.Create(section.Profile);
                 flat = ISection.Create(prof, section.Material);
+                if (section.ReinforcementGroups.Count > 0)
+                    flat.ReinforcementGroups = section.ReinforcementGroups;
+                if (section.SubComponents.Count > 0)
+                    flat.SubComponents = section.SubComponents;
             }
 
             // create offset if any
@@ -720,7 +724,7 @@ namespace AdSecGH.Parameters
 
         public override Guid ComponentGuid => new Guid("fa647c2d-4767-49f1-a574-32bf66a66568");
 
-        public override GH_Exposure Exposure => GH_Exposure.tertiary;
+        public override GH_Exposure Exposure => GH_Exposure.primary;
 
         protected override Bitmap Icon => Properties.Resources.SectionParam;
 
