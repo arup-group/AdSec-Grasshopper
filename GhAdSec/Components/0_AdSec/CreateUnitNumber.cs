@@ -32,9 +32,9 @@ namespace AdSecGH.Components
         public CreateUnitNumber()
           : base("Create UnitNumber", "CreateUnit", "Create a unit number (quantity) from value, unit and measure",
                 Ribbon.CategoryName.Name(),
-                Ribbon.SubCategoryName.Cat0())
+                Ribbon.SubCategoryName.Cat9())
         { this.Hidden = true; } // sets the initial state of the component to hidden
-        public override GH_Exposure Exposure => GH_Exposure.secondary;
+        public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
         protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateUnitNumber;
         #endregion

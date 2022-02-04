@@ -166,16 +166,16 @@ namespace UnitsNet.GH
             // This function is called when Grasshopper needs to convert other data 
             // into this parameter.
 
+            if (source == null) { return false; }
 
-            //if (source == null) { return false; }
+            //Cast from own type
+            if (typeof(GH_UnitNumber).IsAssignableFrom(source.GetType()))
+            {
+                GH_UnitNumber num = (GH_UnitNumber)source;
+                Value = num.m_value;
+                return true;
+            }
 
-            ////Cast from own type
-            //if (typeof(GhUnitNumber).IsAssignableFrom(source.GetType()))
-            //{
-            //    Value = (GhUnitNumber)source;
-            //    return true;
-            //}
-            
             return false;
         }
         #endregion
@@ -193,7 +193,7 @@ namespace UnitsNet.GH
 
         public override Guid ComponentGuid => new Guid("7368cb74-1c8d-411f-9455-1134a6d9df44");
 
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.quarternary | GH_Exposure.obscure;
 
 
         protected override System.Drawing.Bitmap Icon => AdSecGH.Properties.Resources.UnitParam;

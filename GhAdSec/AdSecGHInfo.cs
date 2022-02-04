@@ -145,7 +145,7 @@ namespace AdSecGH
                 + Environment.NewLine + "The plugin requires an AdSec 10 license to load."
                 + Environment.NewLine
                 + Environment.NewLine + "Contact oasys@arup.com to request a free trial version."
-                + Environment.NewLine + Environment.NewLine + "Copyright © Oasys 1985 - 2021";
+                + Environment.NewLine + Environment.NewLine + "Copyright © Oasys 1985 - 2022";
             }
         }
         public override Guid Id
@@ -176,7 +176,7 @@ namespace AdSecGH
         {
             get
             {
-                return "0.0.8-beta";
+                return "0.0.9-beta";
             }
         }
     }

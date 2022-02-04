@@ -24,10 +24,10 @@ namespace AdSecGH.Components
         public CreateReinforcementGroup()
             : base("Create Reinforcement Group", "Reinforcement Group", "Create a Template Reinforcement Group for an AdSec Section",
                 Ribbon.CategoryName.Name(),
-                Ribbon.SubCategoryName.Cat2())
+                Ribbon.SubCategoryName.Cat3())
         { this.Hidden = true; }
         public override Guid ComponentGuid => new Guid("9876f456-de99-4834-8d7f-4019cc0c70ba");
-        public override GH_Exposure Exposure => GH_Exposure.tertiary;
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
         //
         protected override string HtmlHelp_Source()
         {

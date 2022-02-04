@@ -228,10 +228,15 @@ namespace AdSecGH.Components
             else
             {
                 // if no loads are inputted then just convert section
-                jsonString = json.SectionToJson(section.Section);
+                try
+                {
+                    jsonString = json.SectionToJson(section.Section);
+                }
+                catch (Exception e)
+                {
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.InnerException.Message);
+                }
             }
-
         }
     }
 }
-

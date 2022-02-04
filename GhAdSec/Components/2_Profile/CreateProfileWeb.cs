@@ -11,23 +11,22 @@ using Oasys.AdSec.Materials.StressStrainCurves;
 using AdSecGH.Parameters;
 using UnitsNet.GH;
 using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement;
 using UnitsNet;
 
 namespace AdSecGH.Components
 {
-    public class CreateRebar : GH_Component, IGH_VariableParameterComponent
+    public class CreateProfileWeb : GH_Component, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
-        public CreateRebar()
-            : base("Create Rebar", "Rebar", "Create Rebar (single or bundle) for an AdSec Section",
+        public CreateProfileWeb()
+            : base("Create Web", "Web", "Create a Web for AdSec Profile",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat2())
         { this.Hidden = true; }
-        public override Guid ComponentGuid => new Guid("024d241a-b6cc-4134-9f5c-ac9a6dcb2c4b");
-        public override GH_Exposure Exposure => GH_Exposure.tertiary;
+        public override Guid ComponentGuid => new Guid("0f9a9223-e745-44b9-add2-8b2e5950e86a");
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
-        protected override System.Drawing.Bitmap Icon => Properties.Resources.Rebar;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateWeb;
         #endregion
 
         #region Custom UI
@@ -50,7 +49,7 @@ namespace AdSecGH.Components
 
                 IQuantity quantity = new Length(0, lengthUnit);
                 unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
-
+                
                 first = false;
             }
 
@@ -64,12 +63,12 @@ namespace AdSecGH.Components
             if (i == 0)
             {
                 _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[i]);
-                ToggleInput();
             }
             else
             {
                 lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
             }
+            ToggleInput();
         }
         private void UpdateUIFromSelectedItems()
         {
@@ -84,7 +83,7 @@ namespace AdSecGH.Components
         List<string> selecteditems;
         List<string> spacerDescriptions = new List<string>(new string[]
         {
-            "Rebar Type",
+            "Web Type",
             "Measure"
         });
         private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
@@ -93,43 +92,34 @@ namespace AdSecGH.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Material", "Mat", "AdSec Reinforcement Material", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Diameter [" + unitAbbreviation + "]", "Ø", "Bar Diameter", GH_ParamAccess.item);
-            _mode = FoldMode.Single;
+            pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Web thickness", GH_ParamAccess.item);
+            _mode = FoldMode.Constant;
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Rebar", "Rb", "Rebar (single or bundle) for AdSec Reinforcement", GH_ParamAccess.item);
+            pManager.AddGenericParameter("WebProfile", "Web", "Web Profile for AdSec Profile", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            // 0 material input
-            AdSecMaterial material = GetInput.AdSecMaterial(this, DA, 0);
-
             switch (_mode)
             {
-                case FoldMode.Single:
-                    AdSecRebarBundleGoo rebar = new AdSecRebarBundleGoo(
-                        IBarBundle.Create(
-                            (Oasys.AdSec.Materials.IReinforcement)material.Material,
-                            GetInput.Length(this, DA, 1, lengthUnit)));
+                case FoldMode.Constant:
                     
-                    DA.SetData(0, rebar);
+                    AdSecProfileWebGoo webConst = new AdSecProfileWebGoo(
+                    IWebConstant.Create(
+                        GetInput.Length(this, DA, 0, lengthUnit)));
 
+                    DA.SetData(0, webConst);
                     break;
 
-                case FoldMode.Bundle:
-                    int count = 1;
-                    DA.GetData(2, ref count);
+                case FoldMode.Tapered:
+                    AdSecProfileWebGoo webTaper = new AdSecProfileWebGoo(
+                    IWebTapered.Create(
+                        GetInput.Length(this, DA, 0, lengthUnit),
+                        GetInput.Length(this, DA, 1, lengthUnit)));
 
-                    AdSecRebarBundleGoo bundle = new AdSecRebarBundleGoo(
-                    IBarBundle.Create(
-                        (Oasys.AdSec.Materials.IReinforcement)material.Material,
-                        GetInput.Length(this, DA, 1, lengthUnit),
-                        count));
-
-                    DA.SetData(0, bundle);
+                    DA.SetData(0, webTaper);
                     break;
             }
         }
@@ -139,33 +129,32 @@ namespace AdSecGH.Components
         private bool first = true;
         private enum FoldMode
         {
-            Single,
-            Bundle
+            Constant,
+            Tapered
         }
 
-        private FoldMode _mode = FoldMode.Single;
+        private FoldMode _mode = FoldMode.Constant;
 
         private void ToggleInput()
         {
-            RecordUndoEvent("Changed dropdown");
-
             switch (_mode)
             {
-                case FoldMode.Single:
+                case FoldMode.Constant:
                     // remove any additional input parameters
-                    while (Params.Input.Count > 2)
-                        Params.UnregisterInputParameter(Params.Input[2], true);
+                    while (Params.Input.Count > 1)
+                        Params.UnregisterInputParameter(Params.Input[1], true);
                     break;
 
-                case FoldMode.Bundle:
+                case FoldMode.Tapered:
                     // add input parameter
-                    while (Params.Input.Count != 3)
-                        Params.RegisterInputParam(new Param_Integer());
+                    while (Params.Input.Count != 2)
+                        Params.RegisterInputParam(new Param_GenericObject());
                     break;
             }
-            ExpireSolution(true);
+
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
+            ExpireSolution(true);
             this.OnDisplayExpired(true);
         }
         #endregion
@@ -208,15 +197,29 @@ namespace AdSecGH.Components
         {
             IQuantity quantity = new Length(0, lengthUnit);
             unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
-            Params.Input[1].Name = "Diameter [" + unitAbbreviation + "]";
 
-            if (_mode == FoldMode.Bundle)
+            if (_mode == FoldMode.Constant)
             {
-                Params.Input[2].Name = "Count";
-                Params.Input[2].NickName = "N";
-                Params.Input[2].Description = "Count per bundle (1, 2, 3 or 4)";
-                Params.Input[2].Access = GH_ParamAccess.item;
-                Params.Input[2].Optional = false;
+                Params.Input[0].Name = "Thickness [" + unitAbbreviation + "]";
+                Params.Input[0].NickName = "t";
+                Params.Input[0].Description = "Web thickness";
+                Params.Input[0].Access = GH_ParamAccess.item;
+                Params.Input[0].Optional = false;
+
+            }
+            if (_mode == FoldMode.Tapered)
+            {
+                Params.Input[0].Name = "Top Thickness [" + unitAbbreviation + "]";
+                Params.Input[0].NickName = "Tt";
+                Params.Input[0].Description = "Web thickness at the top";
+                Params.Input[0].Access = GH_ParamAccess.item;
+                Params.Input[0].Optional = false;
+
+                Params.Input[1].Name = "Bottom Thickness [" + unitAbbreviation + "]";
+                Params.Input[1].NickName = "Bt";
+                Params.Input[1].Description = "Web thickness at the bottom";
+                Params.Input[1].Access = GH_ParamAccess.item;
+                Params.Input[1].Optional = false;
             }
         }
         #endregion

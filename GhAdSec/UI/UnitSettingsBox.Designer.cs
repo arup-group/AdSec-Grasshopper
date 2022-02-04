@@ -66,7 +66,7 @@ namespace AdSecGH.UI
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 22.55442F));
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 31.47128F));
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.tableLayoutPanel.Controls.Add(this.labelDescription, 3, 5);
+            this.tableLayoutPanel.Controls.Add(this.labelDescription, 2, 5);
             this.tableLayoutPanel.Controls.Add(this.labelCurvature, 3, 2);
             this.tableLayoutPanel.Controls.Add(this.labelBendingStiffness, 3, 1);
             this.tableLayoutPanel.Controls.Add(this.labelAxialStiffness, 3, 0);
@@ -101,15 +101,15 @@ namespace AdSecGH.UI
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel.Size = new System.Drawing.Size(583, 187);
+            this.tableLayoutPanel.Size = new System.Drawing.Size(583, 180);
             this.tableLayoutPanel.TabIndex = 0;
             // 
             // labelDescription
             // 
             this.labelDescription.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.tableLayoutPanel.SetColumnSpan(this.labelDescription, 2);
+            this.tableLayoutPanel.SetColumnSpan(this.labelDescription, 3);
             this.labelDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelDescription.Location = new System.Drawing.Point(257, 159);
+            this.labelDescription.Location = new System.Drawing.Point(257, 155);
             this.labelDescription.Margin = new System.Windows.Forms.Padding(6, 2, 4, 4);
             this.labelDescription.MaximumSize = new System.Drawing.Size(300, 280);
             this.labelDescription.Name = "labelDescription";
@@ -117,6 +117,7 @@ namespace AdSecGH.UI
             this.labelDescription.TabIndex = 39;
             this.labelDescription.Text = "Description";
             this.labelDescription.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelDescription.Click += new System.EventHandler(this.labelDescription_Click);
             // 
             // labelCurvature
             // 
@@ -343,7 +344,7 @@ namespace AdSecGH.UI
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(3, 161);
+            this.okButton.Location = new System.Drawing.Point(3, 154);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(60, 23);
             this.okButton.TabIndex = 24;
@@ -354,7 +355,7 @@ namespace AdSecGH.UI
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(69, 161);
+            this.cancelButton.Location = new System.Drawing.Point(69, 154);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(73, 23);
             this.cancelButton.TabIndex = 31;
@@ -365,7 +366,7 @@ namespace AdSecGH.UI
             // 
             this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.pictureBox1.Image = global::AdSecGH.Properties.Resources.Units;
-            this.pictureBox1.Location = new System.Drawing.Point(549, 156);
+            this.pictureBox1.Location = new System.Drawing.Point(549, 153);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(31, 24);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -378,9 +379,9 @@ namespace AdSecGH.UI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(601, 205);
+            this.ClientSize = new System.Drawing.Size(601, 198);
             this.Controls.Add(this.tableLayoutPanel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "UnitSettingsBox";

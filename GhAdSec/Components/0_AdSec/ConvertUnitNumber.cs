@@ -31,9 +31,9 @@ namespace AdSecGH.Components
         public ConvertUnitNumber()
           : base("Convert UnitNumber", "ConvertUnit", "Convert a unit number (quantity) into another unit",
                 Ribbon.CategoryName.Name(),
-                Ribbon.SubCategoryName.Cat0())
+                Ribbon.SubCategoryName.Cat9())
         { this.Hidden = true; } // sets the initial state of the component to hidden
-        public override GH_Exposure Exposure => GH_Exposure.secondary;
+        public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
         protected override System.Drawing.Bitmap Icon => Properties.Resources.ConvertUnitNumber;
         #endregion

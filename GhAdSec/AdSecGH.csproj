@@ -79,28 +79,28 @@
     <Compile Include="Components\1_Properties\CreateCustomMaterial.cs" />
     <Compile Include="Components\1_Properties\EditCrackParams.cs" />
     <Compile Include="Components\1_Properties\EditMaterial.cs" />
-    <Compile Include="Components\2_Section\CreateProfile.cs" />
-    <Compile Include="Components\2_Section\CreatePoint.cs" />
-    <Compile Include="Components\2_Section\CreateRebarGroup.cs" />
-    <Compile Include="Components\2_Section\CreateRebarSpacing.cs" />
-    <Compile Include="Components\2_Section\CreateRebar.cs" />
-    <Compile Include="Components\2_Section\CreateRebarLayout.cs" />
-    <Compile Include="Components\2_Section\CreateProfileWeb.cs" />
-    <Compile Include="Components\2_Section\CreateProfileFlange.cs" />
-    <Compile Include="Components\2_Section\EditSection.cs" />
-    <Compile Include="Components\2_Section\CreateSection.cs" />
-    <Compile Include="Components\2_Section\CreateSubComponent.cs" />
-    <Compile Include="Components\2_Section\EditProfile.cs" />
-    <Compile Include="Components\3_Loads\CreateDeformation.cs" />
-    <Compile Include="Components\3_Loads\CreatePreLoad.cs" />
-    <Compile Include="Components\3_Loads\CreateLoad.cs" />
-    <Compile Include="Components\4_Solution\Analyse.cs" />
-    <Compile Include="Components\5_Results\NM-diagram.cs" />
-    <Compile Include="Components\2_Section\FlattenRebar.cs" />
-    <Compile Include="Components\5_Results\RebarStressStrain.cs" />
-    <Compile Include="Components\5_Results\ConcreteStressStrain.cs" />
-    <Compile Include="Components\5_Results\ResultsSLS.cs" />
-    <Compile Include="Components\5_Results\ResultsULS.cs" />
+    <Compile Include="Components\2_Profile\CreateProfile.cs" />
+    <Compile Include="Components\2_Rebar\CreatePoint.cs" />
+    <Compile Include="Components\2_Rebar\CreateRebarGroup.cs" />
+    <Compile Include="Components\2_Rebar\CreateRebarSpacing.cs" />
+    <Compile Include="Components\2_Rebar\CreateRebar.cs" />
+    <Compile Include="Components\2_Rebar\CreateRebarLayout.cs" />
+    <Compile Include="Components\2_Profile\CreateProfileWeb.cs" />
+    <Compile Include="Components\2_Profile\CreateProfileFlange.cs" />
+    <Compile Include="Components\3_Section\EditSection.cs" />
+    <Compile Include="Components\3_Section\CreateSection.cs" />
+    <Compile Include="Components\3_Section\CreateSubComponent.cs" />
+    <Compile Include="Components\2_Profile\EditProfile.cs" />
+    <Compile Include="Components\4_Loads\CreateDeformation.cs" />
+    <Compile Include="Components\4_Loads\CreatePreLoad.cs" />
+    <Compile Include="Components\4_Loads\CreateLoad.cs" />
+    <Compile Include="Components\5_Solution\Analyse.cs" />
+    <Compile Include="Components\6_Results\NM-diagram.cs" />
+    <Compile Include="Components\3_Section\FlattenRebar.cs" />
+    <Compile Include="Components\6_Results\RebarStressStrain.cs" />
+    <Compile Include="Components\6_Results\ConcreteStressStrain.cs" />
+    <Compile Include="Components\6_Results\ResultsSLS.cs" />
+    <Compile Include="Components\6_Results\ResultsULS.cs" />
     <Compile Include="AdSecGHInfo.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
@@ -322,6 +322,7 @@
   <ItemGroup>
     <None Include="Properties\Icons\Icons\StressStrainRebar.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
