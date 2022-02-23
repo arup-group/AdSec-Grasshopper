@@ -61,10 +61,10 @@ namespace AdSecGH.UI
             // 
             this.tableLayoutPanel.ColumnCount = 6;
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.06399F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 31.47128F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 2.439024F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 22.55442F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 31.47128F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.29433F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 1.462523F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18.46435F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30.71298F));
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tableLayoutPanel.Controls.Add(this.labelDescription, 2, 5);
             this.tableLayoutPanel.Controls.Add(this.labelCurvature, 3, 2);
@@ -100,7 +100,6 @@ namespace AdSecGH.UI
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel.Size = new System.Drawing.Size(583, 180);
             this.tableLayoutPanel.TabIndex = 0;
             // 
@@ -109,11 +108,11 @@ namespace AdSecGH.UI
             this.labelDescription.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.tableLayoutPanel.SetColumnSpan(this.labelDescription, 3);
             this.labelDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelDescription.Location = new System.Drawing.Point(257, 155);
+            this.labelDescription.Location = new System.Drawing.Point(276, 155);
             this.labelDescription.Margin = new System.Windows.Forms.Padding(6, 2, 4, 4);
             this.labelDescription.MaximumSize = new System.Drawing.Size(300, 280);
             this.labelDescription.Name = "labelDescription";
-            this.labelDescription.Size = new System.Drawing.Size(285, 17);
+            this.labelDescription.Size = new System.Drawing.Size(267, 17);
             this.labelDescription.TabIndex = 39;
             this.labelDescription.Text = "Description";
             this.labelDescription.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -122,11 +121,11 @@ namespace AdSecGH.UI
             // labelCurvature
             // 
             this.labelCurvature.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelCurvature.Location = new System.Drawing.Point(253, 66);
+            this.labelCurvature.Location = new System.Drawing.Point(280, 66);
             this.labelCurvature.Margin = new System.Windows.Forms.Padding(2, 6, 10, 0);
             this.labelCurvature.MaximumSize = new System.Drawing.Size(0, 17);
             this.labelCurvature.Name = "labelCurvature";
-            this.labelCurvature.Size = new System.Drawing.Size(111, 17);
+            this.labelCurvature.Size = new System.Drawing.Size(89, 17);
             this.labelCurvature.TabIndex = 28;
             this.labelCurvature.Text = "Curvature";
             this.labelCurvature.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
@@ -134,11 +133,11 @@ namespace AdSecGH.UI
             // labelBendingStiffness
             // 
             this.labelBendingStiffness.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelBendingStiffness.Location = new System.Drawing.Point(253, 36);
+            this.labelBendingStiffness.Location = new System.Drawing.Point(280, 36);
             this.labelBendingStiffness.Margin = new System.Windows.Forms.Padding(2, 6, 10, 0);
             this.labelBendingStiffness.MaximumSize = new System.Drawing.Size(0, 17);
             this.labelBendingStiffness.Name = "labelBendingStiffness";
-            this.labelBendingStiffness.Size = new System.Drawing.Size(111, 17);
+            this.labelBendingStiffness.Size = new System.Drawing.Size(89, 17);
             this.labelBendingStiffness.TabIndex = 27;
             this.labelBendingStiffness.Text = "Bending Stiffness";
             this.labelBendingStiffness.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
@@ -146,11 +145,11 @@ namespace AdSecGH.UI
             // labelAxialStiffness
             // 
             this.labelAxialStiffness.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelAxialStiffness.Location = new System.Drawing.Point(253, 6);
+            this.labelAxialStiffness.Location = new System.Drawing.Point(280, 6);
             this.labelAxialStiffness.Margin = new System.Windows.Forms.Padding(2, 6, 10, 0);
             this.labelAxialStiffness.MaximumSize = new System.Drawing.Size(0, 17);
             this.labelAxialStiffness.Name = "labelAxialStiffness";
-            this.labelAxialStiffness.Size = new System.Drawing.Size(111, 17);
+            this.labelAxialStiffness.Size = new System.Drawing.Size(89, 17);
             this.labelAxialStiffness.TabIndex = 26;
             this.labelAxialStiffness.Text = "Axial Stiffness";
             this.labelAxialStiffness.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
@@ -221,7 +220,7 @@ namespace AdSecGH.UI
             this.comboBoxStrain.FormattingEnabled = true;
             this.comboBoxStrain.Location = new System.Drawing.Point(69, 123);
             this.comboBoxStrain.Name = "comboBoxStrain";
-            this.comboBoxStrain.Size = new System.Drawing.Size(166, 21);
+            this.comboBoxStrain.Size = new System.Drawing.Size(198, 21);
             this.comboBoxStrain.TabIndex = 34;
             this.comboBoxStrain.SelectedIndexChanged += new System.EventHandler(this.comboBoxStrain_SelectedIndexChanged);
             // 
@@ -231,7 +230,7 @@ namespace AdSecGH.UI
             this.comboBoxStress.FormattingEnabled = true;
             this.comboBoxStress.Location = new System.Drawing.Point(69, 93);
             this.comboBoxStress.Name = "comboBoxStress";
-            this.comboBoxStress.Size = new System.Drawing.Size(166, 21);
+            this.comboBoxStress.Size = new System.Drawing.Size(198, 21);
             this.comboBoxStress.TabIndex = 33;
             this.comboBoxStress.SelectedIndexChanged += new System.EventHandler(this.comboBoxStress_SelectedIndexChanged);
             // 
@@ -241,7 +240,7 @@ namespace AdSecGH.UI
             this.comboBoxMoment.FormattingEnabled = true;
             this.comboBoxMoment.Location = new System.Drawing.Point(69, 63);
             this.comboBoxMoment.Name = "comboBoxMoment";
-            this.comboBoxMoment.Size = new System.Drawing.Size(166, 21);
+            this.comboBoxMoment.Size = new System.Drawing.Size(198, 21);
             this.comboBoxMoment.TabIndex = 32;
             this.comboBoxMoment.SelectedIndexChanged += new System.EventHandler(this.comboBoxMoment_SelectedIndexChanged);
             // 
@@ -251,7 +250,7 @@ namespace AdSecGH.UI
             this.comboBoxForce.FormattingEnabled = true;
             this.comboBoxForce.Location = new System.Drawing.Point(69, 33);
             this.comboBoxForce.Name = "comboBoxForce";
-            this.comboBoxForce.Size = new System.Drawing.Size(166, 21);
+            this.comboBoxForce.Size = new System.Drawing.Size(198, 21);
             this.comboBoxForce.TabIndex = 29;
             this.comboBoxForce.SelectedIndexChanged += new System.EventHandler(this.comboBoxForce_SelectedIndexChanged);
             // 
@@ -261,7 +260,7 @@ namespace AdSecGH.UI
             this.comboBoxLength.FormattingEnabled = true;
             this.comboBoxLength.Location = new System.Drawing.Point(69, 3);
             this.comboBoxLength.Name = "comboBoxLength";
-            this.comboBoxLength.Size = new System.Drawing.Size(166, 21);
+            this.comboBoxLength.Size = new System.Drawing.Size(198, 21);
             this.comboBoxLength.TabIndex = 30;
             this.comboBoxLength.SelectedIndexChanged += new System.EventHandler(this.comboBoxLength_SelectedIndexChanged);
             // 
@@ -270,9 +269,9 @@ namespace AdSecGH.UI
             this.tableLayoutPanel.SetColumnSpan(this.comboBoxCurvature, 2);
             this.comboBoxCurvature.Dock = System.Windows.Forms.DockStyle.Fill;
             this.comboBoxCurvature.FormattingEnabled = true;
-            this.comboBoxCurvature.Location = new System.Drawing.Point(377, 63);
+            this.comboBoxCurvature.Location = new System.Drawing.Point(382, 63);
             this.comboBoxCurvature.Name = "comboBoxCurvature";
-            this.comboBoxCurvature.Size = new System.Drawing.Size(203, 21);
+            this.comboBoxCurvature.Size = new System.Drawing.Size(198, 21);
             this.comboBoxCurvature.TabIndex = 37;
             this.comboBoxCurvature.SelectedIndexChanged += new System.EventHandler(this.comboBoxCurvature_SelectedIndexChanged);
             // 
@@ -281,9 +280,9 @@ namespace AdSecGH.UI
             this.tableLayoutPanel.SetColumnSpan(this.comboBoxBendingStiffness, 2);
             this.comboBoxBendingStiffness.Dock = System.Windows.Forms.DockStyle.Fill;
             this.comboBoxBendingStiffness.FormattingEnabled = true;
-            this.comboBoxBendingStiffness.Location = new System.Drawing.Point(377, 33);
+            this.comboBoxBendingStiffness.Location = new System.Drawing.Point(382, 33);
             this.comboBoxBendingStiffness.Name = "comboBoxBendingStiffness";
-            this.comboBoxBendingStiffness.Size = new System.Drawing.Size(203, 21);
+            this.comboBoxBendingStiffness.Size = new System.Drawing.Size(198, 21);
             this.comboBoxBendingStiffness.TabIndex = 36;
             this.comboBoxBendingStiffness.SelectedIndexChanged += new System.EventHandler(this.comboBoxBendingStiffness_SelectedIndexChanged);
             // 
@@ -292,16 +291,16 @@ namespace AdSecGH.UI
             this.tableLayoutPanel.SetColumnSpan(this.comboBoxAxialStiffness, 2);
             this.comboBoxAxialStiffness.Dock = System.Windows.Forms.DockStyle.Fill;
             this.comboBoxAxialStiffness.FormattingEnabled = true;
-            this.comboBoxAxialStiffness.Location = new System.Drawing.Point(377, 3);
+            this.comboBoxAxialStiffness.Location = new System.Drawing.Point(382, 3);
             this.comboBoxAxialStiffness.Name = "comboBoxAxialStiffness";
-            this.comboBoxAxialStiffness.Size = new System.Drawing.Size(203, 21);
+            this.comboBoxAxialStiffness.Size = new System.Drawing.Size(198, 21);
             this.comboBoxAxialStiffness.TabIndex = 35;
             this.comboBoxAxialStiffness.SelectedIndexChanged += new System.EventHandler(this.comboBoxAxialStiffness_SelectedIndexChanged);
             // 
             // button1
             // 
             this.button1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.button1.Location = new System.Drawing.Point(285, 93);
+            this.button1.Location = new System.Drawing.Point(301, 93);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(54, 23);
             this.button1.TabIndex = 40;
@@ -311,7 +310,7 @@ namespace AdSecGH.UI
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(377, 93);
+            this.button2.Location = new System.Drawing.Point(382, 93);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(54, 23);
             this.button2.TabIndex = 41;
@@ -322,7 +321,7 @@ namespace AdSecGH.UI
             // button3
             // 
             this.button3.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.button3.Location = new System.Drawing.Point(285, 123);
+            this.button3.Location = new System.Drawing.Point(301, 123);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(54, 23);
             this.button3.TabIndex = 42;
@@ -332,7 +331,7 @@ namespace AdSecGH.UI
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(377, 123);
+            this.button4.Location = new System.Drawing.Point(382, 123);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(54, 23);
             this.button4.TabIndex = 43;
@@ -366,9 +365,9 @@ namespace AdSecGH.UI
             // 
             this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.pictureBox1.Image = global::AdSecGH.Properties.Resources.Units;
-            this.pictureBox1.Location = new System.Drawing.Point(549, 153);
+            this.pictureBox1.Location = new System.Drawing.Point(550, 153);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(31, 24);
+            this.pictureBox1.Size = new System.Drawing.Size(30, 24);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBox1.TabIndex = 38;
             this.pictureBox1.TabStop = false;

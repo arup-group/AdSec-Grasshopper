@@ -397,12 +397,20 @@ namespace AdSecGH.Parameters
                 groups.Add(grp.Group);
 
                 // check if cover of group is bigger than any previous ones
-                if(grp.Cover != null)
+                try
                 {
-                    if(cover == null || grp.Cover.UniformCover > cover.UniformCover)
+                    ILinkGroup link = (ILinkGroup)grp.Group;
+                    if (grp.Cover != null)
                     {
-                        cover = grp.Cover;
+                        if (cover == null || grp.Cover.UniformCover > cover.UniformCover)
+                        {
+                            cover = grp.Cover;
+                        }
                     }
+                }
+                catch (Exception)
+                {
+                    // not a link group, so we don't set section's cover
                 }
             }
             return new Tuple<Oasys.Collections.IList<IGroup>, ICover>(groups, cover);

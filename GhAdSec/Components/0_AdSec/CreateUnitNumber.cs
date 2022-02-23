@@ -86,6 +86,7 @@ namespace AdSecGH.Components
                 Units.AdSecUnits unit = (Units.AdSecUnits)Enum.Parse(typeof(Units.AdSecUnits), selecteditems[0]);
                 UpdateQuantityUnitTypeFromUnitString(unit);
                 UpdateMeasureDictionary();
+                selecteditems[1] = selectedMeasure.ToString();
             }
             else // if change is made to the measure of a unit
             {
@@ -184,8 +185,6 @@ namespace AdSecGH.Components
             }
             // update dropdown list
             dropdownitems[1] = measureDictionary.Keys.ToList();
-
-            selectedMeasure = measureDictionary[selecteditems.Last()];
         }
 
         private void UpdateUIFromSelectedItems()
@@ -195,6 +194,7 @@ namespace AdSecGH.Components
             UpdateQuantityUnitTypeFromUnitString(unit);
             UpdateMeasureDictionary();
             UpdateUnitMeasureAndAbbreviation();
+            selectedMeasure = measureDictionary[selecteditems.Last()];
 
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             CreateAttributes();

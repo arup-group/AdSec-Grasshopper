@@ -1,16 +1,17 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using AdSecGH;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AdSecGH")]
-[assembly: AssemblyDescription("AdSec plugin for Grasshopper")]
+[assembly: AssemblyTitle(AdSecGHInfo.ProductName)]
+[assembly: AssemblyDescription(AdSecGHInfo.Company + " " + AdSecGHInfo.ProductName + " Grasshopper plugin")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Oasys")]
-[assembly: AssemblyProduct("AdSecGH")]
-[assembly: AssemblyCopyright("Copyright © Oasys 1985 - 2021")]
+[assembly: AssemblyCompany(AdSecGHInfo.Company)]
+[assembly: AssemblyProduct(AdSecGHInfo.ProductName)]
+[assembly: AssemblyCopyright(AdSecGHInfo.Copyright)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +33,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion(AdSecGHInfo.Vers)]
+[assembly: AssemblyFileVersion(AdSecGHInfo.Vers + ".0")]

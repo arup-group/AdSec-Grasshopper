@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Timers;
 using System.Windows.Forms;
 using Grasshopper.Kernel;
-using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
 
 namespace AdSecGH.Helpers
 {
@@ -22,18 +14,33 @@ namespace AdSecGH.Helpers
         bool AppendToExistingMenu = false;
         public Loader() { }
 
-        internal void LoadingAdSecMenuAndReferences()
+        internal void CreateMainMenuItem()
         {
             menuLoadTimer = new System.Timers.Timer(500);
-            menuLoadTimer.Start();
             menuLoadTimer.Elapsed += TryAddMenuItem;
             menuTrimTimer = new System.Timers.Timer(500);
             menuTrimTimer.Elapsed += TrimMenuItem;
+
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            Assembly[] assemblies = currentDomain.GetAssemblies();
+            foreach (Assembly ass in currentDomain.GetAssemblies())
+            {
+                if (ass.FullName.StartsWith("GsaGH"))
+                    AppendToExistingMenu = true;
+            }
+
+            if (!AppendToExistingMenu)
+                menuLoadTimer.Start();
+            else
+                menuTrimTimer.Start();
         }
 
         private void TryAddMenuItem(object sender, ElapsedEventArgs e)
         {
             if (Grasshopper.Instances.DocumentEditor == null) return;
+            if (Grasshopper.Instances.ActiveCanvas == null) return;
+            if (Grasshopper.Instances.ComponentServer.
+                FindAssembly(new Guid("f815c29a-e1eb-4ca6-9e56-0554777ff9c9")) == null) return;
 
             if (MenuHasBeenAdded)
             {
@@ -42,16 +49,7 @@ namespace AdSecGH.Helpers
                 return;
             }
 
-            // check if GSA plugin is installed, then we want to append to existing menu
-            GH_AssemblyInfo gsaPlugin = Grasshopper.Instances.ComponentServer.FindAssembly(new Guid("a3b08c32-f7de-4b00-b415-f8b466f05e9f"));
-            if (gsaPlugin != null && ((int)gsaPlugin.Version[0] < 1 & (int)gsaPlugin.Version[2] < 4))
-            {
-                AppendToExistingMenu = true;
-                menuLoadTimer.Stop();
-                menuTrimTimer.Start();
-                return;
-            }
-            else
+            if (!AppendToExistingMenu)
             {
                 ToolStripMenuItem oasysMenu = AddMenuItem(new ToolStripMenuItem("Oasys"), sender, e);
 
@@ -62,13 +60,15 @@ namespace AdSecGH.Helpers
                 {
                     mainMenu.Items.Insert(mainMenu.Items.Count - 2, oasysMenu);
                     MenuHasBeenAdded = true;
-                    menuLoadTimer.Stop();
-                    menuTrimTimer.Start();
+                    
                 }
                 catch (Exception)
                 {
                 }
             }
+            
+            menuLoadTimer.Stop();
+            menuTrimTimer.Start();
         }
 
         private ToolStripMenuItem AddMenuItem(ToolStripMenuItem oasysMenu, object sender, ElapsedEventArgs e)
@@ -91,6 +91,9 @@ namespace AdSecGH.Helpers
 
         private void TrimMenuItem(object sender, ElapsedEventArgs e)
         {
+            if (Grasshopper.Instances.DocumentEditor == null) return;
+            if (Grasshopper.Instances.ActiveCanvas == null) return;
+
             var mainMenu = Grasshopper.Instances.DocumentEditor.MainMenuStrip;
             if (AppendToExistingMenu)
             {
