@@ -148,6 +148,9 @@
   <data name="CreateProfile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\CreateProfile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="CreateSection" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\CreateSection.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="CreateUnitNumber" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\CreateUnitNumber.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -190,6 +193,9 @@
   <data name="Prestress" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\Prestress.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ProfileInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Icons\ProfileInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Rebar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\Rebar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -207,9 +213,6 @@
   </data>
   <data name="SaveAdSec" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\SaveAdSec.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Section" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Icons\Section.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SectionParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Icons\SectionParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

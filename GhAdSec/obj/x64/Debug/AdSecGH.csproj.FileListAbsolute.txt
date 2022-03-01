@@ -51,7 +51,6 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSecGH.pdb
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.Properties.Resources.resources
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.pdb
-C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.UI.AboutAdSecBox.resources
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.UI.UnitSettingsBox.resources
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\addata_AdSec_API.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSecLogic_AdSec_API.dll
@@ -61,3 +60,4 @@ C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\OaNumeric_A
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\OaUtil_AdSec_API.dll
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\bin\x64\Debug\AdSec_IO.pdb
 C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.csproj.CopyComplete
+C:\Users\Kristjan.Nielsen\source\repos\GhAdSec\GhAdSec\obj\x64\Debug\AdSecGH.UI.AboutBox.resources

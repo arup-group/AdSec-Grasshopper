@@ -79,6 +79,7 @@
     <Compile Include="Components\1_Properties\CreateCustomMaterial.cs" />
     <Compile Include="Components\1_Properties\EditCrackParams.cs" />
     <Compile Include="Components\1_Properties\EditMaterial.cs" />
+    <Compile Include="Components\2_Profile\ProfileProperties.cs" />
     <Compile Include="Components\2_Profile\CreateProfile.cs" />
     <Compile Include="Components\2_Rebar\CreatePoint.cs" />
     <Compile Include="Components\2_Rebar\CreateRebarGroup.cs" />
@@ -110,7 +111,7 @@
     <Compile Include="Parameters\AdSecSection.cs" />
     <Compile Include="Parameters\CrackGoo.cs" />
     <Compile Include="Parameters\PointGoo.cs" />
-    <Compile Include="Helpers\_Settings.cs" />
+    <Compile Include="Helpers\LoadMainMenu.cs" />
     <Compile Include="Parameters\SolutionGoo.cs" />
     <Compile Include="Parameters\DeformationGoo.cs" />
     <Compile Include="Parameters\LoadGoo.cs" />
@@ -322,7 +323,12 @@
   <ItemGroup>
     <None Include="Properties\Icons\Icons\StressStrainRebar.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CreateSection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\ProfileInfo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

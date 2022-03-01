@@ -27,14 +27,14 @@ namespace AdSecGH.Components
         // including name, exposure level and icon
         public override Guid ComponentGuid => new Guid("af6a8179-5e5f-498c-a83c-e98b90d4464c");
         public CreateSection()
-          : base("Section", "Section", "Create an AdSec Section",
+          : base("Create Section", "Section", "Create an AdSec Section",
                 Ribbon.CategoryName.Name(),
                 Ribbon.SubCategoryName.Cat4())
         { this.Hidden = false; } // sets the initial state of the component to hidden
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
-        protected override System.Drawing.Bitmap Icon => Properties.Resources.Section;
+        protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateSection;
         #endregion
 
         #region Custom UI

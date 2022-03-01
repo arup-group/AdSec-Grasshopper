@@ -12,9 +12,9 @@ using System.Windows.Forms;
 
 namespace AdSecGH.UI
 {
-    partial class AboutAdSecBox : Form
+    partial class AboutBox : Form
     {
-        public AboutAdSecBox()
+        public AboutBox()
         {
             GH_AssemblyInfo adsecPlugin = Grasshopper.Instances.ComponentServer.FindAssembly(new Guid("f815c29a-e1eb-4ca6-9e56-0554777ff9c9"));
 

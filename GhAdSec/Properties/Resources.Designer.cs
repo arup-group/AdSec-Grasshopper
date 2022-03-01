@@ -163,6 +163,16 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CreateSection {
+            get {
+                object obj = ResourceManager.GetObject("CreateSection", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap CreateUnitNumber {
             get {
                 object obj = ResourceManager.GetObject("CreateUnitNumber", resourceCulture);
@@ -303,6 +313,16 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ProfileInfo {
+            get {
+                object obj = ResourceManager.GetObject("ProfileInfo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Rebar {
             get {
                 object obj = ResourceManager.GetObject("Rebar", resourceCulture);
@@ -356,16 +376,6 @@ namespace AdSecGH.Properties {
         internal static System.Drawing.Bitmap SaveAdSec {
             get {
                 object obj = ResourceManager.GetObject("SaveAdSec", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Section {
-            get {
-                object obj = ResourceManager.GetObject("Section", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
