@@ -88,7 +88,8 @@ namespace AdSecGH.Components
                 // try cast directly to quantity type
                 if (gh_typ.Value is AdSecLoadGoo)
                 {
-                    load = (AdSecLoadGoo)gh_typ.Value;
+                    AdSecLoadGoo ld = (AdSecLoadGoo)gh_typ.Value;
+                    load = new AdSecLoadGoo(ILoad.Create(ld.Value.X, ld.Value.YY, ld.Value.ZZ));
                 }
                 else
                 {
