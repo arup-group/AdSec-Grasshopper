@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/AdSec-Grasshopper/v17/.suo
+*.suo
+/.vs/VSWorkspaceState.json

@@ -929,11 +929,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\AdSecGH.csproj",
+      "projectUniqueName": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\AdSec-Grasshopper\\GhAdSec\\AdSecGH.csproj",
       "projectName": "AdSecGH",
-      "projectPath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\AdSecGH.csproj",
+      "projectPath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\AdSec-Grasshopper\\GhAdSec\\AdSecGH.csproj",
       "packagesPath": "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\obj\\",
+      "outputPath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\AdSec-Grasshopper\\GhAdSec\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "configFilePaths": [
@@ -945,9 +945,8 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Users\\Kristjan.Nielsen\\source\\repos\\NugetTestPackages": {},
-        "https://api.nuget.org/v3/index.json": {},
-        "https://pkgs.dev.azure.com/arupcomputedevops/_packaging/arupcomputedevops/nuget/v3/index.json": {}
+        "C:\\Users\\Kristjan.Nielsen\\source\\nuget": {},
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net472": {

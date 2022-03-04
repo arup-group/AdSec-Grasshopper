@@ -1,7 +1,7 @@
 ﻿using AdSecGH;
 namespace AdSecGH.UI
 {
-    partial class AboutAdSecBox
+    partial class AboutBox
     {
         /// <summary>
         /// Required designer variable.
