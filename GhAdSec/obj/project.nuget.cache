@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nfn/syOQz0MWx1ZQh37GazQKRRXFbeQOlu1CllFKOp/TcZbJit+vmshgqdSN61wWHH8RRbZszSAaW2G4OneUWg==",
+  "dgSpecHash": "zS0MktdZ4t6o2VCbTeBcKSZz5PzVNGrA+X7TCJWhflky5B1Ex3QacJMy8mnvLr4mrAxT8Pz7LWqHooqTxbsG5A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\GhAdSec\\GhAdSec\\AdSecGH.csproj",
+  "projectFilePath": "C:\\Users\\Kristjan.Nielsen\\source\\repos\\AdSec-Grasshopper\\GhAdSec\\AdSecGH.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\adsec\\1.0.2.720\\adsec.1.0.2.720.nupkg.sha512",
     "C:\\Users\\Kristjan.Nielsen\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",

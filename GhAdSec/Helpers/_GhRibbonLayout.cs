@@ -69,7 +69,7 @@ namespace AdSecGH.Components.Ribbon
 
 		public static string Cat8()
 		{
-			return "test";
+			return "Lab";
 		}
 
 		public static string Cat9()

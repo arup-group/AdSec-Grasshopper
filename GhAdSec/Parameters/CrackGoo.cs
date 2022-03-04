@@ -25,6 +25,7 @@ using Oasys.AdSec.Materials;
 using Oasys.Profiles;
 using Oasys.AdSec;
 using UnitsNet;
+using UnitsNet.GH;
 
 namespace AdSecGH.Parameters
 {
@@ -128,6 +129,18 @@ namespace AdSecGH.Parameters
                 return true;
             }
 
+            if (typeof(TQ).IsAssignableFrom(typeof(Vector3d)))
+            {
+                target = (TQ)(object)new Vector3d(this.Value.Width.As(Units.LengthUnit), m_point.Y, m_point.Z);
+                return true;
+            }
+
+            if (typeof(TQ).IsAssignableFrom(typeof(GH_Vector)))
+            {
+                target = (TQ)(object)new GH_Vector(new Vector3d(this.Value.Width.As(Units.LengthUnit), m_point.Y, m_point.Z));
+                return true;
+            }
+
             if (typeof(TQ).IsAssignableFrom(typeof(Line)))
             {
                 target = (TQ)(object)m_line;
@@ -137,6 +150,18 @@ namespace AdSecGH.Parameters
             if (typeof(TQ).IsAssignableFrom(typeof(GH_Line)))
             {
                 target = (TQ)(object)new GH_Line(m_line);
+                return true;
+            }
+
+            if (typeof(TQ).IsAssignableFrom(typeof(GH_UnitNumber)))
+            {
+                target = (TQ)(object)new GH_UnitNumber(this.Value.Width);
+                return true;
+            }
+
+            if (typeof(TQ).IsAssignableFrom(typeof(GH_Number)))
+            {
+                target = (TQ)(object)new GH_Number(this.Value.Width.As(Units.LengthUnit));
                 return true;
             }
 

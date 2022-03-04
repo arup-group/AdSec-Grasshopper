@@ -103,6 +103,7 @@
     <Compile Include="Components\6_Results\ResultsSLS.cs" />
     <Compile Include="Components\6_Results\ResultsULS.cs" />
     <Compile Include="AdSecGHInfo.cs" />
+    <Compile Include="Components\Lab\FindCrackLoad.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
@@ -328,6 +329,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\ProfileInfo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\CrackLoad.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
