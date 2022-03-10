@@ -99,11 +99,11 @@ namespace AdSecGH.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddGenericParameter("Top Rebars", "TRs", "Top Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Left Side Rebars", "LRs", "Left Side Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Right Side Rebars", "RRs", "Right Side Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Bottom Rebars", "BRs", "Bottom Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Cover [" + unitAbbreviation + "]", "Cov", "The reinforcement-free zone around the faces of a profile.", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Top Rebars", "TRs", "Top Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Left Side Rebars", "LRs", "Left Side Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Right Side Rebars", "RRs", "Right Side Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Bottom Rebars", "BRs", "Bottom Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Cover [" + unitAbbreviation + "]", "Cov", "The reinforcement-free zone around the faces of a profile.", GH_ParamAccess.list);
             _mode = FoldMode.Template;
             // make all but last input optional
             for (int i = 0; i < pManager.ParamCount - 1; i++)
@@ -119,7 +119,7 @@ namespace AdSecGH.Components
             List<AdSecRebarGroupGoo> groups = new List<AdSecRebarGroupGoo>();
 
             // cover
-            ICover cover = ICover.Create(GetInput.Length(this, DA, this.Params.Input.Count - 1, lengthUnit));
+            List<ICover> covers = GetInput.Covers(this, DA, this.Params.Input.Count - 1, lengthUnit);
 
             switch (_mode)
             {
@@ -136,33 +136,29 @@ namespace AdSecGH.Components
                     if (this.Params.Input[0].SourceCount != 0)
                     {
                         ITemplateGroup grp = ITemplateGroup.Create(ITemplateGroup.Face.Top);
-                        grp.Layers.Add(GetInput.ILayer(this, DA, 0));
+                        grp.Layers = GetInput.ILayers(this, DA, 0);
                         groups.Add(new AdSecRebarGroupGoo(grp));
-                        groups.Last().Cover = cover;
                     }
                     // left
                     if (this.Params.Input[1].SourceCount != 0)
                     {
                         ITemplateGroup grp = ITemplateGroup.Create(ITemplateGroup.Face.LeftSide);
-                        grp.Layers.Add(GetInput.ILayer(this, DA, 1));
+                        grp.Layers = GetInput.ILayers(this, DA, 1);
                         groups.Add(new AdSecRebarGroupGoo(grp));
-                        groups.Last().Cover = cover;
                     }
                     // right
                     if (this.Params.Input[2].SourceCount != 0)
                     {
                         ITemplateGroup grp = ITemplateGroup.Create(ITemplateGroup.Face.RightSide);
-                        grp.Layers.Add(GetInput.ILayer(this, DA, 2));
+                        grp.Layers = GetInput.ILayers(this, DA, 2);
                         groups.Add(new AdSecRebarGroupGoo(grp));
-                        groups.Last().Cover = cover;
                     }
                     // bottom
                     if (this.Params.Input[3].SourceCount != 0)
                     {
                         ITemplateGroup grp = ITemplateGroup.Create(ITemplateGroup.Face.Bottom);
-                        grp.Layers.Add(GetInput.ILayer(this, DA, 3));
+                        grp.Layers = GetInput.ILayers(this, DA, 3);
                         groups.Add(new AdSecRebarGroupGoo(grp));
-                        groups.Last().Cover = cover;
                     }
                     
                     break;
@@ -178,9 +174,8 @@ namespace AdSecGH.Components
                     if (this.Params.Input[0].SourceCount != 0)
                     {
                         IPerimeterGroup grp = IPerimeterGroup.Create();
-                        grp.Layers.Add(GetInput.ILayer(this, DA, 0));
+                        grp.Layers = GetInput.ILayers(this, DA, 0);
                         groups.Add(new AdSecRebarGroupGoo(grp));
-                        groups.Last().Cover = cover;
                     }
                     break;
 
@@ -196,9 +191,15 @@ namespace AdSecGH.Components
                     {
                         ILinkGroup grp = ILinkGroup.Create(GetInput.IBarBundle(this, DA, 0));
                         groups.Add(new AdSecRebarGroupGoo(grp));
-                        groups.Last().Cover = cover;
                     }
                     break;
+            }
+            for (int i = 0; i < groups.Count; i++)
+            {
+                if (covers.Count > i)
+                    groups[i].Cover = covers[i];
+                else
+                    groups[i].Cover = covers.Last();
             }
 
             // set output
@@ -284,25 +285,25 @@ namespace AdSecGH.Components
                 Params.Input[0].Name = "Top Rebars";
                 Params.Input[0].NickName = "TRs";
                 Params.Input[0].Description = "Top Face AdSec Rebars Spaced in a Layer";
-                Params.Input[0].Access = GH_ParamAccess.item;
+                Params.Input[0].Access = GH_ParamAccess.list;
                 Params.Input[0].Optional = true;
 
                 Params.Input[1].Name = "Left Side Rebars";
                 Params.Input[1].NickName = "LRs";
                 Params.Input[1].Description = "Left Side Face AdSec Rebars Spaced in a Layer";
-                Params.Input[1].Access = GH_ParamAccess.item;
+                Params.Input[1].Access = GH_ParamAccess.list;
                 Params.Input[1].Optional = true;
 
                 Params.Input[2].Name = "Right Side Rebars";
                 Params.Input[2].NickName = "RRs";
                 Params.Input[2].Description = "Right Side Face AdSec Rebars Spaced in a Layer";
-                Params.Input[2].Access = GH_ParamAccess.item;
+                Params.Input[2].Access = GH_ParamAccess.list;
                 Params.Input[2].Optional = true;
 
                 Params.Input[3].Name = "Bottom Rebars";
                 Params.Input[3].NickName = "BRs";
                 Params.Input[3].Description = "Bottom Face AdSec Rebars Spaced in a Layer";
-                Params.Input[3].Access = GH_ParamAccess.item;
+                Params.Input[3].Access = GH_ParamAccess.list;
                 Params.Input[3].Optional = true;
             }
             if (_mode == FoldMode.Perimeter)
@@ -310,7 +311,7 @@ namespace AdSecGH.Components
                 Params.Input[0].Name = "Spaced Rebars";
                 Params.Input[0].NickName = "RbS";
                 Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
-                Params.Input[0].Access = GH_ParamAccess.item;
+                Params.Input[0].Access = GH_ParamAccess.list;
                 Params.Input[0].Optional = false;
             }
             if (_mode == FoldMode.Link)
@@ -328,7 +329,7 @@ namespace AdSecGH.Components
             Params.Input[Params.Input.Count - 1].Name = "Cover [" + unitAbbreviation + "]";
             Params.Input[Params.Input.Count - 1].NickName = "Cov";
             Params.Input[Params.Input.Count - 1].Description = "AdSec Rebars Spaced in a Layer";
-            Params.Input[Params.Input.Count - 1].Access = GH_ParamAccess.item;
+            Params.Input[Params.Input.Count - 1].Access = GH_ParamAccess.list;
             Params.Input[Params.Input.Count - 1].Optional = false;
         }
         #endregion
