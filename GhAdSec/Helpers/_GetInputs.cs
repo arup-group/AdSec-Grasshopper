@@ -180,8 +180,7 @@ namespace AdSecGH.Components
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainPoint or a Polyline");
-                        return null;
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainPoint or a Polyline");
                     }
                 }
                 if (pts.Count < 2)
@@ -569,6 +568,36 @@ namespace AdSecGH.Components
         {
             return AdSecRebarLayerGoo(owner, DA, inputid, isOptional).Value;
         }
+        internal static Oasys.Collections.IList<ILayer> ILayers(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        {
+            Oasys.Collections.IList<ILayer> grps = Oasys.Collections.IList<ILayer>.Create();
+            List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
+            if (DA.GetDataList(inputid, gh_typs))
+            {
+                for (int i = 0; i < gh_typs.Count; i++)
+                {
+                    if (gh_typs[i].Value is ILayer)
+                    {
+                        grps.Add((ILayer)gh_typs[i].Value);
+                    }
+                    else if (gh_typs[i].Value is AdSecRebarLayerGoo)
+                    {
+                        AdSecRebarLayerGoo rebarGoo = (AdSecRebarLayerGoo)gh_typs[i].Value;
+                        grps.Add(rebarGoo.Value);
+                    }
+                    else
+                    {
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarLayer");
+                    }
+                }
+                return grps;
+            }
+            else if (!isOptional)
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+            }
+            return null;
+        }
         internal static AdSecRebarGroupGoo ReinforcementGroup(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
@@ -609,8 +638,7 @@ namespace AdSecGH.Components
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarGroup");
-                        return null;
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarGroup");
                     }
                 }
                 return grps;
@@ -695,8 +723,7 @@ namespace AdSecGH.Components
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainPoint or Polyline");
-                        return null;
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainPoint or Polyline");
                     }
                 }
                 if (tempPts.Count > 0)
@@ -807,14 +834,12 @@ namespace AdSecGH.Components
                                     }
                                     else
                                     {
-                                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + ", index in input list: " + i + ", to Polyline");
-                                        return null;
+                                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + ", index in input list: " + i + ", to Polyline");
                                     }
                                 }
                                 else
                                 {
-                                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + ", index in input list: " + i + ", to Polyline");
-                                    return null;
+                                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + ", index in input list: " + i + ", to Polyline");
                                 }
                             }
 
@@ -965,8 +990,7 @@ namespace AdSecGH.Components
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to SubComponent or Section");
-                        return null;
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " to SubComponent or Section");
                     }
                 }
                 return subs;

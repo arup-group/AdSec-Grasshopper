@@ -130,10 +130,18 @@ namespace AdSecGH.Helpers
                             ToolStripMenuItem oasysMenu = mainMenu.Items[i] as ToolStripMenuItem;
                             if (oasysMenu.DropDown.Items.Count == n_existingMenus)
                             {
-                                // add separator first
-                                oasysMenu.DropDown.Items.Add(GH_DocumentObject.Menu_AppendSeparator(oasysMenu.DropDown));
-                                // append Compos menu items
-                                AddMenuItem(oasysMenu, sender, e);
+                                try
+                                {
+                                    // add separator first
+                                    oasysMenu.DropDown.Items.Add(GH_DocumentObject.Menu_AppendSeparator(oasysMenu.DropDown));
+                                    
+                                    // append menu items
+                                    AddMenuItem(oasysMenu, sender, e);
+                                }
+                                catch (Exception)
+                                {
+
+                                }
                             }
                         }
                     }
