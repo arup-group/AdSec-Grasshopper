@@ -23,6 +23,57 @@ namespace AdSecGH.Components
 {
     class GetInput
     {
+        internal static List<Length> Lengths(GH_Component owner, IGH_DataAccess DA, int inputid, LengthUnit docLengthUnit, bool isOptional = false)
+        {
+            List<Length> lengths = new List<Length>();
+            List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
+            if (DA.GetDataList(inputid, gh_typs))
+            {
+                for (int i = 0; i < gh_typs.Count; i++)
+                {
+                    GH_UnitNumber unitNumber = null;
+                    // try cast directly to quantity type
+                    if (gh_typs[i].Value is GH_UnitNumber)
+                    {
+                        unitNumber = (GH_UnitNumber)gh_typs[i].Value;
+                        // check that unit is of right type
+                        if (!unitNumber.Value.QuantityInfo.UnitType.Equals(typeof(LengthUnit)))
+                        {
+                            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Error in " + owner.Params.Input[inputid].NickName + " (item " + i + ") input: Wrong unit type"
+                                + Environment.NewLine + "Unit type is " + unitNumber.Value.QuantityInfo.Name + " but must be Length");
+                        }
+                        else
+                        {
+                            lengths.Add((Length)unitNumber.Value);
+                        }
+                    }
+                    // try cast to double
+                    else if (GH_Convert.ToDouble(gh_typs[i].Value, out double val, GH_Conversion.Both))
+                    {
+                        // create new quantity from default units
+                        lengths.Add(new Length(val, docLengthUnit));
+                    }
+                    else
+                    {
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i + ") to UnitNumber");
+                        return null;
+                    }
+                }
+                return lengths;
+            }
+            else if (!isOptional)
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+            }
+            return null;
+        }
+        internal static List<ICover> Covers(GH_Component owner, IGH_DataAccess DA, int inputid, LengthUnit docLengthUnit, bool isOptional = false)
+        {
+            List<ICover> covers = new List<ICover>();
+            foreach (Length length in Lengths(owner, DA, inputid, docLengthUnit, isOptional))
+                covers.Add(ICover.Create(length));
+            return covers;
+        }
         internal static Length Length(GH_Component owner, IGH_DataAccess DA, int inputid, LengthUnit docLengthUnit, bool isOptional = false)
         {
             GH_UnitNumber unitNumber = null;
@@ -587,7 +638,7 @@ namespace AdSecGH.Components
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarLayer");
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i + ") to RebarLayer");
                     }
                 }
                 return grps;
@@ -638,7 +689,7 @@ namespace AdSecGH.Components
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarGroup");
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i + ") to RebarGroup");
                     }
                 }
                 return grps;
@@ -723,7 +774,7 @@ namespace AdSecGH.Components
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainPoint or Polyline");
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i + ") to StressStrainPoint or Polyline");
                     }
                 }
                 if (tempPts.Count > 0)
@@ -834,12 +885,12 @@ namespace AdSecGH.Components
                                     }
                                     else
                                     {
-                                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + ", index in input list: " + i + ", to Polyline");
+                                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " (item " + i + ") to Polyline");
                                     }
                                 }
                                 else
                                 {
-                                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + ", index in input list: " + i + ", to Polyline");
+                                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " (item " + i + ") to Polyline");
                                 }
                             }
 
@@ -990,7 +1041,7 @@ namespace AdSecGH.Components
                     }
                     else
                     {
-                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " to SubComponent or Section");
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i + ") to SubComponent or Section");
                     }
                 }
                 return subs;
