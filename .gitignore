@@ -2,7 +2,11 @@
 *.suo
 /.vs/VSWorkspaceState.json
 GhAdSec/bin
-GhAdSec/obj
+GhAdSec/obj/x64
 AdSecGHAdapter/obj
 AdSecGHAdapter/bin
 packages
+GhAdSec/obj/AdSecGH.csproj.nuget.g.props
+GhAdSec/obj/AdSecGH.csproj.nuget.dgspec.json
+GhAdSec/obj/AdSecGH.csproj.nuget.g.targets
+GhAdSec/obj/project.assets.json

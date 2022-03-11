@@ -22,6 +22,7 @@ using Oasys.Units;
 using System.Drawing;
 using Rhino.Display;
 using Oasys.Geometry.Paths2D;
+using AdSecGHAdapter;
 
 namespace AdSecGH.Parameters
 {
@@ -104,7 +105,7 @@ namespace AdSecGH.Parameters
         internal List<List<Polyline>> m_subVoidEdges;
         internal List<DisplayMaterial> m_subColours;
 
-        internal void CreatePreview(IDesignCode code, ISection section, Plane local, 
+        internal void CreatePreview(IDesignCode code, ISection section, Plane local,
             ref Brep profile, ref Polyline profileEdge, ref List<Polyline> profileVoidEdges, ref DisplayMaterial profileColour,
             ref List<Brep> rebars, ref List<Circle> rebarEdges, ref List<Curve> linkEdges, ref List<DisplayMaterial> rebarColours,
             ref List<Brep> subProfiles, ref List<Polyline> subEdges, ref List<List<Polyline>> subVoidEdges, ref List<DisplayMaterial> subColours,
@@ -135,7 +136,7 @@ namespace AdSecGH.Parameters
                     offset.Y.As(Units.LengthUnit),
                     offset.Z.As(Units.LengthUnit));
             }
-            
+
 
             // primary profile
             profile = CreateBrepFromProfile(new AdSecProfileGoo(flat.Profile, local));
@@ -150,7 +151,7 @@ namespace AdSecGH.Parameters
             string mat = section.Material.ToString();
             mat = mat.Replace("Oasys.AdSec.Materials.I", "");
             mat = mat.Replace("_Implementation", "");
-            Enum.TryParse(mat, out profileType); 
+            Enum.TryParse(mat, out profileType);
             switch (profileType)
             {
                 case AdSecMaterial.AdSecMaterialType.Concrete:
@@ -285,7 +286,7 @@ namespace AdSecGH.Parameters
         {
             // transform to local plane
             Transform mapToLocal = Transform.PlaneToPlane(Plane.WorldYZ, local);
-            
+
             // get start point
             Point3d startPt = new Point3d(
                     0,
@@ -300,7 +301,7 @@ namespace AdSecGH.Parameters
                 {
                     // try cast to line type
                     ILineSegment<IPoint> line = (ILineSegment<IPoint>)path;
-                    
+
                     // get next point member and transform to local plane
                     Point3d nextPt = new Point3d(
                     0,
@@ -310,7 +311,7 @@ namespace AdSecGH.Parameters
 
                     // create rhino line segments
                     Line ln = new Line(startPt, nextPt);
-                    
+
                     // update starting point for next segment
                     startPt = nextPt;
 
@@ -343,7 +344,7 @@ namespace AdSecGH.Parameters
 
                     // create rhino arc segment
                     Arc arcrh = new Arc(arcPln, radius, sweepAngle);
-                    
+
                     // get next point
                     startPt = arcrh.EndPoint;
 
@@ -359,7 +360,7 @@ namespace AdSecGH.Parameters
 
             if (linkEdges == null)
                 linkEdges = new List<Curve>();
-            
+
             linkEdges.AddRange(new List<Curve>() { offset1[0], offset2[0] });
             //linkEdges.Add(centreline);
         }
@@ -391,7 +392,7 @@ namespace AdSecGH.Parameters
         {
             Oasys.Collections.IList<IGroup> groups = Oasys.Collections.IList<IGroup>.Create();
             ICover cover = null;
-            foreach(AdSecRebarGroup grp in reinforcement)
+            foreach (AdSecRebarGroup grp in reinforcement)
             {
                 // add group to list of groups
                 groups.Add(grp.Group);
@@ -505,7 +506,7 @@ namespace AdSecGH.Parameters
             get
             {
                 if (Value.IsValid) { return string.Empty; }
-                return Value.IsValid.ToString(); 
+                return Value.IsValid.ToString();
             }
         }
         public override string ToString()
@@ -540,7 +541,20 @@ namespace AdSecGH.Parameters
         {
             // This function is called when Grasshopper needs to convert this 
             // AdSec type into some other type Q.            
-
+            if (InteropAdSecComputeTypes.IsPresent())
+            {
+                Type type = InteropAdSecComputeTypes.GetType(typeof(IAdSecSection));
+                if (typeof(Q).IsAssignableFrom(type))
+                {
+                    if (Value == null)
+                        target = default;
+                    else
+                    {
+                        target = (Q)(object)InteropAdSecComputeTypes.CastToSection(Value.Section);
+                    }
+                    return true;
+                }
+            }
             if (typeof(Q).IsAssignableFrom(typeof(AdSecSectionGoo)))
             {
                 if (Value == null)
@@ -581,6 +595,8 @@ namespace AdSecGH.Parameters
                     target = (Q)(object)Value.SolidBrep.DuplicateBrep();
                 return true;
             }
+
+
 
             target = default;
             return false;

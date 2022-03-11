@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdSecGH.AdapterInterfaces
+namespace AdSecGHAdapter
 {
     public interface IAdSecSection
     {
-       object GetSection();
     }
 }
