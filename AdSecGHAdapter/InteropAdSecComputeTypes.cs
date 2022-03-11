@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AdSecComputeTypes;
+using Oasys.AdSec.Reinforcement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,14 +44,22 @@ namespace AdSecGHAdapter
             string standardMaterial = "Concrete." + string.Join(".", values) + "." + materialName;
 
             AdSecComputeTypes.Section outSection = new AdSecComputeTypes.Section();
+            // outSection.Cover = CastToCover(section.Cover);
             outSection.Profile = (AdSecComputeTypes.IProfile)CastToIProfile(section.Profile);
             foreach (Oasys.AdSec.Reinforcement.Groups.IGroup group in section.ReinforcementGroups)
             {
-                outSection.ReinforcementGroups.Add((AdSecComputeTypes.IGroup)CastToIGroup(group, standardMaterial));
+                //outSection.ReinforcementGroups.Add((AdSecComputeTypes.IGroup)CastToIGroup(group, standardMaterial));
             }
             outSection.StandardMaterial = standardMaterial;
 
             return outSection;
+        }
+
+        private static Cover CastToCover(Oasys.AdSec.Reinforcement.ICover cover)
+        {
+            AdSecComputeTypes.Cover outCover = new AdSecComputeTypes.Cover(cover.UniformCover.Millimeters);
+
+            return outCover;
         }
 
         public static object CastToIGroup(Oasys.AdSec.Reinforcement.Groups.IGroup group, string standardMaterial)
@@ -87,22 +97,36 @@ namespace AdSecGHAdapter
             // todo: publish new nuget package
             else if (group.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Groups.IPerimeterGroup).ToString() + "_Implementation"))
             {
-                //    Oasys.AdSec.Reinforcement.Groups.IPerimeterGroup perimeterGroup = (Oasys.AdSec.Reinforcement.Groups.IPerimeterGroup)group;
-                //    AdSecComputeTypes.PerimeterGroup outPerimeterGroup = new AdSecComputeTypes.PerimeterGroup();
-                //    outPerimeterGroup.CentreOfTheCircle =
-                //    return outPerimeterGroup;
+                Oasys.AdSec.Reinforcement.Groups.IPerimeterGroup perimeterGroup = (Oasys.AdSec.Reinforcement.Groups.IPerimeterGroup)group;
+                AdSecComputeTypes.PerimeterGroup outPerimeterGroup = new AdSecComputeTypes.PerimeterGroup();
+                foreach (Oasys.AdSec.Reinforcement.Layers.ILayer layer in perimeterGroup.Layers)
+                {
+                    outPerimeterGroup.Layers.Add((AdSecComputeTypes.ILayer)CastToILayer(layer, standardMaterial));
+                }
+                return outPerimeterGroup;
             }
             else if (group.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Groups.ITemplateGroup).ToString() + "_Implementation"))
             {
-                //    Oasys.AdSec.Reinforcement.Groups.ITemplateGroup templateGroup = (Oasys.AdSec.Reinforcement.Groups.ITemplateGroup)group;
-                //    AdSecComputeTypes.TemplateGroup outTemplateGroup = new AdSecComputeTypes.TemplateGroup();
-                //    return outTemplateGroup;
+                //Oasys.AdSec.Reinforcement.Groups.ITemplateGroup templateGroup = (Oasys.AdSec.Reinforcement.Groups.ITemplateGroup)group;
+
+                //AdSecComputeTypes.Face face = AdSecComputeTypes.Face.Bottom;
+                //AdSecComputeTypes.TemplateGroup outTemplateGroup = new AdSecComputeTypes.TemplateGroup(face);
+                //outTemplateGroup.Layers = new List<AdSecComputeTypes.ILayer>();
+                ////if (templateGroup.Layers != null)
+                ////{
+                //    foreach (Oasys.AdSec.Reinforcement.Layers.ILayer layer in templateGroup.Layers)
+                //    {
+                //        outTemplateGroup.Layers.Add((AdSecComputeTypes.ILayer)CastToILayer(layer, standardMaterial));
+                //    }
+                ////}
+                //return outTemplateGroup;
             }
             else if (group.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Groups.ILinkGroup).ToString() + "_Implementation"))
             {
-                //    Oasys.AdSec.Reinforcement.Groups.ILinkGroup linkGroup = (Oasys.AdSec.Reinforcement.Groups.ILinkGroup)group;
-                //    AdSecComputeTypes.LinkGroup outLinkGroup = new AdSecComputeTypes.LinkGroup();
-                //    return outLinkGroup;
+                Oasys.AdSec.Reinforcement.Groups.ILinkGroup linkGroup = (Oasys.AdSec.Reinforcement.Groups.ILinkGroup)group;
+                AdSecComputeTypes.LinkGroup outLinkGroup = new AdSecComputeTypes.LinkGroup();
+                outLinkGroup.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(linkGroup.BarBundle, standardMaterial);
+                return outLinkGroup;
             }
             return null;
         }
