@@ -67,6 +67,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdapterInterfaces\IAdSecSection.cs" />
     <Compile Include="Components\0_AdSec\SectionSVG.cs" />
     <Compile Include="Components\0_AdSec\SaveAdSec.cs" />
     <Compile Include="Components\0_AdSec\CreateUnitNumber.cs" />
@@ -343,8 +344,11 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"
+//
 Erase "$(TargetPath)"
-Copy "$(ProjectDir)obj\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"</PostBuildEvent>
+
+Copy "$(ProjectDir)obj\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
