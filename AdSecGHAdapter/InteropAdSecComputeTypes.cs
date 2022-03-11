@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AdSecComputeTypes;
-using Oasys.AdSec;
-using Oasys.AdSec.Reinforcement;
 
 namespace AdSecGHAdapter
 {
@@ -16,7 +13,7 @@ namespace AdSecGHAdapter
         {
             try
             {
-                Section section = new Section();
+                AdSecComputeTypes.Section section = new AdSecComputeTypes.Section();
             }
             catch (DllNotFoundException)
             {
@@ -30,7 +27,7 @@ namespace AdSecGHAdapter
             switch (type.Name)
             {
                 case nameof(IAdSecSection):
-                    return typeof(Section);
+                    return typeof(AdSecComputeTypes.Section);
 
                 default:
                     return null;
@@ -44,11 +41,11 @@ namespace AdSecGHAdapter
             values.RemoveAt(values.Count - 2);
             string standardMaterial = "Concrete." + string.Join(".", values) + "." + materialName;
 
-            Section outSection = new Section();
-            outSection.Profile = (IProfile)CastToIProfile(section.Profile);
+            AdSecComputeTypes.Section outSection = new AdSecComputeTypes.Section();
+            outSection.Profile = (AdSecComputeTypes.IProfile)CastToIProfile(section.Profile);
             foreach (Oasys.AdSec.Reinforcement.Groups.IGroup group in section.ReinforcementGroups)
             {
-                outSection.ReinforcementGroups.Add((IGroup)CastToIGroup(group, standardMaterial));
+                outSection.ReinforcementGroups.Add((AdSecComputeTypes.IGroup)CastToIGroup(group, standardMaterial));
             }
             outSection.StandardMaterial = standardMaterial;
 
@@ -61,19 +58,19 @@ namespace AdSecGHAdapter
             {
                 Oasys.AdSec.Reinforcement.Groups.ILineGroup lineGroup = (Oasys.AdSec.Reinforcement.Groups.ILineGroup)group;
                 AdSecComputeTypes.LineGroup outGroup = new AdSecComputeTypes.LineGroup();
-                outGroup.FirstBarPosition = (Point)CastToPoint(lineGroup.FirstBarPosition);
-                outGroup.FinalBarPosition = (Point)CastToPoint(lineGroup.LastBarPosition);
-                outGroup.Layer = (ILayer)CastToILayer(lineGroup.Layer, standardMaterial);
+                outGroup.FirstBarPosition = (AdSecComputeTypes.Point)CastToPoint(lineGroup.FirstBarPosition);
+                outGroup.FinalBarPosition = (AdSecComputeTypes.Point)CastToPoint(lineGroup.LastBarPosition);
+                outGroup.Layer = (AdSecComputeTypes.ILayer)CastToILayer(lineGroup.Layer, standardMaterial);
                 return outGroup;
             }
             else if (group.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Groups.ISingleBars).ToString() + "_Implementation"))
             {
                 Oasys.AdSec.Reinforcement.Groups.ISingleBars singleBars = (Oasys.AdSec.Reinforcement.Groups.ISingleBars)group;
                 AdSecComputeTypes.SingleBars outSingleBars = new AdSecComputeTypes.SingleBars();
-                outSingleBars.BarBundle = (BarBundle)CastToBarBundle(singleBars.BarBundle, standardMaterial);
+                outSingleBars.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(singleBars.BarBundle, standardMaterial);
                 foreach (Oasys.Profiles.IPoint position in singleBars.Positions)
                 {
-                    outSingleBars.Positions.Add((Point)CastToPoint(position));
+                    outSingleBars.Positions.Add((AdSecComputeTypes.Point)CastToPoint(position));
                 }
                 return outSingleBars;
             }
@@ -81,10 +78,10 @@ namespace AdSecGHAdapter
             {
                 Oasys.AdSec.Reinforcement.Groups.ICircleGroup circleGroup = (Oasys.AdSec.Reinforcement.Groups.ICircleGroup)group;
                 AdSecComputeTypes.CircleGroup outCircleGroup = new AdSecComputeTypes.CircleGroup();
-                outCircleGroup.CentreOfTheCircle = (Point)CastToPoint(circleGroup.Centre);
+                outCircleGroup.CentreOfTheCircle = (AdSecComputeTypes.Point)CastToPoint(circleGroup.Centre);
                 outCircleGroup.Radius = circleGroup.Radius.Millimeters;
                 outCircleGroup.Angle = circleGroup.StartAngle.Radians;
-                outCircleGroup.Layer = (ILayer)CastToILayer(circleGroup.Layer, standardMaterial);
+                outCircleGroup.Layer = (AdSecComputeTypes.ILayer)CastToILayer(circleGroup.Layer, standardMaterial);
                 return outCircleGroup;
             }
             // todo: publish new nuget package
@@ -117,7 +114,7 @@ namespace AdSecGHAdapter
                 Oasys.AdSec.Reinforcement.Layers.ILayerByBarCount layerByBarCount = (Oasys.AdSec.Reinforcement.Layers.ILayerByBarCount)layer;
                 AdSecComputeTypes.LayerByBarCount outLayerByBarCount = new AdSecComputeTypes.LayerByBarCount();
                 outLayerByBarCount.Count = layerByBarCount.Count;
-                outLayerByBarCount.BarBundle = (BarBundle)CastToBarBundle(layerByBarCount.BarBundle, standardMaterial);
+                outLayerByBarCount.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(layerByBarCount.BarBundle, standardMaterial);
                 return outLayerByBarCount;
             }
             else if (layer.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Layers.ILayerByBarPitch).ToString() + "_Implementation"))
@@ -157,7 +154,7 @@ namespace AdSecGHAdapter
                 AdSecComputeTypes.PolygonProfile outPolygonProfile = new AdSecComputeTypes.PolygonProfile();
                 foreach (Oasys.Profiles.IPoint point in polygon.Points)
                 {
-                    outPolygonProfile.Points.Add((Point)CastToPoint(point));
+                    outPolygonProfile.Points.Add((AdSecComputeTypes.Point)CastToPoint(point));
                 }
                 return outPolygonProfile;
             }
