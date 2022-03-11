@@ -37,143 +37,148 @@ namespace AdSecGHAdapter
             }
         }
 
-        public static object CastToSection(Oasys.AdSec.ISection section)
+        public static object CastToSection(Oasys.AdSec.ISection section, string codeName, string materialName)
         {
+            // build standard material string
+            List<string> values = new List<string>(codeName.Split(' '));
+            values.RemoveAt(values.Count - 2);
+            string standardMaterial = "Concrete." + string.Join(".", values) + "." + materialName;
+
             Section outSection = new Section();
             outSection.Profile = (IProfile)CastToIProfile(section.Profile);
             foreach (Oasys.AdSec.Reinforcement.Groups.IGroup group in section.ReinforcementGroups)
             {
-                outSection.ReinforcementGroups.Add((IGroup)CastToIGroup(group));
+                outSection.ReinforcementGroups.Add((IGroup)CastToIGroup(group, standardMaterial));
             }
-            outSection.StandardMaterial = section.Material.ToString();
+            outSection.StandardMaterial = standardMaterial;
 
             return outSection;
         }
 
-        public static object CastToIGroup(Oasys.AdSec.Reinforcement.Groups.IGroup group)
+        public static object CastToIGroup(Oasys.AdSec.Reinforcement.Groups.IGroup group, string standardMaterial)
         {
-            switch (group.GetType().Name)
+            if (group.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Groups.ILineGroup).ToString() + "_Implementation"))
             {
-                case (nameof(Oasys.AdSec.Reinforcement.Groups.ILineGroup)):
-                    Oasys.AdSec.Reinforcement.Groups.ILineGroup lineGroup = (Oasys.AdSec.Reinforcement.Groups.ILineGroup)group;
-                    AdSecComputeTypes.LineGroup outGroup = new AdSecComputeTypes.LineGroup();
-                    outGroup.FirstBarPosition = (Point)CastToPoint(lineGroup.FirstBarPosition);
-                    outGroup.FinalBarPosition = (Point)CastToPoint(lineGroup.LastBarPosition);
-                    outGroup.Layer = (ILayer)CastToILayer(lineGroup.Layer);
-                    return outGroup;
-
-                case (nameof(Oasys.AdSec.Reinforcement.Groups.ISingleBars)):
-                    Oasys.AdSec.Reinforcement.Groups.ISingleBars singleBars = (Oasys.AdSec.Reinforcement.Groups.ISingleBars)group;
-                    AdSecComputeTypes.SingleBars outSingleBars = new AdSecComputeTypes.SingleBars();
-                    outSingleBars.BarBundle = (BarBundle)CastToBarBundle(singleBars.BarBundle);
-                    foreach (Oasys.Profiles.IPoint position in singleBars.Positions)
-                    {
-                        outSingleBars.Positions.Add((Point)CastToPoint(position));
-                    }
-                    return outSingleBars;
-
-                case (nameof(Oasys.AdSec.Reinforcement.Groups.ICircleGroup)):
-                    Oasys.AdSec.Reinforcement.Groups.ICircleGroup circleGroup = (Oasys.AdSec.Reinforcement.Groups.ICircleGroup)group;
-                    AdSecComputeTypes.CircleGroup outCircleGroup = new AdSecComputeTypes.CircleGroup();
-                    outCircleGroup.CentreOfTheCircle = (Point)CastToPoint(circleGroup.Centre);
-                    outCircleGroup.Radius = circleGroup.Radius.Millimeters;
-                    outCircleGroup.Angle = circleGroup.StartAngle.Radians;
-                    outCircleGroup.Layer = (ILayer)CastToILayer(circleGroup.Layer);
-                    return outCircleGroup;
-
-                // todo: publish new nuget package
-                //case (nameof(Oasys.AdSec.Reinforcement.Groups.IPerimeterGroup)):
+                Oasys.AdSec.Reinforcement.Groups.ILineGroup lineGroup = (Oasys.AdSec.Reinforcement.Groups.ILineGroup)group;
+                AdSecComputeTypes.LineGroup outGroup = new AdSecComputeTypes.LineGroup();
+                outGroup.FirstBarPosition = (Point)CastToPoint(lineGroup.FirstBarPosition);
+                outGroup.FinalBarPosition = (Point)CastToPoint(lineGroup.LastBarPosition);
+                outGroup.Layer = (ILayer)CastToILayer(lineGroup.Layer, standardMaterial);
+                return outGroup;
+            }
+            else if (group.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Groups.ISingleBars).ToString() + "_Implementation"))
+            {
+                Oasys.AdSec.Reinforcement.Groups.ISingleBars singleBars = (Oasys.AdSec.Reinforcement.Groups.ISingleBars)group;
+                AdSecComputeTypes.SingleBars outSingleBars = new AdSecComputeTypes.SingleBars();
+                outSingleBars.BarBundle = (BarBundle)CastToBarBundle(singleBars.BarBundle, standardMaterial);
+                foreach (Oasys.Profiles.IPoint position in singleBars.Positions)
+                {
+                    outSingleBars.Positions.Add((Point)CastToPoint(position));
+                }
+                return outSingleBars;
+            }
+            else if (group.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Groups.ICircleGroup).ToString() + "_Implementation"))
+            {
+                Oasys.AdSec.Reinforcement.Groups.ICircleGroup circleGroup = (Oasys.AdSec.Reinforcement.Groups.ICircleGroup)group;
+                AdSecComputeTypes.CircleGroup outCircleGroup = new AdSecComputeTypes.CircleGroup();
+                outCircleGroup.CentreOfTheCircle = (Point)CastToPoint(circleGroup.Centre);
+                outCircleGroup.Radius = circleGroup.Radius.Millimeters;
+                outCircleGroup.Angle = circleGroup.StartAngle.Radians;
+                outCircleGroup.Layer = (ILayer)CastToILayer(circleGroup.Layer, standardMaterial);
+                return outCircleGroup;
+            }
+            // todo: publish new nuget package
+            else if (group.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Groups.IPerimeterGroup).ToString() + "_Implementation"))
+            {
                 //    Oasys.AdSec.Reinforcement.Groups.IPerimeterGroup perimeterGroup = (Oasys.AdSec.Reinforcement.Groups.IPerimeterGroup)group;
                 //    AdSecComputeTypes.PerimeterGroup outPerimeterGroup = new AdSecComputeTypes.PerimeterGroup();
                 //    outPerimeterGroup.CentreOfTheCircle =
                 //    return outPerimeterGroup;
-
-                //case (nameof(Oasys.AdSec.Reinforcement.Groups.ITemplateGroup)):
+            }
+            else if (group.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Groups.ITemplateGroup).ToString() + "_Implementation"))
+            {
                 //    Oasys.AdSec.Reinforcement.Groups.ITemplateGroup templateGroup = (Oasys.AdSec.Reinforcement.Groups.ITemplateGroup)group;
                 //    AdSecComputeTypes.TemplateGroup outTemplateGroup = new AdSecComputeTypes.TemplateGroup();
                 //    return outTemplateGroup;
-
-                //case (nameof(Oasys.AdSec.Reinforcement.Groups.ILinkGroup)):
+            }
+            else if (group.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Groups.ILinkGroup).ToString() + "_Implementation"))
+            {
                 //    Oasys.AdSec.Reinforcement.Groups.ILinkGroup linkGroup = (Oasys.AdSec.Reinforcement.Groups.ILinkGroup)group;
                 //    AdSecComputeTypes.LinkGroup outLinkGroup = new AdSecComputeTypes.LinkGroup();
                 //    return outLinkGroup;
-
-                default:
-                    return null;
             }
+            return null;
         }
 
-        private static object CastToILayer(Oasys.AdSec.Reinforcement.Layers.ILayer layer)
+        private static object CastToILayer(Oasys.AdSec.Reinforcement.Layers.ILayer layer, string standardMaterial)
         {
-            switch (layer.GetType().Name)
+            if (layer.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Layers.ILayerByBarCount).ToString() + "_Implementation"))
             {
-                case (nameof(Oasys.AdSec.Reinforcement.Layers.ILayerByBarCount)):
-                    Oasys.AdSec.Reinforcement.Layers.ILayerByBarCount layerByBarCount = (Oasys.AdSec.Reinforcement.Layers.ILayerByBarCount)layer;
-                    AdSecComputeTypes.LayerByBarCount outLayerByBarCount = new AdSecComputeTypes.LayerByBarCount();
-                    outLayerByBarCount.Count = layerByBarCount.Count;
-                    outLayerByBarCount.BarBundle = (BarBundle)CastToBarBundle(layerByBarCount.BarBundle);
-                    return outLayerByBarCount;
-
+                Oasys.AdSec.Reinforcement.Layers.ILayerByBarCount layerByBarCount = (Oasys.AdSec.Reinforcement.Layers.ILayerByBarCount)layer;
+                AdSecComputeTypes.LayerByBarCount outLayerByBarCount = new AdSecComputeTypes.LayerByBarCount();
+                outLayerByBarCount.Count = layerByBarCount.Count;
+                outLayerByBarCount.BarBundle = (BarBundle)CastToBarBundle(layerByBarCount.BarBundle, standardMaterial);
+                return outLayerByBarCount;
+            }
+            else if (layer.GetType().ToString().Equals(typeof(Oasys.AdSec.Reinforcement.Layers.ILayerByBarPitch).ToString() + "_Implementation"))
+            {
                 // todo: publish new nuget package
-                //case (nameof(Oasys.AdSec.Reinforcement.Layers.ILayerByBarPitch)):
                 //    Oasys.AdSec.Reinforcement.Layers.ILayerByBarPitch layerByBarPitch = (Oasys.AdSec.Reinforcement.Layers.ILayerByBarPitch)layer;
                 //    AdSecComputeTypes.LayerByBarPitch outLayerByBarPitch = new AdSecComputeTypes.LayerByBarPitch();
                 //    outLayerByBarPitch.Count = layerByBarPitch.Count;
                 //    outLayerByBarPitch.BarBundle = (BarBundle)CastToBarBundle(layerByBarPitch.BarBundle);
                 //    return outLayerByBarPitch;
-
-                default:
-                    return null;
             }
+            return null;
         }
 
-        private static object CastToBarBundle(Oasys.AdSec.Reinforcement.IBarBundle barBundle)
+        private static object CastToBarBundle(Oasys.AdSec.Reinforcement.IBarBundle barBundle, string standardMaterial)
         {
             AdSecComputeTypes.BarBundle outBarBundle = new AdSecComputeTypes.BarBundle();
             outBarBundle.CountPerBundle = barBundle.CountPerBundle;
             outBarBundle.Diameter = barBundle.Diameter.Millimeters;
-            outBarBundle.StandardMaterial = barBundle.Material.ToString();
+            outBarBundle.StandardMaterial = standardMaterial;
 
             return outBarBundle;
         }
 
         public static object CastToIProfile(Oasys.Profiles.IProfile profile)
         {
-            switch (profile.GetType().Name)
+            if (profile.GetType().ToString().Equals(typeof(Oasys.Profiles.ICircleProfile).ToString() + "_Implementation"))
             {
-                case (nameof(Oasys.Profiles.ICircleProfile)):
-                    Oasys.Profiles.ICircleProfile circleProfile = (Oasys.Profiles.ICircleProfile)profile;
-                    AdSecComputeTypes.CircleProfile outCircleProfile = new AdSecComputeTypes.CircleProfile();
-                    outCircleProfile.Diameter = circleProfile.Diameter.Millimeters;
-                    return outCircleProfile;
-
-                case (nameof(Oasys.Profiles.IPolygon)):
-                    Oasys.Profiles.IPolygon polygon = (Oasys.Profiles.IPolygon)profile;
-                    AdSecComputeTypes.PolygonProfile outPolygonProfile = new AdSecComputeTypes.PolygonProfile();
-                    foreach (Oasys.Profiles.IPoint point in polygon.Points)
-                    {
-                        outPolygonProfile.Points.Add((Point)CastToPoint(point));
-                    }
-                    return outPolygonProfile;
-
-                case (nameof(Oasys.Profiles.IRectangleProfile)):
-                    Oasys.Profiles.IRectangleProfile rectangleProfile = (Oasys.Profiles.IRectangleProfile)profile;
-                    AdSecComputeTypes.RectangleProfile outRectangleProfile = new AdSecComputeTypes.RectangleProfile();
-                    outRectangleProfile.Width = rectangleProfile.Width.Millimeters;
-                    outRectangleProfile.Depth = rectangleProfile.Depth.Millimeters;
-                    return outRectangleProfile;
-
+                Oasys.Profiles.ICircleProfile circleProfile = (Oasys.Profiles.ICircleProfile)profile;
+                AdSecComputeTypes.CircleProfile outCircleProfile = new AdSecComputeTypes.CircleProfile();
+                outCircleProfile.Diameter = circleProfile.Diameter.Millimeters;
+                return outCircleProfile;
+            }
+            else if (profile.GetType().ToString().Equals(typeof(Oasys.Profiles.IPolygon).ToString() + "_Implementation"))
+            {
+                Oasys.Profiles.IPolygon polygon = (Oasys.Profiles.IPolygon)profile;
+                AdSecComputeTypes.PolygonProfile outPolygonProfile = new AdSecComputeTypes.PolygonProfile();
+                foreach (Oasys.Profiles.IPoint point in polygon.Points)
+                {
+                    outPolygonProfile.Points.Add((Point)CastToPoint(point));
+                }
+                return outPolygonProfile;
+            }
+            else if (profile.GetType().ToString().Equals(typeof(Oasys.Profiles.IRectangleProfile).ToString() + "_Implementation"))
+            {
+                Oasys.Profiles.IRectangleProfile rectangleProfile = (Oasys.Profiles.IRectangleProfile)profile;
+                AdSecComputeTypes.RectangleProfile outRectangleProfile = new AdSecComputeTypes.RectangleProfile();
+                outRectangleProfile.Width = rectangleProfile.Width.Millimeters;
+                outRectangleProfile.Depth = rectangleProfile.Depth.Millimeters;
+                return outRectangleProfile;
+            }
+            else if (profile.GetType().ToString().Equals(typeof(Oasys.Profiles.ICircleProfile).ToString() + "_Implementation"))
+            {
                 // todo: publish new nuget package
-                //case (nameof(Oasys.Profiles.ITSectionProfile)):
                 //    Oasys.Profiles.ITSectionProfile tSectionProfile = (Oasys.Profiles.ITSectionProfile)profile;
                 //    AdSecComputeTypes.TProfile outTProfile = new AdSecComputeTypes.RectangleProfile();
                 //    outRectangleProfile.Width = rectangleProfile.Width.Millimeters;
                 //    outRectangleProfile.Depth = rectangleProfile.Depth.Millimeters;
                 //    return outRectangleProfile;
-
-                default:
-                    return null;
             }
+            return null;
         }
 
         public static object CastToPoint(Oasys.Profiles.IPoint point)

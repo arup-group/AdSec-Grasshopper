@@ -550,7 +550,7 @@ namespace AdSecGH.Parameters
                         target = default;
                     else
                     {
-                        target = (Q)(object)InteropAdSecComputeTypes.CastToSection(Value.Section);
+                        target = (Q)(object)InteropAdSecComputeTypes.CastToSection(Value.Section, Value.codeName, Value.materialName);
                     }
                     return true;
                 }
