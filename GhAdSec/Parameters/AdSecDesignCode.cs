@@ -105,7 +105,7 @@ namespace AdSecGH.Parameters
             }
 
             if (m_designCode == null) { return false; }
-            m_designCodeName = designcodeName + " " + designCodeReflectedLevels.Last();
+            m_designCodeName = designcodeName.TrimEnd(' ') + " " + designCodeReflectedLevels.Last();
             return true;
         }
 

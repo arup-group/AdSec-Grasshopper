@@ -376,7 +376,6 @@ namespace AdSecGH.Components
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
             pManager.AddGenericParameter("Material", "Mat", "AdSec Material", GH_ParamAccess.item);
-
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)

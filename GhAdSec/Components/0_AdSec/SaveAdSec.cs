@@ -61,9 +61,9 @@ namespace AdSecGH.Components
             {
                 fileName = fdi.FileName;
                 usersetFileName = true;
+
                 // write to file
                 File.WriteAllText(fileName, jsonString);
-
                 canOpen = true;
 
                 //add panel input with string
@@ -100,6 +100,11 @@ namespace AdSecGH.Components
                 {
                     if (canOpen)
                         System.Diagnostics.Process.Start(fileName);
+                    else
+                    {
+                        File.WriteAllText(fileName, jsonString);
+                        canOpen = true;
+                    }
                 }
             }
         }
@@ -165,7 +170,7 @@ namespace AdSecGH.Components
             return base.Read(reader);
         }
         #endregion
-
+        
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             AdSecSection section = GetInput.AdSecSection(this, DA, 0);
@@ -235,6 +240,29 @@ namespace AdSecGH.Components
                 catch (Exception e)
                 {
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.InnerException.Message);
+                }
+            }
+
+            // filepath
+            string pathString = "";
+            if (DA.GetData(3, ref pathString))
+            { 
+                if (fileName != pathString)
+                {
+                    fileName = pathString;
+                    canOpen = false;
+                }
+            }
+
+            // input save bool
+            bool save = false;
+            if (DA.GetData(2, ref save))
+            {
+                if (save)
+                {
+                    // write to file
+                    File.WriteAllText(fileName, jsonString);
+                    canOpen = true;
                 }
             }
         }
