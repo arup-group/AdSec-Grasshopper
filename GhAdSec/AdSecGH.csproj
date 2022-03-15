@@ -58,6 +58,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AdSecComputeTypes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>obj\AdSecComputeTypes.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -333,6 +337,12 @@
   <ItemGroup>
     <None Include="Properties\Icons\Icons\CrackLoad.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AdSecGHAdapter\AdSecGHAdapter.csproj">
+      <Project>{4e71555e-fa74-41f4-9155-31a9bfbdc103}</Project>
+      <Name>AdSecGHAdapter</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -343,8 +353,8 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"
-Erase "$(TargetPath)"
-Copy "$(ProjectDir)obj\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"</PostBuildEvent>
+Copy "$(ProjectDir)obj\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
