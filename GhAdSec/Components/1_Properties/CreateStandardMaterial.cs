@@ -15,6 +15,7 @@ using AdSecGH.Parameters;
 using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
+using System.Text.RegularExpressions;
 
 namespace AdSecGH.Components
 {
@@ -361,25 +362,74 @@ namespace AdSecGH.Components
             "Material Type",
             "Design Code",
             "National Annex",
+            "Edition",
             "Grade",
-            "Another level",
             "Another other",
             "This is so deep"
         });
         private bool first = true;
         #endregion
 
+
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-
+            pManager.AddTextParameter("Search", "S", "[Optional] Search for Grade " +
+                    System.Environment.NewLine + "Note: input 'all' to list all grades from the selected code", GH_ParamAccess.item);
+            pManager[0].Optional = true;
         }
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Material", "Mat", "AdSec Material", GH_ParamAccess.item);
+            pManager.AddGenericParameter("Material", "Mat", "AdSec Material", GH_ParamAccess.list);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            
+                string search = "";
+                if (DA.GetData(0, ref search))
+                {
+                    search = search.ToLower();
+                    // filter by search pattern
+                    if (search != "")
+                    {
+                        List<string> materialsList = materials.Keys.ToList();
+                        List<AdSecMaterialGoo> filteredMaterials = new List<AdSecMaterialGoo>();
+
+                        for (int i = 0; i < materialsList.Count; i++)
+                        {
+                            if (search.ToLower() == "all")
+                            {
+                                filteredMaterials.Add(new AdSecMaterialGoo(new AdSecMaterial(materials[materialsList[i]])));
+                                selecteditems[selecteditems.Count - 1] = "all";
+                            }
+                            else
+                            {
+                                if (materialsList[i].ToLower().Contains(search))
+                                {
+                                    filteredMaterials.Add(new AdSecMaterialGoo(new AdSecMaterial(materials[materialsList[i]])));
+                                    selecteditems[selecteditems.Count - 1] = materialsList[i];
+                                }
+                                if (!search.Any(char.IsDigit))
+                                {
+                                    string test = materialsList[i].ToString();
+                                    test = Regex.Replace(test, "[0-9]", string.Empty);
+                                    test = test.Replace(".", string.Empty);
+                                    test = test.Replace("-", string.Empty);
+                                    test = test.ToLower();
+                                    if (test.Contains(search))
+                                    {
+                                        filteredMaterials.Add(new AdSecMaterialGoo(new AdSecMaterial(materials[materialsList[i]])));
+                                        selecteditems[selecteditems.Count - 1] = materialsList[i];
+                                    }
+                                }
+                            }
+                        }
+
+                        DA.SetDataList(0, filteredMaterials);
+                        return;
+                    }
+                }
+
             // update selected material
             selectedMaterial = materials[selecteditems.Last()];
 
@@ -387,7 +437,6 @@ namespace AdSecGH.Components
             AdSecMaterial mat = new AdSecMaterial(selectedMaterial);
 
             DA.SetData(0, new AdSecMaterialGoo(mat));
-
         }
 
         #region (de)serialization
@@ -423,6 +472,16 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
+            if (Params.Input.Count == 0)
+            {
+                Params.RegisterInputParam(new Param_String());
+                Params.Input[0].NickName = "S";
+                Params.Input[0].Name = "Search";
+                Params.Input[0].Description = "[Optional] Search for Grade " +
+                    System.Environment.NewLine + "Note: input 'all' to list all grades from the selected code";
+                Params.Input[0].Access = GH_ParamAccess.item;
+                Params.Input[0].Optional = true;
+            }
         }
         #endregion
     }

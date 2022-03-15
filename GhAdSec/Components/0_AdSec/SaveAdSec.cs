@@ -121,8 +121,8 @@ namespace AdSecGH.Components
         {
             pManager.AddGenericParameter("Section", "Sec", "AdSec Section to save", GH_ParamAccess.item);
             pManager.AddGenericParameter("Loads", "Lds", "[Optional] List of AdSec Loads (consistent Load or Deformation type)", GH_ParamAccess.list);
-            pManager.AddBooleanParameter("Save?", "Save", "Input 'True' to save or use button", GH_ParamAccess.item, false);
-            pManager.AddTextParameter("File and Path", "File", "Filename and path", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("Save?", "Save", "[Optional] Input 'True' to save or use button", GH_ParamAccess.item, false);
+            pManager.AddTextParameter("File and Path", "File", "[Optional] Filename and path", GH_ParamAccess.item);
             pManager[1].Optional = true;
             pManager[2].Optional = true;
             pManager[3].Optional = true;

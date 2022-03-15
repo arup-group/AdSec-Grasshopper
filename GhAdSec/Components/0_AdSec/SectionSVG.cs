@@ -103,6 +103,11 @@ namespace AdSecGH.Components
                 {
                     if (canOpen)
                         System.Diagnostics.Process.Start(fileName);
+                    else
+                    {
+                        File.WriteAllText(fileName, imageSVG);
+                        canOpen = true;
+                    }
                 }
             }
         }
@@ -118,8 +123,8 @@ namespace AdSecGH.Components
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Section", "Sec", "AdSec Section to save", GH_ParamAccess.item);
-            pManager.AddBooleanParameter("Save?", "Save", "Input 'True' to save or use button", GH_ParamAccess.item, false);
-            pManager.AddTextParameter("File and Path", "File", "Filename and path", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("Save?", "Save", "[Optional] Input 'True' to save or use button", GH_ParamAccess.item, false);
+            pManager.AddTextParameter("File and Path", "File", "[Optional] Filename and path", GH_ParamAccess.item);
             pManager[1].Optional = true;
             pManager[2].Optional = true;
         }
@@ -203,6 +208,29 @@ namespace AdSecGH.Components
             imageSVG = imageSVG.Replace("#ABABAB", rebar);
             imageSVG = imageSVG.Replace("#CDCDCD", link);
             imageSVG = imageSVG.Replace("#8EFB8E", concrete);
+
+            // filepath
+            string pathString = "";
+            if (DA.GetData(2, ref pathString))
+            {
+                if (fileName != pathString)
+                {
+                    fileName = pathString;
+                    canOpen = false;
+                }
+            }
+
+            // input save bool
+            bool save = false;
+            if (DA.GetData(1, ref save))
+            {
+                if (save)
+                {
+                    // write to file
+                    File.WriteAllText(fileName, imageSVG);
+                    canOpen = true;
+                }
+            }
 
             DA.SetData(0, imageSVG);
         }
