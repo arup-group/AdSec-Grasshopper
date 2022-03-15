@@ -1,7 +1,7 @@
 ﻿/.vs/AdSec-Grasshopper/v17/.suo
 *.suo
 /.vs/VSWorkspaceState.json
-GhAdSec/bin
+GhAdSec/bin/x64/Debug
 GhAdSec/obj/x64
 GhAdSec/obj/Debug
 GhAdSec/obj/AdSecGH.csproj.nuget.g.props
@@ -11,3 +11,5 @@ GhAdSec/obj/project.assets.json
 AdSecGHAdapter/obj
 AdSecGHAdapter/bin
 packages
+/.gitignore.bak
+/GhAdSec/obj
