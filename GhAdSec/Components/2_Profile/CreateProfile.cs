@@ -318,6 +318,8 @@ namespace AdSecGH.Components
                 }
                 profileString = selecteditems[3];
 
+                
+                this.ExpirePreview(true);
                 (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
                 ExpireSolution(true);
                 Params.OnParametersChanged();
@@ -356,11 +358,14 @@ namespace AdSecGH.Components
                     lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
                 }
             }
+            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+            ExpireSolution(true);
+            Params.OnParametersChanged();
+            this.OnDisplayExpired(true);
         }
 
         private void UpdateUIFromSelectedItems()
         {
-
             if (selecteditems[0] == "Catalogue")
             {
                 // update spacer description to match catalogue dropdowns
@@ -397,12 +402,6 @@ namespace AdSecGH.Components
                 typ = profileTypes[selecteditems[0]];
                 Mode2Clicked();
             }
-
-            CreateAttributes();
-            ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
         }
         #endregion
 
@@ -468,8 +467,11 @@ namespace AdSecGH.Components
         #endregion
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            #region catalogue
             this.ClearRuntimeMessages();
+            for (int i = 0; i < this.Params.Input.Count; i++)
+                this.Params.Input[i].ClearRuntimeMessages();
+
+            #region catalogue
             if (_mode == FoldMode.Catalogue)
             {
                 // get user input filter search string
@@ -513,6 +515,7 @@ namespace AdSecGH.Components
 
             if (_mode == FoldMode.Other)
             {
+                this.ClearRuntimeMessages();
                 IProfile profile = null;
                 // angle
                 if (typ.Name.Equals(typeof(IAngleProfile).Name))
@@ -716,7 +719,7 @@ namespace AdSecGH.Components
                 else if(typ.Name.Equals(typeof(IPerimeterProfile).Name))
                 {
                     //profile = GetInput.Boundaries(this, DA, 0, 1, lengthUnit);
-                    DA.SetData(0, GetInput.Boundaries(this, DA, 0, 1, lengthUnit));
+                    DA.SetData(0, GetInput.Boundaries(this, DA, 0, 1, lengthUnit, true));
                     return;
                 }
                 else
@@ -1621,8 +1624,8 @@ namespace AdSecGH.Components
 
                     i++;
                     Params.Input[i].NickName = "V";
-                    Params.Input[i].Name = "[Optional] VoidPolylines";
-                    Params.Input[i].Description = "The void polygons within the solid polygon of the perimeter profile. If first input is a BRep this input will be ignored.";
+                    Params.Input[i].Name = "VoidPolylines";
+                    Params.Input[i].Description = "[Optional] The void polygons within the solid polygon of the perimeter profile. If first input is a BRep this input will be ignored.";
                     Params.Input[i].Access = GH_ParamAccess.list;
                     Params.Input[i].Optional = true;
                 }
