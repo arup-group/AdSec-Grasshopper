@@ -88,19 +88,17 @@ namespace AdSecGHAdapter
             else if (group.GetType().ToString().Equals(typeof(ITemplateGroup).ToString() + "_Implementation"))
             {
                 ITemplateGroup templateGroup = (ITemplateGroup)group;
-
-                //AdSecComputeTypes.Face face = AdSecComputeTypes.Face.Bottom;
-                //AdSecComputeTypes.TemplateGroup outTemplateGroup = new AdSecComputeTypes.TemplateGroup(face);
-                //outTemplateGroup.Layers = new List<AdSecComputeTypes.ILayer>();
-                ////if (templateGroup.Layers != null)
-                ////{
-                //    foreach (ILayer layer in templateGroup.Layers)
-                //    {
-                //        outTemplateGroup.Layers.Add((AdSecComputeTypes.ILayer)CastToILayer(layer, standardMaterial));
-                //    }
-                ////}
-                ///
-                //return outTemplateGroup;
+                AdSecComputeTypes.Face face = AdSecComputeTypes.Face.Bottom;
+                AdSecComputeTypes.TemplateGroup outTemplateGroup = new AdSecComputeTypes.TemplateGroup(face);
+                outTemplateGroup.Layers = new List<AdSecComputeTypes.ILayer>();
+                if (templateGroup.Layers != null)
+                {
+                    foreach (ILayer layer in templateGroup.Layers)
+                    {
+                        outTemplateGroup.Layers.Add((AdSecComputeTypes.ILayer)CastToILayer(layer, standardMaterial));
+                    }
+                }
+                return outTemplateGroup;
             }
             else if (group.GetType().ToString().Equals(typeof(ILinkGroup).ToString() + "_Implementation"))
             {
@@ -195,11 +193,11 @@ namespace AdSecGHAdapter
             string standardMaterial = "Concrete." + string.Join(".", values) + "." + materialName;
 
             AdSecComputeTypes.Section outSection = new AdSecComputeTypes.Section();
-            //outSection.Cover = CastToCover(section.Cover);
+            outSection.Cover = CastToCover(section.Cover);
             outSection.Profile = (AdSecComputeTypes.IProfile)CastToIProfile(section.Profile);
             foreach (IGroup group in section.ReinforcementGroups)
             {
-                //outSection.ReinforcementGroups.Add((AdSecComputeTypes.IGroup)CastToIGroup(group, standardMaterial));
+                outSection.ReinforcementGroups.Add((AdSecComputeTypes.IGroup)CastToIGroup(group, standardMaterial));
             }
             outSection.StandardMaterial = standardMaterial;
 
