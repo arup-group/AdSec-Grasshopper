@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Oasys.AdSec;
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
@@ -13,14 +14,20 @@ namespace AdSecGHAdapter
 {
     public static class InteropAdSecComputeTypes
     {
-        public static object CastToBarBundle(IBarBundle barBundle, string standardMaterial)
+        public static object CastToBarBundle(IBarBundle barBundle, string codeName)
         {
             AdSecComputeTypes.BarBundle outBarBundle = new AdSecComputeTypes.BarBundle();
             outBarBundle.CountPerBundle = barBundle.CountPerBundle;
             outBarBundle.Diameter = barBundle.Diameter.Millimeters;
-            outBarBundle.StandardMaterial = standardMaterial;
-
+            outBarBundle.StandardMaterial = GetStandardMaterial(barBundle.Material, codeName);
             return outBarBundle;
+        }
+
+        private static string GetStandardMaterial(IReinforcement material, string codeName)
+        {
+            List<string> values = new List<string>(codeName.Split(' '));
+            string standardMaterial = "Reinforcement.Steel." + string.Join(".", values) + "." + "S500B";
+            return standardMaterial;
         }
 
         public static AdSecComputeTypes.Cover CastToCover(ICover cover)
@@ -39,7 +46,7 @@ namespace AdSecGHAdapter
             return outFlange;
         }
 
-        public static object CastToIGroup(IGroup group, string standardMaterial)
+        public static object CastToIGroup(IGroup group, string codeName)
         {
             if (group.GetType().ToString().Equals(typeof(ILineGroup).ToString() + "_Implementation"))
             {
@@ -47,7 +54,7 @@ namespace AdSecGHAdapter
                 AdSecComputeTypes.LineGroup outGroup = new AdSecComputeTypes.LineGroup();
                 outGroup.FirstBarPosition = (AdSecComputeTypes.Point)CastToIPoint(lineGroup.FirstBarPosition);
                 outGroup.FinalBarPosition = (AdSecComputeTypes.Point)CastToIPoint(lineGroup.LastBarPosition);
-                outGroup.Layer = (AdSecComputeTypes.ILayer)CastToILayer(lineGroup.Layer, standardMaterial);
+                outGroup.Layer = (AdSecComputeTypes.ILayer)CastToILayer(lineGroup.Layer, codeName);
 
                 return outGroup;
             }
@@ -55,7 +62,7 @@ namespace AdSecGHAdapter
             {
                 ISingleBars singleBars = (ISingleBars)group;
                 AdSecComputeTypes.SingleBars outSingleBars = new AdSecComputeTypes.SingleBars();
-                outSingleBars.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(singleBars.BarBundle, standardMaterial);
+                outSingleBars.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(singleBars.BarBundle, codeName);
                 foreach (IPoint position in singleBars.Positions)
                 {
                     outSingleBars.Positions.Add((AdSecComputeTypes.Point)CastToIPoint(position));
@@ -70,7 +77,7 @@ namespace AdSecGHAdapter
                 outCircleGroup.CentreOfTheCircle = (AdSecComputeTypes.Point)CastToIPoint(circleGroup.Centre);
                 outCircleGroup.Radius = circleGroup.Radius.Millimeters;
                 outCircleGroup.Angle = circleGroup.StartAngle.Radians;
-                outCircleGroup.Layer = (AdSecComputeTypes.ILayer)CastToILayer(circleGroup.Layer, standardMaterial);
+                outCircleGroup.Layer = (AdSecComputeTypes.ILayer)CastToILayer(circleGroup.Layer, codeName);
 
                 return outCircleGroup;
             }
@@ -80,7 +87,7 @@ namespace AdSecGHAdapter
                 AdSecComputeTypes.PerimeterGroup outPerimeterGroup = new AdSecComputeTypes.PerimeterGroup();
                 foreach (ILayer layer in perimeterGroup.Layers)
                 {
-                    outPerimeterGroup.Layers.Add((AdSecComputeTypes.ILayer)CastToILayer(layer, standardMaterial));
+                    outPerimeterGroup.Layers.Add((AdSecComputeTypes.ILayer)CastToILayer(layer, codeName));
                 }
 
                 return outPerimeterGroup;
@@ -95,7 +102,7 @@ namespace AdSecGHAdapter
                 {
                     foreach (ILayer layer in templateGroup.Layers)
                     {
-                        outTemplateGroup.Layers.Add((AdSecComputeTypes.ILayer)CastToILayer(layer, standardMaterial));
+                        outTemplateGroup.Layers.Add((AdSecComputeTypes.ILayer)CastToILayer(layer, codeName));
                     }
                 }
                 return outTemplateGroup;
@@ -104,21 +111,21 @@ namespace AdSecGHAdapter
             {
                 ILinkGroup linkGroup = (ILinkGroup)group;
                 AdSecComputeTypes.LinkGroup outLinkGroup = new AdSecComputeTypes.LinkGroup();
-                outLinkGroup.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(linkGroup.BarBundle, standardMaterial);
+                outLinkGroup.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(linkGroup.BarBundle, codeName);
 
                 return outLinkGroup;
             }
             return null;
         }
 
-        public static object CastToILayer(ILayer layer, string standardMaterial)
+        public static object CastToILayer(ILayer layer, string codeName)
         {
             if (layer.GetType().ToString().Equals(typeof(ILayerByBarCount).ToString() + "_Implementation"))
             {
                 ILayerByBarCount layerByBarCount = (ILayerByBarCount)layer;
                 AdSecComputeTypes.LayerByBarCount outLayerByBarCount = new AdSecComputeTypes.LayerByBarCount();
                 outLayerByBarCount.Count = layerByBarCount.Count;
-                outLayerByBarCount.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(layerByBarCount.BarBundle, standardMaterial);
+                outLayerByBarCount.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(layerByBarCount.BarBundle, codeName);
 
                 return outLayerByBarCount;
             }
@@ -127,7 +134,7 @@ namespace AdSecGHAdapter
                 ILayerByBarPitch layerByBarPitch = (ILayerByBarPitch)layer;
                 AdSecComputeTypes.LayerByBarPitch outLayerByBarPitch = new AdSecComputeTypes.LayerByBarPitch();
                 outLayerByBarPitch.Pitch = layerByBarPitch.Pitch.Millimeters;
-                outLayerByBarPitch.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(layerByBarPitch.BarBundle, standardMaterial);
+                outLayerByBarPitch.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(layerByBarPitch.BarBundle, codeName);
 
                 return outLayerByBarPitch;
             }
@@ -197,7 +204,7 @@ namespace AdSecGHAdapter
             outSection.Profile = (AdSecComputeTypes.IProfile)CastToIProfile(section.Profile);
             foreach (IGroup group in section.ReinforcementGroups)
             {
-                outSection.ReinforcementGroups.Add((AdSecComputeTypes.IGroup)CastToIGroup(group, standardMaterial));
+                outSection.ReinforcementGroups.Add((AdSecComputeTypes.IGroup)CastToIGroup(group, codeName));
             }
             outSection.StandardMaterial = standardMaterial;
 
