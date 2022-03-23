@@ -49,12 +49,11 @@ namespace AdSecGH.Components
         {
             pManager.AddGenericParameter("Results", "Res", "AdSec Results to perform serviceability check on.", GH_ParamAccess.item);
             pManager.AddGenericParameter("BaseLoad", "Ld", "AdSec Load to start the optimisation from.", GH_ParamAccess.item);
-            pManager.AddTextParameter("OptimiseLd", "Opt", "Text input to select which load component to optimise for, X, YY or ZZ", GH_ParamAccess.item, "YY");
-            pManager.AddNumberParameter("Increment", "Inc", "Increment the load in steps of this size [using Unit from Settings]", GH_ParamAccess.item, 1);
+            pManager.AddTextParameter("OptimiseLd", "Opt", "Text input to select which load component to optimise for, X, YY or ZZ (default 'YY')", GH_ParamAccess.item, "YY");
+            pManager.AddNumberParameter("Increment", "Inc", "Increment the load in steps of this size [using Unit from Settings] (default 1)", GH_ParamAccess.item, 1);
             pManager.AddGenericParameter("MaxCrack", "Crk", "The maximum allowed crack width", GH_ParamAccess.item);
             pManager[2].Optional = true;
             pManager[3].Optional = true;
-
         }
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)

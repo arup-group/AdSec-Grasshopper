@@ -34,8 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AdSecComputeTypes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\GhAdSec\obj\AdSecComputeTypes.dll</HintPath>
+      <HintPath>..\packages\AdSecComputeTypes.1.1.0\lib\netstandard2.0\AdSecComputeTypes.dll</HintPath>
     </Reference>
     <Reference Include="AdSec_API, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\AdSec.1.0.2.720\lib\netstandard2.0\AdSec_API.dll</HintPath>
