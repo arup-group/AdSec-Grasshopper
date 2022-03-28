@@ -22,7 +22,7 @@ using Oasys.Units;
 using System.Drawing;
 using Rhino.Display;
 using Oasys.Geometry.Paths2D;
-using AdSecGHAdapter;
+using AdSecGH.Converter;
 
 namespace AdSecGH.Parameters
 {

@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecGH", "GhAdSec\AdSecGH.csproj", "{1B0D92BF-3C51-45D4-8197-696C357F5C7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecGHAdapter", "AdSecGHAdapter\AdSecGHAdapter.csproj", "{4E71555E-FA74-41F4-9155-31A9BFBDC103}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecGHConverter", "AdSecGHConverter\AdSecGHConverter.csproj", "{4E71555E-FA74-41F4-9155-31A9BFBDC103}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

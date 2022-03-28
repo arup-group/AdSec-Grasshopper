@@ -10,7 +10,7 @@ using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
 
-namespace AdSecGHAdapter
+namespace AdSecGH.Converter
 {
     public static class InteropAdSecComputeTypes
     {

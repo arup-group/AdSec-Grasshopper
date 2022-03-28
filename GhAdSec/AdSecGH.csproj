@@ -337,9 +337,9 @@
     <None Include="Properties\Icons\Icons\CrackLoad.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AdSecGHAdapter\AdSecGHAdapter.csproj">
+    <ProjectReference Include="..\AdSecGHConverter\AdSecGHConverter.csproj">
       <Project>{4e71555e-fa74-41f4-9155-31a9bfbdc103}</Project>
-      <Name>AdSecGHAdapter</Name>
+      <Name>AdSecGHConverter</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

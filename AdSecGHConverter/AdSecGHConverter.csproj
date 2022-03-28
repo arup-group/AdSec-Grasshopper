@@ -7,8 +7,8 @@
     <ProjectGuid>{4E71555E-FA74-41F4-9155-31A9BFBDC103}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AdSecGHAdapter</RootNamespace>
-    <AssemblyName>AdSecGHAdapter</AssemblyName>
+    <RootNamespace>AdSecGH.Converters</RootNamespace>
+    <AssemblyName>AdSecGHConverters</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
