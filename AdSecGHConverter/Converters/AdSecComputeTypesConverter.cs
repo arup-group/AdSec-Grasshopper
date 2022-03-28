@@ -10,16 +10,18 @@ using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
 
-namespace AdSecGH.Converter
+namespace AdSecGH.Converters
 {
-    public static class InteropAdSecComputeTypes
+    public static class AdSecComputeTypesConverter
     {
         public static object CastToBarBundle(IBarBundle barBundle, string codeName)
         {
-            AdSecComputeTypes.BarBundle outBarBundle = new AdSecComputeTypes.BarBundle();
-            outBarBundle.CountPerBundle = barBundle.CountPerBundle;
-            outBarBundle.Diameter = barBundle.Diameter.Millimeters;
-            outBarBundle.StandardMaterial = GetStandardMaterial(barBundle.Material, codeName);
+            AdSecComputeTypes.BarBundle outBarBundle = new AdSecComputeTypes.BarBundle
+            {
+                CountPerBundle = barBundle.CountPerBundle,
+                Diameter = barBundle.Diameter.Millimeters,
+                StandardMaterial = GetStandardMaterial(barBundle.Material, codeName)
+            };
             return outBarBundle;
         }
 
@@ -39,9 +41,11 @@ namespace AdSecGH.Converter
 
         public static AdSecComputeTypes.Flange CastToFlange(IFlange flange)
         {
-            AdSecComputeTypes.Flange outFlange = new AdSecComputeTypes.Flange();
-            outFlange.Thickness = flange.Thickness.Millimeters;
-            outFlange.Width = flange.Width.Millimeters;
+            AdSecComputeTypes.Flange outFlange = new AdSecComputeTypes.Flange
+            {
+                Thickness = flange.Thickness.Millimeters,
+                Width = flange.Width.Millimeters
+            };
 
             return outFlange;
         }
@@ -51,10 +55,12 @@ namespace AdSecGH.Converter
             if (group.GetType().ToString().Equals(typeof(ILineGroup).ToString() + "_Implementation"))
             {
                 ILineGroup lineGroup = (ILineGroup)group;
-                AdSecComputeTypes.LineGroup outGroup = new AdSecComputeTypes.LineGroup();
-                outGroup.FirstBarPosition = (AdSecComputeTypes.Point)CastToIPoint(lineGroup.FirstBarPosition);
-                outGroup.FinalBarPosition = (AdSecComputeTypes.Point)CastToIPoint(lineGroup.LastBarPosition);
-                outGroup.Layer = (AdSecComputeTypes.ILayer)CastToILayer(lineGroup.Layer, codeName);
+                AdSecComputeTypes.LineGroup outGroup = new AdSecComputeTypes.LineGroup
+                {
+                    FirstBarPosition = (AdSecComputeTypes.Point)CastToIPoint(lineGroup.FirstBarPosition),
+                    FinalBarPosition = (AdSecComputeTypes.Point)CastToIPoint(lineGroup.LastBarPosition),
+                    Layer = (AdSecComputeTypes.ILayer)CastToILayer(lineGroup.Layer, codeName)
+                };
 
                 return outGroup;
             }
@@ -110,8 +116,10 @@ namespace AdSecGH.Converter
             else if (group.GetType().ToString().Equals(typeof(ILinkGroup).ToString() + "_Implementation"))
             {
                 ILinkGroup linkGroup = (ILinkGroup)group;
-                AdSecComputeTypes.LinkGroup outLinkGroup = new AdSecComputeTypes.LinkGroup();
-                outLinkGroup.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(linkGroup.BarBundle, codeName);
+                AdSecComputeTypes.LinkGroup outLinkGroup = new AdSecComputeTypes.LinkGroup
+                {
+                    BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(linkGroup.BarBundle, codeName)
+                };
 
                 return outLinkGroup;
             }
@@ -123,9 +131,11 @@ namespace AdSecGH.Converter
             if (layer.GetType().ToString().Equals(typeof(ILayerByBarCount).ToString() + "_Implementation"))
             {
                 ILayerByBarCount layerByBarCount = (ILayerByBarCount)layer;
-                AdSecComputeTypes.LayerByBarCount outLayerByBarCount = new AdSecComputeTypes.LayerByBarCount();
-                outLayerByBarCount.Count = layerByBarCount.Count;
-                outLayerByBarCount.BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(layerByBarCount.BarBundle, codeName);
+                AdSecComputeTypes.LayerByBarCount outLayerByBarCount = new AdSecComputeTypes.LayerByBarCount
+                {
+                    Count = layerByBarCount.Count,
+                    BarBundle = (AdSecComputeTypes.BarBundle)CastToBarBundle(layerByBarCount.BarBundle, codeName)
+                };
 
                 return outLayerByBarCount;
             }
@@ -143,9 +153,11 @@ namespace AdSecGH.Converter
 
         public static object CastToIPoint(IPoint point)
         {
-            AdSecComputeTypes.Point outPoint = new AdSecComputeTypes.Point();
-            outPoint.Y = point.Y.Millimeters;
-            outPoint.Z = point.Z.Millimeters;
+            AdSecComputeTypes.Point outPoint = new AdSecComputeTypes.Point
+            {
+                Y = point.Y.Millimeters,
+                Z = point.Z.Millimeters
+            };
 
             return outPoint;
         }
@@ -174,9 +186,11 @@ namespace AdSecGH.Converter
             else if (profile.GetType().ToString().Equals(typeof(IRectangleProfile).ToString() + "_Implementation"))
             {
                 IRectangleProfile rectangleProfile = (IRectangleProfile)profile;
-                AdSecComputeTypes.RectangleProfile outRectangleProfile = new AdSecComputeTypes.RectangleProfile();
-                outRectangleProfile.Width = rectangleProfile.Width.Millimeters;
-                outRectangleProfile.Depth = rectangleProfile.Depth.Millimeters;
+                AdSecComputeTypes.RectangleProfile outRectangleProfile = new AdSecComputeTypes.RectangleProfile
+                {
+                    Width = rectangleProfile.Width.Millimeters,
+                    Depth = rectangleProfile.Depth.Millimeters
+                };
 
                 return outRectangleProfile;
             }
@@ -213,14 +227,16 @@ namespace AdSecGH.Converter
 
         public static AdSecComputeTypes.Web CastToWeb(IWeb web)
         {
-            AdSecComputeTypes.Web outWeb = new AdSecComputeTypes.Web();
-            outWeb.BottomThickness = web.BottomThickness.Millimeters;
-            outWeb.TopThickness = web.TopThickness.Millimeters;
+            AdSecComputeTypes.Web outWeb = new AdSecComputeTypes.Web
+            {
+                BottomThickness = web.BottomThickness.Millimeters,
+                TopThickness = web.TopThickness.Millimeters
+            };
 
             return outWeb;
         }
 
-        public static Type GetType(Type type)
+        public static Type GetTypeFor(Type type)
         {
             switch (type.Name)
             {

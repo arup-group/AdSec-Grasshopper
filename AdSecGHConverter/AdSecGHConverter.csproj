@@ -68,8 +68,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IAdSecSection.cs" />
-    <Compile Include="InteropAdSecComputeTypes.cs" />
+    <Compile Include="Converters\AdSecComputeTypesConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Converters\SpeckleConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdSecGH.Converter
+namespace AdSecGH.Converters
 {
     public interface IAdSecSection
     {

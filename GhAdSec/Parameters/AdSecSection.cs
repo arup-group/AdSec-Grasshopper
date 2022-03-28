@@ -22,7 +22,7 @@ using Oasys.Units;
 using System.Drawing;
 using Rhino.Display;
 using Oasys.Geometry.Paths2D;
-using AdSecGH.Converter;
+using AdSecGH.Converters;
 
 namespace AdSecGH.Parameters
 {
@@ -541,16 +541,31 @@ namespace AdSecGH.Parameters
         {
             // This function is called when Grasshopper needs to convert this 
             // AdSec type into some other type Q.            
-            if (InteropAdSecComputeTypes.IsPresent())
+            if (AdSecComputeTypesConverter.IsPresent())
             {
-                Type type = InteropAdSecComputeTypes.GetType(typeof(IAdSecSection));
+                Type type = AdSecComputeTypesConverter.GetTypeFor(typeof(IAdSecSection));
                 if (typeof(Q).IsAssignableFrom(type))
                 {
                     if (Value == null)
                         target = default;
                     else
                     {
-                        target = (Q)(object)InteropAdSecComputeTypes.CastToSection(Value.Section, Value.codeName, Value.materialName);
+                        target = (Q)(object)AdSecComputeTypesConverter.CastToSection(Value.Section, Value.codeName, Value.materialName);
+                    }
+                    return true;
+                }
+            }
+            if (SpeckleConverter.IsPresent())
+            {
+                Type type = SpeckleConverter.GetTypeFor(typeof(IAdSecSection));
+                if (typeof(Q).IsAssignableFrom(type))
+                {
+                    if (Value == null)
+                        target = default;
+                    else
+                    {
+                        //target = (Q)(object)SpeckleConverter.CastToSection(Value.Section, Value.codeName, Value.materialName);
+                        target = default;
                     }
                     return true;
                 }
