@@ -51,6 +51,13 @@
     <Reference Include="OasysUnits, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AdSec.1.0.2.720\lib\netstandard2.0\OasysUnits.dll</HintPath>
     </Reference>
+    <Reference Include="Objects, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\AppData\Roaming\Speckle\Kits\Objects\Objects.dll</HintPath>
+    </Reference>
+    <Reference Include="SpeckleCore2">
+      <HintPath>..\..\..\AppData\Roaming\Grasshopper\Libraries\SpeckleGrasshopper2\SpeckleCore2.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
