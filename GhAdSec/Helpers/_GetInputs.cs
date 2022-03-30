@@ -843,6 +843,7 @@ namespace AdSecGH.Components
         }
         internal static AdSecProfileGoo Boundaries(GH_Component owner, IGH_DataAccess DA, int inputid_Boundary, int inputid_Voids, LengthUnit lengthUnit, bool isOptional = false)
         {
+            owner.ClearRuntimeMessages();
             AdSecProfileGoo perimeter = null;
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
             if (DA.GetData(inputid_Boundary, ref gh_typ))
@@ -865,48 +866,48 @@ namespace AdSecGH.Components
                         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Boundary].NickName + " to Polyline");
                         return null;
                     }
+                }
+                else
+                {
+                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid_Boundary].NickName + " to Boundary");
+                    return null;
+                }
 
-                    if (inputid_Voids >= 0)
+                if (inputid_Voids >= 0)
+                {
+                    // try get voids
+                    List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
+                    if (DA.GetDataList(inputid_Voids, gh_typs))
                     {
-                        // try get voids
-                        List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
-                        if (DA.GetDataList(inputid_Voids, gh_typs))
-                        {
-                            List<Polyline> voids = new List<Polyline>();
+                        List<Polyline> voids = new List<Polyline>();
 
-                            for (int i = 0; i < gh_typs.Count; i++)
+                        for (int i = 0; i < gh_typs.Count; i++)
+                        {
+                            if (GH_Convert.ToCurve(gh_typs[i].Value, ref crv, GH_Conversion.Both))
                             {
-                                if (GH_Convert.ToCurve(gh_typs[i].Value, ref crv, GH_Conversion.Both))
+                                Polyline voidCrv = null;
+                                if (crv.TryGetPolyline(out voidCrv))
                                 {
-                                    Polyline voidCrv = null;
-                                    if (crv.TryGetPolyline(out voidCrv))
-                                    {
-                                        voids.Add(voidCrv);
-                                    }
-                                    else
-                                    {
-                                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " (item " + i + ") to Polyline");
-                                    }
+                                    voids.Add(voidCrv);
                                 }
                                 else
                                 {
                                     owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " (item " + i + ") to Polyline");
                                 }
                             }
+                            else
+                            {
+                                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " (item " + i + ") to Polyline");
+                            }
+                        }
 
-                            perimeter = new AdSecProfileGoo(solid, voids, lengthUnit);
-                        }
-                        else if (owner.Params.Input[inputid_Voids].SourceCount > 0)
-                        {
-                            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " input to Polyline(s)");
-                            return null;
-                        }
+                        perimeter = new AdSecProfileGoo(solid, voids, lengthUnit);
                     }
-                }
-                else
-                {
-                    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid_Boundary].NickName + " to Boundary");
-                    return null;
+                    else if (owner.Params.Input[inputid_Voids].SourceCount > 0)
+                    {
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " input to Polyline(s)");
+                        return null;
+                    }
                 }
                 return (AdSecProfileGoo)perimeter;
             }
