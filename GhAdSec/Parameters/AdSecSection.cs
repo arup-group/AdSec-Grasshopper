@@ -424,7 +424,21 @@ namespace AdSecGH.Parameters
                     }
                     catch (Exception)
                     {
+                        try
+                        {
+                            ITemplateGroup template = (ITemplateGroup)grp.Group;
+                            if (grp.Cover != null)
+                            {
+                                if (cover == null || grp.Cover.UniformCover > cover.UniformCover)
+                                {
+                                    cover = grp.Cover;
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
 
+                        }
                     }
                     // not a link group, so we don't set section's cover
                 }
