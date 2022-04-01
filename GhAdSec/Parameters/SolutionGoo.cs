@@ -60,7 +60,7 @@ namespace AdSecGH.Parameters
         }
         public override string ToString()
         {
-            return "AdSec " + TypeName; // + " {"
+            return "AdSec " + TypeName;
         }
     }
 }

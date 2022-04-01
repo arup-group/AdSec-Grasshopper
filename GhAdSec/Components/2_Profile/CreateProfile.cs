@@ -100,8 +100,7 @@ namespace AdSecGH.Components
                 dropdownitems.Add(Units.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
-                IQuantity quantity = new Length(0, lengthUnit);
-                unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
+               
             }
 
             m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
@@ -424,8 +423,7 @@ namespace AdSecGH.Components
         Dictionary<string, FieldInfo> profileFields;
 
         private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
-        string unitAbbreviation;
-
+        
         #region catalogue sections
         // for catalogue selection
         // Catalogues
@@ -455,6 +453,8 @@ namespace AdSecGH.Components
 
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
+            IQuantity quantity = new Length(0, lengthUnit);
+            string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
             pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Profile width", GH_ParamAccess.item);
             pManager.AddGenericParameter("Depth [" + unitAbbreviation + "]", "H", "Profile depth", GH_ParamAccess.item);
             pManager.AddPlaneParameter("LocalPlane", "P", "[Optional] Plane representing local coordinate system, by default a YZ-plane is used", GH_ParamAccess.item, Plane.WorldYZ);
@@ -1058,6 +1058,9 @@ namespace AdSecGH.Components
         #region IGH_VariableParameterComponent null implementation
         void IGH_VariableParameterComponent.VariableParameterMaintenance()
         {
+            IQuantity quantity = new Length(0, lengthUnit);
+            string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
+
             if (_mode == FoldMode.Catalogue)
             {
                 int i = 0;
