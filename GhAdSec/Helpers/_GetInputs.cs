@@ -993,6 +993,36 @@ namespace AdSecGH.Components
             }
             return null;
         }
+        internal static List<AdSecSection> AdSecSections(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+        {
+            List<AdSecSection> subs = new List<AdSecSection>();
+            List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
+            if (DA.GetDataList(inputid, gh_typs))
+            {
+                for (int i = 0; i < gh_typs.Count; i++)
+                {
+                    if (gh_typs[i].Value is AdSecSection)
+                    {
+                        subs.Add((AdSecSection)gh_typs[i].Value);
+                    }
+                    else if (gh_typs[i].Value is AdSecSectionGoo)
+                    {
+                        AdSecSectionGoo subcomp = (AdSecSectionGoo)gh_typs[i].Value;
+                        subs.Add(subcomp.Value);
+                    }
+                    else
+                    {
+                        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i + ") to Section");
+                    }
+                }
+                return subs;
+            }
+            else if (!isOptional)
+            {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+            }
+            return null;
+        }
         internal static AdSecSolutionGoo Solution(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
         {
             GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
