@@ -346,15 +346,16 @@ namespace AdSecGH.Components
         {
             if (jsonStrings == null | jsonStrings.Count == 0)
                 return null;
-            string jsonString = jsonStrings[0].Remove(jsonStrings[0].Length - 3, 2);
+            string jsonString = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
             for (int i = 1; i < jsonStrings.Count; i++)
             {
                 string jsonString2 = jsonStrings[i];
                 int start = jsonString2.IndexOf("components") - 2;
-                jsonString2 = "," + jsonString2.Substring(start, jsonString2.Length - 3 - start);
-                jsonString += jsonString2;
+                jsonString2 = "," + jsonString2.Substring(start);
+                jsonString += jsonString2.Remove(jsonString2.Length - 2, 2);
             }
-            jsonString += jsonStrings[0].Substring(jsonStrings[0].Length - 3);
+            jsonString += jsonStrings[0].Substring(jsonStrings[0].Length - 2);
+
             return jsonString;
         }
     }
