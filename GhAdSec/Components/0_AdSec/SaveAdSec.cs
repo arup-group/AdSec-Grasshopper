@@ -222,7 +222,7 @@ namespace AdSecGH.Components
                                 // check if item is load type
                                 if (loads[i][j].CastTo(out AdSecLoadGoo loadGoo))
                                 {
-                                    AdSecLoadGoo load = (AdSecLoadGoo)loadGoo.Value;
+                                    AdSecLoadGoo load = (AdSecLoadGoo)loadGoo;
                                     lds.Add(load.Value);
                                 }
                                 else
@@ -241,17 +241,17 @@ namespace AdSecGH.Components
                                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Error with section at index " + i + ": " + e.InnerException.Message);
                             }
                         }
-                        else if (loads.Branches[i][0].CastTo(out AdSecDeformationGoo notusedDef))
+                        else if (loads.Branches[i][0] is AdSecDeformationGoo)
                         {
                             // create new list of deformations
                             Oasys.Collections.IList<Oasys.AdSec.IDeformation> defs = Oasys.Collections.IList<Oasys.AdSec.IDeformation>.Create();
                             // loop through input list
-                            for (int j = 0; j < loads.Branches[i].Count; i++)
+                            for (int j = 0; j < loads.Branches[i].Count; j++)
                             {
                                 // check if item is load type
-                                if (loads[i][j].CastTo(out AdSecDeformationGoo defGoo))
+                                if (loads[i][j] is AdSecDeformationGoo)
                                 {
-                                    AdSecDeformationGoo def = (AdSecDeformationGoo)defGoo.Value;
+                                    AdSecDeformationGoo def = (AdSecDeformationGoo)loads[i][j];
                                     defs.Add(def.Value);
                                 }
                                 else
