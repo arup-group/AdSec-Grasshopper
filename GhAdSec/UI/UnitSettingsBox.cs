@@ -237,5 +237,10 @@ namespace AdSecGH.UI
         {
 
         }
+
+        private void labelBendingStiffness_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

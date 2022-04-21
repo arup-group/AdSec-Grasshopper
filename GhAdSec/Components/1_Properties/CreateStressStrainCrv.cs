@@ -221,79 +221,88 @@ namespace AdSecGH.Components
         {
             IStressStrainCurve crv = null;
 
-            switch (_mode)
+            try
             {
-                case AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear:
-                    
-                    crv = IBilinearStressStrainCurve.Create(GetInput.StressStrainPoint(this, DA, 0), GetInput.StressStrainPoint(this, DA, 1));
-                    break;
+                switch (_mode)
+                {
+                    case AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear:
 
-                case AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit:
-                    
-                    IExplicitStressStrainCurve exCrv = IExplicitStressStrainCurve.Create();
-                    exCrv.Points = GetInput.StressStrainPoints(this, DA, 0);
-                    crv = exCrv;
-                    break;
+                        crv = IBilinearStressStrainCurve.Create(GetInput.StressStrainPoint(this, DA, 0), GetInput.StressStrainPoint(this, DA, 1));
+                        break;
 
-                case AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
-                    
-                    crv = IFibModelCodeStressStrainCurve.Create(
-                        GetInput.Stress(this, DA, 1, stressUnit),
-                        GetInput.StressStrainPoint(this, DA, 0),
-                        GetInput.Strain(this, DA, 2, strainUnit));
-                    break;
+                    case AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit:
 
-                case AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
+                        IExplicitStressStrainCurve exCrv = IExplicitStressStrainCurve.Create();
+                        exCrv.Points = GetInput.StressStrainPoints(this, DA, 0);
+                        crv = exCrv;
+                        break;
 
-                    crv = IManderStressStrainCurve.Create(
-                        GetInput.Stress(this, DA, 1, stressUnit),
-                        GetInput.StressStrainPoint(this, DA, 0),
-                        GetInput.Strain(this, DA, 2, strainUnit));
-                    break;
+                    case AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
 
-                case AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
-                    
-                    crv = ILinearStressStrainCurve.Create(
-                        GetInput.StressStrainPoint(this, DA, 0));
-                    break;
-                
-                case AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
+                        crv = IFibModelCodeStressStrainCurve.Create(
+                            GetInput.Stress(this, DA, 1, stressUnit),
+                            GetInput.StressStrainPoint(this, DA, 0),
+                            GetInput.Strain(this, DA, 2, strainUnit));
+                        break;
 
-                    crv = IManderConfinedStressStrainCurve.Create(
-                        GetInput.Stress(this, DA, 0, stressUnit),
-                        GetInput.Stress(this, DA, 1, stressUnit),
-                        GetInput.Stress(this, DA, 2, stressUnit),
-                        GetInput.Strain(this, DA, 3, strainUnit));
-                    break;
+                    case AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
 
-                case AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
-                    
-                    crv = IParabolaRectangleStressStrainCurve.Create(
-                        GetInput.StressStrainPoint(this, DA, 0),
-                        GetInput.Strain(this, DA, 1, strainUnit));
-                    break;
+                        crv = IManderStressStrainCurve.Create(
+                            GetInput.Stress(this, DA, 1, stressUnit),
+                            GetInput.StressStrainPoint(this, DA, 0),
+                            GetInput.Strain(this, DA, 2, strainUnit));
+                        break;
 
-                case AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
-                     
-                    crv = IParkStressStrainCurve.Create(
-                        GetInput.StressStrainPoint(this, DA, 0));
-                    break;
+                    case AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
 
-                case AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics:
+                        crv = ILinearStressStrainCurve.Create(
+                            GetInput.StressStrainPoint(this, DA, 0));
+                        break;
 
-                    crv = IPopovicsStressStrainCurve.Create(
-                        GetInput.StressStrainPoint(this, DA, 0),
-                        GetInput.Strain(this, DA, 1, strainUnit));
-                    break;
+                    case AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
 
-                case AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
-                    
+                        crv = IManderConfinedStressStrainCurve.Create(
+                            GetInput.Stress(this, DA, 0, stressUnit),
+                            GetInput.Stress(this, DA, 1, stressUnit),
+                            GetInput.Stress(this, DA, 2, stressUnit),
+                            GetInput.Strain(this, DA, 3, strainUnit));
+                        break;
 
-                    crv = IRectangularStressStrainCurve.Create(
-                        GetInput.StressStrainPoint(this, DA, 0),
-                        GetInput.Strain(this, DA, 1, strainUnit));
-                    break;
+                    case AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
+
+                        crv = IParabolaRectangleStressStrainCurve.Create(
+                            GetInput.StressStrainPoint(this, DA, 0),
+                            GetInput.Strain(this, DA, 1, strainUnit));
+                        break;
+
+                    case AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
+
+                        crv = IParkStressStrainCurve.Create(
+                            GetInput.StressStrainPoint(this, DA, 0));
+                        break;
+
+                    case AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics:
+
+                        crv = IPopovicsStressStrainCurve.Create(
+                            GetInput.StressStrainPoint(this, DA, 0),
+                            GetInput.Strain(this, DA, 1, strainUnit));
+                        break;
+
+                    case AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
+
+
+                        crv = IRectangularStressStrainCurve.Create(
+                            GetInput.StressStrainPoint(this, DA, 0),
+                            GetInput.Strain(this, DA, 1, strainUnit));
+                        break;
+                }
             }
+            catch (Exception e)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
+                return;
+            }
+            
 
             // create preview
             Tuple<Curve, List<Point3d>> tuple = AdSecStressStrainCurveGoo.Create(crv, _mode, true);
