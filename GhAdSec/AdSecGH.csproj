@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AdSecGH</RootNamespace>
     <AssemblyName>AdSecGH</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <NuGetPackageImportStamp>
@@ -21,7 +21,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
@@ -40,7 +40,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -159,20 +159,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="AdSec">
-      <Version>1.0.2.720</Version>
-    </PackageReference>
-    <PackageReference Include="Grasshopper">
-      <Version>6.27.20176.5001</Version>
-    </PackageReference>
-    <PackageReference Include="RhinoCommon">
-      <Version>6.27.20176.5001</Version>
-    </PackageReference>
-    <PackageReference Include="System.Data.SQLite">
-      <Version>1.0.115</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -334,10 +320,15 @@
     <None Include="Properties\Icons\Icons\CrackLoad.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AdSecGHAdapter\AdSecGHAdapter.csproj">
-      <Project>{4e71555e-fa74-41f4-9155-31a9bfbdc103}</Project>
-      <Name>AdSecGHAdapter</Name>
-    </ProjectReference>
+    <PackageReference Include="AdSec">
+      <Version>1.0.2.720</Version>
+    </PackageReference>
+    <PackageReference Include="Grasshopper">
+      <Version>6.27.20176.5001</Version>
+    </PackageReference>
+    <PackageReference Include="Stub.System.Data.SQLite.Core.NetFramework">
+      <Version>1.0.115.5</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -348,9 +339,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"
-Copy "$(ProjectDir)obj\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"
-</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
