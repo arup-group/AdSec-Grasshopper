@@ -1,4 +1,4 @@
-name: MSBuild
+name: Build and Test
 
 on: push
 
@@ -11,6 +11,9 @@ jobs:
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1
+
+    - name: Add NuGet source
+      run: dotnet nuget add source https://pkgs.dev.azure.com/arupcomputedevops/_packaging/arupcomputedevops@Release/nuget/v3/index.json --name "arupcompute-devops" --username "unused" --password "${{ secrets.ARUPCOMPUTE_DEVOPS_NUGET_TOKEN }}"
 
     - name: Restore NuGet packages
       run: nuget restore AdSecGH.sln
