@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AdSecGHAdapter")]
+[assembly: AssemblyTitle("AdSecGHConverters")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Arup")]
-[assembly: AssemblyProduct("AdSecGHAdapter")]
+[assembly: AssemblyProduct("AdSecGHConverters")]
 [assembly: AssemblyCopyright("Copyright © Arup 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4e71555e-fa74-41f4-9155-31a9bfbdc103")]
+[assembly: Guid("03a36ae0-e900-4ec3-92b0-975937d9c69f")]
 
 // Version information for an assembly consists of the following four values:
 //
