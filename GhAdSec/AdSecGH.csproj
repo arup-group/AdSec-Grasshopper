@@ -166,6 +166,20 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AdSec">
+      <Version>1.0.3.3</Version>
+    </PackageReference>
+    <PackageReference Include="Grasshopper">
+      <Version>6.27.20176.5001</Version>
+    </PackageReference>
+    <PackageReference Include="RhinoCommon">
+      <Version>6.27.20176.5001</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite">
+      <Version>1.0.115</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
