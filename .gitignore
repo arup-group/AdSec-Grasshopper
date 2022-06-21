@@ -13,3 +13,5 @@ AdSecGHAdapter/bin
 packages
 /.gitignore.bak
 /GhAdSec/obj
+*.testlog
+*.manifest

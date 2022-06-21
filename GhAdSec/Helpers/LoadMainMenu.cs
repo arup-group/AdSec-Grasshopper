@@ -17,9 +17,9 @@ namespace AdSecGH.Helpers
 
         internal void CreateMainMenuItem()
         {
-            menuLoadTimer = new System.Timers.Timer(500);
+            menuLoadTimer = new System.Timers.Timer(5000);
             menuLoadTimer.Elapsed += TryAddMenuItem;
-            menuTrimTimer = new System.Timers.Timer(500);
+            menuTrimTimer = new System.Timers.Timer(5000);
             menuTrimTimer.Elapsed += TrimMenuItem;
 
             AppDomain currentDomain = AppDomain.CurrentDomain;
