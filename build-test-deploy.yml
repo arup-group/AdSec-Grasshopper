@@ -65,4 +65,4 @@ steps:
   env:
     YAK_TOKEN: $(YAK_TOKEN)
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.isRelease, 'true'))
-  displayName: Deploy yak package
+  displayName: Deploy yak package 
