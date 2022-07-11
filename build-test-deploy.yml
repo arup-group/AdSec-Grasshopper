@@ -16,6 +16,10 @@ pool: 'vs17_2'
 steps:
 - task: NuGetToolInstaller@1
 
+- task: NuGetAuthenticate@1
+  inputs:
+    forceReinstallCredentialProvider: true
+
 - task: NuGetCommand@2
   displayName: 'Restoring NuGet packages'
   inputs:
@@ -64,7 +68,7 @@ steps:
     ls Release\*.yak |% {.\yak push $_.FullName}
   env:
     YAK_TOKEN: $(YAK_TOKEN)
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.isRelease, 'true'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.configuration, 'Release'))
   displayName: Deploy yak package 
 
 # copied from github, won´t work, see https://docs.microsoft.com/en-gb/azure/devops/pipelines/artifacts/nuget?view=azure-devops&tabs=yaml
