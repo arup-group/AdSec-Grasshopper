@@ -167,7 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AdSec">
-      <Version>1.0.3.3</Version>
+      <Version>1.1.0.9</Version>
     </PackageReference>
     <PackageReference Include="Grasshopper">
       <Version>6.27.20176.5001</Version>
@@ -361,7 +361,9 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"
+Copy "$(ProjectDir)lib\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
