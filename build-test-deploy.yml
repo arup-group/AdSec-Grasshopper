@@ -52,6 +52,7 @@ steps:
 #  env:
 #    CODECOV_TOKEN: $(CODECOV_TOKEN)
 #  displayName: Upload Code Coverage to codecovio
+#  failOnStderr: true
 
 - powershell: |
     cd GhAdSec\bin\x64
@@ -68,7 +69,7 @@ steps:
     ls Release\*.yak |% {.\yak push $_.FullName}
   env:
     YAK_TOKEN: $(YAK_TOKEN)
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.configuration, 'Release'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.deploy, 'true'))
   displayName: Deploy yak package 
 
 # copied from github, won´t work, see https://docs.microsoft.com/en-gb/azure/devops/pipelines/artifacts/nuget?view=azure-devops&tabs=yaml
