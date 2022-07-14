@@ -349,7 +349,7 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"
-Copy "$(ProjectDir)obj\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"
+Copy "$(ProjectDir)lib\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
