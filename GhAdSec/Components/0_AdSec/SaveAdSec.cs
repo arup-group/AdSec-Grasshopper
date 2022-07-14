@@ -61,7 +61,6 @@ namespace AdSecGH.Components
       if (res) // == DialogResult.OK)
       {
         fileName = fdi.FileName;
-        usersetFileName = true;
 
         // write to file
         File.WriteAllText(fileName, jsonString);
@@ -115,7 +114,6 @@ namespace AdSecGH.Components
     // This region handles input and output parameters
 
     string fileName = null;
-    bool usersetFileName = false;
     static string jsonString;
     bool canOpen = false;
     protected override void RegisterInputParams(GH_InputParamManager pManager)

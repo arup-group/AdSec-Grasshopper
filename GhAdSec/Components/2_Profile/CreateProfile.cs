@@ -420,7 +420,6 @@ namespace AdSecGH.Components
         "IProfile", "IPoint", "IPolygon", "IFlange", "IWeb", "IWebConstant", "IWebTapered", "ITrapezoidProfileAbstractInterface", "IIBeamProfile"
         });
         Dictionary<string, Type> profileTypes;
-        Dictionary<string, FieldInfo> profileFields;
 
         private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
         
@@ -444,8 +443,6 @@ namespace AdSecGH.Components
         int catalogueIndex = -1; //-1 is all
         int typeIndex = -1;
         // displayed selections
-        string typeName = "All";
-        string sectionName = "All";
         // list of sections as outcome from selections
         string profileString = "HE HE200.B";
         string search = "";
