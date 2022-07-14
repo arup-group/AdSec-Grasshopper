@@ -25,7 +25,7 @@ steps:
   inputs:
       command: 'restore'
       restoreSolution: 'AdSecGH.sln'
-  
+
 - task: VSBuild@1
   displayName: 'Building project in $(configuration)'
   inputs:
@@ -70,7 +70,7 @@ steps:
   env:
     YAK_TOKEN: $(YAK_TOKEN)
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.deploy, 'true'))
-  displayName: Deploy yak package 
+  displayName: Deploy yak package
 
 # copied from github, won´t work, see https://docs.microsoft.com/en-gb/azure/devops/pipelines/artifacts/nuget?view=azure-devops&tabs=yaml
 #- powershell: |
@@ -80,4 +80,44 @@ steps:
 #- powershell: |
 #    dotnet nuget update source oasys-software-libraries --username "unused" --password "${{ secrets.DEVOPS_TOKEN }}" --configfile nuget.config
 #    dotnet nuget push "*.nupkg" --api-key AzureDevOps
-#  displayName: Push NuGet package
+#  displayName: Deploy NuGet package
+
+#- task: GitHubRelease@1
+#  inputs:
+#    gitHubConnection: 'github.com_peterjgrainger'
+#    repositoryName: 'arup-group/oasys-combined'
+#    action: 'edit'
+#    target: '$(Build.SourceVersion)'
+#    tag: ${{replace(variables['Build.SourceBranch'], 'refs/tags/', '')}}
+#    title: ${{replace(variables['Build.SourceBranch'], 'refs/tags/AdSec_API_', 'AdSec API Version ')}}
+#    releaseNotesSource: 'inline'
+#    releaseNotesInline: |
+#      Packages created from `$(Build.SourceBranch)` (commit https://github.com/arup-group/oasys-combined/commit/$(Build.SourceVersion))
+#    assets: |
+#      adsec/build/API/nuget/dist/*.nupkg
+#      adsec/build/API/python/package/dist/*.whl
+#      adsec/build/API/samples-update/*
+#    assetUploadMode: 'replace'
+#    isDraft: true
+#    addChangeLog: false
+#  condition: and(succeeded(), startsWith(variables['configuration'], 'Release'), startsWith(variables['Build.SourceBranch'], 'refs/tags/AdSec_API_'))
+#  displayName: 'Publishing assets to Github'
+
+#- task: NuGetCommand@2
+#  inputs:
+#    command: 'pack'
+#    packagesToPack: 'GhAdSec/*.csproj'
+#    versioningScheme: 'byEnvVar'
+#    versionEnvVar: 'tag'
+#  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
+#  displayName: Package NuGet
+
+#- task: NuGetCommand@2
+#  inputs:
+#    command: 'push'
+#    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+#    nuGetFeedType: 'internal'
+#    publishVstsFeed: '5ac05815-e952-41a1-9899-54474b67ab5d'
+#  continueOnError: true # Allow failure - if the nuget package version isn't updated, we don't want to push a new package, so it's ok to fail 
+#  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
+#  displayName: Push to NuGet Repository
