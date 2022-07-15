@@ -87,15 +87,15 @@ steps:
   #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
   displayName: Package yak
 
-- task: NuGetCommand@2
-  inputs:
-    command: 'pack'
-    packagesToPack: 'GhAdSec/*.csproj'
-    versioningScheme: 'byEnvVar'
-    versionEnvVar: 'tag'
-  condition: succeeded()
-  #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-  displayName: Package NuGet
+#- task: NuGetCommand@2
+#  inputs:
+#    command: 'pack'
+#    packagesToPack: 'GhAdSec/*.csproj'
+#    versioningScheme: 'byEnvVar'
+#    versionEnvVar: 'tag'
+#  condition: succeeded()
+#  #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+#  displayName: Package NuGet
 
 - task: PowerShell@2
   displayName: Check for existing tags
