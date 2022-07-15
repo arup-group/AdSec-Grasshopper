@@ -127,7 +127,7 @@ steps:
 
 - task: GitHubRelease@1
   inputs:
-    gitHubConnection: 'github.com_tlmnrnhrdt'
+    gitHubConnection: 'github.com_peterjgrainger'
     repositoryName: 'arup-group/AdSec-Grasshopper'
     action: 'edit'
     target: '$(Build.SourceVersion)'
