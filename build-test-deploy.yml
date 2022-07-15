@@ -83,7 +83,8 @@ steps:
     $yakRh7Name =  $yakCurrentVersName -Replace "rh6_27", "rh7_0"
     Rename-Item -Path $yakCurrentVersName -NewName $yakRh7Name
     ..\yak build --platform win
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  condition: and(succeeded())
+  #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
   displayName: Package yak
 
 - task: NuGetCommand@2
@@ -140,7 +141,7 @@ steps:
     repositoryName: 'arup-group/AdSec-Grasshopper'
     action: 'edit'
     target: '$(Build.SourceVersion)'
-    tag: 'underscoreSeparatedTag'
+    tag: '$version'
     title: 'AdSecGH Version $version'
     #title: 'AdSecGH Version $tagNumbersOnlydot'
     releaseNotesSource: 'inline'
