@@ -77,7 +77,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-        $versionInfo = $(Get-Item .\GhAdSec\bin\x64\Release\AdSec.dll).VersionInfo
+        $versionInfo = $(Get-Item .\GhAdSec\bin\x64\Release\AdSecGH.dll).VersionInfo
         $fullVersion = [array]${versionInfo}.FileVersion.split('.')
         $currentTime = $(Get-Date -Format "dddd MM/dd/yyyy HH:mm")
         $majorVersion = [string]$fullVersion[0]
