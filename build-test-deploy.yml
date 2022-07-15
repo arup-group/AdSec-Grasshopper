@@ -141,14 +141,15 @@ steps:
     action: 'edit'
     target: '$(Build.SourceVersion)'
     tag: 'underscoreSeparatedTag'
-    title: 'AdSecGH Version $tagNumbersOnlydot'
+    title: 'AdSecGH Version $version'
+    #title: 'AdSecGH Version $tagNumbersOnlydot'
     releaseNotesSource: 'inline'
     releaseNotesInline: |
       Created on $(CURRENT_DATE) from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
     assets: |
-      GhAdSec/bin/x64/Release/*.rh6_27-win.yak
-      GhAdSec/bin/x64/Release/*.rh7_0-win.yak.yak
-      GhAdSec/bin/x64/Release/*.nuget
+      .\GhAdSec\bin\x64/Release\*.rh6_27-win.yak
+      .\GhAdSec\bin\x64/Release\*.rh7_0-win.yak.yak
+      .\GhAdSec\bin\x64/Release\*.nuget
     assetUploadMode: 'replace'
     isDraft: true
     addChangeLog: false
