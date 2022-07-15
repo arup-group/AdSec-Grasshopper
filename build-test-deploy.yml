@@ -84,9 +84,8 @@ steps:
         $minorVersion = [string]$fullVersion[1]
         $spVersion = [string]$fullVersion[2]
         $buildNumber = [string]$fullVersion[3]
-        $uppercase = $exeName.ToUpper()
 
-        $tag = [array]@($uppercase,$majorVersion,$minorVersion,$spVersion,$buildNumber)
+        $tag = [array]@($exeName,$majorVersion,$minorVersion,$spVersion,$buildNumber)
         $tagNumbersOnly = [array]@($majorVersion,$minorVersion,$spVersion,$buildNumber)
 
         $dotSeparatedTag = [system.String]::Join(".", $tag)
