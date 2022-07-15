@@ -69,7 +69,7 @@ steps:
 #    ls Release\*.yak |% {.\yak push $_.FullName}
 #  env:
 #    YAK_TOKEN: $(YAK_TOKEN)
-#  condition: and(succeeded(), ne(variables['TAG_EXISTS'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.deploy, 'true'))
+#  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.deploy, 'true'))
 #  displayName: Deploy yak package
 
 - task: PowerShell@2
@@ -77,7 +77,24 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-        git rev-parse $(UNDERSCORE_SEPARATED_TAG)
+        $versionInfo = $(Get-Item .\GhAdSec\bin\x64\Release\AdSec.dll).VersionInfo
+        $fullVersion = [array]${versionInfo}.FileVersion.split('.')
+        $currentTime = $(Get-Date -Format "dddd MM/dd/yyyy HH:mm")
+        $majorVersion = [string]$fullVersion[0]
+        $minorVersion = [string]$fullVersion[1]
+        $spVersion = [string]$fullVersion[2]
+        $buildNumber = [string]$fullVersion[3]
+        $uppercase = $exeName.ToUpper()
+
+        $tag = [array]@($uppercase,$majorVersion,$minorVersion,$spVersion,$buildNumber)
+        $tagNumbersOnly = [array]@($majorVersion,$minorVersion,$spVersion,$buildNumber)
+
+        $dotSeparatedTag = [system.String]::Join(".", $tag)
+        $underscoreSeparatedTag = [system.String]::Join("_", $tag)
+        $tagNumbersOnlyUnderscore = [system.String]::Join("_", $tagNumbersOnly)
+        $tagNumbersOnlydot = [system.String]::Join(".", $tagNumbersOnly)
+
+        git rev-parse $underscoreSeparatedTag
         if($lastExitCode -eq 0){Write-Host ("##vso[task.setvariable variable=TAG_EXISTS]true")}
     errorActionPreference: 'continue'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
@@ -101,7 +118,7 @@ steps:
 #    assetUploadMode: 'replace'
 #    isDraft: true
 #    addChangeLog: false
-#  condition: and(succeeded(), startsWith(variables['configuration'], 'Release'), startsWith(variables['Build.SourceBranch'], 'refs/tags/AdSec_API_'))
+#  condition: and(succeeded(), ne(variables['TAG_EXISTS'], 'true'), startsWith(variables['configuration'], 'Release'), startsWith(variables['Build.SourceBranch'], 'refs/tags/AdSec_API_'))
 #  displayName: 'Publishing assets to Github'
 
 #- task: NuGetCommand@2
