@@ -72,6 +72,29 @@ steps:
 #  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.deploy, 'true'))
 #  displayName: Deploy yak package
 
+- powershell: |
+    cd GhAdSec\bin\x64
+    curl https://files.mcneel.com/yak/tools/latest/yak.exe -o yak.exe
+    .\yak version
+    cd Release
+    ..\yak spec
+    ..\yak build --platform win
+    $yakCurrentVersName = Get-ChildItem -Path . -Filter "*.yak"
+    $yakRh7Name =  $yakCurrentVersName -Replace "rh6_27", "rh7_0"
+    Rename-Item -Path $yakCurrentVersName -NewName $yakRh7Name
+    ..\yak build --platform win
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  displayName: Package yak
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'GhAdSec/*.csproj'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'tag'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  displayName: Package NuGet
+
 - task: PowerShell@2
   displayName: Check for existing tags
   inputs:
@@ -99,35 +122,26 @@ steps:
     workingDirectory: '$(System.DefaultWorkingDirectory)'
     ignoreLASTEXITCODE: true
 
-#- task: GitHubRelease@1
-#  inputs:
-#    gitHubConnection: 'github.com_peterjgrainger'
-#    repositoryName: 'arup-group/oasys-combined'
-#    action: 'edit'
-#    target: '$(Build.SourceVersion)'
-#    tag: ${{replace(variables['Build.SourceBranch'], 'refs/tags/', '')}}
-#    title: ${{replace(variables['Build.SourceBranch'], 'refs/tags/AdSec_API_', 'AdSec API Version ')}}
-#    releaseNotesSource: 'inline'
-#    releaseNotesInline: |
-#      Packages created from `$(Build.SourceBranch)` (commit https://github.com/arup-group/oasys-combined/commit/$(Build.SourceVersion))
-#    assets: |
-#      adsec/build/API/nuget/dist/*.nupkg
-#      adsec/build/API/python/package/dist/*.whl
-#      adsec/build/API/samples-update/*
-#    assetUploadMode: 'replace'
-#    isDraft: true
-#    addChangeLog: false
-#  condition: and(succeeded(), ne(variables['TAG_EXISTS'], 'true'), startsWith(variables['configuration'], 'Release'), startsWith(variables['Build.SourceBranch'], 'refs/tags/AdSec_API_'))
-#  displayName: 'Publishing assets to Github'
-
-#- task: NuGetCommand@2
-#  inputs:
-#    command: 'pack'
-#    packagesToPack: 'GhAdSec/*.csproj'
-#    versioningScheme: 'byEnvVar'
-#    versionEnvVar: 'tag'
-#  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
-#  displayName: Package NuGet
+- task: GitHubRelease@1
+  inputs:
+    gitHubConnection: 'github.com_tlmnrnhrdt'
+    repositoryName: 'arup-group/AdSec-Grasshopper'
+    action: 'edit'
+    target: '$(Build.SourceVersion)'
+    tag: 'underscoreSeparatedTag'
+    title: 'AdSecGH Version $tagNumbersOnlydot'
+    releaseNotesSource: 'inline'
+    releaseNotesInline: |
+      Created on $(CURRENT_DATE) from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
+    assets: |
+      GhAdSec/bin/x64/Release/*.rh6_27-win.yak
+      GhAdSec/bin/x64/Release/*.rh7_0-win.yak.yak
+      GhAdSec/bin/x64/Release/*.nuget
+    assetUploadMode: 'replace'
+    isDraft: true
+    addChangeLog: false
+  condition: and(succeeded(), ne(variables['TAG_EXISTS'], 'true')))
+  displayName: 'Publishing assets to Github'
 
 #- task: NuGetCommand@2
 #  inputs:
