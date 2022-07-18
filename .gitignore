@@ -1,6 +1,12 @@
-﻿/.vs/
+/.vs
+packages
 GhAdSec/bin
 GhAdSec/obj
-AdSecGHAdapter/obj
-AdSecGHAdapter/bin
-packages
+AdSecGHConverters/bin
+AdSecGHConverters/obj
+AdSecGHTests/bin
+AdSecGHTests/obj
+AdSecGHConverterTests/bin
+AdSecGHConverterTests/obj
+IntegrationTests/bin
+IntegrationTests/obj
