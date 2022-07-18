@@ -112,13 +112,13 @@ steps:
         $tagNumbersOnly = [array]@($majorVersion,$minorVersion,$spVersion,$buildNumber)
         echo $tagNumbersOnly
 
-        $dotSeparatedTag = [system.String]::Join(".", $tag)
+        $dotSeparatedTag = $majorVersion + "." + $minorVersion + "." + $spVersion + "." + $buildNumber
         echo $dotSeparatedTag
-        $underscoreSeparatedTag = [system.String]::Join("_", $tag)
+        $underscoreSeparatedTag = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
         echo $underscoreSeparatedTag
-        $tagNumbersOnlyUnderscore = [system.String]::Join("_", $tagNumbersOnly)
+        $tagNumbersOnlyUnderscore = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
         echo $tagNumbersOnlyUnderscore
-        $tagNumbersOnlydot = [system.String]::Join(".", $tagNumbersOnly)
+        $tagNumbersOnlydot = $majorVersion + "." + $minorVersion + "." + $spVersion + "." + $buildNumber
         echo $tagNumbersOnlydot
 
         git rev-parse $underscoreSeparatedTag
