@@ -177,8 +177,6 @@ namespace AdSecGH.Parameters
       m_designCode = new AdSecDesignCode(designCodeLevelsSplit);
     }
 
-
-
     public AdSecMaterial Duplicate()
     {
       if (this == null) { return null; }
