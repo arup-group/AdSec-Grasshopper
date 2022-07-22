@@ -190,9 +190,10 @@ namespace AdSecGH.Components
             sections.Add(new AdSecSectionGoo(new AdSecSection(section, code.DesignCode, code.DesignCodeName, "", pln)));
           }
 
+          if (sections.Count == 0)
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "File contains no valid sections");
           foreach (Oasys.AdSec.IWarning warning in jsonParser.Warnings)
             AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning.Description);
-
           DA.SetDataList(0, sections);
         }
       }
