@@ -58,7 +58,7 @@ namespace AdSecGH.Parameters
     #endregion
     internal Brep SolidBrep => m_profile;
     internal List<Brep> SubBreps => m_subProfiles;
-        #region constructors
+    #region constructors
     public AdSecSection(ISection section, IDesignCode code, string codeName, string materialName, Plane local, IPoint subComponentOffset = null)
     {
       this.materialName = materialName;
