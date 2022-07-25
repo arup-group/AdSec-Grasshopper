@@ -353,6 +353,7 @@
   <PropertyGroup>
     <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"
 Copy "$(ProjectDir)obj\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"
+Copy "$(ProjectDir)\Properties\Icons\Icons\AdSecLogo128.png" "$(TargetDir)AdSecIcon.png"
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
