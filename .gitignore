@@ -4,3 +4,5 @@ GhAdSec/obj
 AdSecGHAdapter/obj
 AdSecGHAdapter/bin
 packages
+/AdSecGHConverter/bin
+/AdSecGHConverter/obj

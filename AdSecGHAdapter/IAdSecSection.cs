@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AdSecGHAdapter
 {
-    public interface IAdSecSection
-    {
-    }
+  public interface IAdSecSection
+  {
+  }
 }
