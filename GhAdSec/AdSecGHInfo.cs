@@ -127,16 +127,10 @@ namespace AdSecGH
       get
       {
         //Return a 24x24 pixel bitmap to represent this GHA library.
-        return null;
+        return Properties.Resources.AdSecLogo;
       }
     }
-    public string icon_url
-    {
-      get
-      {
-        return "https://raw.githubusercontent.com/arup-group/GSA-Grasshopper/master/Documentation/GettingStartedGuide/Icons/GsaGhLogo.jpg";
-      }
-    }
+   
     public override Bitmap AssemblyIcon
     {
       get
