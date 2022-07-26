@@ -342,6 +342,9 @@
       <Name>AdSecGHAdapter</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\AdSecLogo64.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -353,7 +356,7 @@
   <PropertyGroup>
     <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"
 Copy "$(ProjectDir)obj\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"
-Copy "$(ProjectDir)\Properties\Icons\Icons\AdSecLogo128.png" "$(TargetDir)AdSecIcon.png"
+Copy "$(ProjectDir)\Properties\Icons\Icons\AdSecLogo64.png" "$(TargetDir)AdSecIcon.png"
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
