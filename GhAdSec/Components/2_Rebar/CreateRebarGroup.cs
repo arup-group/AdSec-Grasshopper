@@ -18,7 +18,7 @@ using Oasys.AdSec.Reinforcement;
 
 namespace AdSecGH.Components
 {
-    public class CreateReinforcementGroup : GH_Component, IGH_VariableParameterComponent
+    public class CreateReinforcementGroup : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         public CreateReinforcementGroup()

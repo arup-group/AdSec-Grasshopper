@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace AdSecGH.Components
 {
-    public class ProfileProperties : GH_Component
+    public class ProfileProperties : GH_OasysComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

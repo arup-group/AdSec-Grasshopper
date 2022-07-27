@@ -19,7 +19,7 @@ namespace AdSecGH.Components
     /// <summary>
     /// Component to open an existing GSA model
     /// </summary>
-    public class SaveAdSec : GH_Component, IGH_VariableParameterComponent
+    public class SaveAdSec : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

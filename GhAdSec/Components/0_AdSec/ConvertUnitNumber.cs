@@ -22,7 +22,7 @@ namespace AdSecGH.Components
     /// <summary>
     /// Component to convert a UnitNumber
     /// </summary>
-    public class ConvertUnitNumber : GH_Component, IGH_VariableParameterComponent
+    public class ConvertUnitNumber : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
