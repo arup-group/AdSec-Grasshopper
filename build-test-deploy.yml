@@ -37,9 +37,9 @@ steps:
   env:
     MSBUILDDISABLENODEREUSE: 1
 
-- powershell: |
-    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.1.0\build --results-directory .\results .\AdSecGHTests\bin\Release\net6.0\AdSecGHTests.dll
-  displayName: dotnet tests
+#- powershell: |
+#    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.1.0\build --results-directory .\results .\AdSecGHTests\bin\Release\net6.0\AdSecGHTests.dll
+#  displayName: dotnet tests
 
 #- task: PublishCodeCoverageResults@1
 #  inputs:
