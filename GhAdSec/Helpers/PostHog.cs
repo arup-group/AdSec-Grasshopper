@@ -20,8 +20,12 @@ namespace AdSecGH.Helpers
       User user = new User();
       user.email = UserPrincipal.Current.EmailAddress; // case sensitive
 
+      string userName = Environment.UserName;
+      if (!user.email.EndsWith("arup.com"))
+        userName = "External";
+
       Dictionary<string, object> properties = new Dictionary<string, object>() {
-        { "distinct_id", Environment.UserName },
+        { "distinct_id", userName },
         { "user", user },
         { "pluginName", AdSecGH.AdSecGHInfo.PluginName },
         { "version", AdSecGH.AdSecGHInfo.Vers },
