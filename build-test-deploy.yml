@@ -155,16 +155,15 @@ steps:
     repositoryName: 'arup-group/AdSec-Grasshopper'
     action: 'edit'
     target: '$(Build.SourceVersion)'
-    tag: '$version'
-    title: 'AdSecGH Version $version'
-    #title: 'AdSecGH Version $tagNumbersOnlydot'
+    tag: '$(version)'
+    title: 'AdSecGH Version $(version)'
     releaseNotesSource: 'inline'
     releaseNotesInline: |
       Created on $(CURRENT_DATE) from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
     assets: |
-      $(System.DefaultWorkingDirectory)\GhAdSec\bin\x64\Release\adsec-*.rh6_27-win.yak
-      $(System.DefaultWorkingDirectory)\GhAdSec\bin\x64\Release\adsec-*.rh7_0-win.yak.yak
-      $(System.DefaultWorkingDirectory)\GhAdSec\bin\x64\Release\*.nuget
+      $(System.DefaultWorkingDirectory)/**/*.yak
+      $(Build.ArtifactStagingDirectory)/**/*.nupkg
+      $(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg
     assetUploadMode: 'replace'
     isDraft: true
     addChangeLog: false
