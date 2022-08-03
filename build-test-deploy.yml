@@ -129,6 +129,7 @@ steps:
     errorActionPreference: 'continue'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
     ignoreLASTEXITCODE: true
+   
 
 - task: NuGetCommand@2
   inputs:
@@ -168,7 +169,7 @@ steps:
     assetUploadMode: 'replace'
     isDraft: true
     addChangeLog: false
-  condition: and(succeeded(), ne(variables.tagExists, 'true'))
+  condition: and(succeeded(), ne(variables.TAG_EXISTS, 'true'))
   displayName: 'Publishing assets to Github'
 
 #- task: NuGetCommand@2
