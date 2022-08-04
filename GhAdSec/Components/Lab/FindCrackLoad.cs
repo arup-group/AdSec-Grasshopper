@@ -22,7 +22,7 @@ using UnitsNet.Units;
 
 namespace AdSecGH.Components
 {
-    public class FindCrackLoad : GH_Component
+    public class FindCrackLoad : GH_OasysComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

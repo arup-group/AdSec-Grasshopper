@@ -24,7 +24,7 @@ namespace AdSecGH.Components
     /// <summary>
     /// Component to create a new Stress Strain Point
     /// </summary>
-    public class CreateStressStrainPoint : GH_Component, IGH_VariableParameterComponent
+    public class CreateStressStrainPoint : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

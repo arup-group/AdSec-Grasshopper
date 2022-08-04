@@ -21,7 +21,7 @@ using Grasshopper.Kernel.Parameters;
 
 namespace AdSecGH.Components
 {
-    public class CustomMaterial : GH_Component, IGH_VariableParameterComponent
+    public class CustomMaterial : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

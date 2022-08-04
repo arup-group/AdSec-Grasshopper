@@ -21,7 +21,7 @@ using UnitsNet.GH;
 
 namespace AdSecGH.Components
 {
-    public class CreatePoint : GH_Component, IGH_VariableParameterComponent
+    public class CreatePoint : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
