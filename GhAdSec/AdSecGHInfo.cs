@@ -118,6 +118,8 @@ namespace AdSecGH
     internal static bool isBeta = true;
     internal const string ProductName = "AdSec";
     internal const string PluginName = "AdSecGH";
+    internal static string Disclaimer = PluginName + " is pre-release and under active development, including further testing to be undertaken. It is provided \"as-is\" and you bear the risk of using it. Future versions may contain breaking changes. Any files, results, or other types of output information created using " + PluginName + " should not be relied upon without thorough and independent checking. ";
+    internal const string TermsConditions = "Oasys terms and conditions apply. See https://www.oasys-software.com/terms-conditions for details. ";
     public override string Name
     {
       get
@@ -153,9 +155,12 @@ namespace AdSecGH
       {
         //Return a short string describing the purpose of this GHA library.
         return "Official Oasys AdSec Grasshopper Plugin" + Environment.NewLine
-        + Environment.NewLine + "The plugin requires an AdSec 10 license to load."
-        + Environment.NewLine + "Contact oasys@arup.com to request a free trial version."
-        + Environment.NewLine + Copyright;
+          + (isBeta ? Disclaimer : "")
+        + Environment.NewLine + "The plugin requires an AdSec 10 license to load. "
+        + Environment.NewLine + "Contact oasys@arup.com to request a free trial version. "
+        + System.Environment.NewLine + TermsConditions
+        + System.Environment.NewLine + Copyright;
+
       }
     }
     public override Guid Id
