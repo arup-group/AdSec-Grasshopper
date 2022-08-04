@@ -95,36 +95,26 @@ steps:
         $versionInfo = $(Get-Item .\GhAdSec\bin\x64\Release\AdSecGH.dll).VersionInfo
         echo $versionInfo
         $fullVersion = [array]${versionInfo}.FileVersion.split('.')
-        echo $fullVersion
         $currentTime = $(Get-Date -Format "dddd MM/dd/yyyy HH:mm")
-        echo $currentTime
         $majorVersion = [string]$fullVersion[0]
-        echo $majorVersion
         $minorVersion = [string]$fullVersion[1]
-        echo $minorVersion
         $spVersion = [string]$fullVersion[2]
-        echo $spVersion
         $buildNumber = [string]$fullVersion[3]
         echo $buildNumber
 
         $tag = [array]@($exeName,$majorVersion,$minorVersion,$spVersion,$buildNumber)
-        echo $tag
         $tagNumbersOnly = [array]@($majorVersion,$minorVersion,$spVersion,$buildNumber)
-        echo $tagNumbersOnly
 
         $dotSeparatedTag = $majorVersion + "." + $minorVersion + "." + $spVersion + "." + $buildNumber
-        echo $dotSeparatedTag
         $underscoreSeparatedTag = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
-        echo $underscoreSeparatedTag
         $tagNumbersOnlyUnderscore = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
-        echo $tagNumbersOnlyUnderscore
         $tagNumbersOnlydot = $majorVersion + "." + $minorVersion + "." + $spVersion + "." + $buildNumber
-        echo $tagNumbersOnlydot
 
         git rev-parse $underscoreSeparatedTag
         if($lastExitCode -eq 0){Write-Host ("##vso[task.setvariable variable=TAG_EXISTS]true")}
         if($lastExitCode -eq 0){
           $tagExists = 'true'
+          echo $tagExists
         }
     errorActionPreference: 'continue'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
@@ -156,7 +146,7 @@ steps:
     action: 'edit'
     target: '$(Build.SourceVersion)'
     tag: '$(version)'
-    title: 'AdSecGH Version $(version)'
+    title: 'AdSecGH Version $(dotSeparatedTag)'
     releaseNotesSource: 'inline'
     releaseNotesInline: |
       Created on $(currentTime) from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
