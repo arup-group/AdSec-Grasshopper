@@ -147,7 +147,7 @@ steps:
     action: 'edit'
     target: '$(Build.SourceVersion)'
     tag: '$(version)'
-    title: 'AdSecGH Version $(dotSeparatedTag)'
+    title: 'AdSecGH Version $dotSeparatedTag'
     releaseNotesSource: 'inline'
     releaseNotesInline: |
       Created on $(currentTime) from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
