@@ -176,14 +176,14 @@ namespace AdSecGH.Components
 
           string json = File.ReadAllText(fileName);
           ParsedResult jsonParser = JsonParser.Deserialize(json);
-          
+
           List<Plane> planes = new List<Plane>();
           DA.GetDataList(1, planes);
 
           List<AdSecSectionGoo> sections = new List<AdSecSectionGoo>();
           AdSecDesignCode code = Helpers.File.GetDesignCode(json);
 
-          for(int i = 0; i < jsonParser.Sections.Count; i++)
+          for (int i = 0; i < jsonParser.Sections.Count; i++)
           {
             Oasys.AdSec.ISection section = jsonParser.Sections[i];
             Plane pln = (i > planes.Count - 1) ? planes.Last() : planes[i];
