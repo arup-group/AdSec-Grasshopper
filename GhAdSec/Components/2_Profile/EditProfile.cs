@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 namespace AdSecGH.Components
 {
-    public class EditProfile : GH_Component, IGH_VariableParameterComponent
+    public class EditProfile : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

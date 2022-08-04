@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AdSecGH</RootNamespace>
     <AssemblyName>AdSecGH</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <NuGetPackageImportStamp>
@@ -21,7 +21,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
@@ -58,20 +58,18 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OasysUnits">
-      <HintPath>lib\OasysUnits.dll</HintPath>
-      <Private>True</Private>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\0_AdSec\OpenAdSec.cs" />
     <Compile Include="Components\0_AdSec\SectionSVG.cs" />
     <Compile Include="Components\0_AdSec\SaveAdSec.cs" />
     <Compile Include="Components\0_AdSec\CreateUnitNumber.cs" />
@@ -108,8 +106,11 @@
     <Compile Include="Components\6_Results\ResultsSLS.cs" />
     <Compile Include="Components\6_Results\ResultsULS.cs" />
     <Compile Include="AdSecGHInfo.cs" />
+    <Compile Include="Components\GH_OasysComponent.cs" />
     <Compile Include="Components\Lab\FindCrackLoad.cs" />
+    <Compile Include="Helpers\PostHog.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
+    <Compile Include="Helpers\_FileHelpers.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
     <Compile Include="Helpers\_ResultsHelper.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="UI\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SingleButtonAttributes.cs" />
     <Compile Include="UI\TripleButtonAttributes.cs" />
     <Compile Include="UI\UnitSettingsBox.cs">
       <SubType>Form</SubType>
@@ -171,6 +173,9 @@
     </PackageReference>
     <PackageReference Include="Grasshopper">
       <Version>6.27.20176.5001</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="RhinoCommon">
       <Version>6.27.20176.5001</Version>
@@ -339,18 +344,13 @@
     <None Include="Properties\Icons\Icons\CrackLoad.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AdSec">
-      <Version>1.0.2.3</Version>
-    </PackageReference>
-    <PackageReference Include="Grasshopper">
-      <Version>6.27.20176.5001</Version>
-    </PackageReference>
-    <PackageReference Include="Stub.System.Data.SQLite.Core.NetFramework">
-      <Version>1.0.115.5</Version>
-    </PackageReference>
-    <PackageReference Include="System.ValueTuple">
-      <Version>4.5.0</Version>
-    </PackageReference>
+    <ProjectReference Include="..\AdSecGHAdapter\AdSecGHAdapter.csproj">
+      <Project>{4e71555e-fa74-41f4-9155-31a9bfbdc103}</Project>
+      <Name>AdSecGHAdapter</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\AdSecLogo64.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -362,7 +362,8 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"
-Copy "$(ProjectDir)lib\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"
+Copy "$(ProjectDir)obj\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"
+Copy "$(ProjectDir)\Properties\Icons\Icons\AdSecLogo64.png" "$(TargetDir)AdSecIcon.png"
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

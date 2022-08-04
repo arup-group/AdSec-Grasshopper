@@ -22,7 +22,7 @@ using Oasys.AdSec.Reinforcement.Preloads;
 
 namespace AdSecGH.Components
 {
-    public class FlattenRebar : GH_Component
+    public class FlattenRebar : GH_OasysComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

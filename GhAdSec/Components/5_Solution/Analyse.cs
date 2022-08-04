@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 namespace AdSecGH.Components
 {
-    public class Analyse : GH_Component
+    public class Analyse : GH_OasysComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

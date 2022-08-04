@@ -6,27 +6,27 @@ using System.Drawing;
 
 namespace AdSecGH.UI
 {
-    /// <summary>
-    /// Class holding custom UI graphical buttons/boxes
-    /// </summary>
-    public class ComponentUI
+  /// <summary>
+  /// Class holding custom UI graphical buttons/boxes
+  /// </summary>
+  public class ComponentUI
+  {
+    public static float MaxTextWidth(List<string> spacerTxts, Font font)
     {
-        public static float MaxTextWidth(List<string> spacerTxts, Font font)
+      float sp = new float(); //width of spacer text
+
+      // adjust fontsize to high resolution displays
+      font = new Font(font.FontFamily, font.Size / GH_GraphicsUtil.UiScale, FontStyle.Regular);
+
+      if (spacerTxts != null)
+      {
+        for (int i = 0; i < spacerTxts.Count; i++)
         {
-            float sp = new float(); //width of spacer text
-
-            // adjust fontsize to high resolution displays
-            font = new Font(font.FontFamily, font.Size / GH_GraphicsUtil.UiScale, FontStyle.Regular);
-
-            if (spacerTxts != null)
-            {
-                for (int i = 0; i < spacerTxts.Count; i++)
-                {
-                    if (GH_FontServer.StringWidth(spacerTxts[i] + " ", font) + 8 > sp)
-                        sp = GH_FontServer.StringWidth(spacerTxts[i] + " ", font) + 8;
-                }
-            }
-            return sp;
+          if (GH_FontServer.StringWidth(spacerTxts[i] + " ", font) + 8 > sp)
+            sp = GH_FontServer.StringWidth(spacerTxts[i] + " ", font) + 8;
         }
+      }
+      return sp;
     }
+  }
 }
