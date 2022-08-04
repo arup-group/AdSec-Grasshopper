@@ -18,21 +18,21 @@ using Oasys.Profiles;
 
 namespace AdSecGH.Components
 {
-  /// <summary>
-  /// Component to open an existing GSA model
-  /// </summary>
-  public class SectionSVG : GH_Component, IGH_VariableParameterComponent
-  {
-    #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
-    public override Guid ComponentGuid => new Guid("baf1ad7d-efca-4851-a6a3-21a65471a041");
-    public SectionSVG()
-      : base("Section SVG", "SVG", "Creates a SVG file from an AdSec Section",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat0())
-    { this.Hidden = true; } // sets the initial state of the component to hidden
-    public override GH_Exposure Exposure => GH_Exposure.secondary;
+    /// <summary>
+    /// Component to open an existing GSA model
+    /// </summary>
+    public class SectionSVG : GH_OasysComponent, IGH_VariableParameterComponent
+    {
+        #region Name and Ribbon Layout
+        // This region handles how the component in displayed on the ribbon
+        // including name, exposure level and icon
+        public override Guid ComponentGuid => new Guid("baf1ad7d-efca-4851-a6a3-21a65471a041");
+        public SectionSVG()
+          : base("Section SVG", "SVG", "Creates a SVG file from an AdSec Section",
+                Ribbon.CategoryName.Name(),
+                Ribbon.SubCategoryName.Cat0())
+        { this.Hidden = true; } // sets the initial state of the component to hidden
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
     protected override Bitmap Icon => Properties.Resources.SVG;
     #endregion
