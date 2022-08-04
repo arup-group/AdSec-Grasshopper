@@ -159,7 +159,7 @@ steps:
     title: 'AdSecGH Version $(version)'
     releaseNotesSource: 'inline'
     releaseNotesInline: |
-      Created on $(CURRENT_DATE) from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
+      Created on $(currentTime) from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
     assets: |
       $(System.DefaultWorkingDirectory)/**/*.yak
       $(Build.ArtifactStagingDirectory)/**/*.nupkg
