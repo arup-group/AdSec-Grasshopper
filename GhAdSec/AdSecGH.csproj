@@ -110,7 +110,7 @@
     <Compile Include="Components\Lab\FindCrackLoad.cs" />
     <Compile Include="Helpers\PostHog.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
-    <Compile Include="Helpers\_FileHelpers.cs" />
+    <Compile Include="Helpers\AdSecFile.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
     <Compile Include="Helpers\_ResultsHelper.cs" />
@@ -342,12 +342,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\CrackLoad.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AdSecGHAdapter\AdSecGHAdapter.csproj">
-      <Project>{4e71555e-fa74-41f4-9155-31a9bfbdc103}</Project>
-      <Name>AdSecGHAdapter</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Icons\Icons\AdSecLogo64.png" />

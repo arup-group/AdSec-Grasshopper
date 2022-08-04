@@ -9,7 +9,7 @@ using Oasys.AdSec.DesignCode;
 
 namespace AdSecGH.Helpers
 {
-  internal class File
+  internal class AdSecFile
   {
     internal static AdSecDesignCode GetDesignCode(string json)
     {

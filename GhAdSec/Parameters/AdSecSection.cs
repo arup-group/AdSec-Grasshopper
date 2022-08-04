@@ -22,7 +22,6 @@ using Oasys.Units;
 using System.Drawing;
 using Rhino.Display;
 using Oasys.Geometry.Paths2D;
-using AdSecGHAdapter;
 
 namespace AdSecGH.Parameters
 {
@@ -555,20 +554,20 @@ namespace AdSecGH.Parameters
     {
       // This function is called when Grasshopper needs to convert this 
       // AdSec type into some other type Q.            
-      if (InteropAdSecComputeTypes.IsPresent())
-      {
-        Type type = InteropAdSecComputeTypes.GetType(typeof(IAdSecSection));
-        if (typeof(Q).IsAssignableFrom(type))
-        {
-          if (Value == null)
-            target = default;
-          else
-          {
-            target = (Q)(object)InteropAdSecComputeTypes.CastToSection(Value.Section, Value.codeName, Value.materialName);
-          }
-          return true;
-        }
-      }
+      //if (InteropAdSecComputeTypes.IsPresent())
+      //{
+      //  Type type = InteropAdSecComputeTypes.GetType(typeof(IAdSecSection));
+      //  if (typeof(Q).IsAssignableFrom(type))
+      //  {
+      //    if (Value == null)
+      //      target = default;
+      //    else
+      //    {
+      //      target = (Q)(object)InteropAdSecComputeTypes.CastToSection(Value.Section, Value.codeName, Value.materialName);
+      //    }
+      //    return true;
+      //  }
+      //}
       if (typeof(Q).IsAssignableFrom(typeof(AdSecSectionGoo)))
       {
         if (Value == null)
