@@ -69,6 +69,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\0_AdSec\OpenAdSec.cs" />
     <Compile Include="Components\0_AdSec\SectionSVG.cs" />
     <Compile Include="Components\0_AdSec\SaveAdSec.cs" />
     <Compile Include="Components\0_AdSec\CreateUnitNumber.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Components\Lab\FindCrackLoad.cs" />
     <Compile Include="Helpers\PostHog.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
+    <Compile Include="Helpers\_FileHelpers.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
     <Compile Include="Helpers\_ResultsHelper.cs" />
@@ -149,6 +151,7 @@
     <Compile Include="UI\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SingleButtonAttributes.cs" />
     <Compile Include="UI\TripleButtonAttributes.cs" />
     <Compile Include="UI\UnitSettingsBox.cs">
       <SubType>Form</SubType>
