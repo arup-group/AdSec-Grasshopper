@@ -14,16 +14,16 @@ using UnitsNet;
 
 namespace AdSecGH.Components
 {
-  public class CreateStressStrainCurve : GH_Component, IGH_VariableParameterComponent
-  {
-    #region Name and Ribbon Layout
-    public CreateStressStrainCurve()
-        : base("Create StressStrainCrv", "StressStrainCrv", "Create a Stress Strain Curve for AdSec Material",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat1())
-    { this.Hidden = false; }
-    public override Guid ComponentGuid => new Guid("b2ddf545-2a4c-45ac-ba1c-cb0f3da5b37f");
-    public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
+    public class CreateStressStrainCurve : GH_OasysComponent, IGH_VariableParameterComponent
+    {
+        #region Name and Ribbon Layout
+        public CreateStressStrainCurve()
+            : base("Create StressStrainCrv", "StressStrainCrv", "Create a Stress Strain Curve for AdSec Material",
+                Ribbon.CategoryName.Name(),
+                Ribbon.SubCategoryName.Cat1())
+        { this.Hidden = false; }
+        public override Guid ComponentGuid => new Guid("b2ddf545-2a4c-45ac-ba1c-cb0f3da5b37f");
+        public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
 
     protected override string HtmlHelp_Source()
     {

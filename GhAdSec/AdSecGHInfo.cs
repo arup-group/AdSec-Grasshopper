@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
+using AdSecGH.Helpers;
 
 namespace AdSecGH
 {
@@ -99,6 +100,8 @@ namespace AdSecGH
       // ### Setup units ###
       Units.SetupUnits();
 
+      PostHog.PluginLoaded();
+
       return GH_LoadingInstruction.Proceed;
     }
     public static Assembly AdSecAPI;
@@ -129,10 +132,16 @@ namespace AdSecGH
       get
       {
         //Return a 24x24 pixel bitmap to represent this GHA library.
-        return Properties.Resources.AdSecLogo;
+        return null;
       }
     }
-   
+    public string icon_url
+    {
+      get
+      {
+        return "https://raw.githubusercontent.com/arup-group/GSA-Grasshopper/master/Documentation/GettingStartedGuide/Icons/GsaGhLogo.jpg";
+      }
+    }
     public override Bitmap AssemblyIcon
     {
       get

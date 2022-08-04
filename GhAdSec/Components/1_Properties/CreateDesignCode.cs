@@ -18,21 +18,21 @@ using Oasys.AdSec.Materials;
 
 namespace AdSecGH.Components
 {
-  /// <summary>
-  /// Component to lookup DesignCode for AdSec
-  /// </summary>
-  public class DesignCode : GH_Component, IGH_VariableParameterComponent
-  {
-    #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
-    public override Guid ComponentGuid => new Guid("bbad3d3b-f585-474b-8cc6-76fd375819de");
-    public DesignCode()
-      : base("DesignCode", "DesignCode", "Select an AdSec Design Code",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat1())
-    { this.Hidden = true; } // sets the initial state of the component to hidden
-    public override GH_Exposure Exposure => GH_Exposure.septenary | GH_Exposure.obscure;
+    /// <summary>
+    /// Component to lookup DesignCode for AdSec
+    /// </summary>
+    public class DesignCode : GH_OasysComponent, IGH_VariableParameterComponent
+    {
+        #region Name and Ribbon Layout
+        // This region handles how the component in displayed on the ribbon
+        // including name, exposure level and icon
+        public override Guid ComponentGuid => new Guid("bbad3d3b-f585-474b-8cc6-76fd375819de");
+        public DesignCode()
+          : base("DesignCode", "DesignCode", "Select an AdSec Design Code",
+                Ribbon.CategoryName.Name(),
+                Ribbon.SubCategoryName.Cat1())
+        { this.Hidden = true; } // sets the initial state of the component to hidden
+        public override GH_Exposure Exposure => GH_Exposure.septenary | GH_Exposure.obscure;
 
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateDesignCode;
     #endregion

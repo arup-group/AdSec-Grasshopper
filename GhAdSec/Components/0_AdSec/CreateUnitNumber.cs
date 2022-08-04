@@ -20,21 +20,21 @@ using UnitsNet;
 
 namespace AdSecGH.Components
 {
-  /// <summary>
-  /// Component to create a new UnitNumber
-  /// </summary>
-  public class CreateUnitNumber : GH_Component, IGH_VariableParameterComponent
-  {
-    #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
-    public override Guid ComponentGuid => new Guid("63f42580-8ed7-42fb-8cc6-c6f6171a0248");
-    public CreateUnitNumber()
-      : base("Create UnitNumber", "CreateUnit", "Create a unit number (quantity) from value, unit and measure",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat9())
-    { this.Hidden = true; } // sets the initial state of the component to hidden
-    public override GH_Exposure Exposure => GH_Exposure.quarternary;
+    /// <summary>
+    /// Component to create a new UnitNumber
+    /// </summary>
+    public class CreateUnitNumber : GH_OasysComponent, IGH_VariableParameterComponent
+    {
+        #region Name and Ribbon Layout
+        // This region handles how the component in displayed on the ribbon
+        // including name, exposure level and icon
+        public override Guid ComponentGuid => new Guid("63f42580-8ed7-42fb-8cc6-c6f6171a0248");
+        public CreateUnitNumber()
+          : base("Create UnitNumber", "CreateUnit", "Create a unit number (quantity) from value, unit and measure",
+                Ribbon.CategoryName.Name(),
+                Ribbon.SubCategoryName.Cat9())
+        { this.Hidden = true; } // sets the initial state of the component to hidden
+        public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateUnitNumber;
     #endregion

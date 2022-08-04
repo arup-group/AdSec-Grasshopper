@@ -61,6 +61,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
@@ -104,7 +106,9 @@
     <Compile Include="Components\6_Results\ResultsSLS.cs" />
     <Compile Include="Components\6_Results\ResultsULS.cs" />
     <Compile Include="AdSecGHInfo.cs" />
+    <Compile Include="Components\GH_OasysComponent.cs" />
     <Compile Include="Components\Lab\FindCrackLoad.cs" />
+    <Compile Include="Helpers\PostHog.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\_FileHelpers.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
@@ -169,6 +173,9 @@
     </PackageReference>
     <PackageReference Include="Grasshopper">
       <Version>6.27.20176.5001</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="RhinoCommon">
       <Version>6.27.20176.5001</Version>
@@ -342,6 +349,9 @@
       <Name>AdSecGHAdapter</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Icons\Icons\AdSecLogo64.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -353,7 +363,7 @@
   <PropertyGroup>
     <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"
 Copy "$(ProjectDir)obj\OasysUnits.dll" "$(TargetDir)OasysUnits.dll"
-Copy "$(ProjectDir)\Properties\Icons\Icons\AdSecLogo128.png" "$(TargetDir)AdSecIcon.png"
+Copy "$(ProjectDir)\Properties\Icons\Icons\AdSecLogo64.png" "$(TargetDir)AdSecIcon.png"
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
