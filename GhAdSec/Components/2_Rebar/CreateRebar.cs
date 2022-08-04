@@ -16,7 +16,7 @@ using UnitsNet;
 
 namespace AdSecGH.Components
 {
-    public class CreateRebar : GH_Component, IGH_VariableParameterComponent
+    public class CreateRebar : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         public CreateRebar()

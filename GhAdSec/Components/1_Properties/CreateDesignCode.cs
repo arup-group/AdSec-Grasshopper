@@ -21,7 +21,7 @@ namespace AdSecGH.Components
     /// <summary>
     /// Component to lookup DesignCode for AdSec
     /// </summary>
-    public class DesignCode : GH_Component, IGH_VariableParameterComponent
+    public class DesignCode : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

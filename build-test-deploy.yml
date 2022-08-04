@@ -16,12 +16,16 @@ pool: 'vs17_2'
 steps:
 - task: NuGetToolInstaller@1
 
+- task: NuGetAuthenticate@1
+  inputs:
+    forceReinstallCredentialProvider: true
+
 - task: NuGetCommand@2
   displayName: 'Restoring NuGet packages'
   inputs:
       command: 'restore'
       restoreSolution: 'AdSecGH.sln'
-  
+
 - task: VSBuild@1
   displayName: 'Building project in $(configuration)'
   inputs:
@@ -44,13 +48,32 @@ steps:
 #    pathToSources: '$(System.DefaultWorkingDirectory)'
 
 #- powershell: |
-#    codecov -t $env:CODECOV_TOKEN -f ComposTests\coverage.json -F unittests
+#    codecov -t $env:CODECOV_TOKEN -f .\results\coverage.json -F unittests
 #  env:
 #    CODECOV_TOKEN: $(CODECOV_TOKEN)
 #  displayName: Upload Code Coverage to codecovio
+#  failOnStderr: true
+
+#- powershell: |
+#    cd GhAdSec\bin\x64
+#    curl https://files.mcneel.com/yak/tools/latest/yak.exe -o yak.exe
+#    .\yak version
+#    cd Release
+#    ..\yak spec
+#    ..\yak build --platform win
+#    $yakCurrentVersName = Get-ChildItem -Path . -Filter "*.yak"
+#    $yakRh7Name =  $yakCurrentVersName -Replace "rh6_27", "rh7_0"
+#    Rename-Item -Path $yakCurrentVersName -NewName $yakRh7Name
+#    ..\yak build --platform win
+#    cd ..
+#    ls Release\*.yak |% {.\yak push $_.FullName}
+#  env:
+#    YAK_TOKEN: $(YAK_TOKEN)
+#  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.deploy, 'true'))
+#  displayName: Deploy yak package
 
 - powershell: |
-    cd ComposGH\bin\x64
+    cd GhAdSec\bin\x64
     curl https://files.mcneel.com/yak/tools/latest/yak.exe -o yak.exe
     .\yak version
     cd Release
@@ -60,9 +83,49 @@ steps:
     $yakRh7Name =  $yakCurrentVersName -Replace "rh6_27", "rh7_0"
     Rename-Item -Path $yakCurrentVersName -NewName $yakRh7Name
     ..\yak build --platform win
-    cd ..
-    ls Release\*.yak |% {.\yak push $_.FullName}
-  env:
-    YAK_TOKEN: $(YAK_TOKEN)
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.isRelease, 'true'))
-  displayName: Deploy yak package 
+  condition: succeeded()
+  #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  displayName: Package yak
+
+- task: PowerShell@2
+  displayName: Check for existing tags
+  inputs:
+    targetType: 'inline'
+    script: |
+        $versionInfo = $(Get-Item .\GhAdSec\bin\x64\Release\AdSecGH.dll).VersionInfo
+        echo $versionInfo
+        $fullVersion = [array]${versionInfo}.FileVersion.split('.')
+        echo $fullVersion
+        $currentTime = $(Get-Date -Format "dddd MM/dd/yyyy HH:mm")
+        echo $currentTime
+        $majorVersion = [string]$fullVersion[0]
+        echo $majorVersion
+        $minorVersion = [string]$fullVersion[1]
+        echo $minorVersion
+        $spVersion = [string]$fullVersion[2]
+        echo $spVersion
+        $buildNumber = [string]$fullVersion[3]
+        echo $buildNumber
+
+        $tag = [array]@($exeName,$majorVersion,$minorVersion,$spVersion,$buildNumber)
+        echo $tag
+        $tagNumbersOnly = [array]@($majorVersion,$minorVersion,$spVersion,$buildNumber)
+        echo $tagNumbersOnly
+
+        $dotSeparatedTag = $majorVersion + "." + $minorVersion + "." + $spVersion + "." + $buildNumber
+        echo $dotSeparatedTag
+        $underscoreSeparatedTag = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
+        echo $underscoreSeparatedTag
+        $tagNumbersOnlyUnderscore = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
+        echo $tagNumbersOnlyUnderscore
+        $tagNumbersOnlydot = $majorVersion + "." + $minorVersion + "." + $spVersion + "." + $buildNumber
+        echo $tagNumbersOnlydot
+
+        git rev-parse $underscoreSeparatedTag
+        if($lastExitCode -eq 0){Write-Host ("##vso[task.setvariable variable=TAG_EXISTS]true")}
+        if($lastExitCode -eq 0){
+          $tagExists = 'true'
+        }
+    errorActionPreference: 'continue'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+    ignoreLASTEXITCODE: true

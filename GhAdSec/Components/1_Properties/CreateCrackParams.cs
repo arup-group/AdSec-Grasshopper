@@ -24,7 +24,7 @@ namespace AdSecGH.Components
     /// <summary>
     /// Component to create a new Concrete Crack Calculation Parameters
     /// </summary>
-    public class CreateConcreteCrackCalculationParameters : GH_Component, IGH_VariableParameterComponent
+    public class CreateConcreteCrackCalculationParameters : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

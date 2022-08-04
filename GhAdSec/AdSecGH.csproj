@@ -61,6 +61,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
@@ -103,7 +105,9 @@
     <Compile Include="Components\6_Results\ResultsSLS.cs" />
     <Compile Include="Components\6_Results\ResultsULS.cs" />
     <Compile Include="AdSecGHInfo.cs" />
+    <Compile Include="Components\GH_OasysComponent.cs" />
     <Compile Include="Components\Lab\FindCrackLoad.cs" />
+    <Compile Include="Helpers\PostHog.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
     <Compile Include="Helpers\_GhRibbonLayout.cs" />
@@ -162,10 +166,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AdSec">
-      <Version>1.0.3.3</Version>
+      <Version>1.1.0.9</Version>
     </PackageReference>
     <PackageReference Include="Grasshopper">
       <Version>6.27.20176.5001</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="RhinoCommon">
       <Version>6.27.20176.5001</Version>
