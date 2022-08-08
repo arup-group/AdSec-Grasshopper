@@ -110,7 +110,8 @@ steps:
         $underscoreSeparatedTag = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
         $tagNumbersOnlyUnderscore = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
         $tagNumbersOnlydot = $majorVersion + "." + $minorVersion + "." + $spVersion + "." + $buildNumber
-
+        
+        Write-Host ("##vso[task.setvariable variable=dotSeparatedTag]$dotSeparatedTag")
         git rev-parse $underscoreSeparatedTag
         if($lastExitCode -eq 0){Write-Host ("##vso[task.setvariable variable=TAG_EXISTS]true")}
         if($lastExitCode -eq 0){
@@ -121,21 +122,12 @@ steps:
     workingDirectory: '$(System.DefaultWorkingDirectory)'
     ignoreLASTEXITCODE: true
 
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: |
-         $xml = [Xml] (Get-Content GhAdSec/AdSecGH.csproj)
-         $version = $xml.Project.PropertyGroup.Version
-         echo $version
-         echo "##vso[task.setvariable variable=version]$version"
-
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
     packagesToPack: 'GhAdSec/*.csproj'
     versioningScheme: 'byEnvVar'
-    versionEnvVar: 'version'
+    versionEnvVar: 'dotSeparatedTag'
   condition: succeeded()
   #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
   displayName: Package NuGet
@@ -146,8 +138,8 @@ steps:
     repositoryName: 'arup-group/AdSec-Grasshopper'
     action: 'edit'
     target: '$(Build.SourceVersion)'
-    tag: '$(version)'
-    title: 'AdSecGH Version $dotSeparatedTag'
+    tag: 'v$(dotSeparatedTag)'
+    title: 'AdSecGH Version v$(dotSeparatedTag)'
     releaseNotesSource: 'inline'
     releaseNotesInline: |
       Created on $(currentTime) from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
