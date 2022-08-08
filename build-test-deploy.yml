@@ -129,7 +129,6 @@ steps:
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'dotSeparatedTag'
   condition: succeeded()
-  #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
   displayName: Package NuGet
 
 - task: GitHubRelease@1
@@ -142,7 +141,7 @@ steps:
     title: 'AdSecGH Version v$(dotSeparatedTag)'
     releaseNotesSource: 'inline'
     releaseNotesInline: |
-      Created on $(currentTime) from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
+      Created from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
     assets: |
       $(System.DefaultWorkingDirectory)/**/*.yak
       $(Build.ArtifactStagingDirectory)/**/*.nupkg
@@ -153,12 +152,12 @@ steps:
   condition: and(succeeded(), ne(variables.TAG_EXISTS, 'true'))
   displayName: 'Publishing assets to Github'
 
-#- task: NuGetCommand@2
-#  inputs:
-#    command: 'push'
-#    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-#    nuGetFeedType: 'internal'
-#    publishVstsFeed: '5ac05815-e952-41a1-9899-54474b67ab5d'
-#  continueOnError: true # Allow failure - if the nuget package version isn't updated, we don't want to push a new package, so it's ok to fail 
-#  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
-#  displayName: Push to NuGet Repository
+- task: NuGetCommand@2
+ inputs:
+   command: 'push'
+   packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+   nuGetFeedType: 'internal'
+   publishVstsFeed: '5ac05815-e952-41a1-9899-54474b67ab5d'
+ continueOnError: true # Allow failure - if the nuget package version isn't updated, we don't want to push a new package, so it's ok to fail 
+ condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
+ displayName: Push to NuGet Repository
