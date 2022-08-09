@@ -3,8 +3,7 @@ name: Push AdSecGH yak package
 # On run when release is published
 on:
   release:
-    types:
-      - released
+    types: [published]
 
 jobs:
   pushYakPackage:
