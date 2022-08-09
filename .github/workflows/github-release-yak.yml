@@ -2,10 +2,9 @@ name: Push AdSecGH yak package
 
 # On run when release is published
 on:
-  push:
-#  release:
-#    types:
-#      - released
+  release:
+    types:
+      - released
 
 jobs:
   pushYakPackage:
@@ -22,6 +21,6 @@ jobs:
           file: /.*\.yak/
           token: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: Push yak file
-#        run: |
-#          ls *.yak |% {.\yak push $_.FullName}
+      - name: Push yak file
+        run: |
+          ls *.yak |% {.\yak push $_.FullName}
