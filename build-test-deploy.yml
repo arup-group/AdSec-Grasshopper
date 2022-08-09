@@ -101,18 +101,17 @@ steps:
         $minorVersion = [string]$fullVersion[1]
         $spVersion = [string]$fullVersion[2]
         $buildNumber = [string]$fullVersion[3]
-        echo $buildNumber
 
         $tag = [array]@($exeName,$majorVersion,$minorVersion,$spVersion,$buildNumber)
         $tagNumbersOnly = [array]@($majorVersion,$minorVersion,$spVersion,$buildNumber)
 
-        $dotSeparatedTag = $majorVersion + "." + $minorVersion + "." + $spVersion + "." + $buildNumber
+        $dotSeparatedTag = $majorVersion + "." + $minorVersion + "." + $spVersion + "-beta"
         $underscoreSeparatedTag = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
         $tagNumbersOnlyUnderscore = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
         $tagNumbersOnlydot = $majorVersion + "." + $minorVersion + "." + $spVersion + "." + $buildNumber
         
         Write-Host ("##vso[task.setvariable variable=dotSeparatedTag]$dotSeparatedTag")
-        git rev-parse $underscoreSeparatedTag
+        git rev-parse $dotSeparatedTag
         if($lastExitCode -eq 0){Write-Host ("##vso[task.setvariable variable=TAG_EXISTS]true")}
         if($lastExitCode -eq 0){
           $tagExists = 'true'
@@ -152,12 +151,12 @@ steps:
   condition: and(succeeded(), ne(variables.TAG_EXISTS, 'true'))
   displayName: 'Publishing assets to Github'
 
-- task: NuGetCommand@2
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-    nuGetFeedType: 'internal'
-    publishVstsFeed: '5ac05815-e952-41a1-9899-54474b67ab5d'
-  continueOnError: true
-  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
-  displayName: Push to NuGet Repository
+#- task: NuGetCommand@2
+#  inputs:
+#    command: 'push'
+#    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+#    nuGetFeedType: 'internal'
+#    publishVstsFeed: '5ac05815-e952-41a1-9899-54474b67ab5d'
+#  continueOnError: true
+#  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
+#  displayName: Push to NuGet Repository
