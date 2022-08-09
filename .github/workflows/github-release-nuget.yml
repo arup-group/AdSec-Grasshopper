@@ -2,9 +2,10 @@ name: Push AdSecGH NuGet
 
 # On run when release is published
 on:
-  release:
-    types:
-      - released
+  push:
+#  release:
+#    types:
+#      - released
 
 jobs:
   pushNuGetPackage:

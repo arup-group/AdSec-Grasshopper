@@ -2,9 +2,10 @@ name: Push AdSecGH NuGet and yak package
 
 # On run when release is published
 on:
-  release:
-    types:
-      - released
+  push:
+#  release:
+#    types:
+#      - released
 
 jobs:
   pushYakPackage:
@@ -23,4 +24,4 @@ jobs:
 
 #      - name: Push yak file
 #        run: |
-#          ls Release\*.yak |% {.\yak push $_.FullName}
+#          ls *.yak |% {.\yak push $_.FullName}
