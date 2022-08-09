@@ -37,9 +37,9 @@ steps:
   env:
     MSBUILDDISABLENODEREUSE: 1
 
-#- powershell: |
-#    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.1.0\build --results-directory .\results .\AdSecGHTests\bin\Release\net6.0\AdSecGHTests.dll
-#  displayName: dotnet tests
+- powershell: |
+    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.1.0\build --results-directory .\results .\AdSecGHTests\bin\x64\Release\net6.0\AdSecGHTests.dll
+  displayName: dotnet tests
 
 #- task: PublishCodeCoverageResults@1
 #  inputs:
@@ -96,37 +96,68 @@ steps:
         $versionInfo = $(Get-Item .\GhAdSec\bin\x64\Release\AdSecGH.dll).VersionInfo
         echo $versionInfo
         $fullVersion = [array]${versionInfo}.FileVersion.split('.')
-        echo $fullVersion
         $currentTime = $(Get-Date -Format "dddd MM/dd/yyyy HH:mm")
-        echo $currentTime
         $majorVersion = [string]$fullVersion[0]
-        echo $majorVersion
         $minorVersion = [string]$fullVersion[1]
-        echo $minorVersion
         $spVersion = [string]$fullVersion[2]
-        echo $spVersion
         $buildNumber = [string]$fullVersion[3]
-        echo $buildNumber
 
         $tag = [array]@($exeName,$majorVersion,$minorVersion,$spVersion,$buildNumber)
-        echo $tag
         $tagNumbersOnly = [array]@($majorVersion,$minorVersion,$spVersion,$buildNumber)
-        echo $tagNumbersOnly
 
-        $dotSeparatedTag = $majorVersion + "." + $minorVersion + "." + $spVersion + "." + $buildNumber
-        echo $dotSeparatedTag
+        $dotSeparatedTag = $majorVersion + "." + $minorVersion + "." + $spVersion + "-beta"
         $underscoreSeparatedTag = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
-        echo $underscoreSeparatedTag
         $tagNumbersOnlyUnderscore = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
-        echo $tagNumbersOnlyUnderscore
         $tagNumbersOnlydot = $majorVersion + "." + $minorVersion + "." + $spVersion + "." + $buildNumber
-        echo $tagNumbersOnlydot
-
-        git rev-parse $underscoreSeparatedTag
+        
+        Write-Host ("##vso[task.setvariable variable=dotSeparatedTag]$dotSeparatedTag")
+        git rev-parse $dotSeparatedTag
         if($lastExitCode -eq 0){Write-Host ("##vso[task.setvariable variable=TAG_EXISTS]true")}
         if($lastExitCode -eq 0){
           $tagExists = 'true'
+          echo $tagExists
         }
     errorActionPreference: 'continue'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
     ignoreLASTEXITCODE: true
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'GhAdSec/*.csproj'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'dotSeparatedTag'
+  condition: succeeded()
+  displayName: Package NuGet
+
+- task: GitHubRelease@1
+  inputs:
+    gitHubConnection: 'github.com_peterjgrainger'
+    repositoryName: 'arup-group/AdSec-Grasshopper'
+    action: 'edit'
+    target: '$(Build.SourceVersion)'
+    tag: '$(dotSeparatedTag)'
+    title: 'AdSecGH version $(dotSeparatedTag)'
+    releaseNotesSource: 'inline'
+    releaseNotesInline: |
+      Created from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
+    assets: |
+      $(System.DefaultWorkingDirectory)/**/*.yak
+      $(Build.ArtifactStagingDirectory)/**/*.nupkg
+      $(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg
+    assetUploadMode: 'replace'
+    isDraft: true
+    isPreRelease: true
+    addChangeLog: false
+  condition: and(succeeded(), ne(variables.TAG_EXISTS, 'true'))
+  displayName: 'Publishing assets to Github'
+
+#- task: NuGetCommand@2
+#  inputs:
+#    command: 'push'
+#    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+#    nuGetFeedType: 'internal'
+#    publishVstsFeed: '5ac05815-e952-41a1-9899-54474b67ab5d'
+#  continueOnError: true
+#  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
+#  displayName: Push to NuGet Repository

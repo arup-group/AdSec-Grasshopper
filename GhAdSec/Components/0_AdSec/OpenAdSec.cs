@@ -181,7 +181,7 @@ namespace AdSecGH.Components
           DA.GetDataList(1, planes);
 
           List<AdSecSectionGoo> sections = new List<AdSecSectionGoo>();
-          AdSecDesignCode code = Helpers.File.GetDesignCode(json);
+          AdSecDesignCode code = Helpers.AdSecFile.GetDesignCode(json);
 
           for (int i = 0; i < jsonParser.Sections.Count; i++)
           {

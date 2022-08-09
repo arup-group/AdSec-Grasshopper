@@ -5,32 +5,40 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecGH", "GhAdSec\AdSecGH.csproj", "{1B0D92BF-3C51-45D4-8197-696C357F5C7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecGHAdapter", "AdSecGHAdapter\AdSecGHAdapter.csproj", "{4E71555E-FA74-41F4-9155-31A9BFBDC103}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdSecGHTests", "AdSecGHTests\AdSecGHTests.csproj", "{33A8752C-7015-4842-BBB8-52E6384C1866}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{12D2BD0F-9EF0-4C6F-B288-6076049E3FE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecGHConverters", "AdSecGHConverters\AdSecGHConverters.csproj", "{03A36AE0-E900-4EC3-92B0-975937D9C69F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdSecGHConverterTests", "AdSecGHConverterTests\AdSecGHConverterTests.csproj", "{885C7D18-8B54-4430-A84B-8FD37CF7AD27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
-		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1B0D92BF-3C51-45D4-8197-696C357F5C7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B0D92BF-3C51-45D4-8197-696C357F5C7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B0D92BF-3C51-45D4-8197-696C357F5C7D}.Debug|x64.ActiveCfg = Debug|x64
 		{1B0D92BF-3C51-45D4-8197-696C357F5C7D}.Debug|x64.Build.0 = Debug|x64
-		{1B0D92BF-3C51-45D4-8197-696C357F5C7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B0D92BF-3C51-45D4-8197-696C357F5C7D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1B0D92BF-3C51-45D4-8197-696C357F5C7D}.Release|x64.ActiveCfg = Release|Any CPU
-		{1B0D92BF-3C51-45D4-8197-696C357F5C7D}.Release|x64.Build.0 = Release|Any CPU
-		{4E71555E-FA74-41F4-9155-31A9BFBDC103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E71555E-FA74-41F4-9155-31A9BFBDC103}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E71555E-FA74-41F4-9155-31A9BFBDC103}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4E71555E-FA74-41F4-9155-31A9BFBDC103}.Debug|x64.Build.0 = Debug|Any CPU
-		{4E71555E-FA74-41F4-9155-31A9BFBDC103}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E71555E-FA74-41F4-9155-31A9BFBDC103}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E71555E-FA74-41F4-9155-31A9BFBDC103}.Release|x64.ActiveCfg = Release|Any CPU
-		{4E71555E-FA74-41F4-9155-31A9BFBDC103}.Release|x64.Build.0 = Release|Any CPU
+		{1B0D92BF-3C51-45D4-8197-696C357F5C7D}.Release|x64.ActiveCfg = Release|x64
+		{1B0D92BF-3C51-45D4-8197-696C357F5C7D}.Release|x64.Build.0 = Release|x64
+		{33A8752C-7015-4842-BBB8-52E6384C1866}.Debug|x64.ActiveCfg = Debug|x64
+		{33A8752C-7015-4842-BBB8-52E6384C1866}.Debug|x64.Build.0 = Debug|x64
+		{33A8752C-7015-4842-BBB8-52E6384C1866}.Release|x64.ActiveCfg = Release|x64
+		{33A8752C-7015-4842-BBB8-52E6384C1866}.Release|x64.Build.0 = Release|x64
+		{12D2BD0F-9EF0-4C6F-B288-6076049E3FE8}.Debug|x64.ActiveCfg = Debug|x64
+		{12D2BD0F-9EF0-4C6F-B288-6076049E3FE8}.Debug|x64.Build.0 = Debug|x64
+		{12D2BD0F-9EF0-4C6F-B288-6076049E3FE8}.Release|x64.ActiveCfg = Release|x64
+		{12D2BD0F-9EF0-4C6F-B288-6076049E3FE8}.Release|x64.Build.0 = Release|x64
+		{03A36AE0-E900-4EC3-92B0-975937D9C69F}.Debug|x64.ActiveCfg = Debug|x64
+		{03A36AE0-E900-4EC3-92B0-975937D9C69F}.Debug|x64.Build.0 = Debug|x64
+		{03A36AE0-E900-4EC3-92B0-975937D9C69F}.Release|x64.ActiveCfg = Release|x64
+		{03A36AE0-E900-4EC3-92B0-975937D9C69F}.Release|x64.Build.0 = Release|x64
+		{885C7D18-8B54-4430-A84B-8FD37CF7AD27}.Debug|x64.ActiveCfg = Debug|x64
+		{885C7D18-8B54-4430-A84B-8FD37CF7AD27}.Debug|x64.Build.0 = Debug|x64
+		{885C7D18-8B54-4430-A84B-8FD37CF7AD27}.Release|x64.ActiveCfg = Release|x64
+		{885C7D18-8B54-4430-A84B-8FD37CF7AD27}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
