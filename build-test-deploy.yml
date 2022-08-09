@@ -41,53 +41,6 @@ steps:
     dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.1.0\build --results-directory .\results .\AdSecGHTests\bin\x64\Release\net6.0\AdSecGHTests.dll
   displayName: dotnet tests
 
-#- task: PublishCodeCoverageResults@1
-#  inputs:
-#    codeCoverageTool: 'cobertura'
-#    summaryFileLocation: '$(System.DefaultWorkingDirectory)/results/**/coverage.cobertura.xml'
-#    pathToSources: '$(System.DefaultWorkingDirectory)'
-
-#- powershell: |
-#    codecov -t $env:CODECOV_TOKEN -f .\results\coverage.json -F unittests
-#  env:
-#    CODECOV_TOKEN: $(CODECOV_TOKEN)
-#  displayName: Upload Code Coverage to codecovio
-#  failOnStderr: true
-
-#- powershell: |
-#    cd GhAdSec\bin\x64
-#    curl https://files.mcneel.com/yak/tools/latest/yak.exe -o yak.exe
-#    .\yak version
-#    cd Release
-#    ..\yak spec
-#    ..\yak build --platform win
-#    $yakCurrentVersName = Get-ChildItem -Path . -Filter "*.yak"
-#    $yakRh7Name =  $yakCurrentVersName -Replace "rh6_27", "rh7_0"
-#    Rename-Item -Path $yakCurrentVersName -NewName $yakRh7Name
-#    ..\yak build --platform win
-#    cd ..
-#    ls Release\*.yak |% {.\yak push $_.FullName}
-#  env:
-#    YAK_TOKEN: $(YAK_TOKEN)
-#  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.deploy, 'true'))
-#  displayName: Deploy yak package
-
-- powershell: |
-    cd GhAdSec\bin\x64
-    curl https://files.mcneel.com/yak/tools/latest/yak.exe -o yak.exe
-    .\yak version
-    cd Release
-    ..\yak spec
-    Add-Content manifest.yml 'icon: AdSecIcon.png'
-    ..\yak build --platform win
-    $yakCurrentVersName = Get-ChildItem -Path . -Filter "*.yak"
-    $yakRh7Name =  $yakCurrentVersName -Replace "rh6_27", "rh7_0"
-    Rename-Item -Path $yakCurrentVersName -NewName $yakRh7Name
-    ..\yak build --platform win
-  condition: succeeded()
-  #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-  displayName: Package yak
-
 - task: PowerShell@2
   displayName: Check for existing tags
   inputs:
@@ -121,13 +74,28 @@ steps:
     workingDirectory: '$(System.DefaultWorkingDirectory)'
     ignoreLASTEXITCODE: true
 
+- powershell: |
+    cd GhAdSec\bin\x64
+    curl https://files.mcneel.com/yak/tools/latest/yak.exe -o yak.exe
+    .\yak version
+    cd Release
+    ..\yak spec
+    Add-Content manifest.yml 'icon: AdSecIcon.png'
+    ..\yak build --platform win
+    $yakCurrentVersName = Get-ChildItem -Path . -Filter "*.yak"
+    $yakRh7Name =  $yakCurrentVersName -Replace "rh6_27", "rh7_0"
+    Rename-Item -Path $yakCurrentVersName -NewName $yakRh7Name
+    ..\yak build --platform win
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables.TAG_EXISTS, 'true'))
+  displayName: Package yak
+
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
     packagesToPack: 'GhAdSec/*.csproj'
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'dotSeparatedTag'
-  condition: succeeded()
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables.TAG_EXISTS, 'true'))
   displayName: Package NuGet
 
 - task: GitHubRelease@1
@@ -149,15 +117,5 @@ steps:
     isDraft: true
     isPreRelease: true
     addChangeLog: false
-  condition: and(succeeded(), ne(variables.TAG_EXISTS, 'true'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables.TAG_EXISTS, 'true'))
   displayName: 'Publishing assets to Github'
-
-#- task: NuGetCommand@2
-#  inputs:
-#    command: 'push'
-#    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-#    nuGetFeedType: 'internal'
-#    publishVstsFeed: '5ac05815-e952-41a1-9899-54474b67ab5d'
-#  continueOnError: true
-#  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
-#  displayName: Push to NuGet Repository
