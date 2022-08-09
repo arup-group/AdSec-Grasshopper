@@ -1,4 +1,4 @@
-name: Push AdSecGH NuGet and yak package
+name: Push AdSecGH yak package
 
 # On run when release is published
 on:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   pushYakPackage:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     env:
       YAK_TOKEN: ${{ secrets.YAK_TOKEN }} 
     steps:
