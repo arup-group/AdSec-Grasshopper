@@ -147,6 +147,7 @@ steps:
       $(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg
     assetUploadMode: 'replace'
     isDraft: true
+    isPreRelease: true
     addChangeLog: false
   condition: and(succeeded(), ne(variables.TAG_EXISTS, 'true'))
   displayName: 'Publishing assets to Github'
