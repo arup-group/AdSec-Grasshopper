@@ -136,7 +136,7 @@ steps:
     repositoryName: 'arup-group/AdSec-Grasshopper'
     action: 'edit'
     target: '$(Build.SourceVersion)'
-    tag: 'v$(dotSeparatedTag)'
+    tag: '$(dotSeparatedTag)'
     title: 'AdSecGH Version v$(dotSeparatedTag)'
     releaseNotesSource: 'inline'
     releaseNotesInline: |
