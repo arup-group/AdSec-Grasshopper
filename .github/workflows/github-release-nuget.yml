@@ -1,11 +1,24 @@
-# This is a basic workflow to help you get started with Actions
+name: Push AdSecGH NuGet
 
-name: Release yak packages
-
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# On run when release is published
 on:
   release:
-    types: [published]
+    types:
+      - released
 
-# TO-DO
+jobs:
+  pushNuGetPackage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download NuGet Package
+        uses: i3h/download-release-asset@v1
+        with:
+          owner: ${{ github.repository_owner }}
+          repo: AdSec-Grasshopper
+          tag: ${{ github.event.release.tag_name }}
+          file: /.*\.nupkg/
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+#      - name: Push nupkg file to nuget.org
+#        run: |
+#          dotnet nuget push "*.nupkg" --api-key ${{ SECRETS.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
