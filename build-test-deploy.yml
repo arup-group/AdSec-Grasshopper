@@ -86,7 +86,7 @@ steps:
     $yakRh7Name =  $yakCurrentVersName -Replace "rh6_27", "rh7_0"
     Rename-Item -Path $yakCurrentVersName -NewName $yakRh7Name
     ..\yak build --platform win
-  condition: and(succeeded(),  eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables.TAG_EXISTS, 'true'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables.TAG_EXISTS, 'true'))
   displayName: Package yak
 
 - task: NuGetCommand@2
@@ -95,7 +95,7 @@ steps:
     packagesToPack: 'GhAdSec/*.csproj'
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'dotSeparatedTag'
-  condition: and(succeeded(), ne(variables.TAG_EXISTS, 'true'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables.TAG_EXISTS, 'true'))
   displayName: Package NuGet
 
 - task: GitHubRelease@1
@@ -117,5 +117,5 @@ steps:
     isDraft: true
     isPreRelease: true
     addChangeLog: false
-  condition: and(succeeded(),  eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables.TAG_EXISTS, 'true'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables.TAG_EXISTS, 'true'))
   displayName: 'Publishing assets to Github'
