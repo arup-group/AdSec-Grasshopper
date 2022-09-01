@@ -87,15 +87,12 @@ namespace AdSecGH
         return GH_LoadingInstruction.Abort;
       }
 
+      // ### Queue up Main menu loader ###
+      Grasshopper.Instances.CanvasCreated += UI.Menu.MenuLoad.OnStartup;
 
       // ### Create Ribbon Category name and icon ###
       Grasshopper.Instances.ComponentServer.AddCategorySymbolName("AdSec", 'A');
       Grasshopper.Instances.ComponentServer.AddCategoryIcon("AdSec", Properties.Resources.AdSecLogo);
-
-
-      // ### Queue up Main menu loader ###
-      Helpers.Loader menuLoad = new Helpers.Loader();
-      menuLoad.CreateMainMenuItem();
 
       // ### Setup units ###
       Units.SetupUnits();
