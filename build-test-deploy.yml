@@ -12,7 +12,7 @@ variables:
   - name: configuration
     value: Release
 
-pool: 'vs17_2'
+pool: 'rhino-compute'
 
 steps:
 - task: NuGetToolInstaller@1
