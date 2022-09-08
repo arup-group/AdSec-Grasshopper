@@ -139,7 +139,7 @@ namespace AdSecGH
     {
       get
       {
-        return "https://raw.githubusercontent.com/arup-group/GSA-Grasshopper/master/Documentation/GettingStartedGuide/Icons/GsaGhLogo.jpg";
+        return "https://raw.githubusercontent.com/arup-group/GSA-Grasshopper/main/Documentation/GettingStartedGuide/Icons/GsaGhLogo.jpg";
       }
     }
     public override Bitmap AssemblyIcon
