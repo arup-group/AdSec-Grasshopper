@@ -1,7 +1,7 @@
 /.vs
 packages
-GhAdSec/bin
-GhAdSec/obj
+AdSecGH/bin
+AdSecGH/obj
 AdSecGHConverters/bin
 AdSecGHConverters/obj
 AdSecGHTests/bin

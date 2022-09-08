@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GhAdSec\AdSecGH.csproj" />
+    <ProjectReference Include="..\AdSecGH\AdSecGH.csproj" />
   </ItemGroup>
 
 </Project>

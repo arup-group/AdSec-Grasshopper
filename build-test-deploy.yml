@@ -47,7 +47,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-        $versionInfo = $(Get-Item .\GhAdSec\bin\x64\Release\AdSecGH.dll).VersionInfo
+        $versionInfo = $(Get-Item .\AdSecGH\bin\x64\Release\AdSecGH.dll).VersionInfo
         echo $versionInfo
         $fullVersion = [array]${versionInfo}.FileVersion.split('.')
         $currentTime = $(Get-Date -Format "dddd MM/dd/yyyy HH:mm")
@@ -76,7 +76,7 @@ steps:
     ignoreLASTEXITCODE: true
 
 - powershell: |
-    cd GhAdSec\bin\x64
+    cd AdSecGH\bin\x64
     curl https://files.mcneel.com/yak/tools/latest/yak.exe -o yak.exe
     .\yak version
     cd Release
@@ -93,7 +93,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: 'GhAdSec/*.csproj'
+    packagesToPack: 'AdSecGH/*.csproj'
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'dotSeparatedTag'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables.TAG_EXISTS, 'true'))
