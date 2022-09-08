@@ -311,7 +311,7 @@ namespace AdSecGH.Components
     }
 
     #region menu override
-    //internal enum GhAdSec.Parameters.AdSecStressStrainCurve.StressStrainCurveType
+    //internal enum AdSecGH.Parameters.AdSecStressStrainCurve.StressStrainCurveType
     //{
     //    Bilinear,
     //    Explicit,
