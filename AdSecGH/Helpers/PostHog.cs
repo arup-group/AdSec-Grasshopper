@@ -62,7 +62,7 @@ namespace AdSecGH.Helpers
       _ = PostHog.SendToPostHog(eventName, properties);
     }
 
-    public static void PluginLoaded()
+    public static void PluginLoaded(string error = "")
     {
       string eventName = "PluginLoaded";
 
@@ -72,6 +72,7 @@ namespace AdSecGH.Helpers
              + "." + Rhino.RhinoApp.Version.ToString().Split('.')[1] },
           { "rhinoMajorVersion", Rhino.RhinoApp.ExeVersion },
           { "rhinoServiceRelease", Rhino.RhinoApp.ExeServiceRelease },
+          { "loadingError", error },
         };
       _ = PostHog.SendToPostHog(eventName, properties);
     }
