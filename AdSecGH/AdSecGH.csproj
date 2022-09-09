@@ -147,6 +147,10 @@
     <Compile Include="UI\Colours.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="licenses\AdSec.pdf" />
+    <None Include="licenses\EntityFramework" />
+    <None Include="licenses\Newtonsoft" />
+    <None Include="licenses\UnitsNet" />
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
