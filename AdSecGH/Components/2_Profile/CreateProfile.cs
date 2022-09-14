@@ -1,26 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using Grasshopper.Kernel.Attributes;
-using Grasshopper.GUI.Canvas;
-using Grasshopper.GUI;
-using Grasshopper.Kernel;
-using Grasshopper;
-using Rhino.Geometry;
-using System.Windows.Forms;
-using Grasshopper.Kernel.Types;
-using System.Text.RegularExpressions;
-
-using Grasshopper.Kernel.Parameters;
-using AdSecGH.Parameters;
-using System.Resources;
-using System.Linq;
 using System.IO;
-using System.Text;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 using AdSecGH.Helpers;
+using AdSecGH.Parameters;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
 using Oasys.Profiles;
+using OasysGH.Components;
+using Rhino.Geometry;
 using UnitsNet;
-using UnitsNet.GH;
 
 namespace AdSecGH.Components
 {

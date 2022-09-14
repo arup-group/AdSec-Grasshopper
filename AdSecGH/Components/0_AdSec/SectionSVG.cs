@@ -1,20 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Drawing;
-using Grasshopper.Kernel.Attributes;
-using Grasshopper.GUI.Canvas;
-using Grasshopper.GUI;
-using Grasshopper.Kernel;
-using Rhino.Geometry;
-using System.Windows.Forms;
-using Grasshopper.Kernel.Types;
-using Oasys.AdSec.IO;
-using Oasys.AdSec.IO.Graphics;
 using AdSecGH.Parameters;
-using Oasys.AdSec.IO.Graphics.Section;
+using Grasshopper.Kernel;
 using Oasys.AdSec;
+using Oasys.AdSec.IO.Graphics.Section;
 using Oasys.Profiles;
+using OasysGH.Components;
 
 namespace AdSecGH.Components
 {

@@ -88,7 +88,6 @@
     <Compile Include="Components\6_Results\ResultsSLS.cs" />
     <Compile Include="Components\6_Results\ResultsULS.cs" />
     <Compile Include="AdSecGHInfo.cs" />
-    <Compile Include="Components\GH_OasysComponent.cs" />
     <Compile Include="Components\Lab\FindCrackLoad.cs" />
     <Compile Include="Helpers\PostHog.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
@@ -162,6 +161,9 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="OasysGH">
+      <Version>0.2.6-beta</Version>
     </PackageReference>
     <PackageReference Include="RhinoCommon">
       <Version>6.27.20176.5001</Version>
