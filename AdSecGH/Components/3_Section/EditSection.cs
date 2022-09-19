@@ -17,16 +17,15 @@ namespace AdSecGH.Components
     // This region handles how the component in displayed on the ribbon
     // including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("9b0acde5-f57f-4a39-a9c3-cdc935037490");
+    public override GH_Exposure Exposure => GH_Exposure.primary;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.EditSection;
+
     public EditSection()
       : base("EditSection", "EditSect", "Edit an AdSec Section",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat4())
     { this.Hidden = false; } // sets the initial state of the component to hidden
-
-    public override GH_Exposure Exposure => GH_Exposure.primary;
-
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.EditSection;
-    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

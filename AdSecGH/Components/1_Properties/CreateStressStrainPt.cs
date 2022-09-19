@@ -18,16 +18,15 @@ namespace AdSecGH.Components
     // This region handles how the component in displayed on the ribbon
     // including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("69a789d4-c11b-4396-b237-a10efdd6d0c4");
+    public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.StressStrainPt;
+
     public CreateStressStrainPoint()
       : base("Create StressStrainPt", "StressStrainPt", "Create a Stress Strain Point for AdSec Stress Strain Curve",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat1())
     { this.Hidden = false; } // sets the initial state of the component to hidden
-    public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
-
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.StressStrainPt;
-
-    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

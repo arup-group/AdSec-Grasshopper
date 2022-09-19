@@ -135,7 +135,7 @@ namespace AdSecGH
     }
   }
 
-  internal sealed class AdSecGHPluginInfo
+  internal sealed class PluginInfo
   {
     private static readonly Lazy<OasysPluginInfo> lazy =
         new Lazy<OasysPluginInfo>(() => new OasysPluginInfo(
@@ -148,7 +148,7 @@ namespace AdSecGH
 
     public static OasysPluginInfo Instance { get { return lazy.Value; } }
 
-    private AdSecGHPluginInfo()
+    private PluginInfo()
     {
     }
   }

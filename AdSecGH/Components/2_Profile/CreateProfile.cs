@@ -26,23 +26,21 @@ namespace AdSecGH.Components
     // This region handles how the component in displayed on the ribbon
     // including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("ea0741e5-905e-4ecb-8270-a584e3f99aa3");
+    public override GH_Exposure Exposure => GH_Exposure.primary;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateProfile;
+
     public CreateProfile()
       : base("Create Profile", "Profile", "Create Profile for AdSec Section",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat2())
     { this.Hidden = false; } // sets the initial state of the component to hidden
 
-    public override GH_Exposure Exposure => GH_Exposure.primary;
-
     protected override string HtmlHelp_Source()
     {
       string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.Profiles.html";
       return help;
     }
-
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateProfile;
-
-    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

@@ -81,7 +81,7 @@
     <Compile Include="Components\4_Loads\CreatePreLoad.cs" />
     <Compile Include="Components\4_Loads\CreateLoad.cs" />
     <Compile Include="Components\5_Solution\Analyse.cs" />
-    <Compile Include="Components\6_Results\NM-diagram.cs" />
+    <Compile Include="Components\6_Results\NMDiagram.cs" />
     <Compile Include="Components\3_Section\FlattenRebar.cs" />
     <Compile Include="Components\6_Results\RebarStressStrain.cs" />
     <Compile Include="Components\6_Results\ConcreteStressStrain.cs" />

@@ -14,17 +14,16 @@ namespace AdSecGH.Components
   public class CreateRebar : GH_OasysComponent, IGH_VariableParameterComponent
   {
     #region Name and Ribbon Layout
+    public override Guid ComponentGuid => new Guid("024d241a-b6cc-4134-9f5c-ac9a6dcb2c4b");
+    public override GH_Exposure Exposure => GH_Exposure.primary;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.Rebar;
+
     public CreateRebar()
         : base("Create Rebar", "Rebar", "Create Rebar (single or bundle) for an AdSec Section",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat3())
     { this.Hidden = true; }
-    public override Guid ComponentGuid => new Guid("024d241a-b6cc-4134-9f5c-ac9a6dcb2c4b");
-    public override GH_Exposure Exposure => GH_Exposure.primary;
-
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.Rebar;
-
-    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

@@ -19,17 +19,15 @@ namespace AdSecGH.Components
     // This region handles how the component in displayed on the ribbon
     // including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("27ba3ec5-b94c-43ad-8623-087540413628");
+    public override GH_Exposure Exposure => GH_Exposure.primary;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.SLS;
+
     public ResultsSLS()
       : base("Serviceability Result", "SLS", "Performs serviceability analysis (SLS), for a given Load or Deformation.",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat7())
     { this.Hidden = false; } // sets the initial state of the component to hidden
-
-    public override GH_Exposure Exposure => GH_Exposure.primary;
-
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.SLS;
-
-    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

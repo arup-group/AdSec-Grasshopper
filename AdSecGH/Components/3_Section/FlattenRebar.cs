@@ -21,16 +21,15 @@ namespace AdSecGH.Components
     // This region handles how the component in displayed on the ribbon
     // including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("879ecac6-464d-4286-9113-c15fcf03e4e6");
+    public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.FlattenRebar;
+
     public FlattenRebar()
       : base("FlattenRebars", "FRb", "Flatten all rebars in a section into single bars.",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat4())
     { this.Hidden = true; } // sets the initial state of the component to hidden
-
-    public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
-
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.FlattenRebar;
-    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

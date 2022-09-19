@@ -17,17 +17,15 @@ namespace AdSecGH.Components
     // This region handles how the component in displayed on the ribbon
     // including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("f0b27be7-f367-4a2c-b90c-3ba0f66ae584");
+    public override GH_Exposure Exposure => GH_Exposure.quarternary | GH_Exposure.obscure;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.CrackLoad;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+
     public FindCrackLoad()
       : base("Find Crack Load", "CrackLd", "Increases the load until set crack width is reached",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat7())
     { this.Hidden = false; } // sets the initial state of the component to hidden
-
-    public override GH_Exposure Exposure => GH_Exposure.quarternary | GH_Exposure.obscure;
-
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.CrackLoad;
-
-    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

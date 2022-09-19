@@ -16,17 +16,15 @@ namespace AdSecGH.Components
     // This region handles how the component in displayed on the ribbon
     // including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("c182921f-0ace-49ca-8fb7-5722dbf2ba30");
+    public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateFlange;
+
     public CreateProfileFlange()
       : base("Create Flange", "Flange", "Create a Flange for AdSec Profile",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat2())
     { this.Hidden = true; } // sets the initial state of the component to hidden
-
-    public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
-
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateFlange;
-
-    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

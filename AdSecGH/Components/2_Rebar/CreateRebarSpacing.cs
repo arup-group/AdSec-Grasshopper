@@ -14,17 +14,16 @@ namespace AdSecGH.Components
   public class CreateRebarSpacing : GH_OasysComponent, IGH_VariableParameterComponent
   {
     #region Name and Ribbon Layout
+    public override Guid ComponentGuid => new Guid("846d546a-4284-4d69-906b-0e6985d7ddd3");
+    public override GH_Exposure Exposure => GH_Exposure.primary;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.RebarSpacing;
+
     public CreateRebarSpacing()
         : base("Create Rebar Spacing", "Spacing", "Create Rebar spacing (by Count or Pitch) for an AdSec Section",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat3())
     { this.Hidden = true; }
-    public override Guid ComponentGuid => new Guid("846d546a-4284-4d69-906b-0e6985d7ddd3");
-    public override GH_Exposure Exposure => GH_Exposure.primary;
-
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.RebarSpacing;
-
-    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

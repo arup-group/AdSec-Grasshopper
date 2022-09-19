@@ -19,16 +19,15 @@ namespace AdSecGH.Components
     // This region handles how the component in displayed on the ribbon
     // including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("21cd9e4c-6c85-4077-b575-1e04127f2998");
+    public override GH_Exposure Exposure => GH_Exposure.secondary;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.N_M;
+
     public NMDiagram()
       : base("N-M Diagram", "N-M", "Calculates a force-moment (N-M) or moment-moment (M-M) interaction curve.",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat7())
     { this.Hidden = false; } // sets the initial state of the component to hidden
-    public override GH_Exposure Exposure => GH_Exposure.secondary;
-
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.N_M;
-
-    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

@@ -14,17 +14,16 @@ namespace AdSecGH.Components
   public class CreateProfileWeb : GH_OasysComponent, IGH_VariableParameterComponent
   {
     #region Name and Ribbon Layout
+    public override Guid ComponentGuid => new Guid("0f9a9223-e745-44b9-add2-8b2e5950e86a");
+    public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateWeb;
+
     public CreateProfileWeb()
         : base("Create Web", "Web", "Create a Web for AdSec Profile",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat2())
     { this.Hidden = true; }
-    public override Guid ComponentGuid => new Guid("0f9a9223-e745-44b9-add2-8b2e5950e86a");
-    public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
-
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateWeb;
-
-    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

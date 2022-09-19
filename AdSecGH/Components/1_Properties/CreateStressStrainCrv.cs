@@ -15,22 +15,22 @@ namespace AdSecGH.Components
   public class CreateStressStrainCurve : GH_OasysComponent, IGH_VariableParameterComponent
   {
     #region Name and Ribbon Layout
+    public override Guid ComponentGuid => new Guid("b2ddf545-2a4c-45ac-ba1c-cb0f3da5b37f");
+    public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.StressStrainCrv;
+
     public CreateStressStrainCurve()
         : base("Create StressStrainCrv", "StressStrainCrv", "Create a Stress Strain Curve for AdSec Material",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat1())
     { this.Hidden = false; }
-    public override Guid ComponentGuid => new Guid("b2ddf545-2a4c-45ac-ba1c-cb0f3da5b37f");
-    public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
 
     protected override string HtmlHelp_Source()
     {
       string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Materials.StressStrainCurves.html";
       return help;
     }
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.StressStrainCrv;
-
-    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI
