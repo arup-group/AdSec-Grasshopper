@@ -1,20 +1,20 @@
-﻿using Grasshopper.Kernel;
-using System;
+﻿using System;
 using System.IO;
 using System.Drawing;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using AdSecGH.Helpers;
+using Grasshopper.Kernel;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
-using AdSecGH.Helpers;
+using OasysGH;
 
 namespace AdSecGH
 {
   public class AddReferencePriority : GH_AssemblyPriority
   {
+    public static Assembly AdSecAPI;
+    public static string PluginPath;
+
     /// <summary>
     /// This method finds the location of the AdSec plugin and add's the path to the system environment to load referenced dll files.
     /// Method also tries to load the adsec_api.dll file and provides grasshopper loading error messages if it fails.
@@ -54,7 +54,6 @@ namespace AdSecGH
         return GH_LoadingInstruction.Abort;
       }
 
-
       // ### Trigger a license check ###
       try
       {
@@ -84,8 +83,6 @@ namespace AdSecGH
 
       return GH_LoadingInstruction.Proceed;
     }
-    public static Assembly AdSecAPI;
-    public static string PluginPath;
 
     private bool TryFindPluginPath(string keyword)
     {
@@ -93,7 +90,7 @@ namespace AdSecGH
 
       // initially look in %appdata% folder where package manager will store the plugin
       string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-      path = Path.Combine(path, "McNeel", "Rhinoceros", "Packages", Rhino.RhinoApp.ExeVersion + ".0", AdSecGHInfo.ProductName);
+      path = Path.Combine(path, "McNeel", "Rhinoceros", "Packages", Rhino.RhinoApp.ExeVersion + ".0", AssemblyInfo.ProductName);
 
       if (!File.Exists(Path.Combine(path, keyword))) // if no plugin file is found there continue search
       {
@@ -127,7 +124,7 @@ namespace AdSecGH
             message += Environment.NewLine + pluginFolder.Folder;
 
           Exception exception = new Exception(message);
-          GH_LoadingException gH_LoadingException = new GH_LoadingException(AdSecGHInfo.ProductName + ": " + keyword + " loading failed", exception);
+          GH_LoadingException gH_LoadingException = new GH_LoadingException(AssemblyInfo.ProductName + ": " + keyword + " loading failed", exception);
           Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
           PostHog.PluginLoaded(message);
           return false;
@@ -138,7 +135,25 @@ namespace AdSecGH
     }
   }
 
-  public class AdSecGHInfo : GH_AssemblyInfo
+  internal sealed class AdSecGHPluginInfo
+  {
+    private static readonly Lazy<OasysPluginInfo> lazy =
+        new Lazy<OasysPluginInfo>(() => new OasysPluginInfo(
+          AssemblyInfo.ProductName,
+          AssemblyInfo.PluginName,
+          AssemblyInfo.Vers,
+          AssemblyInfo.isBeta,
+          "phc_alOp3OccDM3D18xJTWDoW44Y1cJvbEScm5LJSX8qnhs"
+          ));
+
+    public static OasysPluginInfo Instance { get { return lazy.Value; } }
+
+    private AdSecGHPluginInfo()
+    {
+    }
+  }
+
+  public class AssemblyInfo : GH_AssemblyInfo
   {
     internal static Guid GUID = new Guid("f815c29a-e1eb-4ca6-9e56-0554777ff9c9");
     internal const string Company = "Oasys";

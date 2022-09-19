@@ -5,6 +5,7 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using OasysGH.Components;
 using UnitsNet.GH;
+using OasysGH;
 
 namespace AdSecGH.Components
 {
@@ -25,6 +26,8 @@ namespace AdSecGH.Components
         public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
     protected override System.Drawing.Bitmap Icon => Properties.Resources.ConvertUnitNumber;
+
+    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

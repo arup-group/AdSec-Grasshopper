@@ -163,7 +163,7 @@
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="OasysGH">
-      <Version>0.2.6-beta</Version>
+      <Version>0.2.8</Version>
     </PackageReference>
     <PackageReference Include="RhinoCommon">
       <Version>6.27.20176.5001</Version>

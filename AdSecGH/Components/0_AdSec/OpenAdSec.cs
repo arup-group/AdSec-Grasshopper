@@ -7,6 +7,8 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec.IO.Serialization;
+using OasysGH;
+using OasysGH.Components;
 using Rhino.Geometry;
 
 namespace AdSecGH.Components
@@ -14,7 +16,7 @@ namespace AdSecGH.Components
   /// <summary>
   /// Component to open an existing .ads file
   /// </summary>
-  public class OpenModel : GH_Component, IGH_VariableParameterComponent
+  public class OpenModel : GH_OasysDropDownComponent, IGH_VariableParameterComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon
@@ -22,13 +24,15 @@ namespace AdSecGH.Components
     public override Guid ComponentGuid => new Guid("42135d0f-bf55-40c0-8f6f-5dc2ad5f7741");
     public OpenModel()
       : base("Open Model", "Open", "Open an existing AdSec .ads file",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat0())
+          Ribbon.CategoryName.Name(),
+          Ribbon.SubCategoryName.Cat0())
     { this.Hidden = false; } // sets the initial state of the component to hidden
 
     public override GH_Exposure Exposure => GH_Exposure.primary;
 
     protected override Bitmap Icon => Properties.Resources.OpenAdSec;
+
+    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI
@@ -110,45 +114,14 @@ namespace AdSecGH.Components
     {
       pManager.AddGenericParameter("Section", "Sec", "AdSec Sections", GH_ParamAccess.list);
     }
+    #endregion
+
     #region IGH_VariableParameterComponent null implementation
-    //This sub region handles any changes to the component after it has been placed on the canvas
-    bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
-    bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
-    IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
-    {
-      return null;
-    }
-    bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
+    // This sub region handles any changes to the component after it has been placed on the canvas
     void IGH_VariableParameterComponent.VariableParameterMaintenance()
     {
       Params.Input[0].Optional = fileName != null; //filename can have input from user input
       Params.Input[0].ClearRuntimeMessages(); // this needs to be called to avoid having a runtime warning message after changed to optional
-
-    }
-    #endregion
-    #endregion
-
-    #region (de)serialization
-    //This region handles serialisation and deserialisation, meaning that 
-    // component states will be remembered when reopening GH script
-    public override bool Write(GH_IO.Serialization.GH_IWriter writer)
-    {
-      writer.SetString("File", (string)fileName);
-      return base.Write(writer);
-    }
-    public override bool Read(GH_IO.Serialization.GH_IReader reader)
-    {
-      fileName = (string)reader.GetString("File");
-      return base.Read(reader);
     }
     #endregion
 
@@ -190,5 +163,30 @@ namespace AdSecGH.Components
         }
       }
     }
+
+    #region (de)serialization
+    // This region handles serialisation and deserialisation, meaning that component states will be remembered when reopening GH script
+    public override bool Write(GH_IO.Serialization.GH_IWriter writer)
+    {
+      writer.SetString("File", (string)fileName);
+      return base.Write(writer);
+    }
+    public override bool Read(GH_IO.Serialization.GH_IReader reader)
+    {
+      fileName = (string)reader.GetString("File");
+      return base.Read(reader);
+    }
+
+    public override void InitialiseDropdowns()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void SetSelected(int i, int j)
+    {
+      throw new NotImplementedException();
+    }
+    #endregion
   }
 }
+

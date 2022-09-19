@@ -23,9 +23,9 @@ namespace AdSecGH.Helpers
       Dictionary<string, object> properties = new Dictionary<string, object>() {
         { "distinct_id", user.userName },
         { "user", user },
-        { "pluginName", AdSecGHInfo.PluginName },
-        { "version", AdSecGHInfo.Vers },
-        { "isBeta", AdSecGHInfo.isBeta },
+        { "pluginName", AssemblyInfo.PluginName },
+        { "version", AssemblyInfo.Vers },
+        { "isBeta", AssemblyInfo.isBeta },
       };
 
       if (additionalProperties != null)

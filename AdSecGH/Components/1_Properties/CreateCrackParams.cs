@@ -3,28 +3,30 @@ using System.Linq;
 using System.Collections.Generic;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
+using OasysGH;
 using OasysGH.Components;
 using UnitsNet;
 
 namespace AdSecGH.Components
 {
-    /// <summary>
-    /// Component to create a new Concrete Crack Calculation Parameters
-    /// </summary>
-    public class CreateConcreteCrackCalculationParameters : GH_OasysComponent, IGH_VariableParameterComponent
-    {
-        #region Name and Ribbon Layout
-        // This region handles how the component in displayed on the ribbon
-        // including name, exposure level and icon
-        public override Guid ComponentGuid => new Guid("bc810b4b-11f1-496f-b949-a0be77e9bdc8");
-        public CreateConcreteCrackCalculationParameters()
-          : base("Create CrackCalcParams", "CrackCalcParams", "Create Concrete Crack Calculation Parameters for AdSec Material",
-                Ribbon.CategoryName.Name(),
-                Ribbon.SubCategoryName.Cat1())
-        { this.Hidden = true; } // sets the initial state of the component to hidden
-        public override GH_Exposure Exposure => GH_Exposure.quarternary | GH_Exposure.obscure;
-
+  /// <summary>
+  /// Component to create a new Concrete Crack Calculation Parameters
+  /// </summary>
+  public class CreateConcreteCrackCalculationParameters : GH_OasysComponent, IGH_VariableParameterComponent
+  {
+    #region Name and Ribbon Layout
+    // This region handles how the component in displayed on the ribbon
+    // including name, exposure level and icon
+    public override Guid ComponentGuid => new Guid("bc810b4b-11f1-496f-b949-a0be77e9bdc8");
+    public CreateConcreteCrackCalculationParameters()
+      : base("Create CrackCalcParams", "CrackCalcParams", "Create Concrete Crack Calculation Parameters for AdSec Material",
+            Ribbon.CategoryName.Name(),
+            Ribbon.SubCategoryName.Cat1())
+    { this.Hidden = true; } // sets the initial state of the component to hidden
+    public override GH_Exposure Exposure => GH_Exposure.quarternary | GH_Exposure.obscure;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateCrackCalcParams;
+
+    public override OasysPluginInfo PluginInfo => AdSecGHPluginInfo.Instance;
     #endregion
 
     #region Custom UI

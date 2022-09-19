@@ -6,12 +6,12 @@ using AdSecGH;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle(AdSecGHInfo.ProductName)]
-[assembly: AssemblyDescription(AdSecGHInfo.Company + " " + AdSecGHInfo.ProductName + " Grasshopper plugin")]
+[assembly: AssemblyTitle(AssemblyInfo.ProductName)]
+[assembly: AssemblyDescription(AssemblyInfo.Company + " " + AssemblyInfo.ProductName + " Grasshopper plugin")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany(AdSecGHInfo.Company)]
-[assembly: AssemblyProduct(AdSecGHInfo.ProductName)]
-[assembly: AssemblyCopyright(AdSecGHInfo.Copyright)]
+[assembly: AssemblyCompany(AssemblyInfo.Company)]
+[assembly: AssemblyProduct(AssemblyInfo.ProductName)]
+[assembly: AssemblyCopyright(AssemblyInfo.Copyright)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,5 +33,5 @@ using AdSecGH;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(AdSecGHInfo.Vers)]
-[assembly: AssemblyFileVersion(AdSecGHInfo.Vers + ".0")]
+[assembly: AssemblyVersion(AssemblyInfo.Vers)]
+[assembly: AssemblyFileVersion(AssemblyInfo.Vers + ".0")]
