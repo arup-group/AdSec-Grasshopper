@@ -14,7 +14,7 @@ using UnitsNet;
 
 namespace AdSecGH.Components
 {
-  public class CustomMaterial : GH_OasysDropDownComponent, IGH_VariableParameterComponent
+  public class CreateCustomMaterial : GH_OasysDropDownComponent, IGH_VariableParameterComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon
@@ -24,7 +24,7 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateCustomMaterial;
 
-    public CustomMaterial()
+    public CreateCustomMaterial()
       : base("Custom Material", "CustomMaterial", "Create a custom AdSec Material",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat1())

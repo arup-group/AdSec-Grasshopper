@@ -1,20 +1,20 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using AdSecGH.Parameters;
+﻿using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using OasysGH;
 using OasysGH.Components;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace AdSecGH.Components
 {
   /// <summary>
   /// Component to create a new Standard Material for AdSec
   /// </summary>
-  public class StandardMaterial : GH_OasysDropDownComponent, IGH_VariableParameterComponent
+  public class CreateStandardMaterial : GH_OasysDropDownComponent, IGH_VariableParameterComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon
@@ -24,7 +24,7 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.StandardMaterial;
 
-    public StandardMaterial()
+    public CreateStandardMaterial()
       : base("Standard Material", "Material", "Create a new AdSec Design Code based standard material",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat1())

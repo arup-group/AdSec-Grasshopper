@@ -56,11 +56,11 @@
     <Compile Include="Components\0_AdSec\SaveAdSec.cs" />
     <Compile Include="Components\0_AdSec\CreateUnitNumber.cs" />
     <Compile Include="Components\0_AdSec\ConvertUnitNumber.cs" />
-    <Compile Include="Components\1_Properties\CreateCrackParams.cs" />
-    <Compile Include="Components\1_Properties\CreateStressStrainPt.cs" />
+    <Compile Include="Components\1_Properties\CreateConcreteCrackCalculationParameters.cs" />
+    <Compile Include="Components\1_Properties\CreateStressStrainPoint.cs" />
     <Compile Include="Components\1_Properties\CreateDesignCode.cs" />
     <Compile Include="Components\1_Properties\CreateStandardMaterial.cs" />
-    <Compile Include="Components\1_Properties\CreateStressStrainCrv.cs" />
+    <Compile Include="Components\1_Properties\CreateStressStrainCurve.cs" />
     <Compile Include="Components\1_Properties\CreateCustomMaterial.cs" />
     <Compile Include="Components\1_Properties\EditCrackParams.cs" />
     <Compile Include="Components\1_Properties\EditMaterial.cs" />

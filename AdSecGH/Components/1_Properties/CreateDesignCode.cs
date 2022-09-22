@@ -12,7 +12,7 @@ namespace AdSecGH.Components
   /// <summary>
   /// Component to lookup DesignCode for AdSec
   /// </summary>
-  public class DesignCode : GH_OasysDropDownComponent, IGH_VariableParameterComponent
+  public class CreateDesignCode : GH_OasysDropDownComponent, IGH_VariableParameterComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon
@@ -22,7 +22,7 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateDesignCode;
 
-    public DesignCode()
+    public CreateDesignCode()
       : base("DesignCode", "DesignCode", "Select an AdSec Design Code",
             Ribbon.CategoryName.Name(),
             Ribbon.SubCategoryName.Cat1())

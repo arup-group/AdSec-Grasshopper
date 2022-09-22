@@ -34,21 +34,25 @@ namespace AdSecGH.Parameters
     public AdSecDesignCode()
     {
     }
+
     public AdSecDesignCode(IDesignCode designCode, string designCodeName)
     {
       m_designCode = designCode;
       m_designCodeName = designCodeName;
     }
+
     internal AdSecDesignCode(FieldInfo fieldDesignCode)
     {
       string designCodeReflectedLevels = fieldDesignCode.DeclaringType.FullName.Replace("Oasys.AdSec.DesignCode.", "");
       List<string> designCodeLevelsSplit = designCodeReflectedLevels.Split('+').ToList();
       CreateFromReflectedLevels(designCodeLevelsSplit, true);
     }
+
     internal AdSecDesignCode(List<string> designCodeReflectedLevels)
     {
       CreateFromReflectedLevels(designCodeReflectedLevels);
     }
+
     private bool CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false)
     {
       // Get all DesignCodes in DLL under namespace
