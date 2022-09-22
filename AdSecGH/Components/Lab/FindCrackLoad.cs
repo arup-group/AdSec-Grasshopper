@@ -28,12 +28,7 @@ namespace AdSecGH.Components
     { this.Hidden = false; } // sets the initial state of the component to hidden
     #endregion
 
-    #region Custom UI
-    //This region overrides the typical component layout
-    #endregion
-
     #region Input and output
-
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
       pManager.AddGenericParameter("Results", "Res", "AdSec Results to perform serviceability check on.", GH_ParamAccess.item);
@@ -66,8 +61,6 @@ namespace AdSecGH.Components
         return;
       }
 
-      IServiceabilityResult sls = null;
-
       // get load - can be either load or deformation
       GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
       AdSecLoadGoo load = null;
@@ -91,7 +84,7 @@ namespace AdSecGH.Components
         return;
       }
 
-      sls = solution.Value.Serviceability.Check(load.Value);
+      IServiceabilityResult sls = solution.Value.Serviceability.Check(load.Value);
 
       string loadComponent = "X";
       DA.GetData(2, ref loadComponent);
@@ -161,7 +154,6 @@ namespace AdSecGH.Components
 
       if (sls.MaximumWidthCrack != null && sls.MaximumWidthCrack.Width.Meters < 1)
         DA.SetData(1, new AdSecCrackGoo(sls.MaximumWidthCrack, solution.LocalPlane));
-
     }
   }
 }

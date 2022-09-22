@@ -1,40 +1,30 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Rhino;
-using Rhino.Geometry;
+using System.Drawing;
+using System.Linq;
 using Grasshopper;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
-using System.IO;
-using System.Linq;
-using System.Data;
-using System.Drawing;
-using System.Reflection;
-using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Linq;
-using System.Runtime.InteropServices;
-using Rhino.DocObjects;
-using Rhino.Collections;
-using GH_IO;
-using GH_IO.Serialization;
-using Rhino.Display;
-using Oasys.AdSec.Materials;
-using Oasys.Profiles;
 using Oasys.AdSec;
+using Oasys.Units;
+using Rhino.Geometry;
+using Rhino.Display;
 using UnitsNet;
 
 namespace AdSecGH.Parameters
 {
   public class AdSecLoadGoo : GH_GeometricGoo<ILoad>, IGH_PreviewData
   {
-    public AdSecLoadGoo(ILoad load)
-    : base(load)
-    {
-    }
+    public static string Name => "Load";
+    public static string NickName => "Ld";
+    public static string Description => "AdSec Load";
+    public override bool IsValid => true;
+    public override string TypeName => "Load";
+    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+
     private Point3d m_point = Point3d.Unset;
+
+    public AdSecLoadGoo(ILoad load) : base(load) { }
+
     public AdSecLoadGoo(ILoad load, Plane local)
     {
       this.m_value = load;
@@ -46,11 +36,6 @@ namespace AdSecGH.Parameters
       point.Transform(mapFromLocal);
       m_point = point;
     }
-    public override bool IsValid => true;
-
-    public override string TypeName => "Load";
-
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
     public BoundingBox ClippingBox
     {
@@ -73,10 +58,8 @@ namespace AdSecGH.Parameters
       }
     }
 
-    public override IGH_Goo Duplicate()
-    {
-      return new AdSecLoadGoo(this.Value);
-    }
+    public override IGH_Goo Duplicate() => new AdSecLoadGoo(this.Value);
+
     public override string ToString()
     {
       IQuantity quantityMoment = new Oasys.Units.Moment(0, Units.MomentUnit);
@@ -88,6 +71,7 @@ namespace AdSecGH.Parameters
           + Math.Round(this.Value.YY.As(Units.MomentUnit), 4) + unitMomentAbbreviation + ", "
           + Math.Round(this.Value.ZZ.As(Units.MomentUnit), 4) + unitMomentAbbreviation + "}";
     }
+
     public override bool CastTo<TQ>(out TQ target)
     {
       if (typeof(TQ).IsAssignableFrom(typeof(AdSecLoadGoo)))
@@ -126,7 +110,7 @@ namespace AdSecGH.Parameters
         Point3d point = (Point3d)source;
         ILoad load = ILoad.Create(
             new Force(point.X, Units.ForceUnit),
-            new Oasys.Units.Moment(point.Y, Units.MomentUnit),
+            new Moment(point.Y, Units.MomentUnit),
             new Oasys.Units.Moment(point.Z, Units.MomentUnit));
         AdSecLoadGoo temp = new AdSecLoadGoo(load);
         this.Value = temp.Value;

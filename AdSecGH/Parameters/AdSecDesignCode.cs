@@ -4,21 +4,8 @@ using System.Linq;
 using System.Reflection;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Rhino.Geometry;
-using Rhino;
-using Grasshopper.Documentation;
-using Rhino.Collections;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.AdSec;
-using Oasys.AdSec.StandardMaterials;
-using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.AdSec.Reinforcement.Layers;
-using UnitsNet;
-using Oasys.Units;
+using Oasys.AdSec.DesignCode;
 
 namespace AdSecGH.Parameters
 {

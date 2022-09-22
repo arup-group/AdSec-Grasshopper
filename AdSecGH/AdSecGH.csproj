@@ -89,7 +89,6 @@
     <Compile Include="Components\6_Results\ResultsULS.cs" />
     <Compile Include="AdSecGHInfo.cs" />
     <Compile Include="Components\Lab\FindCrackLoad.cs" />
-    <Compile Include="Helpers\PostHog.cs" />
     <Compile Include="Helpers\_DeSerialization.cs" />
     <Compile Include="Helpers\AdSecFile.cs" />
     <Compile Include="Helpers\_GetInputs.cs" />
@@ -97,28 +96,28 @@
     <Compile Include="Helpers\_ResultsHelper.cs" />
     <Compile Include="Helpers\_SqlReader.cs" />
     <Compile Include="Parameters\AdSecSection.cs" />
-    <Compile Include="Parameters\CrackGoo.cs" />
-    <Compile Include="Parameters\PointGoo.cs" />
+    <Compile Include="Parameters\AdSecCrackGoo.cs" />
+    <Compile Include="Parameters\AdSecPointGoo.cs" />
     <Compile Include="Helpers\LoadMainMenu.cs" />
-    <Compile Include="Parameters\SolutionGoo.cs" />
-    <Compile Include="Parameters\DeformationGoo.cs" />
-    <Compile Include="Parameters\LoadGoo.cs" />
-    <Compile Include="Parameters\NM_DiagramGoo.cs" />
-    <Compile Include="Parameters\SubComponentGoo.cs" />
+    <Compile Include="Parameters\AdSecSolutionGoo.cs" />
+    <Compile Include="Parameters\AdSecDeformationGoo.cs" />
+    <Compile Include="Parameters\AdSecLoadGoo.cs" />
+    <Compile Include="Parameters\AdSecNMMCurveGoo.cs" />
+    <Compile Include="Parameters\AdSecSubComponentGoo.cs" />
     <Compile Include="Parameters\AdSecRebarGroup.cs" />
-    <Compile Include="Parameters\RebarLayerGoo.cs" />
-    <Compile Include="Parameters\RebarBundleGoo.cs" />
-    <Compile Include="Parameters\ProfileWebGoo.cs" />
-    <Compile Include="Parameters\ProfileFlangeGoo.cs" />
-    <Compile Include="Parameters\FailureSurfaceGoo.cs" />
+    <Compile Include="Parameters\AdSecRebarLayerGoo.cs" />
+    <Compile Include="Parameters\AdSecRebarBundleGoo.cs" />
+    <Compile Include="Parameters\AdSecProfileWebGoo.cs" />
+    <Compile Include="Parameters\AdSecProfileFlangeGoo.cs" />
+    <Compile Include="Parameters\AdSecFailureSurfaceGoo.cs" />
     <Compile Include="Parameters\GH_UnitNumber.cs" />
     <Compile Include="Parameters\AdSecDesignCode.cs" />
     <Compile Include="Parameters\AdSecMaterial.cs" />
     <Compile Include="Helpers\_Reflection.cs" />
-    <Compile Include="Parameters\CrackCalcParamsGoo.cs" />
-    <Compile Include="Parameters\ProfileGoo.cs" />
-    <Compile Include="Parameters\StressStrainPointGoo.cs" />
-    <Compile Include="Parameters\StressStrainCurveGoo.cs" />
+    <Compile Include="Parameters\AdSecConcreteCrackCalculationParametersGoo.cs" />
+    <Compile Include="Parameters\AdSecProfileGoo.cs" />
+    <Compile Include="Parameters\AdSecStressStrainPointGoo.cs" />
+    <Compile Include="Parameters\AdSecStressStrainCurveGoo.cs" />
     <Compile Include="Parameters\_DocUnits.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -163,7 +162,7 @@
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="OasysGH">
-      <Version>0.2.8</Version>
+      <Version>0.2.9</Version>
     </PackageReference>
     <PackageReference Include="RhinoCommon">
       <Version>6.27.20176.5001</Version>

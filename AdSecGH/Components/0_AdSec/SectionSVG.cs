@@ -57,7 +57,6 @@ namespace AdSecGH.Components
       if (res) // == DialogResult.OK)
       {
         fileName = fdi.FileName;
-        usersetFileName = true;
         // write to file
         File.WriteAllText(fileName, imageSVG);
 
@@ -109,9 +108,7 @@ namespace AdSecGH.Components
 
     #region Input and output
     // This region handles input and output parameters
-
     string fileName = null;
-    bool usersetFileName = false;
     static string imageSVG;
     bool canOpen = false;
     protected override void RegisterInputParams(GH_InputParamManager pManager)
@@ -122,10 +119,13 @@ namespace AdSecGH.Components
       pManager[1].Optional = true;
       pManager[2].Optional = true;
     }
+
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
       pManager.AddTextParameter("SVG string", "SVG", "Text string representing the SVG file", GH_ParamAccess.item);
     }
+    #endregion
+
     #region IGH_VariableParameterComponent null implementation
     //This sub region handles any changes to the component after it has been placed on the canvas
     bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
@@ -150,7 +150,6 @@ namespace AdSecGH.Components
       Params.Input[0].ClearRuntimeMessages(); // this needs to be called to avoid having a runtime warning message after changed to optional
     }
     #endregion
-    #endregion
 
     #region (de)serialization
     //This region handles serialisation and deserialisation, meaning that 
@@ -160,6 +159,7 @@ namespace AdSecGH.Components
       writer.SetString("File", (string)fileName);
       return base.Write(writer);
     }
+
     public override bool Read(GH_IO.Serialization.GH_IReader reader)
     {
       fileName = (string)reader.GetString("File");

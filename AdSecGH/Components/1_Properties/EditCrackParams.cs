@@ -26,10 +26,6 @@ namespace AdSecGH.Components
     { this.Hidden = true; } // sets the initial state of the component to hidden
     #endregion
 
-    #region Custom UI
-    //This region overrides the typical component layout
-    #endregion
-
     #region Input and output
 
     protected override void RegisterInputParams(GH_InputParamManager pManager)

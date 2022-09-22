@@ -39,6 +39,7 @@ namespace AdSecGH.Components
     {
       m_attributes = new UI.ButtonComponentUI(this, "Open", OpenFile, "Open AdSec file");
     }
+
     public void OpenFile()
     {
       var fdi = new Rhino.UI.OpenFileDialog { Filter = "AdSec Files(*.ads)|*.ads|All files (*.*)|*.*" };
@@ -108,6 +109,7 @@ namespace AdSecGH.Components
       pManager[1].Optional = true;
       pManager.HideParameter(1);
     }
+
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
       pManager.AddGenericParameter("Section", "Sec", "AdSec Sections", GH_ParamAccess.list);

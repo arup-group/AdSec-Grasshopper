@@ -2,11 +2,11 @@
 using System.IO;
 using System.Drawing;
 using System.Reflection;
-using AdSecGH.Helpers;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using OasysGH;
+using OasysGH.Helpers;
 
 namespace AdSecGH
 {
@@ -50,7 +50,7 @@ namespace AdSecGH
         Exception exception = new Exception(message);
         GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec: AdSec_API.dll loading", exception);
         Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
-        PostHog.PluginLoaded(message);
+        PostHog.PluginLoaded(PluginInfo.Instance, message);
         return GH_LoadingInstruction.Abort;
       }
 
@@ -65,7 +65,7 @@ namespace AdSecGH
         Exception exception = new Exception(message);
         GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec: License", exception);
         Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
-        PostHog.PluginLoaded(message);
+        PostHog.PluginLoaded(PluginInfo.Instance, message);
         return GH_LoadingInstruction.Abort;
       }
 
@@ -79,7 +79,7 @@ namespace AdSecGH
       // ### Setup units ###
       Units.SetupUnits();
 
-      PostHog.PluginLoaded();
+      PostHog.PluginLoaded(PluginInfo.Instance);
 
       return GH_LoadingInstruction.Proceed;
     }
@@ -126,7 +126,7 @@ namespace AdSecGH
           Exception exception = new Exception(message);
           GH_LoadingException gH_LoadingException = new GH_LoadingException(AssemblyInfo.ProductName + ": " + keyword + " loading failed", exception);
           Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
-          PostHog.PluginLoaded(message);
+          PostHog.PluginLoaded(PluginInfo.Instance, message);
           return false;
         }
       }

@@ -5,14 +5,16 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.Units;
 using OasysGH;
 using OasysGH.Components;
 using Rhino.Geometry;
 using UnitsNet;
+using UnitsNet.Units;
 
 namespace AdSecGH.Components
 {
-  public class CreateStressStrainCurve : GH_OasysComponent, IGH_VariableParameterComponent
+  public class CreateStressStrainCurve : GH_OasysDropDownComponent, IGH_VariableParameterComponent
   {
     #region Name and Ribbon Layout
     public override Guid ComponentGuid => new Guid("b2ddf545-2a4c-45ac-ba1c-cb0f3da5b37f");
@@ -33,194 +35,9 @@ namespace AdSecGH.Components
     }
     #endregion
 
-    #region Custom UI
-    //This region overrides the typical component layout
-    public override void CreateAttributes()
-    {
-      if (first)
-      {
-        selecteditems = new List<string>();
-        selecteditems.Add(_mode.ToString());
-
-        dropdownitems = new List<List<string>>();
-        dropdownitems.Add(Enum.GetNames(typeof(AdSecStressStrainCurveGoo.StressStrainCurveType)).ToList());
-        dropdownitems[0].RemoveAt(dropdownitems[0].Count - 1);
-        first = false;
-      }
-
-      m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
-    }
-
-    public void SetSelected(int i, int j)
-    {
-      // set selected item
-      selecteditems[i] = dropdownitems[i][j];
-
-      // toggle case
-      if (i == 0)
-      {
-        // remove dropdown lists beyond first level
-        while (dropdownitems.Count > 1)
-          dropdownitems.RemoveAt(1);
-
-        switch (j)
-        {
-          case 0:
-            Mode0Clicked();
-            break;
-          case 1:
-            Mode1Clicked();
-            break;
-          case 2:
-            // add strain dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
-            dropdownitems.Add(Units.FilteredStrainUnits);
-            selecteditems.Add(strainUnit.ToString());
-
-            // add pressure dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-            dropdownitems.Add(Units.FilteredStressUnits);
-            selecteditems.Add(stressUnit.ToString());
-
-            Mode2Clicked();
-            break;
-          case 3:
-            Mode3Clicked();
-            break;
-          case 4:
-            // add strain dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
-            dropdownitems.Add(Units.FilteredStrainUnits);
-            selecteditems.Add(strainUnit.ToString());
-
-            // add pressure dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
-            dropdownitems.Add(Units.FilteredStressUnits);
-            selecteditems.Add(stressUnit.ToString());
-
-            Mode4Clicked();
-            break;
-          case 5:
-            Mode5Clicked();
-            break;
-          case 6:
-            // add strain dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
-            dropdownitems.Add(Units.FilteredStrainUnits);
-            selecteditems.Add(strainUnit.ToString());
-
-            Mode6Clicked();
-            break;
-          case 7:
-            Mode7Clicked();
-            break;
-          case 8:
-            // add strain dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
-            dropdownitems.Add(Units.FilteredStrainUnits);
-            selecteditems.Add(strainUnit.ToString());
-            Mode8Clicked();
-            break;
-          case 9:
-            // add strain dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
-            dropdownitems.Add(Units.FilteredStrainUnits);
-            selecteditems.Add(strainUnit.ToString());
-            Mode9Clicked();
-            break;
-
-        }
-      }
-      else
-      {
-        switch (i)
-        {
-          case 1:
-            strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
-            break;
-          case 2:
-            stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
-            break;
-        }
-      }
-        (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-      ExpireSolution(true);
-      Params.OnParametersChanged();
-      this.OnDisplayExpired(true);
-    }
-    private void UpdateUIFromSelectedItems()
-    {
-      switch (_mode)
-      {
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)0:
-          Mode0Clicked();
-          break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)1:
-          Mode1Clicked();
-          break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)2:
-          Mode2Clicked();
-          break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)3:
-          Mode3Clicked();
-          break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)4:
-          Mode4Clicked();
-          break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)5:
-          Mode5Clicked();
-          break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)6:
-          Mode6Clicked();
-          break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)7:
-          Mode7Clicked();
-          break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)8:
-          Mode8Clicked();
-          break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)9:
-          Mode9Clicked();
-          break;
-      }
-      CreateAttributes();
-      (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-      ExpireSolution(true);
-      Params.OnParametersChanged();
-      this.OnDisplayExpired(true);
-    }
-    #endregion
-
-    #region Input and output
-    List<List<string>> dropdownitems;
-    List<string> selecteditems;
-    List<string> spacerDescriptions = new List<string>(new string[]
-    {
-            "Curve Type",
-            "Strain Unit",
-            "Stress Unit",
-    });
-    private Oasys.Units.StrainUnit strainUnit = Units.StrainUnit;
-    private UnitsNet.Units.PressureUnit stressUnit = Units.StressUnit;
-
-    string unitStressAbbreviation;
-    string unitStrainAbbreviation;
-    #endregion
-
-    protected override void RegisterInputParams(GH_InputParamManager pManager)
-    {
-      pManager.AddGenericParameter("Failure", "SPu", "AdSec Stress Strain Point representing the Failure Point", GH_ParamAccess.item);
-      _mode = AdSecStressStrainCurveGoo.StressStrainCurveType.Linear;
-    }
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
-      pManager.AddGenericParameter("StressStrainCrv", "SCv", "AdSec Stress Strain Curve", GH_ParamAccess.item);
-    }
-
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       IStressStrainCurve crv = null;
-
       try
       {
         switch (_mode)
@@ -310,6 +127,178 @@ namespace AdSecGH.Components
       DA.SetData(0, new AdSecStressStrainCurveGoo(tuple.Item1, crv, _mode, tuple.Item2));
     }
 
+    #region Custom UI
+    private StrainUnit strainUnit = Units.StrainUnit;
+    private PressureUnit stressUnit = Units.StressUnit;
+
+    public override void InitialiseDropdowns()
+    {
+      this.SpacerDescriptions = new List<string>(new string[] {
+        "Curve Type",
+        "Strain Unit",
+        "Stress Unit",
+      });
+
+      this.DropDownItems = new List<List<string>>();
+      this.SelectedItems = new List<string>();
+
+      this.SelectedItems.Add(_mode.ToString());
+
+      this.DropDownItems = new List<List<string>>();
+      this.DropDownItems.Add(Enum.GetNames(typeof(AdSecStressStrainCurveGoo.StressStrainCurveType)).ToList());
+      this.DropDownItems[0].RemoveAt(this.DropDownItems[0].Count - 1);
+
+      this.IsInitialised = true;
+    }
+
+    public override void SetSelected(int i, int j)
+    {
+      // change selected item
+      this.SelectedItems[i] = this.DropDownItems[i][j];
+
+      // toggle case
+      if (i == 0)
+      {
+        // remove dropdown lists beyond first level
+        while (this.DropDownItems.Count > 1)
+          this.DropDownItems.RemoveAt(1);
+
+        switch (j)
+        {
+          case 0:
+            Mode0Clicked();
+            break;
+          case 1:
+            Mode1Clicked();
+            break;
+          case 2:
+            // add strain dropdown
+            //this.DropDownItems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            this.DropDownItems.Add(Units.FilteredStrainUnits);
+            this.SelectedItems.Add(strainUnit.ToString());
+
+            // add pressure dropdown
+            //this.DropDownItems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+            this.DropDownItems.Add(Units.FilteredStressUnits);
+            this.SelectedItems.Add(stressUnit.ToString());
+
+            Mode2Clicked();
+            break;
+          case 3:
+            Mode3Clicked();
+            break;
+          case 4:
+            // add strain dropdown
+            //this.DropDownItems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            this.DropDownItems.Add(Units.FilteredStrainUnits);
+            this.SelectedItems.Add(strainUnit.ToString());
+
+            // add pressure dropdown
+            //this.DropDownItems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+            this.DropDownItems.Add(Units.FilteredStressUnits);
+            this.SelectedItems.Add(stressUnit.ToString());
+
+            Mode4Clicked();
+            break;
+          case 5:
+            Mode5Clicked();
+            break;
+          case 6:
+            // add strain dropdown
+            //this.DropDownItems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            this.DropDownItems.Add(Units.FilteredStrainUnits);
+            this.SelectedItems.Add(strainUnit.ToString());
+
+            Mode6Clicked();
+            break;
+          case 7:
+            Mode7Clicked();
+            break;
+          case 8:
+            // add strain dropdown
+            //this.DropDownItems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            this.DropDownItems.Add(Units.FilteredStrainUnits);
+            this.SelectedItems.Add(strainUnit.ToString());
+            Mode8Clicked();
+            break;
+          case 9:
+            // add strain dropdown
+            //this.DropDownItems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            this.DropDownItems.Add(Units.FilteredStrainUnits);
+            this.SelectedItems.Add(strainUnit.ToString());
+            Mode9Clicked();
+            break;
+        }
+      }
+      else
+      {
+        switch (i)
+        {
+          case 1:
+            strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), this.SelectedItems[i]);
+            break;
+          case 2:
+            stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), this.SelectedItems[i]);
+            break;
+        }
+      }
+      base.UpdateUI();
+    }
+
+    public override void UpdateUIFromSelectedItems()
+    {
+      switch (_mode)
+      {
+        case (AdSecStressStrainCurveGoo.StressStrainCurveType)0:
+          Mode0Clicked();
+          break;
+        case (AdSecStressStrainCurveGoo.StressStrainCurveType)1:
+          Mode1Clicked();
+          break;
+        case (AdSecStressStrainCurveGoo.StressStrainCurveType)2:
+          Mode2Clicked();
+          break;
+        case (AdSecStressStrainCurveGoo.StressStrainCurveType)3:
+          Mode3Clicked();
+          break;
+        case (AdSecStressStrainCurveGoo.StressStrainCurveType)4:
+          Mode4Clicked();
+          break;
+        case (AdSecStressStrainCurveGoo.StressStrainCurveType)5:
+          Mode5Clicked();
+          break;
+        case (AdSecStressStrainCurveGoo.StressStrainCurveType)6:
+          Mode6Clicked();
+          break;
+        case (AdSecStressStrainCurveGoo.StressStrainCurveType)7:
+          Mode7Clicked();
+          break;
+        case (AdSecStressStrainCurveGoo.StressStrainCurveType)8:
+          Mode8Clicked();
+          break;
+        case (AdSecStressStrainCurveGoo.StressStrainCurveType)9:
+          Mode9Clicked();
+          break;
+      }
+      base.UpdateUIFromSelectedItems();
+    }
+    #endregion
+
+    #region Input and output
+    protected override void RegisterInputParams(GH_InputParamManager pManager)
+    {
+      pManager.AddGenericParameter("Failure", "SPu", "AdSec Stress Strain Point representing the Failure Point", GH_ParamAccess.item);
+      _mode = AdSecStressStrainCurveGoo.StressStrainCurveType.Linear;
+    }
+
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
+    {
+      pManager.AddGenericParameter("StressStrainCrv", "SCv", "AdSec Stress Strain Curve", GH_ParamAccess.item);
+    }
+    #endregion
+
+    
+
     #region menu override
     //internal enum AdSecGH.Parameters.AdSecStressStrainCurve.StressStrainCurveType
     //{
@@ -324,7 +313,6 @@ namespace AdSecGH.Components
     //    Popovics,
     //    Rectangular
     //}
-    private bool first = true;
     private AdSecStressStrainCurveGoo.StressStrainCurveType _mode = AdSecStressStrainCurveGoo.StressStrainCurveType.Linear;
     private bool comingFromSave = false;
     private void Mode0Clicked()
@@ -527,48 +515,31 @@ namespace AdSecGH.Components
     #region (de)serialization
     public override bool Write(GH_IO.Serialization.GH_IWriter writer)
     {
-      Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
       writer.SetString("mode", _mode.ToString());
       writer.SetString("strain_mode", strainUnit.ToString());
       writer.SetString("stress_mode", stressUnit.ToString());
       return base.Write(writer);
     }
+
     public override bool Read(GH_IO.Serialization.GH_IReader reader)
     {
-      Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
       strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), reader.GetString("strain_mode"));
       stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), reader.GetString("stress_mode"));
 
       _mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)Enum.Parse(
           typeof(AdSecStressStrainCurveGoo.StressStrainCurveType), reader.GetString("mode"));
       comingFromSave = true;
-      UpdateUIFromSelectedItems();
       comingFromSave = false;
-      first = false;
       return base.Read(reader);
     }
-
-    bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
-    bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
-    IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
-    {
-      return null;
-    }
-    bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
     #endregion
+
     #region IGH_VariableParameterComponent null implementation
     void IGH_VariableParameterComponent.VariableParameterMaintenance()
     {
+      string unitStressAbbreviation = Pressure.GetAbbreviation(stressUnit);
+      string unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
+
       if (_mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)0)
       {
         Params.Input[0].Name = "Yield Point";
