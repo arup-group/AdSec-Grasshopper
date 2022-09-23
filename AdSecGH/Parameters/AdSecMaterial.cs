@@ -4,9 +4,10 @@ using System.Linq;
 using System.Reflection;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Rhino.Geometry;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
+using OasysGH.Parameters;
+using Rhino.Geometry;
 
 namespace AdSecGH.Parameters
 {
@@ -231,74 +232,7 @@ namespace AdSecGH.Parameters
     }
     #endregion
 
-    #region properties
-    public override bool IsValid
-    {
-      get
-      {
-        if (Value == null) { return false; }
-        return true;
-      }
-    }
-    public override string IsValidWhyNot
-    {
-      get
-      {
-        if (Value.IsValid) { return string.Empty; }
-        return Value.IsValid.ToString();
-      }
-    }
-    public override string ToString()
-    {
-      if (Value == null)
-        return "Null";
-      else
-        return "AdSec " + TypeName + " {" + Value.ToString() + "}";
-    }
-    public override string TypeName => "Material";
 
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
-
-
-    #endregion
-
-    #region casting methods
-    public override bool CastTo<Q>(ref Q target)
-    {
-      // This function is called when Grasshopper needs to convert this 
-      // instance of GsaBool6 into some other type Q.            
-
-
-      if (typeof(Q).IsAssignableFrom(typeof(AdSecMaterial)))
-      {
-        if (Value == null)
-          target = default;
-        else
-          target = (Q)(object)Value.Duplicate();
-        return true;
-      }
-
-      target = default;
-      return false;
-    }
-    public override bool CastFrom(object source)
-    {
-      // This function is called when Grasshopper needs to convert other data 
-      // into this parameter.
-
-
-      if (source == null) { return false; }
-
-      //Cast from own type
-      if (typeof(AdSecMaterial).IsAssignableFrom(source.GetType()))
-      {
-        Value = (AdSecMaterial)source;
-        return true;
-      }
-
-      return false;
-    }
-    #endregion
   }
 
   /// <summary>

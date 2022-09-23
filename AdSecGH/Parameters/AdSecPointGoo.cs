@@ -5,6 +5,7 @@ using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.Profiles;
+using OasysGH.Parameters;
 using Rhino.Geometry;
 using Rhino.Display;
 using UnitsNet;

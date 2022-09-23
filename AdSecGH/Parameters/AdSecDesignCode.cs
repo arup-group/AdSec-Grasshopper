@@ -6,6 +6,8 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
+using OasysGH;
+using OasysGH.Parameters;
 
 namespace AdSecGH.Parameters
 {
@@ -129,156 +131,15 @@ namespace AdSecGH.Parameters
   }
 
   /// <summary>
-  /// Goo wrapper class, makes sure this can be used in Grasshopper.
+  /// Goo wrapper class, makes sure <see cref="AdSecDesignCode"/> can be used in Grasshopper.
   /// </summary>
-  public class AdSecDesignCodeGoo : GH_Goo<AdSecDesignCode>
+  public class AdSecDesignCodeGoo : GH_OasysGoo<AdSecDesignCode>
   {
-    #region constructors
-    public AdSecDesignCodeGoo()
-    {
-      this.Value = new AdSecDesignCode();
-    }
-    public AdSecDesignCodeGoo(AdSecDesignCode goo)
-    {
-      if (goo == null)
-        goo = new AdSecDesignCode();
-      this.Value = goo; // goo.Duplicate(); 
-    }
-
-    public override IGH_Goo Duplicate()
-    {
-      return DuplicateGoo();
-    }
-    public AdSecDesignCodeGoo DuplicateGoo()
-    {
-      return new AdSecDesignCodeGoo(Value == null ? new AdSecDesignCode() : Value.Duplicate());
-    }
-    #endregion
-
-    #region properties
-    public override bool IsValid
-    {
-      get
-      {
-        if (Value == null) { return false; }
-        return true;
-      }
-    }
-    public override string IsValidWhyNot
-    {
-      get
-      {
-        if (Value.IsValid) { return string.Empty; }
-        return Value.IsValid.ToString();
-      }
-    }
-    public override string ToString()
-    {
-      if (Value == null)
-        return "Null";
-      else
-        return "AdSec " + TypeName + " {" + Value.ToString() + "}";
-    }
-    public override string TypeName => "DesignCode";
-
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
-
-
-    #endregion
-
-    #region casting methods
-    public override bool CastTo<Q>(ref Q target)
-    {
-      // This function is called when Grasshopper needs to convert this 
-      // instance of GsaBool6 into some other type Q.            
-
-
-      if (typeof(Q).IsAssignableFrom(typeof(AdSecDesignCode)))
-      {
-        if (Value == null)
-          target = default;
-        else
-          target = (Q)(object)Value.Duplicate();
-        return true;
-      }
-
-      target = default;
-      return false;
-    }
-    public override bool CastFrom(object source)
-    {
-      // This function is called when Grasshopper needs to convert other data 
-      // into this parameter.
-
-
-      if (source == null) { return false; }
-
-      //Cast from own type
-      if (typeof(AdSecDesignCode).IsAssignableFrom(source.GetType()))
-      {
-        Value = (AdSecDesignCode)source;
-        return true;
-      }
-
-      return false;
-    }
-    #endregion
-  }
-
-  /// <summary>
-  /// This class provides a Parameter interface for the Data_GsaBool6 type.
-  /// </summary>
-  public class AdSecDesignCodeParameter : GH_PersistentParam<AdSecDesignCodeGoo>
-  {
-    public AdSecDesignCodeParameter()
-      : base(new GH_InstanceDescription("DesignCode", "Code", "AdSec DesignCode Parameter", Components.Ribbon.CategoryName.Name(), Components.Ribbon.SubCategoryName.Cat9()))
-    {
-    }
-
-    public override Guid ComponentGuid => new Guid("6d656276-61f6-47ce-81bc-9fabdd39edc2");
-
-    public override GH_Exposure Exposure => GH_Exposure.primary | GH_Exposure.obscure;
-
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.DesignCodeParameter;
-
-    protected override GH_GetterResult Prompt_Plural(ref List<AdSecDesignCodeGoo> values)
-    {
-      return GH_GetterResult.cancel;
-    }
-    protected override GH_GetterResult Prompt_Singular(ref AdSecDesignCodeGoo value)
-    {
-      return GH_GetterResult.cancel;
-    }
-    protected override System.Windows.Forms.ToolStripMenuItem Menu_CustomSingleValueItem()
-    {
-      System.Windows.Forms.ToolStripMenuItem item = new System.Windows.Forms.ToolStripMenuItem
-      {
-        Text = "Not available",
-        Visible = false
-      };
-      return item;
-    }
-    protected override System.Windows.Forms.ToolStripMenuItem Menu_CustomMultiValueItem()
-    {
-      System.Windows.Forms.ToolStripMenuItem item = new System.Windows.Forms.ToolStripMenuItem
-      {
-        Text = "Not available",
-        Visible = false
-      };
-      return item;
-    }
-
-    #region preview methods
-
-    public bool Hidden
-    {
-      get { return true; }
-      //set { m_hidden = value; }
-    }
-    public bool IsPreviewCapable
-    {
-      get { return false; }
-    }
-    #endregion
+    public static string Name => "DesignCode";
+    public static string NickName => "DC";
+    public static string Description => "AdSec Design Code";
+    public AdSecDesignCodeGoo(AdSecDesignCode item) : base(item) { }
+    public override IGH_Goo Duplicate() => new AdSecDesignCodeGoo(this.Value);
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
   }
 }

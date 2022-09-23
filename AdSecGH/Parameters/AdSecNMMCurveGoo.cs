@@ -7,6 +7,7 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.Mesh;
+using OasysGH.Parameters;
 using Rhino.DocObjects;
 using Rhino.Display;
 using Rhino.Geometry;

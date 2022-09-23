@@ -2,6 +2,7 @@
 using System.Linq;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
+using OasysGH.Parameters;
 using UnitsNet;
 
 namespace AdSecGH.Parameters

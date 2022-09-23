@@ -4,6 +4,7 @@ using System.Drawing;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec.Mesh;
+using OasysGH.Parameters;
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters

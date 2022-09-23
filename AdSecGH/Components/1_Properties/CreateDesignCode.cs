@@ -22,10 +22,12 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateDesignCode;
 
-    public CreateDesignCode()
-      : base("DesignCode", "DesignCode", "Select an AdSec Design Code",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat1())
+    public CreateDesignCode() : base(
+      "Create" + AdSecDesignCodeGoo.Name.Replace(" ", string.Empty),
+      AdSecDesignCodeGoo.Name.Replace(" ", string.Empty),
+      "Create a " + AdSecDesignCodeGoo.Description,
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat1())
     { this.Hidden = true; } // sets the initial state of the component to hidden
     #endregion
 

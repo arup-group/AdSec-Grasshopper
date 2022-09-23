@@ -10,6 +10,7 @@ using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.Geometry.Paths2D;
 using Oasys.Profiles;
+using OasysGH.Parameters;
 using Rhino;
 using Rhino.Geometry;
 using Rhino.Display;

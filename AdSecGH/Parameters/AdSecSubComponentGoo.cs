@@ -7,6 +7,7 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.Profiles;
+using OasysGH.Parameters;
 using Rhino.Geometry;
 using UnitsNet.Units;
 

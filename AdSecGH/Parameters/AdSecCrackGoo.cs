@@ -5,13 +5,14 @@ using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
+using OasysGH.Parameters;
 using Rhino.Geometry;
 using UnitsNet;
 using UnitsNet.GH;
 
 namespace AdSecGH.Parameters
 {
-  public class AdSecCrackGoo : GH_GeometricGoo<ICrack>, IGH_PreviewData
+  public class AdSecCrackGoo : GH_OasysGoo<ICrack>, IGH_PreviewData
   {
     public AdSecCrackGoo(ICrack crack, Plane local)
     : base(crack)

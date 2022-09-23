@@ -1,5 +1,6 @@
 ﻿using System;
 using Grasshopper.Kernel.Types;
+using OasysGH.Parameters;
 using Oasys.AdSec.Reinforcement;
 
 namespace AdSecGH.Parameters
