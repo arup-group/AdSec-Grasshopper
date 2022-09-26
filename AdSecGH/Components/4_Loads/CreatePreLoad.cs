@@ -52,7 +52,7 @@ namespace AdSecGH.Components
 
         IQuantity force = new Force(0, forceUnit);
         forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-        strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        strainUnitAbbreviation = Strain.GetAbbreviation(strainUnit);
         IQuantity stress = new Pressure(0, stressUnit);
         stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 
@@ -90,13 +90,13 @@ namespace AdSecGH.Components
         switch (selecteditems[0])
         {
           case ("Force"):
-            forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[i]);
+            forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), selecteditems[i]);
             break;
           case ("Strain"):
-            strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
+            strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), selecteditems[i]);
             break;
           case ("Stress"):
-            stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
+            stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), selecteditems[i]);
             break;
         }
       }
@@ -131,9 +131,9 @@ namespace AdSecGH.Components
     });
     private bool first = true;
 
-    private UnitsNet.Units.ForceUnit forceUnit = Units.ForceUnit;
-    private Oasys.Units.StrainUnit strainUnit = Units.StrainUnit;
-    private UnitsNet.Units.PressureUnit stressUnit = Units.StressUnit;
+    private ForceUnit forceUnit = Units.ForceUnit;
+    private StrainUnit strainUnit = Units.StrainUnit;
+    private PressureUnit stressUnit = Units.StressUnit;
     string forceUnitAbbreviation;
     string strainUnitAbbreviation;
     string stressUnitAbbreviation;
@@ -194,9 +194,9 @@ namespace AdSecGH.Components
     {
       Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
-      forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), reader.GetString("force"));
-      strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), reader.GetString("strain"));
-      stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), reader.GetString("stress"));
+      forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), reader.GetString("force"));
+      strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), reader.GetString("strain"));
+      stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), reader.GetString("stress"));
 
       UpdateUIFromSelectedItems();
 
@@ -226,7 +226,7 @@ namespace AdSecGH.Components
     {
       IQuantity force = new Force(0, forceUnit);
       forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-      strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+      strainUnitAbbreviation = Strain.GetAbbreviation(strainUnit);
       IQuantity stress = new Pressure(0, stressUnit);
       stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 

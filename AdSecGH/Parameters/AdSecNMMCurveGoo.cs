@@ -139,9 +139,9 @@ namespace AdSecGH.Parameters
       m_axes.AddRange(plotBoundary.ToPolyline().GetSegments());
 
       // Create axis labels
-      string momentAxis = "Moment [" + Oasys.Units.Moment.GetAbbreviation(Units.MomentUnit) + "]";
-      string myyAxis = "Myy [" + Oasys.Units.Moment.GetAbbreviation(Units.MomentUnit) + "]";
-      string mzzAxis = "Mzz [" + Oasys.Units.Moment.GetAbbreviation(Units.MomentUnit) + "]";
+      string momentAxis = "Moment [" + Moment.GetAbbreviation(Units.MomentUnit) + "]";
+      string myyAxis = "Myy [" + Moment.GetAbbreviation(Units.MomentUnit) + "]";
+      string mzzAxis = "Mzz [" + Moment.GetAbbreviation(Units.MomentUnit) + "]";
       IQuantity force = new Force(0, Units.ForceUnit);
       string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
       string forceAxis = "Axial force [" + forceUnitAbbreviation + "]";

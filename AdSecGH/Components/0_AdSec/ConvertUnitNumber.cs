@@ -121,7 +121,7 @@ namespace AdSecGH.Components
           {
 
             unitDict = new Dictionary<string, Enum>();
-            foreach (UnitsNet.UnitInfo unit in inUnitNumber.Value.QuantityInfo.UnitInfos)
+            foreach (UnitInfo unit in inUnitNumber.Value.QuantityInfo.UnitInfos)
             {
               unitDict.Add(unit.Name, unit.Value);
             }

@@ -87,11 +87,11 @@ namespace AdSecGH.Components
         switch (i)
         {
           case 1:
-            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+            lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
             break;
 
           case 2:
-            angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[i]);
+            angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[i]);
             break;
         }
       }
@@ -100,8 +100,8 @@ namespace AdSecGH.Components
     private void UpdateUIFromSelectedItems()
     {
       _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
-      lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
-      angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[2]);
+      lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[1]);
+      angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[2]);
       CreateAttributes();
       ToggleInput();
     }
@@ -116,8 +116,8 @@ namespace AdSecGH.Components
             "Measure",
             "Angular measure"
     });
-    private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
-    private UnitsNet.Units.AngleUnit angleUnit = UnitsNet.Units.AngleUnit.Radian;
+    private LengthUnit lengthUnit = Units.LengthUnit;
+    private AngleUnit angleUnit = AngleUnit.Radian;
     string unitAbbreviation;
     string angleAbbreviation;
     #endregion

@@ -25,7 +25,7 @@ namespace AdSecGH.Parameters
     public override string ToString()
     {
       string bar = "Rebar {";
-      UnitsNet.Length thk1 = this.Value.Diameter.ToUnit(Units.LengthUnit);
+      Length thk1 = this.Value.Diameter.ToUnit(Units.LengthUnit);
       bar += "Ø" + thk1.ToString();
       if (this.Value.CountPerBundle > 1)
       {

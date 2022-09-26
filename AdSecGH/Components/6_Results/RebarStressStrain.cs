@@ -11,7 +11,7 @@ using Oasys.Units;
 using OasysGH;
 using OasysGH.Components;
 using UnitsNet;
-using UnitsNet.GH;
+using GH;
 
 namespace AdSecGH.Components
 {
@@ -48,7 +48,7 @@ namespace AdSecGH.Components
     {
       IQuantity length = new Length(0, Units.LengthUnit);
       string lengthUnitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
-      string strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
       IQuantity stress = new Pressure(0, Units.StressUnit);
       string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 

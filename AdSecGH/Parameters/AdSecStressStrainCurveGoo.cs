@@ -27,8 +27,8 @@ namespace AdSecGH.Parameters
       {
         Point3d point3d = curve.Point(j);
         pt = IStressStrainPoint.Create(
-            new UnitsNet.Pressure(point3d.Y, Units.StressUnit),
-            new Oasys.Units.Strain(point3d.X, Units.StrainUnit));
+            new Pressure(point3d.Y, Units.StressUnit),
+            new Strain(point3d.X, Units.StrainUnit));
         pts.Add(pt);
       }
       return pts;
@@ -77,16 +77,16 @@ namespace AdSecGH.Parameters
         List<Point3d> polypts = new List<Point3d>();
         for (int i = 0; i < 250; i++)
         {
-          Oasys.Units.Strain strain = new Oasys.Units.Strain((double)i / (double)100.0 * maxStrain, Units.StrainUnit);
+          Strain strain = new Strain((double)i / (double)100.0 * maxStrain, Units.StrainUnit);
 
-          UnitsNet.Pressure stress;
+          Pressure stress;
           try
           {
             stress = stressStrainCurve.StressAt(strain); // for some material models the first point returns an NaN
           }
           catch (Exception)
           {
-            stress = UnitsNet.Pressure.Zero;
+            stress = Pressure.Zero;
           }
 
           polypts.Add(new Point3d(
@@ -158,8 +158,8 @@ namespace AdSecGH.Parameters
       List<Point3d> polypts = new List<Point3d>();
       for (int i = 0; i < 100; i++)
       {
-        Oasys.Units.Strain strain = new Oasys.Units.Strain((double)i / (double)100.0 * maxStrain, Units.StrainUnit);
-        UnitsNet.Pressure stress = stressStrainCurve.StressAt(strain);
+        Strain strain = new Strain((double)i / (double)100.0 * maxStrain, Units.StrainUnit);
+        Pressure stress = stressStrainCurve.StressAt(strain);
         polypts.Add(new Point3d(
         strain.As(Units.StrainUnit) * direction,
         stress.As(Units.StressUnit) * direction, 0));

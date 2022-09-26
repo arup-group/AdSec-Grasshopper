@@ -347,7 +347,7 @@ namespace AdSecGH.Components
         else
         {
           // change unit
-          lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+          lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
         }
       }
         (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
@@ -415,7 +415,7 @@ namespace AdSecGH.Components
     Dictionary<string, Type> profileTypes;
     Dictionary<string, FieldInfo> profileFields;
 
-    private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
+    private LengthUnit lengthUnit = Units.LengthUnit;
 
     #region catalogue sections
     // for catalogue selection
@@ -1017,7 +1017,7 @@ namespace AdSecGH.Components
       DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
       _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
-      lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), reader.GetString("lengthUnit"));
+      lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), reader.GetString("lengthUnit"));
 
       inclSS = reader.GetBoolean("inclSS");
       numberOfInputs = reader.GetInt32("NumberOfInputs");

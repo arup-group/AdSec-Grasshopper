@@ -68,14 +68,14 @@ namespace AdSecGH.Components
       }
       else
       {
-        lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+        lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
       }
 
     }
     private void UpdateUIFromSelectedItems()
     {
       _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
-      lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
+      lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[1]);
       CreateAttributes();
       ToggleInput();
     }
@@ -89,7 +89,7 @@ namespace AdSecGH.Components
             "Group Type",
             "Measure",
     });
-    private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
+    private LengthUnit lengthUnit = Units.LengthUnit;
     string unitAbbreviation;
     #endregion
 

@@ -63,7 +63,7 @@ namespace AdSecGH.Parameters
         double maxMzz = bbox.PointAt(0.5, 1, 0.5).Y;
         double minMzz = bbox.PointAt(0.5, 0, 0.5).Y;
 
-        //UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
+        //Length length = new Length(pythogoras * 0.15, LengthUnit.Meter);
         previewPosXaxis = new Line(m_plane.Origin, m_plane.ZAxis, maxN);
         previewPosYaxis = new Line(m_plane.Origin, m_plane.YAxis, maxMyy);
         previewPosZaxis = new Line(m_plane.Origin, m_plane.XAxis, maxMzz);

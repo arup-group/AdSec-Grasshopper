@@ -10,7 +10,7 @@ using OasysGH;
 using OasysGH.Components;
 using Rhino.Geometry;
 using UnitsNet;
-using UnitsNet.Units;
+using Units;
 
 namespace AdSecGH.Components
 {
@@ -173,12 +173,12 @@ namespace AdSecGH.Components
             break;
           case 2:
             // add strain dropdown
-            //this.DropDownItems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             this.DropDownItems.Add(Units.FilteredStrainUnits);
             this.SelectedItems.Add(strainUnit.ToString());
 
             // add pressure dropdown
-            //this.DropDownItems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+            //this.DropDownItems.Add(Enum.GetNames(typeof(PressureUnit)).ToList());
             this.DropDownItems.Add(Units.FilteredStressUnits);
             this.SelectedItems.Add(stressUnit.ToString());
 
@@ -189,12 +189,12 @@ namespace AdSecGH.Components
             break;
           case 4:
             // add strain dropdown
-            //this.DropDownItems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             this.DropDownItems.Add(Units.FilteredStrainUnits);
             this.SelectedItems.Add(strainUnit.ToString());
 
             // add pressure dropdown
-            //this.DropDownItems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+            //this.DropDownItems.Add(Enum.GetNames(typeof(PressureUnit)).ToList());
             this.DropDownItems.Add(Units.FilteredStressUnits);
             this.SelectedItems.Add(stressUnit.ToString());
 
@@ -205,7 +205,7 @@ namespace AdSecGH.Components
             break;
           case 6:
             // add strain dropdown
-            //this.DropDownItems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             this.DropDownItems.Add(Units.FilteredStrainUnits);
             this.SelectedItems.Add(strainUnit.ToString());
 
@@ -216,14 +216,14 @@ namespace AdSecGH.Components
             break;
           case 8:
             // add strain dropdown
-            //this.DropDownItems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             this.DropDownItems.Add(Units.FilteredStrainUnits);
             this.SelectedItems.Add(strainUnit.ToString());
             Mode8Clicked();
             break;
           case 9:
             // add strain dropdown
-            //this.DropDownItems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             this.DropDownItems.Add(Units.FilteredStrainUnits);
             this.SelectedItems.Add(strainUnit.ToString());
             Mode9Clicked();
@@ -235,10 +235,10 @@ namespace AdSecGH.Components
         switch (i)
         {
           case 1:
-            strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), this.SelectedItems[i]);
+            strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), this.SelectedItems[i]);
             break;
           case 2:
-            stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), this.SelectedItems[i]);
+            stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), this.SelectedItems[i]);
             break;
         }
       }
@@ -523,8 +523,8 @@ namespace AdSecGH.Components
 
     public override bool Read(GH_IO.Serialization.GH_IReader reader)
     {
-      strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), reader.GetString("strain_mode"));
-      stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), reader.GetString("stress_mode"));
+      strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), reader.GetString("strain_mode"));
+      stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), reader.GetString("stress_mode"));
 
       _mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)Enum.Parse(
           typeof(AdSecStressStrainCurveGoo.StressStrainCurveType), reader.GetString("mode"));
@@ -581,7 +581,7 @@ namespace AdSecGH.Components
         Params.Input[1].Access = GH_ParamAccess.item;
         Params.Input[1].Optional = false;
 
-        unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
 
         Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
         Params.Input[2].NickName = "εu";
@@ -622,7 +622,7 @@ namespace AdSecGH.Components
         Params.Input[2].Access = GH_ParamAccess.item;
         Params.Input[2].Optional = false;
 
-        unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
 
         Params.Input[3].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
         Params.Input[3].NickName = "εu";
@@ -648,7 +648,7 @@ namespace AdSecGH.Components
         Params.Input[1].Access = GH_ParamAccess.item;
         Params.Input[1].Optional = false;
 
-        unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
 
         Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
         Params.Input[2].NickName = "εu";
@@ -665,7 +665,7 @@ namespace AdSecGH.Components
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
 
         Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
         Params.Input[1].NickName = "εu";
@@ -691,7 +691,7 @@ namespace AdSecGH.Components
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
 
         Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
         Params.Input[1].NickName = "εu";
@@ -708,7 +708,7 @@ namespace AdSecGH.Components
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
 
         Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
         Params.Input[1].NickName = "εu";

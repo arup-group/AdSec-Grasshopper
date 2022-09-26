@@ -7,8 +7,8 @@ using Oasys.AdSec;
 using Oasys.Units;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
-using UnitsNet.GH;
+using OasysUnits;
+using OasysGH.Parameters;
 
 namespace AdSecGH.Components
 {
@@ -44,7 +44,7 @@ namespace AdSecGH.Components
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
-      string strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
       IQuantity stress = new Pressure(0, Units.StressUnit);
       string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 

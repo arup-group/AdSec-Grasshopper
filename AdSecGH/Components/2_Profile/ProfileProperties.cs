@@ -4,10 +4,11 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.Profiles;
 using Oasys.Profiles.Properties;
-using Oasys.Units;
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.Parameters;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -73,12 +74,10 @@ namespace AdSecGH.Components
       // 0 profile
       AdSecProfileGoo profile = GetInput.AdSecProfileGoo(this, DA, 0);
 
-      Oasys.Units.AxialStiffness asdf;
-
       LengthUnit lengthUnit = Units.LengthUnit;
-      BaseUnits SI = UnitsNet.UnitSystem.SI.BaseUnits;
+      BaseUnits SI = UnitSystem.SI.BaseUnits;
       BaseUnits baseUnits = new BaseUnits(lengthUnit, SI.Mass, SI.Time, SI.Current, SI.Temperature, SI.Amount, SI.LuminousIntensity);
-      UnitSystem unitSystem = new UnitsNet.UnitSystem(baseUnits);
+      UnitSystem unitSystem = new UnitSystem(baseUnits);
       AreaUnit areaUnit = new Area(1, unitSystem).Unit;
 
       SectionModulusUnit wUnit = SectionModulusUnit.Undefined;
@@ -87,7 +86,7 @@ namespace AdSecGH.Components
         case LengthUnit.Millimeter:
           wUnit = SectionModulusUnit.CubicMillimeter;
           break;
-        case UnitsNet.Units.LengthUnit.Centimeter:
+        case LengthUnit.Centimeter:
           wUnit = SectionModulusUnit.CubicCentimeter;
           break;
         case LengthUnit.Meter:

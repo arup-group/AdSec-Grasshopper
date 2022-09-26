@@ -86,10 +86,10 @@ namespace AdSecGH.Components
         switch (selecteditems[0])
         {
           case ("N-M"):
-            angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[i]);
+            angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[i]);
             break;
           case ("M-M"):
-            forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[i]);
+            forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), selecteditems[i]);
             break;
         }
       }
@@ -123,8 +123,8 @@ namespace AdSecGH.Components
     });
     private bool first = true;
 
-    private UnitsNet.Units.ForceUnit forceUnit = Units.ForceUnit;
-    private UnitsNet.Units.AngleUnit angleUnit = UnitsNet.Units.AngleUnit.Radian;
+    private ForceUnit forceUnit = Units.ForceUnit;
+    private AngleUnit angleUnit = AngleUnit.Radian;
     string forceUnitAbbreviation;
     string angleUnitAbbreviation;
     #endregion
@@ -209,8 +209,8 @@ namespace AdSecGH.Components
     {
       Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
-      forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), reader.GetString("force"));
-      angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), reader.GetString("angle"));
+      forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), reader.GetString("force"));
+      angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), reader.GetString("angle"));
 
       UpdateUIFromSelectedItems();
 

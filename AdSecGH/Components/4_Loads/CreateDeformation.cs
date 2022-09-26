@@ -45,8 +45,8 @@ namespace AdSecGH.Components
         dropdownitems.Add(Units.FilteredCurvatureUnits);
         selecteditems.Add(curvatureUnit.ToString());
 
-        strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
-        curvatureUnitAbbreviation = Oasys.Units.Curvature.GetAbbreviation(curvatureUnit);
+        strainUnitAbbreviation = Strain.GetAbbreviation(strainUnit);
+        curvatureUnitAbbreviation = Curvature.GetAbbreviation(curvatureUnit);
 
         first = false;
       }
@@ -62,10 +62,10 @@ namespace AdSecGH.Components
       switch (i)
       {
         case 0:
-          strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
+          strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), selecteditems[i]);
           break;
         case 1:
-          curvatureUnit = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), selecteditems[i]);
+          curvatureUnit = (CurvatureUnit)Enum.Parse(typeof(CurvatureUnit), selecteditems[i]);
           break;
       }
 
@@ -78,8 +78,8 @@ namespace AdSecGH.Components
 
     private void UpdateUIFromSelectedItems()
     {
-      strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
-      curvatureUnit = (Oasys.Units.CurvatureUnit)Enum.Parse(typeof(Oasys.Units.CurvatureUnit), selecteditems[1]);
+      strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), selecteditems[0]);
+      curvatureUnit = (CurvatureUnit)Enum.Parse(typeof(CurvatureUnit), selecteditems[1]);
 
       CreateAttributes();
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
@@ -103,8 +103,8 @@ namespace AdSecGH.Components
     });
     private bool first = true;
 
-    private Oasys.Units.StrainUnit strainUnit = Units.StrainUnit;
-    private Oasys.Units.CurvatureUnit curvatureUnit = Units.CurvatureUnit;
+    private StrainUnit strainUnit = Units.StrainUnit;
+    private CurvatureUnit curvatureUnit = Units.CurvatureUnit;
     string strainUnitAbbreviation;
     string curvatureUnitAbbreviation;
     #endregion
@@ -167,8 +167,8 @@ namespace AdSecGH.Components
     #region IGH_VariableParameterComponent null implementation
     void IGH_VariableParameterComponent.VariableParameterMaintenance()
     {
-      strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
-      curvatureUnitAbbreviation = Oasys.Units.Curvature.GetAbbreviation(curvatureUnit);
+      strainUnitAbbreviation = Strain.GetAbbreviation(strainUnit);
+      curvatureUnitAbbreviation = Curvature.GetAbbreviation(curvatureUnit);
       Params.Input[0].Name = "εx [" + strainUnitAbbreviation + "]";
       Params.Input[1].Name = "κyy [" + curvatureUnitAbbreviation + "]";
       Params.Input[2].Name = "κzz [" + curvatureUnitAbbreviation + "]";

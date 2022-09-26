@@ -7,7 +7,7 @@ using OasysGH.Components;
 using UnitsNet;
 using OasysGH;
 using Oasys.Units;
-using UnitsNet.Units;
+using Units;
 
 namespace AdSecGH.Components
 {
@@ -88,10 +88,10 @@ namespace AdSecGH.Components
       switch (i)
       {
         case 0:
-          StrainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), this.SelectedItems[i]);
+          StrainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), this.SelectedItems[i]);
           break;
         case 1:
-          StressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), this.SelectedItems[i]);
+          StressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), this.SelectedItems[i]);
           break;
       }
       base.UpdateUI();
@@ -99,8 +99,8 @@ namespace AdSecGH.Components
 
     public override void UpdateUIFromSelectedItems()
     {
-      this.StrainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), this.SelectedItems[0]);
-      this.StressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), this.SelectedItems[1]);
+      this.StrainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), this.SelectedItems[0]);
+      this.StressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), this.SelectedItems[1]);
 
       base.UpdateUIFromSelectedItems();
     }

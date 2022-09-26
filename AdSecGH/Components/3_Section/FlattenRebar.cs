@@ -7,11 +7,10 @@ using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
 using Oasys.Profiles;
-using Oasys.Units;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
-using UnitsNet.GH;
+using OasysGH.Parameters;
+using OasysUnits;
 
 namespace AdSecGH.Components
 {
@@ -49,7 +48,7 @@ namespace AdSecGH.Components
       string lengthUnitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
       IQuantity stress = new Pressure(0, Units.StressUnit);
       string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
-      string strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
       IQuantity force = new Force(0, Units.ForceUnit);
       string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
 

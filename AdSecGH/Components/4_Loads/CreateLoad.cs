@@ -8,7 +8,7 @@ using OasysGH;
 using OasysGH.Components;
 using Oasys.Units;
 using UnitsNet;
-using UnitsNet.Units;
+using Units;
 
 namespace AdSecGH.Components
 {
@@ -104,10 +104,10 @@ namespace AdSecGH.Components
       switch (i)
       {
         case 0:
-          this.ForceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), this.SelectedItems[i]);
+          this.ForceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), this.SelectedItems[i]);
           break;
         case 1:
-          this.MomentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), this.SelectedItems[i]);
+          this.MomentUnit = (MomentUnit)Enum.Parse(typeof(MomentUnit), this.SelectedItems[i]);
           break;
       }
 
@@ -116,8 +116,8 @@ namespace AdSecGH.Components
 
     public override void UpdateUIFromSelectedItems()
     {
-      this.ForceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), this.SelectedItems[0]);
-      this.MomentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), this.SelectedItems[1]);
+      this.ForceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), this.SelectedItems[0]);
+      this.MomentUnit = (MomentUnit)Enum.Parse(typeof(MomentUnit), this.SelectedItems[1]);
 
       base.UpdateUIFromSelectedItems();
     }

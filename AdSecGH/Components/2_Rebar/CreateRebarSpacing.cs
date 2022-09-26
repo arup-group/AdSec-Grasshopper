@@ -40,7 +40,7 @@ namespace AdSecGH.Components
         selecteditems.Add(dropdownitems[0][0]);
 
         // length
-        //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+        //dropdownitems.Add(Enum.GetNames(typeof(LengthUnit)).ToList());
         dropdownitems.Add(Units.FilteredLengthUnits);
         selecteditems.Add(lengthUnit.ToString());
 
@@ -82,7 +82,7 @@ namespace AdSecGH.Components
       }
       else
       {
-        lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+        lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
 
       }
     }
@@ -90,7 +90,7 @@ namespace AdSecGH.Components
     {
       _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
       if (_mode == FoldMode.Distance)
-        lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
+        lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[1]);
       CreateAttributes();
       ToggleInput();
     }
@@ -104,7 +104,7 @@ namespace AdSecGH.Components
             "Spacing method",
             "Measure"
     });
-    private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
+    private LengthUnit lengthUnit = Units.LengthUnit;
     string unitAbbreviation;
     #endregion
 

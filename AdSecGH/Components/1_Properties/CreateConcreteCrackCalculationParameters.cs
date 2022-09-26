@@ -5,7 +5,7 @@ using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
 using UnitsNet;
-using UnitsNet.Units;
+using Units;
 
 namespace AdSecGH.Components
 {
@@ -108,10 +108,10 @@ namespace AdSecGH.Components
       switch (i)
       {
         case 0:
-          StressUnitE = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), this.SelectedItems[i]);
+          StressUnitE = (PressureUnit)Enum.Parse(typeof(PressureUnit), this.SelectedItems[i]);
           break;
         case 1:
-          StrengthUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), this.SelectedItems[i]);
+          StrengthUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), this.SelectedItems[i]);
           break;
       }
 
@@ -120,8 +120,8 @@ namespace AdSecGH.Components
 
     public override void UpdateUIFromSelectedItems()
     {
-      this.StressUnitE = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), this.SelectedItems[0]);
-      this.StrengthUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), this.SelectedItems[1]);
+      this.StressUnitE = (PressureUnit)Enum.Parse(typeof(PressureUnit), this.SelectedItems[0]);
+      this.StrengthUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), this.SelectedItems[1]);
 
       base.UpdateUIFromSelectedItems();
     }

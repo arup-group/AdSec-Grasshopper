@@ -6,7 +6,7 @@ using Oasys.AdSec;
 using Oasys.Units;
 using OasysGH.Components;
 using UnitsNet;
-using UnitsNet.Units;
+using Units;
 using OasysGH;
 
 namespace AdSecGH.Components

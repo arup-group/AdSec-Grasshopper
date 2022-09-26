@@ -37,7 +37,7 @@ namespace AdSecGH.Components
         selecteditems = new List<string>();
 
         // length
-        //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+        //dropdownitems.Add(Enum.GetNames(typeof(LengthUnit)).ToList());
         dropdownitems.Add(Units.FilteredLengthUnits);
         selecteditems.Add(lengthUnit.ToString());
 
@@ -54,7 +54,7 @@ namespace AdSecGH.Components
       // change selected item
       selecteditems[i] = dropdownitems[i][j];
 
-      lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+      lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
 
       // update name of inputs (to display unit on sliders)
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
@@ -65,7 +65,7 @@ namespace AdSecGH.Components
 
     private void UpdateUIFromSelectedItems()
     {
-      lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[0]);
+      lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[0]);
 
       CreateAttributes();
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
@@ -86,7 +86,7 @@ namespace AdSecGH.Components
             "Measure"
     });
     private bool first = true;
-    private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
+    private LengthUnit lengthUnit = Units.LengthUnit;
     string unitAbbreviation;
 
 

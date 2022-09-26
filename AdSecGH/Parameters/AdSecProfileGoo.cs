@@ -7,8 +7,9 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.Profiles;
 using OasysGH.Parameters;
+using OasysUnits;
+using OasysUnits.Units;
 using Rhino.Geometry;
-using UnitsNet.Units;
 
 namespace AdSecGH.Parameters
 {
@@ -66,7 +67,7 @@ namespace AdSecGH.Parameters
         m_profile.IsReflectedZ = value;
       }
     }
-    public UnitsNet.Angle Rotation
+    public Angle Rotation
     {
       get { return m_profile.Rotation; }
       set
@@ -82,9 +83,9 @@ namespace AdSecGH.Parameters
       {
         if (m_plane != Plane.WorldXY & m_plane != Plane.WorldYZ & m_plane != Plane.WorldZX)
         {
-          UnitsNet.Area area = m_profile.Area();
+          Area area = m_profile.Area();
           double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-          UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, LengthUnit.Meter);
+          Length length = new Length(pythogoras * 0.15, LengthUnit.Meter);
           previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(Units.LengthUnit));
           previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(Units.LengthUnit));
           previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(Units.LengthUnit));
@@ -210,8 +211,8 @@ namespace AdSecGH.Parameters
         Point3d point3d = polyline[i];
         point3d.Transform(xform);
         pt = IPoint.Create(
-            new UnitsNet.Length(point3d.X, lengthUnit),
-            new UnitsNet.Length(point3d.Y, lengthUnit));
+            new Length(point3d.X, lengthUnit),
+            new Length(point3d.Y, lengthUnit));
         pts.Add(pt);
       }
 

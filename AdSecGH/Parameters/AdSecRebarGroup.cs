@@ -237,7 +237,7 @@ namespace AdSecGH.Parameters
               IPreStrain strain = (IPreStrain)longitudinal.Preload;
               if (strain.Strain.Value != 0)
               {
-                string unitstrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
+                string unitstrainAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
                 m_preLoad = ", " + Math.Round(strain.Strain.As(Units.StrainUnit), 4) + unitstrainAbbreviation + " prestress";
               }
             }
