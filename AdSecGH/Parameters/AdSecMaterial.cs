@@ -6,6 +6,7 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
+using OasysGH;
 using OasysGH.Parameters;
 using Rhino.Geometry;
 
@@ -208,31 +209,14 @@ namespace AdSecGH.Parameters
   /// <summary>
   /// Goo wrapper class, makes sure this can be used in Grasshopper.
   /// </summary>
-  public class AdSecMaterialGoo : GH_Goo<AdSecMaterial>
+  public class AdSecMaterialGoo : GH_OasysGoo<AdSecMaterial>
   {
-    #region constructors
-    public AdSecMaterialGoo()
-    {
-      this.Value = new AdSecMaterial();
-    }
-    public AdSecMaterialGoo(AdSecMaterial goo)
-    {
-      if (goo == null)
-        goo = new AdSecMaterial();
-      this.Value = goo; //goo.Duplicate(); 
-    }
-
-    public override IGH_Goo Duplicate()
-    {
-      return DuplicateGoo();
-    }
-    public AdSecMaterialGoo DuplicateGoo()
-    {
-      return new AdSecMaterialGoo(Value == null ? new AdSecMaterial() : Value.Duplicate());
-    }
-    #endregion
-
-
+    public static string Name => "Material";
+    public static string NickName => "Mat";
+    public static string Description => "AdSec Material Parameter";
+    public AdSecMaterialGoo(AdSecMaterial item) : base(item) { }
+    public override IGH_Goo Duplicate() => new AdSecMaterialGoo(this.Value);
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
   }
 
   /// <summary>

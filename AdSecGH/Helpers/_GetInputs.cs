@@ -18,6 +18,7 @@ using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement.Groups;
+using OasysGH.Parameters;
 
 namespace AdSecGH.Components
 {

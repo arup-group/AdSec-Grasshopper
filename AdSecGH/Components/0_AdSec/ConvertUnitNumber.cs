@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using OasysGH.Components;
-using UnitsNet.GH;
 using OasysGH;
 
 namespace AdSecGH.Components

@@ -5,15 +5,22 @@ using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
+using OasysGH;
 using OasysGH.Parameters;
 using Rhino.Geometry;
-using UnitsNet;
-using UnitsNet.GH;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {
   public class AdSecCrackGoo : GH_OasysGoo<ICrack>, IGH_PreviewData
   {
+    public static string Name => "Crack";
+    public static string NickName => "Cr";
+    public static string Description => "AdSec Crack Parameter";
+    public AdSecCrackGoo(ICrack item) : base(item) { }
+    public override IGH_Goo Duplicate() => new AdSecCrackGoo(this.Value);
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+
     public AdSecCrackGoo(ICrack crack, Plane local)
     : base(crack)
     {
@@ -57,12 +64,6 @@ namespace AdSecGH.Parameters
     private Plane m_plane;
     private Line m_line;
 
-    public override bool IsValid => true;
-
-    public override string TypeName => "Crack";
-
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
-
     public BoundingBox ClippingBox
     {
       get { return Boundingbox; }
@@ -78,11 +79,7 @@ namespace AdSecGH.Parameters
         return crv.GetBoundingBox(false);
       }
     }
-
-    public override IGH_Goo Duplicate()
-    {
-      return new AdSecCrackGoo(this.Value, m_plane);
-    }
+ 
     public override string ToString()
     {
       IQuantity length = new Length(0, Units.LengthUnit);

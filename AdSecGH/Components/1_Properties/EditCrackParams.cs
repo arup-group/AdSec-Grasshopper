@@ -4,8 +4,7 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
-using UnitsNet.GH;
+using OasysUnits;
 
 namespace AdSecGH.Components
 {

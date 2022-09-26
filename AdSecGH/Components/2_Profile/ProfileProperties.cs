@@ -7,9 +7,7 @@ using Oasys.Profiles.Properties;
 using Oasys.Units;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
-using UnitsNet.GH;
-using UnitsNet.Units;
+using OasysGH.Parameters;
 
 namespace AdSecGH.Components
 {
@@ -75,6 +73,8 @@ namespace AdSecGH.Components
       // 0 profile
       AdSecProfileGoo profile = GetInput.AdSecProfileGoo(this, DA, 0);
 
+      Oasys.Units.AxialStiffness asdf;
+
       LengthUnit lengthUnit = Units.LengthUnit;
       BaseUnits SI = UnitsNet.UnitSystem.SI.BaseUnits;
       BaseUnits baseUnits = new BaseUnits(lengthUnit, SI.Mass, SI.Time, SI.Current, SI.Temperature, SI.Amount, SI.LuminousIntensity);
@@ -87,7 +87,7 @@ namespace AdSecGH.Components
         case LengthUnit.Millimeter:
           wUnit = SectionModulusUnit.CubicMillimeter;
           break;
-        case LengthUnit.Centimeter:
+        case UnitsNet.Units.LengthUnit.Centimeter:
           wUnit = SectionModulusUnit.CubicCentimeter;
           break;
         case LengthUnit.Meter:
