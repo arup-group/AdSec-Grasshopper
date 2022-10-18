@@ -42,7 +42,7 @@ steps:
     dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.1.2\build --results-directory .\results\adsecgh\ .\AdSecGHTests\bin\x64\Release\net6.0\AdSecGHTests.dll
   displayName: dotnet tests
 
-  - powershell: |
+- powershell: |
     $coverage_file_adsecgh = (Resolve-Path $(System.DefaultWorkingDirectory)/results/adsecgh/*/coverage.cobertura.xml).Path
     echo $coverage_file_adsecgh
     Copy-Item $coverage_file_adsecgh $(System.DefaultWorkingDirectory)\results\coverage_adsecgh.xml
