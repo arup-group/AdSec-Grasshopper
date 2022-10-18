@@ -39,8 +39,22 @@ steps:
     MSBUILDDISABLENODEREUSE: 1
 
 - powershell: |
-    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.1.2\build --results-directory .\results .\AdSecGHTests\bin\x64\Release\net6.0\AdSecGHTests.dll
+    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.1.2\build --results-directory .\results\adsecgh\ .\AdSecGHTests\bin\x64\Release\net6.0\AdSecGHTests.dll
   displayName: dotnet tests
+
+  - powershell: |
+    $coverage_file_adsecgh = (Resolve-Path $(System.DefaultWorkingDirectory)/results/adsecgh/*/coverage.cobertura.xml).Path
+    echo $coverage_file_adsecgh
+    Copy-Item $coverage_file_adsecgh $(System.DefaultWorkingDirectory)\results\coverage_adsecgh.xml
+    $ProgressPreference = 'SilentlyContinue'
+    Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
+    ls $(System.DefaultWorkingDirectory)\
+    cd $(System.DefaultWorkingDirectory)\
+    .\codecov.exe -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_adsecgh.xml --flags adsecgh
+  env:
+    CODECOV_TOKEN: $(CODECOV_TOKEN)
+  displayName: Upload Code Coverage to codecovio
+  failOnStderr: true
 
 - task: PowerShell@2
   displayName: Check for existing tags
@@ -90,13 +104,9 @@ steps:
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables.TAG_EXISTS, 'true'))
   displayName: Package yak
 
-- task: NuGetCommand@2
-  inputs:
-    command: 'pack'
-    packagesToPack: 'AdSecGH/*.csproj'
-    includeSymbols: true
-    versioningScheme: 'byEnvVar'
-    versionEnvVar: 'dotSeparatedTag'
+- powershell: |
+    cd AdSecGH
+    & 'C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\MSBuild.exe' AdSecGH.csproj /t:pack /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg /p:DebugType=portable /property:Configuration=Debug
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables.TAG_EXISTS, 'true'))
   displayName: Package NuGet
 
