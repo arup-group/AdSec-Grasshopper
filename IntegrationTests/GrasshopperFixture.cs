@@ -13,6 +13,7 @@ namespace ComposGHTests
     private bool _isDisposed;
     private static string _linkFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Grasshopper", "Libraries");
     private static string _linkFileName = "IntegrationTests.ghlink";
+
     static GrasshopperFixture()
     {
       // This MUST be included in a static constructor to ensure that no Rhino DLLs
@@ -21,6 +22,7 @@ namespace ComposGHTests
       // assemblies to be loaded before this is called.
       RhinoInside.Resolver.Initialize();
     }
+
     public GrasshopperFixture()
     {
       AddPluginToGH();
@@ -79,6 +81,7 @@ namespace ComposGHTests
         return _Core as Rhino.Runtime.InProcess.RhinoCore;
       }
     }
+
     public Grasshopper.Plugin.GH_RhinoScriptInterface GHPlugin
     {
       get
@@ -87,6 +90,7 @@ namespace ComposGHTests
         return _GHPlugin as Grasshopper.Plugin.GH_RhinoScriptInterface;
       }
     }
+
     public Grasshopper.Kernel.GH_DocumentIO DocIO
     {
       get
@@ -100,6 +104,7 @@ namespace ComposGHTests
     {
       _Core = new Rhino.Runtime.InProcess.RhinoCore();
     }
+
     void InitializeGrasshopperPlugin()
     {
       if (null == _Core) InitializeCore();
@@ -107,12 +112,14 @@ namespace ComposGHTests
       // which will happen automatically when we enter the function containing GH references
       InitializeGrasshopperPlugin2();
     }
+
     void InitializeGrasshopperPlugin2()
     {
       _GHPlugin = Rhino.RhinoApp.GetPlugInObject("Grasshopper");
       var ghp = _GHPlugin as Grasshopper.Plugin.GH_RhinoScriptInterface;
       ghp.RunHeadless();
     }
+
     void InitializeDocIO()
     {
       // we do this in a seperate function to absolutely ensure that the core is initialized before we load the GH plugin,
@@ -120,6 +127,7 @@ namespace ComposGHTests
       if (null == _GHPlugin) InitializeGrasshopperPlugin();
       InitializeDocIO2();
     }
+
     void InitializeDocIO2()
     {
       var docIO = new Grasshopper.Kernel.GH_DocumentIO();
