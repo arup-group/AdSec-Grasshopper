@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AdSecGH.Parameters;
@@ -6,7 +6,8 @@ using Oasys.Profiles;
 using OasysGH;
 using OasysGH.Components;
 using Grasshopper.Kernel;
-using UnitsNet;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -104,8 +105,8 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // get inputs
-      Length y = GetInput.Length(this, DA, 0, lengthUnit);
-      Length z = GetInput.Length(this, DA, 1, lengthUnit);
+      Length y = GetInput.GetLength(this, DA, 0, lengthUnit);
+      Length z = GetInput.GetLength(this, DA, 1, lengthUnit);
 
       // create IPoint
       IPoint pt = IPoint.Create(y, z);

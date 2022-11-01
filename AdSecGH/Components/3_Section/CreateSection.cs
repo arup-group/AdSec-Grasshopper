@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
+using OasysUnits.Units;
+using OasysUnits;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Components;

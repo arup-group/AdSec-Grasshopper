@@ -14,7 +14,6 @@ namespace AdSecGH.Parameters
 {
   /// <summary>
   /// AdSec Material class, this class defines the basic properties and methods for any AdSec Material
-  /// </summary>
   public class AdSecMaterial
   {
     public IMaterial Material

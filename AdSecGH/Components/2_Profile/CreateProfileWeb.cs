@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AdSecGH.Parameters;
@@ -7,7 +7,8 @@ using Grasshopper.Kernel.Parameters;
 using Oasys.Profiles;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -105,7 +106,7 @@ namespace AdSecGH.Components
 
           AdSecProfileWebGoo webConst = new AdSecProfileWebGoo(
           IWebConstant.Create(
-              GetInput.Length(this, DA, 0, lengthUnit)));
+              GetInput.GetLength(this, DA, 0, lengthUnit)));
 
           DA.SetData(0, webConst);
           break;
@@ -113,8 +114,8 @@ namespace AdSecGH.Components
         case FoldMode.Tapered:
           AdSecProfileWebGoo webTaper = new AdSecProfileWebGoo(
           IWebTapered.Create(
-              GetInput.Length(this, DA, 0, lengthUnit),
-              GetInput.Length(this, DA, 1, lengthUnit)));
+              GetInput.GetLength(this, DA, 0, lengthUnit),
+              GetInput.GetLength(this, DA, 1, lengthUnit)));
 
           DA.SetData(0, webTaper);
           break;

@@ -5,10 +5,9 @@ using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.Profiles;
-using OasysGH.Parameters;
-using Rhino.Geometry;
+using OasysUnits;
 using Rhino.Display;
-using UnitsNet;
+using Rhino.Geometry;
 
 namespace AdSecGH.Parameters
 {

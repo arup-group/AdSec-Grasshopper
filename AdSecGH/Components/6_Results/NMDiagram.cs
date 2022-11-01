@@ -6,7 +6,8 @@ using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
 using Rhino.Geometry;
-using UnitsNet;
+using OasysUnits.Units;
+using OasysUnits;
 
 namespace AdSecGH.Components
 {
@@ -162,7 +163,7 @@ namespace AdSecGH.Components
       if (_mode == FoldMode.NM)
       {
         // get angle input
-        Angle angle = GetInput.Angle(this, DA, 1, angleUnit, true);
+        Angle angle = GetInput.GetAngle(this, DA, 1, angleUnit, true);
 
         // get loadcurve
         Oasys.Collections.IList<Oasys.AdSec.Mesh.ILoadCurve> loadCurve = solution.Value.Strength.GetForceMomentInteractionCurve(angle);
@@ -173,7 +174,7 @@ namespace AdSecGH.Components
       else
       {
         // get force input
-        Force force = GetInput.Force(this, DA, 1, forceUnit, true);
+        Force force = GetInput.GetForce(this, DA, 1, forceUnit, true);
 
         // get loadcurve
         Oasys.Collections.IList<Oasys.AdSec.Mesh.ILoadCurve> loadCurve = solution.Value.Strength.GetMomentMomentInteractionCurve(force);

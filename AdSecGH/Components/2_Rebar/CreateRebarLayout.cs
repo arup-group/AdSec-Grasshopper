@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AdSecGH.Parameters;
@@ -7,7 +7,8 @@ using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Reinforcement.Groups;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -154,8 +155,8 @@ namespace AdSecGH.Components
           group = new AdSecRebarGroupGoo(
               ICircleGroup.Create(
                   GetInput.IPoint(this, DA, 1, true),
-                  GetInput.Length(this, DA, 2, lengthUnit),
-                  GetInput.Angle(this, DA, 3, angleUnit, true),
+                  GetInput.GetLength(this, DA, 2, lengthUnit),
+                  GetInput.GetAngle(this, DA, 3, angleUnit, true),
                   GetInput.ILayer(this, DA, 0)));
           break;
 
@@ -164,9 +165,9 @@ namespace AdSecGH.Components
           group = new AdSecRebarGroupGoo(
               IArcGroup.Create(
                   GetInput.IPoint(this, DA, 1, true),
-                  GetInput.Length(this, DA, 2, lengthUnit),
-                  GetInput.Angle(this, DA, 3, angleUnit),
-                  GetInput.Angle(this, DA, 4, angleUnit),
+                  GetInput.GetLength(this, DA, 2, lengthUnit),
+                  GetInput.GetAngle(this, DA, 3, angleUnit),
+                  GetInput.GetAngle(this, DA, 4, angleUnit),
                   GetInput.ILayer(this, DA, 0)));
           break;
 

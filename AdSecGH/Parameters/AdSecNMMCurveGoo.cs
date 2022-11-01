@@ -10,8 +10,11 @@ using Oasys.AdSec.Mesh;
 using OasysGH.Parameters;
 using Rhino.DocObjects;
 using Rhino.Display;
+using Oasys.AdSec.Mesh;
+using Oasys.AdSec;
+using OasysUnits;
+using AdSecGH.Helpers;
 using Rhino.Geometry;
-using UnitsNet;
 
 namespace AdSecGH.Parameters
 {

@@ -3,14 +3,17 @@ using System.Linq;
 using System.Collections.Generic;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Parameters;
+using Grasshopper.Kernel.Types;
+using OasysUnits.Units;
+using OasysUnits;
+using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.Units;
 using OasysGH;
 using OasysGH.Components;
 using Rhino.Geometry;
-using UnitsNet;
+using Grasshopper.Kernel.Parameters;
 
 namespace AdSecGH.Components
 {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using AdSecGH.Parameters;
@@ -8,7 +8,8 @@ using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
+using OasysUnits.Units;
+using OasysUnits;
 
 namespace AdSecGH.Components
 {
@@ -159,13 +160,13 @@ namespace AdSecGH.Components
       switch (selecteditems[0])
       {
         case ("Force"):
-          load = IPreForce.Create(GetInput.Force(this, DA, 1, forceUnit));
+          load = IPreForce.Create(GetInput.GetForce(this, DA, 1, forceUnit));
           break;
         case ("Strain"):
-          load = IPreStrain.Create(GetInput.Strain(this, DA, 1, strainUnit));
+          load = IPreStrain.Create(GetInput.GetStrain(this, DA, 1, strainUnit));
           break;
         case ("Stress"):
-          load = IPreStress.Create(GetInput.Stress(this, DA, 1, stressUnit));
+          load = IPreStress.Create(GetInput.GetStress(this, DA, 1, stressUnit));
           break;
       }
       ILongitudinalGroup longitudinal = (ILongitudinalGroup)in_rebar.Value;

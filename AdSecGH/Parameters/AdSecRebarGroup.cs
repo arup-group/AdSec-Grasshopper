@@ -5,11 +5,10 @@ using System.Linq;
 using System.Windows.Forms;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using OasysGH.Parameters;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
-using UnitsNet;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using AdSecGH.Parameters;
@@ -6,9 +6,8 @@ using Grasshopper.Kernel;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Components;
-using Oasys.Units;
-using UnitsNet;
-using Units;
+using OasysUnits.Units;
+using OasysUnits;
 
 namespace AdSecGH.Components
 {
@@ -54,9 +53,9 @@ namespace AdSecGH.Components
     {
       // Create new load
       ILoad load = ILoad.Create(
-        GetInput.Force(this, DA, 0, this.ForceUnit, true),
-        GetInput.Moment(this, DA, 1, this.MomentUnit, true),
-        GetInput.Moment(this, DA, 2, this.MomentUnit, true));
+        GetInput.GetForce(this, DA, 0, this.ForceUnit, true),
+        GetInput.GetMoment(this, DA, 1, this.MomentUnit, true),
+        GetInput.GetMoment(this, DA, 2, this.MomentUnit, true));
 
       // check for enough input parameters
       if (this.Params.Input[0].SourceCount == 0 && this.Params.Input[1].SourceCount == 0

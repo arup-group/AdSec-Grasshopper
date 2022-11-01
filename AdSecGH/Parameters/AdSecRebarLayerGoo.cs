@@ -2,6 +2,7 @@
 using Grasshopper.Kernel.Types;
 using OasysGH.Parameters;
 using Oasys.AdSec.Reinforcement.Layers;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {

@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
-using Oasys.Units;
 using OasysGH;
 using OasysGH.Components;
 using Rhino.Geometry;
-using UnitsNet;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {

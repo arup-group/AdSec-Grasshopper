@@ -5,7 +5,7 @@ using Oasys.AdSec;
 using Oasys.Profiles;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
+using OasysUnits;
 
 namespace AdSecGH.Components
 {

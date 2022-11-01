@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using AdSecGH.Parameters;
@@ -7,11 +7,10 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.Profiles;
-using Oasys.Units;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
-using GH;
+using OasysUnits;
+using OasysGH.Parameters;
 
 namespace AdSecGH.Components
 {

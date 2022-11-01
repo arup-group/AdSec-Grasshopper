@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AdSecGH.Parameters;
@@ -7,7 +7,8 @@ using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Reinforcement.Layers;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -135,7 +136,7 @@ namespace AdSecGH.Components
           new AdSecRebarLayerGoo(
               ILayerByBarPitch.Create(
                   rebar.Value,
-                  GetInput.Length(this, DA, 1, lengthUnit)));
+                  GetInput.GetLength(this, DA, 1, lengthUnit)));
           DA.SetData(0, bundleD);
 
           break;

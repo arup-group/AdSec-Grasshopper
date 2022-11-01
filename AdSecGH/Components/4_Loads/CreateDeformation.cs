@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Components;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -124,9 +126,9 @@ namespace AdSecGH.Components
     {
       // Create new load
       IDeformation deformation = IDeformation.Create(
-          GetInput.Strain(this, DA, 0, strainUnit),
-          GetInput.Curvature(this, DA, 1, curvatureUnit),
-          GetInput.Curvature(this, DA, 2, curvatureUnit));
+          GetInput.GetStrain(this, DA, 0, strainUnit),
+          GetInput.GetCurvature(this, DA, 1, curvatureUnit),
+          GetInput.GetCurvature(this, DA, 2, curvatureUnit));
 
       DA.SetData(0, new AdSecDeformationGoo(deformation));
     }

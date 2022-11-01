@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using OasysGH.Components;
-using UnitsNet;
 using OasysGH;
-using Oasys.Units;
-using Units;
+using OasysUnits.Units;
+using OasysUnits;
 
 namespace AdSecGH.Components
 {
@@ -35,8 +33,8 @@ namespace AdSecGH.Components
     {
       // create new point
       AdSecStressStrainPointGoo pt = new AdSecStressStrainPointGoo(
-          GetInput.Stress(this, DA, 1, StressUnit),
-          GetInput.Strain(this, DA, 0, StrainUnit));
+          GetInput.GetStress(this, DA, 1, StressUnit),
+          GetInput.GetStrain(this, DA, 0, StrainUnit));
 
       DA.SetData(0, pt);
     }

@@ -1,13 +1,12 @@
-﻿using System;
+using System;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using AdSecGH.Parameters;
 using Oasys.AdSec;
-using Oasys.Units;
 using OasysGH.Components;
-using UnitsNet;
-using Units;
 using OasysGH;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -92,7 +91,7 @@ namespace AdSecGH.Components
       double increment = 1;
       DA.GetData(3, ref increment);
 
-      Length maxCrack = GetInput.Length(this, DA, 4, Units.LengthUnit);
+      Length maxCrack = GetInput.GetLength(this, DA, 4, Units.LengthUnit);
 
       ForceUnit forceUnit = Units.ForceUnit;
       MomentUnit momentUnit = Units.MomentUnit;

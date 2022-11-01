@@ -5,8 +5,15 @@ using System.Reflection;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.StandardMaterials;
+using Oasys.Profiles;
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Layers;
+using OasysUnits;
+using OasysUnits.Units;
 using OasysGH;
+using Oasys.AdSec.DesignCode;
 using OasysGH.Parameters;
 
 namespace AdSecGH.Parameters

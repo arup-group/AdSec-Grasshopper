@@ -5,12 +5,11 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.Units;
 using OasysGH;
 using OasysGH.Components;
+using OasysUnits;
+using OasysUnits.Units;
 using Rhino.Geometry;
-using UnitsNet;
-using Units;
 
 namespace AdSecGH.Components
 {
@@ -57,17 +56,17 @@ namespace AdSecGH.Components
           case AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
 
             crv = IFibModelCodeStressStrainCurve.Create(
-                GetInput.Stress(this, DA, 1, stressUnit),
+                GetInput.GetStress(this, DA, 1, stressUnit),
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.Strain(this, DA, 2, strainUnit));
+                GetInput.GetStrain(this, DA, 2, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
 
             crv = IManderStressStrainCurve.Create(
-                GetInput.Stress(this, DA, 1, stressUnit),
+                GetInput.GetStress(this, DA, 1, stressUnit),
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.Strain(this, DA, 2, strainUnit));
+                GetInput.GetStrain(this, DA, 2, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
@@ -79,17 +78,17 @@ namespace AdSecGH.Components
           case AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
 
             crv = IManderConfinedStressStrainCurve.Create(
-                GetInput.Stress(this, DA, 0, stressUnit),
-                GetInput.Stress(this, DA, 1, stressUnit),
-                GetInput.Stress(this, DA, 2, stressUnit),
-                GetInput.Strain(this, DA, 3, strainUnit));
+                GetInput.GetStress(this, DA, 0, stressUnit),
+                GetInput.GetStress(this, DA, 1, stressUnit),
+                GetInput.GetStress(this, DA, 2, stressUnit),
+                GetInput.GetStrain(this, DA, 3, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
 
             crv = IParabolaRectangleStressStrainCurve.Create(
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.Strain(this, DA, 1, strainUnit));
+                GetInput.GetStrain(this, DA, 1, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
@@ -102,7 +101,7 @@ namespace AdSecGH.Components
 
             crv = IPopovicsStressStrainCurve.Create(
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.Strain(this, DA, 1, strainUnit));
+                GetInput.GetStrain(this, DA, 1, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
@@ -110,7 +109,7 @@ namespace AdSecGH.Components
 
             crv = IRectangularStressStrainCurve.Create(
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.Strain(this, DA, 1, strainUnit));
+                GetInput.GetStrain(this, DA, 1, strainUnit));
             break;
         }
       }
@@ -523,6 +522,9 @@ namespace AdSecGH.Components
 
     public override bool Read(GH_IO.Serialization.GH_IReader reader)
     {
+      // ??
+      Helpers.DeSerialization.readDropDownComponents(ref reader, ref DropDownItems, ref SelectedItems, ref SpacerDescriptions);
+
       strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), reader.GetString("strain_mode"));
       stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), reader.GetString("stress_mode"));
 

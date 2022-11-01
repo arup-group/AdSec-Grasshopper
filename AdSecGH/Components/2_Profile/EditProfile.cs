@@ -1,11 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -111,7 +112,7 @@ namespace AdSecGH.Components
         // 1 Rotation
         if (Params.Input[1].SourceCount > 0)
         {
-          editPrf.Rotation = GetInput.Angle(this, DA, 1, angleUnit);
+          editPrf.Rotation = GetInput.GetAngle(this, DA, 1, angleUnit);
         }
 
         // 2 ReflectionY

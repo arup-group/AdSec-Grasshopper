@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using AdSecGH.Parameters;
@@ -6,7 +6,8 @@ using Grasshopper.Kernel;
 using Oasys.Profiles;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
+using OasysUnits.Units;
+using OasysUnits;
 
 namespace AdSecGH.Components
 {
@@ -104,8 +105,8 @@ namespace AdSecGH.Components
 
       AdSecProfileFlangeGoo flange = new AdSecProfileFlangeGoo(
           IFlange.Create(
-              GetInput.Length(this, DA, 0, lengthUnit),
-              GetInput.Length(this, DA, 1, lengthUnit)));
+              GetInput.GetLength(this, DA, 0, lengthUnit),
+              GetInput.GetLength(this, DA, 1, lengthUnit)));
 
       DA.SetData(0, flange);
     }

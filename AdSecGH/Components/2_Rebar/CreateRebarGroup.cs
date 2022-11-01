@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AdSecGH.Parameters;
@@ -8,7 +8,8 @@ using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {

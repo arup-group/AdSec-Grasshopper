@@ -1,21 +1,19 @@
-﻿using AdSecGH.Parameters;
+﻿using System;
+using System.Collections.Generic;
+using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
+using Oasys.AdSec;
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
-using Rhino.Geometry;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using OasysGH.Parameters;
 using OasysUnits;
 using OasysUnits.Units;
-using Oasys.Units;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Reinforcement.Layers;
-using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec;
-using Oasys.AdSec.Reinforcement.Groups;
-using OasysGH.Parameters;
+using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
@@ -280,7 +278,7 @@ namespace AdSecGH.Components
       }
       return null;
     }
-    internal static Pressure Stress(GH_Component owner, IGH_DataAccess DA, int inputid, PressureUnit stressUnit, bool isOptional = false)
+    internal static Pressure GetStress(GH_Component owner, IGH_DataAccess DA, int inputid, PressureUnit stressUnit, bool isOptional = false)
     {
       Pressure stressFib = new Pressure();
 
@@ -403,7 +401,7 @@ namespace AdSecGH.Components
       }
       return Curvature.Zero;
     }
-    internal static Force Force(GH_Component owner, IGH_DataAccess DA, int inputid, ForceUnit forceUnit, bool isOptional = false)
+    internal static Force GetForce(GH_Component owner, IGH_DataAccess DA, int inputid, ForceUnit forceUnit, bool isOptional = false)
     {
       Force force = new Force();
 
@@ -444,7 +442,7 @@ namespace AdSecGH.Components
       }
       return Force.Zero;
     }
-    internal static Moment Moment(GH_Component owner, IGH_DataAccess DA, int inputid, MomentUnit momentUnit, bool isOptional = false)
+    internal static Moment GetMoment(GH_Component owner, IGH_DataAccess DA, int inputid, MomentUnit momentUnit, bool isOptional = false)
     {
       Moment moment = new Moment();
 

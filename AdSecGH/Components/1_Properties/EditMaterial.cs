@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.Units;
 using OasysGH;
 using OasysGH.Components;
+using OasysUnits;
+using OasysUnits.Units;
 using Rhino.Geometry;
-using UnitsNet;
 
 namespace AdSecGH.Components
 {

@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Linq;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using AdSecGH.Parameters;
 using Oasys.AdSec;
-using Oasys.Units;
 using OasysGH;
 using OasysGH.Components;
 using OasysUnits;

@@ -3,6 +3,7 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec.Materials;
 using OasysGH;
 using OasysGH.Parameters;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {

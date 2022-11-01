@@ -4,8 +4,8 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
-using UnitsNet;
-using Units;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -47,19 +47,19 @@ namespace AdSecGH.Components
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
-      Pressure modulus = GetInput.Stress(this, DA, 0, StressUnitE);
+      Pressure modulus = GetInput.GetStress(this, DA, 0, StressUnitE);
       if (modulus.Value < 0)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
         modulus = new Pressure(Math.Abs(modulus.Value), modulus.Unit);
       }
-      Pressure compression = GetInput.Stress(this, DA, 1, StrengthUnit);
+      Pressure compression = GetInput.GetStress(this, DA, 1, StrengthUnit);
       if (compression.Value > 0)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
         compression = new Pressure(compression.Value * -1, compression.Unit);
       }
-      Pressure tension = GetInput.Stress(this, DA, 2, StrengthUnit);
+      Pressure tension = GetInput.GetStress(this, DA, 2, StrengthUnit);
       if (tension.Value < 0)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
