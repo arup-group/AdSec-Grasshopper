@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Grasshopper;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Parameters;
-using Rhino.Geometry;
-using Oasys.AdSec.Materials.StressStrainCurves;
 using AdSecGH.Parameters;
-using GH;
-using Oasys.Profiles;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
+using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using OasysUnits;
-using Oasys.AdSec.Reinforcement.Layers;
-using Oasys.AdSec.Reinforcement;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    public class CreateReinforcementGroup : GH_OasysComponent, IGH_VariableParameterComponent
+  public class CreateReinforcementGroup : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         public CreateReinforcementGroup()

@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AdSecGH</RootNamespace>
     <AssemblyName>AdSecGH</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <NuGetPackageImportStamp>
@@ -54,8 +54,6 @@
     <Compile Include="Components\0_AdSec\OpenAdSec.cs" />
     <Compile Include="Components\0_AdSec\SectionSVG.cs" />
     <Compile Include="Components\0_AdSec\SaveAdSec.cs" />
-    <Compile Include="Components\0_AdSec\CreateUnitNumber.cs" />
-    <Compile Include="Components\0_AdSec\ConvertUnitNumber.cs" />
     <Compile Include="Components\1_Properties\CreateCrackParams.cs" />
     <Compile Include="Components\1_Properties\CreateStressStrainPt.cs" />
     <Compile Include="Components\1_Properties\CreateDesignCode.cs" />
@@ -112,7 +110,6 @@
     <Compile Include="Parameters\ProfileWebGoo.cs" />
     <Compile Include="Parameters\ProfileFlangeGoo.cs" />
     <Compile Include="Parameters\FailureSurfaceGoo.cs" />
-    <Compile Include="Parameters\GH_UnitNumber.cs" />
     <Compile Include="Parameters\AdSecDesignCode.cs" />
     <Compile Include="Parameters\AdSecMaterial.cs" />
     <Compile Include="Helpers\_Reflection.cs" />
@@ -162,6 +159,9 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="OasysGH">
+      <Version>0.3.13-beta</Version>
     </PackageReference>
     <PackageReference Include="OasysUnits">
       <Version>1.0.0</Version>

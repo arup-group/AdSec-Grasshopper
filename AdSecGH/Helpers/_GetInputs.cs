@@ -10,10 +10,10 @@ using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
+using OasysGH.Parameters;
 using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
-using GH;
 
 namespace AdSecGH.Components
 {

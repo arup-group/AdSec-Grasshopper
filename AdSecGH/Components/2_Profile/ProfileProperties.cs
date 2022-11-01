@@ -1,17 +1,16 @@
 ﻿using System;
+using System.Linq;
+using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.Profiles;
-using AdSecGH.Parameters;
-using GH;
 using Oasys.Profiles.Properties;
+using OasysGH.Parameters;
 using OasysUnits;
 using OasysUnits.Units;
-using OasysUnits.Units;
-using System.Linq;
 
 namespace AdSecGH.Components
 {
-    public class ProfileProperties : GH_OasysComponent
+  public class ProfileProperties : GH_OasysComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

@@ -1,35 +1,20 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Reflection;
-using Grasshopper.Kernel.Attributes;
-using Grasshopper.GUI.Canvas;
-using Grasshopper.GUI;
-using Grasshopper.Kernel;
-using Grasshopper;
-using Rhino.Geometry;
-using System.Windows.Forms;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Parameters;
+using System.Linq;
 using AdSecGH.Parameters;
-using System.Resources;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
-using GH;
-using OasysUnits;
-using Oasys.AdSec;
-using Oasys.AdSec.Reinforcement.Preloads;
-using Oasys.AdSec.Reinforcement.Groups;
+using Grasshopper.Kernel;
 using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Preloads;
+using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    /// <summary>
-    /// Component to create a new Stress Strain Point
-    /// </summary>
-    public class CreatePreLoad : GH_OasysComponent, IGH_VariableParameterComponent
+  /// <summary>
+  /// Component to create a new Stress Strain Point
+  /// </summary>
+  public class CreatePreLoad : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

@@ -1,27 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
-using OasysUnits.Units;
-using OasysUnits;
-using GH;
-using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.AdSec.StandardMaterials;
-using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.AdSec.Reinforcement.Layers;
 using AdSecGH.Parameters;
-using Rhino.Geometry;
-using System.Collections.Generic;
+using Grasshopper.Kernel;
+using OasysGH.Parameters;
+using OasysUnits;
 
 namespace AdSecGH.Components
 {
-    public class EditConcreteCrackCalculationParameters : GH_OasysComponent
+  public class EditConcreteCrackCalculationParameters : GH_OasysComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon

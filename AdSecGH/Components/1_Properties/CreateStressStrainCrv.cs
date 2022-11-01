@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Grasshopper;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Parameters;
-using Rhino.Geometry;
-using Oasys.AdSec.Materials.StressStrainCurves;
 using AdSecGH.Parameters;
-using GH;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
+using Oasys.AdSec.Materials.StressStrainCurves;
 using OasysUnits;
 using OasysUnits.Units;
+using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
-    public class CreateStressStrainCurve : GH_OasysComponent, IGH_VariableParameterComponent
+  public class CreateStressStrainCurve : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         public CreateStressStrainCurve()
