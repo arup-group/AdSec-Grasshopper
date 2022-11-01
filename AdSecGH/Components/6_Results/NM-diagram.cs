@@ -1,34 +1,18 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Reflection;
-using Grasshopper.Kernel.Attributes;
-using Grasshopper.GUI.Canvas;
-using Grasshopper.GUI;
-using Grasshopper.Kernel;
-using Grasshopper;
-using Rhino.Geometry;
-using System.Windows.Forms;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Parameters;
+using System.Linq;
 using AdSecGH.Parameters;
-using System.Resources;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
-using UnitsNet.GH;
-using UnitsNet;
-using Oasys.AdSec;
-using Oasys.AdSec.Reinforcement.Preloads;
-using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.AdSec.Reinforcement;
+using Grasshopper.Kernel;
+using OasysUnits;
+using OasysUnits.Units;
+using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
-    /// <summary>
-    /// Component to create a new Stress Strain Point
-    /// </summary>
-    public class NMDiagram : GH_OasysComponent, IGH_VariableParameterComponent
+  /// <summary>
+  /// Component to create a new Stress Strain Point
+  /// </summary>
+  public class NMDiagram : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -100,10 +84,10 @@ namespace AdSecGH.Components
                 switch (selecteditems[0])
                 {
                     case ("N-M"):
-                        angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[i]);
+                        angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[i]);
                         break;
                     case ("M-M"):
-                        forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[i]);
+                        forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), selecteditems[i]);
                         break;
                 }
             }
@@ -137,8 +121,8 @@ namespace AdSecGH.Components
         });
         private bool first = true;
 
-        private UnitsNet.Units.ForceUnit forceUnit = Units.ForceUnit;
-        private UnitsNet.Units.AngleUnit angleUnit = UnitsNet.Units.AngleUnit.Radian;
+        private ForceUnit forceUnit = Units.ForceUnit;
+        private AngleUnit angleUnit = AngleUnit.Radian;
         string forceUnitAbbreviation;
         string angleUnitAbbreviation;
         #endregion
@@ -176,7 +160,7 @@ namespace AdSecGH.Components
             if (_mode == FoldMode.NM)
             {
                 // get angle input
-                Angle angle = GetInput.Angle(this, DA, 1, angleUnit, true);
+                Angle angle = GetInput.GetAngle(this, DA, 1, angleUnit, true);
 
                 // get loadcurve
                 Oasys.Collections.IList<Oasys.AdSec.Mesh.ILoadCurve> loadCurve = solution.Value.Strength.GetForceMomentInteractionCurve(angle);
@@ -187,7 +171,7 @@ namespace AdSecGH.Components
             else
             {
                 // get force input
-                Force force = GetInput.Force(this, DA, 1, forceUnit, true);
+                Force force = GetInput.GetForce(this, DA, 1, forceUnit, true);
 
                 // get loadcurve
                 Oasys.Collections.IList<Oasys.AdSec.Mesh.ILoadCurve> loadCurve = solution.Value.Strength.GetMomentMomentInteractionCurve(force);
@@ -223,8 +207,8 @@ namespace AdSecGH.Components
         {
             Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
-            forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), reader.GetString("force"));
-            angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), reader.GetString("angle"));
+            forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), reader.GetString("force"));
+            angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), reader.GetString("angle"));
             
             UpdateUIFromSelectedItems();
             

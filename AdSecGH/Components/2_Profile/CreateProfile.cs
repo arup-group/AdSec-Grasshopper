@@ -19,8 +19,9 @@ using System.Text;
 using System.Reflection;
 using AdSecGH.Helpers;
 using Oasys.Profiles;
-using UnitsNet;
-using UnitsNet.GH;
+using OasysUnits;
+using GH;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -354,7 +355,7 @@ namespace AdSecGH.Components
                 else
                 {
                     // change unit
-                    lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+                    lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
                 }
             }
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
@@ -422,7 +423,7 @@ namespace AdSecGH.Components
         Dictionary<string, Type> profileTypes;
         Dictionary<string, FieldInfo> profileFields;
 
-        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
+        private LengthUnit lengthUnit = Units.LengthUnit;
         
         #region catalogue sections
         // for catalogue selection
@@ -521,7 +522,7 @@ namespace AdSecGH.Components
                 if (typ.Name.Equals(typeof(IAngleProfile).Name))
                 {
                     profile = IAngleProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
                         GetInput.Flange(this, DA, 1),
                         GetInput.Web(this, DA, 2));
                 }
@@ -530,7 +531,7 @@ namespace AdSecGH.Components
                 else if (typ.Name.Equals(typeof(IChannelProfile).Name))
                 {
                     profile = IChannelProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
                         GetInput.Flange(this, DA, 1),
                         (IWebConstant)GetInput.Web(this, DA, 2));
                 }
@@ -539,22 +540,22 @@ namespace AdSecGH.Components
                 else if (typ.Name.Equals(typeof(ICircleHollowProfile).Name))
                 {
                     profile = ICircleHollowProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
-                        GetInput.Length(this, DA, 1, lengthUnit));
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 1, lengthUnit));
                 }
 
                 // circle
                 else if (typ.Name.Equals(typeof(ICircleProfile).Name))
                 {
                     profile = ICircleProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit));
+                        GetInput.GetLength(this, DA, 0, lengthUnit));
                 }
 
                 // ICruciformSymmetricalProfile
                 else if (typ.Name.Equals(typeof(ICruciformSymmetricalProfile).Name))
                 {
                     profile = ICruciformSymmetricalProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
                         GetInput.Flange(this, DA, 1),
                         (IWebConstant)GetInput.Web(this, DA, 2));
                 }
@@ -563,46 +564,46 @@ namespace AdSecGH.Components
                 else if (typ.Name.Equals(typeof(IEllipseHollowProfile).Name))
                 {
                     profile = IEllipseHollowProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
-                        GetInput.Length(this, DA, 1, lengthUnit),
-                        GetInput.Length(this, DA, 2, lengthUnit));
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 1, lengthUnit),
+                        GetInput.GetLength(this, DA, 2, lengthUnit));
                 }
 
                 // IEllipseProfile
                 else if (typ.Name.Equals(typeof(IEllipseProfile).Name))
                 {
                     profile = IEllipseProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
-                        GetInput.Length(this, DA, 1, lengthUnit));
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 1, lengthUnit));
                 }
 
                 // IGeneralCProfile
                 else if (typ.Name.Equals(typeof(IGeneralCProfile).Name))
                 {
                     profile = IGeneralCProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
-                        GetInput.Length(this, DA, 1, lengthUnit),
-                        GetInput.Length(this, DA, 2, lengthUnit),
-                        GetInput.Length(this, DA, 3, lengthUnit));
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 1, lengthUnit),
+                        GetInput.GetLength(this, DA, 2, lengthUnit),
+                        GetInput.GetLength(this, DA, 3, lengthUnit));
                 }
 
                 // IGeneralZProfile
                 else if (typ.Name.Equals(typeof(IGeneralZProfile).Name))
                 {
                     profile = IGeneralZProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
-                        GetInput.Length(this, DA, 1, lengthUnit),
-                        GetInput.Length(this, DA, 2, lengthUnit),
-                        GetInput.Length(this, DA, 3, lengthUnit),
-                        GetInput.Length(this, DA, 4, lengthUnit),
-                        GetInput.Length(this, DA, 5, lengthUnit));
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 1, lengthUnit),
+                        GetInput.GetLength(this, DA, 2, lengthUnit),
+                        GetInput.GetLength(this, DA, 3, lengthUnit),
+                        GetInput.GetLength(this, DA, 4, lengthUnit),
+                        GetInput.GetLength(this, DA, 5, lengthUnit));
                 }
 
                 // IIBeamAsymmetricalProfile
                 else if (typ.Name.Equals(typeof(IIBeamAsymmetricalProfile).Name))
                 {
                     profile = IIBeamAsymmetricalProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
                         GetInput.Flange(this, DA, 1),
                         GetInput.Flange(this, DA, 2),
                         GetInput.Web(this, DA, 3));
@@ -612,17 +613,17 @@ namespace AdSecGH.Components
                 else if (typ.Name.Equals(typeof(IIBeamCellularProfile).Name))
                 {
                     profile = IIBeamCellularProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
                         GetInput.Flange(this, DA, 1),
                         (IWebConstant)GetInput.Web(this, DA, 2),
-                        GetInput.Length(this, DA, 3, lengthUnit));
+                        GetInput.GetLength(this, DA, 3, lengthUnit));
                 }
 
                 // IIBeamSymmetricalProfile
                 else if (typ.Name.Equals(typeof(IIBeamSymmetricalProfile).Name))
                 {
                     profile = IIBeamSymmetricalProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
                         GetInput.Flange(this, DA, 1),
                         (IWebConstant)GetInput.Web(this, DA, 2));
                 }
@@ -631,7 +632,7 @@ namespace AdSecGH.Components
                 else if (typ.Name.Equals(typeof(IRectangleHollowProfile).Name))
                 {
                     profile = IRectangleHollowProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
                         GetInput.Flange(this, DA, 1),
                         (IWebConstant)GetInput.Web(this, DA, 2));
                 }
@@ -640,18 +641,18 @@ namespace AdSecGH.Components
                 else if (typ.Name.Equals(typeof(IRectangleProfile).Name))
                 {
                     profile = IRectangleProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
-                        GetInput.Length(this, DA, 1, lengthUnit));
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 1, lengthUnit));
                 }
 
                 // IRectoEllipseProfile
                 else if (typ.Name.Equals(typeof(IRectoEllipseProfile).Name))
                 {
                     profile = IRectoEllipseProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
-                        GetInput.Length(this, DA, 1, lengthUnit),
-                        GetInput.Length(this, DA, 2, lengthUnit),
-                        GetInput.Length(this, DA, 3, lengthUnit));
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 1, lengthUnit),
+                        GetInput.GetLength(this, DA, 2, lengthUnit),
+                        GetInput.GetLength(this, DA, 3, lengthUnit));
                 }
 
                 // ISecantPileProfile
@@ -672,8 +673,8 @@ namespace AdSecGH.Components
                     }
 
                     profile = ISecantPileProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
-                        GetInput.Length(this, DA, 1, lengthUnit),
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 1, lengthUnit),
                         pileCount, isWallNotSection);
                 }
 
@@ -681,36 +682,36 @@ namespace AdSecGH.Components
                 else if (typ.Name.Equals(typeof(ISheetPileProfile).Name))
                 {
                     profile = ISheetPileProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
-                        GetInput.Length(this, DA, 1, lengthUnit),
-                        GetInput.Length(this, DA, 2, lengthUnit),
-                        GetInput.Length(this, DA, 3, lengthUnit),
-                        GetInput.Length(this, DA, 4, lengthUnit),
-                        GetInput.Length(this, DA, 5, lengthUnit));
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 1, lengthUnit),
+                        GetInput.GetLength(this, DA, 2, lengthUnit),
+                        GetInput.GetLength(this, DA, 3, lengthUnit),
+                        GetInput.GetLength(this, DA, 4, lengthUnit),
+                        GetInput.GetLength(this, DA, 5, lengthUnit));
                 }
 
                 // IStadiumProfile
                 else if (typ.Name.Equals(typeof(IStadiumProfile).Name))
                 {
                     profile = IStadiumProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
-                        GetInput.Length(this, DA, 1, lengthUnit));
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 1, lengthUnit));
                 }
 
                 // ITrapezoidProfile
                 else if (typ.Name.Equals(typeof(ITrapezoidProfile).Name))
                 {
                     profile = ITrapezoidProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
-                        GetInput.Length(this, DA, 1, lengthUnit),
-                        GetInput.Length(this, DA, 2, lengthUnit));
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 1, lengthUnit),
+                        GetInput.GetLength(this, DA, 2, lengthUnit));
                 }
 
                 // ITSectionProfile
                 else if (typ.Name.Equals(typeof(ITSectionProfile).Name))
                 {
                     profile = ITSectionProfile.Create(
-                        GetInput.Length(this, DA, 0, lengthUnit),
+                        GetInput.GetLength(this, DA, 0, lengthUnit),
                         GetInput.Flange(this, DA, 1),
                         GetInput.Web(this, DA, 2));
                 }
@@ -1024,7 +1025,7 @@ namespace AdSecGH.Components
             DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
             
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
-            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), reader.GetString("lengthUnit"));
+            lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), reader.GetString("lengthUnit"));
 
             inclSS = reader.GetBoolean("inclSS");
             numberOfInputs = reader.GetInt32("NumberOfInputs");

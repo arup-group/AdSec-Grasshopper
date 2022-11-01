@@ -16,8 +16,9 @@ using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
-using UnitsNet.GH;
-using UnitsNet;
+using GH;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -50,16 +51,16 @@ namespace AdSecGH.Components
         selecteditems = new List<string>();
 
         // strain
-        //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+        //dropdownitems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
         dropdownitems.Add(Units.FilteredStrainUnits);
         selecteditems.Add(strainUnit.ToString());
 
         // pressure
-        //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+        //dropdownitems.Add(Enum.GetNames(typeof(Units.PressureUnit)).ToList());
         dropdownitems.Add(Units.FilteredStressUnits);
         selecteditems.Add(stressUnit.ToString());
 
-        strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        strainUnitAbbreviation = Strain.GetAbbreviation(strainUnit);
         IQuantity stress = new Pressure(0, stressUnit);
         stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 
@@ -77,10 +78,10 @@ namespace AdSecGH.Components
       switch (i)
       {
         case 0:
-          strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
+          strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), selecteditems[i]);
           break;
         case 1:
-          stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
+          stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), selecteditems[i]);
           break;
       }
 
@@ -114,8 +115,8 @@ namespace AdSecGH.Components
     });
     private bool first = true;
 
-    private Oasys.Units.StrainUnit strainUnit = Units.StrainUnit;
-    private UnitsNet.Units.PressureUnit stressUnit = Units.StressUnit;
+    private StrainUnit strainUnit = Units.StrainUnit;
+    private PressureUnit stressUnit = Units.StressUnit;
     string strainUnitAbbreviation;
     string stressUnitAbbreviation;
     #endregion
@@ -135,8 +136,8 @@ namespace AdSecGH.Components
 
       // create new point
       AdSecStressStrainPointGoo pt = new AdSecStressStrainPointGoo(
-          GetInput.Stress(this, DA, 1, stressUnit),
-          GetInput.Strain(this, DA, 0, strainUnit));
+          GetInput.GetStress(this, DA, 1, stressUnit),
+          GetInput.GetStrain(this, DA, 0, strainUnit));
 
       DA.SetData(0, pt);
     }
@@ -152,8 +153,8 @@ namespace AdSecGH.Components
     {
       Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
-      strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[0]);
-      stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
+      strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), selecteditems[0]);
+      stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), selecteditems[1]);
       UpdateUIFromSelectedItems();
       first = false;
       return base.Read(reader);
@@ -179,7 +180,7 @@ namespace AdSecGH.Components
     #region IGH_VariableParameterComponent null implementation
     void IGH_VariableParameterComponent.VariableParameterMaintenance()
     {
-      strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+      strainUnitAbbreviation = Strain.GetAbbreviation(strainUnit);
       IQuantity stress = new Pressure(0, stressUnit);
       stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
       Params.Input[0].Name = "Strain [" + strainUnitAbbreviation + "]";

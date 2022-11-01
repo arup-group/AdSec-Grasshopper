@@ -3,8 +3,8 @@ using System.Linq;
 using System.Reflection;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Oasys.Units;
-using UnitsNet;
+using OasysUnits.Units;
+using OasysUnits;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -63,7 +63,7 @@ namespace AdSecGH.Components
         {
             // set selected item
             selecteditems[i] = dropdownitems[i][j];
-            angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[i]);
+            angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[i]);
             ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
             Params.OnParametersChanged();
@@ -72,7 +72,7 @@ namespace AdSecGH.Components
 
         private void UpdateUIFromSelectedItems()
         {
-            angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[0]);
+            angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[0]);
             CreateAttributes();
             ExpireSolution(true);
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
@@ -89,7 +89,7 @@ namespace AdSecGH.Components
         {
             "Measure"
         });
-        private UnitsNet.Units.AngleUnit angleUnit = UnitsNet.Units.AngleUnit.Radian;
+        private AngleUnit angleUnit = AngleUnit.Radian;
         string angleAbbreviation;
         bool first = true;
         protected override void RegisterInputParams(GH_InputParamManager pManager)
@@ -122,7 +122,7 @@ namespace AdSecGH.Components
                 // 1 Rotation
                 if (Params.Input[1].SourceCount > 0)
                 {
-                    editPrf.Rotation = GetInput.Angle(this, DA, 1, angleUnit);
+                    editPrf.Rotation = GetInput.GetAngle(this, DA, 1, angleUnit);
                 }
 
                 // 2 ReflectionY

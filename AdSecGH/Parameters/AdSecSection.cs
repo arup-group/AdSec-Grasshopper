@@ -17,8 +17,8 @@ using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using UnitsNet;
-using Oasys.Units;
+using OasysUnits;
+using OasysUnits.Units;
 using System.Drawing;
 using Rhino.Display;
 using Oasys.Geometry.Paths2D;
@@ -265,8 +265,8 @@ namespace AdSecGH.Parameters
         if (local != Plane.WorldXY & local != Plane.WorldYZ & local != Plane.WorldZX)
         {
           Area area = this.m_section.Profile.Area();
-          double pythogoras = Math.Sqrt(area.As(UnitsNet.Units.AreaUnit.SquareMeter));
-          Length length = new Length(pythogoras * 0.15, UnitsNet.Units.LengthUnit.Meter);
+          double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
+          Length length = new Length(pythogoras * 0.15, LengthUnit.Meter);
           previewXaxis = new Line(local.Origin, local.XAxis, length.As(Units.LengthUnit));
           previewYaxis = new Line(local.Origin, local.YAxis, length.As(Units.LengthUnit));
           previewZaxis = new Line(local.Origin, local.ZAxis, length.As(Units.LengthUnit));
@@ -339,7 +339,7 @@ namespace AdSecGH.Parameters
           Plane arcPln = new Plane(centrePt, xAxis, yAxis);
 
           // get segment sweep angle
-          double sweepAngle = arc.SweepAngle.As(UnitsNet.Units.AngleUnit.Radian);
+          double sweepAngle = arc.SweepAngle.As(AngleUnit.Radian);
 
           // create rhino arc segment
           Arc arcrh = new Arc(arcPln, radius, sweepAngle);

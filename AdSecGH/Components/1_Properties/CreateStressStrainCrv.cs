@@ -9,8 +9,9 @@ using Grasshopper.Kernel.Parameters;
 using Rhino.Geometry;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using AdSecGH.Parameters;
-using UnitsNet.GH;
-using UnitsNet;
+using GH;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -73,12 +74,12 @@ namespace AdSecGH.Components
             break;
           case 2:
             // add strain dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            //dropdownitems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             dropdownitems.Add(Units.FilteredStrainUnits);
             selecteditems.Add(strainUnit.ToString());
 
             // add pressure dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+            //dropdownitems.Add(Enum.GetNames(typeof(Units.PressureUnit)).ToList());
             dropdownitems.Add(Units.FilteredStressUnits);
             selecteditems.Add(stressUnit.ToString());
 
@@ -89,12 +90,12 @@ namespace AdSecGH.Components
             break;
           case 4:
             // add strain dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            //dropdownitems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             dropdownitems.Add(Units.FilteredStrainUnits);
             selecteditems.Add(strainUnit.ToString());
 
             // add pressure dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+            //dropdownitems.Add(Enum.GetNames(typeof(Units.PressureUnit)).ToList());
             dropdownitems.Add(Units.FilteredStressUnits);
             selecteditems.Add(stressUnit.ToString());
 
@@ -105,7 +106,7 @@ namespace AdSecGH.Components
             break;
           case 6:
             // add strain dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            //dropdownitems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             dropdownitems.Add(Units.FilteredStrainUnits);
             selecteditems.Add(strainUnit.ToString());
 
@@ -116,14 +117,14 @@ namespace AdSecGH.Components
             break;
           case 8:
             // add strain dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            //dropdownitems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             dropdownitems.Add(Units.FilteredStrainUnits);
             selecteditems.Add(strainUnit.ToString());
             Mode8Clicked();
             break;
           case 9:
             // add strain dropdown
-            //dropdownitems.Add(Enum.GetNames(typeof(Oasys.Units.StrainUnit)).ToList());
+            //dropdownitems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             dropdownitems.Add(Units.FilteredStrainUnits);
             selecteditems.Add(strainUnit.ToString());
             Mode9Clicked();
@@ -136,10 +137,10 @@ namespace AdSecGH.Components
         switch (i)
         {
           case 1:
-            strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), selecteditems[i]);
+            strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), selecteditems[i]);
             break;
           case 2:
-            stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
+            stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), selecteditems[i]);
             break;
         }
       }
@@ -200,8 +201,8 @@ namespace AdSecGH.Components
             "Strain Unit",
             "Stress Unit",
     });
-    private Oasys.Units.StrainUnit strainUnit = Units.StrainUnit;
-    private UnitsNet.Units.PressureUnit stressUnit = Units.StressUnit;
+    private StrainUnit strainUnit = Units.StrainUnit;
+    private PressureUnit stressUnit = Units.StressUnit;
 
     string unitStressAbbreviation;
     string unitStrainAbbreviation;
@@ -240,17 +241,17 @@ namespace AdSecGH.Components
           case AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
 
             crv = IFibModelCodeStressStrainCurve.Create(
-                GetInput.Stress(this, DA, 1, stressUnit),
+                GetInput.GetStress(this, DA, 1, stressUnit),
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.Strain(this, DA, 2, strainUnit));
+                GetInput.GetStrain(this, DA, 2, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
 
             crv = IManderStressStrainCurve.Create(
-                GetInput.Stress(this, DA, 1, stressUnit),
+                GetInput.GetStress(this, DA, 1, stressUnit),
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.Strain(this, DA, 2, strainUnit));
+                GetInput.GetStrain(this, DA, 2, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
@@ -262,17 +263,17 @@ namespace AdSecGH.Components
           case AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
 
             crv = IManderConfinedStressStrainCurve.Create(
-                GetInput.Stress(this, DA, 0, stressUnit),
-                GetInput.Stress(this, DA, 1, stressUnit),
-                GetInput.Stress(this, DA, 2, stressUnit),
-                GetInput.Strain(this, DA, 3, strainUnit));
+                GetInput.GetStress(this, DA, 0, stressUnit),
+                GetInput.GetStress(this, DA, 1, stressUnit),
+                GetInput.GetStress(this, DA, 2, stressUnit),
+                GetInput.GetStrain(this, DA, 3, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
 
             crv = IParabolaRectangleStressStrainCurve.Create(
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.Strain(this, DA, 1, strainUnit));
+                GetInput.GetStrain(this, DA, 1, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
@@ -285,7 +286,7 @@ namespace AdSecGH.Components
 
             crv = IPopovicsStressStrainCurve.Create(
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.Strain(this, DA, 1, strainUnit));
+                GetInput.GetStrain(this, DA, 1, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
@@ -293,7 +294,7 @@ namespace AdSecGH.Components
 
             crv = IRectangularStressStrainCurve.Create(
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.Strain(this, DA, 1, strainUnit));
+                GetInput.GetStrain(this, DA, 1, strainUnit));
             break;
         }
       }
@@ -537,8 +538,8 @@ namespace AdSecGH.Components
     {
       Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
-      strainUnit = (Oasys.Units.StrainUnit)Enum.Parse(typeof(Oasys.Units.StrainUnit), reader.GetString("strain_mode"));
-      stressUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), reader.GetString("stress_mode"));
+      strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), reader.GetString("strain_mode"));
+      stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), reader.GetString("stress_mode"));
 
       _mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)Enum.Parse(
           typeof(AdSecStressStrainCurveGoo.StressStrainCurveType), reader.GetString("mode"));
@@ -610,7 +611,7 @@ namespace AdSecGH.Components
         Params.Input[1].Access = GH_ParamAccess.item;
         Params.Input[1].Optional = false;
 
-        unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
 
         Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
         Params.Input[2].NickName = "εu";
@@ -651,7 +652,7 @@ namespace AdSecGH.Components
         Params.Input[2].Access = GH_ParamAccess.item;
         Params.Input[2].Optional = false;
 
-        unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
 
         Params.Input[3].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
         Params.Input[3].NickName = "εu";
@@ -677,7 +678,7 @@ namespace AdSecGH.Components
         Params.Input[1].Access = GH_ParamAccess.item;
         Params.Input[1].Optional = false;
 
-        unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
 
         Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
         Params.Input[2].NickName = "εu";
@@ -694,7 +695,7 @@ namespace AdSecGH.Components
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
 
         Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
         Params.Input[1].NickName = "εu";
@@ -720,7 +721,7 @@ namespace AdSecGH.Components
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
 
         Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
         Params.Input[1].NickName = "εu";
@@ -737,7 +738,7 @@ namespace AdSecGH.Components
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        unitStrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(strainUnit);
+        unitStrainAbbreviation = Strain.GetAbbreviation(strainUnit);
 
         Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
         Params.Input[1].NickName = "εu";

@@ -2,11 +2,11 @@
 using Grasshopper.Kernel;
 using Oasys.Profiles;
 using AdSecGH.Parameters;
-using UnitsNet.GH;
+using GH;
 using Oasys.Profiles.Properties;
-using UnitsNet;
-using UnitsNet.Units;
-using Oasys.Units;
+using OasysUnits;
+using OasysUnits.Units;
+using OasysUnits.Units;
 using System.Linq;
 
 namespace AdSecGH.Components
@@ -74,9 +74,9 @@ namespace AdSecGH.Components
             AdSecProfileGoo profile = GetInput.AdSecProfileGoo(this, DA, 0);
 
             LengthUnit lengthUnit = Units.LengthUnit;
-            BaseUnits SI = UnitsNet.UnitSystem.SI.BaseUnits;
+            BaseUnits SI = UnitSystem.SI.BaseUnits;
             BaseUnits baseUnits = new BaseUnits(lengthUnit, SI.Mass, SI.Time, SI.Current, SI.Temperature, SI.Amount, SI.LuminousIntensity);
-            UnitSystem unitSystem = new UnitsNet.UnitSystem(baseUnits);
+            UnitSystem unitSystem = new UnitSystem(baseUnits);
             AreaUnit areaUnit = new Area(1, unitSystem).Unit;
 
             SectionModulusUnit wUnit = SectionModulusUnit.Undefined;

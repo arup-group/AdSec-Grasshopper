@@ -3,8 +3,8 @@ using System.Linq;
 using System.Reflection;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Oasys.Units;
-using UnitsNet;
+using OasysUnits.Units;
+using OasysUnits;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -17,7 +17,7 @@ using Oasys.AdSec.Reinforcement.Layers;
 using AdSecGH.Parameters;
 using Rhino.Geometry;
 using System.Collections.Generic;
-using UnitsNet.GH;
+using GH;
 
 namespace AdSecGH.Components
 {
@@ -52,7 +52,7 @@ namespace AdSecGH.Components
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            string strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
+            string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
             IQuantity curvature = new Curvature(0, Units.CurvatureUnit);
             string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
             IQuantity axial = new AxialStiffness(0, Units.AxialStiffnessUnit);
@@ -138,7 +138,7 @@ namespace AdSecGH.Components
             if (sls.MaximumWidthCrack != null && sls.MaximumWidthCrack.Width.Meters < 1)
                 DA.SetData(2, new AdSecCrackGoo(sls.MaximumWidthCrack, solution.LocalPlane));
 
-            double util = sls.CrackingUtilisation.As(UnitsNet.Units.RatioUnit.DecimalFraction);
+            double util = sls.CrackingUtilisation.As(RatioUnit.DecimalFraction);
             DA.SetData(3, util);
             if (util > 1)
             {

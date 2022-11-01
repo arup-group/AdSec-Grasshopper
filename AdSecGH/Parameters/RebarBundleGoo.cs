@@ -23,6 +23,7 @@ using GH_IO.Serialization;
 using Rhino.Display;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {
@@ -46,7 +47,7 @@ namespace AdSecGH.Parameters
     public override string ToString()
     {
       string bar = "Rebar {";
-      UnitsNet.Length thk1 = this.Value.Diameter.ToUnit(Units.LengthUnit);
+      Length thk1 = this.Value.Diameter.ToUnit(Units.LengthUnit);
       bar += "Ø" + thk1.ToString();
       if (this.Value.CountPerBundle > 1)
       {

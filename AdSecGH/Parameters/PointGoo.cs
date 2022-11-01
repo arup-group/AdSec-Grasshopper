@@ -22,7 +22,7 @@ using GH_IO;
 using GH_IO.Serialization;
 using Rhino.Display;
 using Oasys.Profiles;
-using UnitsNet;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {

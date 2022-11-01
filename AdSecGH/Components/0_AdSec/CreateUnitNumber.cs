@@ -15,8 +15,9 @@ using AdSecGH.Parameters;
 using System.Resources;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
-using UnitsNet.GH;
-using UnitsNet;
+using GH;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -53,7 +54,7 @@ namespace AdSecGH.Components
         selecteditems.Add(dropdownitems[0][0]);
 
         // first type
-        dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+        dropdownitems.Add(Enum.GetNames(typeof(LengthUnit)).ToList());
         selecteditems.Add(Units.LengthUnit.ToString());
 
         // set selected unit to
@@ -107,36 +108,36 @@ namespace AdSecGH.Components
       switch ((Units.AdSecUnits)Enum.Parse(typeof(Units.AdSecUnits), selecteditems[0]))
       {
         case Units.AdSecUnits.Length:
-          quantity = new Length(val, (UnitsNet.Units.LengthUnit)selectedMeasure);
+          quantity = new Length(val, (LengthUnit)selectedMeasure);
           unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
           break;
         case Units.AdSecUnits.Force:
-          quantity = new Force(val, (UnitsNet.Units.ForceUnit)selectedMeasure);
+          quantity = new Force(val, (ForceUnit)selectedMeasure);
           unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
           break;
         case Units.AdSecUnits.Moment:
-          quantity = new Oasys.Units.Moment(val, (Oasys.Units.MomentUnit)selectedMeasure);
-          unitAbbreviation = Oasys.Units.Moment.GetAbbreviation((Oasys.Units.MomentUnit)selectedMeasure);
+          quantity = new Moment(val, (MomentUnit)selectedMeasure);
+          unitAbbreviation = Moment.GetAbbreviation((MomentUnit)selectedMeasure);
           break;
         case Units.AdSecUnits.Stress:
-          quantity = new Pressure(val, (UnitsNet.Units.PressureUnit)selectedMeasure);
+          quantity = new Pressure(val, (PressureUnit)selectedMeasure);
           unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
           break;
         case Units.AdSecUnits.Strain:
-          quantity = new Oasys.Units.Strain(val, (Oasys.Units.StrainUnit)selectedMeasure);
-          unitAbbreviation = Oasys.Units.Strain.GetAbbreviation((Oasys.Units.StrainUnit)selectedMeasure);
+          quantity = new Strain(val, (StrainUnit)selectedMeasure);
+          unitAbbreviation = Strain.GetAbbreviation((StrainUnit)selectedMeasure);
           break;
         case Units.AdSecUnits.AxialStiffness:
-          quantity = new Oasys.Units.AxialStiffness(val, (Oasys.Units.AxialStiffnessUnit)selectedMeasure);
-          unitAbbreviation = Oasys.Units.AxialStiffness.GetAbbreviation((Oasys.Units.AxialStiffnessUnit)selectedMeasure);
+          quantity = new AxialStiffness(val, (AxialStiffnessUnit)selectedMeasure);
+          unitAbbreviation = AxialStiffness.GetAbbreviation((AxialStiffnessUnit)selectedMeasure);
           break;
         case Units.AdSecUnits.BendingStiffness:
-          quantity = new Oasys.Units.BendingStiffness(val, (Oasys.Units.BendingStiffnessUnit)selectedMeasure);
-          unitAbbreviation = Oasys.Units.BendingStiffness.GetAbbreviation((Oasys.Units.BendingStiffnessUnit)selectedMeasure);
+          quantity = new BendingStiffness(val, (BendingStiffnessUnit)selectedMeasure);
+          unitAbbreviation = BendingStiffness.GetAbbreviation((BendingStiffnessUnit)selectedMeasure);
           break;
         case Units.AdSecUnits.Curvature:
-          quantity = new Oasys.Units.Curvature(val, (Oasys.Units.CurvatureUnit)selectedMeasure);
-          unitAbbreviation = Oasys.Units.Curvature.GetAbbreviation((Oasys.Units.CurvatureUnit)selectedMeasure);
+          quantity = new Curvature(val, (CurvatureUnit)selectedMeasure);
+          unitAbbreviation = Curvature.GetAbbreviation((CurvatureUnit)selectedMeasure);
           break;
       }
     }
@@ -153,22 +154,22 @@ namespace AdSecGH.Components
           quantity = new Force(val, Units.ForceUnit);
           break;
         case Units.AdSecUnits.Moment:
-          quantity = new Oasys.Units.Moment(val, Units.MomentUnit);
+          quantity = new Moment(val, Units.MomentUnit);
           break;
         case Units.AdSecUnits.Stress:
           quantity = new Pressure(val, Units.StressUnit);
           break;
         case Units.AdSecUnits.Strain:
-          quantity = new Oasys.Units.Strain(val, Units.StrainUnit);
+          quantity = new Strain(val, Units.StrainUnit);
           break;
         case Units.AdSecUnits.AxialStiffness:
-          quantity = new Oasys.Units.AxialStiffness(val, Units.AxialStiffnessUnit);
+          quantity = new AxialStiffness(val, Units.AxialStiffnessUnit);
           break;
         case Units.AdSecUnits.BendingStiffness:
-          quantity = new Oasys.Units.BendingStiffness(val, Units.BendingStiffnessUnit);
+          quantity = new BendingStiffness(val, Units.BendingStiffnessUnit);
           break;
         case Units.AdSecUnits.Curvature:
-          quantity = new Oasys.Units.Curvature(val, Units.CurvatureUnit);
+          quantity = new Curvature(val, Units.CurvatureUnit);
           break;
       }
 
@@ -245,28 +246,28 @@ namespace AdSecGH.Components
         switch (unit)
         {
           case Units.AdSecUnits.Length:
-            quantity = new Length(val, (UnitsNet.Units.LengthUnit)selectedMeasure);
+            quantity = new Length(val, (LengthUnit)selectedMeasure);
             break;
           case Units.AdSecUnits.Force:
-            quantity = new Force(val, (UnitsNet.Units.ForceUnit)selectedMeasure);
+            quantity = new Force(val, (ForceUnit)selectedMeasure);
             break;
           case Units.AdSecUnits.Moment:
-            quantity = new Oasys.Units.Moment(val, (Oasys.Units.MomentUnit)selectedMeasure);
+            quantity = new Moment(val, (MomentUnit)selectedMeasure);
             break;
           case Units.AdSecUnits.Stress:
-            quantity = new Pressure(val, (UnitsNet.Units.PressureUnit)selectedMeasure);
+            quantity = new Pressure(val, (PressureUnit)selectedMeasure);
             break;
           case Units.AdSecUnits.Strain:
-            quantity = new Oasys.Units.Strain(val, (Oasys.Units.StrainUnit)selectedMeasure);
+            quantity = new Strain(val, (StrainUnit)selectedMeasure);
             break;
           case Units.AdSecUnits.AxialStiffness:
-            quantity = new Oasys.Units.AxialStiffness(val, (Oasys.Units.AxialStiffnessUnit)selectedMeasure);
+            quantity = new AxialStiffness(val, (AxialStiffnessUnit)selectedMeasure);
             break;
           case Units.AdSecUnits.BendingStiffness:
-            quantity = new Oasys.Units.BendingStiffness(val, (Oasys.Units.BendingStiffnessUnit)selectedMeasure);
+            quantity = new BendingStiffness(val, (BendingStiffnessUnit)selectedMeasure);
             break;
           case Units.AdSecUnits.Curvature:
-            quantity = new Oasys.Units.Curvature(val, (Oasys.Units.CurvatureUnit)selectedMeasure);
+            quantity = new Curvature(val, (CurvatureUnit)selectedMeasure);
             break;
         }
 

@@ -3,8 +3,8 @@ using System.Linq;
 using System.Reflection;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Oasys.Units;
-using UnitsNet;
+using OasysUnits.Units;
+using OasysUnits;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -17,8 +17,8 @@ using Oasys.AdSec.Reinforcement.Layers;
 using AdSecGH.Parameters;
 using Rhino.Geometry;
 using System.Collections.Generic;
-using UnitsNet.GH;
-using UnitsNet.Units;
+using GH;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -110,7 +110,7 @@ namespace AdSecGH.Components
             double increment = 1;
             DA.GetData(3, ref increment);
 
-            Length maxCrack = GetInput.Length(this, DA, 4, Units.LengthUnit);
+            Length maxCrack = GetInput.GetLength(this, DA, 4, Units.LengthUnit);
 
             ForceUnit forceUnit = Units.ForceUnit;
             MomentUnit momentUnit = Units.MomentUnit;

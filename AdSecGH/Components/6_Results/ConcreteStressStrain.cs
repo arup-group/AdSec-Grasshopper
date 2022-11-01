@@ -3,8 +3,8 @@ using System.Linq;
 using System.Reflection;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Oasys.Units;
-using UnitsNet;
+using OasysUnits.Units;
+using OasysUnits;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -17,7 +17,7 @@ using Oasys.AdSec.Reinforcement.Layers;
 using AdSecGH.Parameters;
 using Rhino.Geometry;
 using System.Collections.Generic;
-using UnitsNet.GH;
+using GH;
 
 namespace AdSecGH.Components
 {
@@ -53,7 +53,7 @@ namespace AdSecGH.Components
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            string strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
+            string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
             IQuantity stress = new Pressure(0, Units.StressUnit);
             string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 

@@ -9,12 +9,13 @@ using Grasshopper.Kernel.Parameters;
 using Rhino.Geometry;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using AdSecGH.Parameters;
-using UnitsNet.GH;
+using GH;
 using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement.Groups;
-using UnitsNet;
+using OasysUnits;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.AdSec.Reinforcement;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -72,14 +73,14 @@ namespace AdSecGH.Components
             }
             else
             {
-                lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+                lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
             }
             
         }
         private void UpdateUIFromSelectedItems()
         {
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
-            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
+            lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[1]);
             CreateAttributes();
             ToggleInput();
         }
@@ -93,7 +94,7 @@ namespace AdSecGH.Components
             "Group Type",
             "Measure",
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
+        private LengthUnit lengthUnit = Units.LengthUnit;
         string unitAbbreviation;
         #endregion
 

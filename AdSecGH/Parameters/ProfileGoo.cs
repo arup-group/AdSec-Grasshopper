@@ -1,29 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Rhino;
-using Rhino.Geometry;
+using System.Drawing;
+using System.Linq;
 using Grasshopper;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
-using System.IO;
-using System.Linq;
-using System.Data;
-using System.Drawing;
-using System.Reflection;
-using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Linq;
-using System.Runtime.InteropServices;
-using Rhino.DocObjects;
-using Rhino.Collections;
-using GH_IO;
-using GH_IO.Serialization;
-using Rhino.Display;
 using Oasys.Profiles;
-using UnitsNet.Units;
-
+using OasysUnits;
+using OasysUnits.Units;
+using Rhino.Geometry;
 
 namespace AdSecGH.Parameters
 {
@@ -81,7 +66,7 @@ namespace AdSecGH.Parameters
         m_profile.IsReflectedZ = value;
       }
     }
-    public UnitsNet.Angle Rotation
+    public Angle Rotation
     {
       get { return m_profile.Rotation; }
       set
@@ -97,9 +82,9 @@ namespace AdSecGH.Parameters
       {
         if (m_plane != Plane.WorldXY & m_plane != Plane.WorldYZ & m_plane != Plane.WorldZX)
         {
-          UnitsNet.Area area = m_profile.Area();
+          Area area = m_profile.Area();
           double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-          UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, LengthUnit.Meter);
+          Length length = new Length(pythogoras * 0.15, LengthUnit.Meter);
           previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(Units.LengthUnit));
           previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(Units.LengthUnit));
           previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(Units.LengthUnit));
@@ -225,8 +210,8 @@ namespace AdSecGH.Parameters
         Point3d point3d = polyline[i];
         point3d.Transform(xform);
         pt = IPoint.Create(
-            new UnitsNet.Length(point3d.X, lengthUnit),
-            new UnitsNet.Length(point3d.Y, lengthUnit));
+            new Length(point3d.X, lengthUnit),
+            new Length(point3d.Y, lengthUnit));
         pts.Add(pt);
       }
 
