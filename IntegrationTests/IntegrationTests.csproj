@@ -31,4 +31,9 @@
 
   <Import Project="PreBuild.targets" />
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="Copy &quot;$(TargetDir)AdSecGH.dll&quot; &quot;$(TargetDir)AdSec.gha&quot;" />
+    <Exec Command="Del &quot;$(TargetDir)AdSecGH.dll&quot;" />
+  </Target>
+
 </Project>
