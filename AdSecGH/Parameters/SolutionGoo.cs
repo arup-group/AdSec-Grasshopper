@@ -24,7 +24,7 @@ using Rhino.Display;
 using Oasys.AdSec.Materials;
 using Oasys.Profiles;
 using Oasys.AdSec;
-using UnitsNet;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {

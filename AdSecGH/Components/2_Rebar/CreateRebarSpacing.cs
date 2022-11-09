@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Grasshopper;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Parameters;
-using Rhino.Geometry;
-using Oasys.AdSec.Materials.StressStrainCurves;
 using AdSecGH.Parameters;
-using UnitsNet.GH;
-using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Reinforcement.Layers;
-using UnitsNet;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    public class CreateRebarSpacing : GH_OasysComponent, IGH_VariableParameterComponent
+  public class CreateRebarSpacing : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         public CreateRebarSpacing()
@@ -45,7 +38,7 @@ namespace AdSecGH.Components
                 selecteditems.Add(dropdownitems[0][0]);
 
                 // length
-                //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                //dropdownitems.Add(Enum.GetNames(typeof(Units.LengthUnit)).ToList());
                 dropdownitems.Add(Units.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
@@ -87,7 +80,7 @@ namespace AdSecGH.Components
             }
             else
             {
-                lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+                lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
                 
             }
         }
@@ -95,7 +88,7 @@ namespace AdSecGH.Components
         {
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
             if (_mode == FoldMode.Distance)
-                lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
+                lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[1]);
             CreateAttributes();
             ToggleInput();
         }
@@ -109,7 +102,7 @@ namespace AdSecGH.Components
             "Spacing method",
             "Measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
+        private LengthUnit lengthUnit = Units.LengthUnit;
         string unitAbbreviation;
         #endregion
 
@@ -140,7 +133,7 @@ namespace AdSecGH.Components
                     new AdSecRebarLayerGoo(
                         ILayerByBarPitch.Create(
                             rebar.Value,
-                            GetInput.Length(this, DA, 1, lengthUnit)));
+                            GetInput.GetLength(this, DA, 1, lengthUnit)));
                     DA.SetData(0, bundleD);
 
                     break;

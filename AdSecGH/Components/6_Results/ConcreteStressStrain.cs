@@ -1,27 +1,15 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
+using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Oasys.Units;
-using UnitsNet;
 using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.AdSec.StandardMaterials;
-using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.AdSec.Reinforcement.Layers;
-using AdSecGH.Parameters;
-using Rhino.Geometry;
-using System.Collections.Generic;
-using UnitsNet.GH;
+using OasysGH.Parameters;
+using OasysUnits;
 
 namespace AdSecGH.Components
 {
-    public class ConcreteStressStrain : GH_OasysComponent
+  public class ConcreteStressStrain : GH_OasysComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -53,7 +41,7 @@ namespace AdSecGH.Components
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            string strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
+            string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
             IQuantity stress = new Pressure(0, Units.StressUnit);
             string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 

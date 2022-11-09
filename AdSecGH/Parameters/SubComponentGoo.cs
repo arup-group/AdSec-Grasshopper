@@ -22,9 +22,10 @@ using GH_IO;
 using GH_IO.Serialization;
 using Rhino.Display;
 using Oasys.Profiles;
-using UnitsNet.Units;
+using OasysUnits.Units;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {
@@ -54,9 +55,9 @@ namespace AdSecGH.Parameters
       {
         if (m_plane != Plane.WorldXY & local != Plane.WorldYZ & local != Plane.WorldZX)
         {
-          UnitsNet.Area area = this.section.Section.Profile.Area();
+          Area area = this.section.Section.Profile.Area();
           double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-          UnitsNet.Length length = new UnitsNet.Length(pythogoras * 0.15, LengthUnit.Meter);
+          Length length = new Length(pythogoras * 0.15, LengthUnit.Meter);
           previewXaxis = new Line(local.Origin, local.XAxis, length.As(Units.LengthUnit));
           previewYaxis = new Line(local.Origin, local.YAxis, length.As(Units.LengthUnit));
           previewZaxis = new Line(local.Origin, local.ZAxis, length.As(Units.LengthUnit));

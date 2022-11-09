@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Grasshopper;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Parameters;
-using Rhino.Geometry;
-using Oasys.AdSec.Materials.StressStrainCurves;
 using AdSecGH.Parameters;
-using UnitsNet.GH;
-using Oasys.Profiles;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Reinforcement.Groups;
-using UnitsNet;
-using Oasys.AdSec.Reinforcement.Layers;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    public class CreateReinforcementLayout : GH_OasysComponent, IGH_VariableParameterComponent
+  public class CreateReinforcementLayout : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         public CreateReinforcementLayout()
@@ -92,11 +85,11 @@ namespace AdSecGH.Components
                 switch (i)
                 {
                     case 1:
-                        lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+                        lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
                         break;
 
                     case 2:
-                        angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[i]);
+                        angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[i]);
                         break;
                 }
             }
@@ -105,8 +98,8 @@ namespace AdSecGH.Components
         private void UpdateUIFromSelectedItems()
         {
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
-            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
-            angleUnit = (UnitsNet.Units.AngleUnit)Enum.Parse(typeof(UnitsNet.Units.AngleUnit), selecteditems[2]);
+            lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[1]);
+            angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[2]);
             CreateAttributes();
             ToggleInput();
         }
@@ -121,8 +114,8 @@ namespace AdSecGH.Components
             "Measure",
             "Angular measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
-        private UnitsNet.Units.AngleUnit angleUnit = UnitsNet.Units.AngleUnit.Radian;
+        private LengthUnit lengthUnit = Units.LengthUnit;
+        private AngleUnit angleUnit = AngleUnit.Radian;
         string unitAbbreviation;
         string angleAbbreviation;
         #endregion
@@ -159,8 +152,8 @@ namespace AdSecGH.Components
                     group = new AdSecRebarGroupGoo(
                         ICircleGroup.Create(
                             GetInput.IPoint(this, DA, 1, true),
-                            GetInput.Length(this, DA, 2, lengthUnit),
-                            GetInput.Angle(this, DA, 3, angleUnit, true),
+                            GetInput.GetLength(this, DA, 2, lengthUnit),
+                            GetInput.GetAngle(this, DA, 3, angleUnit, true),
                             GetInput.ILayer(this, DA, 0)));
                     break;
 
@@ -169,9 +162,9 @@ namespace AdSecGH.Components
                     group = new AdSecRebarGroupGoo(
                         IArcGroup.Create(
                             GetInput.IPoint(this, DA, 1, true),
-                            GetInput.Length(this, DA, 2, lengthUnit),
-                            GetInput.Angle(this, DA, 3, angleUnit),
-                            GetInput.Angle(this, DA, 4, angleUnit),
+                            GetInput.GetLength(this, DA, 2, lengthUnit),
+                            GetInput.GetAngle(this, DA, 3, angleUnit),
+                            GetInput.GetAngle(this, DA, 4, angleUnit),
                             GetInput.ILayer(this, DA, 0)));
                     break;
 

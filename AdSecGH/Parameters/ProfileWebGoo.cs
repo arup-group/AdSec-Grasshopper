@@ -23,6 +23,7 @@ using GH_IO.Serialization;
 using Rhino.Display;
 using Oasys.AdSec.Materials;
 using Oasys.Profiles;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {
@@ -48,13 +49,13 @@ namespace AdSecGH.Parameters
       string web = "AdSec Web {";
       if (this.Value.BottomThickness.Value == this.Value.TopThickness.Value)
       {
-        UnitsNet.Length thk = this.Value.BottomThickness.ToUnit(Units.LengthUnit);
+        Length thk = this.Value.BottomThickness.ToUnit(Units.LengthUnit);
         web += "Constant " + thk.ToString() + "}";
       }
       else
       {
-        UnitsNet.Length thk1 = this.Value.TopThickness.ToUnit(Units.LengthUnit);
-        UnitsNet.Length thk2 = this.Value.BottomThickness.ToUnit(Units.LengthUnit);
+        Length thk1 = this.Value.TopThickness.ToUnit(Units.LengthUnit);
+        Length thk2 = this.Value.BottomThickness.ToUnit(Units.LengthUnit);
         web += "Tapered: Top:" + thk1.ToString() + ", Bottom:" + thk2.ToString() + "}";
       }
       return web;

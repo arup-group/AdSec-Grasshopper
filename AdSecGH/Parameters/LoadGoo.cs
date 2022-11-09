@@ -24,7 +24,7 @@ using Rhino.Display;
 using Oasys.AdSec.Materials;
 using Oasys.Profiles;
 using Oasys.AdSec;
-using UnitsNet;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {
@@ -79,7 +79,7 @@ namespace AdSecGH.Parameters
     }
     public override string ToString()
     {
-      IQuantity quantityMoment = new Oasys.Units.Moment(0, Units.MomentUnit);
+      IQuantity quantityMoment = new Moment(0, Units.MomentUnit);
       string unitMomentAbbreviation = string.Concat(quantityMoment.ToString().Where(char.IsLetter));
       IQuantity quantityForce = new Force(0, Units.ForceUnit);
       string unitforceAbbreviation = string.Concat(quantityForce.ToString().Where(char.IsLetter));
@@ -126,8 +126,8 @@ namespace AdSecGH.Parameters
         Point3d point = (Point3d)source;
         ILoad load = ILoad.Create(
             new Force(point.X, Units.ForceUnit),
-            new Oasys.Units.Moment(point.Y, Units.MomentUnit),
-            new Oasys.Units.Moment(point.Z, Units.MomentUnit));
+            new Moment(point.Y, Units.MomentUnit),
+            new Moment(point.Z, Units.MomentUnit));
         AdSecLoadGoo temp = new AdSecLoadGoo(load);
         this.Value = temp.Value;
         return true;
@@ -139,8 +139,8 @@ namespace AdSecGH.Parameters
         Point3d point = ptGoo.Value;
         ILoad load = ILoad.Create(
             new Force(point.X, Units.ForceUnit),
-            new Oasys.Units.Moment(point.Y, Units.MomentUnit),
-            new Oasys.Units.Moment(point.Z, Units.MomentUnit));
+            new Moment(point.Y, Units.MomentUnit),
+            new Moment(point.Z, Units.MomentUnit));
         AdSecLoadGoo temp = new AdSecLoadGoo(load);
         this.Value = temp.Value;
         return true;
@@ -152,8 +152,8 @@ namespace AdSecGH.Parameters
         Point3d point = pt;
         ILoad load = ILoad.Create(
             new Force(point.X, Units.ForceUnit),
-            new Oasys.Units.Moment(point.Y, Units.MomentUnit),
-            new Oasys.Units.Moment(point.Z, Units.MomentUnit));
+            new Moment(point.Y, Units.MomentUnit),
+            new Moment(point.Z, Units.MomentUnit));
         AdSecLoadGoo temp = new AdSecLoadGoo(load);
         this.Value = temp.Value;
         return true;

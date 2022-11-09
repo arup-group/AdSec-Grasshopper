@@ -1,28 +1,14 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
+using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Oasys.Units;
-using UnitsNet;
 using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.AdSec.StandardMaterials;
-using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.AdSec.Reinforcement.Layers;
-using AdSecGH.Parameters;
-using Rhino.Geometry;
-using System.Collections.Generic;
-using UnitsNet.GH;
-using UnitsNet.Units;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    public class FindCrackLoad : GH_OasysComponent
+  public class FindCrackLoad : GH_OasysComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -110,7 +96,7 @@ namespace AdSecGH.Components
             double increment = 1;
             DA.GetData(3, ref increment);
 
-            Length maxCrack = GetInput.Length(this, DA, 4, Units.LengthUnit);
+            Length maxCrack = GetInput.GetLength(this, DA, 4, Units.LengthUnit);
 
             ForceUnit forceUnit = Units.ForceUnit;
             MomentUnit momentUnit = Units.MomentUnit;

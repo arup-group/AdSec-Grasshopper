@@ -22,7 +22,7 @@ using GH_IO;
 using GH_IO.Serialization;
 using Rhino.Display;
 using Oasys.AdSec.Materials.StressStrainCurves;
-using UnitsNet;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {
@@ -34,7 +34,7 @@ namespace AdSecGH.Parameters
       m_value = point;
       this.m_SSpoint = IStressStrainPoint.Create(
           new Pressure(m_value.Y, Units.StressUnit),
-          new Oasys.Units.Strain(m_value.X, Units.StrainUnit));
+          new Strain(m_value.X, Units.StrainUnit));
     }
     public AdSecStressStrainPointGoo(AdSecStressStrainPointGoo stressstrainPoint)
     {
@@ -49,7 +49,7 @@ namespace AdSecGH.Parameters
           m_SSpoint.Stress.As(Units.StressUnit),
           0);
     }
-    public AdSecStressStrainPointGoo(Pressure stress, Oasys.Units.Strain strain)
+    public AdSecStressStrainPointGoo(Pressure stress, Strain strain)
     {
       m_SSpoint = IStressStrainPoint.Create(stress, strain);
       m_value = new Point3d(
@@ -62,7 +62,7 @@ namespace AdSecGH.Parameters
     {
       return IStressStrainPoint.Create(
           new Pressure(point.Y, Units.StressUnit),
-          new Oasys.Units.Strain(point.X, Units.StrainUnit));
+          new Strain(point.X, Units.StrainUnit));
     }
 
     private IStressStrainPoint m_SSpoint;
@@ -73,7 +73,7 @@ namespace AdSecGH.Parameters
 
     public override string ToString()
     {
-      IQuantity quantityStrain = new Oasys.Units.Strain(0, Units.StrainUnit);
+      IQuantity quantityStrain = new Strain(0, Units.StrainUnit);
       string unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
       IQuantity quantityStress = new Pressure(0, Units.StressUnit);
       string unitStressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
@@ -149,7 +149,7 @@ namespace AdSecGH.Parameters
       {
         target = (TQ)(object)IStressStrainPoint.Create(
             new Pressure(Value.Y, Units.StressUnit),
-            new Oasys.Units.Strain(Value.X, Units.StrainUnit));
+            new Strain(Value.X, Units.StrainUnit));
         return true;
       }
 

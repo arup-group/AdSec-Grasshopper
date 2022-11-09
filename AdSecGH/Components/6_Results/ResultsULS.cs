@@ -3,8 +3,8 @@ using System.Linq;
 using System.Reflection;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Oasys.Units;
-using UnitsNet;
+using OasysUnits.Units;
+using OasysUnits;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -51,7 +51,7 @@ namespace AdSecGH.Components
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            string strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
+            string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
             IQuantity curvature = new Curvature(0, Units.CurvatureUnit);
             string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
             IQuantity moment = new Moment(0, Units.MomentUnit);
@@ -117,7 +117,7 @@ namespace AdSecGH.Components
             }
 
             DA.SetData(0, new AdSecLoadGoo(uls.Load, solution.LocalPlane));
-            double util = uls.LoadUtilisation.As(UnitsNet.Units.RatioUnit.DecimalFraction);
+            double util = uls.LoadUtilisation.As(RatioUnit.DecimalFraction);
             DA.SetData(1, util);
             if (util > 1)
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Utilisation is above 1!");
@@ -127,7 +127,7 @@ namespace AdSecGH.Components
                 ulsDeformationResult.X.As(Units.StrainUnit),
                 ulsDeformationResult.YY.As(Units.CurvatureUnit),
                 ulsDeformationResult.ZZ.As(Units.CurvatureUnit)));
-            double defUtil = uls.DeformationUtilisation.As(UnitsNet.Units.RatioUnit.DecimalFraction);
+            double defUtil = uls.DeformationUtilisation.As(RatioUnit.DecimalFraction);
             DA.SetData(3, defUtil);
             if (defUtil > 1)
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Deformation utilisation is above 1!");
@@ -158,7 +158,7 @@ namespace AdSecGH.Components
                 offsetSI = 0.0;
 
             // temp length in SI units
-            Length tempOffset = new Length(offsetSI, UnitsNet.Units.LengthUnit.Meter);
+            Length tempOffset = new Length(offsetSI, LengthUnit.Meter);
 
             // offset in user selected unit
             Length offset = new Length(tempOffset.As(Units.LengthUnit), Units.LengthUnit);
@@ -166,7 +166,7 @@ namespace AdSecGH.Components
             // compute angle
             double angleRadians = Math.Atan2(kZZ, kYY);
             // temp angle in radians
-            Angle tempAngle = new Angle(angleRadians, UnitsNet.Units.AngleUnit.Radian);
+            Angle tempAngle = new Angle(angleRadians, AngleUnit.Radian);
 
             // calculate temp plane for width of neutral line
             Plane tempPlane = local.Clone();

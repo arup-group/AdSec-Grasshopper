@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Grasshopper;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Parameters;
-using Rhino.Geometry;
-using Oasys.AdSec.Materials.StressStrainCurves;
 using AdSecGH.Parameters;
-using UnitsNet.GH;
-using Oasys.Profiles;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Reinforcement;
-using UnitsNet;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    public class CreateRebar : GH_OasysComponent, IGH_VariableParameterComponent
+  public class CreateRebar : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         public CreateRebar()
@@ -44,7 +38,7 @@ namespace AdSecGH.Components
                 selecteditems.Add(dropdownitems[0][0]);
 
                 // length
-                //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                //dropdownitems.Add(Enum.GetNames(typeof(Units.LengthUnit)).ToList());
                 dropdownitems.Add(Units.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
@@ -68,12 +62,12 @@ namespace AdSecGH.Components
             }
             else
             {
-                lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+                lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
             }
         }
         private void UpdateUIFromSelectedItems()
         {
-            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
+            lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[1]);
             CreateAttributes();
             ToggleInput();
         }
@@ -87,7 +81,7 @@ namespace AdSecGH.Components
             "Rebar Type",
             "Measure"
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
+        private LengthUnit lengthUnit = Units.LengthUnit;
         string unitAbbreviation;
         #endregion
 
@@ -113,7 +107,7 @@ namespace AdSecGH.Components
                     AdSecRebarBundleGoo rebar = new AdSecRebarBundleGoo(
                         IBarBundle.Create(
                             (Oasys.AdSec.Materials.IReinforcement)material.Material,
-                            GetInput.Length(this, DA, 1, lengthUnit)));
+                            GetInput.GetLength(this, DA, 1, lengthUnit)));
                     
                     DA.SetData(0, rebar);
 
@@ -126,7 +120,7 @@ namespace AdSecGH.Components
                     AdSecRebarBundleGoo bundle = new AdSecRebarBundleGoo(
                     IBarBundle.Create(
                         (Oasys.AdSec.Materials.IReinforcement)material.Material,
-                        GetInput.Length(this, DA, 1, lengthUnit),
+                        GetInput.GetLength(this, DA, 1, lengthUnit),
                         count));
 
                     DA.SetData(0, bundle);

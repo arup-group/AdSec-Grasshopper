@@ -24,7 +24,7 @@ using Rhino.Display;
 using Oasys.AdSec.Materials;
 using Oasys.Profiles;
 using Oasys.AdSec;
-using UnitsNet;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {
@@ -47,8 +47,8 @@ namespace AdSecGH.Parameters
     }
     public override string ToString()
     {
-      string strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
-      IQuantity curvature = new Oasys.Units.Curvature(0, Units.CurvatureUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
+      IQuantity curvature = new Curvature(0, Units.CurvatureUnit);
       string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
       return "AdSec " + TypeName + " {"
           + Math.Round(this.Value.X.As(Units.StrainUnit), 4) + strainUnitAbbreviation + ", "

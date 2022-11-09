@@ -1,27 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Oasys.Units;
-using UnitsNet;
 using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.AdSec.StandardMaterials;
-using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.AdSec.Reinforcement.Layers;
-using AdSecGH.Parameters;
+using OasysUnits;
+using OasysUnits.Units;
 using Rhino.Geometry;
-using System.Collections.Generic;
-using UnitsNet.GH;
 
 namespace AdSecGH.Components
 {
-    public class ResultsSLS : GH_OasysComponent
+  public class ResultsSLS : GH_OasysComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -52,7 +42,7 @@ namespace AdSecGH.Components
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            string strainUnitAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
+            string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
             IQuantity curvature = new Curvature(0, Units.CurvatureUnit);
             string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
             IQuantity axial = new AxialStiffness(0, Units.AxialStiffnessUnit);
@@ -138,7 +128,7 @@ namespace AdSecGH.Components
             if (sls.MaximumWidthCrack != null && sls.MaximumWidthCrack.Width.Meters < 1)
                 DA.SetData(2, new AdSecCrackGoo(sls.MaximumWidthCrack, solution.LocalPlane));
 
-            double util = sls.CrackingUtilisation.As(UnitsNet.Units.RatioUnit.DecimalFraction);
+            double util = sls.CrackingUtilisation.As(RatioUnit.DecimalFraction);
             DA.SetData(3, util);
             if (util > 1)
             {

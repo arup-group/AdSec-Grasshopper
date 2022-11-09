@@ -1,31 +1,18 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Reflection;
-using Grasshopper.Kernel.Attributes;
-using Grasshopper.GUI.Canvas;
-using Grasshopper.GUI;
-using Grasshopper.Kernel;
-using Grasshopper;
-using Rhino.Geometry;
-using System.Windows.Forms;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Parameters;
+using System.Linq;
 using AdSecGH.Parameters;
-using System.Resources;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
-using UnitsNet.GH;
-using UnitsNet;
+using Grasshopper.Kernel;
 using Oasys.AdSec;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    /// <summary>
-    /// Component to create a new Stress Strain Point
-    /// </summary>
-    public class CreateLoad : GH_OasysComponent, IGH_VariableParameterComponent
+  /// <summary>
+  /// Component to create a new Stress Strain Point
+  /// </summary>
+  public class CreateLoad : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -61,7 +48,7 @@ namespace AdSecGH.Components
                 IQuantity force = new Force(0, forceUnit);
                 
                 forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-                momentUnitAbbreviation = Oasys.Units.Moment.GetAbbreviation(momentUnit);
+                momentUnitAbbreviation = Moment.GetAbbreviation(momentUnit);
 
                 first = false;
             }
@@ -77,10 +64,10 @@ namespace AdSecGH.Components
             switch (i)
             {
                 case 0:
-                    forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[i]);
+                    forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), selecteditems[i]);
                     break;
                 case 1:
-                    momentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), selecteditems[i]);
+                    momentUnit = (MomentUnit)Enum.Parse(typeof(MomentUnit), selecteditems[i]);
                     break;
             }
 
@@ -93,8 +80,8 @@ namespace AdSecGH.Components
 
         private void UpdateUIFromSelectedItems()
         {
-            forceUnit = (UnitsNet.Units.ForceUnit)Enum.Parse(typeof(UnitsNet.Units.ForceUnit), selecteditems[0]);
-            momentUnit = (Oasys.Units.MomentUnit)Enum.Parse(typeof(Oasys.Units.MomentUnit), selecteditems[1]);
+            forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), selecteditems[0]);
+            momentUnit = (MomentUnit)Enum.Parse(typeof(MomentUnit), selecteditems[1]);
 
             CreateAttributes();
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
@@ -118,8 +105,8 @@ namespace AdSecGH.Components
         });
         private bool first = true;
 
-        private UnitsNet.Units.ForceUnit forceUnit = Units.ForceUnit;
-        private Oasys.Units.MomentUnit momentUnit = Units.MomentUnit;
+        private ForceUnit forceUnit = Units.ForceUnit;
+        private MomentUnit momentUnit = Units.MomentUnit;
         string forceUnitAbbreviation;
         string momentUnitAbbreviation;
         #endregion
@@ -142,9 +129,9 @@ namespace AdSecGH.Components
         {
             // Create new load
             ILoad load = ILoad.Create(
-                GetInput.Force(this, DA, 0, forceUnit, true),
-                GetInput.Moment(this, DA, 1, momentUnit, true),
-                GetInput.Moment(this, DA, 2, momentUnit, true));
+                GetInput.GetForce(this, DA, 0, forceUnit, true),
+                GetInput.GetMoment(this, DA, 1, momentUnit, true),
+                GetInput.GetMoment(this, DA, 2, momentUnit, true));
 
             // check for enough input parameters
             if (this.Params.Input[0].SourceCount == 0 && this.Params.Input[1].SourceCount == 0
@@ -197,7 +184,7 @@ namespace AdSecGH.Components
         {
             IQuantity force = new Force(0, forceUnit);
             forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-            momentUnitAbbreviation = Oasys.Units.Moment.GetAbbreviation(momentUnit);
+            momentUnitAbbreviation = Moment.GetAbbreviation(momentUnit);
             Params.Input[0].Name = "Fx [" + forceUnitAbbreviation + "]";
             Params.Input[1].Name = "Myy [" + momentUnitAbbreviation + "]";
             Params.Input[2].Name = "Mzz [" + momentUnitAbbreviation + "]";

@@ -25,7 +25,7 @@ using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.AdSec;
-using UnitsNet;
+using OasysUnits;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Preloads;
 
@@ -255,7 +255,7 @@ namespace AdSecGH.Parameters
               IPreStrain strain = (IPreStrain)longitudinal.Preload;
               if (strain.Strain.Value != 0)
               {
-                string unitstrainAbbreviation = Oasys.Units.Strain.GetAbbreviation(Units.StrainUnit);
+                string unitstrainAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
                 m_preLoad = ", " + Math.Round(strain.Strain.As(Units.StrainUnit), 4) + unitstrainAbbreviation + " prestress";
               }
             }

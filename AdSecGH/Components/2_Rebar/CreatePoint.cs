@@ -1,27 +1,15 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
-using Oasys.Units;
-using UnitsNet;
-using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.AdSec.StandardMaterials;
-using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.AdSec.Reinforcement.Layers;
-using AdSecGH.Parameters;
-using Rhino.Geometry;
 using System.Collections.Generic;
-using UnitsNet.GH;
+using System.Linq;
+using AdSecGH.Parameters;
+using Grasshopper.Kernel;
+using Oasys.Profiles;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    public class CreatePoint : GH_OasysComponent, IGH_VariableParameterComponent
+  public class CreatePoint : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -48,7 +36,7 @@ namespace AdSecGH.Components
                 selecteditems = new List<string>();
 
                 // length
-                //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.LengthUnit)).ToList());
+                //dropdownitems.Add(Enum.GetNames(typeof(Units.LengthUnit)).ToList());
                 dropdownitems.Add(Units.FilteredLengthUnits);
                 selecteditems.Add(lengthUnit.ToString());
 
@@ -65,7 +53,7 @@ namespace AdSecGH.Components
             // change selected item
             selecteditems[i] = dropdownitems[i][j];
 
-            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+            lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
 
             // update name of inputs (to display unit on sliders)
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
@@ -76,7 +64,7 @@ namespace AdSecGH.Components
 
         private void UpdateUIFromSelectedItems()
         {
-            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[0]);
+            lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[0]);
 
             CreateAttributes();
             (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
@@ -97,7 +85,7 @@ namespace AdSecGH.Components
             "Measure"
         });
         private bool first = true;
-        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
+        private LengthUnit lengthUnit = Units.LengthUnit;
         string unitAbbreviation;
 
 
@@ -115,8 +103,8 @@ namespace AdSecGH.Components
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             // get inputs
-            Length y = GetInput.Length(this, DA, 0, lengthUnit);
-            Length z = GetInput.Length(this, DA, 1, lengthUnit);
+            Length y = GetInput.GetLength(this, DA, 0, lengthUnit);
+            Length z = GetInput.GetLength(this, DA, 1, lengthUnit);
 
             // create IPoint
             IPoint pt = IPoint.Create(y, z);

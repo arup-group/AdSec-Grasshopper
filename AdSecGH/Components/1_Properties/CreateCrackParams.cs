@@ -1,30 +1,17 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Reflection;
-using Grasshopper.Kernel.Attributes;
-using Grasshopper.GUI.Canvas;
-using Grasshopper.GUI;
-using Grasshopper.Kernel;
-using Grasshopper;
-using Rhino.Geometry;
-using System.Windows.Forms;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Parameters;
+using System.Linq;
 using AdSecGH.Parameters;
-using System.Resources;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
-using UnitsNet.GH;
-using UnitsNet;
+using Grasshopper.Kernel;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    /// <summary>
-    /// Component to create a new Concrete Crack Calculation Parameters
-    /// </summary>
-    public class CreateConcreteCrackCalculationParameters : GH_OasysComponent, IGH_VariableParameterComponent
+  /// <summary>
+  /// Component to create a new Concrete Crack Calculation Parameters
+  /// </summary>
+  public class CreateConcreteCrackCalculationParameters : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         // This region handles how the component in displayed on the ribbon
@@ -50,12 +37,12 @@ namespace AdSecGH.Components
         selecteditems = new List<string>();
 
         // pressure E
-        //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+        //dropdownitems.Add(Enum.GetNames(typeof(Units.PressureUnit)).ToList());
         dropdownitems.Add(Units.FilteredStressUnits);
         selecteditems.Add(strengthUnit.ToString());
 
         // pressure stress
-        //dropdownitems.Add(Enum.GetNames(typeof(UnitsNet.Units.PressureUnit)).ToList());
+        //dropdownitems.Add(Enum.GetNames(typeof(Units.PressureUnit)).ToList());
         dropdownitems.Add(Units.FilteredStressUnits);
         selecteditems.Add(strengthUnit.ToString());
 
@@ -78,10 +65,10 @@ namespace AdSecGH.Components
       switch (i)
       {
         case 0:
-          stressUnitE = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
+          stressUnitE = (PressureUnit)Enum.Parse(typeof(PressureUnit), selecteditems[i]);
           break;
         case 1:
-          strengthUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[i]);
+          strengthUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), selecteditems[i]);
           break;
       }
 
@@ -94,8 +81,8 @@ namespace AdSecGH.Components
 
     private void UpdateUIFromSelectedItems()
     {
-      stressUnitE = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[0]);
-      strengthUnit = (UnitsNet.Units.PressureUnit)Enum.Parse(typeof(UnitsNet.Units.PressureUnit), selecteditems[1]);
+      stressUnitE = (PressureUnit)Enum.Parse(typeof(PressureUnit), selecteditems[0]);
+      strengthUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), selecteditems[1]);
 
       CreateAttributes();
       ExpireSolution(true);
@@ -118,8 +105,8 @@ namespace AdSecGH.Components
             "Strength Unit"
     });
     private bool first = true;
-    private UnitsNet.Units.PressureUnit stressUnitE = Units.StressUnit;
-    private UnitsNet.Units.PressureUnit strengthUnit = Units.StressUnit;
+    private PressureUnit stressUnitE = Units.StressUnit;
+    private PressureUnit strengthUnit = Units.StressUnit;
     string unitEAbbreviation;
     string unitSAbbreviation;
     #endregion
@@ -137,19 +124,19 @@ namespace AdSecGH.Components
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
-      Pressure modulus = GetInput.Stress(this, DA, 0, stressUnitE);
+      Pressure modulus = GetInput.GetStress(this, DA, 0, stressUnitE);
       if (modulus.Value < 0)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
         modulus = new Pressure(Math.Abs(modulus.Value), modulus.Unit);
       }
-      Pressure compression = GetInput.Stress(this, DA, 1, strengthUnit);
+      Pressure compression = GetInput.GetStress(this, DA, 1, strengthUnit);
       if (compression.Value > 0)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
         compression = new Pressure(compression.Value * -1, compression.Unit);
       }
-      Pressure tension = GetInput.Stress(this, DA, 2, strengthUnit);
+      Pressure tension = GetInput.GetStress(this, DA, 2, strengthUnit);
       if (tension.Value < 0)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");

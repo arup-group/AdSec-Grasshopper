@@ -1,27 +1,10 @@
-﻿using System;
+﻿using OasysUnits;
+using OasysUnits.Units;
+using Rhino;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rhino;
-using System.Reflection;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
-using Rhino.Geometry;
-using Grasshopper.Documentation;
-using Rhino.Collections;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.AdSec;
-using Oasys.AdSec.StandardMaterials;
-using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.AdSec.Reinforcement.Layers;
-using UnitsNet;
-using UnitsNet.Units;
-using Oasys.Units;
+using UnitSystem = OasysUnits.UnitSystem;
 
 namespace AdSecGH
 {
@@ -69,7 +52,7 @@ namespace AdSecGH
         BaseUnits units = new BaseUnits(
             m_length,
             m_units.BaseUnits.Mass, m_units.BaseUnits.Time, m_units.BaseUnits.Current, m_units.BaseUnits.Temperature, m_units.BaseUnits.Amount, m_units.BaseUnits.LuminousIntensity);
-        m_units = new UnitsNet.UnitSystem(units);
+        m_units = new UnitSystem(units);
       }
     }
     private static LengthUnit m_length;
@@ -183,12 +166,12 @@ namespace AdSecGH
         };
     #endregion
     #region unit system
-    public static UnitsNet.UnitSystem UnitSystem
+    public static UnitSystem UnitSystem
     {
       get { return m_units; }
       set { m_units = value; }
     }
-    private static UnitsNet.UnitSystem m_units;
+    private static UnitSystem m_units;
     #endregion
     #region methods
     internal static void SetupUnits()
@@ -201,12 +184,12 @@ namespace AdSecGH
         SaveSettings();
       }
       // get SI units
-      UnitsNet.UnitSystem si = UnitsNet.UnitSystem.SI;
+      UnitSystem si = UnitSystem.SI;
 
       BaseUnits units = new BaseUnits(
           m_length,
           si.BaseUnits.Mass, si.BaseUnits.Time, si.BaseUnits.Current, si.BaseUnits.Temperature, si.BaseUnits.Amount, si.BaseUnits.LuminousIntensity);
-      m_units = new UnitsNet.UnitSystem(units);
+      m_units = new UnitSystem(units);
 
     }
     internal static void SaveSettings()

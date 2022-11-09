@@ -17,8 +17,8 @@ using Oasys.Profiles;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using UnitsNet;
-using Oasys.Units;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Parameters
 {

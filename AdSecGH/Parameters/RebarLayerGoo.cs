@@ -23,6 +23,7 @@ using GH_IO.Serialization;
 using Rhino.Display;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement.Layers;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {
@@ -46,7 +47,7 @@ namespace AdSecGH.Parameters
     public override string ToString()
     {
       string bar = "";
-      UnitsNet.Length dia = this.Value.BarBundle.Diameter.ToUnit(Units.LengthUnit);
+      Length dia = this.Value.BarBundle.Diameter.ToUnit(Units.LengthUnit);
       bar += "Ø" + dia.ToString();
       if (this.Value.BarBundle.CountPerBundle > 1)
       {
@@ -64,7 +65,7 @@ namespace AdSecGH.Parameters
         try
         {
           ILayerByBarPitch byBarPitch = (ILayerByBarPitch)Value;
-          UnitsNet.Length spacing = byBarPitch.Pitch.ToUnit(Units.LengthUnit);
+          Length spacing = byBarPitch.Pitch.ToUnit(Units.LengthUnit);
           str = bar + " bars / " + spacing.ToString();
         }
         catch (Exception)

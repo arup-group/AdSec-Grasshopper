@@ -1,24 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Grasshopper;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Parameters;
-using Rhino.Geometry;
-using Oasys.AdSec.Materials.StressStrainCurves;
 using AdSecGH.Parameters;
-using UnitsNet.GH;
-using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement.Groups;
-using UnitsNet;
-using Oasys.AdSec.Reinforcement.Layers;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Groups;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    public class CreateReinforcementGroup : GH_OasysComponent, IGH_VariableParameterComponent
+  public class CreateReinforcementGroup : GH_OasysComponent, IGH_VariableParameterComponent
     {
         #region Name and Ribbon Layout
         public CreateReinforcementGroup()
@@ -72,14 +65,14 @@ namespace AdSecGH.Components
             }
             else
             {
-                lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[i]);
+                lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
             }
             
         }
         private void UpdateUIFromSelectedItems()
         {
             _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
-            lengthUnit = (UnitsNet.Units.LengthUnit)Enum.Parse(typeof(UnitsNet.Units.LengthUnit), selecteditems[1]);
+            lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[1]);
             CreateAttributes();
             ToggleInput();
         }
@@ -93,7 +86,7 @@ namespace AdSecGH.Components
             "Group Type",
             "Measure",
         });
-        private UnitsNet.Units.LengthUnit lengthUnit = Units.LengthUnit;
+        private LengthUnit lengthUnit = Units.LengthUnit;
         string unitAbbreviation;
         #endregion
 
