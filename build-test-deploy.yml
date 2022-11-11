@@ -109,8 +109,8 @@ steps:
       Created from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
     assets: |
       $(System.DefaultWorkingDirectory)/**/*.yak
-      $(Build.ArtifactStagingDirectory)/**/*.nupkg
-      $(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg
+      $(System.DefaultWorkingDirectory)/**/*.nupkg
+      $(System.DefaultWorkingDirectory)/**/*.snupkg
     assetUploadMode: 'replace'
     isDraft: true
     isPreRelease: true
