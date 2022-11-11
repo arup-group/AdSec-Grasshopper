@@ -10,7 +10,7 @@
     <RepositoryUrl>https://github.com/arup-group/AdSec-Grasshopper</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>AdSecLogo128.png</PackageIcon>
-    <Version>0.9.8-beta</Version>
+    <Version>0.9.9-beta</Version>
     <Description>Official Oasys AdSec Grasshopper Plugin
 
 AdSecGH is pre-release and under active development, including further testing to be undertaken. It is provided "as-is" and you bear the risk of using it. Future versions may contain breaking changes. Any files, results, or other types of output information created using AdSecGH should not be relied upon without thorough and independent checking.
@@ -20,6 +20,7 @@ The plugin requires a licensed version of AdSec to load.
 Contact oasys@arup.com to request a free trial version.
 
 Copyright © Oasys 1985 - 2022</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Properties\Icons\Icons\**" />
@@ -51,14 +52,12 @@ Copyright © Oasys 1985 - 2022</Description>
     <PackageReference Include="AdSec">
       <Version>2.0.0.21</Version>
     </PackageReference>
-    <PackageReference Include="Grasshopper">
-      <Version>6.27.20176.5001</Version>
-    </PackageReference>
+    <PackageReference Include="Grasshopper" Version="6.27.20176.5001" IncludeAssets="compile;build" />
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="OasysGH">
-      <Version>0.4.0-beta</Version>
+      <Version>0.4.2-beta</Version>
     </PackageReference>
     <PackageReference Include="OasysUnits">
       <Version>1.0.0</Version>
@@ -71,7 +70,7 @@ Copyright © Oasys 1985 - 2022</Description>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\AdSecLogo128.png" Pack="true" PackagePath=""/>
+    <None Include="Properties\Icons\AdSecLogo128.png" Pack="true" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Properties\Icons\AdSecLogo64.png">
