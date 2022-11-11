@@ -76,10 +76,10 @@ steps:
     ignoreLASTEXITCODE: true
 
 - powershell: |
-    cd AdSecGH\bin\x64
+    cd AdSecGH\bin\x64\Release
     curl https://files.mcneel.com/yak/tools/latest/yak.exe -o yak.exe
     .\yak version
-    cd Release
+    cd net48
     ..\yak spec
     Add-Content manifest.yml 'icon: AdSecIcon.png'
     ..\yak build --platform win
