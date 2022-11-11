@@ -20,6 +20,7 @@ The plugin requires a licensed version of AdSec to load.
 Contact oasys@arup.com to request a free trial version.
 
 Copyright © Oasys 1985 - 2022</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Properties\Icons\Icons\**" />
@@ -51,14 +52,12 @@ Copyright © Oasys 1985 - 2022</Description>
     <PackageReference Include="AdSec">
       <Version>2.0.0.21</Version>
     </PackageReference>
-    <PackageReference Include="Grasshopper">
-      <Version>6.27.20176.5001</Version>
-    </PackageReference>
+    <PackageReference Include="Grasshopper" Version="6.27.20176.5001" IncludeAssets="compile;build" />
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="OasysGH">
-      <Version>0.4.0-beta</Version>
+      <Version>0.4.2-beta</Version>
     </PackageReference>
     <PackageReference Include="OasysUnits">
       <Version>1.0.0</Version>
@@ -71,7 +70,7 @@ Copyright © Oasys 1985 - 2022</Description>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\AdSecLogo128.png" Pack="true" PackagePath=""/>
+    <None Include="Properties\Icons\AdSecLogo128.png" Pack="true" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Properties\Icons\AdSecLogo64.png">
