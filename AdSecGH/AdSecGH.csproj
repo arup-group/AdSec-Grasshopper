@@ -10,7 +10,7 @@
     <RepositoryUrl>https://github.com/arup-group/AdSec-Grasshopper</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>AdSecLogo128.png</PackageIcon>
-    <Version>0.9.8-beta</Version>
+    <Version>0.9.9-beta</Version>
     <Description>Official Oasys AdSec Grasshopper Plugin
 
 AdSecGH is pre-release and under active development, including further testing to be undertaken. It is provided "as-is" and you bear the risk of using it. Future versions may contain breaking changes. Any files, results, or other types of output information created using AdSecGH should not be relied upon without thorough and independent checking.
