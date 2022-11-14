@@ -2,6 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <Deterministic>true</Deterministic>
+	<PlatformTarget>x64</PlatformTarget>
+	<Platforms>x64</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
