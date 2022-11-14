@@ -76,7 +76,7 @@ steps:
     ignoreLASTEXITCODE: true
 
 - powershell: |
-    cd AdSecGH\bin\x64\Release
+    cd \AdSecGH\bin\x64\Release\net48\
     curl https://files.mcneel.com/yak/tools/latest/yak.exe -o yak.exe
     .\yak version
     cd net48
