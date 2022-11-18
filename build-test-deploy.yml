@@ -41,6 +41,7 @@ steps:
 - powershell: |
     dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.2.0\build --results-directory .\results .\AdSecGHTests\bin\x64\Release\net6.0\AdSecGHTests.dll
   displayName: dotnet tests
+  failOnStderr: true
 
 - task: PowerShell@2
   displayName: Check for existing tags
