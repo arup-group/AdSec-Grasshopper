@@ -60,7 +60,7 @@ Copyright © Oasys 1985 - 2022</Description>
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="OasysGH">
-      <Version>0.4.2-beta</Version>
+      <Version>0.4.3-beta</Version>
     </PackageReference>
     <PackageReference Include="OasysUnits">
       <Version>1.0.0</Version>
