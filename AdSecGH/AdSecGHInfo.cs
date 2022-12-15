@@ -144,7 +144,7 @@ namespace AdSecGH
     internal const string Company = "Oasys";
     internal const string Copyright = "Copyright © Oasys 1985 - 2022";
     internal const string Contact = "https://www.oasys-software.com/";
-    internal const string Vers = "0.9.11";
+    internal const string Vers = "0.9.12";
     internal static bool isBeta = true;
     internal const string ProductName = "AdSec";
     internal const string PluginName = "AdSecGH";
