@@ -1,44 +1,33 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1B0D92BF-3C51-45D4-8197-696C357F5C7D}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AdSecGH</RootNamespace>
-    <AssemblyName>AdSecGH</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
+    <TargetFramework>net48</TargetFramework>
+    <AutoGenerateBindingRedirects>False</AutoGenerateBindingRedirects>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Platforms>x64</Platforms>
+    <Title>AdSecGH</Title>
+    <Company>Oasys</Company>
+    <Copyright>Copyright © Oasys 1985 - 2022</Copyright>
+    <PackageProjectUrl>https://github.com/arup-group/AdSec-Grasshopper</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/arup-group/AdSec-Grasshopper</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>AdSecLogo128.png</PackageIcon>
+    <Version>0.9.11-beta</Version>
+    <Description>Official Oasys AdSec Grasshopper Plugin
+
+AdSecGH is pre-release and under active development, including further testing to be undertaken. It is provided "as-is" and you bear the risk of using it. Future versions may contain breaking changes. Any files, results, or other types of output information created using AdSecGH should not be relied upon without thorough and independent checking.
+
+The plugin requires a licensed version of AdSec to load.
+
+Contact oasys@arup.com to request a free trial version.
+
+Copyright © Oasys 1985 - 2022</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Properties\Icons\Icons\**" />
+    <EmbeddedResource Remove="Properties\Icons\Icons\**" />
+    <None Remove="Properties\Icons\Icons\**" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -51,305 +40,55 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\0_AdSec\OpenAdSec.cs" />
-    <Compile Include="Components\0_AdSec\SectionSVG.cs" />
-    <Compile Include="Components\0_AdSec\SaveAdSec.cs" />
-    <Compile Include="Components\0_AdSec\CreateUnitNumber.cs" />
-    <Compile Include="Components\0_AdSec\ConvertUnitNumber.cs" />
-    <Compile Include="Components\1_Properties\CreateConcreteCrackCalculationParameters.cs" />
-    <Compile Include="Components\1_Properties\CreateStressStrainPoint.cs" />
-    <Compile Include="Components\1_Properties\CreateDesignCode.cs" />
-    <Compile Include="Components\1_Properties\CreateStandardMaterial.cs" />
-    <Compile Include="Components\1_Properties\CreateStressStrainCurve.cs" />
-    <Compile Include="Components\1_Properties\CreateCustomMaterial.cs" />
-    <Compile Include="Components\1_Properties\EditCrackParams.cs" />
-    <Compile Include="Components\1_Properties\EditMaterial.cs" />
-    <Compile Include="Components\2_Profile\ProfileProperties.cs" />
-    <Compile Include="Components\2_Profile\CreateProfile.cs" />
-    <Compile Include="Components\2_Rebar\CreatePoint.cs" />
-    <Compile Include="Components\2_Rebar\CreateRebarGroup.cs" />
-    <Compile Include="Components\2_Rebar\CreateRebarSpacing.cs" />
-    <Compile Include="Components\2_Rebar\CreateRebar.cs" />
-    <Compile Include="Components\2_Rebar\CreateRebarLayout.cs" />
-    <Compile Include="Components\2_Profile\CreateProfileWeb.cs" />
-    <Compile Include="Components\2_Profile\CreateProfileFlange.cs" />
-    <Compile Include="Components\3_Section\EditSection.cs" />
-    <Compile Include="Components\3_Section\CreateSection.cs" />
-    <Compile Include="Components\3_Section\CreateSubComponent.cs" />
-    <Compile Include="Components\2_Profile\EditProfile.cs" />
-    <Compile Include="Components\4_Loads\CreateDeformation.cs" />
-    <Compile Include="Components\4_Loads\CreatePreLoad.cs" />
-    <Compile Include="Components\4_Loads\CreateLoad.cs" />
-    <Compile Include="Components\5_Solution\Analyse.cs" />
-    <Compile Include="Components\6_Results\NMDiagram.cs" />
-    <Compile Include="Components\3_Section\FlattenRebar.cs" />
-    <Compile Include="Components\6_Results\RebarStressStrain.cs" />
-    <Compile Include="Components\6_Results\ConcreteStressStrain.cs" />
-    <Compile Include="Components\6_Results\ResultsSLS.cs" />
-    <Compile Include="Components\6_Results\ResultsULS.cs" />
-    <Compile Include="AdSecGHInfo.cs" />
-    <Compile Include="Components\Lab\FindCrackLoad.cs" />
-    <Compile Include="Helpers\_DeSerialization.cs" />
-    <Compile Include="Helpers\AdSecFile.cs" />
-    <Compile Include="Helpers\_GetInputs.cs" />
-    <Compile Include="Helpers\_GhRibbonLayout.cs" />
-    <Compile Include="Helpers\_ResultsHelper.cs" />
-    <Compile Include="Helpers\_SqlReader.cs" />
-    <Compile Include="Parameters\AdSecDesignCodeParameter.cs" />
-    <Compile Include="Parameters\AdSecSection.cs" />
-    <Compile Include="Parameters\AdSecCrackGoo.cs" />
-    <Compile Include="Parameters\AdSecPointGoo.cs" />
-    <Compile Include="Helpers\LoadMainMenu.cs" />
-    <Compile Include="Parameters\AdSecSolutionGoo.cs" />
-    <Compile Include="Parameters\AdSecDeformationGoo.cs" />
-    <Compile Include="Parameters\AdSecLoadGoo.cs" />
-    <Compile Include="Parameters\AdSecNMMCurveGoo.cs" />
-    <Compile Include="Parameters\AdSecSubComponentGoo.cs" />
-    <Compile Include="Parameters\AdSecRebarGroup.cs" />
-    <Compile Include="Parameters\AdSecRebarLayerGoo.cs" />
-    <Compile Include="Parameters\AdSecRebarBundleGoo.cs" />
-    <Compile Include="Parameters\AdSecProfileWebGoo.cs" />
-    <Compile Include="Parameters\AdSecProfileFlangeGoo.cs" />
-    <Compile Include="Parameters\AdSecFailureSurfaceGoo.cs" />
-    <Compile Include="Parameters\AdSecDesignCode.cs" />
-    <Compile Include="Parameters\AdSecMaterial.cs" />
-    <Compile Include="Helpers\_Reflection.cs" />
-    <Compile Include="Parameters\AdSecConcreteCrackCalculationParametersGoo.cs" />
-    <Compile Include="Parameters\AdSecProfileGoo.cs" />
-    <Compile Include="Parameters\AdSecStressStrainPointGoo.cs" />
-    <Compile Include="Parameters\AdSecStressStrainCurveGoo.cs" />
-    <Compile Include="Parameters\_DocUnits.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="UI\AboutBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\AboutBox.Designer.cs">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SingleButtonAttributes.cs" />
-    <Compile Include="UI\TripleButtonAttributes.cs" />
-    <Compile Include="UI\UnitSettingsBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\UnitSettingsBox.Designer.cs">
-      <DependentUpon>UnitSettingsBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\GraphicButtons.cs" />
-    <Compile Include="UI\WidthFix.cs" />
-    <Compile Include="UI\DropDownAttributes.cs" />
-    <Compile Include="UI\Colours.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="licenses\AdSec.pdf" />
     <None Include="licenses\EntityFramework" />
     <None Include="licenses\Newtonsoft" />
     <None Include="licenses\UnitsNet" />
-    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AdSec">
       <Version>2.0.0.21</Version>
     </PackageReference>
-    <PackageReference Include="Grasshopper">
-      <Version>6.27.20176.5001</Version>
+    <PackageReference Include="Grasshopper" Version="6.27.20176.5001" IncludeAssets="compile;build">
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="OasysGH">
-      <Version>0.3.11-beta</Version>
+      <Version>0.4.4-beta</Version>
     </PackageReference>
     <PackageReference Include="OasysUnits">
       <Version>1.0.0</Version>
     </PackageReference>
     <PackageReference Include="RhinoCommon">
       <Version>6.27.20176.5001</Version>
+      <IncludeAssets>compile;build</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite">
       <Version>1.0.116</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\AboutBox.resx">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\UnitSettingsBox.resx">
-      <DependentUpon>UnitSettingsBox.cs</DependentUpon>
-    </EmbeddedResource>
+    <None Include="Properties\Icons\AdSecLogo128.png" Pack="true" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\Icons\AdSecLogo.png" />
+    <None Update="Properties\Icons\AdSecLogo64.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateCrackCalcParams.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateCustomMaterial.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateDesignCode.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateFlange.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateProfile.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateWeb.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\EditCrackCalcParams.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\EditMaterial.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\EditSection.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\MaterialParam.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\Prestress.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\RebarLayout.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\RebarSpacing.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\SectionParam.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\StandardMaterial.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\UnitParam.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\Units.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\VertexPoint.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\AdSecInfo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\ConvertUnitNumber.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateLoad.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateUnitNumber.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\DeformationLoad.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\DesignCodeParameter.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\EditProfile.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\LoadParam.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\N-M.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\Rebar.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\RebarGroup.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\RebarGroupParam.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\Section.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\SLS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\SolutionParam.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\StressStrainCrv.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\StressStrainPt.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\SubComponent.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\ULS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\AdSecLogo128.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\Solution.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\OpenAdSec.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\SaveAdSec.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\SVG.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\FlattenRebar.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\StressStrainConcrete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\StressStrainRebar.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CreateSection.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\ProfileInfo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\CrackLoad.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Icons\Icons\AdSecLogo64.png" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "$(TargetDir)AdSec.gha"
-Copy "$(ProjectDir)\Properties\Icons\Icons\AdSecLogo64.png" "$(TargetDir)AdSecIcon.png"
-</PostBuildEvent>
+  <PropertyGroup Condition="$(Configuration) == 'Debug' AND $([MSBuild]::IsOSPlatform(Windows))">
+    <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
+    <StartArguments></StartArguments>
+    <StartAction>Program</StartAction>
   </PropertyGroup>
-  <PropertyGroup>
-    <FallbackCulture>en-US</FallbackCulture>
-  </PropertyGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(TargetDir)AdSec.gha&quot;&#xD;&#xA;Copy &quot;$(ProjectDir)obj\OasysUnits.dll&quot; &quot;$(TargetDir)OasysUnits.dll&quot;&#xD;&#xA;Copy &quot;Properties\Icons\AdSecLogo64.png&quot; &quot;$(TargetDir)AdSecIcon.png&quot;" />
+  </Target>
 </Project>

@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecGH", "AdSecGH\AdSecGH.csproj", "{1B0D92BF-3C51-45D4-8197-696C357F5C7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdSecGH", "AdSecGH\AdSecGH.csproj", "{1B0D92BF-3C51-45D4-8197-696C357F5C7D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdSecGHTests", "AdSecGHTests\AdSecGHTests.csproj", "{33A8752C-7015-4842-BBB8-52E6384C1866}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{12D2BD0F-9EF0-4C6F-B288-6076049E3FE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecGHConverters", "AdSecGHConverters\AdSecGHConverters.csproj", "{03A36AE0-E900-4EC3-92B0-975937D9C69F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdSecGHConverters", "AdSecGHConverters\AdSecGHConverters.csproj", "{03A36AE0-E900-4EC3-92B0-975937D9C69F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdSecGHConverterTests", "AdSecGHConverterTests\AdSecGHConverterTests.csproj", "{885C7D18-8B54-4430-A84B-8FD37CF7AD27}"
 EndProject

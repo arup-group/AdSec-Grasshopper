@@ -41,6 +41,7 @@ steps:
 - powershell: |
     dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.1.0\build --results-directory .\results\adsecgh\ .\AdSecGHTests\bin\x64\Release\net6.0\AdSecGHTests.dll
   displayName: dotnet tests
+  failOnStderr: true
 
 - task: PublishCodeCoverageResults@1
   inputs:
@@ -67,7 +68,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-        $versionInfo = $(Get-Item .\AdSecGH\bin\x64\Release\AdSecGH.dll).VersionInfo
+        $versionInfo = $(Get-Item .\AdSecGH\bin\x64\Release\net48\AdSecGH.dll).VersionInfo
         echo $versionInfo
         $fullVersion = [array]${versionInfo}.FileVersion.split('.')
         $currentTime = $(Get-Date -Format "dddd MM/dd/yyyy HH:mm")
@@ -96,10 +97,10 @@ steps:
     ignoreLASTEXITCODE: true
 
 - powershell: |
-    cd AdSecGH\bin\x64
+    cd AdSecGH\bin\x64\Release
     curl https://files.mcneel.com/yak/tools/latest/yak.exe -o yak.exe
     .\yak version
-    cd Release
+    cd net48
     ..\yak spec
     Add-Content manifest.yml 'icon: AdSecIcon.png'
     ..\yak build --platform win
@@ -118,7 +119,7 @@ steps:
 
 - task: GitHubRelease@1
   inputs:
-    gitHubConnection: 'github.com_peterjgrainger'
+    gitHubConnection: 'github.com_MJCramp'
     repositoryName: 'arup-group/AdSec-Grasshopper'
     action: 'edit'
     target: '$(Build.SourceVersion)'
