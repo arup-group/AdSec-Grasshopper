@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
+using Oasys.AdSec.Materials;
 using OasysGH;
 using OasysGH.Components;
 using OasysUnits;
@@ -21,7 +22,7 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateCrackCalcParams;
 
-    public CreateConcreteCrackCalculationParameters(): base("Create CrackCalcParams",
+    public CreateConcreteCrackCalculationParameters() : base("Create CrackCalcParams",
       "CrackCalcParams",
       "Create Concrete Crack Calculation Parameters for AdSec Material",
       Ribbon.CategoryName.Name(),
@@ -67,12 +68,10 @@ namespace AdSecGH.Components
       }
 
       // create new ccp
-      AdSecConcreteCrackCalculationParametersGoo ccp = new AdSecConcreteCrackCalculationParametersGoo(
-          modulus,
-          compression,
-          tension);
+      IConcreteCrackCalculationParameters ccp = IConcreteCrackCalculationParameters.Create(modulus, compression, tension);
+      AdSecConcreteCrackCalculationParametersGoo ccpGoo = new AdSecConcreteCrackCalculationParametersGoo(ccp);
 
-      DA.SetData(0, ccp);
+      DA.SetData(0, ccpGoo);
     }
 
     #region Custom UI
@@ -126,7 +125,7 @@ namespace AdSecGH.Components
       base.UpdateUIFromSelectedItems();
     }
     #endregion
-    
+
     #region IGH_VariableParameterComponent null implementation
     void IGH_VariableParameterComponent.VariableParameterMaintenance()
     {

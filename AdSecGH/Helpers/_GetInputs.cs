@@ -497,7 +497,7 @@ namespace AdSecGH.Components
         else if (gh_typ.Value is AdSecConcreteCrackCalculationParametersGoo)
         {
           AdSecConcreteCrackCalculationParametersGoo adsecccp = (AdSecConcreteCrackCalculationParametersGoo)gh_typ.Value;
-          concreteCrack = adsecccp.ConcreteCrackCalculationParameters;
+          concreteCrack = adsecccp.Value;
         }
         else
         {

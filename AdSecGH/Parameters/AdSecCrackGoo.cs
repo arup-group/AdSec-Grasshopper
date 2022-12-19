@@ -12,13 +12,13 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Parameters
 {
-  public class AdSecCrackGoo : GH_OasysGoo<ICrack>, IGH_PreviewData
+  public class AdSecCrackGoo : GH_OasysGeometricGoo<ICrack>, IGH_PreviewData
   {
     public static string Name => "Crack";
     public static string NickName => "Cr";
     public static string Description => "AdSec Crack Parameter";
     public AdSecCrackGoo(ICrack item) : base(item) { }
-    public override IGH_Goo Duplicate() => new AdSecCrackGoo(this.Value);
+    public override IGH_GeometricGoo Duplicate() => new AdSecCrackGoo(this.Value);
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
 
     public AdSecCrackGoo(ICrack crack, Plane local)
@@ -64,7 +64,7 @@ namespace AdSecGH.Parameters
     private Plane m_plane;
     private Line m_line;
 
-    public BoundingBox ClippingBox
+    public override BoundingBox ClippingBox
     {
       get { return Boundingbox; }
     }
@@ -79,7 +79,7 @@ namespace AdSecGH.Parameters
         return crv.GetBoundingBox(false);
       }
     }
- 
+
     public override string ToString()
     {
       IQuantity length = new Length(0, Units.LengthUnit);
@@ -89,6 +89,7 @@ namespace AdSecGH.Parameters
           + "Z:" + Math.Round(this.Value.Position.Z.As(Units.LengthUnit), 4) + unitAbbreviation + ", "
           + "Width:" + Math.Round(this.Value.Width.As(Units.LengthUnit), 4) + unitAbbreviation + "}";
     }
+
     public override bool CastTo<TQ>(out TQ target)
     {
       if (typeof(TQ).IsAssignableFrom(typeof(AdSecCrackGoo)))
@@ -148,13 +149,15 @@ namespace AdSecGH.Parameters
       target = default(TQ);
       return false;
     }
+
     public override bool CastFrom(object source)
     {
       if (source == null) return false;
 
       return false;
     }
-    public void DrawViewportWires(GH_PreviewWireArgs args)
+
+    public override void DrawViewportWires(GH_PreviewWireArgs args)
     {
       if (m_point.IsValid)
       {
@@ -166,7 +169,7 @@ namespace AdSecGH.Parameters
       }
     }
 
-    public void DrawViewportMeshes(GH_PreviewMeshArgs args)
+    public override void DrawViewportMeshes(GH_PreviewMeshArgs args)
     {
     }
 
@@ -190,6 +193,11 @@ namespace AdSecGH.Parameters
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph)
+    {
+      return null;
+    }
+
+    public override GeometryBase GetGeometry()
     {
       return null;
     }

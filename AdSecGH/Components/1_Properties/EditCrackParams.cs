@@ -2,6 +2,7 @@
 using System.Linq;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
+using Oasys.AdSec.Materials;
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.Parameters;
@@ -57,7 +58,7 @@ namespace AdSecGH.Components
           new AdSecConcreteCrackCalculationParametersGoo(
               GetInput.ConcreteCrackCalculationParameters(this, DA, 0));
 
-      if (concreteCrack != null && concreteCrack.ConcreteCrackCalculationParameters != null)
+      if (concreteCrack != null && concreteCrack.Value != null)
       {
         // #### get the remaining inputs ####
         Pressure e = concreteCrack.Value.ElasticModulus;
@@ -103,7 +104,10 @@ namespace AdSecGH.Components
         }
 
         if (reCreate)
-          concreteCrack = new AdSecConcreteCrackCalculationParametersGoo(e, fck, ft);
+        {
+          IConcreteCrackCalculationParameters ccp = IConcreteCrackCalculationParameters.Create(e, fck, ft);
+          concreteCrack = new AdSecConcreteCrackCalculationParametersGoo(ccp);
+        }
 
         // #### set outputs ####
         DA.SetData(0, concreteCrack);
