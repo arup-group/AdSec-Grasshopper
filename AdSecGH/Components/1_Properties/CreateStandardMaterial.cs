@@ -414,7 +414,7 @@ namespace AdSecGH.Components
           this.SpacerDescriptions[this.SelectedItems.Count - 1] = "Grade";
         }
       }
-      this.UpdateUIFromSelectedItems();
+      base.UpdateUIFromSelectedItems();
     }
     #endregion
 
