@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Parameters;
-using OasysUnits;
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters
@@ -29,8 +27,8 @@ namespace AdSecGH.Parameters
 
       // create point from crack position in global axis
       Point3d point = new Point3d(
-          crack.Position.Y.As(Units.LengthUnit),
-          crack.Position.Z.As(Units.LengthUnit),
+          crack.Position.Y.Value,
+          crack.Position.Z.Value,
           0);
 
       // remap to local coordinate system
@@ -42,9 +40,9 @@ namespace AdSecGH.Parameters
       Vector3d halfCrack = new Vector3d(local.ZAxis);
       halfCrack.Unitize();
       halfCrack = new Vector3d(
-          halfCrack.X * crack.Width.As(Units.LengthUnit) / 2,
-          halfCrack.Y * crack.Width.As(Units.LengthUnit) / 2,
-          halfCrack.Z * crack.Width.As(Units.LengthUnit) / 2);
+          halfCrack.X * crack.Width.Value / 2,
+          halfCrack.Y * crack.Width.Value / 2,
+          halfCrack.Z * crack.Width.Value / 2);
 
       Transform move = Rhino.Geometry.Transform.Translation(halfCrack);
       Point3d crackStart = new Point3d(m_point);
@@ -54,9 +52,9 @@ namespace AdSecGH.Parameters
       Vector3d crackWidth = new Vector3d(halfCrack);
       crackWidth.Unitize();
       crackWidth = new Vector3d(
-          crackWidth.X * crack.Width.As(Units.LengthUnit) * -1,
-          crackWidth.Y * crack.Width.As(Units.LengthUnit) * -1,
-          crackWidth.Z * crack.Width.As(Units.LengthUnit) * -1);
+          crackWidth.X * crack.Width.Value * -1,
+          crackWidth.Y * crack.Width.Value * -1,
+          crackWidth.Z * crack.Width.Value * -1);
 
       m_line = new Line(crackStart, crackWidth);
     }
@@ -82,12 +80,10 @@ namespace AdSecGH.Parameters
 
     public override string ToString()
     {
-      IQuantity length = new Length(0, Units.LengthUnit);
-      string unitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
       return "AdSec " + TypeName + " {"
-          + "Y:" + Math.Round(this.Value.Position.Y.As(Units.LengthUnit), 4) + unitAbbreviation + ", "
-          + "Z:" + Math.Round(this.Value.Position.Z.As(Units.LengthUnit), 4) + unitAbbreviation + ", "
-          + "Width:" + Math.Round(this.Value.Width.As(Units.LengthUnit), 4) + unitAbbreviation + "}";
+          + "Y:" + Math.Round(this.Value.Position.Y.Value, 4) + this.Value.Position.Y.Unit + ", "
+          + "Z:" + Math.Round(this.Value.Position.Z.Value, 4) + this.Value.Position.Z.Unit + ", "
+          + "Width:" + Math.Round(this.Value.Width.Value, 4) + this.Value.Width.Unit + "}";
     }
 
     public override bool CastTo<TQ>(out TQ target)
@@ -112,13 +108,13 @@ namespace AdSecGH.Parameters
 
       if (typeof(TQ).IsAssignableFrom(typeof(Vector3d)))
       {
-        target = (TQ)(object)new Vector3d(this.Value.Width.As(Units.LengthUnit), m_point.Y, m_point.Z);
+        target = (TQ)(object)new Vector3d(this.Value.Width.Value, m_point.Y, m_point.Z);
         return true;
       }
 
       if (typeof(TQ).IsAssignableFrom(typeof(GH_Vector)))
       {
-        target = (TQ)(object)new GH_Vector(new Vector3d(this.Value.Width.As(Units.LengthUnit), m_point.Y, m_point.Z));
+        target = (TQ)(object)new GH_Vector(new Vector3d(this.Value.Width.Value, m_point.Y, m_point.Z));
         return true;
       }
 
@@ -142,7 +138,7 @@ namespace AdSecGH.Parameters
 
       if (typeof(TQ).IsAssignableFrom(typeof(GH_Number)))
       {
-        target = (TQ)(object)new GH_Number(this.Value.Width.As(Units.LengthUnit));
+        target = (TQ)(object)new GH_Number(this.Value.Width.Value);
         return true;
       }
 

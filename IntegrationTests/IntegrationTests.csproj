@@ -4,7 +4,6 @@
     <Platforms>x64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Grasshopper" Version="7.5.21100.3001" />
     <PackageReference Include="Rhino.Inside" Version="7.0.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
@@ -19,4 +18,13 @@
   <ItemGroup>
     <ProjectReference Include="..\AdSecGH\AdSecGH.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="PreBuild.targets" />
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="Copy &quot;$(TargetDir)AdSecGH.dll&quot; &quot;$(TargetDir)AdSec.gha&quot;" />
+  </Target>
 </Project>

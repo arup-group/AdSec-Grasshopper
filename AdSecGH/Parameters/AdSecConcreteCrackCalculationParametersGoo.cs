@@ -1,9 +1,7 @@
-﻿using System;
-using Grasshopper.Kernel.Types;
+﻿using Grasshopper.Kernel.Types;
 using Oasys.AdSec.Materials;
 using OasysGH;
 using OasysGH.Parameters;
-using OasysUnits;
 
 namespace AdSecGH.Parameters
 {
@@ -22,14 +20,10 @@ namespace AdSecGH.Parameters
 
     public override string ToString()
     {
-      // recreate pressure values with document units
-      Pressure e = new Pressure(this.Value.ElasticModulus.As(Units.StressUnit), Units.StressUnit);
-      Pressure fck = new Pressure(this.Value.CharacteristicCompressiveStrength.As(Units.StressUnit), Units.StressUnit);
-      Pressure ftk = new Pressure(this.Value.CharacteristicTensileStrength.As(Units.StressUnit), Units.StressUnit);
       return "AdSec " + TypeName +
-        " {E:" + e.ToString() +
-        ", fc:" + fck.ToString() +
-        ", ft: " + ftk.ToString() + "}";
+        " {E:" + this.Value.ElasticModulus.ToString() +
+        ", fc:" + this.Value.CharacteristicCompressiveStrength.ToString() +
+        ", ft: " + this.Value.CharacteristicTensileStrength.ToString() + "}";
     }
   }
 }
