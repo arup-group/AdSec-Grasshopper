@@ -8,3 +8,12 @@
 #    carryforward: false
 ignore:
   - "AdSecGHTests"  # ignore folders and all its contents
+  - "AdSecGH/Components/GraveyardComp"  # ignore old versions of components in
+  - "AdSecGH/UI"  # ignore UI about box
+  - "AdSecGH/Properties" # ignore icons etc
+  - "AdSecGH/Resources" # ignore icons etc
+  - "AdSecGH/Parameters/**/*Parameter.cs" # ignore all files ending with *Parameter.cs (scaffolding for params, no logic should be placed here)
+  - "AdSecGH/Parameters/**/*Goo.cs" # ignore all files ending with *Goo.cs (scaffolding for params, no logic should be placed here)
+comment:     # this is a top-level key
+  layout: "reach, diff, tree"
+  behavior: new
