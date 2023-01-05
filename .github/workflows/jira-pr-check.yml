@@ -22,5 +22,5 @@ jobs:
         with:
           prTitle: '${{ github.event.pull_request.title }}'
           jiraSecret: '${{ secrets.JIRA_PASSWORD }}'
-          statusCategory: 'In Progress'
+          statusCategory: 'In Review'
           jiraUsername: 'automation@arup.com'
