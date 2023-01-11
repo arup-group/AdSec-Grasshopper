@@ -57,10 +57,10 @@ Copyright © Oasys 1985 - 2022</Description>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.1</Version>
+      <Version>13.0.2</Version>
     </PackageReference>
     <PackageReference Include="OasysGH">
-      <Version>0.4.5-beta</Version>
+      <Version>0.5.0-beta</Version>
     </PackageReference>
     <PackageReference Include="OasysUnits">
       <Version>1.0.0</Version>
@@ -71,7 +71,7 @@ Copyright © Oasys 1985 - 2022</Description>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite">
-      <Version>1.0.116</Version>
+      <Version>1.0.117</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
