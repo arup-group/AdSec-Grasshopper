@@ -7,6 +7,9 @@ using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Reinforcement.Groups;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.UI;
+using OasysGH.Units;
+using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -52,7 +55,7 @@ namespace AdSecGH.Components
         first = false;
       }
 
-      m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
     }
 
     public void SetSelected(int i, int j)
@@ -74,9 +77,9 @@ namespace AdSecGH.Components
           case FoldMode.Arc:
           case FoldMode.Circle:
             if (dropdownitems.Count < 2)
-              dropdownitems.Add(Units.FilteredLengthUnits);
+              dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
             if (dropdownitems.Count < 3)
-              dropdownitems.Add(Units.FilteredAngleUnits);
+              dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
             spacerDescriptions[1] = "Length measure";
             break;
         }
@@ -117,7 +120,7 @@ namespace AdSecGH.Components
             "Measure",
             "Angular measure"
     });
-    private LengthUnit lengthUnit = Units.LengthUnit;
+    private LengthUnit lengthUnit = DefaultUnits.LengthUnitGeometry;
     private AngleUnit angleUnit = AngleUnit.Radian;
     string unitAbbreviation;
     string angleAbbreviation;

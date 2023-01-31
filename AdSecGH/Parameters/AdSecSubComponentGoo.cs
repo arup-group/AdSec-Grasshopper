@@ -24,6 +24,7 @@ using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using OasysUnits;
 using Rhino.Geometry;
+using OasysGH.Units;
 
 namespace AdSecGH.Parameters
 {
@@ -56,9 +57,9 @@ namespace AdSecGH.Parameters
           Area area = this.section.Section.Profile.Area();
           double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
           Length length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-          previewXaxis = new Line(local.Origin, local.XAxis, length.As(Units.LengthUnit));
-          previewYaxis = new Line(local.Origin, local.YAxis, length.As(Units.LengthUnit));
-          previewZaxis = new Line(local.Origin, local.ZAxis, length.As(Units.LengthUnit));
+          previewXaxis = new Line(local.Origin, local.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
+          previewYaxis = new Line(local.Origin, local.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
+          previewZaxis = new Line(local.Origin, local.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
         }
       }
     }

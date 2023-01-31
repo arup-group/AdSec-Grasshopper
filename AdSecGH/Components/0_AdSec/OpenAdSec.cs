@@ -9,6 +9,7 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec.IO.Serialization;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.UI;
 using Rhino.Geometry;
 
 namespace AdSecGH.Components
@@ -37,7 +38,7 @@ namespace AdSecGH.Components
     //This region overrides the typical component layout
     public override void CreateAttributes()
     {
-      m_attributes = new UI.ButtonComponentUI(this, "Open", OpenFile, "Open AdSec file");
+      m_attributes = new ButtonComponentAttributes(this, "Open", OpenFile, "Open AdSec file");
     }
 
     public void OpenFile()

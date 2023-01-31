@@ -6,6 +6,8 @@ using OasysGH.Components;
 using OasysGH;
 using OasysUnits.Units;
 using OasysUnits;
+using OasysGH.Units.Helpers;
+using OasysGH.Units;
 
 namespace AdSecGH.Components
 {
@@ -55,8 +57,8 @@ namespace AdSecGH.Components
     #endregion
 
     #region Custom UI
-    private StrainUnit StrainUnit = Units.StrainUnit;
-    private PressureUnit StressUnit = Units.StressUnit;
+    private StrainUnit StrainUnit = DefaultUnits.StrainUnitResult;
+    private PressureUnit StressUnit = DefaultUnits.StressUnitResult;
     public override void InitialiseDropdowns()
     {
       this.SpacerDescriptions = new List<string>(new string[] {
@@ -67,12 +69,12 @@ namespace AdSecGH.Components
       this.DropDownItems = new List<List<string>>();
       this.SelectedItems = new List<string>();
 
-      // strain
-      this.DropDownItems.Add(Units.FilteredStrainUnits);
+      // strainUnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain)
+      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
       this.SelectedItems.Add(StrainUnit.ToString());
 
       // pressure
-      this.DropDownItems.Add(Units.FilteredStressUnits);
+      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
       this.SelectedItems.Add(StressUnit.ToString());
 
       this.IsInitialised = true;

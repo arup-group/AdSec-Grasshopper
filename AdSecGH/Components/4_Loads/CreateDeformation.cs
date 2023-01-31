@@ -5,6 +5,9 @@ using Grasshopper.Kernel;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.UI;
+using OasysGH.Units;
+using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -40,11 +43,11 @@ namespace AdSecGH.Components
         selecteditems = new List<string>();
 
         // strain
-        dropdownitems.Add(Units.FilteredStrainUnits);
+        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
         selecteditems.Add(strainUnit.ToString());
 
         // curvature
-        dropdownitems.Add(Units.FilteredCurvatureUnits);
+        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Curvature));
         selecteditems.Add(curvatureUnit.ToString());
 
         strainUnitAbbreviation = Strain.GetAbbreviation(strainUnit);
@@ -53,7 +56,7 @@ namespace AdSecGH.Components
         first = false;
       }
 
-      m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
     }
 
     public void SetSelected(int i, int j)
@@ -105,8 +108,8 @@ namespace AdSecGH.Components
     });
     private bool first = true;
 
-    private StrainUnit strainUnit = Units.StrainUnit;
-    private CurvatureUnit curvatureUnit = Units.CurvatureUnit;
+    private StrainUnit strainUnit = DefaultUnits.StrainUnitResult;
+    private CurvatureUnit curvatureUnit = DefaultUnits.CurvatureUnit;
     string strainUnitAbbreviation;
     string curvatureUnitAbbreviation;
     #endregion

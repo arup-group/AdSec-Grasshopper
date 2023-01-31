@@ -8,6 +8,9 @@ using OasysGH.Components;
 using Rhino.Geometry;
 using OasysUnits.Units;
 using OasysUnits;
+using OasysGH.Units.Helpers;
+using OasysGH.UI;
+using OasysGH.Units;
 
 namespace AdSecGH.Components
 {
@@ -46,7 +49,7 @@ namespace AdSecGH.Components
         selecteditems.Add(dropdownitems[0][0]);
 
         // force
-        dropdownitems.Add(Units.FilteredAngleUnits);
+        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
         selecteditems.Add(angleUnit.ToString());
 
         IQuantity force = new Force(0, forceUnit);
@@ -57,7 +60,7 @@ namespace AdSecGH.Components
         first = false;
       }
 
-      m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
     }
 
     public void SetSelected(int i, int j)
@@ -71,13 +74,13 @@ namespace AdSecGH.Components
         {
           case ("N-M"):
             _mode = FoldMode.NM;
-            dropdownitems[1] = Units.FilteredAngleUnits;
+            dropdownitems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle);
             selecteditems[1] = angleUnit.ToString();
             break;
 
           case ("M-M"):
             _mode = FoldMode.MM;
-            dropdownitems[1] = Units.FilteredForceUnits;
+            dropdownitems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
             selecteditems[1] = forceUnit.ToString();
             break;
         }
@@ -124,7 +127,7 @@ namespace AdSecGH.Components
     });
     private bool first = true;
 
-    private ForceUnit forceUnit = Units.ForceUnit;
+    private ForceUnit forceUnit = DefaultUnits.ForceUnit;
     private AngleUnit angleUnit = AngleUnit.Radian;
     string forceUnitAbbreviation;
     string angleUnitAbbreviation;
@@ -137,7 +140,7 @@ namespace AdSecGH.Components
       pManager[1].Optional = true;
       // create default rectangle as 1/2 meter square
       Length sz = Length.FromMeters(0.5);
-      Rectangle3d rect = new Rectangle3d(Plane.WorldXY, sz.As(Units.LengthUnit), sz.As(Units.LengthUnit));
+      Rectangle3d rect = new Rectangle3d(Plane.WorldXY, sz.As(DefaultUnits.LengthUnitGeometry), sz.As(DefaultUnits.LengthUnitGeometry));
       pManager.AddRectangleParameter("Plot", "R", "Rectangle for plot boundary", GH_ParamAccess.item, rect);
     }
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)

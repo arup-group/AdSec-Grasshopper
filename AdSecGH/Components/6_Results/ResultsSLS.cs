@@ -10,6 +10,7 @@ using OasysGH.Components;
 using Rhino.Geometry;
 using OasysUnits;
 using OasysUnits.Units;
+using OasysGH.Units;
 
 namespace AdSecGH.Components
 {
@@ -44,14 +45,14 @@ namespace AdSecGH.Components
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
-      string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
-      IQuantity curvature = new Curvature(0, Units.CurvatureUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
+      IQuantity curvature = new Curvature(0, DefaultUnits.CurvatureUnit);
       string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
-      IQuantity axial = new AxialStiffness(0, Units.AxialStiffnessUnit);
+      IQuantity axial = new AxialStiffness(0, DefaultUnits.AxialStiffnessUnit);
       string axialUnitAbbreviation = string.Concat(axial.ToString().Where(char.IsLetter));
-      IQuantity bending = new BendingStiffness(0, Units.BendingStiffnessUnit);
+      IQuantity bending = new BendingStiffness(0, DefaultUnits.BendingStiffnessUnit);
       string bendingUnitAbbreviation = string.Concat(bending.ToString().Where(char.IsLetter));
-      IQuantity moment = new Moment(0, Units.MomentUnit);
+      IQuantity moment = new Moment(0, DefaultUnits.MomentUnit);
       string momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
 
       pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." +
@@ -141,21 +142,21 @@ namespace AdSecGH.Components
       }
 
       DA.SetData(4, new Vector3d(
-          sls.Deformation.X.As(Units.StrainUnit),
-          sls.Deformation.YY.As(Units.CurvatureUnit),
-          sls.Deformation.ZZ.As(Units.CurvatureUnit)));
+          sls.Deformation.X.As(DefaultUnits.StrainUnitResult),
+          sls.Deformation.YY.As(DefaultUnits.CurvatureUnit),
+          sls.Deformation.ZZ.As(DefaultUnits.CurvatureUnit)));
 
       DA.SetData(5, new Vector3d(
-          sls.SecantStiffness.X.As(Units.AxialStiffnessUnit),
-          sls.SecantStiffness.YY.As(Units.BendingStiffnessUnit),
-          sls.SecantStiffness.ZZ.As(Units.BendingStiffnessUnit)));
+          sls.SecantStiffness.X.As(DefaultUnits.AxialStiffnessUnit),
+          sls.SecantStiffness.YY.As(DefaultUnits.BendingStiffnessUnit),
+          sls.SecantStiffness.ZZ.As(DefaultUnits.BendingStiffnessUnit)));
 
       List<GH_Interval> momentRanges = new List<GH_Interval>();
       foreach (IMomentRange mrng in sls.UncrackedMomentRanges)
       {
         Interval interval = new Interval(
-            mrng.Min.As(Units.MomentUnit),
-            mrng.Max.As(Units.MomentUnit));
+            mrng.Min.As(DefaultUnits.MomentUnit),
+            mrng.Max.As(DefaultUnits.MomentUnit));
         momentRanges.Add(new GH_Interval(interval));
       }
       DA.SetDataList(6, momentRanges);

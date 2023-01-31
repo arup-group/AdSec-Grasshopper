@@ -7,6 +7,7 @@ using Oasys.Profiles.Properties;
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.Parameters;
+using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -42,7 +43,7 @@ namespace AdSecGH.Components
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
-      string lengthUnitAbbreviation = string.Concat(new Length(0, Units.LengthUnit).ToString().Where(char.IsLetter));
+      string lengthUnitAbbreviation = string.Concat(new Length(0, DefaultUnits.LengthUnitGeometry).ToString().Where(char.IsLetter));
       string areahUnitAbbreviation = lengthUnitAbbreviation + "\u00B2";
       string modulusUnitAbbreviation = lengthUnitAbbreviation + "\u00B3";
       string inertiaUnitAbbreviation = lengthUnitAbbreviation + "\u2074";
@@ -74,7 +75,7 @@ namespace AdSecGH.Components
       // 0 profile
       AdSecProfileGoo profile = GetInput.AdSecProfileGoo(this, DA, 0);
 
-      LengthUnit lengthUnit = Units.LengthUnit;
+      LengthUnit lengthUnit = DefaultUnits.LengthUnitGeometry;
       BaseUnits SI = UnitSystem.SI.BaseUnits;
       BaseUnits baseUnits = new BaseUnits(lengthUnit, SI.Mass, SI.Time, SI.Current, SI.Temperature, SI.Amount, SI.LuminousIntensity);
       UnitSystem unitSystem = new UnitSystem(baseUnits);

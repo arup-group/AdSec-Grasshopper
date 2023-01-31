@@ -1,13 +1,14 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Components;
-using OasysUnits.Units;
+using OasysGH.Units;
+using OasysGH.Units.Helpers;
 using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
@@ -70,8 +71,8 @@ namespace AdSecGH.Components
     }
 
     #region Custom UI
-    private ForceUnit ForceUnit = Units.ForceUnit;
-    private MomentUnit MomentUnit = Units.MomentUnit;
+    private ForceUnit ForceUnit = DefaultUnits.ForceUnit;
+    private MomentUnit MomentUnit = DefaultUnits.MomentUnit;
 
     public override void InitialiseDropdowns()
     {
@@ -84,11 +85,11 @@ namespace AdSecGH.Components
       this.SelectedItems = new List<string>();
 
       // force
-      this.DropDownItems.Add(Units.FilteredForceUnits);
+      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
       this.SelectedItems.Add(this.ForceUnit.ToString());
 
       // moment
-      this.DropDownItems.Add(Units.FilteredMomentUnits);
+      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Moment));
       this.SelectedItems.Add(this.MomentUnit.ToString());
 
 

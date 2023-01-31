@@ -5,6 +5,8 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.UI;
+using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -35,8 +37,8 @@ namespace AdSecGH.Components
 
       if (first)
       {
-        dropdownitems = new List<List<string>>();
-        dropdownitems.Add(Units.FilteredAngleUnits);
+        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
+        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
 
         IQuantity quantityAngle = new Angle(0, angleUnit);
         angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
@@ -47,7 +49,7 @@ namespace AdSecGH.Components
         first = false;
       }
 
-      m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
     }
     public void SetSelected(int i, int j)
     {

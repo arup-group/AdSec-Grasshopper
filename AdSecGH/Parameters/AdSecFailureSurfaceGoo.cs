@@ -6,6 +6,7 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec.Mesh;
 using OasysGH.Parameters;
 using Rhino.Geometry;
+using OasysGH.Units;
 
 namespace AdSecGH.Parameters
 {
@@ -116,9 +117,9 @@ namespace AdSecGH.Parameters
 
       outMesh.Vertices.AddVertices(
           loadsurface.Vertices.Select(pt => new Point3d(
-              pt.X.As(Units.ForceUnit),
-              pt.ZZ.As(Units.MomentUnit),
-              pt.YY.As(Units.MomentUnit)
+              pt.X.As(DefaultUnits.ForceUnit),
+              pt.ZZ.As(DefaultUnits.MomentUnit),
+              pt.YY.As(DefaultUnits.MomentUnit)
               )));
 
       outMesh.Faces.AddFaces(

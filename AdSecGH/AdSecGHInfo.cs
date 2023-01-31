@@ -70,16 +70,16 @@ namespace AdSecGH
       }
 
       // ### Queue up Main menu loader ###
-      Grasshopper.Instances.CanvasCreated += UI.Menu.MenuLoad.OnStartup;
+      Grasshopper.Instances.CanvasCreated += Graphics.Menu.MenuLoad.OnStartup;
 
       // ### Create Ribbon Category name and icon ###
       Grasshopper.Instances.ComponentServer.AddCategorySymbolName("AdSec", 'A');
       Grasshopper.Instances.ComponentServer.AddCategoryIcon("AdSec", Properties.Resources.AdSecLogo);
 
-      // ### Setup units ###
-      Units.SetupUnits();
+      // ### Setup OasysGH and shared Units ###
+      Utility.InitialiseMainMenuAndDefaultUnits();
 
-      PostHog.PluginLoaded(PluginInfo.Instance);
+      PostHog.PluginLoaded(AdSecGH.PluginInfo.Instance);
 
       return GH_LoadingInstruction.Proceed;
     }

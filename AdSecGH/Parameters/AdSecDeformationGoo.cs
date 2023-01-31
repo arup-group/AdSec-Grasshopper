@@ -2,6 +2,7 @@
 using System.Linq;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
+using OasysGH.Units;
 using OasysUnits;
 
 namespace AdSecGH.Parameters
@@ -25,13 +26,13 @@ namespace AdSecGH.Parameters
     }
     public override string ToString()
     {
-      string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
-      IQuantity curvature = new Curvature(0, Units.CurvatureUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
+      IQuantity curvature = new Curvature(0, DefaultUnits.CurvatureUnit);
       string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
       return "AdSec " + TypeName + " {"
-          + Math.Round(this.Value.X.As(Units.StrainUnit), 4) + strainUnitAbbreviation + ", "
-          + Math.Round(this.Value.YY.As(Units.CurvatureUnit), 4) + curvatureUnitAbbreviation + ", "
-          + Math.Round(this.Value.ZZ.As(Units.CurvatureUnit), 4) + curvatureUnitAbbreviation + "}";
+          + Math.Round(this.Value.X.As(DefaultUnits.StrainUnitResult), 4) + strainUnitAbbreviation + ", "
+          + Math.Round(this.Value.YY.As(DefaultUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + ", "
+          + Math.Round(this.Value.ZZ.As(DefaultUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + "}";
     }
   }
 }

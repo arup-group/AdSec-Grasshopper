@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Generic;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
@@ -11,6 +10,7 @@ using Oasys.Profiles;
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.Parameters;
+using OasysGH.Units;
 using OasysUnits;
 
 namespace AdSecGH.Components
@@ -45,12 +45,12 @@ namespace AdSecGH.Components
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
-      IQuantity length = new Length(0, Units.LengthUnit);
+      IQuantity length = new Length(0, DefaultUnits.LengthUnitGeometry);
       string lengthUnitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
-      IQuantity stress = new Pressure(0, Units.StressUnit);
+      IQuantity stress = new Pressure(0, DefaultUnits.StressUnitResult);
       string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
-      string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
-      IQuantity force = new Force(0, Units.ForceUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
+      IQuantity force = new Force(0, DefaultUnits.ForceUnit);
       string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
 
       pManager.AddGenericParameter("Position [" + lengthUnitAbbreviation + "]", "Vx", "Rebar position as 2D vertex in the section's local yz-plane ", GH_ParamAccess.list);
@@ -98,7 +98,7 @@ namespace AdSecGH.Components
             pointGoos.Add(new AdSecPointGoo(pos));
 
             // diameter
-            diameters.Add(new GH_UnitNumber(new Length(snglBrs.BarBundle.Diameter.As(Units.LengthUnit), Units.LengthUnit)));
+            diameters.Add(new GH_UnitNumber(new Length(snglBrs.BarBundle.Diameter.As(DefaultUnits.LengthUnitGeometry), DefaultUnits.LengthUnitGeometry)));
 
             // bundle count
             counts.Add(snglBrs.BarBundle.CountPerBundle);
@@ -109,19 +109,19 @@ namespace AdSecGH.Components
               try
               {
                 IPreForce force = (IPreForce)snglBrs.Preload;
-                prestresses.Add(new GH_UnitNumber(new Force(force.Force.As(Units.ForceUnit), Units.ForceUnit)));
+                prestresses.Add(new GH_UnitNumber(new Force(force.Force.As(DefaultUnits.ForceUnit), DefaultUnits.ForceUnit)));
               }
               catch (Exception)
               {
                 try
                 {
                   IPreStress stress = (IPreStress)snglBrs.Preload;
-                  prestresses.Add(new GH_UnitNumber(new Pressure(stress.Stress.As(Units.StressUnit), Units.StressUnit)));
+                  prestresses.Add(new GH_UnitNumber(new Pressure(stress.Stress.As(DefaultUnits.StressUnitResult), DefaultUnits.StressUnitResult)));
                 }
                 catch (Exception)
                 {
                   IPreStrain strain = (IPreStrain)snglBrs.Preload;
-                  prestresses.Add(new GH_UnitNumber(new Strain(strain.Strain.As(Units.StrainUnit), Units.StrainUnit)));
+                  prestresses.Add(new GH_UnitNumber(new Strain(strain.Strain.As(DefaultUnits.StrainUnitResult), DefaultUnits.StrainUnitResult)));
                 }
               }
             }

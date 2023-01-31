@@ -8,6 +8,8 @@ using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.UI;
+using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -55,7 +57,7 @@ namespace AdSecGH.Components
         first = false;
       }
 
-      m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
     }
 
     public void SetSelected(int i, int j)
@@ -90,7 +92,7 @@ namespace AdSecGH.Components
             "Group Type",
             "Measure",
     });
-    private LengthUnit lengthUnit = Units.LengthUnit;
+    private LengthUnit lengthUnit = DefaultUnits.LengthUnitGeometry;
     string unitAbbreviation;
     #endregion
 

@@ -7,6 +7,7 @@ using OasysGH.Components;
 using OasysGH;
 using OasysUnits;
 using OasysUnits.Units;
+using OasysGH.Units;
 
 namespace AdSecGH.Components
 {
@@ -91,10 +92,10 @@ namespace AdSecGH.Components
       double increment = 1;
       DA.GetData(3, ref increment);
 
-      Length maxCrack = GetInput.GetLength(this, DA, 4, Units.LengthUnit);
+      Length maxCrack = GetInput.GetLength(this, DA, 4, DefaultUnits.LengthUnitGeometry);
 
-      ForceUnit forceUnit = Units.ForceUnit;
-      MomentUnit momentUnit = Units.MomentUnit;
+      ForceUnit forceUnit = DefaultUnits.ForceUnit;
+      MomentUnit momentUnit = DefaultUnits.MomentUnit;
 
       while (sls.MaximumWidthCrack.Width <= maxCrack)
       {

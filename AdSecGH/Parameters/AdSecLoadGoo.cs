@@ -5,6 +5,7 @@ using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
+using OasysGH.Units;
 using OasysUnits;
 using Rhino.Display;
 using Rhino.Geometry;
@@ -28,9 +29,9 @@ namespace AdSecGH.Parameters
     {
       this.m_value = load;
       Point3d point = new Point3d(
-          load.ZZ.As(Units.MomentUnit),
-          load.YY.As(Units.MomentUnit),
-          load.X.As(Units.ForceUnit));
+          load.ZZ.As(DefaultUnits.MomentUnit),
+          load.YY.As(DefaultUnits.MomentUnit),
+          load.X.As(DefaultUnits.ForceUnit));
       Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
       point.Transform(mapFromLocal);
       m_point = point;
@@ -61,14 +62,14 @@ namespace AdSecGH.Parameters
 
     public override string ToString()
     {
-      IQuantity quantityMoment = new Moment(0, Units.MomentUnit);
+      IQuantity quantityMoment = new Moment(0, DefaultUnits.MomentUnit);
       string unitMomentAbbreviation = string.Concat(quantityMoment.ToString().Where(char.IsLetter));
-      IQuantity quantityForce = new Force(0, Units.ForceUnit);
+      IQuantity quantityForce = new Force(0, DefaultUnits.ForceUnit);
       string unitforceAbbreviation = string.Concat(quantityForce.ToString().Where(char.IsLetter));
       return "AdSec " + TypeName + " {"
-          + Math.Round(this.Value.X.As(Units.ForceUnit), 4) + unitforceAbbreviation + ", "
-          + Math.Round(this.Value.YY.As(Units.MomentUnit), 4) + unitMomentAbbreviation + ", "
-          + Math.Round(this.Value.ZZ.As(Units.MomentUnit), 4) + unitMomentAbbreviation + "}";
+          + Math.Round(this.Value.X.As(DefaultUnits.ForceUnit), 4) + unitforceAbbreviation + ", "
+          + Math.Round(this.Value.YY.As(DefaultUnits.MomentUnit), 4) + unitMomentAbbreviation + ", "
+          + Math.Round(this.Value.ZZ.As(DefaultUnits.MomentUnit), 4) + unitMomentAbbreviation + "}";
     }
 
     public override bool CastTo<TQ>(out TQ target)
@@ -108,9 +109,9 @@ namespace AdSecGH.Parameters
       {
         Point3d point = (Point3d)source;
         ILoad load = ILoad.Create(
-            new Force(point.X, Units.ForceUnit),
-            new Moment(point.Y, Units.MomentUnit),
-            new Moment(point.Z, Units.MomentUnit));
+            new Force(point.X, DefaultUnits.ForceUnit),
+            new Moment(point.Y, DefaultUnits.MomentUnit),
+            new Moment(point.Z, DefaultUnits.MomentUnit));
         AdSecLoadGoo temp = new AdSecLoadGoo(load);
         this.Value = temp.Value;
         return true;
@@ -121,9 +122,9 @@ namespace AdSecGH.Parameters
       {
         Point3d point = ptGoo.Value;
         ILoad load = ILoad.Create(
-            new Force(point.X, Units.ForceUnit),
-            new Moment(point.Y, Units.MomentUnit),
-            new Moment(point.Z, Units.MomentUnit));
+            new Force(point.X, DefaultUnits.ForceUnit),
+            new Moment(point.Y, DefaultUnits.MomentUnit),
+            new Moment(point.Z, DefaultUnits.MomentUnit));
         AdSecLoadGoo temp = new AdSecLoadGoo(load);
         this.Value = temp.Value;
         return true;
@@ -134,9 +135,9 @@ namespace AdSecGH.Parameters
       {
         Point3d point = pt;
         ILoad load = ILoad.Create(
-            new Force(point.X, Units.ForceUnit),
-            new Moment(point.Y, Units.MomentUnit),
-            new Moment(point.Z, Units.MomentUnit));
+            new Force(point.X, DefaultUnits.ForceUnit),
+            new Moment(point.Y, DefaultUnits.MomentUnit),
+            new Moment(point.Z, DefaultUnits.MomentUnit));
         AdSecLoadGoo temp = new AdSecLoadGoo(load);
         this.Value = temp.Value;
         return true;

@@ -1,6 +1,7 @@
 ﻿using System;
 using Grasshopper.Kernel.Types;
 using Oasys.Profiles;
+using OasysGH.Units;
 using OasysUnits;
 
 namespace AdSecGH.Parameters
@@ -22,11 +23,12 @@ namespace AdSecGH.Parameters
     {
       return new AdSecProfileFlangeGoo(this.Value);
     }
+
     public override string ToString()
     {
       string flange = "AdSec Flange {";
-      Length thk1 = this.Value.Width.ToUnit(Units.LengthUnit);
-      Length thk2 = this.Value.Thickness.ToUnit(Units.LengthUnit);
+      Length thk1 = this.Value.Width.ToUnit(DefaultUnits.LengthUnitGeometry);
+      Length thk2 = this.Value.Thickness.ToUnit(DefaultUnits.LengthUnitGeometry);
       flange += "Width:" + thk1.ToString() + ", Thk:" + thk2.ToString() + "}";
       return flange;
     }

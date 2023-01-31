@@ -8,6 +8,7 @@ using Oasys.AdSec.IO.Graphics.Section;
 using Oasys.Profiles;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.UI;
 
 namespace AdSecGH.Components
 {
@@ -35,7 +36,7 @@ namespace AdSecGH.Components
     //This region overrides the typical component layout
     public override void CreateAttributes()
     {
-      m_attributes = new UI.Button3ComponentUI(this, "Save", "Save As", "Open SVG", SaveFile, SaveAsFile, OpenSVGexe, true, "Save SVG file");
+      m_attributes = new ThreeButtonAtrributes(this, "Save", "Save As", "Open SVG", SaveFile, SaveAsFile, OpenSVGexe, true, "Save SVG file");
     }
 
     public void SaveFile()

@@ -6,6 +6,7 @@ using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.Profiles;
+using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
@@ -85,9 +86,9 @@ namespace AdSecGH.Parameters
           Area area = m_profile.Area();
           double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
           Length length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-          previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(Units.LengthUnit));
-          previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(Units.LengthUnit));
-          previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(Units.LengthUnit));
+          previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
+          previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
+          previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
         }
       }
     }
@@ -238,8 +239,8 @@ namespace AdSecGH.Parameters
       foreach (IPoint apt in apts)
       {
         Point3d pt = new Point3d(0,
-            apt.Y.As(Units.LengthUnit),
-            apt.Z.As(Units.LengthUnit)
+            apt.Y.As(DefaultUnits.LengthUnitGeometry),
+            apt.Z.As(DefaultUnits.LengthUnitGeometry)
             );
         pt.Transform(maptToLocal);
         rhPts.Add(pt);
@@ -519,7 +520,7 @@ namespace AdSecGH.Parameters
         Polyline poly;
         if (crv.TryGetPolyline(out poly))
         {
-          AdSecProfileGoo temp = new AdSecProfileGoo(poly, Units.LengthUnit);
+          AdSecProfileGoo temp = new AdSecProfileGoo(poly, DefaultUnits.LengthUnitGeometry);
           this.m_value = temp.m_value;
           this.m_profile = temp.m_profile;
           this.m_voidEdges = temp.m_voidEdges;

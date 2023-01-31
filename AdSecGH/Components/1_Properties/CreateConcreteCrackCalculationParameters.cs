@@ -5,6 +5,8 @@ using Grasshopper.Kernel;
 using Oasys.AdSec.Materials;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.Units;
+using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -75,8 +77,8 @@ namespace AdSecGH.Components
     }
 
     #region Custom UI
-    private PressureUnit StressUnitE = Units.StressUnit;
-    private PressureUnit StrengthUnit = Units.StressUnit;
+    private PressureUnit StressUnitE = DefaultUnits.StressUnitResult;
+    private PressureUnit StrengthUnit = DefaultUnits.MaterialStrengthUnit;
 
     public override void InitialiseDropdowns()
     {
@@ -89,11 +91,11 @@ namespace AdSecGH.Components
       this.SelectedItems = new List<string>();
 
       // pressure E
-      this.DropDownItems.Add(Units.FilteredStressUnits);
+      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
       this.SelectedItems.Add(StrengthUnit.ToString());
 
       // pressure stress
-      this.DropDownItems.Add(Units.FilteredStressUnits);
+      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
       this.SelectedItems.Add(StrengthUnit.ToString());
 
       this.IsInitialised = true;

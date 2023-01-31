@@ -15,6 +15,7 @@ using Oasys.AdSec;
 using OasysUnits;
 using AdSecGH.Helpers;
 using Rhino.Geometry;
+using OasysGH.Units;
 
 namespace AdSecGH.Parameters
 {
@@ -142,10 +143,10 @@ namespace AdSecGH.Parameters
       m_axes.AddRange(plotBoundary.ToPolyline().GetSegments());
 
       // Create axis labels
-      string momentAxis = "Moment [" + Moment.GetAbbreviation(Units.MomentUnit) + "]";
-      string myyAxis = "Myy [" + Moment.GetAbbreviation(Units.MomentUnit) + "]";
-      string mzzAxis = "Mzz [" + Moment.GetAbbreviation(Units.MomentUnit) + "]";
-      IQuantity force = new Force(0, Units.ForceUnit);
+      string momentAxis = "Moment [" + Moment.GetAbbreviation(DefaultUnits.MomentUnit) + "]";
+      string myyAxis = "Myy [" + Moment.GetAbbreviation(DefaultUnits.MomentUnit) + "]";
+      string mzzAxis = "Mzz [" + Moment.GetAbbreviation(DefaultUnits.MomentUnit) + "]";
+      IQuantity force = new Force(0, DefaultUnits.ForceUnit);
       string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
       string forceAxis = "Axial force [" + forceUnitAbbreviation + "]";
 
@@ -190,8 +191,8 @@ namespace AdSecGH.Parameters
       foreach (ILoad load in loadCurve.Points)
       {
         Point3d pt = new Point3d(
-            load.YY.As(Units.MomentUnit), // plot yy on x-axis
-            load.ZZ.As(Units.MomentUnit), // plot zz on y-axis
+            load.YY.As(DefaultUnits.MomentUnit), // plot yy on x-axis
+            load.ZZ.As(DefaultUnits.MomentUnit), // plot zz on y-axis
             0);
         pts.Add(pt);
       }
@@ -218,9 +219,9 @@ namespace AdSecGH.Parameters
       foreach (ILoad load in loadCurve.Points)
       {
         Point3d pt = new Point3d(
-            load.ZZ.As(Units.MomentUnit),
-            load.YY.As(Units.MomentUnit),
-            load.X.As(Units.ForceUnit) * -1); // flip y-axis for NM-diagram
+            load.ZZ.As(DefaultUnits.MomentUnit),
+            load.YY.As(DefaultUnits.MomentUnit),
+            load.X.As(DefaultUnits.ForceUnit) * -1); // flip y-axis for NM-diagram
         pts.Add(pt);
       }
       // add first point to the end to make a closed curve

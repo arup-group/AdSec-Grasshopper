@@ -8,6 +8,7 @@ using OasysGH;
 using OasysGH.Components;
 using OasysUnits;
 using OasysGH.Parameters;
+using OasysGH.Units;
 
 namespace AdSecGH.Components
 {
@@ -28,10 +29,6 @@ namespace AdSecGH.Components
     { this.Hidden = true; } // sets the initial state of the component to hidden
     #endregion
 
-    #region Custom UI
-    //This region overrides the typical component layout
-    #endregion
-
     #region Input and output
 
     protected override void RegisterInputParams(GH_InputParamManager pManager)
@@ -43,8 +40,8 @@ namespace AdSecGH.Components
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
-      string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
-      IQuantity stress = new Pressure(0, Units.StressUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
+      IQuantity stress = new Pressure(0, DefaultUnits.StressUnitResult);
       string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 
       pManager.AddGenericParameter("ULS Strain [" + strainUnitAbbreviation + "]", "εd", "ULS strain at Vertex Point", GH_ParamAccess.item);
@@ -93,22 +90,22 @@ namespace AdSecGH.Components
 
       // ULS strain
       Strain strainULS = uls.Deformation.StrainAt(GetInput.IPoint(this, DA, 2, false));
-      GH_UnitNumber outStrainULS = new GH_UnitNumber(new Strain(strainULS.As(Units.StrainUnit), Units.StrainUnit));
+      GH_UnitNumber outStrainULS = new GH_UnitNumber(new Strain(strainULS.As(DefaultUnits.StrainUnitResult), DefaultUnits.StrainUnitResult));
       DA.SetData(0, outStrainULS);
 
       // ULS stress in concrete material from strain
       Pressure stressULS = solution.m_section.Section.Material.Strength.StressAt(strainULS);
-      GH_UnitNumber outStressULS = new GH_UnitNumber(new Pressure(stressULS.As(Units.StressUnit), Units.StressUnit));
+      GH_UnitNumber outStressULS = new GH_UnitNumber(new Pressure(stressULS.As(DefaultUnits.StressUnitResult), DefaultUnits.StressUnitResult));
       DA.SetData(1, outStressULS);
 
       // SLS strain
       Strain strainSLS = sls.Deformation.StrainAt(GetInput.IPoint(this, DA, 2, false));
-      GH_UnitNumber outStrainSLS = new GH_UnitNumber(new Strain(strainSLS.As(Units.StrainUnit), Units.StrainUnit));
+      GH_UnitNumber outStrainSLS = new GH_UnitNumber(new Strain(strainSLS.As(DefaultUnits.StrainUnitResult), DefaultUnits.StrainUnitResult));
       DA.SetData(2, outStrainSLS);
 
       // SLS stress in concrete material from strain
       Pressure stressSLS = solution.m_section.Section.Material.Serviceability.StressAt(strainSLS);
-      GH_UnitNumber outStressSLS = new GH_UnitNumber(new Pressure(stressSLS.As(Units.StressUnit), Units.StressUnit));
+      GH_UnitNumber outStressSLS = new GH_UnitNumber(new Pressure(stressSLS.As(DefaultUnits.StressUnitResult), DefaultUnits.StressUnitResult));
 
       DA.SetData(3, outStressSLS);
     }

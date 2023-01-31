@@ -7,6 +7,9 @@ using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Reinforcement.Layers;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.UI;
+using OasysGH.Units;
+using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -42,7 +45,7 @@ namespace AdSecGH.Components
 
         // length
         //dropdownitems.Add(Enum.GetNames(typeof(LengthUnit)).ToList());
-        dropdownitems.Add(Units.FilteredLengthUnits);
+        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
         selecteditems.Add(lengthUnit.ToString());
 
         IQuantity quantity = new Length(0, lengthUnit);
@@ -51,7 +54,7 @@ namespace AdSecGH.Components
         first = false;
       }
 
-      m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
     }
 
     public void SetSelected(int i, int j)
@@ -74,7 +77,7 @@ namespace AdSecGH.Components
           // add second dropdown (length)
           if (dropdownitems.Count != 2)
           {
-            dropdownitems.Add(Units.FilteredLengthUnits);
+            dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
             selecteditems.Add(lengthUnit.ToString());
           }
         }
@@ -105,7 +108,7 @@ namespace AdSecGH.Components
             "Spacing method",
             "Measure"
     });
-    private LengthUnit lengthUnit = Units.LengthUnit;
+    private LengthUnit lengthUnit = DefaultUnits.LengthUnitGeometry;
     string unitAbbreviation;
     #endregion
 

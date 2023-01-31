@@ -1,15 +1,16 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
-using OasysGH.Components;
-using Rhino.Geometry;
 using OasysGH;
-using OasysUnits.Units;
+using OasysGH.Components;
+using OasysGH.Units;
 using OasysUnits;
+using OasysUnits.Units;
+using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
@@ -44,10 +45,10 @@ namespace AdSecGH.Components
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
-      string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
-      IQuantity curvature = new Curvature(0, Units.CurvatureUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
+      IQuantity curvature = new Curvature(0, DefaultUnits.CurvatureUnit);
       string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
-      IQuantity moment = new Moment(0, Units.MomentUnit);
+      IQuantity moment = new Moment(0, DefaultUnits.MomentUnit);
       string momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
 
       pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." +
@@ -117,9 +118,9 @@ namespace AdSecGH.Components
 
       IDeformation ulsDeformationResult = uls.Deformation;
       DA.SetData(2, new Vector3d(
-          ulsDeformationResult.X.As(Units.StrainUnit),
-          ulsDeformationResult.YY.As(Units.CurvatureUnit),
-          ulsDeformationResult.ZZ.As(Units.CurvatureUnit)));
+          ulsDeformationResult.X.As(DefaultUnits.StrainUnitResult),
+          ulsDeformationResult.YY.As(DefaultUnits.CurvatureUnit),
+          ulsDeformationResult.ZZ.As(DefaultUnits.CurvatureUnit)));
       double defUtil = uls.DeformationUtilisation.As(RatioUnit.DecimalFraction);
       DA.SetData(3, defUtil);
       if (defUtil > 1)
@@ -129,8 +130,8 @@ namespace AdSecGH.Components
       foreach (IMomentRange mrng in uls.MomentRanges)
       {
         Interval interval = new Interval(
-            mrng.Min.As(Units.MomentUnit),
-            mrng.Max.As(Units.MomentUnit));
+            mrng.Min.As(DefaultUnits.MomentUnit),
+            mrng.Max.As(DefaultUnits.MomentUnit));
         momentRanges.Add(new GH_Interval(interval));
       }
       DA.SetDataList(4, momentRanges);
@@ -154,7 +155,7 @@ namespace AdSecGH.Components
       Length tempOffset = new Length(offsetSI, LengthUnit.Meter);
 
       // offset in user selected unit
-      Length offset = new Length(tempOffset.As(Units.LengthUnit), Units.LengthUnit);
+      Length offset = new Length(tempOffset.As(DefaultUnits.LengthUnitGeometry), DefaultUnits.LengthUnitGeometry);
 
       // compute angle
       double angleRadians = Math.Atan2(kZZ, kYY);
@@ -186,7 +187,7 @@ namespace AdSecGH.Components
       offsVec.Rotate(Math.PI / 2, local.ZAxis);
       offsVec.Unitize();
       // move the line
-      double off = offset.As(Units.LengthUnit);
+      double off = offset.As(DefaultUnits.LengthUnitGeometry);
       ln.Transform(Transform.Translation(offsVec.X * off, offsVec.Y * off, offsVec.Z * off));
       return ln;
     }

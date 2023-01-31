@@ -10,6 +10,9 @@ using OasysGH;
 using OasysGH.Components;
 using OasysUnits.Units;
 using OasysUnits;
+using OasysGH.Units;
+using OasysGH.UI;
+using OasysGH.Units.Helpers;
 
 namespace AdSecGH.Components
 {
@@ -48,7 +51,7 @@ namespace AdSecGH.Components
         selecteditems.Add(dropdownitems[0][0]);
 
         // force
-        dropdownitems.Add(Units.FilteredForceUnits);
+        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
         selecteditems.Add(forceUnit.ToString());
 
         IQuantity force = new Force(0, forceUnit);
@@ -60,7 +63,7 @@ namespace AdSecGH.Components
         first = false;
       }
 
-      m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
     }
 
     public void SetSelected(int i, int j)
@@ -73,15 +76,15 @@ namespace AdSecGH.Components
         switch (selecteditems[0])
         {
           case ("Force"):
-            dropdownitems[1] = Units.FilteredForceUnits;
+            dropdownitems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
             selecteditems[0] = forceUnit.ToString();
             break;
           case ("Strain"):
-            dropdownitems[1] = Units.FilteredStrainUnits;
+            dropdownitems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
             selecteditems[0] = strainUnit.ToString();
             break;
           case ("Stress"):
-            dropdownitems[1] = Units.FilteredStressUnits;
+            dropdownitems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
             selecteditems[0] = stressUnit.ToString();
             break;
         }
@@ -132,9 +135,9 @@ namespace AdSecGH.Components
     });
     private bool first = true;
 
-    private ForceUnit forceUnit = Units.ForceUnit;
-    private StrainUnit strainUnit = Units.StrainUnit;
-    private PressureUnit stressUnit = Units.StressUnit;
+    private ForceUnit forceUnit = DefaultUnits.ForceUnit;
+    private StrainUnit strainUnit = DefaultUnits.StrainUnitResult;
+    private PressureUnit stressUnit = DefaultUnits.StressUnitResult;
     string forceUnitAbbreviation;
     string strainUnitAbbreviation;
     string stressUnitAbbreviation;

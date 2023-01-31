@@ -3,6 +3,7 @@ using Grasshopper.Kernel.Types;
 using OasysGH.Parameters;
 using Oasys.AdSec.Reinforcement;
 using OasysUnits;
+using OasysGH.Units;
 
 namespace AdSecGH.Parameters
 {
@@ -26,7 +27,7 @@ namespace AdSecGH.Parameters
     public override string ToString()
     {
       string bar = "Rebar {";
-      Length thk1 = this.Value.Diameter.ToUnit(Units.LengthUnit);
+      Length thk1 = this.Value.Diameter.ToUnit(DefaultUnits.LengthUnitGeometry);
       bar += "Ø" + thk1.ToString();
       if (this.Value.CountPerBundle > 1)
       {

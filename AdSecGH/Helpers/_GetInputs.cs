@@ -11,6 +11,7 @@ using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
 using OasysGH.Parameters;
+using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
@@ -726,8 +727,8 @@ namespace AdSecGH.Components
       else if (isOptional)
       {
         return new AdSecPointGoo(Oasys.Profiles.IPoint.Create(
-        new Length(0, Units.LengthUnit),
-        new Length(0, Units.LengthUnit)));
+        new Length(0, DefaultUnits.LengthUnitGeometry),
+        new Length(0, DefaultUnits.LengthUnitGeometry)));
       }
       return null;
 
@@ -927,7 +928,7 @@ namespace AdSecGH.Components
         }
         else
         {
-          prfl = Boundaries(owner, DA, inputid, -1, Units.LengthUnit).Profile;
+          prfl = Boundaries(owner, DA, inputid, -1, DefaultUnits.LengthUnitGeometry).Profile;
         }
 
         return prfl;
@@ -951,7 +952,7 @@ namespace AdSecGH.Components
         }
         else
         {
-          prfl = Boundaries(owner, DA, inputid, -1, Units.LengthUnit);
+          prfl = Boundaries(owner, DA, inputid, -1, DefaultUnits.LengthUnitGeometry);
         }
         return prfl;
       }

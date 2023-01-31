@@ -5,6 +5,7 @@ using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.Profiles;
+using OasysGH.Units;
 using OasysUnits;
 using Rhino.Display;
 using Rhino.Geometry;
@@ -18,8 +19,8 @@ namespace AdSecGH.Parameters
     {
       m_value = point;
       this.m_AdSecPoint = IPoint.Create(
-          new Length(m_value.Y, Units.LengthUnit),
-          new Length(m_value.Z, Units.LengthUnit));
+          new Length(m_value.Y, DefaultUnits.LengthUnitGeometry),
+          new Length(m_value.Z, DefaultUnits.LengthUnitGeometry));
     }
     public AdSecPointGoo(AdSecPointGoo adsecPoint)
     {
@@ -31,16 +32,16 @@ namespace AdSecGH.Parameters
       m_AdSecPoint = adsecPoint;
       this.m_value = new Point3d(
           0,
-          m_AdSecPoint.Y.As(Units.LengthUnit),
-          m_AdSecPoint.Z.As(Units.LengthUnit));
+          m_AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
+          m_AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
     }
     public AdSecPointGoo(Length y, Length z)
     {
       m_AdSecPoint = IPoint.Create(y, z);
       m_value = new Point3d(
           0,
-          m_AdSecPoint.Y.As(Units.LengthUnit),
-          m_AdSecPoint.Z.As(Units.LengthUnit));
+          m_AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
+          m_AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
     }
 
     public static IPoint CreateFromPoint3d(Point3d point, Plane plane)
@@ -50,8 +51,8 @@ namespace AdSecGH.Parameters
       Point3d trans = new Point3d(point);
       trans.Transform(mapToLocal);
       return IPoint.Create(
-          new Length(trans.Y, Units.LengthUnit),
-          new Length(trans.Z, Units.LengthUnit));
+          new Length(trans.Y, DefaultUnits.LengthUnitGeometry),
+          new Length(trans.Z, DefaultUnits.LengthUnitGeometry));
     }
     internal static Oasys.Collections.IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve)
     {
@@ -66,8 +67,8 @@ namespace AdSecGH.Parameters
         Point3d point3d = curve.Point(j);
         point3d.Transform(mapToLocal);
         pt = IPoint.Create(
-            new Length(point3d.X, Units.LengthUnit),
-            new Length(point3d.Y, Units.LengthUnit));
+            new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
+            new Length(point3d.Y, DefaultUnits.LengthUnitGeometry));
         pts.Add(pt);
       }
       return pts;
@@ -84,8 +85,8 @@ namespace AdSecGH.Parameters
         Point3d point3d = curve[j];
         point3d.Transform(mapToLocal);
         pt = IPoint.Create(
-            new Length(point3d.X, Units.LengthUnit),
-            new Length(point3d.Y, Units.LengthUnit));
+            new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
+            new Length(point3d.Y, DefaultUnits.LengthUnitGeometry));
         pts.Add(pt);
       }
       return pts;
@@ -98,11 +99,11 @@ namespace AdSecGH.Parameters
 
     public override string ToString()
     {
-      IQuantity quantity = new Length(0, Units.LengthUnit);
+      IQuantity quantity = new Length(0, DefaultUnits.LengthUnitGeometry);
       string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
       return "AdSec " + TypeName + " {"
-          + Math.Round(AdSecPoint.Y.As(Units.LengthUnit), 4) + unitAbbreviation + ", "
-          + Math.Round(AdSecPoint.Z.As(Units.LengthUnit), 4) + unitAbbreviation + "}";
+          + Math.Round(AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry), 4) + unitAbbreviation + ", "
+          + Math.Round(AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry), 4) + unitAbbreviation + "}";
     }
     public override string TypeName => "Vertex";
 
@@ -171,8 +172,8 @@ namespace AdSecGH.Parameters
       if (typeof(TQ).IsAssignableFrom(typeof(IPoint)))
       {
         target = (TQ)(object)IPoint.Create(
-            new Length(Value.X, Units.LengthUnit),
-            new Length(Value.Y, Units.LengthUnit));
+            new Length(Value.X, DefaultUnits.LengthUnitGeometry),
+            new Length(Value.Y, DefaultUnits.LengthUnitGeometry));
         return true;
       }
 

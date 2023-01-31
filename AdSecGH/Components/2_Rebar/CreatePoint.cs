@@ -8,6 +8,9 @@ using OasysGH.Components;
 using Grasshopper.Kernel;
 using OasysUnits;
 using OasysUnits.Units;
+using OasysGH.Units.Helpers;
+using OasysGH.UI;
+using OasysGH.Units;
 
 namespace AdSecGH.Components
 {
@@ -39,7 +42,7 @@ namespace AdSecGH.Components
 
         // length
         //dropdownitems.Add(Enum.GetNames(typeof(LengthUnit)).ToList());
-        dropdownitems.Add(Units.FilteredLengthUnits);
+        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
         selecteditems.Add(lengthUnit.ToString());
 
         IQuantity quantity = new Length(0, lengthUnit);
@@ -48,7 +51,7 @@ namespace AdSecGH.Components
         first = false;
       }
 
-      m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
     }
     public void SetSelected(int i, int j)
     {
@@ -87,7 +90,7 @@ namespace AdSecGH.Components
             "Measure"
     });
     private bool first = true;
-    private LengthUnit lengthUnit = Units.LengthUnit;
+    private LengthUnit lengthUnit = DefaultUnits.LengthUnitGeometry;
     string unitAbbreviation;
 
 

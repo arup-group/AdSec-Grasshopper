@@ -13,6 +13,8 @@ using Rhino.Geometry;
 using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
+using OasysGH.Units.Helpers;
+using OasysGH.Units;
 
 namespace AdSecGH.Components
 {
@@ -130,8 +132,8 @@ namespace AdSecGH.Components
     }
 
     #region Custom UI
-    private StrainUnit strainUnit = Units.StrainUnit;
-    private PressureUnit stressUnit = Units.StressUnit;
+    private StrainUnit strainUnit = DefaultUnits.StrainUnitResult;
+    private PressureUnit stressUnit = DefaultUnits.StressUnitResult;
 
     public override void InitialiseDropdowns()
     {
@@ -176,12 +178,12 @@ namespace AdSecGH.Components
           case 2:
             // add strain dropdown
             //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
-            this.DropDownItems.Add(Units.FilteredStrainUnits);
+            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
             this.SelectedItems.Add(strainUnit.ToString());
 
             // add pressure dropdown
             //this.DropDownItems.Add(Enum.GetNames(typeof(PressureUnit)).ToList());
-            this.DropDownItems.Add(Units.FilteredStressUnits);
+            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
             this.SelectedItems.Add(stressUnit.ToString());
 
             Mode2Clicked();
@@ -192,12 +194,12 @@ namespace AdSecGH.Components
           case 4:
             // add strain dropdown
             //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
-            this.DropDownItems.Add(Units.FilteredStrainUnits);
+            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
             this.SelectedItems.Add(strainUnit.ToString());
 
             // add pressure dropdown
             //this.DropDownItems.Add(Enum.GetNames(typeof(PressureUnit)).ToList());
-            this.DropDownItems.Add(Units.FilteredStressUnits);
+            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
             this.SelectedItems.Add(stressUnit.ToString());
 
             Mode4Clicked();
@@ -208,7 +210,7 @@ namespace AdSecGH.Components
           case 6:
             // add strain dropdown
             //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
-            this.DropDownItems.Add(Units.FilteredStrainUnits);
+            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
             this.SelectedItems.Add(strainUnit.ToString());
 
             Mode6Clicked();
@@ -219,14 +221,14 @@ namespace AdSecGH.Components
           case 8:
             // add strain dropdown
             //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
-            this.DropDownItems.Add(Units.FilteredStrainUnits);
+            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
             this.SelectedItems.Add(strainUnit.ToString());
             Mode8Clicked();
             break;
           case 9:
             // add strain dropdown
             //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
-            this.DropDownItems.Add(Units.FilteredStrainUnits);
+            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
             this.SelectedItems.Add(strainUnit.ToString());
             Mode9Clicked();
             break;

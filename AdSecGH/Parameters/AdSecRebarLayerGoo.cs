@@ -3,6 +3,7 @@ using Grasshopper.Kernel.Types;
 using OasysGH.Parameters;
 using Oasys.AdSec.Reinforcement.Layers;
 using OasysUnits;
+using OasysGH.Units;
 
 namespace AdSecGH.Parameters
 {
@@ -26,7 +27,7 @@ namespace AdSecGH.Parameters
     public override string ToString()
     {
       string bar = "";
-      Length dia = this.Value.BarBundle.Diameter.ToUnit(Units.LengthUnit);
+      Length dia = this.Value.BarBundle.Diameter.ToUnit(DefaultUnits.LengthUnitGeometry);
       bar += "Ø" + dia.ToString();
       if (this.Value.BarBundle.CountPerBundle > 1)
       {
@@ -44,7 +45,7 @@ namespace AdSecGH.Parameters
         try
         {
           ILayerByBarPitch byBarPitch = (ILayerByBarPitch)Value;
-          Length spacing = byBarPitch.Pitch.ToUnit(Units.LengthUnit);
+          Length spacing = byBarPitch.Pitch.ToUnit(DefaultUnits.LengthUnitGeometry);
           str = bar + " bars / " + spacing.ToString();
         }
         catch (Exception)

@@ -11,6 +11,7 @@ using OasysGH;
 using OasysGH.Components;
 using OasysUnits;
 using OasysGH.Parameters;
+using OasysGH.Units;
 
 namespace AdSecGH.Components
 {
@@ -45,10 +46,10 @@ namespace AdSecGH.Components
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
-      IQuantity length = new Length(0, Units.LengthUnit);
+      IQuantity length = new Length(0, DefaultUnits.LengthUnitGeometry);
       string lengthUnitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
-      string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
-      IQuantity stress = new Pressure(0, Units.StressUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
+      IQuantity stress = new Pressure(0, DefaultUnits.StressUnitResult);
       string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 
       pManager.AddGenericParameter("Position [" + lengthUnitAbbreviation + "]", "Vx", "Rebar position as 2D vertex in the section's local yz-plane ", GH_ParamAccess.list);
@@ -130,19 +131,19 @@ namespace AdSecGH.Components
 
             // ULS strain
             Strain strainULS = uls.Deformation.StrainAt(pos);
-            outStrainULS.Add(new GH_UnitNumber(new Strain(strainULS.As(Units.StrainUnit), Units.StrainUnit)));
+            outStrainULS.Add(new GH_UnitNumber(new Strain(strainULS.As(DefaultUnits.StrainUnitResult), DefaultUnits.StrainUnitResult)));
 
             // ULS stress in bar material from strain
             Pressure stressULS = snglBrs.BarBundle.Material.Strength.StressAt(strainULS);
-            outStressULS.Add(new GH_UnitNumber(new Pressure(stressULS.As(Units.StressUnit), Units.StressUnit)));
+            outStressULS.Add(new GH_UnitNumber(new Pressure(stressULS.As(DefaultUnits.StressUnitResult), DefaultUnits.StressUnitResult)));
 
             // SLS strain
             Strain strainSLS = sls.Deformation.StrainAt(pos);
-            outStrainSLS.Add(new GH_UnitNumber(new Strain(strainSLS.As(Units.StrainUnit), Units.StrainUnit)));
+            outStrainSLS.Add(new GH_UnitNumber(new Strain(strainSLS.As(DefaultUnits.StrainUnitResult), DefaultUnits.StrainUnitResult)));
 
             // SLS stress in bar material from strain
             Pressure stressSLS = snglBrs.BarBundle.Material.Serviceability.StressAt(strainSLS);
-            outStressSLS.Add(new GH_UnitNumber(new Pressure(stressSLS.As(Units.StressUnit), Units.StressUnit)));
+            outStressSLS.Add(new GH_UnitNumber(new Pressure(stressSLS.As(DefaultUnits.StressUnitResult), DefaultUnits.StressUnitResult)));
 
           }
         }

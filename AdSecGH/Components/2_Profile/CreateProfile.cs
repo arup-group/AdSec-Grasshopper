@@ -12,6 +12,9 @@ using Grasshopper.Kernel.Parameters;
 using Oasys.Profiles;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.UI;
+using OasysGH.Units;
+using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
@@ -91,13 +94,13 @@ namespace AdSecGH.Components
         }
 
         // length
-        dropdownitems.Add(Units.FilteredLengthUnits);
+        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
         selecteditems.Add(lengthUnit.ToString());
 
 
       }
 
-      m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
 
     }
 
@@ -333,7 +336,7 @@ namespace AdSecGH.Components
             dropdownitems.RemoveAt(1);
 
           // add length measure dropdown list
-          dropdownitems.Add(Units.FilteredLengthUnits);
+          dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
 
           // set selected length
           selecteditems[1] = lengthUnit.ToString();
@@ -416,7 +419,7 @@ namespace AdSecGH.Components
     Dictionary<string, Type> profileTypes;
     Dictionary<string, FieldInfo> profileFields;
 
-    private LengthUnit lengthUnit = Units.LengthUnit;
+    private LengthUnit lengthUnit = DefaultUnits.LengthUnitGeometry;
 
     #region catalogue sections
     // for catalogue selection

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Threading;
+﻿using System.Threading;
 using System.Windows.Forms;
 using AdSecGH.UI;
 using Grasshopper.GUI;
