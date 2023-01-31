@@ -9,30 +9,33 @@ namespace AdSecGH.Parameters
   public class AdSecSectionGoo : GH_GeometricGoo<AdSecSection>, IGH_PreviewData
   {
     #region properties
+    public override string TypeName => "Section";
+    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
     public override BoundingBox Boundingbox
     {
       get
       {
-        if (Value == null)
+        if (this.Value == null)
           return BoundingBox.Empty;
-        if (Value.SolidBrep == null)
+        if (this.Value.SolidBrep == null)
           return BoundingBox.Empty;
-        return Value.SolidBrep.GetBoundingBox(false);
+        return this.Value.SolidBrep.GetBoundingBox(false);
       }
     }
     public BoundingBox ClippingBox
     {
-      get {
-        return Boundingbox; 
+      get
+      {
+        return this.Boundingbox;
       }
     }
     public override bool IsValid
     {
       get
       {
-        if (Value == null)
+        if (this.Value == null)
           return false;
-        if (Value.SolidBrep == null || Value.IsValid == false)
+        if (this.Value.SolidBrep == null || this.Value.IsValid == false)
           return false;
         return true;
       }
@@ -41,20 +44,19 @@ namespace AdSecGH.Parameters
     {
       get
       {
-        if (Value.IsValid)
+        if (this.Value.IsValid)
           return string.Empty;
-        return Value.IsValid.ToString();
+        return this.Value.IsValid.ToString();
       }
     }
     public override string ToString()
     {
-      if (Value == null)
+      if (this.Value == null)
         return "Null AdSec Section";
       else
-        return "AdSec " + TypeName + " {" + Value.ToString() + "}";
+        return "AdSec " + this.TypeName + " {" + this.Value.ToString() + "}";
     }
-    public override string TypeName => "Section";
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+
     #endregion
 
     #region constructors
@@ -87,9 +89,9 @@ namespace AdSecGH.Parameters
     public override BoundingBox GetBoundingBox(Transform xform)
     {
       if (this.Value == null)
-        return BoundingBox.Empty; 
+        return BoundingBox.Empty;
       if (this.Value.SolidBrep == null)
-        return BoundingBox.Empty; 
+        return BoundingBox.Empty;
       return this.Value.SolidBrep.GetBoundingBox(xform);
     }
 
@@ -158,7 +160,7 @@ namespace AdSecGH.Parameters
     public override bool CastFrom(object source)
     {
       if (source == null)
-        return false; 
+        return false;
 
       return false;
     }
@@ -182,48 +184,48 @@ namespace AdSecGH.Parameters
     public void DrawViewportMeshes(GH_PreviewMeshArgs args)
     {
       //Draw shape.
-      if (Value.SolidBrep != null)
+      if (this.Value.SolidBrep != null)
       {
         // draw profile
-        args.Pipeline.DrawBrepShaded(Value.SolidBrep, Value.m_profileColour);
+        args.Pipeline.DrawBrepShaded(this.Value.SolidBrep, this.Value.m_profileColour);
         // draw subcomponents
-        for (int i = 0; i < Value.m_subProfiles.Count; i++)
+        for (int i = 0; i < this.Value.m_subProfiles.Count; i++)
         {
-          args.Pipeline.DrawBrepShaded(Value.m_subProfiles[i], Value.m_subColours[i]);
+          args.Pipeline.DrawBrepShaded(this.Value.m_subProfiles[i], this.Value.m_subColours[i]);
         }
         // draw rebars
-        for (int i = 0; i < Value.m_rebars.Count; i++)
+        for (int i = 0; i < this.Value.m_rebars.Count; i++)
         {
-          args.Pipeline.DrawBrepShaded(Value.m_rebars[i], Value.m_rebarColours[i]);
+          args.Pipeline.DrawBrepShaded(this.Value.m_rebars[i], this.Value.m_rebarColours[i]);
         }
       }
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args)
     {
-      if (Value == null) { return; }
+      if (this.Value == null) { return; }
 
       Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
       if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
       {
-        args.Pipeline.DrawPolyline(Value.m_profileEdge, UI.Colour.OasysBlue, 2);
-        if (Value.m_profileVoidEdges != null)
+        args.Pipeline.DrawPolyline(this.Value.m_profileEdge, UI.Colour.OasysBlue, 2);
+        if (this.Value.m_profileVoidEdges != null)
         {
-          foreach (Polyline crv in Value.m_profileVoidEdges)
+          foreach (Polyline crv in this.Value.m_profileVoidEdges)
           {
             args.Pipeline.DrawPolyline(crv, UI.Colour.OasysBlue, 1);
           }
         }
-        if (Value.m_subEdges != null)
+        if (this.Value.m_subEdges != null)
         {
-          foreach (Polyline crv in Value.m_subEdges)
+          foreach (Polyline crv in this.Value.m_subEdges)
           {
             args.Pipeline.DrawPolyline(crv, UI.Colour.OasysBlue, 1);
           }
         }
-        if (Value.m_subVoidEdges != null)
+        if (this.Value.m_subVoidEdges != null)
         {
-          foreach (List<Polyline> crvs in Value.m_subVoidEdges)
+          foreach (List<Polyline> crvs in this.Value.m_subVoidEdges)
           {
             foreach (Polyline crv in crvs)
             {
@@ -231,16 +233,16 @@ namespace AdSecGH.Parameters
             }
           }
         }
-        if (Value.m_rebarEdges != null)
+        if (this.Value.m_rebarEdges != null)
         {
-          foreach (Circle crv in Value.m_rebarEdges)
+          foreach (Circle crv in this.Value.m_rebarEdges)
           {
             args.Pipeline.DrawCircle(crv, Color.Black, 1);
           }
         }
-        if (Value.m_linkEdges != null)
+        if (this.Value.m_linkEdges != null)
         {
-          foreach (Curve crv in Value.m_linkEdges)
+          foreach (Curve crv in this.Value.m_linkEdges)
           {
             args.Pipeline.DrawCurve(crv, Color.Black, 1);
           }
@@ -249,23 +251,23 @@ namespace AdSecGH.Parameters
       else // selected
       {
         args.Pipeline.DrawPolyline(Value.m_profileEdge, UI.Colour.OasysYellow, 3);
-        if (Value.m_profileVoidEdges != null)
+        if (this.Value.m_profileVoidEdges != null)
         {
-          foreach (Polyline crv in Value.m_profileVoidEdges)
+          foreach (Polyline crv in this.Value.m_profileVoidEdges)
           {
             args.Pipeline.DrawPolyline(crv, UI.Colour.OasysYellow, 2);
           }
         }
-        if (Value.m_subEdges != null)
+        if (this.Value.m_subEdges != null)
         {
-          foreach (Polyline crv in Value.m_subEdges)
+          foreach (Polyline crv in this.Value.m_subEdges)
           {
             args.Pipeline.DrawPolyline(crv, UI.Colour.OasysYellow, 2);
           }
         }
-        if (Value.m_subVoidEdges != null)
+        if (this.Value.m_subVoidEdges != null)
         {
-          foreach (List<Polyline> crvs in Value.m_subVoidEdges)
+          foreach (List<Polyline> crvs in this.Value.m_subVoidEdges)
           {
             foreach (Polyline crv in crvs)
             {
@@ -273,27 +275,27 @@ namespace AdSecGH.Parameters
             }
           }
         }
-        if (Value.m_rebarEdges != null)
+        if (this.Value.m_rebarEdges != null)
         {
-          foreach (Circle crv in Value.m_rebarEdges)
+          foreach (Circle crv in this.Value.m_rebarEdges)
           {
             args.Pipeline.DrawCircle(crv, UI.Colour.UILightGrey, 2);
           }
         }
-        if (Value.m_linkEdges != null)
+        if (this.Value.m_linkEdges != null)
         {
-          foreach (Curve crv in Value.m_linkEdges)
+          foreach (Curve crv in this.Value.m_linkEdges)
           {
             args.Pipeline.DrawCurve(crv, UI.Colour.UILightGrey, 2);
           }
         }
       }
       // local axis
-      if (Value.previewXaxis != null)
+      if (this.Value.previewXaxis != null)
       {
-        args.Pipeline.DrawLine(Value.previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
-        args.Pipeline.DrawLine(Value.previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
-        args.Pipeline.DrawLine(Value.previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
+        args.Pipeline.DrawLine(this.Value.previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
+        args.Pipeline.DrawLine(this.Value.previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
+        args.Pipeline.DrawLine(this.Value.previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
       }
     }
     #endregion

@@ -11,9 +11,9 @@ namespace AdSecGH.Parameters
 {
   public class AdSecRebarGroupGoo : GH_Goo<AdSecRebarGroup>
   {
-    public override bool IsValid => true;
     public override string TypeName => "Rebar Group";
     public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public override bool IsValid => true;
     internal ICover Cover
     {
       get
@@ -26,6 +26,7 @@ namespace AdSecGH.Parameters
       }
     }
 
+    #region constructors
     public AdSecRebarGroupGoo()
     {
     }
@@ -41,7 +42,9 @@ namespace AdSecGH.Parameters
         goo = new AdSecRebarGroup();
       this.Value = goo;
     }
+    #endregion
 
+    #region methods
     public override IGH_Goo Duplicate()
     {
       AdSecRebarGroupGoo dup = new AdSecRebarGroupGoo(this.Value);
@@ -147,6 +150,36 @@ namespace AdSecGH.Parameters
 
     //    }
     //}
+
+    public override bool CastTo<Q>(ref Q target)
+    {
+      if (typeof(Q).IsAssignableFrom(typeof(AdSecRebarGroup)))
+      {
+        if (Value == null)
+          target = default;
+        else
+          target = (Q)(object)Value.Duplicate();
+        return true;
+      }
+
+      target = default;
+      return false;
+    }
+
+    public override bool CastFrom(object source)
+    {
+      if (source == null)
+        return false;
+
+      //Cast from own type
+      if (typeof(AdSecRebarGroup).IsAssignableFrom(source.GetType()))
+      {
+        Value = (AdSecRebarGroup)source;
+        return true;
+      }
+
+      return false;
+    }
 
     public override string ToString()
     {
@@ -257,37 +290,6 @@ namespace AdSecGH.Parameters
 
       }
       return "AdSec " + TypeName + " {" + m_ToString + m_preLoad + "}";
-    }
-
-    #region casting methods
-    public override bool CastTo<Q>(ref Q target)
-    {
-      if (typeof(Q).IsAssignableFrom(typeof(AdSecRebarGroup)))
-      {
-        if (Value == null)
-          target = default;
-        else
-          target = (Q)(object)Value.Duplicate();
-        return true;
-      }
-
-      target = default;
-      return false;
-    }
-
-    public override bool CastFrom(object source)
-    {
-      if (source == null)
-        return false;
-
-      //Cast from own type
-      if (typeof(AdSecRebarGroup).IsAssignableFrom(source.GetType()))
-      {
-        Value = (AdSecRebarGroup)source;
-        return true;
-      }
-
-      return false;
     }
     #endregion
   }

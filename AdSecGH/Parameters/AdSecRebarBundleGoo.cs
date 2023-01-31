@@ -15,6 +15,7 @@ namespace AdSecGH.Parameters
     {
     }
 
+    #region methods
     public override IGH_Goo Duplicate()
     {
       return new AdSecRebarBundleGoo(this.Value);
@@ -32,5 +33,6 @@ namespace AdSecGH.Parameters
       //bar += ", " + this.Value.Material.ToString();
       return "AdSec " + bar + "}";
     }
+    #endregion
   }
 }

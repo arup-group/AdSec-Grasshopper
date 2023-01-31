@@ -12,12 +12,184 @@ namespace AdSecGH.Parameters
 {
   public class AdSecStressStrainCurveGoo : GH_GeometricGoo<Curve>, IGH_PreviewData
   {
-    public AdSecStressStrainCurveGoo(Curve curve, IStressStrainCurve stressStrainCurve, StressStrainCurveType type, List<Point3d> points)
-    : base(curve)
+    public enum StressStrainCurveType
     {
-      m_pts = points;
-      m_type = type;
-      m_SScurve = stressStrainCurve;
+      Bilinear,
+      Explicit,
+      FibModelCode,
+      Linear,
+      ManderConfined,
+      Mander,
+      ParabolaRectangle,
+      Park,
+      Popovics,
+      Rectangular,
+      StressStrainDefault
+    }
+
+    public override string TypeName => "StressStrainCurve";
+    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public IStressStrainCurve StressStrainCurve
+    {
+      get
+      {
+        return this.m_SScurve;
+      }
+    }
+    public List<Point3d> ControlPoints
+    {
+      get
+      {
+        return this.m_pts;
+      }
+    }
+    public override BoundingBox Boundingbox
+    {
+      get
+      {
+        if (this.Value == null)
+          return BoundingBox.Empty;
+        return this.Value.GetBoundingBox(false);
+      }
+    }
+    public BoundingBox ClippingBox
+    {
+      get
+      {
+        return this.Boundingbox;
+      }
+    }
+    private List<Point3d> m_pts = new List<Point3d>();
+    private StressStrainCurveType m_type;
+    private IStressStrainCurve m_SScurve;
+
+    public AdSecStressStrainCurveGoo(Curve curve, IStressStrainCurve stressStrainCurve, StressStrainCurveType type, List<Point3d> points) : base(curve)
+    {
+      this.m_pts = points;
+      this.m_type = type;
+      this.m_SScurve = stressStrainCurve;
+    }
+
+    #region methods
+    public override bool CastTo<Q>(out Q target)
+    {
+      if (typeof(Q).IsAssignableFrom(typeof(AdSecStressStrainCurveGoo)))
+      {
+        target = (Q)(object)new AdSecStressStrainCurveGoo(m_value.DuplicateCurve(), m_SScurve, m_type, m_pts.ToList());
+        return true;
+      }
+
+      if (typeof(Q).IsAssignableFrom(typeof(Line)))
+      {
+        target = (Q)(object)this.Value;
+        return true;
+      }
+
+      if (typeof(Q).IsAssignableFrom(typeof(GH_Curve)))
+      {
+        target = (Q)(object)new GH_Curve(this.Value);
+        return true;
+      }
+
+      target = default(Q);
+      return false;
+    }
+
+    public override bool CastFrom(object source)
+    {
+      if (source == null) return false;
+      if (source is Curve)
+      {
+        this.Value = (Curve)source;
+        return true;
+      }
+      GH_Curve lineGoo = source as GH_Curve;
+      if (lineGoo != null)
+      {
+        this.Value = lineGoo.Value;
+        return true;
+      }
+
+      Curve line = null;
+      if (GH_Convert.ToCurve(source, ref line, GH_Conversion.Both))
+      {
+        this.Value = line;
+        return true;
+      }
+      return false;
+    }
+
+    public override string ToString()
+    {
+      return "AdSec " + this.TypeName + " {" + this.m_type.ToString() + "}";
+    }
+
+    public override IGH_GeometricGoo DuplicateGeometry()
+    {
+      return new AdSecStressStrainCurveGoo(this.Value.DuplicateCurve(), this.m_SScurve, this.m_type, this.m_pts);
+    }
+
+    public override BoundingBox GetBoundingBox(Transform xform)
+    {
+      return Value.GetBoundingBox(false);
+    }
+
+    public override IGH_GeometricGoo Transform(Transform xform)
+    {
+      return null;
+    }
+
+    public override IGH_GeometricGoo Morph(SpaceMorph xmorph)
+    {
+      return null;
+    }
+
+    public void DrawViewportMeshes(GH_PreviewMeshArgs args)
+    {
+    }
+
+    public void DrawViewportWires(GH_PreviewWireArgs args)
+    {
+      if (Value != null)
+      {
+        args.Pipeline.DrawCurve(Value, UI.Colour.OasysBlue, 2);
+        foreach (Point3d pt in m_pts)
+        {
+          args.Pipeline.DrawCircle(new Circle(pt, 0.5), UI.Colour.OasysYellow, 1);
+        }
+      }
+    }
+
+    public Oasys.Collections.IList<IStressStrainPoint> IStressStrainPoints
+    {
+      get
+      {
+        try
+        {
+          IExplicitStressStrainCurve crv2 = (IExplicitStressStrainCurve)m_SScurve;
+          return crv2.Points;
+
+        }
+        catch (Exception)
+        {
+
+          throw new Exception("Unable to cast to internal IStressStrainCurve to IExplicitStressStrainCurve");
+        }
+      }
+    }
+
+    public List<AdSecStressStrainPointGoo> AdSecStressStrainPoints
+    {
+      get
+      {
+        List<AdSecStressStrainPointGoo> outPts = new List<AdSecStressStrainPointGoo>();
+        Oasys.Collections.IList<IStressStrainPoint> pts = this.IStressStrainPoints;
+        foreach (IStressStrainPoint pt in pts)
+        {
+          outPts.Add(new AdSecStressStrainPointGoo(pt));
+        }
+        return outPts;
+      }
     }
 
     internal static Oasys.Collections.IList<IStressStrainPoint> StressStrainPtsFromPolyline(PolylineCurve curve)
@@ -34,9 +206,9 @@ namespace AdSecGH.Parameters
       }
       return pts;
     }
+
     internal static Tuple<Curve, List<Point3d>> Create(IStressStrainCurve stressStrainCurve, StressStrainCurveType type, bool isCompression)
     {
-
       int direction = isCompression ? 1 : -1;
       Curve crvOut = null;
       List<Point3d> pts = new List<Point3d>();
@@ -149,6 +321,7 @@ namespace AdSecGH.Parameters
 
       return new Tuple<Curve, List<Point3d>>(crvOut, pts);
     }
+
     internal static Tuple<Curve, List<Point3d>> CreateFromCode(IStressStrainCurve stressStrainCurve, bool isCompression)
     {
       int direction = isCompression ? 1 : -1;
@@ -171,160 +344,6 @@ namespace AdSecGH.Parameters
 
       return new Tuple<Curve, List<Point3d>>(crvOut, pts);
     }
-    public enum StressStrainCurveType
-    {
-      Bilinear,
-      Explicit,
-      FibModelCode,
-      Linear,
-      ManderConfined,
-      Mander,
-      ParabolaRectangle,
-      Park,
-      Popovics,
-      Rectangular,
-      StressStrainDefault
-    }
-    private List<Point3d> m_pts = new List<Point3d>();
-    private StressStrainCurveType m_type;
-    private IStressStrainCurve m_SScurve;
-
-    public IStressStrainCurve StressStrainCurve
-    {
-      get { return m_SScurve; }
-    }
-    public List<Point3d> ControlPoints
-    {
-      get { return m_pts; }
-    }
-    public Oasys.Collections.IList<IStressStrainPoint> IStressStrainPoints
-    {
-      get
-      {
-        try
-        {
-          IExplicitStressStrainCurve crv2 = (IExplicitStressStrainCurve)m_SScurve;
-          return crv2.Points;
-
-        }
-        catch (Exception)
-        {
-
-          throw new Exception("Unable to cast to internal IStressStrainCurve to IExplicitStressStrainCurve");
-        }
-      }
-    }
-    public List<AdSecStressStrainPointGoo> AdSecStressStrainPoints
-    {
-      get
-      {
-        List<AdSecStressStrainPointGoo> outPts = new List<AdSecStressStrainPointGoo>();
-        Oasys.Collections.IList<IStressStrainPoint> pts = this.IStressStrainPoints;
-        foreach (IStressStrainPoint pt in pts)
-        {
-          outPts.Add(new AdSecStressStrainPointGoo(pt));
-        }
-        return outPts;
-      }
-    }
-
-
-    public override string ToString()
-    {
-      return "AdSec " + TypeName + " {" + m_type.ToString() + "}";
-    }
-    public override string TypeName => "StressStrainCurve";
-
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
-
-    public override IGH_GeometricGoo DuplicateGeometry()
-    {
-      return new AdSecStressStrainCurveGoo(this.Value.DuplicateCurve(), m_SScurve, m_type, m_pts);
-    }
-    public override BoundingBox Boundingbox
-    {
-      get
-      {
-        if (Value == null) { return BoundingBox.Empty; }
-        return Value.GetBoundingBox(false);
-      }
-    }
-    public override BoundingBox GetBoundingBox(Transform xform)
-    {
-      return Value.GetBoundingBox(false);
-    }
-    public override IGH_GeometricGoo Transform(Transform xform)
-    {
-      return null;
-    }
-    public override IGH_GeometricGoo Morph(SpaceMorph xmorph)
-    {
-      return null;
-    }
-
-     public override bool CastTo<TQ>(out TQ target)
-    {
-      if (typeof(TQ).IsAssignableFrom(typeof(AdSecStressStrainCurveGoo)))
-      {
-        target = (TQ)(object)new AdSecStressStrainCurveGoo(m_value.DuplicateCurve(), m_SScurve, m_type, m_pts.ToList());
-        return true;
-      }
-
-      if (typeof(TQ).IsAssignableFrom(typeof(Line)))
-      {
-        target = (TQ)(object)Value;
-        return true;
-      }
-
-      if (typeof(TQ).IsAssignableFrom(typeof(GH_Curve)))
-      {
-        target = (TQ)(object)new GH_Curve(Value);
-        return true;
-      }
-
-      target = default(TQ);
-      return false;
-    }
-    public override bool CastFrom(object source)
-    {
-      if (source == null) return false;
-      if (source is Curve)
-      {
-        Value = (Curve)source;
-        return true;
-      }
-      GH_Curve lineGoo = source as GH_Curve;
-      if (lineGoo != null)
-      {
-        Value = lineGoo.Value;
-        return true;
-      }
-
-      Curve line = null;
-      if (GH_Convert.ToCurve(source, ref line, GH_Conversion.Both))
-      {
-        Value = line;
-        return true;
-      }
-
-      return false;
-    }
-
-    public BoundingBox ClippingBox
-    {
-      get { return Boundingbox; }
-    }
-    public void DrawViewportWires(GH_PreviewWireArgs args)
-    {
-      if (Value != null)
-      {
-        args.Pipeline.DrawCurve(Value, UI.Colour.OasysBlue, 2);
-        foreach (Point3d pt in m_pts)
-        {
-          args.Pipeline.DrawCircle(new Circle(pt, 0.5), UI.Colour.OasysYellow, 1);
-        }
-      }
-    }
-    public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
+    #endregion
   }
 }

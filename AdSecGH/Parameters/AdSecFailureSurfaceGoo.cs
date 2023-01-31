@@ -112,33 +112,33 @@ namespace AdSecGH.Parameters
       return new AdSecFailureSurfaceGoo(this.FailureSurface, local, m);
     }
 
-    public override bool CastTo<TQ>(out TQ target)
+    public override bool CastTo<Q>(out Q target)
     {
-      if (typeof(TQ).IsAssignableFrom(typeof(AdSecFailureSurfaceGoo)))
+      if (typeof(Q).IsAssignableFrom(typeof(AdSecFailureSurfaceGoo)))
       {
-        target = (TQ)(object)new AdSecFailureSurfaceGoo(this.FailureSurface, this.m_plane, this.Value);
+        target = (Q)(object)new AdSecFailureSurfaceGoo(this.FailureSurface, this.m_plane, this.Value);
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(Mesh)))
+      if (typeof(Q).IsAssignableFrom(typeof(Mesh)))
       {
-        target = (TQ)(object)Value;
+        target = (Q)(object)Value;
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(GH_Mesh)))
+      if (typeof(Q).IsAssignableFrom(typeof(GH_Mesh)))
       {
-        target = (TQ)(object)new GH_Mesh(Value);
+        target = (Q)(object)new GH_Mesh(Value);
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(ILoadSurface)))
+      if (typeof(Q).IsAssignableFrom(typeof(ILoadSurface)))
       {
-        target = (TQ)(object)FailureSurface;
+        target = (Q)(object)FailureSurface;
         return true;
       }
 
-      target = default(TQ);
+      target = default(Q);
       return false;
     }
 

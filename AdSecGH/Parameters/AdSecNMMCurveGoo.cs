@@ -23,12 +23,6 @@ namespace AdSecGH.Parameters
       MM
     }
 
-    internal ILoadCurve LoadCurve;
-    private InteractionCurveType m_type;
-    private List<Line> m_grids = new List<Line>();
-    private List<Line> m_axes = new List<Line>();
-    private List<Text3d> m_txts;
-    private Rectangle3d m_plotBounds;
     public override string TypeName => (m_type == InteractionCurveType.NM) ? "N-M" : "M-M";
     public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
     public override BoundingBox Boundingbox
@@ -49,7 +43,14 @@ namespace AdSecGH.Parameters
         return Boundingbox;
       }
     }
+    internal ILoadCurve LoadCurve;
+    private InteractionCurveType m_type;
+    private List<Line> m_grids = new List<Line>();
+    private List<Line> m_axes = new List<Line>();
+    private List<Text3d> m_txts;
+    private Rectangle3d m_plotBounds;
 
+    #region constructors
     public AdSecNMMCurveGoo(Polyline curve, ILoadCurve loadCurve, InteractionCurveType interactionType, Rectangle3d plotBoundary) : base(curve)
     {
       if (loadCurve == null)
@@ -127,6 +128,95 @@ namespace AdSecGH.Parameters
       m_value.Transform(mapFromLocal);
       m_plotBounds = plotBoundary;
       UpdatePreview(m_plotBounds);
+    }
+    #endregion
+
+    #region methods
+    public override IGH_GeometricGoo DuplicateGeometry()
+    {
+      return new AdSecNMMCurveGoo(this.m_value.Duplicate(), this.LoadCurve, this.m_type, this.m_plotBounds);
+    }
+
+    public override bool CastTo<Q>(out Q target)
+    {
+      if (typeof(Q).IsAssignableFrom(typeof(AdSecNMMCurveGoo)))
+      {
+        target = (Q)(object)new AdSecNMMCurveGoo(this.m_value.Duplicate(), this.LoadCurve, this.m_type, this.m_plotBounds);
+        return true;
+      }
+
+      if (typeof(Q).IsAssignableFrom(typeof(Line)))
+      {
+        target = (Q)(object)Value;
+        return true;
+      }
+
+      if (typeof(Q).IsAssignableFrom(typeof(GH_Curve)))
+      {
+        PolylineCurve pln = this.m_value.ToPolylineCurve();
+        target = (Q)(object)new GH_Curve(pln);
+        return true;
+      }
+
+      target = default(Q);
+      return false;
+    }
+
+    public override bool CastFrom(object source)
+    {
+      if (source == null)
+        return false;
+
+      return false;
+    }
+
+    public override string ToString()
+    {
+      string interactionType = "";
+      if (m_type == InteractionCurveType.NM)
+        interactionType = "N-M (Force-Moment Interaction)";
+      else
+        interactionType = "M-M (Moment-Moment Interaction)";
+      return "AdSec " + TypeName + " {" + interactionType + "}";
+    }
+
+    public override BoundingBox GetBoundingBox(Transform xform)
+    {
+      Polyline dup = this.m_value.Duplicate();
+      dup.Transform(xform);
+      return dup.BoundingBox;
+    }
+
+    public override IGH_GeometricGoo Transform(Transform xform)
+    {
+      return null;
+    }
+
+    public override IGH_GeometricGoo Morph(SpaceMorph xmorph)
+    {
+      return null;
+    }
+
+    public void DrawViewportMeshes(GH_PreviewMeshArgs args)
+    {
+    }
+
+    public void DrawViewportWires(GH_PreviewWireArgs args)
+    {
+      if (Value != null)
+      {
+        // draw diagram polyline
+        if (args.Color == Color.FromArgb(255, 150, 0, 0)) //Grasshopper.Instances.Settings.GetValue("DefaultPreviewColourSelected", System.Drawing.Color.White))
+          args.Pipeline.DrawPolyline(Value, UI.Colour.OasysBlue, 2);
+        else
+          args.Pipeline.DrawPolyline(Value, UI.Colour.OasysYellow, 2);
+
+        // draw plot diagram
+        args.Pipeline.DrawLines(m_grids, UI.Colour.OasysDarkGrey, 1);
+        args.Pipeline.DrawLines(m_axes, UI.Colour.OasysDarkGrey, 2);
+        foreach (Text3d txt in m_txts)
+          args.Pipeline.Draw3dText(txt, UI.Colour.OasysDarkGrey);
+      }
     }
 
     private void UpdatePreview(Rectangle3d plotBoundary)
@@ -268,90 +358,6 @@ namespace AdSecGH.Parameters
       m_txts.Add(txtY);
 
     }
-
-    public override string ToString()
-    {
-      string interactionType = "";
-      if (m_type == InteractionCurveType.NM)
-        interactionType = "N-M (Force-Moment Interaction)";
-      else
-        interactionType = "M-M (Moment-Moment Interaction)";
-      return "AdSec " + TypeName + " {" + interactionType + "}";
-    }
-
-    public override IGH_GeometricGoo DuplicateGeometry()
-    {
-      return new AdSecNMMCurveGoo(this.m_value.Duplicate(), this.LoadCurve, this.m_type, this.m_plotBounds);
-    }
-
-    public override BoundingBox GetBoundingBox(Transform xform)
-    {
-      Polyline dup = this.m_value.Duplicate();
-      dup.Transform(xform);
-      return dup.BoundingBox;
-    }
-
-    public override IGH_GeometricGoo Transform(Transform xform)
-    {
-      return null;
-    }
-
-    public override IGH_GeometricGoo Morph(SpaceMorph xmorph)
-    {
-      return null;
-    }
-
-    public override bool CastTo<TQ>(out TQ target)
-    {
-      if (typeof(TQ).IsAssignableFrom(typeof(AdSecNMMCurveGoo)))
-      {
-        target = (TQ)(object)new AdSecNMMCurveGoo(this.m_value.Duplicate(), this.LoadCurve, this.m_type, this.m_plotBounds);
-        return true;
-      }
-
-      if (typeof(TQ).IsAssignableFrom(typeof(Line)))
-      {
-        target = (TQ)(object)Value;
-        return true;
-      }
-
-      if (typeof(TQ).IsAssignableFrom(typeof(GH_Curve)))
-      {
-        PolylineCurve pln = this.m_value.ToPolylineCurve();
-        target = (TQ)(object)new GH_Curve(pln);
-        return true;
-      }
-
-      target = default(TQ);
-      return false;
-    }
-
-    public override bool CastFrom(object source)
-    {
-      if (source == null)
-        return false;
-
-      return false;
-    }
-
-    public void DrawViewportWires(GH_PreviewWireArgs args)
-    {
-      if (Value != null)
-      {
-        // draw diagram polyline
-        if (args.Color == Color.FromArgb(255, 150, 0, 0)) //Grasshopper.Instances.Settings.GetValue("DefaultPreviewColourSelected", System.Drawing.Color.White))
-          args.Pipeline.DrawPolyline(Value, UI.Colour.OasysBlue, 2);
-        else
-          args.Pipeline.DrawPolyline(Value, UI.Colour.OasysYellow, 2);
-
-        // draw plot diagram
-        args.Pipeline.DrawLines(m_grids, UI.Colour.OasysDarkGrey, 1);
-        args.Pipeline.DrawLines(m_axes, UI.Colour.OasysDarkGrey, 2);
-        foreach (Text3d txt in m_txts)
-          args.Pipeline.Draw3dText(txt, UI.Colour.OasysDarkGrey);
-      }
-    }
-
-    public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
+    #endregion
   }
 }

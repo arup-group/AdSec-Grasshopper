@@ -84,63 +84,63 @@ namespace AdSecGH.Parameters
     #region methods
     public override IGH_GeometricGoo Duplicate() => new AdSecCrackGoo(this.Value);
 
-    public override bool CastTo<TQ>(out TQ target)
+    public override bool CastTo<Q>(out Q target)
     {
-      if (typeof(TQ).IsAssignableFrom(typeof(AdSecCrackGoo)))
+      if (typeof(Q).IsAssignableFrom(typeof(AdSecCrackGoo)))
       {
-        target = (TQ)(object)new AdSecCrackGoo(this.Value, this.m_plane);
+        target = (Q)(object)new AdSecCrackGoo(this.Value, this.m_plane);
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(Point3d)))
+      if (typeof(Q).IsAssignableFrom(typeof(Point3d)))
       {
-        target = (TQ)(object)m_point;
+        target = (Q)(object)m_point;
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(GH_Point)))
+      if (typeof(Q).IsAssignableFrom(typeof(GH_Point)))
       {
-        target = (TQ)(object)new GH_Point(m_point);
+        target = (Q)(object)new GH_Point(m_point);
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(Vector3d)))
+      if (typeof(Q).IsAssignableFrom(typeof(Vector3d)))
       {
-        target = (TQ)(object)new Vector3d(this.Value.Width.Value, m_point.Y, m_point.Z);
+        target = (Q)(object)new Vector3d(this.Value.Width.Value, m_point.Y, m_point.Z);
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(GH_Vector)))
+      if (typeof(Q).IsAssignableFrom(typeof(GH_Vector)))
       {
-        target = (TQ)(object)new GH_Vector(new Vector3d(this.Value.Width.Value, m_point.Y, m_point.Z));
+        target = (Q)(object)new GH_Vector(new Vector3d(this.Value.Width.Value, m_point.Y, m_point.Z));
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(Line)))
+      if (typeof(Q).IsAssignableFrom(typeof(Line)))
       {
-        target = (TQ)(object)m_line;
+        target = (Q)(object)m_line;
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(GH_Line)))
+      if (typeof(Q).IsAssignableFrom(typeof(GH_Line)))
       {
-        target = (TQ)(object)new GH_Line(m_line);
+        target = (Q)(object)new GH_Line(m_line);
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(GH_UnitNumber)))
+      if (typeof(Q).IsAssignableFrom(typeof(GH_UnitNumber)))
       {
-        target = (TQ)(object)new GH_UnitNumber(this.Value.Width);
+        target = (Q)(object)new GH_UnitNumber(this.Value.Width);
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(GH_Number)))
+      if (typeof(Q).IsAssignableFrom(typeof(GH_Number)))
       {
-        target = (TQ)(object)new GH_Number(this.Value.Width.Value);
+        target = (Q)(object)new GH_Number(this.Value.Width.Value);
         return true;
       }
 
-      target = default(TQ);
+      target = default(Q);
       return false;
     }
 

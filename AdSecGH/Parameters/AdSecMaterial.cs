@@ -21,8 +21,9 @@ namespace AdSecGH.Parameters
       FRP,
     }
 
-    #region properties
     public IMaterial Material { get; set; }
+    public AdSecDesignCode DesignCode { get; set; }
+    public string GradeName { get; set; }
     public string TypeName
     {
       get
@@ -30,17 +31,12 @@ namespace AdSecGH.Parameters
         return this.Type.ToString();
       }
     }
-    public string GradeName { get; set; }
-
-    public AdSecDesignCode DesignCode { get; set; }
     public string DesignCodeName
     {
       get
       {
         if (this.DesignCode == null)
-        {
           return null;
-        }
         return this.DesignCode.DesignCodeName;
       }
     }
@@ -49,14 +45,11 @@ namespace AdSecGH.Parameters
       get
       {
         if (this.Material == null)
-        {
           return false;
-        }
         return true;
       }
     }
     internal AdSecMaterialType Type { get; set; }
-    #endregion
 
     #region constructors
     public AdSecMaterial()
@@ -166,6 +159,9 @@ namespace AdSecGH.Parameters
       // set designcode
       this.DesignCode = new AdSecDesignCode(designCodeLevelsSplit);
     }
+    #endregion
+
+    #region methods
 
     public AdSecMaterial Duplicate()
     {
@@ -174,9 +170,7 @@ namespace AdSecGH.Parameters
       AdSecMaterial dup = (AdSecMaterial)this.MemberwiseClone();
       return dup;
     }
-    #endregion
 
-    #region methods
     public override string ToString()
     {
       string grd = "Custom ";

@@ -1,16 +1,16 @@
 ﻿using System;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
-using OasysUnits;
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters
 {
   public class AdSecSolutionGoo : GH_Goo<ISolution>
   {
+    public override bool IsValid => true;
+    public override string TypeName => "Results";
+    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
     internal AdSecSection m_section;
-    private Plane m_plane;
-    private Polyline m_profile;
     internal Plane LocalPlane
     {
       get
@@ -25,9 +25,8 @@ namespace AdSecGH.Parameters
         return m_profile;
       }
     }
-    public override bool IsValid => true;
-    public override string TypeName => "Results";
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    private Plane m_plane;
+    private Polyline m_profile;
 
     public AdSecSolutionGoo(ISolution solution, AdSecSection section) : base(solution)
     {
@@ -40,6 +39,7 @@ namespace AdSecGH.Parameters
     {
       return new AdSecSolutionGoo(this.Value, m_section);
     }
+
     public override string ToString()
     {
       return "AdSec " + TypeName;

@@ -16,6 +16,7 @@ namespace AdSecGH.Parameters
     {
     }
 
+    #region methods
     public override IGH_Goo Duplicate()
     {
       return new AdSecRebarLayerGoo(this.Value);
@@ -51,5 +52,6 @@ namespace AdSecGH.Parameters
       }
       return "AdSec " + TypeName + " {" + str + "}";
     }
+    #endregion
   }
 }

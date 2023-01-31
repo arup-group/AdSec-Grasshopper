@@ -16,12 +16,25 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Parameters
 {
-  /// <summary>
-  /// AdSec Material class, this class defines the basic properties and methods for any AdSec Material
-  /// </summary>
   public class AdSecSection
   {
-    #region fields
+
+    public ISection Section { get; set; }
+    public IDesignCode DesignCode { get; set; }
+    public Plane LocalPlane { get; set; }
+    #region properties
+    public bool IsValid
+    {
+      get
+      {
+        if (this.Section == null)
+          return false;
+        return true;
+      }
+    }
+    #endregion
+    internal Brep SolidBrep => m_profile;
+    internal List<Brep> SubBreps => m_subProfiles;
     internal string codeName;
     internal string materialName;
     internal Line previewXaxis;
@@ -40,23 +53,6 @@ namespace AdSecGH.Parameters
     internal List<Polyline> m_subEdges;
     internal List<List<Polyline>> m_subVoidEdges;
     internal List<DisplayMaterial> m_subColours;
-    #endregion
-    public ISection Section { get; set; }
-    public IDesignCode DesignCode { get; set; }
-    public Plane LocalPlane { get; set; }
-    #region properties
-    public bool IsValid
-    {
-      get
-      {
-        if (this.Section == null)
-          return false;
-        return true;
-      }
-    }
-    #endregion
-    internal Brep SolidBrep => m_profile;
-    internal List<Brep> SubBreps => m_subProfiles;
 
     #region constructors
     public AdSecSection(ISection section, IDesignCode code, string codeName, string materialName, Plane local, IPoint subComponentOffset = null)
@@ -69,9 +65,7 @@ namespace AdSecGH.Parameters
       this.CreatePreview(ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour, ref m_rebars, ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges, ref m_subColours, subComponentOffset);
     }
 
-    public AdSecSection(IProfile profile, Plane local, AdSecMaterial material,
-        List<AdSecRebarGroup> reinforcement,
-        Oasys.Collections.IList<ISubComponent> subComponents)
+    public AdSecSection(IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement, Oasys.Collections.IList<ISubComponent> subComponents)
     {
       this.DesignCode = material.DesignCode.Duplicate().DesignCode;
       codeName = material.DesignCodeName;
@@ -85,6 +79,21 @@ namespace AdSecGH.Parameters
         this.Section.SubComponents = subComponents;
       this.LocalPlane = local;
       CreatePreview(ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour, ref m_rebars, ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref m_subProfiles, ref m_subEdges, ref m_subVoidEdges, ref m_subColours);
+    }
+    #endregion
+
+    #region methods
+    public AdSecSection Duplicate()
+    {
+      if (this == null)
+        return null;
+      AdSecSection dup = (AdSecSection)this.MemberwiseClone();
+      return dup;
+    }
+
+    public override string ToString()
+    {
+      return Section.Profile.Description();
     }
 
     internal void CreatePreview(ref Brep profile, ref Polyline profileEdge, ref List<Polyline> profileVoidEdges, ref DisplayMaterial profileColour, ref List<Brep> rebars, ref List<Circle> rebarEdges, ref List<Curve> linkEdges, ref List<DisplayMaterial> rebarColours, ref List<Brep> subProfiles, ref List<Polyline> subEdges, ref List<List<Polyline>> subVoidEdges, ref List<DisplayMaterial> subColours, IPoint offset = null)
@@ -421,19 +430,6 @@ namespace AdSecGH.Parameters
       }
       return new Tuple<Oasys.Collections.IList<IGroup>, ICover>(groups, cover);
     }
-
-    public AdSecSection Duplicate()
-    {
-      if (this == null)
-        return null;
-      AdSecSection dup = (AdSecSection)this.MemberwiseClone();
-      return dup;
-    }
     #endregion
-
-    public override string ToString()
-    {
-      return Section.Profile.Description();
-    }
   }
 }

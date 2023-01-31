@@ -10,10 +10,12 @@ namespace AdSecGH.Parameters
     public override bool IsValid => true;
     public override string TypeName => "Web Profile";
     public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+
     public AdSecProfileWebGoo(IWeb web) : base(web)
     {
     }
 
+    #region methods
     public override IGH_Goo Duplicate()
     {
       return new AdSecProfileWebGoo(this.Value);
@@ -35,5 +37,6 @@ namespace AdSecGH.Parameters
       }
       return web;
     }
+    #endregion
   }
 }

@@ -11,7 +11,6 @@ namespace AdSecGH.Parameters
   {
     public override Guid ComponentGuid => new Guid("fa647c2d-4767-49f1-a574-32bf66a66568");
     public override GH_Exposure Exposure => GH_Exposure.primary;
-    protected override Bitmap Icon => Properties.Resources.SectionParam;
     public BoundingBox ClippingBox
     {
       get
@@ -22,8 +21,12 @@ namespace AdSecGH.Parameters
     public bool Hidden { get; set; }
     public bool IsPreviewCapable
     {
-      get { return true; }
+      get
+      {
+        return true;
+      }
     }
+    protected override Bitmap Icon => Properties.Resources.SectionParam;
 
     public AdSecSectionParameter() : base(new GH_InstanceDescription(
       "Section",
@@ -31,7 +34,21 @@ namespace AdSecGH.Parameters
       "Maintains a collection of AdSec Section data.",
       Components.Ribbon.CategoryName.Name(),
       Components.Ribbon.SubCategoryName.Cat9()))
-    { }
+    {
+    }
+
+    #region methods
+    public void DrawViewportMeshes(IGH_PreviewArgs args)
+    {
+      //Use a standard method to draw gunk, you don't have to specifically implement this.
+      this.Preview_DrawMeshes(args);
+    }
+
+    public void DrawViewportWires(IGH_PreviewArgs args)
+    {
+      //Use a standard method to draw gunk, you don't have to specifically implement this.
+      this.Preview_DrawWires(args);
+    }
 
     //We do not allow users to pick parameter, 
     //therefore the following 4 methods disable all this ui.
@@ -63,19 +80,6 @@ namespace AdSecGH.Parameters
         Visible = false
       };
       return item;
-    }
-    #region preview methods
-
-    public void DrawViewportMeshes(IGH_PreviewArgs args)
-    {
-      //Use a standard method to draw gunk, you don't have to specifically implement this.
-      this.Preview_DrawMeshes(args);
-    }
-
-    public void DrawViewportWires(IGH_PreviewArgs args)
-    {
-      //Use a standard method to draw gunk, you don't have to specifically implement this.
-      this.Preview_DrawWires(args);
     }
     #endregion
   }

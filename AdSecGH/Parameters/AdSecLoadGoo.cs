@@ -17,37 +17,17 @@ namespace AdSecGH.Parameters
     public static string Name => "Load";
     public static string NickName => "Ld";
     public static string Description => "AdSec Load";
-    public override bool IsValid => true;
     public override string TypeName => "Load";
     public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
-
-    private Point3d m_point = Point3d.Unset;
-
-    public AdSecLoadGoo(ILoad load) : base(load) { }
-
-    public AdSecLoadGoo(ILoad load, Plane local)
-    {
-      this.m_value = load;
-      Point3d point = new Point3d(
-          load.ZZ.As(DefaultUnits.MomentUnit),
-          load.YY.As(DefaultUnits.MomentUnit),
-          load.X.As(DefaultUnits.ForceUnit));
-      Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
-      point.Transform(mapFromLocal);
-      m_point = point;
-    }
-
-    public BoundingBox ClippingBox
-    {
-      get { return Boundingbox; }
-    }
-
+    public override bool IsValid => true;
     public override BoundingBox Boundingbox
     {
       get
       {
-        if (Value == null) { return BoundingBox.Empty; }
-        if (m_point == null) { return BoundingBox.Empty; }
+        if (this.Value == null)
+          return BoundingBox.Empty;
+        if (this.m_point == null)
+          return BoundingBox.Empty;
         Point3d pt1 = new Point3d(m_point);
         pt1.Z += 0.25;
         Point3d pt2 = new Point3d(m_point);
@@ -57,48 +37,64 @@ namespace AdSecGH.Parameters
         return crv.GetBoundingBox(false);
       }
     }
-
-    public override IGH_Goo Duplicate() => new AdSecLoadGoo(this.Value);
-
-    public override string ToString()
+    public BoundingBox ClippingBox
     {
-      IQuantity quantityMoment = new Moment(0, DefaultUnits.MomentUnit);
-      string unitMomentAbbreviation = string.Concat(quantityMoment.ToString().Where(char.IsLetter));
-      IQuantity quantityForce = new Force(0, DefaultUnits.ForceUnit);
-      string unitforceAbbreviation = string.Concat(quantityForce.ToString().Where(char.IsLetter));
-      return "AdSec " + TypeName + " {"
-          + Math.Round(this.Value.X.As(DefaultUnits.ForceUnit), 4) + unitforceAbbreviation + ", "
-          + Math.Round(this.Value.YY.As(DefaultUnits.MomentUnit), 4) + unitMomentAbbreviation + ", "
-          + Math.Round(this.Value.ZZ.As(DefaultUnits.MomentUnit), 4) + unitMomentAbbreviation + "}";
+      get
+      {
+        return Boundingbox;
+      }
+    }
+    private Point3d m_point = Point3d.Unset;
+
+    #region constructors
+    public AdSecLoadGoo(ILoad load) : base(load)
+    {
     }
 
-    public override bool CastTo<TQ>(out TQ target)
+    public AdSecLoadGoo(ILoad load, Plane local)
     {
-      if (typeof(TQ).IsAssignableFrom(typeof(AdSecLoadGoo)))
+      this.m_value = load;
+      Point3d point = new Point3d(
+        load.ZZ.As(DefaultUnits.MomentUnit),
+        load.YY.As(DefaultUnits.MomentUnit),
+        load.X.As(DefaultUnits.ForceUnit));
+      Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
+      point.Transform(mapFromLocal);
+      m_point = point;
+    }
+    #endregion
+
+    #region methods
+    public override IGH_Goo Duplicate() => new AdSecLoadGoo(this.Value);
+
+
+    public override bool CastTo<Q>(out Q target)
+    {
+      if (typeof(Q).IsAssignableFrom(typeof(AdSecLoadGoo)))
       {
-        target = (TQ)(object)new AdSecLoadGoo(this.Value);
+        target = (Q)(object)new AdSecLoadGoo(this.Value);
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(Point3d)))
+      if (typeof(Q).IsAssignableFrom(typeof(Point3d)))
       {
-        target = (TQ)(object)m_point;
+        target = (Q)(object)m_point;
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(GH_Point)))
+      if (typeof(Q).IsAssignableFrom(typeof(GH_Point)))
       {
-        target = (TQ)(object)new GH_Point(m_point);
+        target = (Q)(object)new GH_Point(m_point);
         return true;
       }
 
-      if (typeof(TQ).IsAssignableFrom(typeof(ILoad)))
+      if (typeof(Q).IsAssignableFrom(typeof(ILoad)))
       {
-        target = (TQ)(object)ILoad.Create(Value.X, Value.YY, Value.ZZ);
+        target = (Q)(object)ILoad.Create(Value.X, Value.YY, Value.ZZ);
         return true;
       }
 
-      target = default(TQ);
+      target = default(Q);
       return false;
     }
 
@@ -147,6 +143,22 @@ namespace AdSecGH.Parameters
       return false;
     }
 
+    public override string ToString()
+    {
+      IQuantity quantityMoment = new Moment(0, DefaultUnits.MomentUnit);
+      string unitMomentAbbreviation = string.Concat(quantityMoment.ToString().Where(char.IsLetter));
+      IQuantity quantityForce = new Force(0, DefaultUnits.ForceUnit);
+      string unitforceAbbreviation = string.Concat(quantityForce.ToString().Where(char.IsLetter));
+      return "AdSec " + TypeName + " {"
+        + Math.Round(this.Value.X.As(DefaultUnits.ForceUnit), 4) + unitforceAbbreviation + ", "
+        + Math.Round(this.Value.YY.As(DefaultUnits.MomentUnit), 4) + unitMomentAbbreviation + ", "
+        + Math.Round(this.Value.ZZ.As(DefaultUnits.MomentUnit), 4) + unitMomentAbbreviation + "}";
+    }
+
+    public void DrawViewportMeshes(GH_PreviewMeshArgs args)
+    {
+    }
+
     public void DrawViewportWires(GH_PreviewWireArgs args)
     {
       if (m_point.IsValid)
@@ -157,10 +169,6 @@ namespace AdSecGH.Parameters
         else
           args.Pipeline.DrawPoint(m_point, PointStyle.X, 8, UI.Colour.UILightGrey);
       }
-    }
-
-    public void DrawViewportMeshes(GH_PreviewMeshArgs args)
-    {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry()
@@ -192,5 +200,6 @@ namespace AdSecGH.Parameters
     {
       return null;
     }
+    #endregion
   }
 }

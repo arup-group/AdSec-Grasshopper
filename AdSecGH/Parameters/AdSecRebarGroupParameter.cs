@@ -10,7 +10,6 @@ namespace AdSecGH.Parameters
   {
     public override Guid ComponentGuid => new Guid("6d666276-61f6-47ce-81bc-9fabdd39edc2");
     public override GH_Exposure Exposure => GH_Exposure.primary;
-    protected override Bitmap Icon => Properties.Resources.RebarGroupParam;
     public bool Hidden
     {
       get
@@ -26,6 +25,7 @@ namespace AdSecGH.Parameters
         return false;
       }
     }
+    protected override Bitmap Icon => Properties.Resources.RebarGroupParam;
 
     public AdSecRebarGroupParameter() : base(new GH_InstanceDescription(
       "RebarGroup",
@@ -36,6 +36,7 @@ namespace AdSecGH.Parameters
     {
     }
 
+    #region methods
     protected override GH_GetterResult Prompt_Plural(ref List<AdSecRebarGroupGoo> values)
     {
       return GH_GetterResult.cancel;
@@ -65,5 +66,6 @@ namespace AdSecGH.Parameters
       };
       return item;
     }
+    #endregion
   }
 }

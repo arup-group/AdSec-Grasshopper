@@ -12,8 +12,12 @@ namespace AdSecGH.Parameters
     public static string Name => "Material";
     public static string NickName => "Mat";
     public static string Description => "AdSec Material Parameter";
-    public override IGH_Goo Duplicate() => new AdSecMaterialGoo(this.Value);
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    public AdSecMaterialGoo(AdSecMaterial item) : base(item) { }
+
+    public AdSecMaterialGoo(AdSecMaterial item) : base(item)
+    {
+    }
+
+    public override IGH_Goo Duplicate() => new AdSecMaterialGoo(this.Value);
   }
 }
