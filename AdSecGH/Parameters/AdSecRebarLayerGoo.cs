@@ -1,29 +1,26 @@
 ﻿using System;
 using Grasshopper.Kernel.Types;
-using OasysGH.Parameters;
 using Oasys.AdSec.Reinforcement.Layers;
-using OasysUnits;
 using OasysGH.Units;
+using OasysUnits;
 
 namespace AdSecGH.Parameters
 {
   public class AdSecRebarLayerGoo : GH_Goo<ILayer>
   {
-    public AdSecRebarLayerGoo(ILayer layer)
-    : base(layer)
+    public override bool IsValid => true;
+    public override string TypeName => "Rebar Spacing";
+    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+
+    public AdSecRebarLayerGoo(ILayer layer) : base(layer)
     {
     }
-
-    public override bool IsValid => true;
-
-    public override string TypeName => "Rebar Spacing";
-
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
     public override IGH_Goo Duplicate()
     {
       return new AdSecRebarLayerGoo(this.Value);
     }
+
     public override string ToString()
     {
       string bar = "";
@@ -50,10 +47,8 @@ namespace AdSecGH.Parameters
         }
         catch (Exception)
         {
-
         }
       }
-
       return "AdSec " + TypeName + " {" + str + "}";
     }
   }

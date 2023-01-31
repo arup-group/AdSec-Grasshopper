@@ -1,6 +1,4 @@
-﻿using System;
-using Grasshopper.Kernel.Types;
-using OasysGH.Parameters;
+﻿using Grasshopper.Kernel.Types;
 using Oasys.Profiles;
 using OasysUnits;
 using OasysGH.Units;
@@ -9,21 +7,18 @@ namespace AdSecGH.Parameters
 {
   public class AdSecProfileWebGoo : GH_Goo<IWeb>
   {
-    public AdSecProfileWebGoo(IWeb web)
-    : base(web)
+    public override bool IsValid => true;
+    public override string TypeName => "Web Profile";
+    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public AdSecProfileWebGoo(IWeb web) : base(web)
     {
     }
-
-    public override bool IsValid => true;
-
-    public override string TypeName => "Web Profile";
-
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
     public override IGH_Goo Duplicate()
     {
       return new AdSecProfileWebGoo(this.Value);
     }
+
     public override string ToString()
     {
       string web = "AdSec Web {";

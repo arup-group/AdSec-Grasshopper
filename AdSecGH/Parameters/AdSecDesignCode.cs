@@ -2,19 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
-using Oasys.AdSec.StandardMaterials;
-using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.AdSec.Reinforcement.Layers;
-using OasysUnits;
-using OasysUnits.Units;
-using OasysGH;
 using Oasys.AdSec.DesignCode;
-using OasysGH.Parameters;
 
 namespace AdSecGH.Parameters
 {
@@ -23,21 +12,17 @@ namespace AdSecGH.Parameters
   /// </summary>
   public class AdSecDesignCode
   {
-    public IDesignCode DesignCode
+    public IDesignCode DesignCode { get; set; }
+    public string DesignCodeName { get; set; }
+    public bool IsValid
     {
-      get { return m_designCode; }
-      set { m_designCode = value; }
+      get
+      {
+        if (this.DesignCode == null)
+          return false;
+        return true;
+      }
     }
-    public string DesignCodeName
-    {
-      get { return m_designCodeName; }
-      set { m_designCodeName = value; }
-    }
-
-    #region fields
-    private IDesignCode m_designCode;
-    private string m_designCodeName;
-    #endregion
 
     #region constructors
     public AdSecDesignCode()
@@ -46,8 +31,8 @@ namespace AdSecGH.Parameters
 
     public AdSecDesignCode(IDesignCode designCode, string designCodeName)
     {
-      m_designCode = designCode;
-      m_designCodeName = designCodeName;
+      this.DesignCode = designCode;
+      this.DesignCodeName = designCodeName;
     }
 
     internal AdSecDesignCode(FieldInfo fieldDesignCode)
@@ -59,7 +44,22 @@ namespace AdSecGH.Parameters
 
     internal AdSecDesignCode(List<string> designCodeReflectedLevels)
     {
-      CreateFromReflectedLevels(designCodeReflectedLevels);
+      this.CreateFromReflectedLevels(designCodeReflectedLevels);
+    }
+
+    public AdSecDesignCode Duplicate()
+    {
+      if (this == null)
+        return null;
+      AdSecDesignCode dup = (AdSecDesignCode)this.MemberwiseClone();
+      return dup;
+    }
+    #endregion
+
+    #region methods
+    public override string ToString()
+    {
+      return DesignCodeName.Replace("  ", " ");
     }
 
     private bool CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false)
@@ -74,14 +74,16 @@ namespace AdSecGH.Parameters
       {
         designcodeName = designcodeName + designCodeReflectedLevels[i] + " ";
         designCodeKVP.TryGetValue(designCodeReflectedLevels[i], out typ);
-        if (typ == null) { return false; }
+        if (typ == null)
+          return false;
         designCodeKVP = Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
       }
       if (designCodeReflectedLevels.Count == 1)
       {
         designcodeName = designCodeReflectedLevels[0];
         designCodeKVP.TryGetValue(designCodeReflectedLevels[0], out typ);
-        if (typ == null) { return false; }
+        if (typ == null)
+          return false;
       }
 
       // we need to find the right type Interface under Oasys.AdSec.IAdsec in order to cast to IDesignCode
@@ -93,60 +95,15 @@ namespace AdSecGH.Parameters
       foreach (var type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes())
       {
         if (type.IsInterface && type.Namespace == "Oasys.AdSec.DesignCode")
-        {
           foreach (var field in type.GetFields())
-          {
             if (field.DeclaringType.FullName == searchFor)
-            {
-              m_designCode = (IDesignCode)field.GetValue(null);
-            }
-          }
-        }
+              this.DesignCode = (IDesignCode)field.GetValue(null);
       }
 
-      if (m_designCode == null) { return false; }
-      m_designCodeName = designcodeName.TrimEnd(' ') + " " + designCodeReflectedLevels.Last();
+      if (this.DesignCode == null) { return false; }
+      this.DesignCodeName = designcodeName.TrimEnd(' ') + " " + designCodeReflectedLevels.Last();
       return true;
     }
-
-    public AdSecDesignCode Duplicate()
-    {
-      if (this == null) { return null; }
-      AdSecDesignCode dup = (AdSecDesignCode)this.MemberwiseClone();
-      return dup;
-    }
     #endregion
-
-    #region properties
-    public bool IsValid
-    {
-      get
-      {
-        if (this.DesignCode == null) { return false; }
-        return true;
-      }
-    }
-    #endregion
-
-    #region methods
-    public override string ToString()
-    {
-      return DesignCodeName.Replace("  ", " ");
-    }
-
-    #endregion
-  }
-
-  /// <summary>
-  /// Goo wrapper class, makes sure <see cref="AdSecDesignCode"/> can be used in Grasshopper.
-  /// </summary>
-  public class AdSecDesignCodeGoo : GH_OasysGoo<AdSecDesignCode>
-  {
-    public static string Name => "DesignCode";
-    public static string NickName => "DC";
-    public static string Description => "AdSec Design Code";
-    public AdSecDesignCodeGoo(AdSecDesignCode item) : base(item) { }
-    public override IGH_Goo Duplicate() => new AdSecDesignCodeGoo(this.Value);
-    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
   }
 }

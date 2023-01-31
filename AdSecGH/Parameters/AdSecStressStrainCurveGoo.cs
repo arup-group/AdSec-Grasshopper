@@ -262,11 +262,7 @@ namespace AdSecGH.Parameters
       return null;
     }
 
-    public override object ScriptVariable()
-    {
-      return Value;
-    }
-    public override bool CastTo<TQ>(out TQ target)
+     public override bool CastTo<TQ>(out TQ target)
     {
       if (typeof(TQ).IsAssignableFrom(typeof(AdSecStressStrainCurveGoo)))
       {

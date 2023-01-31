@@ -15,12 +15,33 @@ namespace AdSecGH.Parameters
     public static string Name => "Crack";
     public static string NickName => "Cr";
     public static string Description => "AdSec Crack Parameter";
-    public AdSecCrackGoo(ICrack item) : base(item) { }
-    public override IGH_GeometricGoo Duplicate() => new AdSecCrackGoo(this.Value);
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    public override BoundingBox Boundingbox
+    {
+      get
+      {
+        if (this.Value == null)
+          return BoundingBox.Empty;
+        if (this.m_line == null)
+          return BoundingBox.Empty;
+        LineCurve crv = new LineCurve(this.m_line);
+        return crv.GetBoundingBox(false);
+      }
+    }
+    public override BoundingBox ClippingBox
+    {
+      get { return this.Boundingbox; }
+    }
+    private Point3d m_point = Point3d.Unset;
+    private Plane m_plane;
+    private Line m_line;
 
-    public AdSecCrackGoo(ICrack crack, Plane local)
-    : base(crack)
+    #region constructors
+    public AdSecCrackGoo(ICrack item) : base(item)
+    {
+    }
+
+    public AdSecCrackGoo(ICrack crack, Plane local) : base(crack)
     {
       this.m_value = crack;
       m_plane = local;
@@ -58,33 +79,10 @@ namespace AdSecGH.Parameters
 
       m_line = new Line(crackStart, crackWidth);
     }
-    private Point3d m_point = Point3d.Unset;
-    private Plane m_plane;
-    private Line m_line;
+    #endregion
 
-    public override BoundingBox ClippingBox
-    {
-      get { return Boundingbox; }
-    }
-
-    public override BoundingBox Boundingbox
-    {
-      get
-      {
-        if (Value == null) { return BoundingBox.Empty; }
-        if (m_line == null) { return BoundingBox.Empty; }
-        LineCurve crv = new LineCurve(m_line);
-        return crv.GetBoundingBox(false);
-      }
-    }
-
-    public override string ToString()
-    {
-      return "AdSec " + TypeName + " {"
-          + "Y:" + Math.Round(this.Value.Position.Y.Value, 4) + this.Value.Position.Y.Unit + ", "
-          + "Z:" + Math.Round(this.Value.Position.Z.Value, 4) + this.Value.Position.Z.Unit + ", "
-          + "Width:" + Math.Round(this.Value.Width.Value, 4) + this.Value.Width.Unit + "}";
-    }
+    #region methods
+    public override IGH_GeometricGoo Duplicate() => new AdSecCrackGoo(this.Value);
 
     public override bool CastTo<TQ>(out TQ target)
     {
@@ -148,9 +146,17 @@ namespace AdSecGH.Parameters
 
     public override bool CastFrom(object source)
     {
-      if (source == null) return false;
-
+      if (source == null)
+        return false;
       return false;
+    }
+
+    public override string ToString()
+    {
+      return "AdSec " + TypeName + " {"
+          + "Y:" + Math.Round(this.Value.Position.Y.Value, 4) + this.Value.Position.Y.Unit + ", "
+          + "Z:" + Math.Round(this.Value.Position.Z.Value, 4) + this.Value.Position.Z.Unit + ", "
+          + "Width:" + Math.Round(this.Value.Width.Value, 4) + this.Value.Width.Unit + "}";
     }
 
     public override void DrawViewportWires(GH_PreviewWireArgs args)
@@ -177,8 +183,10 @@ namespace AdSecGH.Parameters
 
     public override BoundingBox GetBoundingBox(Transform xform)
     {
-      if (Value == null) { return BoundingBox.Empty; }
-      if (m_point == null) { return BoundingBox.Empty; }
+      if (Value == null)
+        return BoundingBox.Empty;
+      if (m_point == null)
+        return BoundingBox.Empty;
       LineCurve crv = new LineCurve(m_line);
       return crv.GetBoundingBox(xform);
     }
@@ -197,5 +205,6 @@ namespace AdSecGH.Parameters
     {
       return null;
     }
+    #endregion
   }
 }

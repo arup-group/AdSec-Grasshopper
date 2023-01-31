@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using Grasshopper.Kernel;
 
 namespace AdSecGH.Parameters
 {
-  public class AdSecDesignCodeParameter : GH_PersistentParam<AdSecDesignCodeGoo>
+  public class AdSecRebarGroupParameter : GH_PersistentParam<AdSecRebarGroupGoo>
   {
-    public override Guid ComponentGuid => new Guid("6d656276-61f6-47ce-81bc-9fabdd39edc2");
-    public override GH_Exposure Exposure => GH_Exposure.primary | GH_Exposure.obscure;
+    public override Guid ComponentGuid => new Guid("6d666276-61f6-47ce-81bc-9fabdd39edc2");
+    public override GH_Exposure Exposure => GH_Exposure.primary;
+    protected override Bitmap Icon => Properties.Resources.RebarGroupParam;
     public bool Hidden
     {
       get
@@ -17,7 +19,6 @@ namespace AdSecGH.Parameters
       }
       //set { m_hidden = value; }
     }
-
     public bool IsPreviewCapable
     {
       get
@@ -25,24 +26,22 @@ namespace AdSecGH.Parameters
         return false;
       }
     }
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.DesignCodeParameter;
 
-    public AdSecDesignCodeParameter() : base(new GH_InstanceDescription(
-      "DesignCode",
-      "Code",
-      "AdSec DesignCode Parameter",
+    public AdSecRebarGroupParameter() : base(new GH_InstanceDescription(
+      "RebarGroup",
+      "RbG",
+      "AdSec RebarGroup Parameter",
       Components.Ribbon.CategoryName.Name(),
       Components.Ribbon.SubCategoryName.Cat9()))
     {
     }
 
-    #region methods
-    protected override GH_GetterResult Prompt_Plural(ref List<AdSecDesignCodeGoo> values)
+    protected override GH_GetterResult Prompt_Plural(ref List<AdSecRebarGroupGoo> values)
     {
       return GH_GetterResult.cancel;
     }
 
-    protected override GH_GetterResult Prompt_Singular(ref AdSecDesignCodeGoo value)
+    protected override GH_GetterResult Prompt_Singular(ref AdSecRebarGroupGoo value)
     {
       return GH_GetterResult.cancel;
     }
@@ -66,6 +65,5 @@ namespace AdSecGH.Parameters
       };
       return item;
     }
-    #endregion
   }
 }

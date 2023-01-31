@@ -8,16 +8,13 @@ namespace AdSecGH.Parameters
 {
   public class AdSecProfileFlangeGoo : GH_Goo<IFlange>
   {
-    public AdSecProfileFlangeGoo(IFlange flange)
-    : base(flange)
+    public override bool IsValid => true;
+    public override string TypeName => "Flange Profile";
+    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+
+    public AdSecProfileFlangeGoo(IFlange flange) : base(flange)
     {
     }
-
-    public override bool IsValid => true;
-
-    public override string TypeName => "Flange Profile";
-
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
     public override IGH_Goo Duplicate()
     {

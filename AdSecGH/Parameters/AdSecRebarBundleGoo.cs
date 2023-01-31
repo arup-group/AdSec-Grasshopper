@@ -1,6 +1,4 @@
-﻿using System;
-using Grasshopper.Kernel.Types;
-using OasysGH.Parameters;
+﻿using Grasshopper.Kernel.Types;
 using Oasys.AdSec.Reinforcement;
 using OasysUnits;
 using OasysGH.Units;
@@ -9,21 +7,19 @@ namespace AdSecGH.Parameters
 {
   public class AdSecRebarBundleGoo : GH_Goo<IBarBundle>
   {
-    public AdSecRebarBundleGoo(IBarBundle bar)
-    : base(bar)
+    public override bool IsValid => true;
+    public override string TypeName => "Rebar Bundle";
+    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+
+    public AdSecRebarBundleGoo(IBarBundle bar) : base(bar)
     {
     }
-
-    public override bool IsValid => true;
-
-    public override string TypeName => "Rebar Bundle";
-
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
     public override IGH_Goo Duplicate()
     {
       return new AdSecRebarBundleGoo(this.Value);
     }
+
     public override string ToString()
     {
       string bar = "Rebar {";

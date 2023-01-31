@@ -14,34 +14,54 @@ namespace AdSecGH.Parameters
 {
   public class AdSecPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData
   {
-    public AdSecPointGoo(Point3d point)
-    : base(point)
+    private IPoint m_AdSecPoint;
+    public override string TypeName => "Vertex";
+    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public BoundingBox ClippingBox
+    {
+      get {
+        return Boundingbox;
+      }
+    }
+
+    public IPoint AdSecPoint
+    {
+      get
+      {
+        return m_AdSecPoint;
+      }
+    }
+
+    public AdSecPointGoo(Point3d point) : base(point)
     {
       m_value = point;
       this.m_AdSecPoint = IPoint.Create(
-          new Length(m_value.Y, DefaultUnits.LengthUnitGeometry),
-          new Length(m_value.Z, DefaultUnits.LengthUnitGeometry));
+        new Length(m_value.Y, DefaultUnits.LengthUnitGeometry),
+        new Length(m_value.Z, DefaultUnits.LengthUnitGeometry));
     }
+
     public AdSecPointGoo(AdSecPointGoo adsecPoint)
     {
       m_AdSecPoint = adsecPoint.AdSecPoint;
       this.m_value = new Point3d(Value);
     }
+
     public AdSecPointGoo(IPoint adsecPoint)
     {
       m_AdSecPoint = adsecPoint;
       this.m_value = new Point3d(
-          0,
-          m_AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
-          m_AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
+        0,
+        m_AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
+        m_AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
     }
+
     public AdSecPointGoo(Length y, Length z)
     {
       m_AdSecPoint = IPoint.Create(y, z);
       m_value = new Point3d(
-          0,
-          m_AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
-          m_AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
+        0,
+        m_AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
+        m_AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
     }
 
     public static IPoint CreateFromPoint3d(Point3d point, Plane plane)
@@ -54,6 +74,7 @@ namespace AdSecGH.Parameters
           new Length(trans.Y, DefaultUnits.LengthUnitGeometry),
           new Length(trans.Z, DefaultUnits.LengthUnitGeometry));
     }
+
     internal static Oasys.Collections.IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve)
     {
       curve.TryGetPolyline(out Polyline temp_crv);
@@ -61,18 +82,18 @@ namespace AdSecGH.Parameters
       Transform mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
 
       Oasys.Collections.IList<IPoint> pts = Oasys.Collections.IList<IPoint>.Create();
-      IPoint pt = null;
       for (int j = 0; j < curve.PointCount; j++)
       {
         Point3d point3d = curve.Point(j);
         point3d.Transform(mapToLocal);
-        pt = IPoint.Create(
-            new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
-            new Length(point3d.Y, DefaultUnits.LengthUnitGeometry));
+        IPoint pt = IPoint.Create(
+          new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
+          new Length(point3d.Y, DefaultUnits.LengthUnitGeometry));
         pts.Add(pt);
       }
       return pts;
     }
+
     internal static Oasys.Collections.IList<IPoint> PtsFromPolyline(Polyline curve)
     {
       Plane.FitPlaneToPoints(curve.ToList(), out Plane plane);
@@ -85,16 +106,11 @@ namespace AdSecGH.Parameters
         Point3d point3d = curve[j];
         point3d.Transform(mapToLocal);
         pt = IPoint.Create(
-            new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
-            new Length(point3d.Y, DefaultUnits.LengthUnitGeometry));
+          new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
+          new Length(point3d.Y, DefaultUnits.LengthUnitGeometry));
         pts.Add(pt);
       }
       return pts;
-    }
-    private IPoint m_AdSecPoint;
-    public IPoint AdSecPoint
-    {
-      get { return m_AdSecPoint; }
     }
 
     public override string ToString()
@@ -102,17 +118,15 @@ namespace AdSecGH.Parameters
       IQuantity quantity = new Length(0, DefaultUnits.LengthUnitGeometry);
       string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
       return "AdSec " + TypeName + " {"
-          + Math.Round(AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry), 4) + unitAbbreviation + ", "
-          + Math.Round(AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry), 4) + unitAbbreviation + "}";
+        + Math.Round(AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry), 4) + unitAbbreviation + ", "
+        + Math.Round(AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry), 4) + unitAbbreviation + "}";
     }
-    public override string TypeName => "Vertex";
-
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
     public override IGH_GeometricGoo DuplicateGeometry()
     {
       return new AdSecPointGoo(new Point3d(this.Value));
     }
+
     public override BoundingBox Boundingbox
     {
       get
@@ -127,6 +141,7 @@ namespace AdSecGH.Parameters
         return crv.GetBoundingBox(false);
       }
     }
+
     public override BoundingBox GetBoundingBox(Transform xform)
     {
       if (Value == null) { return BoundingBox.Empty; }
@@ -136,19 +151,17 @@ namespace AdSecGH.Parameters
       LineCurve crv = new LineCurve(ln);
       return crv.GetBoundingBox(xform);
     }
+
     public override IGH_GeometricGoo Transform(Transform xform)
     {
       return null;
     }
+
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph)
     {
       return null;
     }
 
-    public override object ScriptVariable()
-    {
-      return Value;
-    }
     public override bool CastTo<TQ>(out TQ target)
     {
       if (typeof(TQ).IsAssignableFrom(typeof(AdSecPointGoo)))
@@ -180,6 +193,7 @@ namespace AdSecGH.Parameters
       target = default(TQ);
       return false;
     }
+
     public override bool CastFrom(object source)
     {
       if (source == null) return false;
@@ -221,10 +235,6 @@ namespace AdSecGH.Parameters
       return false;
     }
 
-    public BoundingBox ClippingBox
-    {
-      get { return Boundingbox; }
-    }
     public void DrawViewportWires(GH_PreviewWireArgs args)
     {
       if (args.Color == Instances.Settings.GetValue("DefaultPreviewColour", Color.White)) //Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", System.Drawing.Color.White)) // not selected
@@ -232,6 +242,7 @@ namespace AdSecGH.Parameters
       else
         args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 5, UI.Colour.OasysYellow);
     }
+
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
   }
 }

@@ -17,6 +17,8 @@ namespace AdSecGH.Components
   /// </summary>
   public class SectionSVG : GH_OasysComponent, IGH_VariableParameterComponent
   {
+    static string imageSVG;
+
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon
     // including name, exposure level and icon
@@ -110,7 +112,6 @@ namespace AdSecGH.Components
     #region Input and output
     // This region handles input and output parameters
     string fileName = null;
-    static string imageSVG;
     bool canOpen = false;
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {

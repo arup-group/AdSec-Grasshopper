@@ -7,24 +7,53 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.Mesh;
-using OasysGH.Parameters;
-using Rhino.DocObjects;
-using Rhino.Display;
-using Oasys.AdSec.Mesh;
-using Oasys.AdSec;
-using OasysUnits;
-using AdSecGH.Helpers;
-using Rhino.Geometry;
 using OasysGH.Units;
+using OasysUnits;
+using Rhino.Display;
+using Rhino.DocObjects;
+using Rhino.Geometry;
 
 namespace AdSecGH.Parameters
 {
   public class AdSecNMMCurveGoo : GH_GeometricGoo<Polyline>, IGH_PreviewData
   {
-    public AdSecNMMCurveGoo(Polyline curve, ILoadCurve loadCurve, NMM_InteractionCurveType interactionType, Rectangle3d plotBoundary)
-    : base(curve)
+    public enum InteractionCurveType
     {
-      if (loadCurve == null) { return; }
+      NM,
+      MM
+    }
+
+    internal ILoadCurve LoadCurve;
+    private InteractionCurveType m_type;
+    private List<Line> m_grids = new List<Line>();
+    private List<Line> m_axes = new List<Line>();
+    private List<Text3d> m_txts;
+    private Rectangle3d m_plotBounds;
+    public override string TypeName => (m_type == InteractionCurveType.NM) ? "N-M" : "M-M";
+    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public override BoundingBox Boundingbox
+    {
+      get
+      {
+        if (Value == null)
+        {
+          return BoundingBox.Empty;
+        }
+        return Value.BoundingBox;
+      }
+    }
+    public BoundingBox ClippingBox
+    {
+      get
+      {
+        return Boundingbox;
+      }
+    }
+
+    public AdSecNMMCurveGoo(Polyline curve, ILoadCurve loadCurve, InteractionCurveType interactionType, Rectangle3d plotBoundary) : base(curve)
+    {
+      if (loadCurve == null)
+        return;
 
       m_type = interactionType;
       LoadCurve = loadCurve;
@@ -32,10 +61,74 @@ namespace AdSecGH.Parameters
       m_plotBounds = plotBoundary;
       UpdatePreview(m_plotBounds);
     }
-    private List<Line> m_grids = new List<Line>();
-    private List<Line> m_axes = new List<Line>();
-    private List<Text3d> m_txts;
-    private Rectangle3d m_plotBounds;
+
+    /// <summary>
+    /// this constuctor will create an M-M type interaction diagram
+    /// </summary>
+    /// <param name="loadCurve"></param>
+    internal AdSecNMMCurveGoo(ILoadCurve loadCurve, Rectangle3d plotBoundary)
+    {
+      if (loadCurve == null)
+        return;
+
+      m_type = InteractionCurveType.MM;
+      LoadCurve = loadCurve;
+
+      List<Point3d> pts = new List<Point3d>();
+      foreach (ILoad load in loadCurve.Points)
+      {
+        Point3d pt = new Point3d(
+            load.YY.As(DefaultUnits.MomentUnit), // plot yy on x-axis
+            load.ZZ.As(DefaultUnits.MomentUnit), // plot zz on y-axis
+            0);
+        pts.Add(pt);
+      }
+      // add first point to the end to make a closed curve
+      pts.Add(pts[0]);
+
+      m_value = new Polyline(pts);
+      m_plotBounds = plotBoundary;
+      UpdatePreview(m_plotBounds);
+    }
+
+    /// <summary>
+    /// This constuctor will create an N-M type interaction diagram
+    /// </summary>
+    /// <param name="loadCurve"></param>
+    /// <param name="angle"></param>
+    internal AdSecNMMCurveGoo(ILoadCurve loadCurve, Angle angle, Rectangle3d plotBoundary)
+    {
+      if (loadCurve == null)
+        return;
+
+      LoadCurve = loadCurve;
+      m_type = InteractionCurveType.NM;
+
+      List<Point3d> pts = new List<Point3d>();
+      foreach (ILoad load in loadCurve.Points)
+      {
+        Point3d pt = new Point3d(
+            load.ZZ.As(DefaultUnits.MomentUnit),
+            load.YY.As(DefaultUnits.MomentUnit),
+            load.X.As(DefaultUnits.ForceUnit) * -1); // flip y-axis for NM-diagram
+        pts.Add(pt);
+      }
+      // add first point to the end to make a closed curve
+      pts.Add(pts[0]);
+
+      Plane local = Plane.WorldYZ;
+      if (angle.Radians != 0)
+        local.Rotate(angle.Radians * -1, Vector3d.ZAxis);
+
+      // transform to local plane
+      Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(local, Plane.WorldXY);
+
+      m_value = new Polyline(pts);
+      m_value.Transform(mapFromLocal);
+      m_plotBounds = plotBoundary;
+      UpdatePreview(m_plotBounds);
+    }
+
     private void UpdatePreview(Rectangle3d plotBoundary)
     {
       // get bounding box of load curve polyline
@@ -82,7 +175,7 @@ namespace AdSecGH.Parameters
       m_txts = new List<Text3d>();
       Plane txtPln = Plane.WorldXY;
       // loop through all values in y axis to create x-dir grids
-      int item = (m_type == NMM_InteractionCurveType.NM) ? yAxis.MajorRange.Length - 1 : 0;
+      int item = (m_type == InteractionCurveType.NM) ? yAxis.MajorRange.Length - 1 : 0;
       foreach (float step in yAxis.MajorRange)
       {
         // create gridline in original unit
@@ -110,7 +203,7 @@ namespace AdSecGH.Parameters
         txtPln.Origin = new Point3d(
           grid.PointAt(0).X - size,
           grid.PointAt(0).Y, 0);
-        string displayval = (m_type == NMM_InteractionCurveType.NM) ? (step * -1).ToString() : step.ToString();
+        string displayval = (m_type == InteractionCurveType.NM) ? (step * -1).ToString() : step.ToString();
         Text3d txt = new Text3d(displayval, txtPln, size);
         txt.HorizontalAlignment = TextHorizontalAlignment.Right;
         txt.VerticalAlignment = TextVerticalAlignment.Middle;
@@ -150,8 +243,8 @@ namespace AdSecGH.Parameters
       string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
       string forceAxis = "Axial force [" + forceUnitAbbreviation + "]";
 
-      string annoXaxis = (m_type == NMM_InteractionCurveType.NM) ? momentAxis : myyAxis;
-      string annoYaxis = (m_type == NMM_InteractionCurveType.NM) ? forceAxis : mzzAxis;
+      string annoXaxis = (m_type == InteractionCurveType.NM) ? momentAxis : myyAxis;
+      string annoYaxis = (m_type == InteractionCurveType.NM) ? forceAxis : mzzAxis;
 
       // find largest annotation value string length
       double offset = Math.Max(
@@ -176,122 +269,38 @@ namespace AdSecGH.Parameters
 
     }
 
-    /// <summary>
-    /// this method will create an M-M type interaction diagram
-    /// </summary>
-    /// <param name="loadCurve"></param>
-    internal AdSecNMMCurveGoo(ILoadCurve loadCurve, Rectangle3d plotBoundary)
-    {
-      if (loadCurve == null) { return; }
-
-      m_type = NMM_InteractionCurveType.MM;
-      LoadCurve = loadCurve;
-
-      List<Point3d> pts = new List<Point3d>();
-      foreach (ILoad load in loadCurve.Points)
-      {
-        Point3d pt = new Point3d(
-            load.YY.As(DefaultUnits.MomentUnit), // plot yy on x-axis
-            load.ZZ.As(DefaultUnits.MomentUnit), // plot zz on y-axis
-            0);
-        pts.Add(pt);
-      }
-      // add first point to the end to make a closed curve
-      pts.Add(pts[0]);
-
-      m_value = new Polyline(pts);
-      m_plotBounds = plotBoundary;
-      UpdatePreview(m_plotBounds);
-    }
-    /// <summary>
-    /// this method will create an N-M type interaction diagram
-    /// </summary>
-    /// <param name="loadCurve"></param>
-    /// <param name="angle"></param>
-    internal AdSecNMMCurveGoo(ILoadCurve loadCurve, Angle angle, Rectangle3d plotBoundary)
-    {
-      if (loadCurve == null) { return; }
-
-      LoadCurve = loadCurve;
-      m_type = NMM_InteractionCurveType.NM;
-
-      List<Point3d> pts = new List<Point3d>();
-      foreach (ILoad load in loadCurve.Points)
-      {
-        Point3d pt = new Point3d(
-            load.ZZ.As(DefaultUnits.MomentUnit),
-            load.YY.As(DefaultUnits.MomentUnit),
-            load.X.As(DefaultUnits.ForceUnit) * -1); // flip y-axis for NM-diagram
-        pts.Add(pt);
-      }
-      // add first point to the end to make a closed curve
-      pts.Add(pts[0]);
-
-
-      Plane local = Plane.WorldYZ;
-      if (angle.Radians != 0)
-        local.Rotate(angle.Radians * -1, Vector3d.ZAxis);
-
-      // transform to local plane
-      Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(local, Plane.WorldXY);
-
-      m_value = new Polyline(pts);
-      m_value.Transform(mapFromLocal);
-      m_plotBounds = plotBoundary;
-      UpdatePreview(m_plotBounds);
-    }
-
-    public enum NMM_InteractionCurveType
-    {
-      NM,
-      MM
-    }
-    internal ILoadCurve LoadCurve;
-    private NMM_InteractionCurveType m_type;
     public override string ToString()
     {
       string interactionType = "";
-      if (m_type == NMM_InteractionCurveType.NM)
+      if (m_type == InteractionCurveType.NM)
         interactionType = "N-M (Force-Moment Interaction)";
       else
         interactionType = "M-M (Moment-Moment Interaction)";
       return "AdSec " + TypeName + " {" + interactionType + "}";
     }
-    public override string TypeName => (m_type == NMM_InteractionCurveType.NM) ? "N-M" : "M-M";
-
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
 
     public override IGH_GeometricGoo DuplicateGeometry()
     {
       return new AdSecNMMCurveGoo(this.m_value.Duplicate(), this.LoadCurve, this.m_type, this.m_plotBounds);
     }
-    public override BoundingBox Boundingbox
-    {
-      get
-      {
-        if (Value == null) { return BoundingBox.Empty; }
-        return Value.BoundingBox;
-      }
-    }
+
     public override BoundingBox GetBoundingBox(Transform xform)
     {
       Polyline dup = this.m_value.Duplicate();
       dup.Transform(xform);
       return dup.BoundingBox;
     }
+
     public override IGH_GeometricGoo Transform(Transform xform)
     {
       return null;
     }
+
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph)
     {
       return null;
     }
 
-    public override object ScriptVariable()
-    {
-      return Value;
-    }
     public override bool CastTo<TQ>(out TQ target)
     {
       if (typeof(TQ).IsAssignableFrom(typeof(AdSecNMMCurveGoo)))
@@ -316,17 +325,15 @@ namespace AdSecGH.Parameters
       target = default(TQ);
       return false;
     }
+
     public override bool CastFrom(object source)
     {
-      if (source == null) return false;
+      if (source == null)
+        return false;
 
       return false;
     }
 
-    public BoundingBox ClippingBox
-    {
-      get { return Boundingbox; }
-    }
     public void DrawViewportWires(GH_PreviewWireArgs args)
     {
       if (Value != null)
@@ -344,6 +351,7 @@ namespace AdSecGH.Parameters
           args.Pipeline.Draw3dText(txt, UI.Colour.OasysDarkGrey);
       }
     }
+
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
   }
 }

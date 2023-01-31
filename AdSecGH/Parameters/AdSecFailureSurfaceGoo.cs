@@ -1,34 +1,47 @@
 ﻿using System;
-using System.Linq;
 using System.Drawing;
+using System.Linq;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec.Mesh;
-using OasysGH.Parameters;
-using Rhino.Geometry;
 using OasysGH.Units;
+using Rhino.Geometry;
 
 namespace AdSecGH.Parameters
 {
   public class AdSecFailureSurfaceGoo : GH_GeometricGoo<Mesh>, IGH_PreviewData
   {
-    public AdSecFailureSurfaceGoo(ILoadSurface loadsurface, Plane local, Mesh mesh = null)
-    : base(mesh)
+    public override string TypeName => "FailureSurface";
+    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public ILoadSurface FailureSurface
     {
-      if (mesh == null)
-        this.m_value = MeshFromILoadSurface(loadsurface, local);
-      m_loadsurface = loadsurface;
-      m_plane = local;
-      UpdatePreview();
+      get
+      {
+        return m_loadsurface;
+      }
     }
-    public AdSecFailureSurfaceGoo(ILoadSurface loadsurface, Plane local)
+    public override BoundingBox Boundingbox
     {
-      this.m_value = MeshFromILoadSurface(loadsurface, local);
-      m_loadsurface = loadsurface;
-      m_plane = local;
-      UpdatePreview();
+      get
+      {
+        if (Value == null)
+          return BoundingBox.Empty;
+        return Value.GetBoundingBox(false);
+      }
     }
-
+    public BoundingBox ClippingBox
+    {
+      get
+      {
+        return Boundingbox;
+      }
+    }
+    internal Rhino.Display.Text3d posN;
+    internal Rhino.Display.Text3d negN;
+    internal Rhino.Display.Text3d posMyy;
+    internal Rhino.Display.Text3d negMyy;
+    internal Rhino.Display.Text3d posMzz;
+    internal Rhino.Display.Text3d negMzz;
     private ILoadSurface m_loadsurface;
     private Plane m_plane;
     private Line previewPosXaxis;
@@ -37,17 +50,163 @@ namespace AdSecGH.Parameters
     private Line previewNegXaxis;
     private Line previewNegYaxis;
     private Line previewNegZaxis;
-    internal Rhino.Display.Text3d posN;
-    internal Rhino.Display.Text3d negN;
-    internal Rhino.Display.Text3d posMyy;
-    internal Rhino.Display.Text3d negMyy;
-    internal Rhino.Display.Text3d posMzz;
-    internal Rhino.Display.Text3d negMzz;
     private BoundingBox bbox;
-    public ILoadSurface FailureSurface
+
+    #region constructors
+    public AdSecFailureSurfaceGoo(ILoadSurface loadsurface, Plane local, Mesh mesh = null) : base(mesh)
     {
-      get { return m_loadsurface; }
+      if (mesh == null)
+        this.m_value = MeshFromILoadSurface(loadsurface, local);
+      this.m_loadsurface = loadsurface;
+      this.m_plane = local;
+      this.UpdatePreview();
     }
+
+    public AdSecFailureSurfaceGoo(ILoadSurface loadsurface, Plane local)
+    {
+      this.m_value = MeshFromILoadSurface(loadsurface, local);
+      this.m_loadsurface = loadsurface;
+      this.m_plane = local;
+      this.UpdatePreview();
+    }
+    #endregion
+
+    #region methods
+    public override IGH_GeometricGoo DuplicateGeometry()
+    {
+      return new AdSecFailureSurfaceGoo(this.FailureSurface, m_plane);
+    }
+
+    public override string ToString()
+    {
+      GH_Mesh mesh = new GH_Mesh(Value);
+      return "AdSec " + TypeName + mesh.ToString();
+    }
+
+    public override BoundingBox GetBoundingBox(Transform xform)
+    {
+      if (Value == null)
+        return BoundingBox.Empty;
+      return Value.GetBoundingBox(xform);
+    }
+
+    public override IGH_GeometricGoo Transform(Transform xform)
+    {
+      if (Value == null)
+        return null;
+      Mesh m = Value.DuplicateMesh();
+      m.Transform(xform);
+      Plane local = new Plane(m_plane);
+      local.Transform(xform);
+      return new AdSecFailureSurfaceGoo(this.FailureSurface, local, m);
+    }
+
+    public override IGH_GeometricGoo Morph(SpaceMorph xmorph)
+    {
+      if (Value == null) 
+        return null; 
+      Mesh m = Value.DuplicateMesh();
+      xmorph.Morph(m);
+      Plane local = new Plane(m_plane);
+      xmorph.Morph(ref local);
+      return new AdSecFailureSurfaceGoo(this.FailureSurface, local, m);
+    }
+
+    public override bool CastTo<TQ>(out TQ target)
+    {
+      if (typeof(TQ).IsAssignableFrom(typeof(AdSecFailureSurfaceGoo)))
+      {
+        target = (TQ)(object)new AdSecFailureSurfaceGoo(this.FailureSurface, this.m_plane, this.Value);
+        return true;
+      }
+
+      if (typeof(TQ).IsAssignableFrom(typeof(Mesh)))
+      {
+        target = (TQ)(object)Value;
+        return true;
+      }
+
+      if (typeof(TQ).IsAssignableFrom(typeof(GH_Mesh)))
+      {
+        target = (TQ)(object)new GH_Mesh(Value);
+        return true;
+      }
+
+      if (typeof(TQ).IsAssignableFrom(typeof(ILoadSurface)))
+      {
+        target = (TQ)(object)FailureSurface;
+        return true;
+      }
+
+      target = default(TQ);
+      return false;
+    }
+
+    public override bool CastFrom(object source)
+    {
+      if (source == null)
+        return false;
+
+      return false;
+    }
+
+    public void DrawViewportWires(GH_PreviewWireArgs args)
+    {
+      if (!Value.IsValid) { return; }
+      args.Pipeline.DrawMeshWires(Value, UI.Colour.UILightGrey, 1);
+      // local axis
+      if (previewPosXaxis != null)
+      {
+        args.Pipeline.DrawArrow(previewPosXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5);//red
+        args.Pipeline.DrawArrow(previewPosYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5);//green
+        args.Pipeline.DrawArrow(previewPosZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5);//blue
+        args.Pipeline.DrawArrow(previewNegXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5);//red
+        args.Pipeline.DrawArrow(previewNegYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5);//green
+        args.Pipeline.DrawArrow(previewNegZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5);//blue
+        args.Pipeline.Draw3dText(posN, Color.FromArgb(255, 244, 96, 96));
+        args.Pipeline.Draw3dText(negN, Color.FromArgb(255, 244, 96, 96));
+        args.Pipeline.Draw3dText(posMyy, Color.FromArgb(255, 96, 244, 96));
+        args.Pipeline.Draw3dText(negMyy, Color.FromArgb(255, 96, 244, 96));
+        args.Pipeline.Draw3dText(posMzz, Color.FromArgb(255, 96, 96, 234));
+        args.Pipeline.Draw3dText(negMzz, Color.FromArgb(255, 96, 96, 234));
+      }
+    }
+
+    public void DrawViewportMeshes(GH_PreviewMeshArgs args)
+    {
+      Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      if (args.Material.Diffuse.R == defaultCol.R && args.Material.Diffuse.G == defaultCol.G && args.Material.Diffuse.B == defaultCol.B) // not selected
+        args.Pipeline.DrawMeshShaded(Value, UI.Colour.FailureNormal);
+      else
+        args.Pipeline.DrawMeshShaded(Value, UI.Colour.FailureSelected);
+    }
+
+    internal Mesh MeshFromILoadSurface(ILoadSurface loadsurface, Plane local)
+    {
+      Mesh outMesh = new Mesh();
+
+      outMesh.Vertices.AddVertices(
+          loadsurface.Vertices.Select(pt => new Point3d(
+              pt.X.As(DefaultUnits.ForceUnit),
+              pt.ZZ.As(DefaultUnits.MomentUnit),
+              pt.YY.As(DefaultUnits.MomentUnit)
+              )));
+
+      outMesh.Faces.AddFaces(
+          loadsurface.Faces.Select(face => new MeshFace(
+              face.Vertex1, face.Vertex2, face.Vertex3)));
+
+      // transform to local plane
+      Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
+
+      bbox = outMesh.GetBoundingBox(false);
+      bbox.Transform(Rhino.Geometry.Transform.Scale(new Point3d(0, 0, 0), 1.05));
+      //bbox.Transform(mapFromLocal);
+      outMesh.Transform(mapFromLocal);
+
+      return outMesh;
+    }
+
     private void UpdatePreview()
     {
       // local axis
@@ -111,150 +270,6 @@ namespace AdSecGH.Parameters
         negMzz.VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Middle;
       }
     }
-    internal Mesh MeshFromILoadSurface(ILoadSurface loadsurface, Plane local)
-    {
-      Mesh outMesh = new Mesh();
-
-      outMesh.Vertices.AddVertices(
-          loadsurface.Vertices.Select(pt => new Point3d(
-              pt.X.As(DefaultUnits.ForceUnit),
-              pt.ZZ.As(DefaultUnits.MomentUnit),
-              pt.YY.As(DefaultUnits.MomentUnit)
-              )));
-
-      outMesh.Faces.AddFaces(
-          loadsurface.Faces.Select(face => new MeshFace(
-              face.Vertex1, face.Vertex2, face.Vertex3)));
-
-      // transform to local plane
-      Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
-
-      bbox = outMesh.GetBoundingBox(false);
-      bbox.Transform(Rhino.Geometry.Transform.Scale(new Point3d(0, 0, 0), 1.05));
-      //bbox.Transform(mapFromLocal);
-      outMesh.Transform(mapFromLocal);
-
-      return outMesh;
-    }
-
-    public override string ToString()
-    {
-      GH_Mesh mesh = new GH_Mesh(Value);
-      return "AdSec " + TypeName + mesh.ToString();
-    }
-    public override string TypeName => "FailureSurface";
-
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
-
-    public override IGH_GeometricGoo DuplicateGeometry()
-    {
-      return new AdSecFailureSurfaceGoo(this.FailureSurface, m_plane);
-    }
-    public override BoundingBox Boundingbox
-    {
-      get
-      {
-        if (Value == null) { return BoundingBox.Empty; }
-        return Value.GetBoundingBox(false);
-      }
-    }
-    public override BoundingBox GetBoundingBox(Transform xform)
-    {
-      if (Value == null) { return BoundingBox.Empty; }
-      return Value.GetBoundingBox(xform);
-    }
-    public override IGH_GeometricGoo Transform(Transform xform)
-    {
-      if (Value == null) { return null; }
-      Mesh m = Value.DuplicateMesh();
-      m.Transform(xform);
-      Plane local = new Plane(m_plane);
-      local.Transform(xform);
-      return new AdSecFailureSurfaceGoo(this.FailureSurface, local, m);
-    }
-    public override IGH_GeometricGoo Morph(SpaceMorph xmorph)
-    {
-      if (Value == null) { return null; }
-      Mesh m = Value.DuplicateMesh();
-      xmorph.Morph(m);
-      Plane local = new Plane(m_plane);
-      xmorph.Morph(ref local);
-      return new AdSecFailureSurfaceGoo(this.FailureSurface, local, m);
-    }
-
-    public override object ScriptVariable()
-    {
-      return Value;
-    }
-    public override bool CastTo<TQ>(out TQ target)
-    {
-      if (typeof(TQ).IsAssignableFrom(typeof(AdSecFailureSurfaceGoo)))
-      {
-        target = (TQ)(object)new AdSecFailureSurfaceGoo(this.FailureSurface, this.m_plane, this.Value);
-        return true;
-      }
-
-      if (typeof(TQ).IsAssignableFrom(typeof(Mesh)))
-      {
-        target = (TQ)(object)Value;
-        return true;
-      }
-
-      if (typeof(TQ).IsAssignableFrom(typeof(GH_Mesh)))
-      {
-        target = (TQ)(object)new GH_Mesh(Value);
-        return true;
-      }
-
-      if (typeof(TQ).IsAssignableFrom(typeof(ILoadSurface)))
-      {
-        target = (TQ)(object)FailureSurface;
-        return true;
-      }
-
-      target = default(TQ);
-      return false;
-    }
-    public override bool CastFrom(object source)
-    {
-      if (source == null) return false;
-
-      return false;
-    }
-
-    public BoundingBox ClippingBox
-    {
-      get { return Boundingbox; }
-    }
-    public void DrawViewportWires(GH_PreviewWireArgs args)
-    {
-      if (!Value.IsValid) { return; }
-      args.Pipeline.DrawMeshWires(Value, UI.Colour.UILightGrey, 1);
-      // local axis
-      if (previewPosXaxis != null)
-      {
-        args.Pipeline.DrawArrow(previewPosXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5);//red
-        args.Pipeline.DrawArrow(previewPosYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5);//green
-        args.Pipeline.DrawArrow(previewPosZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5);//blue
-        args.Pipeline.DrawArrow(previewNegXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5);//red
-        args.Pipeline.DrawArrow(previewNegYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5);//green
-        args.Pipeline.DrawArrow(previewNegZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5);//blue
-        args.Pipeline.Draw3dText(posN, Color.FromArgb(255, 244, 96, 96));
-        args.Pipeline.Draw3dText(negN, Color.FromArgb(255, 244, 96, 96));
-        args.Pipeline.Draw3dText(posMyy, Color.FromArgb(255, 96, 244, 96));
-        args.Pipeline.Draw3dText(negMyy, Color.FromArgb(255, 96, 244, 96));
-        args.Pipeline.Draw3dText(posMzz, Color.FromArgb(255, 96, 96, 234));
-        args.Pipeline.Draw3dText(negMzz, Color.FromArgb(255, 96, 96, 234));
-      }
-    }
-    public void DrawViewportMeshes(GH_PreviewMeshArgs args)
-    {
-      Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      if (args.Material.Diffuse.R == defaultCol.R && args.Material.Diffuse.G == defaultCol.G && args.Material.Diffuse.B == defaultCol.B) // not selected
-        args.Pipeline.DrawMeshShaded(Value, UI.Colour.FailureNormal);
-      else
-        args.Pipeline.DrawMeshShaded(Value, UI.Colour.FailureSelected);
-
-    }
+    #endregion
   }
 }

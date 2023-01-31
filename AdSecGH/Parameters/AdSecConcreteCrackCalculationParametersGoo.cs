@@ -13,10 +13,14 @@ namespace AdSecGH.Parameters
     public static string Name => "Crack Calc Params";
     public static string NickName => "CrackCalcParams";
     public static string Description => "AdSec Concrete Crack Calculation Parameters";
-    public override IGH_Goo Duplicate() => new AdSecConcreteCrackCalculationParametersGoo(this.Value);
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
 
-    public AdSecConcreteCrackCalculationParametersGoo(IConcreteCrackCalculationParameters item) : base(item) { }
+    public AdSecConcreteCrackCalculationParametersGoo(IConcreteCrackCalculationParameters item) : base(item) 
+    {
+    }
+
+    #region methods
+    public override IGH_Goo Duplicate() => new AdSecConcreteCrackCalculationParametersGoo(this.Value);
 
     public override string ToString()
     {
@@ -25,5 +29,6 @@ namespace AdSecGH.Parameters
         ", fc:" + this.Value.CharacteristicCompressiveStrength.ToString() +
         ", ft: " + this.Value.CharacteristicTensileStrength.ToString() + "}";
     }
+    #endregion
   }
 }

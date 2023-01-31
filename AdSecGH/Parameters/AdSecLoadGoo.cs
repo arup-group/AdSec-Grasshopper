@@ -101,6 +101,7 @@ namespace AdSecGH.Parameters
       target = default(TQ);
       return false;
     }
+
     public override bool CastFrom(object source)
     {
       if (source == null) return false;
@@ -145,6 +146,7 @@ namespace AdSecGH.Parameters
 
       return false;
     }
+
     public void DrawViewportWires(GH_PreviewWireArgs args)
     {
       if (m_point.IsValid)
