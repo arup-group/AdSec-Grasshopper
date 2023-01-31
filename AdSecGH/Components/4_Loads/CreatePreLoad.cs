@@ -94,13 +94,13 @@ namespace AdSecGH.Components
         switch (selecteditems[0])
         {
           case ("Force"):
-            forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), selecteditems[i]);
+            forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), selecteditems[i]);
             break;
           case ("Strain"):
-            strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), selecteditems[i]);
+            strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), selecteditems[i]);
             break;
           case ("Stress"):
-            stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), selecteditems[i]);
+            stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), selecteditems[i]);
             break;
         }
       }
@@ -198,9 +198,9 @@ namespace AdSecGH.Components
     {
       Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
-      forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), reader.GetString("force"));
-      strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), reader.GetString("strain"));
-      stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), reader.GetString("stress"));
+      forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), reader.GetString("force"));
+      strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), reader.GetString("strain"));
+      stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), reader.GetString("stress"));
 
       UpdateUIFromSelectedItems();
 

@@ -90,10 +90,10 @@ namespace AdSecGH.Components
         switch (selecteditems[0])
         {
           case ("N-M"):
-            angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[i]);
+            angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), selecteditems[i]);
             break;
           case ("M-M"):
-            forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), selecteditems[i]);
+            forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), selecteditems[i]);
             break;
         }
       }
@@ -213,8 +213,8 @@ namespace AdSecGH.Components
     {
       Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
-      forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), reader.GetString("force"));
-      angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), reader.GetString("angle"));
+      forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), reader.GetString("force"));
+      angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), reader.GetString("angle"));
 
       UpdateUIFromSelectedItems();
 

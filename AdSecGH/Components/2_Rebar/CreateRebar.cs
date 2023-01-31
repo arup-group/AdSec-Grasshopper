@@ -68,12 +68,12 @@ namespace AdSecGH.Components
       }
       else
       {
-        lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
+        lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), selecteditems[i]);
       }
     }
     private void UpdateUIFromSelectedItems()
     {
-      lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[1]);
+      lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), selecteditems[1]);
       CreateAttributes();
       ToggleInput();
     }

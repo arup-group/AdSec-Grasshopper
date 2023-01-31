@@ -67,10 +67,10 @@ namespace AdSecGH.Components
       switch (i)
       {
         case 0:
-          strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), selecteditems[i]);
+          strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), selecteditems[i]);
           break;
         case 1:
-          curvatureUnit = (CurvatureUnit)Enum.Parse(typeof(CurvatureUnit), selecteditems[i]);
+          curvatureUnit = (CurvatureUnit)UnitsHelper.Parse(typeof(CurvatureUnit), selecteditems[i]);
           break;
       }
 
@@ -83,8 +83,8 @@ namespace AdSecGH.Components
 
     private void UpdateUIFromSelectedItems()
     {
-      strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), selecteditems[0]);
-      curvatureUnit = (CurvatureUnit)Enum.Parse(typeof(CurvatureUnit), selecteditems[1]);
+      strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), selecteditems[0]);
+      curvatureUnit = (CurvatureUnit)UnitsHelper.Parse(typeof(CurvatureUnit), selecteditems[1]);
 
       CreateAttributes();
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();

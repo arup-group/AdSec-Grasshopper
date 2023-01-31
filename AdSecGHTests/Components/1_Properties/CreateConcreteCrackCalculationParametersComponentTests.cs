@@ -16,9 +16,9 @@ namespace AdSecGHTests.Properties
       
       comp.SetSelected(0, 0); // change dropdown to ?
       
-      ComponentTestHelper.SetInput(comp, 130, 1);
-      ComponentTestHelper.SetInput(comp, 1700, 2);
-      ComponentTestHelper.SetInput(comp, 1200, 3);
+      ComponentTestHelper.SetInput(comp, 130, 0);
+      ComponentTestHelper.SetInput(comp, 1700, 1);
+      ComponentTestHelper.SetInput(comp, 1200, 2);
 
       return comp;
     }

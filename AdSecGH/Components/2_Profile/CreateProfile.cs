@@ -351,7 +351,7 @@ namespace AdSecGH.Components
         else
         {
           // change unit
-          lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
+          lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), selecteditems[i]);
         }
       }
         (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
@@ -1021,7 +1021,7 @@ namespace AdSecGH.Components
       DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
 
       _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
-      lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), reader.GetString("lengthUnit"));
+      lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), reader.GetString("lengthUnit"));
 
       inclSS = reader.GetBoolean("inclSS");
       numberOfInputs = reader.GetInt32("NumberOfInputs");

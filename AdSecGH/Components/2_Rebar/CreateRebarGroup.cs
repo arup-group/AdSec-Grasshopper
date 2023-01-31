@@ -10,6 +10,7 @@ using OasysGH;
 using OasysGH.Components;
 using OasysGH.UI;
 using OasysGH.Units;
+using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -71,14 +72,14 @@ namespace AdSecGH.Components
       }
       else
       {
-        lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
+        lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), selecteditems[i]);
       }
 
     }
     private void UpdateUIFromSelectedItems()
     {
       _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
-      lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[1]);
+      lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), selecteditems[1]);
       CreateAttributes();
       ToggleInput();
     }

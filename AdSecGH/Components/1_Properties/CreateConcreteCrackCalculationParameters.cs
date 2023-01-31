@@ -109,10 +109,10 @@ namespace AdSecGH.Components
       switch (i)
       {
         case 0:
-          StressUnitE = (PressureUnit)Enum.Parse(typeof(PressureUnit), this.SelectedItems[i]);
+          this.StressUnitE = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
           break;
         case 1:
-          StrengthUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), this.SelectedItems[i]);
+          this.StrengthUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
           break;
       }
 
@@ -121,8 +121,8 @@ namespace AdSecGH.Components
 
     public override void UpdateUIFromSelectedItems()
     {
-      this.StressUnitE = (PressureUnit)Enum.Parse(typeof(PressureUnit), this.SelectedItems[0]);
-      this.StrengthUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), this.SelectedItems[1]);
+      this.StressUnitE = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[0]);
+      this.StrengthUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[1]);
 
       base.UpdateUIFromSelectedItems();
     }

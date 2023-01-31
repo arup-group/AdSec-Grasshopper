@@ -239,10 +239,10 @@ namespace AdSecGH.Components
         switch (i)
         {
           case 1:
-            strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), this.SelectedItems[i]);
+            strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[i]);
             break;
           case 2:
-            stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), this.SelectedItems[i]);
+            stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
             break;
         }
       }
@@ -530,8 +530,8 @@ namespace AdSecGH.Components
       // ??
       Helpers.DeSerialization.readDropDownComponents(ref reader, ref DropDownItems, ref SelectedItems, ref SpacerDescriptions);
 
-      strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), reader.GetString("strain_mode"));
-      stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), reader.GetString("stress_mode"));
+      strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), reader.GetString("strain_mode"));
+      stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), reader.GetString("stress_mode"));
 
       _mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)Enum.Parse(
           typeof(AdSecStressStrainCurveGoo.StressStrainCurveType), reader.GetString("mode"));

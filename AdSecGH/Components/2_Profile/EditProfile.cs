@@ -55,7 +55,7 @@ namespace AdSecGH.Components
     {
       // set selected item
       selecteditems[i] = dropdownitems[i][j];
-      angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[i]);
+      angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), selecteditems[i]);
       ExpireSolution(true);
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
       Params.OnParametersChanged();
@@ -64,7 +64,7 @@ namespace AdSecGH.Components
 
     private void UpdateUIFromSelectedItems()
     {
-      angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[0]);
+      angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), selecteditems[0]);
       CreateAttributes();
       ExpireSolution(true);
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();

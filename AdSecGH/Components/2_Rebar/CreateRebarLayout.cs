@@ -91,11 +91,11 @@ namespace AdSecGH.Components
         switch (i)
         {
           case 1:
-            lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
+            lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), selecteditems[i]);
             break;
 
           case 2:
-            angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[i]);
+            angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), selecteditems[i]);
             break;
         }
       }
@@ -104,8 +104,8 @@ namespace AdSecGH.Components
     private void UpdateUIFromSelectedItems()
     {
       _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
-      lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[1]);
-      angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[2]);
+      lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), selecteditems[1]);
+      angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), selecteditems[2]);
       CreateAttributes();
       ToggleInput();
     }

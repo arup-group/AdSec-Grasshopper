@@ -58,7 +58,7 @@ namespace AdSecGH.Components
       // change selected item
       selecteditems[i] = dropdownitems[i][j];
 
-      lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
+      lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), selecteditems[i]);
 
       // update name of inputs (to display unit on sliders)
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
@@ -68,7 +68,7 @@ namespace AdSecGH.Components
     }
     private void UpdateUIFromSelectedItems()
     {
-      lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[0]);
+      lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), selecteditems[0]);
 
       CreateAttributes();
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();

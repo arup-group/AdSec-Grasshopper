@@ -86,7 +86,7 @@ namespace AdSecGH.Components
       }
       else
       {
-        lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
+        lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), selecteditems[i]);
 
       }
     }
@@ -94,7 +94,7 @@ namespace AdSecGH.Components
     {
       _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[0]);
       if (_mode == FoldMode.Distance)
-        lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[1]);
+        lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), selecteditems[1]);
       CreateAttributes();
       ToggleInput();
     }
