@@ -1,6 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Drawing;
+using System.IO;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
@@ -12,16 +13,12 @@ using OasysGH.UI;
 
 namespace AdSecGH.Components
 {
-  /// <summary>
-  /// Component to open an existing GSA model
-  /// </summary>
-  public class SectionSVG : GH_OasysComponent, IGH_VariableParameterComponent
+   public class SectionSVG : GH_OasysComponent
   {
     static string imageSVG;
 
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("baf1ad7d-efca-4851-a6a3-21a65471a041");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;

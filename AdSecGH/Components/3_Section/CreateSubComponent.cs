@@ -1,4 +1,5 @@
 ﻿using System;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
@@ -12,8 +13,7 @@ namespace AdSecGH.Components
   public class CreateSubcomponent : GH_OasysComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("38747c89-01a4-4388-921b-8c8d8cbca410");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;

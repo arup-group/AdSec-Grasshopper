@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec.Materials;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.Helpers;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;
 using OasysUnits;
@@ -12,10 +14,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  /// <summary>
-  /// Component to create new Concrete Crack Calculation Parameters
-  /// </summary>
-  public class CreateConcreteCrackCalculationParameters : GH_OasysDropDownComponent, IGH_VariableParameterComponent
+  public class CreateConcreteCrackCalculationParameters : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -50,19 +49,19 @@ namespace AdSecGH.Components
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
-      Pressure modulus = GetInput.GetStress(this, DA, 0, StressUnitE);
+      Pressure modulus = (Pressure)Input.UnitNumber(this, DA, 0, StressUnitE);
       if (modulus.Value < 0)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
         modulus = new Pressure(Math.Abs(modulus.Value), modulus.Unit);
       }
-      Pressure compression = GetInput.GetStress(this, DA, 1, StrengthUnit);
+      Pressure compression = (Pressure)Input.UnitNumber(this, DA, 1, StrengthUnit);
       if (compression.Value > 0)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
         compression = new Pressure(compression.Value * -1, compression.Unit);
       }
-      Pressure tension = GetInput.GetStress(this, DA, 2, StrengthUnit);
+      Pressure tension = (Pressure)Input.UnitNumber(this, DA, 2, StrengthUnit);
       if (tension.Value < 0)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");

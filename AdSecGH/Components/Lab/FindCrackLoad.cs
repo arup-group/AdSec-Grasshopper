@@ -1,21 +1,22 @@
 using System;
+using AdSecGH.Helpers;
+using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using AdSecGH.Parameters;
 using Oasys.AdSec;
-using OasysGH.Components;
 using OasysGH;
+using OasysGH.Components;
+using OasysGH.Helpers;
+using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
-using OasysGH.Units;
 
 namespace AdSecGH.Components
 {
   public class FindCrackLoad : GH_OasysComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("f0b27be7-f367-4a2c-b90c-3ba0f66ae584");
     public override GH_Exposure Exposure => GH_Exposure.quarternary | GH_Exposure.obscure;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CrackLoad;
@@ -92,7 +93,7 @@ namespace AdSecGH.Components
       double increment = 1;
       DA.GetData(3, ref increment);
 
-      Length maxCrack = GetInput.GetLength(this, DA, 4, DefaultUnits.LengthUnitGeometry);
+      Length maxCrack = (Length)Input.UnitNumber(this, DA, 4, DefaultUnits.LengthUnitGeometry);
 
       ForceUnit forceUnit = DefaultUnits.ForceUnit;
       MomentUnit momentUnit = DefaultUnits.MomentUnit;

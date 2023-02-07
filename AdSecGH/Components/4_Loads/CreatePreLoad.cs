@@ -1,6 +1,7 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec.Reinforcement;
@@ -8,99 +9,94 @@ using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
 using OasysGH;
 using OasysGH.Components;
-using OasysUnits.Units;
-using OasysUnits;
-using OasysGH.Units;
+using OasysGH.Helpers;
 using OasysGH.UI;
+using OasysGH.Units;
 using OasysGH.Units.Helpers;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  /// <summary>
-  /// Component to create a new Stress Strain Point
-  /// </summary>
-  public class CreatePreLoad : GH_OasysComponent, IGH_VariableParameterComponent
+  public class CreatePreLoad : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     public override Guid ComponentGuid => new Guid("cbab2b12-2a01-4f05-ba24-2c79827c7415");
     protected override System.Drawing.Bitmap Icon => Properties.Resources.Prestress;
 
-    public CreatePreLoad()
-      : base("Create Prestress", "Prestress", "Create an AdSec Prestress Load for Reinforcement Layout as either Preforce, Prestrain or Prestress",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat5())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
+    public CreatePreLoad() : base("Create Prestress", "Prestress", "Create an AdSec Prestress Load for Reinforcement Layout as either Preforce, Prestrain or Prestress", Ribbon.CategoryName.Name(), Ribbon.SubCategoryName.Cat5())
+    {
+      this.Hidden = false; // sets the initial state of the component to hidden
+    }
     #endregion
 
     #region Custom UI
-    //This region overrides the typical component layout
-    public override void CreateAttributes()
+    public override void InitialiseDropdowns()
     {
-      if (first)
-      {
-        dropdownitems = new List<List<string>>();
-        selecteditems = new List<string>();
+      this.SpacerDescriptions = new List<string>(new string[]{
+        "Type",
+        "Measure"
+      });
 
-        // type
-        List<string> types = new List<string>() { "Force", "Strain", "Stress" };
-        dropdownitems.Add(types);
-        selecteditems.Add(dropdownitems[0][0]);
+      this.DropDownItems = new List<List<string>>();
+      this.SelectedItems = new List<string>();
 
-        // force
-        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
-        selecteditems.Add(forceUnit.ToString());
+      // type
+      List<string> types = new List<string>() { "Force", "Strain", "Stress" };
+      this.DropDownItems.Add(types);
+      this.SelectedItems.Add(this.DropDownItems[0][0]);
 
-        IQuantity force = new Force(0, forceUnit);
-        forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-        strainUnitAbbreviation = Strain.GetAbbreviation(strainUnit);
-        IQuantity stress = new Pressure(0, stressUnit);
-        stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
+      // force
+      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
+      this.SelectedItems.Add(ForceUnit.ToString());
 
-        first = false;
-      }
+      IQuantity force = new Force(0, ForceUnit);
+      forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
+      strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnit);
+      IQuantity stress = new Pressure(0, StressUnit);
+      stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 
-      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, this.DropDownItems, this.SelectedItems, this.SpacerDescriptions);
     }
 
-    public void SetSelected(int i, int j)
+    public override void SetSelected(int i, int j)
     {
       // change selected item
-      selecteditems[i] = dropdownitems[i][j];
+      this.SelectedItems[i] = this.DropDownItems[i][j];
 
       if (i == 0)
       {
-        switch (selecteditems[0])
+        switch (this.SelectedItems[0])
         {
           case ("Force"):
-            dropdownitems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
-            selecteditems[0] = forceUnit.ToString();
+            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
+            this.SelectedItems[0] = ForceUnit.ToString();
             break;
           case ("Strain"):
-            dropdownitems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
-            selecteditems[0] = strainUnit.ToString();
+            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
+            this.SelectedItems[0] = StrainUnit.ToString();
             break;
           case ("Stress"):
-            dropdownitems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
-            selecteditems[0] = stressUnit.ToString();
+            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
+            this.SelectedItems[0] = StressUnit.ToString();
             break;
         }
       }
       else
       {
-        switch (selecteditems[0])
+        switch (this.SelectedItems[0])
         {
           case ("Force"):
-            forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), selecteditems[i]);
+            ForceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[i]);
             break;
           case ("Strain"):
-            strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), selecteditems[i]);
+            StrainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[i]);
             break;
           case ("Stress"):
-            stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), selecteditems[i]);
+            StressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
             break;
         }
       }
@@ -111,33 +107,12 @@ namespace AdSecGH.Components
       Params.OnParametersChanged();
       this.OnDisplayExpired(true);
     }
-    private void UpdateUIFromSelectedItems()
-    {
-      CreateAttributes();
-      ExpireSolution(true);
-      (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-      Params.OnParametersChanged();
-      this.OnDisplayExpired(true);
-    }
     #endregion
 
     #region Input and output
-
-    // list of lists with all dropdown lists conctent
-    List<List<string>> dropdownitems;
-    // list of selected items
-    List<string> selecteditems;
-    // list of descriptions 
-    List<string> spacerDescriptions = new List<string>(new string[]
-    {
-            "Type",
-            "Measure"
-    });
-    private bool first = true;
-
-    private ForceUnit forceUnit = DefaultUnits.ForceUnit;
-    private StrainUnit strainUnit = DefaultUnits.StrainUnitResult;
-    private PressureUnit stressUnit = DefaultUnits.StressUnitResult;
+    private ForceUnit ForceUnit = DefaultUnits.ForceUnit;
+    private StrainUnit StrainUnit = DefaultUnits.StrainUnitResult;
+    private PressureUnit StressUnit = DefaultUnits.StressUnitResult;
     string forceUnitAbbreviation;
     string strainUnitAbbreviation;
     string stressUnitAbbreviation;
@@ -148,6 +123,7 @@ namespace AdSecGH.Components
       pManager.AddGenericParameter("RebarGroup", "RbG", "AdSec Reinforcement Group to apply Preload to", GH_ParamAccess.item);
       pManager.AddGenericParameter("Force [" + forceUnitAbbreviation + "]", "P", "The pre-load per reinforcement bar. Positive value is tension.", GH_ParamAccess.item);
     }
+
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
       pManager.AddGenericParameter("Prestressed RebarGroup", "RbG", "Preloaded Rebar Group for AdSec Section", GH_ParamAccess.item);
@@ -160,16 +136,16 @@ namespace AdSecGH.Components
 
       IPreload load = null;
       // Create new load
-      switch (selecteditems[0])
+      switch (this.SelectedItems[0])
       {
         case ("Force"):
-          load = IPreForce.Create(GetInput.GetForce(this, DA, 1, forceUnit));
+          load = IPreForce.Create((Force)Input.UnitNumber(this, DA, 1, ForceUnit));
           break;
         case ("Strain"):
-          load = IPreStrain.Create(GetInput.GetStrain(this, DA, 1, strainUnit));
+          load = IPreStrain.Create((Strain)Input.UnitNumber(this, DA, 1, StrainUnit));
           break;
         case ("Stress"):
-          load = IPreStress.Create(GetInput.GetStress(this, DA, 1, stressUnit));
+          load = IPreStress.Create((Pressure)Input.UnitNumber(this, DA, 1, StressUnit));
           break;
       }
       ILongitudinalGroup longitudinal = (ILongitudinalGroup)in_rebar.Value;
@@ -188,55 +164,33 @@ namespace AdSecGH.Components
     #region (de)serialization
     public override bool Write(GH_IO.Serialization.GH_IWriter writer)
     {
-      Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
-      writer.SetString("force", forceUnit.ToString());
-      writer.SetString("strain", strainUnit.ToString());
-      writer.SetString("stress", stressUnit.ToString());
+      writer.SetString("force", this.ForceUnit.ToString());
+      writer.SetString("strain", this.StrainUnit.ToString());
+      writer.SetString("stress", this.StressUnit.ToString());
       return base.Write(writer);
     }
+
     public override bool Read(GH_IO.Serialization.GH_IReader reader)
     {
-      Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
-      forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), reader.GetString("force"));
-      strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), reader.GetString("strain"));
-      stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), reader.GetString("stress"));
-
-      UpdateUIFromSelectedItems();
-
-      first = false;
+      this.ForceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), reader.GetString("force"));
+      this.StrainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), reader.GetString("strain"));
+      this.StressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), reader.GetString("stress"));
       return base.Read(reader);
     }
-
-    bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
-    bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
-    IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
-    {
-      return null;
-    }
-    bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
     #endregion
+
     #region IGH_VariableParameterComponent null implementation
     void IGH_VariableParameterComponent.VariableParameterMaintenance()
     {
-      IQuantity force = new Force(0, forceUnit);
+      IQuantity force = new Force(0, ForceUnit);
       forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-      strainUnitAbbreviation = Strain.GetAbbreviation(strainUnit);
-      IQuantity stress = new Pressure(0, stressUnit);
+      strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnit);
+      IQuantity stress = new Pressure(0, StressUnit);
       stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
 
-      if (selecteditems == null) return; // skip this during GH loading
+      if (this.SelectedItems == null) return; // skip this during GH loading
 
-      switch (selecteditems[0])
+      switch (this.SelectedItems[0])
       {
         case ("Force"):
           Params.Input[1].Name = "Force [" + forceUnitAbbreviation + "]";

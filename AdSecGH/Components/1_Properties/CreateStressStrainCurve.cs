@@ -10,17 +10,17 @@ using OasysGH.Components;
 using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
-using OasysUnits;
-using OasysUnits.Units;
-using Rhino.Geometry;
 using OasysGH.Units.Helpers;
 using OasysGH.Units;
+using OasysGH.Helpers;
+using AdSecGH.Helpers;
 
 namespace AdSecGH.Components
 {
-  public class CreateStressStrainCurve : GH_OasysDropDownComponent, IGH_VariableParameterComponent
+  public class CreateStressStrainCurve : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("b2ddf545-2a4c-45ac-ba1c-cb0f3da5b37f");
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -61,17 +61,17 @@ namespace AdSecGH.Components
           case AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
 
             crv = IFibModelCodeStressStrainCurve.Create(
-                GetInput.GetStress(this, DA, 1, stressUnit),
+                (Pressure)Input.UnitNumber(this, DA, 1, stressUnit),
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.GetStrain(this, DA, 2, strainUnit));
+                (Strain)Input.UnitNumber(this, DA, 2, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
 
             crv = IManderStressStrainCurve.Create(
-                GetInput.GetStress(this, DA, 1, stressUnit),
+                (Pressure)Input.UnitNumber(this, DA, 1, stressUnit),
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.GetStrain(this, DA, 2, strainUnit));
+                (Strain)Input.UnitNumber(this, DA, 2, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
@@ -83,17 +83,17 @@ namespace AdSecGH.Components
           case AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
 
             crv = IManderConfinedStressStrainCurve.Create(
-                GetInput.GetStress(this, DA, 0, stressUnit),
-                GetInput.GetStress(this, DA, 1, stressUnit),
-                GetInput.GetStress(this, DA, 2, stressUnit),
-                GetInput.GetStrain(this, DA, 3, strainUnit));
+                (Pressure)Input.UnitNumber(this, DA, 0, stressUnit),
+                (Pressure)Input.UnitNumber(this, DA, 1, stressUnit),
+                (Pressure)Input.UnitNumber(this, DA, 2, stressUnit),
+                (Strain)Input.UnitNumber(this, DA, 3, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
 
             crv = IParabolaRectangleStressStrainCurve.Create(
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.GetStrain(this, DA, 1, strainUnit));
+                (Strain)Input.UnitNumber(this, DA, 1, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
@@ -106,7 +106,7 @@ namespace AdSecGH.Components
 
             crv = IPopovicsStressStrainCurve.Create(
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.GetStrain(this, DA, 1, strainUnit));
+                (Strain)Input.UnitNumber(this, DA, 1, strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
@@ -114,7 +114,7 @@ namespace AdSecGH.Components
 
             crv = IRectangularStressStrainCurve.Create(
                 GetInput.StressStrainPoint(this, DA, 0),
-                GetInput.GetStrain(this, DA, 1, strainUnit));
+                (Strain)Input.UnitNumber(this, DA, 1, strainUnit));
             break;
         }
       }

@@ -9,14 +9,10 @@ using OasysGH.Components;
 
 namespace AdSecGH.Components
 {
-  /// <summary>
-  /// Component to lookup DesignCode for AdSec
-  /// </summary>
-  public class CreateDesignCode : GH_OasysDropDownComponent, IGH_VariableParameterComponent
+  public class CreateDesignCode : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("bbad3d3b-f585-474b-8cc6-76fd375819de");
     public override GH_Exposure Exposure => GH_Exposure.septenary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;

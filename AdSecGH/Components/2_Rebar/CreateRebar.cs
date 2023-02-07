@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Reinforcement;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.Helpers;
 using OasysGH.UI;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;
@@ -15,9 +17,10 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  public class CreateRebar : GH_OasysComponent, IGH_VariableParameterComponent
+  public class CreateRebar : GH_OasysComponent
   {
     #region Name and Ribbon Layout
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("024d241a-b6cc-4134-9f5c-ac9a6dcb2c4b");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -37,15 +40,15 @@ namespace AdSecGH.Components
       if (first)
       {
         List<string> list = Enum.GetNames(typeof(FoldMode)).ToList();
-        dropdownitems = new List<List<string>>();
-        dropdownitems.Add(list);
+        this.DropDownItems = new List<List<string>>();
+        this.DropDownItems.Add(list);
 
         selecteditems = new List<string>();
-        selecteditems.Add(dropdownitems[0][0]);
+        selecteditems.Add(this.DropDownItems[0][0]);
 
         // length
-        //dropdownitems.Add(Enum.GetNames(typeof(LengthUnit)).ToList());
-        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
+        //this.DropDownItems.Add(Enum.GetNames(typeof(LengthUnit)).ToList());
+        this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
         selecteditems.Add(lengthUnit.ToString());
 
         IQuantity quantity = new Length(0, lengthUnit);
@@ -54,13 +57,13 @@ namespace AdSecGH.Components
         first = false;
       }
 
-      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, this.DropDownItems, selecteditems, spacerDescriptions);
     }
 
     public void SetSelected(int i, int j)
     {
       // set selected item
-      selecteditems[i] = dropdownitems[i][j];
+      selecteditems[i] = this.DropDownItems[i][j];
       if (i == 0)
       {
         _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[i]);
@@ -80,7 +83,6 @@ namespace AdSecGH.Components
     #endregion
 
     #region Input and output
-    List<List<string>> dropdownitems;
     List<string> selecteditems;
     List<string> spacerDescriptions = new List<string>(new string[]
     {
@@ -113,7 +115,7 @@ namespace AdSecGH.Components
           AdSecRebarBundleGoo rebar = new AdSecRebarBundleGoo(
               IBarBundle.Create(
                   (Oasys.AdSec.Materials.IReinforcement)material.Material,
-                  GetInput.GetLength(this, DA, 1, lengthUnit)));
+                  (Length)Input.UnitNumber(this, DA, 1, lengthUnit)));
 
           DA.SetData(0, rebar);
 
@@ -126,7 +128,7 @@ namespace AdSecGH.Components
           AdSecRebarBundleGoo bundle = new AdSecRebarBundleGoo(
           IBarBundle.Create(
               (Oasys.AdSec.Materials.IReinforcement)material.Material,
-              GetInput.GetLength(this, DA, 1, lengthUnit),
+              (Length)Input.UnitNumber(this, DA, 1, lengthUnit),
               count));
 
           DA.SetData(0, bundle);
@@ -173,13 +175,13 @@ namespace AdSecGH.Components
     #region (de)serialization
     public override bool Write(GH_IO.Serialization.GH_IWriter writer)
     {
-      Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+      Helpers.DeSerialization.writeDropDownComponents(ref writer, this.DropDownItems, selecteditems, spacerDescriptions);
       writer.SetString("mode", _mode.ToString());
       return base.Write(writer);
     }
     public override bool Read(GH_IO.Serialization.GH_IReader reader)
     {
-      Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+      Helpers.DeSerialization.readDropDownComponents(ref reader, ref this.DropDownItems, ref selecteditems, ref spacerDescriptions);
       _mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
       UpdateUIFromSelectedItems();
       first = false;

@@ -1,27 +1,25 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
-using Rhino.Geometry;
-using OasysUnits.Units;
-using OasysUnits;
-using OasysGH.Units.Helpers;
+using OasysGH.Helpers;
 using OasysGH.UI;
 using OasysGH.Units;
+using OasysGH.Units.Helpers;
+using OasysUnits;
+using OasysUnits.Units;
+using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
-  /// <summary>
-  /// Component to create a new Stress Strain Point
-  /// </summary>
-  public class NMDiagram : GH_OasysComponent, IGH_VariableParameterComponent
+  public class NMDiagram : GH_OasysComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("21cd9e4c-6c85-4077-b575-1e04127f2998");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -40,16 +38,16 @@ namespace AdSecGH.Components
     {
       if (first)
       {
-        dropdownitems = new List<List<string>>();
+        this.DropDownItems = new List<List<string>>();
         selecteditems = new List<string>();
 
         // type
         List<string> types = new List<string>() { "N-M", "M-M" };
-        dropdownitems.Add(types);
-        selecteditems.Add(dropdownitems[0][0]);
+        this.DropDownItems.Add(types);
+        selecteditems.Add(this.DropDownItems[0][0]);
 
         // force
-        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
+        this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
         selecteditems.Add(angleUnit.ToString());
 
         IQuantity force = new Force(0, forceUnit);
@@ -60,13 +58,13 @@ namespace AdSecGH.Components
         first = false;
       }
 
-      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, this.DropDownItems, selecteditems, spacerDescriptions);
     }
 
     public void SetSelected(int i, int j)
     {
       // change selected item
-      selecteditems[i] = dropdownitems[i][j];
+      selecteditems[i] = this.DropDownItems[i][j];
 
       if (i == 0)
       {
@@ -74,13 +72,13 @@ namespace AdSecGH.Components
         {
           case ("N-M"):
             _mode = FoldMode.NM;
-            dropdownitems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle);
+            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle);
             selecteditems[1] = angleUnit.ToString();
             break;
 
           case ("M-M"):
             _mode = FoldMode.MM;
-            dropdownitems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
+            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
             selecteditems[1] = forceUnit.ToString();
             break;
         }
@@ -115,8 +113,6 @@ namespace AdSecGH.Components
 
     #region Input and output
 
-    // list of lists with all dropdown lists conctent
-    List<List<string>> dropdownitems;
     // list of selected items
     List<string> selecteditems;
     // list of descriptions 
@@ -166,7 +162,7 @@ namespace AdSecGH.Components
       if (_mode == FoldMode.NM)
       {
         // get angle input
-        Angle angle = GetInput.GetAngle(this, DA, 1, angleUnit, true);
+        Angle angle = (Angle)Input.UnitNumber(this, DA, 1, angleUnit, true);
 
         // get loadcurve
         Oasys.Collections.IList<Oasys.AdSec.Mesh.ILoadCurve> loadCurve = solution.Value.Strength.GetForceMomentInteractionCurve(angle);
@@ -177,7 +173,7 @@ namespace AdSecGH.Components
       else
       {
         // get force input
-        Force force = GetInput.GetForce(this, DA, 1, forceUnit, true);
+        Force force = (Force)Input.UnitNumber(this, DA, 1, forceUnit, true);
 
         // get loadcurve
         Oasys.Collections.IList<Oasys.AdSec.Mesh.ILoadCurve> loadCurve = solution.Value.Strength.GetMomentMomentInteractionCurve(force);
@@ -204,14 +200,14 @@ namespace AdSecGH.Components
     #region (de)serialization
     public override bool Write(GH_IO.Serialization.GH_IWriter writer)
     {
-      Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+      Helpers.DeSerialization.writeDropDownComponents(ref writer, this.DropDownItems, selecteditems, spacerDescriptions);
       writer.SetString("force", forceUnit.ToString());
       writer.SetString("angle", angleUnit.ToString());
       return base.Write(writer);
     }
     public override bool Read(GH_IO.Serialization.GH_IReader reader)
     {
-      Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+      Helpers.DeSerialization.readDropDownComponents(ref reader, ref this.DropDownItems, ref selecteditems, ref spacerDescriptions);
 
       forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), reader.GetString("force"));
       angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), reader.GetString("angle"));

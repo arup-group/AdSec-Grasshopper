@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
-using OasysUnits.Units;
-using OasysUnits;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Components;
@@ -14,8 +12,7 @@ namespace AdSecGH.Components
   public class CreateSection : GH_OasysComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("af6a8179-5e5f-498c-a83c-e98b90d4464c");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;

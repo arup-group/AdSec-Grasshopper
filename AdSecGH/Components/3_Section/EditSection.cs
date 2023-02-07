@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using OasysUnits.Units;
-using OasysUnits;
 using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement.Groups;
 using OasysGH;
@@ -16,26 +15,24 @@ namespace AdSecGH.Components
   public class EditSection : GH_OasysComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("9b0acde5-f57f-4a39-a9c3-cdc935037490");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.EditSection;
 
-    public EditSection()
-      : base("EditSection", "EditSect", "Edit an AdSec Section",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat4())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
-    #endregion
-
-    #region Custom UI
-    //This region overrides the typical component layout
+    public EditSection() : base(
+      "EditSection",
+      "EditSect",
+      "Edit an AdSec Section",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat4())
+    {
+      this.Hidden = false; // sets the initial state of the component to hidden
+    }
     #endregion
 
     #region Input and output
-
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
       pManager.AddGenericParameter("Section", "Sec", "AdSec Section to edit or get information from", GH_ParamAccess.item);
@@ -209,7 +206,6 @@ namespace AdSecGH.Components
           }
         }
       }
-
       DA.SetDataList(6, curves);
     }
   }

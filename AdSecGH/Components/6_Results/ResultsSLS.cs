@@ -1,42 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Components;
-using Rhino.Geometry;
+using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
-using OasysGH.Units;
+using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
   public class ResultsSLS : GH_OasysComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("27ba3ec5-b94c-43ad-8623-087540413628");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.SLS;
 
-    public ResultsSLS()
-      : base("Serviceability Result", "SLS", "Performs serviceability analysis (SLS), for a given Load or Deformation.",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat7())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
-    #endregion
-
-    #region Custom UI
-    //This region overrides the typical component layout
+    public ResultsSLS() : base(
+      "Serviceability Result",
+      "SLS",
+      "Performs serviceability analysis (SLS), for a given Load or Deformation.",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat7())
+    {
+      this.Hidden = false; // sets the initial state of the component to hidden
+    }
     #endregion
 
     #region Input and output
-
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
       pManager.AddGenericParameter("Results", "Res", "AdSec Results to perform serviceability check on.", GH_ParamAccess.item);
@@ -123,9 +122,8 @@ namespace AdSecGH.Components
 
       List<AdSecCrackGoo> cracks = new List<AdSecCrackGoo>();
       foreach (ICrack crack in sls.Cracks)
-      {
         cracks.Add(new AdSecCrackGoo(crack, solution.LocalPlane));
-      }
+      
       DA.SetDataList(1, cracks);
 
       if (sls.MaximumWidthCrack != null && sls.MaximumWidthCrack.Width.Meters < 1)
@@ -142,21 +140,21 @@ namespace AdSecGH.Components
       }
 
       DA.SetData(4, new Vector3d(
-          sls.Deformation.X.As(DefaultUnits.StrainUnitResult),
-          sls.Deformation.YY.As(DefaultUnits.CurvatureUnit),
-          sls.Deformation.ZZ.As(DefaultUnits.CurvatureUnit)));
+        sls.Deformation.X.As(DefaultUnits.StrainUnitResult),
+        sls.Deformation.YY.As(DefaultUnits.CurvatureUnit),
+        sls.Deformation.ZZ.As(DefaultUnits.CurvatureUnit)));
 
       DA.SetData(5, new Vector3d(
-          sls.SecantStiffness.X.As(DefaultUnits.AxialStiffnessUnit),
-          sls.SecantStiffness.YY.As(DefaultUnits.BendingStiffnessUnit),
-          sls.SecantStiffness.ZZ.As(DefaultUnits.BendingStiffnessUnit)));
+        sls.SecantStiffness.X.As(DefaultUnits.AxialStiffnessUnit),
+        sls.SecantStiffness.YY.As(DefaultUnits.BendingStiffnessUnit),
+        sls.SecantStiffness.ZZ.As(DefaultUnits.BendingStiffnessUnit)));
 
       List<GH_Interval> momentRanges = new List<GH_Interval>();
       foreach (IMomentRange mrng in sls.UncrackedMomentRanges)
       {
         Interval interval = new Interval(
-            mrng.Min.As(DefaultUnits.MomentUnit),
-            mrng.Max.As(DefaultUnits.MomentUnit));
+          mrng.Min.As(DefaultUnits.MomentUnit),
+          mrng.Max.As(DefaultUnits.MomentUnit));
         momentRanges.Add(new GH_Interval(interval));
       }
       DA.SetDataList(6, momentRanges);

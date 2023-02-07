@@ -14,14 +14,10 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
-  /// <summary>
-  /// Component to open an existing .ads file
-  /// </summary>
-  public class OpenModel : GH_OasysDropDownComponent, IGH_VariableParameterComponent
+  public class OpenModel : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("42135d0f-bf55-40c0-8f6f-5dc2ad5f7741");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;

@@ -2,23 +2,20 @@
 using System.Collections.Generic;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
-using OasysGH.Components;
 using OasysGH;
-using OasysUnits.Units;
-using OasysUnits;
-using OasysGH.Units.Helpers;
+using OasysGH.Components;
+using OasysGH.Helpers;
 using OasysGH.Units;
+using OasysGH.Units.Helpers;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  /// <summary>
-  /// Component to create a new Stress Strain Point
-  /// </summary>
-  public class CreateStressStrainPoint : GH_OasysDropDownComponent, IGH_VariableParameterComponent
+  public class CreateStressStrainPoint : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("69a789d4-c11b-4396-b237-a10efdd6d0c4");
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -35,8 +32,8 @@ namespace AdSecGH.Components
     {
       // create new point
       AdSecStressStrainPointGoo pt = new AdSecStressStrainPointGoo(
-          GetInput.GetStress(this, DA, 1, StressUnit),
-          GetInput.GetStrain(this, DA, 0, StrainUnit));
+          (Pressure)Input.UnitNumber(this, DA, 1, StressUnit),
+          (Strain)Input.UnitNumber(this, DA, 0, StrainUnit));
 
       DA.SetData(0, pt);
     }

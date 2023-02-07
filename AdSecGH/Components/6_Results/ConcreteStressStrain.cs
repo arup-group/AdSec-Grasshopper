@@ -9,14 +9,14 @@ using OasysGH.Components;
 using OasysUnits;
 using OasysGH.Parameters;
 using OasysGH.Units;
+using AdSecGH.Helpers;
 
 namespace AdSecGH.Components
 {
   public class ConcreteStressStrain : GH_OasysComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("542fc96d-d90a-4301-855f-d14507cc9753");
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;

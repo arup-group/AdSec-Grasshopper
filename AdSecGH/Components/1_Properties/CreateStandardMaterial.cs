@@ -11,14 +11,10 @@ using System.Text.RegularExpressions;
 
 namespace AdSecGH.Components
 {
-  /// <summary>
-  /// Component to create a new Standard Material for AdSec
-  /// </summary>
-  public class CreateStandardMaterial : GH_OasysDropDownComponent, IGH_VariableParameterComponent
+  public class CreateStandardMaterial : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("42f42580-8ed7-42fb-9cc7-c6f6171a0248");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;

@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.Helpers;
 using OasysGH.UI;
 using OasysGH.Units.Helpers;
 using OasysUnits;
@@ -12,80 +14,32 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  public class EditProfile : GH_OasysComponent, IGH_VariableParameterComponent
+  public class EditProfile : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("78f26bee-c72c-4d88-9b30-492190df2910");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.EditProfile;
+    private AngleUnit _angleUnit = AngleUnit.Radian;
 
-    public EditProfile()
-      : base("Edit Profile", "ProfileEdit", "Modify an AdSec Profile",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat2())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
-    #endregion
-
-    #region Custom UI
-    //This region overrides the typical component layout
-    public override void CreateAttributes()
+    public EditProfile() : base(
+      "Edit Profile",
+      "ProfileEdit",
+      "Modify an AdSec Profile",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat2())
     {
-      if (Grasshopper.Instances.DocumentEditor == null) { base.CreateAttributes(); return; } // skip this class during GH loading
-
-      if (first)
-      {
-        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
-        dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
-
-        IQuantity quantityAngle = new Angle(0, angleUnit);
-        angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
-
-        selecteditems = new List<string>();
-        selecteditems.Add(angleUnit.ToString());
-
-        first = false;
-      }
-
-      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
-    }
-    public void SetSelected(int i, int j)
-    {
-      // set selected item
-      selecteditems[i] = dropdownitems[i][j];
-      angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), selecteditems[i]);
-      ExpireSolution(true);
-      (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-      Params.OnParametersChanged();
-      this.OnDisplayExpired(true);
-    }
-
-    private void UpdateUIFromSelectedItems()
-    {
-      angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), selecteditems[0]);
-      CreateAttributes();
-      ExpireSolution(true);
-      (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-      Params.OnParametersChanged();
-      this.OnDisplayExpired(true);
+      this.Hidden = false; // sets the initial state of the component to hidden
     }
     #endregion
-
 
     #region Input and output
-    List<List<string>> dropdownitems;
-    List<string> selecteditems;
-    List<string> spacerDescriptions = new List<string>(new string[]
-    {
-            "Measure"
-    });
-    private AngleUnit angleUnit = AngleUnit.Radian;
-    string angleAbbreviation;
-    bool first = true;
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
+      string angleAbbreviation = Angle.GetAbbreviation(this._angleUnit);
+
       pManager.AddGenericParameter("Profile", "Pf", "AdSet Profile to Edit or get information from", GH_ParamAccess.item);
       pManager.AddGenericParameter("Rotation [" + angleAbbreviation + "]", "R", "[Optional] The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.", GH_ParamAccess.item);
       pManager.AddBooleanParameter("isReflectedY", "rY", "[Optional] Reflects the profile over the y-axis in the local coordinate system.", GH_ParamAccess.item);
@@ -114,7 +68,7 @@ namespace AdSecGH.Components
         // 1 Rotation
         if (Params.Input[1].SourceCount > 0)
         {
-          editPrf.Rotation = GetInput.GetAngle(this, DA, 1, angleUnit);
+          editPrf.Rotation = (Angle)Input.UnitNumber(this, DA, 1, _angleUnit);
         }
 
         // 2 ReflectionY
@@ -135,49 +89,42 @@ namespace AdSecGH.Components
       }
     }
 
-    #region (de)serialization
-    public override bool Write(GH_IO.Serialization.GH_IWriter writer)
+    #region Custom UI
+    public override void InitialiseDropdowns()
     {
-      Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
-      return base.Write(writer);
-    }
-    public override bool Read(GH_IO.Serialization.GH_IReader reader)
-    {
-      if (Grasshopper.Instances.DocumentEditor == null) { return base.Read(reader); } // skip this class during GH loading
+      this.SpacerDescriptions = new List<string>(new string[] {
+        "Measure"
+      });
 
-      Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+      this.DropDownItems = new List<List<string>>();
+      this.SelectedItems = new List<string>();
 
-      UpdateUIFromSelectedItems();
+      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
+      this.SelectedItems.Add(_angleUnit.ToString());
 
-      first = false;
+      this.IsInitialised = true;
+    }
 
-      return base.Read(reader);
-    }
-    bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
+    public override void SetSelected(int i, int j)
     {
-      return false;
+      this.SelectedItems[i] = this.DropDownItems[i][j];
+      this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this.SelectedItems[i]);
+      base.UpdateUI();
     }
-    bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
+
+    public override void UpdateUIFromSelectedItems()
     {
-      return false;
-    }
-    IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
-    {
-      return null;
-    }
-    bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
-    {
-      return false;
+      this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this.SelectedItems[0]);
+      base.UpdateUIFromSelectedItems();
     }
     #endregion
 
-    #region IGH_VariableParameterComponent null implementation
-    void IGH_VariableParameterComponent.VariableParameterMaintenance()
+    public override void VariableParameterMaintenance()
     {
-      IQuantity quantityAngle = new Angle(0, angleUnit);
+      string angleAbbreviation = Angle.GetAbbreviation(this._angleUnit);
+      IQuantity quantityAngle = new Angle(0, _angleUnit);
       angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
       Params.Input[1].Name = "Rotation [" + angleAbbreviation + "]";
     }
-    #endregion
   }
 }

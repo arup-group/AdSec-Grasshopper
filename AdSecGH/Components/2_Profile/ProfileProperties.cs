@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.Profiles;
@@ -16,8 +17,7 @@ namespace AdSecGH.Components
   public class ProfileProperties : GH_OasysComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("bb540a8e-7e7e-4299-933f-08689d7b2af8");
     public override GH_Exposure Exposure => GH_Exposure.tertiary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;

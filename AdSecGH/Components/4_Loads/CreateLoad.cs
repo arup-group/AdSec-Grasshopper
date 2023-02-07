@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.Helpers;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;
 using OasysUnits;
@@ -12,9 +14,6 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  /// <summary>
-  /// Component to create a new Load
-  /// </summary>
   public class CreateLoad : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
@@ -54,9 +53,9 @@ namespace AdSecGH.Components
     {
       // Create new load
       ILoad load = ILoad.Create(
-        GetInput.GetForce(this, DA, 0, this.ForceUnit, true),
-        GetInput.GetMoment(this, DA, 1, this.MomentUnit, true),
-        GetInput.GetMoment(this, DA, 2, this.MomentUnit, true));
+        (Force)Input.UnitNumber(this, DA, 0, this.ForceUnit, true),
+        (Moment)Input.UnitNumber(this, DA, 1, this.MomentUnit, true),
+        (Moment)Input.UnitNumber(this, DA, 2, this.MomentUnit, true));
 
       // check for enough input parameters
       if (this.Params.Input[0].SourceCount == 0 && this.Params.Input[1].SourceCount == 0

@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Reinforcement.Groups;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.Helpers;
 using OasysGH.UI;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;
@@ -15,9 +17,10 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  public class CreateReinforcementLayout : GH_OasysComponent, IGH_VariableParameterComponent
+  public class CreateReinforcementLayout : GH_OasysComponent
   {
     #region Name and Ribbon Layout
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("1250f456-de99-4834-8d7f-4019cc0c70ba");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -37,11 +40,11 @@ namespace AdSecGH.Components
       if (first)
       {
         List<string> list = Enum.GetNames(typeof(FoldMode)).ToList();
-        dropdownitems = new List<List<string>>();
-        dropdownitems.Add(list);
+        this.DropDownItems = new List<List<string>>();
+        this.DropDownItems.Add(list);
 
         selecteditems = new List<string>();
-        selecteditems.Add(dropdownitems[0][0]);
+        selecteditems.Add(this.DropDownItems[0][0]);
 
         // populate unit abbriviations and add to selected items to have list length of 3 always
         IQuantity quantity = new Length(0, lengthUnit);
@@ -55,13 +58,13 @@ namespace AdSecGH.Components
         first = false;
       }
 
-      m_attributes = new DropDownComponentAttributes(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
+      m_attributes = new DropDownComponentAttributes(this, SetSelected, this.DropDownItems, selecteditems, spacerDescriptions);
     }
 
     public void SetSelected(int i, int j)
     {
       // set selected item
-      selecteditems[i] = dropdownitems[i][j];
+      selecteditems[i] = this.DropDownItems[i][j];
       if (i == 0)
       {
         _mode = (FoldMode)Enum.Parse(typeof(FoldMode), selecteditems[i]);
@@ -70,16 +73,16 @@ namespace AdSecGH.Components
         {
           case FoldMode.Line:
           case FoldMode.SingleBars:
-            while (dropdownitems.Count > 1)
-              dropdownitems.RemoveAt(1);
+            while (this.DropDownItems.Count > 1)
+              this.DropDownItems.RemoveAt(1);
             spacerDescriptions[1] = "Measure";
             break;
           case FoldMode.Arc:
           case FoldMode.Circle:
-            if (dropdownitems.Count < 2)
-              dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-            if (dropdownitems.Count < 3)
-              dropdownitems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
+            if (this.DropDownItems.Count < 2)
+              this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
+            if (this.DropDownItems.Count < 3)
+              this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
             spacerDescriptions[1] = "Length measure";
             break;
         }
@@ -112,7 +115,6 @@ namespace AdSecGH.Components
     #endregion
 
     #region Input and output
-    List<List<string>> dropdownitems;
     List<string> selecteditems;
     List<string> spacerDescriptions = new List<string>(new string[]
     {
@@ -158,8 +160,8 @@ namespace AdSecGH.Components
           group = new AdSecRebarGroupGoo(
               ICircleGroup.Create(
                   GetInput.IPoint(this, DA, 1, true),
-                  GetInput.GetLength(this, DA, 2, lengthUnit),
-                  GetInput.GetAngle(this, DA, 3, angleUnit, true),
+                  (Length)Input.UnitNumber(this, DA, 2, lengthUnit),
+                  (Angle)Input.UnitNumber(this, DA, 3, angleUnit, true),
                   GetInput.ILayer(this, DA, 0)));
           break;
 
@@ -168,9 +170,9 @@ namespace AdSecGH.Components
           group = new AdSecRebarGroupGoo(
               IArcGroup.Create(
                   GetInput.IPoint(this, DA, 1, true),
-                  GetInput.GetLength(this, DA, 2, lengthUnit),
-                  GetInput.GetAngle(this, DA, 3, angleUnit),
-                  GetInput.GetAngle(this, DA, 4, angleUnit),
+                  (Length)Input.UnitNumber(this, DA, 2, lengthUnit),
+                  (Angle)Input.UnitNumber(this, DA, 3, angleUnit),
+                  (Angle)Input.UnitNumber(this, DA, 4, angleUnit),
                   GetInput.ILayer(this, DA, 0)));
           break;
 
@@ -255,12 +257,12 @@ namespace AdSecGH.Components
     #region (de)serialization
     public override bool Write(GH_IO.Serialization.GH_IWriter writer)
     {
-      Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
+      Helpers.DeSerialization.writeDropDownComponents(ref writer, this.DropDownItems, selecteditems, spacerDescriptions);
       return base.Write(writer);
     }
     public override bool Read(GH_IO.Serialization.GH_IReader reader)
     {
-      Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
+      Helpers.DeSerialization.readDropDownComponents(ref reader, ref this.DropDownItems, ref selecteditems, ref spacerDescriptions);
       UpdateUIFromSelectedItems();
       first = false;
       return base.Read(reader);
