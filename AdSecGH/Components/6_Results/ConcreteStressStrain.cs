@@ -22,7 +22,8 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.StressStrainConcrete;
 
-    public ConcreteStressStrain() : base("Concrete Stress/Strain",
+    public ConcreteStressStrain() : base(
+      "Concrete Stress/Strain",
       "CSS",
       "Calculate the Concrete Stress/Strain at a point on the Section for a given Load or Deformation.",
       Ribbon.CategoryName.Name(),
@@ -56,7 +57,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // get solution input
-      AdSecSolutionGoo solution = GetInput.Solution(this, DA, 0);
+      AdSecSolutionGoo solution = AdSecInput.Solution(this, DA, 0);
 
       IStrengthResult uls = null;
       IServiceabilityResult sls = null;
@@ -91,7 +92,7 @@ namespace AdSecGH.Components
       }
 
       // ULS strain
-      Strain strainULS = uls.Deformation.StrainAt(GetInput.IPoint(this, DA, 2, false));
+      Strain strainULS = uls.Deformation.StrainAt(AdSecInput.IPoint(this, DA, 2, false));
       GH_UnitNumber outStrainULS = new GH_UnitNumber(new Strain(strainULS.As(DefaultUnits.StrainUnitResult), DefaultUnits.StrainUnitResult));
       DA.SetData(0, outStrainULS);
 
@@ -101,7 +102,7 @@ namespace AdSecGH.Components
       DA.SetData(1, outStressULS);
 
       // SLS strain
-      Strain strainSLS = sls.Deformation.StrainAt(GetInput.IPoint(this, DA, 2, false));
+      Strain strainSLS = sls.Deformation.StrainAt(AdSecInput.IPoint(this, DA, 2, false));
       GH_UnitNumber outStrainSLS = new GH_UnitNumber(new Strain(strainSLS.As(DefaultUnits.StrainUnitResult), DefaultUnits.StrainUnitResult));
       DA.SetData(2, outStrainSLS);
 

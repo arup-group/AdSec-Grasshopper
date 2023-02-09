@@ -58,7 +58,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // get solution input
-      AdSecSolutionGoo solution = GetInput.Solution(this, DA, 0);
+      AdSecSolutionGoo solution = AdSecInput.Solution(this, DA, 0);
       if (solution == null)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Results input is null");

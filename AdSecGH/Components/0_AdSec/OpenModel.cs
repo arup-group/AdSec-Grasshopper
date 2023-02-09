@@ -22,19 +22,46 @@ namespace AdSecGH.Components
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Properties.Resources.OpenAdSec;
+    private string _fileName = null;
+    private Guid _panelGuid = Guid.NewGuid();
 
-    public OpenModel()
-      : base("Open Model", "Open", "Open an existing AdSec .ads file",
-          Ribbon.CategoryName.Name(),
-          Ribbon.SubCategoryName.Cat0())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
+    public OpenModel() : base(
+      "Open Model",
+      "Open",
+      "Open an existing AdSec .ads file",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat0())
+    {
+      this.Hidden = false; // sets the initial state of the component to hidden
+    }
+    #endregion
+
+    #region Input and output
+    protected override void RegisterInputParams(GH_InputParamManager pManager)
+    {
+      pManager.AddGenericParameter("Filename and path", "File", "AdSec file to open and work with." + System.Environment.NewLine + "Input either path component, a text string with path and " + System.Environment.NewLine + "filename or an existing AdSec File created in Grasshopper.", GH_ParamAccess.item);
+      pManager.AddPlaneParameter("LocalPlane", "Pln", "[Optional] Plane representing local coordinate system, by default a YZ-plane is used", GH_ParamAccess.list, Plane.WorldYZ);
+      pManager[1].Optional = true;
+      pManager.HideParameter(1);
+    }
+
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
+    {
+      pManager.AddGenericParameter("Section", "Sec", "AdSec Sections", GH_ParamAccess.list);
+    }
     #endregion
 
     #region Custom UI
-    //This region overrides the typical component layout
     public override void CreateAttributes()
     {
       m_attributes = new ButtonComponentAttributes(this, "Open", OpenFile, "Open AdSec file");
+    }
+    public override void InitialiseDropdowns()
+    {
+    }
+
+    public override void SetSelected(int i, int j)
+    {
     }
 
     public void OpenFile()
@@ -43,7 +70,7 @@ namespace AdSecGH.Components
       var res = fdi.ShowOpenDialog();
       if (res) // == DialogResult.OK)
       {
-        fileName = fdi.FileName;
+        _fileName = fdi.FileName;
 
         // instantiate  new panel
         var panel = new Grasshopper.Kernel.Special.GH_Panel();
@@ -58,12 +85,12 @@ namespace AdSecGH.Components
         {
           var input = Params.Input[0].Sources[0];
           // check if input is the one we automatically create below
-          if (Params.Input[0].Sources[0].InstanceGuid == panelGUID)
+          if (Params.Input[0].Sources[0].InstanceGuid == _panelGuid)
           {
             // update the UserText in existing panel
             //RecordUndoEvent("Changed OpenGSA Component input");
             panel = input as Grasshopper.Kernel.Special.GH_Panel;
-            panel.UserText = fileName;
+            panel.UserText = _fileName;
             panel.ExpireSolution(true); // update the display of the panel
           }
 
@@ -72,10 +99,10 @@ namespace AdSecGH.Components
         }
 
         //populate panel with our own content
-        panel.UserText = fileName;
+        panel.UserText = _fileName;
 
         // record the panel's GUID if new, so that we can update it on change
-        panelGUID = panel.InstanceGuid;
+        _panelGuid = panel.InstanceGuid;
 
         //Until now, the panel is a hypothetical object.
         // This command makes it 'real' and adds it to the canvas.
@@ -92,35 +119,11 @@ namespace AdSecGH.Components
     }
     #endregion
 
-    #region Input and output
-    // This region handles input and output parameters
-
-    string fileName = null;
-    Guid panelGUID = Guid.NewGuid();
-    protected override void RegisterInputParams(GH_InputParamManager pManager)
+    public override void VariableParameterMaintenance()
     {
-      pManager.AddGenericParameter("Filename and path", "File", "AdSec file to open and work with." +
-              System.Environment.NewLine + "Input either path component, a text string with path and " +
-              System.Environment.NewLine + "filename or an existing AdSec File created in Grasshopper.", GH_ParamAccess.item);
-      pManager.AddPlaneParameter("LocalPlane", "Pln", "[Optional] Plane representing local coordinate system, by default a YZ-plane is used", GH_ParamAccess.list, Plane.WorldYZ);
-      pManager[1].Optional = true;
-      pManager.HideParameter(1);
-    }
-
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
-      pManager.AddGenericParameter("Section", "Sec", "AdSec Sections", GH_ParamAccess.list);
-    }
-    #endregion
-
-    #region IGH_VariableParameterComponent null implementation
-    // This sub region handles any changes to the component after it has been placed on the canvas
-    void IGH_VariableParameterComponent.VariableParameterMaintenance()
-    {
-      Params.Input[0].Optional = fileName != null; //filename can have input from user input
+      Params.Input[0].Optional = _fileName != null; //filename can have input from user input
       Params.Input[0].ClearRuntimeMessages(); // this needs to be called to avoid having a runtime warning message after changed to optional
     }
-    #endregion
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
@@ -131,12 +134,12 @@ namespace AdSecGH.Components
         {
           string tempfile = "";
           if (GH_Convert.ToString(gh_typ, out tempfile, GH_Conversion.Both))
-            fileName = tempfile;
+            _fileName = tempfile;
 
-          if (!fileName.EndsWith(".ads"))
-            fileName = fileName + ".ads";
+          if (!_fileName.EndsWith(".ads"))
+            _fileName = _fileName + ".ads";
 
-          string json = File.ReadAllText(fileName);
+          string json = File.ReadAllText(_fileName);
           ParsedResult jsonParser = JsonParser.Deserialize(json);
 
           List<Plane> planes = new List<Plane>();
@@ -162,26 +165,16 @@ namespace AdSecGH.Components
     }
 
     #region (de)serialization
-    // This region handles serialisation and deserialisation, meaning that component states will be remembered when reopening GH script
     public override bool Write(GH_IO.Serialization.GH_IWriter writer)
     {
-      writer.SetString("File", (string)fileName);
+      writer.SetString("File", (string)_fileName);
       return base.Write(writer);
     }
+
     public override bool Read(GH_IO.Serialization.GH_IReader reader)
     {
-      fileName = (string)reader.GetString("File");
+      _fileName = (string)reader.GetString("File");
       return base.Read(reader);
-    }
-
-    public override void InitialiseDropdowns()
-    {
-      throw new NotImplementedException();
-    }
-
-    public override void SetSelected(int i, int j)
-    {
-      throw new NotImplementedException();
     }
     #endregion
   }

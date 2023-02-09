@@ -22,20 +22,25 @@ namespace AdSecGH.Components
     public override GH_Exposure Exposure => GH_Exposure.quarternary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateCrackCalcParams;
+    private PressureUnit _stressUnit = DefaultUnits.StressUnitResult;
+    private PressureUnit _strengthUnit = DefaultUnits.MaterialStrengthUnit;
 
-    public CreateConcreteCrackCalculationParameters() : base("Create CrackCalcParams",
+    public CreateConcreteCrackCalculationParameters() : base(
+      "Create CrackCalcParams",
       "CrackCalcParams",
       "Create Concrete Crack Calculation Parameters for AdSec Material",
       Ribbon.CategoryName.Name(),
       Ribbon.SubCategoryName.Cat1())
-    { this.Hidden = true; } // sets the initial state of the component to hidden
+    {
+      this.Hidden = true; // sets the initial state of the component to hidden
+    }
     #endregion
 
     #region Input and output
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
-      string unitEAbbreviation = Pressure.GetAbbreviation(this.StressUnitE);
-      string unitSAbbreviation = Pressure.GetAbbreviation(this.StrengthUnit);
+      string unitEAbbreviation = Pressure.GetAbbreviation(this._stressUnit);
+      string unitSAbbreviation = Pressure.GetAbbreviation(this._strengthUnit);
       pManager.AddGenericParameter("Elastic Modulus [" + unitEAbbreviation + "]", "E", "Value for Elastic Modulus", GH_ParamAccess.item);
       pManager.AddGenericParameter("Compression [" + unitSAbbreviation + "]", "fc", "Value for Characteristic Compressive Strength", GH_ParamAccess.item);
       pManager.AddGenericParameter("Tension [" + unitSAbbreviation + "]", "ft", "Value for Characteristic Tension Strength", GH_ParamAccess.item);
@@ -49,22 +54,22 @@ namespace AdSecGH.Components
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
-      Pressure modulus = (Pressure)Input.UnitNumber(this, DA, 0, StressUnitE);
+      Pressure modulus = (Pressure)Input.UnitNumber(this, DA, 0, this._stressUnit);
       if (modulus.Value < 0)
       {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
+        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
         modulus = new Pressure(Math.Abs(modulus.Value), modulus.Unit);
       }
-      Pressure compression = (Pressure)Input.UnitNumber(this, DA, 1, StrengthUnit);
+      Pressure compression = (Pressure)Input.UnitNumber(this, DA, 1, this._strengthUnit);
       if (compression.Value > 0)
       {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
+        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
         compression = new Pressure(compression.Value * -1, compression.Unit);
       }
-      Pressure tension = (Pressure)Input.UnitNumber(this, DA, 2, StrengthUnit);
+      Pressure tension = (Pressure)Input.UnitNumber(this, DA, 2, this._strengthUnit);
       if (tension.Value < 0)
       {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
+        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
         tension = new Pressure(Math.Abs(tension.Value), tension.Unit);
       }
 
@@ -76,9 +81,6 @@ namespace AdSecGH.Components
     }
 
     #region Custom UI
-    private PressureUnit StressUnitE = DefaultUnits.StressUnitResult;
-    private PressureUnit StrengthUnit = DefaultUnits.MaterialStrengthUnit;
-
     public override void InitialiseDropdowns()
     {
       this.SpacerDescriptions = new List<string>(new string[] {
@@ -91,27 +93,26 @@ namespace AdSecGH.Components
 
       // pressure E
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
-      this.SelectedItems.Add(StrengthUnit.ToString());
+      this.SelectedItems.Add(_strengthUnit.ToString());
 
       // pressure stress
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
-      this.SelectedItems.Add(StrengthUnit.ToString());
+      this.SelectedItems.Add(_strengthUnit.ToString());
 
       this.IsInitialised = true;
     }
 
     public override void SetSelected(int i, int j)
     {
-      // change selected item
       this.SelectedItems[i] = this.DropDownItems[i][j];
 
       switch (i)
       {
         case 0:
-          this.StressUnitE = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
+          this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
           break;
         case 1:
-          this.StrengthUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
+          this._strengthUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
           break;
       }
 
@@ -120,22 +121,19 @@ namespace AdSecGH.Components
 
     public override void UpdateUIFromSelectedItems()
     {
-      this.StressUnitE = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[0]);
-      this.StrengthUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[1]);
-
+      this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[0]);
+      this._strengthUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[1]);
       base.UpdateUIFromSelectedItems();
     }
     #endregion
 
-    #region IGH_VariableParameterComponent null implementation
-    void IGH_VariableParameterComponent.VariableParameterMaintenance()
+    public override void VariableParameterMaintenance()
     {
-      string unitEAbbreviation = Pressure.GetAbbreviation(this.StressUnitE);
-      string unitSAbbreviation = Pressure.GetAbbreviation(this.StrengthUnit);
-      Params.Input[0].Name = "Elastic Modulus [" + unitEAbbreviation + "]";
-      Params.Input[1].Name = "Compression [" + unitSAbbreviation + "]";
-      Params.Input[2].Name = "Tension [" + unitSAbbreviation + "]";
+      string unitEAbbreviation = Pressure.GetAbbreviation(this._stressUnit);
+      string unitSAbbreviation = Pressure.GetAbbreviation(this._strengthUnit);
+      this.Params.Input[0].Name = "Elastic Modulus [" + unitEAbbreviation + "]";
+      this.Params.Input[1].Name = "Compression [" + unitSAbbreviation + "]";
+      this.Params.Input[2].Name = "Tension [" + unitSAbbreviation + "]";
     }
-    #endregion
   }
 }

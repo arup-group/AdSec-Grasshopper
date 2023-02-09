@@ -63,7 +63,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // 0 rebar input
-      AdSecRebarBundleGoo rebar = GetInput.AdSecRebarBundleGoo(this, DA, 0);
+      AdSecRebarBundleGoo rebar = AdSecInput.AdSecRebarBundleGoo(this, DA, 0);
 
       switch (this._mode)
       {

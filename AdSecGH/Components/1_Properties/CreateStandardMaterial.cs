@@ -20,11 +20,15 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.StandardMaterial;
 
-    public CreateStandardMaterial()
-      : base("Standard Material", "Material", "Create a new AdSec Design Code based standard material",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat1())
-    { this.Hidden = true; } // sets the initial state of the component to hidden
+    public CreateStandardMaterial() : base(
+      "Standard Material",
+      "Material",
+      "Create a new AdSec Design Code based standard material",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat1())
+    {
+      this.Hidden = true; // sets the initial state of the component to hidden
+    }
     #endregion
 
     #region Input and output
@@ -414,20 +418,17 @@ namespace AdSecGH.Components
     }
     #endregion
 
-    #region IGH_VariableParameterComponent null implementation
-    void IGH_VariableParameterComponent.VariableParameterMaintenance()
+    public override void VariableParameterMaintenance()
     {
       if (Params.Input.Count == 0)
       {
         Params.RegisterInputParam(new Param_String());
         Params.Input[0].NickName = "S";
         Params.Input[0].Name = "Search";
-        Params.Input[0].Description = "[Optional] Search for Grade " +
-            System.Environment.NewLine + "Note: input 'all' to list all grades from the selected code";
+        Params.Input[0].Description = "[Optional] Search for Grade " + System.Environment.NewLine + "Note: input 'all' to list all grades from the selected code";
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = true;
       }
     }
-    #endregion
   }
 }

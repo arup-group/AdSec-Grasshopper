@@ -63,7 +63,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // 0 section 
-      AdSecSection in_section = GetInput.AdSecSection(this, DA, 0);
+      AdSecSection in_section = AdSecInput.AdSecSection(this, DA, 0);
       if (in_section == null)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
@@ -72,7 +72,7 @@ namespace AdSecGH.Components
       // 1 profile
       AdSecProfileGoo profile = null;
       if (Params.Input[1].SourceCount > 0)
-        profile = GetInput.AdSecProfileGoo(this, DA, 1, true);
+        profile = AdSecInput.AdSecProfileGoo(this, DA, 1, true);
       else
         profile = new AdSecProfileGoo(in_section.Section.Profile, in_section.LocalPlane);
       DA.SetData(1, profile);
@@ -81,7 +81,7 @@ namespace AdSecGH.Components
       AdSecMaterial material = new AdSecMaterial();
       if (Params.Input[2].SourceCount > 0)
       {
-        material = GetInput.AdSecMaterial(this, DA, 2, true);
+        material = AdSecInput.AdSecMaterial(this, DA, 2, true);
       }
       else
       {
@@ -92,7 +92,7 @@ namespace AdSecGH.Components
       // 3 DesignCode
       if (Params.Input[3].SourceCount > 0)
       {
-        material.DesignCode = GetInput.AdSecDesignCode(this, DA, 3);
+        material.DesignCode = AdSecInput.AdSecDesignCode(this, DA, 3);
       }
       else
       {
@@ -107,7 +107,7 @@ namespace AdSecGH.Components
       List<AdSecRebarGroup> reinforcements = new List<AdSecRebarGroup>();
       if (Params.Input[4].SourceCount > 0)
       {
-        reinforcements = GetInput.ReinforcementGroups(this, DA, 4, true);
+        reinforcements = AdSecInput.ReinforcementGroups(this, DA, 4, true);
       }
       else
       {
@@ -127,7 +127,7 @@ namespace AdSecGH.Components
       Oasys.Collections.IList<ISubComponent> subComponents = Oasys.Collections.IList<ISubComponent>.Create();
       if (Params.Input[5].SourceCount > 0)
       {
-        subComponents = GetInput.SubComponents(this, DA, 5, true);
+        subComponents = AdSecInput.SubComponents(this, DA, 5, true);
       }
       else
       {

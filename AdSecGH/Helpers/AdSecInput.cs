@@ -18,7 +18,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Helpers
 {
-  internal static class GetInput
+  internal static class AdSecInput
   {
     internal static List<ICover> Covers(GH_Component owner, IGH_DataAccess DA, int inputid, LengthUnit docLengthUnit, bool isOptional = false)
     {

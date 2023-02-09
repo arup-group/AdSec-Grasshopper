@@ -70,32 +70,32 @@ namespace AdSecGH.Components
         switch (this._mode)
         {
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear:
-            crv = IBilinearStressStrainCurve.Create(GetInput.StressStrainPoint(this, DA, 0), GetInput.StressStrainPoint(this, DA, 1));
+            crv = IBilinearStressStrainCurve.Create(AdSecInput.StressStrainPoint(this, DA, 0), AdSecInput.StressStrainPoint(this, DA, 1));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit:
             IExplicitStressStrainCurve exCrv = IExplicitStressStrainCurve.Create();
-            exCrv.Points = GetInput.StressStrainPoints(this, DA, 0);
+            exCrv.Points = AdSecInput.StressStrainPoints(this, DA, 0);
             crv = exCrv;
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
             crv = IFibModelCodeStressStrainCurve.Create(
               (Pressure)Input.UnitNumber(this, DA, 1, _stressUnit),
-              GetInput.StressStrainPoint(this, DA, 0),
+              AdSecInput.StressStrainPoint(this, DA, 0),
               (Strain)Input.UnitNumber(this, DA, 2, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
             crv = IManderStressStrainCurve.Create(
               (Pressure)Input.UnitNumber(this, DA, 1, _stressUnit),
-              GetInput.StressStrainPoint(this, DA, 0),
+              AdSecInput.StressStrainPoint(this, DA, 0),
               (Strain)Input.UnitNumber(this, DA, 2, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
             crv = ILinearStressStrainCurve.Create(
-              GetInput.StressStrainPoint(this, DA, 0));
+              AdSecInput.StressStrainPoint(this, DA, 0));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
@@ -108,24 +108,24 @@ namespace AdSecGH.Components
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
             crv = IParabolaRectangleStressStrainCurve.Create(
-              GetInput.StressStrainPoint(this, DA, 0),
+              AdSecInput.StressStrainPoint(this, DA, 0),
               (Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
             crv = IParkStressStrainCurve.Create(
-              GetInput.StressStrainPoint(this, DA, 0));
+              AdSecInput.StressStrainPoint(this, DA, 0));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics:
             crv = IPopovicsStressStrainCurve.Create(
-              GetInput.StressStrainPoint(this, DA, 0),
+              AdSecInput.StressStrainPoint(this, DA, 0),
               (Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
             crv = IRectangularStressStrainCurve.Create(
-              GetInput.StressStrainPoint(this, DA, 0),
+              AdSecInput.StressStrainPoint(this, DA, 0),
               (Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
             break;
         }

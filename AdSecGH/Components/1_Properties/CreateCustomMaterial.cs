@@ -59,26 +59,26 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // 0 DesignCode
-      AdSecDesignCode designCode = GetInput.AdSecDesignCode(this, DA, 0);
+      AdSecDesignCode designCode = AdSecInput.AdSecDesignCode(this, DA, 0);
 
       // 1 StressStrain ULS Compression
-      AdSecStressStrainCurveGoo ulsCompCrv = GetInput.StressStrainCurveGoo(this, DA, 1, true);
+      AdSecStressStrainCurveGoo ulsCompCrv = AdSecInput.StressStrainCurveGoo(this, DA, 1, true);
 
 
       // 2 StressStrain ULS Tension
-      AdSecStressStrainCurveGoo ulsTensCrv = GetInput.StressStrainCurveGoo(this, DA, 2, false);
+      AdSecStressStrainCurveGoo ulsTensCrv = AdSecInput.StressStrainCurveGoo(this, DA, 2, false);
 
       // 3 StressStrain SLS Compression
-      AdSecStressStrainCurveGoo slsCompCrv = GetInput.StressStrainCurveGoo(this, DA, 3, true);
+      AdSecStressStrainCurveGoo slsCompCrv = AdSecInput.StressStrainCurveGoo(this, DA, 3, true);
 
       // 4 StressStrain SLS Tension
-      AdSecStressStrainCurveGoo slsTensCrv = GetInput.StressStrainCurveGoo(this, DA, 4, false);
+      AdSecStressStrainCurveGoo slsTensCrv = AdSecInput.StressStrainCurveGoo(this, DA, 4, false);
 
       // 5 Cracked params
       IConcreteCrackCalculationParameters concreteCrack = null;
       if (this._isConcrete)
       {
-        concreteCrack = GetInput.ConcreteCrackCalculationParameters(this, DA, 5);
+        concreteCrack = AdSecInput.ConcreteCrackCalculationParameters(this, DA, 5);
       }
 
       // create new empty material
@@ -180,19 +180,21 @@ namespace AdSecGH.Components
 
       this.ChangeMode();
 
-      this.UpdateUI();;
+      this.UpdateUI(); ;
     }
     #endregion
 
     private void ChangeMode()
     {
       if (this._isConcrete)
-        if (Params.Input.Count == 6) {
-          return; 
+        if (Params.Input.Count == 6)
+        {
+          return;
         }
 
       if (!this._isConcrete)
-        if (Params.Input.Count == 5) {
+        if (Params.Input.Count == 5)
+        {
           return;
         }
 

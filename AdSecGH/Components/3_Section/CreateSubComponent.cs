@@ -48,10 +48,10 @@ namespace AdSecGH.Components
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
-      AdSecSection section = GetInput.AdSecSection(this, DA, 0);
+      AdSecSection section = AdSecInput.AdSecSection(this, DA, 0);
       if (section == null)
         return;
-      IPoint offset = GetInput.IPoint(this, DA, 1, true);
+      IPoint offset = AdSecInput.IPoint(this, DA, 1, true);
       if (offset == null)
         offset = IPoint.Create(Length.Zero, Length.Zero);
       ISubComponent subComponent = ISubComponent.Create(section.Section, offset);

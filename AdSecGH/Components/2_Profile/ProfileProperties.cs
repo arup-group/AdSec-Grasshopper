@@ -23,19 +23,17 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.ProfileInfo;
 
-    public ProfileProperties()
-      : base("Profile Properties", "Prop", "Properties of an AdSec Profile",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat2())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
-    #endregion
-
-    #region Custom UI
-    //This region overrides the typical component layout
+    public ProfileProperties() : base("Profile Properties",
+      "Prop",
+      "Properties of an AdSec Profile",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat2())
+    {
+      this.Hidden = false; // sets the initial state of the component to hidden
+    }
     #endregion
 
     #region Input and output
-
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
       pManager.AddGenericParameter("Profile", "Pf", "AdSec Profile defining the Section solid boundary", GH_ParamAccess.item);
@@ -43,7 +41,7 @@ namespace AdSecGH.Components
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
-      string lengthUnitAbbreviation = string.Concat(new Length(0, DefaultUnits.LengthUnitGeometry).ToString().Where(char.IsLetter));
+      string lengthUnitAbbreviation = Length.GetAbbreviation(DefaultUnits.LengthUnitGeometry);
       string areahUnitAbbreviation = lengthUnitAbbreviation + "\u00B2";
       string modulusUnitAbbreviation = lengthUnitAbbreviation + "\u00B3";
       string inertiaUnitAbbreviation = lengthUnitAbbreviation + "\u2074";
@@ -73,7 +71,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // 0 profile
-      AdSecProfileGoo profile = GetInput.AdSecProfileGoo(this, DA, 0);
+      AdSecProfileGoo profile = AdSecInput.AdSecProfileGoo(this, DA, 0);
 
       LengthUnit lengthUnit = DefaultUnits.LengthUnitGeometry;
       BaseUnits SI = UnitSystem.SI.BaseUnits;

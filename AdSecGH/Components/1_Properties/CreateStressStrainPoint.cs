@@ -23,7 +23,8 @@ namespace AdSecGH.Components
     private StrainUnit _strainUnit = DefaultUnits.StrainUnitResult;
     private PressureUnit _stressUnit = DefaultUnits.StressUnitResult;
 
-    public CreateStressStrainPoint() : base("Create StressStrainPt",
+    public CreateStressStrainPoint() : base(
+      "Create StressStrainPt",
       "StressStrainPt",
       "Create a Stress Strain Point for AdSec Stress Strain Curve",
       Ribbon.CategoryName.Name(),

@@ -69,7 +69,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // get section input
-      AdSecSection section = GetInput.AdSecSection(this, DA, 0);
+      AdSecSection section = AdSecInput.AdSecSection(this, DA, 0);
 
       // create flattened section
       ISection flat = null;

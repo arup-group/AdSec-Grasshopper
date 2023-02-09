@@ -63,7 +63,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // #### get material input and duplicate it ####
-      AdSecMaterial editMat = GetInput.AdSecMaterial(this, DA, 0);
+      AdSecMaterial editMat = AdSecInput.AdSecMaterial(this, DA, 0);
 
       if (editMat != null)
       {
@@ -71,7 +71,7 @@ namespace AdSecGH.Components
 
         // 1 DesignCode
         if (Params.Input[1].SourceCount > 0)
-          editMat.DesignCode = GetInput.AdSecDesignCode(this, DA, 1);
+          editMat.DesignCode = AdSecInput.AdSecDesignCode(this, DA, 1);
 
         bool rebuildCurves = false;
 
@@ -80,7 +80,7 @@ namespace AdSecGH.Components
         if (Params.Input[2].SourceCount > 0)
         {
           // use input
-          ulsCompCrv = GetInput.StressStrainCurveGoo(this, DA, 2, true);
+          ulsCompCrv = AdSecInput.StressStrainCurveGoo(this, DA, 2, true);
           rebuildCurves = true;
         }
         else
@@ -96,7 +96,7 @@ namespace AdSecGH.Components
         if (Params.Input[3].SourceCount > 0)
         {
           // use input
-          ulsTensCrv = GetInput.StressStrainCurveGoo(this, DA, 3, false);
+          ulsTensCrv = AdSecInput.StressStrainCurveGoo(this, DA, 3, false);
           rebuildCurves = true;
         }
         else
@@ -112,7 +112,7 @@ namespace AdSecGH.Components
         if (Params.Input[4].SourceCount > 0)
         {
           // use input
-          slsCompCrv = GetInput.StressStrainCurveGoo(this, DA, 4, true);
+          slsCompCrv = AdSecInput.StressStrainCurveGoo(this, DA, 4, true);
           rebuildCurves = true;
         }
         else
@@ -128,7 +128,7 @@ namespace AdSecGH.Components
         if (Params.Input[5].SourceCount > 0)
         {
           // use input
-          slsTensCrv = GetInput.StressStrainCurveGoo(this, DA, 5, false);
+          slsTensCrv = AdSecInput.StressStrainCurveGoo(this, DA, 5, false);
           rebuildCurves = true;
         }
         else
@@ -144,7 +144,7 @@ namespace AdSecGH.Components
         if (Params.Input[6].SourceCount > 0)
         {
           // use input
-          concreteCrack = GetInput.ConcreteCrackCalculationParameters(this, DA, 6);
+          concreteCrack = AdSecInput.ConcreteCrackCalculationParameters(this, DA, 6);
           rebuildCurves = true;
         }
 

@@ -18,7 +18,8 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateSection;
 
-    public CreateSection() : base("Create Section",
+    public CreateSection() : base(
+      "Create Section",
       "Section",
       "Create an AdSec Section",
       Ribbon.CategoryName.Name(),
@@ -50,20 +51,20 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // 0 profile
-      AdSecProfileGoo profile = GetInput.AdSecProfileGoo(this, DA, 0);
+      AdSecProfileGoo profile = AdSecInput.AdSecProfileGoo(this, DA, 0);
 
       // 1 material
-      AdSecMaterial material = GetInput.AdSecMaterial(this, DA, 1);
+      AdSecMaterial material = AdSecInput.AdSecMaterial(this, DA, 1);
 
       // 2 Rebars
       List<AdSecRebarGroup> reinforcements = new List<AdSecRebarGroup>();
       if (Params.Input[2].SourceCount > 0)
-        reinforcements = GetInput.ReinforcementGroups(this, DA, 2, true);
+        reinforcements = AdSecInput.ReinforcementGroups(this, DA, 2, true);
 
       // 3 Subcomponents
       Oasys.Collections.IList<ISubComponent> subComponents = Oasys.Collections.IList<ISubComponent>.Create();
       if (Params.Input[3].SourceCount > 0)
-        subComponents = GetInput.SubComponents(this, DA, 3, true);
+        subComponents = AdSecInput.SubComponents(this, DA, 3, true);
 
       // create section
       AdSecSection section = new AdSecSection(profile.Profile, profile.LocalPlane, material, reinforcements, subComponents);

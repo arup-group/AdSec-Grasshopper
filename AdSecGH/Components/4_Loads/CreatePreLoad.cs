@@ -58,7 +58,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // get rebargroup
-      AdSecRebarGroupGoo in_rebar = GetInput.ReinforcementGroup(this, DA, 0);
+      AdSecRebarGroupGoo in_rebar = AdSecInput.ReinforcementGroup(this, DA, 0);
 
       IPreload load = null;
       // Create new load

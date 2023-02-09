@@ -62,7 +62,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // 0 material input
-      AdSecMaterial material = GetInput.AdSecMaterial(this, DA, 0);
+      AdSecMaterial material = AdSecInput.AdSecMaterial(this, DA, 0);
 
       switch (this._mode)
       {

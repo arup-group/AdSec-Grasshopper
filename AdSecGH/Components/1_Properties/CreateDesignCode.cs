@@ -288,9 +288,5 @@ namespace AdSecGH.Components
       this.UpdateUIFromSelectedItems();
     }
     #endregion
-
-    #region IGH_VariableParameterComponent null implementation
-    void IGH_VariableParameterComponent.VariableParameterMaintenance() { }
-    #endregion
   }
 }

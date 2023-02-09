@@ -59,7 +59,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // #### get material input and duplicate it ####
-      AdSecProfileGoo editPrf = GetInput.AdSecProfileGoo(this, DA, 0);
+      AdSecProfileGoo editPrf = AdSecInput.AdSecProfileGoo(this, DA, 0);
 
       if (editPrf != null)
       {

@@ -14,104 +14,50 @@ using OasysGH.UI;
 
 namespace AdSecGH.Components
 {
-  public class SaveAdSec : GH_OasysComponent
+  public class SaveModel : GH_OasysDropDownComponent
   {
-    static string jsonString;
+    static string _jsonString;
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("6bba517c-3ec1-45da-a520-ea117f7f901a");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Properties.Resources.SaveAdSec;
-    string fileName = null;
 
-    public SaveAdSec()
-      : base("Save AdSec", "Save", "Saves your AdSec Section with loads from this parametric nightmare",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat0())
-    { this.Hidden = true; } // sets the initial state of the component to hidden
-    #endregion
-
-    #region Custom UI
-    //This region overrides the typical component layout
-    public override void CreateAttributes()
-    {
-      m_attributes = new ThreeButtonAtrributes(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile, OpenAdSecexe, true, "Save AdSec file");
-    }
-
-    public void SaveFile()
-    {
-      if (fileName == null | fileName == "")
-        SaveAsFile();
-      else
-      {
-        // write to file
-        File.WriteAllText(fileName, jsonString);
-        canOpen = true;
-      }
-    }
-
-    public void SaveAsFile()
-    {
-      var fdi = new Rhino.UI.SaveFileDialog { Filter = "AdSec File (*.ads)|*.ads|All files (*.*)|*.*" };
-      var res = fdi.ShowSaveDialog();
-      if (res) // == DialogResult.OK)
-      {
-        fileName = fdi.FileName;
-
-        // write to file
-        File.WriteAllText(fileName, jsonString);
-        canOpen = true;
-
-        //add panel input with string
-        //delete existing inputs if any
-        while (Params.Input[3].Sources.Count > 0)
-          Grasshopper.Instances.ActiveCanvas.Document.RemoveObject(Params.Input[3].Sources[0], false);
-
-        //instantiate  new panel
-        var panel = new Grasshopper.Kernel.Special.GH_Panel();
-        panel.CreateAttributes();
-
-        panel.Attributes.Pivot = new PointF((float)Attributes.DocObject.Attributes.Bounds.Left -
-            panel.Attributes.Bounds.Width - 40, (float)Attributes.DocObject.Attributes.Bounds.Bottom - panel.Attributes.Bounds.Height);
-
-        //populate value list with our own data
-        panel.UserText = fileName;
-
-        //Until now, the panel is a hypothetical object.
-        // This command makes it 'real' and adds it to the canvas.
-        Grasshopper.Instances.ActiveCanvas.Document.AddObject(panel, false);
-
-        //Connect the new slider to this component
-        Params.Input[3].AddSource(panel);
-        Params.OnParametersChanged();
-        ExpireSolution(true);
-      }
-    }
-
-    public void OpenAdSecexe()
-    {
-      if (fileName != null)
-      {
-        if (fileName != "")
-        {
-          if (canOpen)
-            System.Diagnostics.Process.Start(fileName);
-          else
-          {
-            File.WriteAllText(fileName, jsonString);
-            canOpen = true;
-          }
-        }
-      }
-    }
-    #endregion
-
-    #region Input and output
-    // This region handles input and output parameters
-
+    private string _fileName = null;
 
     bool canOpen = false;
+
+
+    public SaveModel() : base(
+      "Save AdSec",
+      "Save",
+      "Saves your AdSec Section with loads from this parametric nightmare",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat0())
+    {
+      this.Hidden = true; // sets the initial state of the component to hidden
+    }
+    #endregion
+
+    internal static string CombineJSonStrings(List<string> jsonStrings)
+    {
+      if (jsonStrings == null | jsonStrings.Count == 0)
+        return null;
+      string jsonString = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
+      for (int i = 1; i < jsonStrings.Count; i++)
+      {
+        string jsonString2 = jsonStrings[i];
+        int start = jsonString2.IndexOf("components") - 2;
+        jsonString2 = "," + jsonString2.Substring(start);
+        jsonString += jsonString2.Remove(jsonString2.Length - 2, 2);
+      }
+      jsonString += jsonStrings[0].Substring(jsonStrings[0].Length - 2);
+
+      return jsonString;
+    }
+
+    #region Input and output
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
       pManager.AddGenericParameter("Section", "Sec", "AdSec Section to save", GH_ParamAccess.list);
@@ -122,57 +68,15 @@ namespace AdSecGH.Components
       pManager[2].Optional = true;
       pManager[3].Optional = true;
     }
+
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
-    }
-    #region IGH_VariableParameterComponent null implementation
-    //This sub region handles any changes to the component after it has been placed on the canvas
-    bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
-    bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
-    IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
-    {
-      return null;
-    }
-    bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
-    void IGH_VariableParameterComponent.VariableParameterMaintenance()
-    {
-      Params.Input[0].Optional = fileName != null; //filename can have input from user input
-      Params.Input[0].ClearRuntimeMessages(); // this needs to be called to avoid having a runtime warning message after changed to optional
-      Params.Input[0].Access = GH_ParamAccess.list;
-      Params.Input[1].Access = GH_ParamAccess.tree;
-    }
-    #endregion
-    #endregion
-
-    #region (de)serialization
-    //This region handles serialisation and deserialisation, meaning that 
-    // component states will be remembered when reopening GH script
-    public override bool Write(GH_IO.Serialization.GH_IWriter writer)
-    {
-      writer.SetString("File", (string)fileName);
-      return base.Write(writer);
-    }
-    public override bool Read(GH_IO.Serialization.GH_IReader reader)
-    {
-      fileName = (string)reader.GetString("File");
-      (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-      Params.OnParametersChanged();
-      return base.Read(reader);
     }
     #endregion
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
-      List<AdSecSection> sections = GetInput.AdSecSections(this, DA, 0);
+      List<AdSecSection> sections = AdSecInput.AdSecSections(this, DA, 0);
       if (sections.Count == 0)
         return;
 
@@ -310,15 +214,15 @@ namespace AdSecGH.Components
         }
       }
 
-      jsonString = CombineJSons(jsonStrings);
+      _jsonString = CombineJSonStrings(jsonStrings);
 
       // filepath
       string pathString = "";
       if (DA.GetData(3, ref pathString))
       {
-        if (fileName != pathString)
+        if (_fileName != pathString)
         {
-          fileName = pathString;
+          _fileName = pathString;
           canOpen = false;
         }
       }
@@ -330,27 +234,110 @@ namespace AdSecGH.Components
         if (save)
         {
           // write to file
-          File.WriteAllText(fileName, jsonString);
+          File.WriteAllText(_fileName, _jsonString);
           canOpen = true;
         }
       }
     }
 
-    internal string CombineJSons(List<string> jsonStrings)
-    {
-      if (jsonStrings == null | jsonStrings.Count == 0)
-        return null;
-      string jsonString = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
-      for (int i = 1; i < jsonStrings.Count; i++)
-      {
-        string jsonString2 = jsonStrings[i];
-        int start = jsonString2.IndexOf("components") - 2;
-        jsonString2 = "," + jsonString2.Substring(start);
-        jsonString += jsonString2.Remove(jsonString2.Length - 2, 2);
-      }
-      jsonString += jsonStrings[0].Substring(jsonStrings[0].Length - 2);
+    #region Custom UI
+    public override void SetSelected(int i, int j) { }
 
-      return jsonString;
+    public override void InitialiseDropdowns() { }
+
+    public override void CreateAttributes()
+    {
+      m_attributes = new ThreeButtonAtrributes(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile, OpenAdSecexe, true, "Save AdSec file");
     }
+
+    public void SaveFile()
+    {
+      if (this._fileName == null | this._fileName == "")
+        SaveAsFile();
+      else
+      {
+        // write to file
+        File.WriteAllText(this._fileName, _jsonString);
+        this.canOpen = true;
+      }
+    }
+
+    public void SaveAsFile()
+    {
+      var fdi = new Rhino.UI.SaveFileDialog { Filter = "AdSec File (*.ads)|*.ads|All files (*.*)|*.*" };
+      var res = fdi.ShowSaveDialog();
+      if (res) // == DialogResult.OK)
+      {
+        _fileName = fdi.FileName;
+
+        // write to file
+        File.WriteAllText(_fileName, _jsonString);
+        canOpen = true;
+
+        //add panel input with string
+        //delete existing inputs if any
+        while (Params.Input[3].Sources.Count > 0)
+          Grasshopper.Instances.ActiveCanvas.Document.RemoveObject(Params.Input[3].Sources[0], false);
+
+        //instantiate  new panel
+        var panel = new Grasshopper.Kernel.Special.GH_Panel();
+        panel.CreateAttributes();
+
+        panel.Attributes.Pivot = new PointF((float)Attributes.DocObject.Attributes.Bounds.Left -
+            panel.Attributes.Bounds.Width - 40, (float)Attributes.DocObject.Attributes.Bounds.Bottom - panel.Attributes.Bounds.Height);
+
+        //populate value list with our own data
+        panel.UserText = _fileName;
+
+        //Until now, the panel is a hypothetical object.
+        // This command makes it 'real' and adds it to the canvas.
+        Grasshopper.Instances.ActiveCanvas.Document.AddObject(panel, false);
+
+        //Connect the new slider to this component
+        Params.Input[3].AddSource(panel);
+        Params.OnParametersChanged();
+        ExpireSolution(true);
+      }
+    }
+
+    public void OpenAdSecexe()
+    {
+      if (_fileName != null)
+      {
+        if (_fileName != "")
+        {
+          if (canOpen)
+            System.Diagnostics.Process.Start(_fileName);
+          else
+          {
+            File.WriteAllText(_fileName, _jsonString);
+            canOpen = true;
+          }
+        }
+      }
+    }
+    #endregion
+
+    public override void VariableParameterMaintenance()
+    {
+      Params.Input[0].Optional = _fileName != null; //filename can have input from user input
+      Params.Input[0].ClearRuntimeMessages(); // this needs to be called to avoid having a runtime warning message after changed to optional
+      Params.Input[0].Access = GH_ParamAccess.list;
+      Params.Input[1].Access = GH_ParamAccess.tree;
+    }
+
+    #region (de)serialization
+    public override bool Write(GH_IO.Serialization.GH_IWriter writer)
+    {
+      writer.SetString("File", this._fileName);
+      return base.Write(writer);
+    }
+
+    public override bool Read(GH_IO.Serialization.GH_IReader reader)
+    {
+      this._fileName = reader.GetString("File");
+      return base.Read(reader);
+    }
+    #endregion
   }
 }

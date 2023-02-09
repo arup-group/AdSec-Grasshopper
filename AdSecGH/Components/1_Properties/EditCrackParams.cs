@@ -21,15 +21,15 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.EditCrackCalcParams;
 
-    public EditConcreteCrackCalculationParameters()      : base(
+    public EditConcreteCrackCalculationParameters() : base(
       "Edit CrackCalcParams",
-      "EditCalcParams", 
+      "EditCalcParams",
       "Edit Concrete Crack Calculation Parameters for AdSec Material",
       Ribbon.CategoryName.Name(),
       Ribbon.SubCategoryName.Cat1())
-    { 
+    {
       this.Hidden = true; // sets the initial state of the component to hidden
-    } 
+    }
     #endregion
 
     #region Input and output
@@ -58,7 +58,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // 0 Cracked params
-      AdSecConcreteCrackCalculationParametersGoo concreteCrack = new AdSecConcreteCrackCalculationParametersGoo(GetInput.ConcreteCrackCalculationParameters(this, DA, 0));
+      AdSecConcreteCrackCalculationParametersGoo concreteCrack = new AdSecConcreteCrackCalculationParametersGoo(AdSecInput.ConcreteCrackCalculationParameters(this, DA, 0));
 
       if (concreteCrack != null && concreteCrack.Value != null)
       {
