@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -22,20 +21,22 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.EditCrackCalcParams;
 
-    public EditConcreteCrackCalculationParameters()
-      : base("Edit CrackCalcParams", "EditCalcParams", "Edit Concrete Crack Calculation Parameters for AdSec Material",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat1())
-    { this.Hidden = true; } // sets the initial state of the component to hidden
+    public EditConcreteCrackCalculationParameters()      : base(
+      "Edit CrackCalcParams",
+      "EditCalcParams", 
+      "Edit Concrete Crack Calculation Parameters for AdSec Material",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat1())
+    { 
+      this.Hidden = true; // sets the initial state of the component to hidden
+    } 
     #endregion
 
     #region Input and output
 
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
-      IQuantity quantity = new Pressure(0, DefaultUnits.StressUnitResult);
-      string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
-
+      string unitAbbreviation = Pressure.GetAbbreviation(DefaultUnits.StressUnitResult);
       pManager.AddGenericParameter("CrackCalcParams", "CCP", "AdSec ConcreteCrackCalculationParameters", GH_ParamAccess.item);
       pManager.AddGenericParameter("Elastic Modulus [" + unitAbbreviation + "]", "E", "[Optional] Overwrite Value for Elastic Modulus", GH_ParamAccess.item);
       pManager.AddGenericParameter("Compression [" + unitAbbreviation + "]", "fc", "[Optional] Overwrite Value for Characteristic Compressive Strength", GH_ParamAccess.item);
@@ -44,6 +45,7 @@ namespace AdSecGH.Components
       for (int i = 1; i < pManager.ParamCount; i++)
         pManager[i].Optional = true;
     }
+
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
       pManager.AddGenericParameter("CrackCalcParams", "CCP", "Modified AdSec ConcreteCrackCalculationParameters", GH_ParamAccess.item);
@@ -69,11 +71,10 @@ namespace AdSecGH.Components
         // 1 Elastic modulus
         if (Params.Input[1].SourceCount > 0)
         {
-
           e = (Pressure)Input.UnitNumber(this, DA, 1, DefaultUnits.StressUnitResult);
           if (e.Value < 0)
           {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
+            this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
             e = new Pressure(Math.Abs(e.Value), e.Unit);
           }
           reCreate = true;
@@ -85,7 +86,7 @@ namespace AdSecGH.Components
           fck = (Pressure)Input.UnitNumber(this, DA, 2, DefaultUnits.StressUnitResult);
           if (fck.Value > 0)
           {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
+            this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
             fck = new Pressure(fck.Value * -1, fck.Unit);
           }
           reCreate = true;
@@ -97,7 +98,7 @@ namespace AdSecGH.Components
           ft = (Pressure)Input.UnitNumber(this, DA, 3, DefaultUnits.StressUnitResult);
           if (ft.Value < 0)
           {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
+            this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
             ft = new Pressure(Math.Abs(ft.Value), ft.Unit);
           }
           reCreate = true;
@@ -118,7 +119,7 @@ namespace AdSecGH.Components
       }
       else
       {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "ConcreteCrackCalculationParameters are null");
+        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "ConcreteCrackCalculationParameters are null");
         return;
       }
     }

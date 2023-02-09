@@ -26,100 +26,25 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     public override Guid ComponentGuid => new Guid("cbab2b12-2a01-4f05-ba24-2c79827c7415");
     protected override System.Drawing.Bitmap Icon => Properties.Resources.Prestress;
+    private ForceUnit _forceUnit = DefaultUnits.ForceUnit;
+    private PressureUnit _stressUnit = DefaultUnits.StressUnitResult;
+    private StrainUnit _strainUnit = DefaultUnits.StrainUnitResult;
 
-    public CreatePreLoad() : base("Create Prestress", "Prestress", "Create an AdSec Prestress Load for Reinforcement Layout as either Preforce, Prestrain or Prestress", Ribbon.CategoryName.Name(), Ribbon.SubCategoryName.Cat5())
+    public CreatePreLoad() : base(
+      "Create Prestress",
+      "Prestress",
+      "Create an AdSec Prestress Load for Reinforcement Layout as either Preforce, Prestrain or Prestress",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat5())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }
     #endregion
 
-    #region Custom UI
-    public override void InitialiseDropdowns()
-    {
-      this.SpacerDescriptions = new List<string>(new string[]{
-        "Type",
-        "Measure"
-      });
-
-      this.DropDownItems = new List<List<string>>();
-      this.SelectedItems = new List<string>();
-
-      // type
-      List<string> types = new List<string>() { "Force", "Strain", "Stress" };
-      this.DropDownItems.Add(types);
-      this.SelectedItems.Add(this.DropDownItems[0][0]);
-
-      // force
-      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
-      this.SelectedItems.Add(ForceUnit.ToString());
-
-      IQuantity force = new Force(0, ForceUnit);
-      forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-      strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnit);
-      IQuantity stress = new Pressure(0, StressUnit);
-      stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
-
-      m_attributes = new DropDownComponentAttributes(this, SetSelected, this.DropDownItems, this.SelectedItems, this.SpacerDescriptions);
-    }
-
-    public override void SetSelected(int i, int j)
-    {
-      // change selected item
-      this.SelectedItems[i] = this.DropDownItems[i][j];
-
-      if (i == 0)
-      {
-        switch (this.SelectedItems[0])
-        {
-          case ("Force"):
-            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
-            this.SelectedItems[0] = ForceUnit.ToString();
-            break;
-          case ("Strain"):
-            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
-            this.SelectedItems[0] = StrainUnit.ToString();
-            break;
-          case ("Stress"):
-            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
-            this.SelectedItems[0] = StressUnit.ToString();
-            break;
-        }
-      }
-      else
-      {
-        switch (this.SelectedItems[0])
-        {
-          case ("Force"):
-            ForceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[i]);
-            break;
-          case ("Strain"):
-            StrainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[i]);
-            break;
-          case ("Stress"):
-            StressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
-            break;
-        }
-      }
-
-        // update name of inputs (to display unit on sliders)
-        (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-      ExpireSolution(true);
-      Params.OnParametersChanged();
-      this.OnDisplayExpired(true);
-    }
-    #endregion
-
     #region Input and output
-    private ForceUnit ForceUnit = DefaultUnits.ForceUnit;
-    private StrainUnit StrainUnit = DefaultUnits.StrainUnitResult;
-    private PressureUnit StressUnit = DefaultUnits.StressUnitResult;
-    string forceUnitAbbreviation;
-    string strainUnitAbbreviation;
-    string stressUnitAbbreviation;
-    #endregion
-
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
+      string forceUnitAbbreviation = Force.GetAbbreviation(this._forceUnit);
       pManager.AddGenericParameter("RebarGroup", "RbG", "AdSec Reinforcement Group to apply Preload to", GH_ParamAccess.item);
       pManager.AddGenericParameter("Force [" + forceUnitAbbreviation + "]", "P", "The pre-load per reinforcement bar. Positive value is tension.", GH_ParamAccess.item);
     }
@@ -128,6 +53,7 @@ namespace AdSecGH.Components
     {
       pManager.AddGenericParameter("Prestressed RebarGroup", "RbG", "Preloaded Rebar Group for AdSec Section", GH_ParamAccess.item);
     }
+    #endregion
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
@@ -139,13 +65,13 @@ namespace AdSecGH.Components
       switch (this.SelectedItems[0])
       {
         case ("Force"):
-          load = IPreForce.Create((Force)Input.UnitNumber(this, DA, 1, ForceUnit));
+          load = IPreForce.Create((Force)Input.UnitNumber(this, DA, 1, _forceUnit));
           break;
         case ("Strain"):
-          load = IPreStrain.Create((Strain)Input.UnitNumber(this, DA, 1, StrainUnit));
+          load = IPreStrain.Create((Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
           break;
         case ("Stress"):
-          load = IPreStress.Create((Pressure)Input.UnitNumber(this, DA, 1, StressUnit));
+          load = IPreStress.Create((Pressure)Input.UnitNumber(this, DA, 1, _stressUnit));
           break;
       }
       ILongitudinalGroup longitudinal = (ILongitudinalGroup)in_rebar.Value;
@@ -161,35 +87,93 @@ namespace AdSecGH.Components
           "This will change in future releases, apologies for the inconvenience...");
     }
 
+    #region Custom UI
+    public override void InitialiseDropdowns()
+    {
+      this.SpacerDescriptions = new List<string>(new string[]{
+        "Type",
+        "Measure"
+      });
+
+      this.DropDownItems = new List<List<string>>();
+      this.SelectedItems = new List<string>();
+
+      // type
+      this.DropDownItems.Add(new List<string>() { "Force", "Strain", "Stress" });
+      this.SelectedItems.Add(this.DropDownItems[0][0]);
+
+      // force
+      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
+      this.SelectedItems.Add(_forceUnit.ToString());
+
+      this.IsInitialised = true;
+    }
+
+    public override void SetSelected(int i, int j)
+    {
+      // change selected item
+      this.SelectedItems[i] = this.DropDownItems[i][j];
+
+      if (i == 0)
+      {
+        switch (this.SelectedItems[0])
+        {
+          case ("Force"):
+            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
+            this.SelectedItems[0] = _forceUnit.ToString();
+            break;
+          case ("Strain"):
+            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
+            this.SelectedItems[0] = _strainUnit.ToString();
+            break;
+          case ("Stress"):
+            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
+            this.SelectedItems[0] = _stressUnit.ToString();
+            break;
+        }
+      }
+      else
+      {
+        switch (this.SelectedItems[0])
+        {
+          case ("Force"):
+            _forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[i]);
+            break;
+          case ("Strain"):
+            _strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[i]);
+            break;
+          case ("Stress"):
+            _stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
+            break;
+        }
+      }
+      base.UpdateUI();
+    }
+    #endregion
+
     #region (de)serialization
     public override bool Write(GH_IO.Serialization.GH_IWriter writer)
     {
-      writer.SetString("force", this.ForceUnit.ToString());
-      writer.SetString("strain", this.StrainUnit.ToString());
-      writer.SetString("stress", this.StressUnit.ToString());
+      writer.SetString("force", this._forceUnit.ToString());
+      writer.SetString("strain", this._strainUnit.ToString());
+      writer.SetString("stress", this._stressUnit.ToString());
       return base.Write(writer);
     }
 
     public override bool Read(GH_IO.Serialization.GH_IReader reader)
     {
-      this.ForceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), reader.GetString("force"));
-      this.StrainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), reader.GetString("strain"));
-      this.StressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), reader.GetString("stress"));
+      this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), reader.GetString("force"));
+      this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), reader.GetString("strain"));
+      this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), reader.GetString("stress"));
       return base.Read(reader);
     }
     #endregion
 
-    #region IGH_VariableParameterComponent null implementation
-    void IGH_VariableParameterComponent.VariableParameterMaintenance()
+    public override void UpdateUIFromSelectedItems()
     {
-      IQuantity force = new Force(0, ForceUnit);
-      forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-      strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnit);
-      IQuantity stress = new Pressure(0, StressUnit);
-      stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
-
-      if (this.SelectedItems == null) return; // skip this during GH loading
-
+      string forceUnitAbbreviation = Force.GetAbbreviation(this._forceUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(this._strainUnit);
+      string stressUnitAbbreviation = Pressure.GetAbbreviation(this._stressUnit);
       switch (this.SelectedItems[0])
       {
         case ("Force"):
@@ -206,7 +190,5 @@ namespace AdSecGH.Components
           break;
       }
     }
-    #endregion
-
   }
 }

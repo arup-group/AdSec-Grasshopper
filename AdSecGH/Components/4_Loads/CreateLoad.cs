@@ -22,19 +22,24 @@ namespace AdSecGH.Components
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateLoad;
+    private ForceUnit _forceUnit = DefaultUnits.ForceUnit;
+    private MomentUnit _momentUnit = DefaultUnits.MomentUnit;
 
-    public CreateLoad() : base("Create" + AdSecLoadGoo.Name.Replace(" ", string.Empty),
+    public CreateLoad() : base(
+      "Create" + AdSecLoadGoo.Name.Replace(" ", string.Empty),
       AdSecLoadGoo.Name.Replace(" ", string.Empty),
       "Create an" + AdSecLoadGoo.Description + " from an axial force and biaxial moments",
       Ribbon.CategoryName.Name(), Ribbon.SubCategoryName.Cat5())
-    { this.Hidden = true; } // sets the initial state of the component to hidden
+    {
+      this.Hidden = true; // sets the initial state of the component to hidden
+    }
     #endregion
 
     #region Input and output
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
-      string forceUnitAbbreviation = Force.GetAbbreviation(this.ForceUnit);
-      string momentUnitAbbreviation = Moment.GetAbbreviation(this.MomentUnit);
+      string forceUnitAbbreviation = Force.GetAbbreviation(this._forceUnit);
+      string momentUnitAbbreviation = Moment.GetAbbreviation(this._momentUnit);
       pManager.AddGenericParameter("Fx [" + forceUnitAbbreviation + "]", "X", "The axial force. Positive x is tension.", GH_ParamAccess.item);
       pManager.AddGenericParameter("Myy [" + momentUnitAbbreviation + "]", "YY", "The moment about local y-axis. Positive yy is anti - clockwise moment about local y-axis.", GH_ParamAccess.item);
       pManager.AddGenericParameter("Mzz [" + momentUnitAbbreviation + "]", "ZZ", "The moment about local z-axis. Positive zz is anti - clockwise moment about local z-axis.", GH_ParamAccess.item);
@@ -53,9 +58,9 @@ namespace AdSecGH.Components
     {
       // Create new load
       ILoad load = ILoad.Create(
-        (Force)Input.UnitNumber(this, DA, 0, this.ForceUnit, true),
-        (Moment)Input.UnitNumber(this, DA, 1, this.MomentUnit, true),
-        (Moment)Input.UnitNumber(this, DA, 2, this.MomentUnit, true));
+        (Force)Input.UnitNumber(this, DA, 0, this._forceUnit, true),
+        (Moment)Input.UnitNumber(this, DA, 1, this._momentUnit, true),
+        (Moment)Input.UnitNumber(this, DA, 2, this._momentUnit, true));
 
       // check for enough input parameters
       if (this.Params.Input[0].SourceCount == 0 && this.Params.Input[1].SourceCount == 0
@@ -70,9 +75,6 @@ namespace AdSecGH.Components
     }
 
     #region Custom UI
-    private ForceUnit ForceUnit = DefaultUnits.ForceUnit;
-    private MomentUnit MomentUnit = DefaultUnits.MomentUnit;
-
     public override void InitialiseDropdowns()
     {
       this.SpacerDescriptions = new List<string>(new string[] {
@@ -85,11 +87,11 @@ namespace AdSecGH.Components
 
       // force
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
-      this.SelectedItems.Add(this.ForceUnit.ToString());
+      this.SelectedItems.Add(this._forceUnit.ToString());
 
       // moment
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Moment));
-      this.SelectedItems.Add(this.MomentUnit.ToString());
+      this.SelectedItems.Add(this._momentUnit.ToString());
 
 
       this.IsInitialised = true;
@@ -97,16 +99,15 @@ namespace AdSecGH.Components
 
     public override void SetSelected(int i, int j)
     {
-      // change selected item
       this.SelectedItems[i] = this.DropDownItems[i][j];
 
       switch (i)
       {
         case 0:
-          this.ForceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[i]);
+          this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[i]);
           break;
         case 1:
-          this.MomentUnit = (MomentUnit)UnitsHelper.Parse(typeof(MomentUnit), this.SelectedItems[i]);
+          this._momentUnit = (MomentUnit)UnitsHelper.Parse(typeof(MomentUnit), this.SelectedItems[i]);
           break;
       }
 
@@ -115,17 +116,15 @@ namespace AdSecGH.Components
 
     public override void UpdateUIFromSelectedItems()
     {
-      this.ForceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[0]);
-      this.MomentUnit = (MomentUnit)UnitsHelper.Parse(typeof(MomentUnit), this.SelectedItems[1]);
-
+      this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[0]);
+      this._momentUnit = (MomentUnit)UnitsHelper.Parse(typeof(MomentUnit), this.SelectedItems[1]);
       base.UpdateUIFromSelectedItems();
     }
 
     public override void VariableParameterMaintenance()
     {
-      //string forceUnitAbbreviation = string.Concat(new Force(0, this.ForceUnit).ToString().Where(char.IsLetter));
-      string forceUnitAbbreviation = Force.GetAbbreviation(this.ForceUnit);
-      string momentUnitAbbreviation = Moment.GetAbbreviation(this.MomentUnit);
+      string forceUnitAbbreviation = Force.GetAbbreviation(this._forceUnit);
+      string momentUnitAbbreviation = Moment.GetAbbreviation(this._momentUnit);
       Params.Input[0].Name = "Fx [" + forceUnitAbbreviation + "]";
       Params.Input[1].Name = "Myy [" + momentUnitAbbreviation + "]";
       Params.Input[2].Name = "Mzz [" + momentUnitAbbreviation + "]";

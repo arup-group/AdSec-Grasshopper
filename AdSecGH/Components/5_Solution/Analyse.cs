@@ -17,20 +17,18 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.Solution;
 
-
-    public Analyse()
-      : base("Analyse Section", "Analyse", "Analyse an AdSec Section",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat6())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
-    #endregion
-
-    #region Custom UI
-    //This region overrides the typical component layout
+    public Analyse() : base(
+      "Analyse Section",
+      "Analyse",
+      "Analyse an AdSec Section",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat6())
+    {
+      this.Hidden = false; // sets the initial state of the component to hidden
+    }
     #endregion
 
     #region Input and output
-
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
       pManager.AddGenericParameter("Section", "Sec", "AdSec Section to analyse", GH_ParamAccess.item);

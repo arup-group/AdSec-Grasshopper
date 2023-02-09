@@ -22,11 +22,15 @@ namespace AdSecGH.Components
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CrackLoad;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
 
-    public FindCrackLoad()
-      : base("Find Crack Load", "CrackLd", "Increases the load until set crack width is reached",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat7())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
+    public FindCrackLoad() : base(
+      "Find Crack Load",
+      "CrackLd",
+      "Increases the load until set crack width is reached",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat7())
+    {
+      this.Hidden = false; // sets the initial state of the component to hidden
+    }
     #endregion
 
     #region Input and output
@@ -45,7 +49,6 @@ namespace AdSecGH.Components
     {
       pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." +
           Environment.NewLine + "If the applied deformation is outside the capacity range of the section, the returned load will be zero.", GH_ParamAccess.item);
-
       pManager.AddGenericParameter("MaximumCrack", "Crk", "The crack result from Cracks that corresponds to the maximum crack width." +
           Environment.NewLine + "If the applied action is outside the capacity range of the section, the returned maximum width crack result will be maximum " +
           "double value.", GH_ParamAccess.item);

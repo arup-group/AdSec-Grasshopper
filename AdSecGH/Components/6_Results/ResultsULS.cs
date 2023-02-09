@@ -24,19 +24,18 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.ULS;
 
-    public ResultsULS()
-      : base("Strength Result", "ULS", "Performs strength checks (ULS), for a given Load or Deformation.",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat7())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
-    #endregion
-
-    #region Custom UI
-    //This region overrides the typical component layout
+    public ResultsULS() : base(
+      "Strength Result",
+      "ULS",
+      "Performs strength checks (ULS), for a given Load or Deformation.",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat7())
+    {
+      this.Hidden = false;// sets the initial state of the component to hidden
+    }
     #endregion
 
     #region Input and output
-
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
       pManager.AddGenericParameter("Results", "Res", "AdSec Results to perform strenght check on.", GH_ParamAccess.item);
@@ -100,13 +99,13 @@ namespace AdSecGH.Components
         }
         else
         {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
+          this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
           return;
         }
       }
       else
       {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
+        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
         return;
       }
 
@@ -114,24 +113,24 @@ namespace AdSecGH.Components
       double util = uls.LoadUtilisation.As(RatioUnit.DecimalFraction);
       DA.SetData(1, util);
       if (util > 1)
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Utilisation is above 1!");
+        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Utilisation is above 1!");
 
       IDeformation ulsDeformationResult = uls.Deformation;
       DA.SetData(2, new Vector3d(
-          ulsDeformationResult.X.As(DefaultUnits.StrainUnitResult),
-          ulsDeformationResult.YY.As(DefaultUnits.CurvatureUnit),
-          ulsDeformationResult.ZZ.As(DefaultUnits.CurvatureUnit)));
+        ulsDeformationResult.X.As(DefaultUnits.StrainUnitResult),
+        ulsDeformationResult.YY.As(DefaultUnits.CurvatureUnit),
+        ulsDeformationResult.ZZ.As(DefaultUnits.CurvatureUnit)));
       double defUtil = uls.DeformationUtilisation.As(RatioUnit.DecimalFraction);
       DA.SetData(3, defUtil);
       if (defUtil > 1)
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Deformation utilisation is above 1!");
+        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Deformation utilisation is above 1!");
 
       List<GH_Interval> momentRanges = new List<GH_Interval>();
       foreach (IMomentRange mrng in uls.MomentRanges)
       {
         Interval interval = new Interval(
-            mrng.Min.As(DefaultUnits.MomentUnit),
-            mrng.Max.As(DefaultUnits.MomentUnit));
+          mrng.Min.As(DefaultUnits.MomentUnit),
+          mrng.Max.As(DefaultUnits.MomentUnit));
         momentRanges.Add(new GH_Interval(interval));
       }
       DA.SetDataList(4, momentRanges);

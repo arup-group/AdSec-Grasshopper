@@ -47,7 +47,7 @@ namespace AdSecGH.Components
     {
       string unitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
       pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Web thickness", GH_ParamAccess.item);
-      _mode = FoldMode.Constant;
+      this._mode = FoldMode.Constant;
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -105,14 +105,10 @@ namespace AdSecGH.Components
       // set selected item
       this.SelectedItems[i] = this.DropDownItems[i][j];
       if (i == 0)
-      {
         this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this.SelectedItems[i]);
-      }
       else
-      {
         this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this.SelectedItems[i]);
-      }
-      ToggleInput();
+      this.ToggleInput();
     }
 
     public override void UpdateUIFromSelectedItems()

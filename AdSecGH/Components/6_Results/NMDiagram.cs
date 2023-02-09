@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.Helpers;
-using OasysGH.UI;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;
 using OasysUnits;
@@ -16,121 +14,39 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
-  public class NMDiagram : GH_OasysComponent
+  public class NMDiagram : GH_OasysDropDownComponent
   {
+    private enum FoldMode
+    {
+      NM,
+      MM
+    }
+
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("21cd9e4c-6c85-4077-b575-1e04127f2998");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.N_M;
+    private AngleUnit _angleUnit = AngleUnit.Radian;
+    private ForceUnit _forceUnit = DefaultUnits.ForceUnit;
+    private FoldMode _mode = FoldMode.NM;
 
-    public NMDiagram()
-      : base("N-M Diagram", "N-M", "Calculates a force-moment (N-M) or moment-moment (M-M) interaction curve.",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat7())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
-    #endregion
-
-    #region Custom UI
-    //This region overrides the typical component layout
-    public override void CreateAttributes()
+    public NMDiagram() : base(
+      "N-M Diagram",
+      "N-M",
+      "Calculates a force-moment (N-M) or moment-moment (M-M) interaction curve.",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat7())
     {
-      if (first)
-      {
-        this.DropDownItems = new List<List<string>>();
-        selecteditems = new List<string>();
-
-        // type
-        List<string> types = new List<string>() { "N-M", "M-M" };
-        this.DropDownItems.Add(types);
-        selecteditems.Add(this.DropDownItems[0][0]);
-
-        // force
-        this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
-        selecteditems.Add(angleUnit.ToString());
-
-        IQuantity force = new Force(0, forceUnit);
-        forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-        IQuantity angle = new Angle(0, angleUnit);
-        angleUnitAbbreviation = string.Concat(angle.ToString().Where(char.IsLetter));
-
-        first = false;
-      }
-
-      m_attributes = new DropDownComponentAttributes(this, SetSelected, this.DropDownItems, selecteditems, spacerDescriptions);
-    }
-
-    public void SetSelected(int i, int j)
-    {
-      // change selected item
-      selecteditems[i] = this.DropDownItems[i][j];
-
-      if (i == 0)
-      {
-        switch (selecteditems[0])
-        {
-          case ("N-M"):
-            _mode = FoldMode.NM;
-            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle);
-            selecteditems[1] = angleUnit.ToString();
-            break;
-
-          case ("M-M"):
-            _mode = FoldMode.MM;
-            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
-            selecteditems[1] = forceUnit.ToString();
-            break;
-        }
-      }
-      else
-      {
-        switch (selecteditems[0])
-        {
-          case ("N-M"):
-            angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), selecteditems[i]);
-            break;
-          case ("M-M"):
-            forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), selecteditems[i]);
-            break;
-        }
-      }
-        // update name of inputs (to display unit on sliders)
-        (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-      ExpireSolution(true);
-      Params.OnParametersChanged();
-      this.OnDisplayExpired(true);
-    }
-    private void UpdateUIFromSelectedItems()
-    {
-      CreateAttributes();
-      (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-      ExpireSolution(true);
-      Params.OnParametersChanged();
-      this.OnDisplayExpired(true);
+      this.Hidden = false; // sets the initial state of the component to hidden
     }
     #endregion
 
     #region Input and output
-
-    // list of selected items
-    List<string> selecteditems;
-    // list of descriptions 
-    List<string> spacerDescriptions = new List<string>(new string[]
-    {
-            "Interaction",
-            "Measure"
-    });
-    private bool first = true;
-
-    private ForceUnit forceUnit = DefaultUnits.ForceUnit;
-    private AngleUnit angleUnit = AngleUnit.Radian;
-    string forceUnitAbbreviation;
-    string angleUnitAbbreviation;
-    #endregion
-
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
+      string angleUnitAbbreviation = Angle.GetAbbreviation(this._angleUnit);
       pManager.AddGenericParameter("Results", "Res", "AdSec Results to calculate interaction diagram from", GH_ParamAccess.item);
       pManager.AddGenericParameter("Moment Angle [" + angleUnitAbbreviation + "]", "A", "[Default 0] The moment angle, which must be in the range -180 degrees to +180 degrees. Angle of zero equals Nx-Myy diagram.", GH_ParamAccess.item);
       pManager[1].Optional = true;
@@ -139,15 +55,15 @@ namespace AdSecGH.Components
       Rectangle3d rect = new Rectangle3d(Plane.WorldXY, sz.As(DefaultUnits.LengthUnitGeometry), sz.As(DefaultUnits.LengthUnitGeometry));
       pManager.AddRectangleParameter("Plot", "R", "Rectangle for plot boundary", GH_ParamAccess.item, rect);
     }
+
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
       pManager.AddGenericParameter("N-M Curve", "NM", "AdSec Force-Moment (N-M) interaction diagram", GH_ParamAccess.item);
     }
+    #endregion
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
-      //AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "This component is WIP and currently does not place the NM diagram on an XY plane");
-
       // get solution input
       AdSecSolutionGoo solution = GetInput.Solution(this, DA, 0);
 
@@ -155,14 +71,14 @@ namespace AdSecGH.Components
       Rectangle3d rect = new Rectangle3d();
       if (!DA.GetData(2, ref rect))
       {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[2].NickName + " to Rectangle");
+        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[2].NickName + " to Rectangle");
         return;
       }
 
-      if (_mode == FoldMode.NM)
+      if (this._mode == FoldMode.NM)
       {
         // get angle input
-        Angle angle = (Angle)Input.UnitNumber(this, DA, 1, angleUnit, true);
+        Angle angle = (Angle)Input.UnitNumber(this, DA, 1, _angleUnit, true);
 
         // get loadcurve
         Oasys.Collections.IList<Oasys.AdSec.Mesh.ILoadCurve> loadCurve = solution.Value.Strength.GetForceMomentInteractionCurve(angle);
@@ -173,7 +89,7 @@ namespace AdSecGH.Components
       else
       {
         // get force input
-        Force force = (Force)Input.UnitNumber(this, DA, 1, forceUnit, true);
+        Force force = (Force)Input.UnitNumber(this, DA, 1, _forceUnit, true);
 
         // get loadcurve
         Oasys.Collections.IList<Oasys.AdSec.Mesh.ILoadCurve> loadCurve = solution.Value.Strength.GetMomentMomentInteractionCurve(force);
@@ -190,61 +106,88 @@ namespace AdSecGH.Components
       }
     }
 
-    private enum FoldMode
+    public override void InitialiseDropdowns()
     {
-      NM,
-      MM
+      this.SpacerDescriptions = new List<string>(new string[] {
+        "Interaction",
+        "Measure"
+      });
+
+      this.DropDownItems = new List<List<string>>();
+      this.SelectedItems = new List<string>();
+
+      // type
+      this.DropDownItems.Add(new List<string>() { "N-M", "M-M" });
+      this.SelectedItems.Add(this.DropDownItems[0][0]);
+
+      // force
+      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
+      this.SelectedItems.Add(_angleUnit.ToString());
+
+      this.IsInitialised = true;
     }
-    private FoldMode _mode = FoldMode.NM;
+
+    public override void SetSelected(int i, int j)
+    {
+      this.SelectedItems[i] = this.DropDownItems[i][j];
+
+      if (i == 0)
+      {
+        switch (this.SelectedItems[0])
+        {
+          case ("N-M"):
+            _mode = FoldMode.NM;
+            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle);
+            this.SelectedItems[1] = _angleUnit.ToString();
+            break;
+
+          case ("M-M"):
+            _mode = FoldMode.MM;
+            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
+            this.SelectedItems[1] = _forceUnit.ToString();
+            break;
+        }
+      }
+      else
+      {
+        switch (this.SelectedItems[0])
+        {
+          case ("N-M"):
+            _angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this.SelectedItems[i]);
+            break;
+          case ("M-M"):
+            _forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[i]);
+            break;
+        }
+      }
+      base.UpdateUI();
+    }
 
     #region (de)serialization
     public override bool Write(GH_IO.Serialization.GH_IWriter writer)
     {
-      Helpers.DeSerialization.writeDropDownComponents(ref writer, this.DropDownItems, selecteditems, spacerDescriptions);
-      writer.SetString("force", forceUnit.ToString());
-      writer.SetString("angle", angleUnit.ToString());
+      writer.SetString("force", this._forceUnit.ToString());
+      writer.SetString("angle", this._angleUnit.ToString());
       return base.Write(writer);
     }
+
     public override bool Read(GH_IO.Serialization.GH_IReader reader)
     {
-      Helpers.DeSerialization.readDropDownComponents(ref reader, ref this.DropDownItems, ref selecteditems, ref spacerDescriptions);
-
-      forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), reader.GetString("force"));
-      angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), reader.GetString("angle"));
-
-      UpdateUIFromSelectedItems();
-
-      first = false;
+      this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), reader.GetString("force"));
+      this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), reader.GetString("angle"));
       return base.Read(reader);
     }
-
-    bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
-    bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
-    IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
-    {
-      return null;
-    }
-    bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
-    {
-      return false;
-    }
     #endregion
-    #region IGH_VariableParameterComponent null implementation
-    void IGH_VariableParameterComponent.VariableParameterMaintenance()
-    {
-      if (selecteditems == null) return;
 
-      switch (selecteditems[0])
+    public override void VariableParameterMaintenance()
+    {
+      if (this.SelectedItems == null)
+        return;
+
+      switch (this.SelectedItems[0])
       {
         case ("N-M"):
-          IQuantity angle = new Angle(0, angleUnit);
-          angleUnitAbbreviation = string.Concat(angle.ToString().Where(char.IsLetter));
+          string angleUnitAbbreviation = Angle.GetAbbreviation(this._angleUnit);
           Params.Input[1].Name = "Moment Angle [" + angleUnitAbbreviation + "]";
           Params.Input[1].NickName = "A";
           Params.Input[1].Description = "[Default 0] The moment angle, which must be in the range -180 degrees to +180 degrees. Angle of zero equals Nx-Myy diagram.";
@@ -253,8 +196,7 @@ namespace AdSecGH.Components
           Params.Output[0].Description = "AdSec Force-Moment (N-M) interaction diagram";
           break;
         case ("M-M"):
-          IQuantity force = new Force(0, forceUnit);
-          forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
+          string forceUnitAbbreviation = Force.GetAbbreviation(this._forceUnit);
           Params.Input[1].Name = "Axial Force [" + forceUnitAbbreviation + "]";
           Params.Input[1].NickName = "F";
           Params.Input[1].Description = "[Default 0] The axial force to calculate the moment-moment diagram for.";
@@ -264,7 +206,5 @@ namespace AdSecGH.Components
           break;
       }
     }
-    #endregion
-
   }
 }

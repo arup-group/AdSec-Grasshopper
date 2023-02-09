@@ -20,29 +20,24 @@ namespace AdSecGH.Components
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.StressStrainPt;
+    private StrainUnit _strainUnit = DefaultUnits.StrainUnitResult;
+    private PressureUnit _stressUnit = DefaultUnits.StressUnitResult;
 
-    public CreateStressStrainPoint()
-      : base("Create StressStrainPt", "StressStrainPt", "Create a Stress Strain Point for AdSec Stress Strain Curve",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat1())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
-    #endregion
-
-    protected override void SolveInstance(IGH_DataAccess DA)
+    public CreateStressStrainPoint() : base("Create StressStrainPt",
+      "StressStrainPt",
+      "Create a Stress Strain Point for AdSec Stress Strain Curve",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat1())
     {
-      // create new point
-      AdSecStressStrainPointGoo pt = new AdSecStressStrainPointGoo(
-          (Pressure)Input.UnitNumber(this, DA, 1, StressUnit),
-          (Strain)Input.UnitNumber(this, DA, 0, StrainUnit));
-
-      DA.SetData(0, pt);
+      this.Hidden = false; // sets the initial state of the component to hidden
     }
+    #endregion
 
     #region Input and output
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
-      string strainUnitAbbreviation = Strain.GetAbbreviation(this.StrainUnit);
-      string stressUnitAbbreviation = Pressure.GetAbbreviation(this.StressUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(this._strainUnit);
+      string stressUnitAbbreviation = Pressure.GetAbbreviation(this._stressUnit);
       pManager.AddGenericParameter("Strain [" + strainUnitAbbreviation + "]", "ε", "Value for strain (X-axis)", GH_ParamAccess.item);
       pManager.AddGenericParameter("Stress [" + stressUnitAbbreviation + "]", "σ", "Value for stress (Y-axis)", GH_ParamAccess.item);
     }
@@ -53,9 +48,17 @@ namespace AdSecGH.Components
     }
     #endregion
 
+    protected override void SolveInstance(IGH_DataAccess DA)
+    {
+      // create new point
+      AdSecStressStrainPointGoo pt = new AdSecStressStrainPointGoo(
+        (Pressure)Input.UnitNumber(this, DA, 1, this._stressUnit),
+        (Strain)Input.UnitNumber(this, DA, 0, this._strainUnit));
+
+      DA.SetData(0, pt);
+    }
+
     #region Custom UI
-    private StrainUnit StrainUnit = DefaultUnits.StrainUnitResult;
-    private PressureUnit StressUnit = DefaultUnits.StressUnitResult;
     public override void InitialiseDropdowns()
     {
       this.SpacerDescriptions = new List<string>(new string[] {
@@ -66,29 +69,26 @@ namespace AdSecGH.Components
       this.DropDownItems = new List<List<string>>();
       this.SelectedItems = new List<string>();
 
-      // strainUnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain)
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-      this.SelectedItems.Add(StrainUnit.ToString());
+      this.SelectedItems.Add(this._strainUnit.ToString());
 
-      // pressure
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
-      this.SelectedItems.Add(StressUnit.ToString());
+      this.SelectedItems.Add(this._stressUnit.ToString());
 
       this.IsInitialised = true;
     }
 
     public override void SetSelected(int i, int j)
     {
-      // change selected item
       this.SelectedItems[i] = this.DropDownItems[i][j];
 
       switch (i)
       {
         case 0:
-          StrainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[i]);
+          this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[i]);
           break;
         case 1:
-          StressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
+          this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
           break;
       }
       base.UpdateUI();
@@ -96,21 +96,19 @@ namespace AdSecGH.Components
 
     public override void UpdateUIFromSelectedItems()
     {
-      this.StrainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[0]);
-      this.StressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[1]);
+      this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[0]);
+      this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[1]);
 
       base.UpdateUIFromSelectedItems();
     }
     #endregion
 
-    #region IGH_VariableParameterComponent null implementation
-    void IGH_VariableParameterComponent.VariableParameterMaintenance()
+    public override void VariableParameterMaintenance()
     {
-      string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnit);
-      string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(this._strainUnit);
+      string stressUnitAbbreviation = Pressure.GetAbbreviation(this._stressUnit);
       Params.Input[0].Name = "Strain [" + strainUnitAbbreviation + "]";
       Params.Input[1].Name = "Stress [" + stressUnitAbbreviation + "]";
     }
-    #endregion
   }
 }

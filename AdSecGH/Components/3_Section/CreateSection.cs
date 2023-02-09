@@ -18,19 +18,17 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateSection;
 
-    public CreateSection()
-      : base("Create Section", "Section", "Create an AdSec Section",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat4())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
-    #endregion
-
-    #region Custom UI
-    //This region overrides the typical component layout
+    public CreateSection() : base("Create Section",
+      "Section",
+      "Create an AdSec Section",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat4())
+    {
+      this.Hidden = false; // sets the initial state of the component to hidden
+    }
     #endregion
 
     #region Input and output
-
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
       pManager.AddGenericParameter("Profile", "Pf", "AdSec Profile defining the Section solid boundary", GH_ParamAccess.item);
@@ -60,16 +58,12 @@ namespace AdSecGH.Components
       // 2 Rebars
       List<AdSecRebarGroup> reinforcements = new List<AdSecRebarGroup>();
       if (Params.Input[2].SourceCount > 0)
-      {
         reinforcements = GetInput.ReinforcementGroups(this, DA, 2, true);
-      }
 
       // 3 Subcomponents
       Oasys.Collections.IList<ISubComponent> subComponents = Oasys.Collections.IList<ISubComponent>.Create();
       if (Params.Input[3].SourceCount > 0)
-      {
         subComponents = GetInput.SubComponents(this, DA, 3, true);
-      }
 
       // create section
       AdSecSection section = new AdSecSection(profile.Profile, profile.LocalPlane, material, reinforcements, subComponents);
@@ -78,3 +72,4 @@ namespace AdSecGH.Components
     }
   }
 }
+

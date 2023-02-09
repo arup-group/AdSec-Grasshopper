@@ -22,15 +22,18 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.EditMaterial;
 
-    public EditMaterial()
-      : base("Edit Material", "MaterialEdit", "Modify AdSec Material",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat1())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
+    public EditMaterial() : base(
+      "Edit Material",
+      "MaterialEdit",
+      "Modify AdSec Material",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat1())
+    {
+      this.Hidden = false; // sets the initial state of the component to hiddens
+    }
     #endregion
 
     #region Input and output
-
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
       pManager.AddGenericParameter("Material", "Mat", "AdSet Material to Edit or get information from", GH_ParamAccess.item);
@@ -40,7 +43,6 @@ namespace AdSecGH.Components
       pManager.AddGenericParameter("SLS Comp. Crv", "S_C", "SLS Stress Strain Curve for Compression", GH_ParamAccess.item);
       pManager.AddGenericParameter("SLS Tens. Crv", "S_T", "SLS Stress Strain Curve for Tension", GH_ParamAccess.item);
       pManager.AddGenericParameter("Crack Calc Params", "CCP", "[Optional] Overwrite the Material's ConcreteCrackCalculationParameters", GH_ParamAccess.item);
-
       // make all but first input optional
       for (int i = 1; i < pManager.ParamCount; i++)
         pManager[i].Optional = true;
@@ -69,9 +71,7 @@ namespace AdSecGH.Components
 
         // 1 DesignCode
         if (Params.Input[1].SourceCount > 0)
-        {
           editMat.DesignCode = GetInput.AdSecDesignCode(this, DA, 1);
-        }
 
         bool rebuildCurves = false;
 
@@ -152,15 +152,14 @@ namespace AdSecGH.Components
         {
           if (ulsTensCrv.StressStrainCurve.FailureStrain.Value == 0)
           {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "ULS Stress Strain Curve for Tension has zero failure strain."
-                + System.Environment.NewLine + "The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "ULS Stress Strain Curve for Tension has zero failure strain." + System.Environment.NewLine + "The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
             IStressStrainCurve crv = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
             Tuple<Curve, List<Point3d>> tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, false);
             ulsTensCrv = new AdSecStressStrainCurveGoo(tuple.Item1, crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, tuple.Item2);
           }
           if (ulsCompCrv.StressStrainCurve.FailureStrain.Value == 0)
           {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "ULS Stress Strain Curve for Compression has zero failure strain.");
+            this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "ULS Stress Strain Curve for Compression has zero failure strain.");
             return;
           }
           ITensionCompressionCurve ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.StressStrainCurve, ulsCompCrv.StressStrainCurve);

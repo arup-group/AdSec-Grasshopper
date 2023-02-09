@@ -25,19 +25,18 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.StressStrainRebar;
 
-    public RebarStressStrain()
-      : base("Rebar Stress/Strain", "RSS", "Calculate the Rebar Stress/Strains in the Section for a given Load or Deformation.",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat7())
-    { this.Hidden = true; } // sets the initial state of the component to hidden
-    #endregion
-
-    #region Custom UI
-    //This region overrides the typical component layout
+    public RebarStressStrain() : base(
+      "Rebar Stress/Strain",
+      "RSS",
+      "Calculate the Rebar Stress/Strains in the Section for a given Load or Deformation.",
+      Ribbon.CategoryName.Name(),
+      Ribbon.SubCategoryName.Cat7())
+    {
+      this.Hidden = true; // sets the initial state of the component to hidden
+    }
     #endregion
 
     #region Input and output
-
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
       pManager.AddGenericParameter("Results", "Res", "AdSec Results to perform serviceability check on.", GH_ParamAccess.item);
@@ -46,14 +45,10 @@ namespace AdSecGH.Components
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
-      IQuantity length = new Length(0, DefaultUnits.LengthUnitGeometry);
-      string lengthUnitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
+      string lengthUnitAbbreviation = Length.GetAbbreviation(DefaultUnits.LengthUnitResult);
       string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
-      IQuantity stress = new Pressure(0, DefaultUnits.StressUnitResult);
-      string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
-
+      string stressUnitAbbreviation = Pressure.GetAbbreviation(DefaultUnits.StressUnitResult);
       pManager.AddGenericParameter("Position [" + lengthUnitAbbreviation + "]", "Vx", "Rebar position as 2D vertex in the section's local yz-plane ", GH_ParamAccess.list);
-
       pManager.AddGenericParameter("ULS Strain [" + strainUnitAbbreviation + "]", "εd", "ULS strain for each rebar position", GH_ParamAccess.list);
       pManager.AddGenericParameter("ULS Stress [" + stressUnitAbbreviation + "]", "σd", "ULS stress for each rebar position", GH_ParamAccess.list);
       pManager.AddGenericParameter("SLS Strain [" + strainUnitAbbreviation + "]", "εk", "SLS strain for each rebar position", GH_ParamAccess.list);
@@ -88,16 +83,15 @@ namespace AdSecGH.Components
         }
         else
         {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
+          this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
           return;
         }
       }
       else
       {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
+        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
         return;
       }
-
 
       // create flattened section to extract rebars
       ISection flat = null;
