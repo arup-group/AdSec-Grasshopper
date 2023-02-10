@@ -279,7 +279,7 @@ namespace AdSecGH.Parameters
       List<Curve> crvs = new List<Curve>();
       crvs.Add(profile.Value.ToPolylineCurve());
       crvs.AddRange(profile.VoidEdges.Select(x => x.ToPolylineCurve()));
-      return Brep.CreatePlanarBreps(crvs, RhinoDoc.ActiveDoc.ModelAbsoluteTolerance).First();
+      return Brep.CreatePlanarBreps(crvs, 0.001).First(); //TODO: use OasysUnits tolerance
     }
     private void CreateCurvesFromLinkGroup(IPerimeterLinkGroup linkGroup, ref List<Curve> linkEdges, Plane local)
     {
@@ -382,7 +382,7 @@ namespace AdSecGH.Parameters
         Circle edgeCurve = new Circle(localCenter, bars.BarBundle.Diameter.As(Units.LengthUnit) / 2);
         edgeCurves.Add(edgeCurve);
         List<Curve> crvs = new List<Curve>() { edgeCurve.ToNurbsCurve() };
-        rebarBreps.Add(Brep.CreatePlanarBreps(crvs, RhinoDoc.ActiveDoc.ModelRelativeTolerance).First());
+        rebarBreps.Add(Brep.CreatePlanarBreps(crvs, 0.001).First()); //TODO: use OasysUnits tolerance
       }
       return rebarBreps;
     }

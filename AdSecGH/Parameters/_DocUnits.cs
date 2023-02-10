@@ -35,14 +35,13 @@ namespace AdSecGH
     {
       get
       {
-        if (m_units == null || useRhinoLengthUnit)
-        {
+        if (m_units == null)
+          m_length = LengthUnit.Meter; //TODO: use OasysUnits
+        else if (useRhinoLengthUnit)
           m_length = GetRhinoLengthUnit(RhinoDoc.ActiveDoc.ModelUnitSystem);
-        }
         else
-        {
           m_length = m_units.BaseUnits.Length;
-        }
+        
         return m_length;
       }
       set
