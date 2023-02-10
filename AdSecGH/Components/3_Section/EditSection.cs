@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
@@ -12,7 +13,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
-  public class EditSection : GH_OasysComponent
+    public class EditSection : GH_OasysComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -25,8 +26,8 @@ namespace AdSecGH.Components
       "EditSection",
       "EditSect",
       "Edit an AdSec Section",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat4())
+      CategoryName.Name(),
+      SubCategoryName.Cat4())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }

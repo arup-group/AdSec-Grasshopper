@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using OasysGH;
@@ -14,7 +15,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
-  public class NMDiagram : GH_OasysDropDownComponent
+    public class NMDiagram : GH_OasysDropDownComponent
   {
     private enum FoldMode
     {
@@ -36,8 +37,8 @@ namespace AdSecGH.Components
       "N-M Diagram",
       "N-M",
       "Calculates a force-moment (N-M) or moment-moment (M-M) interaction curve.",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat7())
+      CategoryName.Name(),
+      SubCategoryName.Cat7())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }

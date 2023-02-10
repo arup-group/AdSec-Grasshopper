@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
@@ -16,7 +17,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  public class CreateReinforcementLayout : GH_OasysDropDownComponent
+    public class CreateReinforcementLayout : GH_OasysDropDownComponent
   {
     private enum FoldMode
     {
@@ -40,8 +41,8 @@ namespace AdSecGH.Components
       "Create Reinforcement Layout",
       "Reinforcement Layout",
       "Create a Reinforcement Layout for an AdSec Section",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat3())
+      CategoryName.Name(),
+      SubCategoryName.Cat3())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }

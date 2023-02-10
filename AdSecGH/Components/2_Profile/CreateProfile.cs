@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
@@ -22,7 +23,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
-  public class CreateProfile : GH_OasysDropDownComponent
+    public class CreateProfile : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -31,7 +32,7 @@ namespace AdSecGH.Components
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateProfile;
 
-    public CreateProfile() : base("Create Profile", "Profile", "Create Profile for AdSec Section", Ribbon.CategoryName.Name(), Ribbon.SubCategoryName.Cat2())
+    public CreateProfile() : base("Create Profile", "Profile", "Create Profile for AdSec Section", CategoryName.Name(), SubCategoryName.Cat2())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }

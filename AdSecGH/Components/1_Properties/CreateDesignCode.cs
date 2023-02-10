@@ -76,18 +76,6 @@ namespace AdSecGH.Components
       }
       designCodeGroups = tempList;
 
-      if (this.SelectedItems == null)
-      {
-        // create a new list of selected items and add the first material type
-        this.SelectedItems = new List<string>();
-        this.SelectedItems.Add(designCodeGroups[4]);
-      }
-      if (this.DropDownItems == null)
-      {
-        // create a new list of selected items and add the first material type
-        this.DropDownItems = new List<List<string>>();
-        this.DropDownItems.Add(designCodeGroups);
-      }
       if (this.DropDownItems.Count == 1)
       {
         Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.Profiles;
@@ -13,7 +14,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  public class CreateProfileFlange : GH_OasysDropDownComponent
+    public class CreateProfileFlange : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -27,8 +28,8 @@ namespace AdSecGH.Components
       "Create Flange",
       "Flange",
       "Create a Flange for AdSec Profile",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat2())
+      CategoryName.Name(),
+      SubCategoryName.Cat2())
     {
       this.Hidden = true; // sets the initial state of the component to hidden
     }

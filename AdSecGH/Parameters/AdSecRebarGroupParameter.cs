@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using AdSecGH.Helpers.GH;
 using Grasshopper.Kernel;
 
 namespace AdSecGH.Parameters
 {
-  public class AdSecRebarGroupParameter : GH_PersistentParam<AdSecRebarGroupGoo>
+    public class AdSecRebarGroupParameter : GH_PersistentParam<AdSecRebarGroupGoo>
   {
     public override Guid ComponentGuid => new Guid("6d666276-61f6-47ce-81bc-9fabdd39edc2");
     public override GH_Exposure Exposure => GH_Exposure.primary;
@@ -31,8 +32,8 @@ namespace AdSecGH.Parameters
       "RebarGroup",
       "RbG",
       "AdSec RebarGroup Parameter",
-      Components.Ribbon.CategoryName.Name(),
-      Components.Ribbon.SubCategoryName.Cat9()))
+      CategoryName.Name(),
+      SubCategoryName.Cat9()))
     {
     }
 

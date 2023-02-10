@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
@@ -16,7 +17,7 @@ using OasysUnits;
 
 namespace AdSecGH.Components
 {
-  public class FlattenRebar : GH_OasysComponent
+    public class FlattenRebar : GH_OasysComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -29,8 +30,8 @@ namespace AdSecGH.Components
       "FlattenRebars",
       "FRb",
       "Flatten all rebars in a section into single bars.",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat4())
+      CategoryName.Name(),
+      SubCategoryName.Cat4())
     {
       this.Hidden = true; // sets the initial state of the component to hidden
     }

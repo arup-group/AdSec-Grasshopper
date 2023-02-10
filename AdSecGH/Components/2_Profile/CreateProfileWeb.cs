@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
@@ -15,7 +16,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  public class CreateProfileWeb : GH_OasysDropDownComponent
+    public class CreateProfileWeb : GH_OasysDropDownComponent
   {
     private enum FoldMode
     {
@@ -35,8 +36,8 @@ namespace AdSecGH.Components
       "Create Web",
       "Web",
       "Create a Web for AdSec Profile",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat2())
+      CategoryName.Name(),
+      SubCategoryName.Cat2())
     {
       this.Hidden = true; // sets the initial state of the component to hidden
     }

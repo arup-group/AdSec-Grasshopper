@@ -1,5 +1,6 @@
 ﻿using System;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
@@ -10,7 +11,7 @@ using OasysUnits;
 
 namespace AdSecGH.Components
 {
-  public class CreateSubcomponent : GH_OasysComponent
+    public class CreateSubcomponent : GH_OasysComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -23,8 +24,8 @@ namespace AdSecGH.Components
       "SubComponent",
       "SubComponent",
       "Create an AdSec Subcomponent from a Section",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat4())
+      CategoryName.Name(),
+      SubCategoryName.Cat4())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }

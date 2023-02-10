@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec.Reinforcement;
@@ -18,7 +19,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  public class CreatePreLoad : GH_OasysDropDownComponent
+    public class CreatePreLoad : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -34,8 +35,8 @@ namespace AdSecGH.Components
       "Create Prestress",
       "Prestress",
       "Create an AdSec Prestress Load for Reinforcement Layout as either Preforce, Prestrain or Prestress",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat5())
+      CategoryName.Name(),
+      SubCategoryName.Cat5())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }

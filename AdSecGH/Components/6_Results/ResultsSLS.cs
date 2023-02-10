@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
@@ -15,7 +16,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
-  public class ResultsSLS : GH_OasysComponent
+    public class ResultsSLS : GH_OasysComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -28,8 +29,8 @@ namespace AdSecGH.Components
       "Serviceability Result",
       "SLS",
       "Performs serviceability analysis (SLS), for a given Load or Deformation.",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat7())
+      CategoryName.Name(),
+      SubCategoryName.Cat7())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }

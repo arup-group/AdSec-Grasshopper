@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.Profiles;
@@ -14,7 +15,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  public class ProfileProperties : GH_OasysComponent
+    public class ProfileProperties : GH_OasysComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -26,8 +27,8 @@ namespace AdSecGH.Components
     public ProfileProperties() : base("Profile Properties",
       "Prop",
       "Properties of an AdSec Profile",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat2())
+      CategoryName.Name(),
+      SubCategoryName.Cat2())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }

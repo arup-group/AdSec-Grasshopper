@@ -13,10 +13,11 @@ using OasysUnits;
 using OasysGH.Parameters;
 using OasysGH.Units;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 
 namespace AdSecGH.Components
 {
-  public class RebarStressStrain : GH_OasysComponent
+    public class RebarStressStrain : GH_OasysComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -29,8 +30,8 @@ namespace AdSecGH.Components
       "Rebar Stress/Strain",
       "RSS",
       "Calculate the Rebar Stress/Strains in the Section for a given Load or Deformation.",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat7())
+      CategoryName.Name(),
+      SubCategoryName.Cat7())
     {
       this.Hidden = true; // sets the initial state of the component to hidden
     }

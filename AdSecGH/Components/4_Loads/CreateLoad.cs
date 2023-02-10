@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
@@ -14,7 +15,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  public class CreateLoad : GH_OasysDropDownComponent
+    public class CreateLoad : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -29,7 +30,7 @@ namespace AdSecGH.Components
       "Create" + AdSecLoadGoo.Name.Replace(" ", string.Empty),
       AdSecLoadGoo.Name.Replace(" ", string.Empty),
       "Create an" + AdSecLoadGoo.Description + " from an axial force and biaxial moments",
-      Ribbon.CategoryName.Name(), Ribbon.SubCategoryName.Cat5())
+      CategoryName.Name(), SubCategoryName.Cat5())
     {
       this.Hidden = true; // sets the initial state of the component to hidden
     }

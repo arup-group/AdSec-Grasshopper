@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using AdSecGH.Helpers.GH;
 using Grasshopper.Kernel;
 
 namespace AdSecGH.Parameters
 {
-  public class AdSecDesignCodeParameter : GH_PersistentParam<AdSecDesignCodeGoo>
+    public class AdSecDesignCodeParameter : GH_PersistentParam<AdSecDesignCodeGoo>
   {
     public override Guid ComponentGuid => new Guid("6d656276-61f6-47ce-81bc-9fabdd39edc2");
     public override GH_Exposure Exposure => GH_Exposure.primary | GH_Exposure.obscure;
@@ -31,8 +32,8 @@ namespace AdSecGH.Parameters
       "DesignCode",
       "Code",
       "AdSec DesignCode Parameter",
-      Components.Ribbon.CategoryName.Name(),
-      Components.Ribbon.SubCategoryName.Cat9()))
+      CategoryName.Name(),
+      SubCategoryName.Cat9()))
     {
     }
 

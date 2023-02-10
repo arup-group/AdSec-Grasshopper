@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
@@ -13,7 +14,7 @@ using OasysGH.UI;
 
 namespace AdSecGH.Components
 {
-  public class SaveSVG : GH_OasysDropDownComponent
+    public class SaveSVG : GH_OasysDropDownComponent
   {
     static string imageSVG;
 
@@ -30,8 +31,8 @@ namespace AdSecGH.Components
       "Section SVG",
       "SVG",
       "Creates a SVG file from an AdSec Section",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat0())
+      CategoryName.Name(),
+      SubCategoryName.Cat0())
     {
       this.Hidden = true; // sets the initial state of the component to hidden
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
@@ -14,7 +15,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
-  public class OpenModel : GH_OasysDropDownComponent
+    public class OpenModel : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -29,8 +30,8 @@ namespace AdSecGH.Components
       "Open Model",
       "Open",
       "Open an existing AdSec .ads file",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat0())
+      CategoryName.Name(),
+      SubCategoryName.Cat0())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }

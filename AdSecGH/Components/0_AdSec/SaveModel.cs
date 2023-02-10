@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
@@ -14,7 +15,7 @@ using OasysGH.UI;
 
 namespace AdSecGH.Components
 {
-  public class SaveModel : GH_OasysDropDownComponent
+    public class SaveModel : GH_OasysDropDownComponent
   {
     static string _jsonString;
     #region Name and Ribbon Layout
@@ -33,8 +34,8 @@ namespace AdSecGH.Components
       "Save AdSec",
       "Save",
       "Saves your AdSec Section with loads from this parametric nightmare",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat0())
+      CategoryName.Name(),
+      SubCategoryName.Cat0())
     {
       this.Hidden = true; // sets the initial state of the component to hidden
     }
