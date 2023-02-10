@@ -14,7 +14,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  public class CreateConcreteCrackCalculationParameters : GH_OasysDropDownComponent
+  public class CreateConcreteCrackParameters : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -25,7 +25,7 @@ namespace AdSecGH.Components
     private PressureUnit _stressUnit = DefaultUnits.StressUnitResult;
     private PressureUnit _strengthUnit = DefaultUnits.MaterialStrengthUnit;
 
-    public CreateConcreteCrackCalculationParameters() : base(
+    public CreateConcreteCrackParameters() : base(
       "Create CrackCalcParams",
       "CrackCalcParams",
       "Create Concrete Crack Calculation Parameters for AdSec Material",
@@ -93,11 +93,11 @@ namespace AdSecGH.Components
 
       // pressure E
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
-      this.SelectedItems.Add(_strengthUnit.ToString());
+      this.SelectedItems.Add(Pressure.GetAbbreviation(this._strengthUnit));
 
       // pressure stress
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
-      this.SelectedItems.Add(_strengthUnit.ToString());
+      this.SelectedItems.Add(Pressure.GetAbbreviation(this._strengthUnit));
 
       this.IsInitialised = true;
     }

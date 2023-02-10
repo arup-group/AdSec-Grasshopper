@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.Helpers;
+using OasysGH.Units;
+using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
-using OasysGH.Units.Helpers;
-using OasysGH.Units;
-using OasysGH.Helpers;
-using AdSecGH.Helpers;
 
 namespace AdSecGH.Components
 {
@@ -28,9 +28,6 @@ namespace AdSecGH.Components
     private StrainUnit _strainUnit = DefaultUnits.StrainUnitResult;
     private PressureUnit _stressUnit = DefaultUnits.StressUnitResult;
     private AdSecStressStrainCurveGoo.StressStrainCurveType _mode = AdSecStressStrainCurveGoo.StressStrainCurveType.Linear;
-
-    // ???
-    private bool comingFromSave = false;
 
     public CreateStressStrainCurve() : base(
       "Create StressStrainCrv",
@@ -175,65 +172,65 @@ namespace AdSecGH.Components
         switch (j)
         {
           case 0:
-            Mode0Clicked();
+            this.Mode0Clicked();
             break;
           case 1:
-            Mode1Clicked();
+            this.Mode1Clicked();
             break;
           case 2:
             // add strain dropdown
             this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-            this.SelectedItems.Add(this._strainUnit.ToString());
+            this.SelectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
 
             // add stress dropdown
             this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
-            this.SelectedItems.Add(this._stressUnit.ToString());
+            this.SelectedItems.Add(Pressure.GetAbbreviation(this._stressUnit));
 
-            Mode2Clicked();
+            this.Mode2Clicked();
             break;
           case 3:
-            Mode3Clicked();
+            this.Mode3Clicked();
             break;
           case 4:
             // add strain dropdown
             //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-            this.SelectedItems.Add(this._strainUnit.ToString());
+            this.SelectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
 
             // add pressure dropdown
             //this.DropDownItems.Add(Enum.GetNames(typeof(PressureUnit)).ToList());
             this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
-            this.SelectedItems.Add(this._stressUnit.ToString());
+            this.SelectedItems.Add(Pressure.GetAbbreviation(this._stressUnit));
 
-            Mode4Clicked();
+            this.Mode4Clicked();
             break;
           case 5:
-            Mode5Clicked();
+            this.Mode5Clicked();
             break;
           case 6:
             // add strain dropdown
             //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-            this.SelectedItems.Add(this._strainUnit.ToString());
+            this.SelectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
 
-            Mode6Clicked();
+            this.Mode6Clicked();
             break;
           case 7:
-            Mode7Clicked();
+            this.Mode7Clicked();
             break;
           case 8:
             // add strain dropdown
             //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-            this.SelectedItems.Add(this._strainUnit.ToString());
-            Mode8Clicked();
+            this.SelectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
+            this.Mode8Clicked();
             break;
           case 9:
             // add strain dropdown
             //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-            this.SelectedItems.Add(this._strainUnit.ToString());
-            Mode9Clicked();
+            this.SelectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
+            this.Mode9Clicked();
             break;
         }
       }
@@ -256,35 +253,35 @@ namespace AdSecGH.Components
     {
       switch (this._mode)
       {
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)0:
-          Mode0Clicked();
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear:
+          this.Mode0Clicked(true);
           break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)1:
-          Mode1Clicked();
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit:
+          this.Mode1Clicked(true);
           break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)2:
-          Mode2Clicked();
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
+          this.Mode2Clicked(true);
           break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)3:
-          Mode3Clicked();
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
+          this.Mode3Clicked(true);
           break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)4:
-          Mode4Clicked();
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
+          this.Mode4Clicked(true);
           break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)5:
-          Mode5Clicked();
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
+          this.Mode5Clicked(true);
           break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)6:
-          Mode6Clicked();
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
+          this.Mode6Clicked(true);
           break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)7:
-          Mode7Clicked();
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
+          this.Mode7Clicked(true);
           break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)8:
-          Mode8Clicked();
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics:
+          this.Mode8Clicked(true);
           break;
-        case (AdSecStressStrainCurveGoo.StressStrainCurveType)9:
-          Mode9Clicked();
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
+          this.Mode9Clicked(true);
           break;
       }
       base.UpdateUIFromSelectedItems();
@@ -292,209 +289,209 @@ namespace AdSecGH.Components
     #endregion
 
     #region menu override
-    private void Mode0Clicked()
+    private void Mode0Clicked(bool forceUpdate = false)
     {
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)0)
-        if (!comingFromSave) { return; }
+      if (this._mode != AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear || forceUpdate)
+      {
+        bool cleanAll = false;
+        if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined)
+          cleanAll = true;
 
-      bool cleanAll = false;
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)4)
-        cleanAll = true;
+        this.RecordUndoEvent("Changed dropdown");
+        this._mode = AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear;
 
-      RecordUndoEvent("Changed dropdown");
-      this._mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)0;
-
-      //remove input parameters
-      int i = cleanAll ? 0 : 1;
-      while (Params.Input.Count > i)
-        Params.UnregisterInputParameter(Params.Input[i], true);
-      while (Params.Input.Count != 2)
-        Params.RegisterInputParam(new Param_GenericObject());
+        //remove input parameters
+        int i = cleanAll ? 0 : 1;
+        while (this.Params.Input.Count > i)
+          this.Params.UnregisterInputParameter(this.Params.Input[i], true);
+        while (this.Params.Input.Count != 2)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+      }
     }
 
-    private void Mode1Clicked()
+    private void Mode1Clicked(bool forceUpdate = false)
     {
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)1)
-        if (!comingFromSave) { return; }
+      if (this._mode != AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit || forceUpdate)
+      {
+        bool cleanAll = false;
+        if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined)
+          cleanAll = true;
 
-      bool cleanAll = false;
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)4)
-        cleanAll = true;
+        this.RecordUndoEvent("Changed dropdown");
+        this._mode = AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit;
 
-      RecordUndoEvent("Changed dropdown");
-      _mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)1;
-
-      //remove input parameters
-      int i = cleanAll ? 0 : 1;
-      while (Params.Input.Count > i)
-        Params.UnregisterInputParameter(Params.Input[i], true);
-      if (cleanAll)
-        Params.RegisterInputParam(new Param_GenericObject());
+        //remove input parameters
+        int i = cleanAll ? 0 : 1;
+        while (this.Params.Input.Count > i)
+          this.Params.UnregisterInputParameter(this.Params.Input[i], true);
+        if (cleanAll)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+      }
     }
 
-    private void Mode2Clicked()
+    private void Mode2Clicked(bool forceUpdate = false)
     {
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)2)
-        if (!comingFromSave) { return; }
+      if (this._mode != AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode || forceUpdate)
+      {
+        bool cleanAll = false;
+        if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined)
+          cleanAll = true;
 
-      bool cleanAll = false;
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)4)
-        cleanAll = true;
+        this.RecordUndoEvent("Changed dropdown");
+        this._mode = AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode;
 
-      RecordUndoEvent("Changed dropdown");
-      this._mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)2;
-
-      //remove input parameters
-      int i = cleanAll ? 0 : 1;
-      while (Params.Input.Count > i)
-        Params.UnregisterInputParameter(Params.Input[i], true);
-      if (cleanAll)
-        Params.RegisterInputParam(new Param_GenericObject());
-      while (Params.Input.Count != 3)
-        Params.RegisterInputParam(new Param_GenericObject());
+        //remove input parameters
+        int i = cleanAll ? 0 : 1;
+        while (this.Params.Input.Count > i)
+          this.Params.UnregisterInputParameter(this.Params.Input[i], true);
+        if (cleanAll)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+        while (this.Params.Input.Count != 3)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+      }
     }
 
-    private void Mode3Clicked()
+    private void Mode3Clicked(bool forceUpdate = false)
     {
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)3)
-        if (!comingFromSave) { return; }
+      if (this._mode != AdSecStressStrainCurveGoo.StressStrainCurveType.Linear || forceUpdate)
+      {
+        bool cleanAll = false;
+        if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined)
+          cleanAll = true;
 
-      bool cleanAll = false;
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)4)
-        cleanAll = true;
+        this.RecordUndoEvent("Changed dropdown");
+        this._mode = AdSecStressStrainCurveGoo.StressStrainCurveType.Linear;
 
-      RecordUndoEvent("Changed dropdown");
-      this._mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)3;
-
-      //remove input parameters
-      int i = cleanAll ? 0 : 1;
-      while (Params.Input.Count > i)
-        Params.UnregisterInputParameter(Params.Input[i], true);
-      if (cleanAll)
-        Params.RegisterInputParam(new Param_GenericObject());
+        //remove input parameters
+        int i = cleanAll ? 0 : 1;
+        while (this.Params.Input.Count > i)
+          this.Params.UnregisterInputParameter(this.Params.Input[i], true);
+        if (cleanAll)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+      }
     }
 
-    private void Mode4Clicked()
+    private void Mode4Clicked(bool forceUpdate = false)
     {
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)4)
-        if (!comingFromSave) { return; }
+      if (this._mode != AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined || forceUpdate)
+      {
+        this.RecordUndoEvent("Changed dropdown");
+        this._mode = AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined;
 
-      RecordUndoEvent("Changed dropdown");
-      this._mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)4;
-
-      //remove input parameters
-      while (Params.Input.Count > 0)
-        Params.UnregisterInputParameter(Params.Input[0], true);
-      while (Params.Input.Count != 4)
-        Params.RegisterInputParam(new Param_GenericObject());
+        //remove input parameters
+        while (this.Params.Input.Count > 0)
+          this.Params.UnregisterInputParameter(this.Params.Input[0], true);
+        while (this.Params.Input.Count != 4)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+      }
     }
 
-    private void Mode5Clicked()
+    private void Mode5Clicked(bool forceUpdate = false)
     {
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)5)
-        if (!comingFromSave) { return; }
+      if (this._mode != AdSecStressStrainCurveGoo.StressStrainCurveType.Mander || forceUpdate)
+      {
+        bool cleanAll = false;
+        if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined)
+          cleanAll = true;
 
-      bool cleanAll = false;
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)4)
-        cleanAll = true;
+        this.RecordUndoEvent("Changed dropdown");
+        this._mode = AdSecStressStrainCurveGoo.StressStrainCurveType.Mander;
 
-      RecordUndoEvent("Changed dropdown");
-      this._mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)5;
-
-      //remove input parameters
-      int i = cleanAll ? 0 : 1;
-      while (Params.Input.Count > i)
-        Params.UnregisterInputParameter(Params.Input[i], true);
-      if (cleanAll)
-        Params.RegisterInputParam(new Param_GenericObject());
-      while (Params.Input.Count != 3)
-        Params.RegisterInputParam(new Param_GenericObject());
+        //remove input parameters
+        int i = cleanAll ? 0 : 1;
+        while (this.Params.Input.Count > i)
+          this.Params.UnregisterInputParameter(this.Params.Input[i], true);
+        if (cleanAll)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+        while (this.Params.Input.Count != 3)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+      }
     }
 
-    private void Mode6Clicked()
+    private void Mode6Clicked(bool forceUpdate = false)
     {
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)6)
-        if (!comingFromSave) { return; }
+      if (this._mode != AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle || forceUpdate)
+      {
+        bool cleanAll = false;
+        if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined)
+          cleanAll = true;
 
-      bool cleanAll = false;
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)4)
-        cleanAll = true;
+        this.RecordUndoEvent("Changed dropdown");
+        this._mode = AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle;
 
-      RecordUndoEvent("Changed dropdown");
-      this._mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)6;
-
-      //remove input parameters
-      int i = cleanAll ? 0 : 1;
-      while (Params.Input.Count > i)
-        Params.UnregisterInputParameter(Params.Input[i], true);
-      if (cleanAll)
-        Params.RegisterInputParam(new Param_GenericObject());
-      while (Params.Input.Count != 2)
-        Params.RegisterInputParam(new Param_GenericObject());
+        //remove input parameters
+        int i = cleanAll ? 0 : 1;
+        while (this.Params.Input.Count > i)
+          this.Params.UnregisterInputParameter(this.Params.Input[i], true);
+        if (cleanAll)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+        while (this.Params.Input.Count != 2)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+      }
     }
 
-    private void Mode7Clicked()
+    private void Mode7Clicked(bool forceUpdate = false)
     {
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)7)
-        if (!comingFromSave) { return; }
+      if (this._mode != AdSecStressStrainCurveGoo.StressStrainCurveType.Park || forceUpdate)
+      {
+        bool cleanAll = false;
+        if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined)
+          cleanAll = true;
 
-      bool cleanAll = false;
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)4)
-        cleanAll = true;
+        this.RecordUndoEvent("Changed dropdown");
+        this._mode = AdSecStressStrainCurveGoo.StressStrainCurveType.Park;
 
-      RecordUndoEvent("Changed dropdown");
-      this._mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)7;
-
-      //remove input parameters
-      int i = cleanAll ? 0 : 1;
-      while (Params.Input.Count > i)
-        Params.UnregisterInputParameter(Params.Input[i], true);
-      if (cleanAll)
-        Params.RegisterInputParam(new Param_GenericObject());
+        //remove input parameters
+        int i = cleanAll ? 0 : 1;
+        while (this.Params.Input.Count > i)
+          this.Params.UnregisterInputParameter(this.Params.Input[i], true);
+        if (cleanAll)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+      }
     }
 
-    private void Mode8Clicked()
+    private void Mode8Clicked(bool forceUpdate = false)
     {
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)8)
-        if (!comingFromSave) { return; }
+      if (this._mode != AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics || forceUpdate)
+      {
+        bool cleanAll = false;
+        if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined)
+          cleanAll = true;
 
-      bool cleanAll = false;
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)4)
-        cleanAll = true;
+        this.RecordUndoEvent("Changed dropdown");
+        this._mode = AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics;
 
-      RecordUndoEvent("Changed dropdown");
-      this._mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)8;
-
-      //remove input parameters
-      int i = cleanAll ? 0 : 1;
-      while (Params.Input.Count > i)
-        Params.UnregisterInputParameter(Params.Input[i], true);
-      if (cleanAll)
-        Params.RegisterInputParam(new Param_GenericObject());
-      while (Params.Input.Count != 2)
-        Params.RegisterInputParam(new Param_GenericObject());
+        //remove input parameters
+        int i = cleanAll ? 0 : 1;
+        while (this.Params.Input.Count > i)
+          this.Params.UnregisterInputParameter(this.Params.Input[i], true);
+        if (cleanAll)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+        while (this.Params.Input.Count != 2)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+      }
     }
 
-    private void Mode9Clicked()
+    private void Mode9Clicked(bool forceUpdate = false)
     {
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)9)
-        if (!comingFromSave) { return; }
+      if (this._mode != AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular || forceUpdate)
+      {
+        bool cleanAll = false;
+        if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined)
+          cleanAll = true;
 
-      bool cleanAll = false;
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)4)
-        cleanAll = true;
+        this.RecordUndoEvent("Changed dropdown");
+        this._mode = AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular;
 
-      RecordUndoEvent("Changed dropdown");
-      this._mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)9;
-
-      //remove input parameters
-      int i = cleanAll ? 0 : 1;
-      while (this.Params.Input.Count > i)
-        this.Params.UnregisterInputParameter(this.Params.Input[i], true);
-      if (cleanAll)
-        this.Params.RegisterInputParam(new Param_GenericObject());
-      while (this.Params.Input.Count != 2)
-        this.Params.RegisterInputParam(new Param_GenericObject());
+        //remove input parameters
+        int i = cleanAll ? 0 : 1;
+        while (this.Params.Input.Count > i)
+          this.Params.UnregisterInputParameter(this.Params.Input[i], true);
+        if (cleanAll)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+        while (this.Params.Input.Count != 2)
+          this.Params.RegisterInputParam(new Param_GenericObject());
+      }
     }
     #endregion
 
@@ -502,203 +499,200 @@ namespace AdSecGH.Components
     public override bool Write(GH_IO.Serialization.GH_IWriter writer)
     {
       writer.SetString("mode", this._mode.ToString());
-      writer.SetString("strain_mode", this._strainUnit.ToString());
-      writer.SetString("stress_mode", this._stressUnit.ToString());
+      writer.SetString("strain", Strain.GetAbbreviation(this._strainUnit));
+      writer.SetString("stress", Pressure.GetAbbreviation(this._stressUnit));
       return base.Write(writer);
     }
 
     public override bool Read(GH_IO.Serialization.GH_IReader reader)
     {
-      this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), reader.GetString("strain_mode"));
-      this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), reader.GetString("stress_mode"));
-
       this._mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)Enum.Parse(typeof(AdSecStressStrainCurveGoo.StressStrainCurveType), reader.GetString("mode"));
-      comingFromSave = true;
-      comingFromSave = false;
+      this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), reader.GetString("strain"));
+      this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), reader.GetString("stress"));
       return base.Read(reader);
     }
     #endregion
 
     public override void VariableParameterMaintenance()
     {
-      string unitStressAbbreviation = Pressure.GetAbbreviation(_stressUnit);
-      string unitStrainAbbreviation = Strain.GetAbbreviation(_strainUnit);
+      string unitStressAbbreviation = Pressure.GetAbbreviation(this._stressUnit);
+      string unitStrainAbbreviation = Strain.GetAbbreviation(this._strainUnit);
 
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)0)
+      if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear)
       {
-        Params.Input[0].Name = "Yield Point";
-        Params.Input[0].NickName = "SPy";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Yield Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
+        this.Params.Input[0].Name = "Yield Point";
+        this.Params.Input[0].NickName = "SPy";
+        this.Params.Input[0].Description = "AdSec Stress Strain Point representing the Yield Point";
+        this.Params.Input[0].Access = GH_ParamAccess.item;
+        this.Params.Input[0].Optional = false;
 
-        Params.Input[1].Name = "Failure Point";
-        Params.Input[1].NickName = "SPu";
-        Params.Input[1].Description = "AdSec Stress Strain Point representing the Failure Point";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
+        this.Params.Input[1].Name = "Failure Point";
+        this.Params.Input[1].NickName = "SPu";
+        this.Params.Input[1].Description = "AdSec Stress Strain Point representing the Failure Point";
+        this.Params.Input[1].Access = GH_ParamAccess.item;
+        this.Params.Input[1].Optional = false;
       }
 
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)1)
+      else if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit)
       {
-        Params.Input[0].Name = "StressStrainPts";
-        Params.Input[0].NickName = "SPs";
-        Params.Input[0].Description = "AdSec Stress Strain Points representing the StressStrainCurve as a Polyline";
-        Params.Input[0].Access = GH_ParamAccess.list;
-        Params.Input[0].Optional = false;
+        this.Params.Input[0].Name = "StressStrainPts";
+        this.Params.Input[0].NickName = "SPs";
+        this.Params.Input[0].Description = "AdSec Stress Strain Points representing the StressStrainCurve as a Polyline";
+        this.Params.Input[0].Access = GH_ParamAccess.list;
+        this.Params.Input[0].Optional = false;
       }
 
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)2)
+      else if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode)
       {
-        Params.Input[0].Name = "Peak Point";
-        Params.Input[0].NickName = "SPt";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the FIB model's Peak Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
+        this.Params.Input[0].Name = "Peak Point";
+        this.Params.Input[0].NickName = "SPt";
+        this.Params.Input[0].Description = "AdSec Stress Strain Point representing the FIB model's Peak Point";
+        this.Params.Input[0].Access = GH_ParamAccess.item;
+        this.Params.Input[0].Optional = false;
 
         IQuantity quantityStress = new Pressure(0, _stressUnit);
         unitStressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
 
-        Params.Input[1].Name = "Initial Modus [" + unitStressAbbreviation + "]";
-        Params.Input[1].NickName = "Ei";
-        Params.Input[1].Description = "Initial Moduls from FIB model code";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
+        this.Params.Input[1].Name = "Initial Modus [" + unitStressAbbreviation + "]";
+        this.Params.Input[1].NickName = "Ei";
+        this.Params.Input[1].Description = "Initial Moduls from FIB model code";
+        this.Params.Input[1].Access = GH_ParamAccess.item;
+        this.Params.Input[1].Optional = false;
 
         unitStrainAbbreviation = Strain.GetAbbreviation(_strainUnit);
 
-        Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
-        Params.Input[2].NickName = "εu";
-        Params.Input[2].Description = "Failure strain from FIB model code";
-        Params.Input[2].Access = GH_ParamAccess.item;
-        Params.Input[2].Optional = false;
+        this.Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
+        this.Params.Input[2].NickName = "εu";
+        this.Params.Input[2].Description = "Failure strain from FIB model code";
+        this.Params.Input[2].Access = GH_ParamAccess.item;
+        this.Params.Input[2].Optional = false;
       }
 
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)3)
+      else if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Linear)
       {
-        Params.Input[0].Name = "Failure Point";
-        Params.Input[0].NickName = "SPu";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Failure Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
+        this.Params.Input[0].Name = "Failure Point";
+        this.Params.Input[0].NickName = "SPu";
+        this.Params.Input[0].Description = "AdSec Stress Strain Point representing the Failure Point";
+        this.Params.Input[0].Access = GH_ParamAccess.item;
+        this.Params.Input[0].Optional = false;
       }
 
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)4)
+      else if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined)
       {
         IQuantity quantityStress = new Pressure(0, _stressUnit);
         unitStressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
 
-        Params.Input[0].Name = "Unconfined Strength [" + unitStressAbbreviation + "]";
-        Params.Input[0].NickName = "σU";
-        Params.Input[0].Description = "Unconfined strength for Mander Confined Model";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
+        this.Params.Input[0].Name = "Unconfined Strength [" + unitStressAbbreviation + "]";
+        this.Params.Input[0].NickName = "σU";
+        this.Params.Input[0].Description = "Unconfined strength for Mander Confined Model";
+        this.Params.Input[0].Access = GH_ParamAccess.item;
+        this.Params.Input[0].Optional = false;
 
-        Params.Input[1].Name = "Confined Strength [" + unitStressAbbreviation + "]";
-        Params.Input[1].NickName = "σC";
-        Params.Input[1].Description = "Confined strength for Mander Confined Model";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
+        this.Params.Input[1].Name = "Confined Strength [" + unitStressAbbreviation + "]";
+        this.Params.Input[1].NickName = "σC";
+        this.Params.Input[1].Description = "Confined strength for Mander Confined Model";
+        this.Params.Input[1].Access = GH_ParamAccess.item;
+        this.Params.Input[1].Optional = false;
 
-        Params.Input[2].Name = "Initial Modus [" + unitStressAbbreviation + "]";
-        Params.Input[2].NickName = "Ei";
-        Params.Input[2].Description = "Initial Moduls for Mander Confined Model";
-        Params.Input[2].Access = GH_ParamAccess.item;
-        Params.Input[2].Optional = false;
+        this.Params.Input[2].Name = "Initial Modus [" + unitStressAbbreviation + "]";
+        this.Params.Input[2].NickName = "Ei";
+        this.Params.Input[2].Description = "Initial Moduls for Mander Confined Model";
+        this.Params.Input[2].Access = GH_ParamAccess.item;
+        this.Params.Input[2].Optional = false;
 
         unitStrainAbbreviation = Strain.GetAbbreviation(_strainUnit);
 
-        Params.Input[3].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
-        Params.Input[3].NickName = "εu";
-        Params.Input[3].Description = "Failure strain for Mander Confined Model";
-        Params.Input[3].Access = GH_ParamAccess.item;
-        Params.Input[3].Optional = false;
+        this.Params.Input[3].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
+        this.Params.Input[3].NickName = "εu";
+        this.Params.Input[3].Description = "Failure strain for Mander Confined Model";
+        this.Params.Input[3].Access = GH_ParamAccess.item;
+        this.Params.Input[3].Optional = false;
       }
 
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)5)
+      else if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Mander)
       {
-        Params.Input[0].Name = "Peak Point";
-        Params.Input[0].NickName = "SPt";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Mander model's Peak Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
+        this.Params.Input[0].Name = "Peak Point";
+        this.Params.Input[0].NickName = "SPt";
+        this.Params.Input[0].Description = "AdSec Stress Strain Point representing the Mander model's Peak Point";
+        this.Params.Input[0].Access = GH_ParamAccess.item;
+        this.Params.Input[0].Optional = false;
 
         IQuantity quantityStress = new Pressure(0, _stressUnit);
         unitStressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
 
-        Params.Input[1].Name = "Initial Modus [" + unitStressAbbreviation + "]";
-        Params.Input[1].NickName = "Ei";
-        Params.Input[1].Description = "Initial Moduls for Mander model";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
+        this.Params.Input[1].Name = "Initial Modus [" + unitStressAbbreviation + "]";
+        this.Params.Input[1].NickName = "Ei";
+        this.Params.Input[1].Description = "Initial Moduls for Mander model";
+        this.Params.Input[1].Access = GH_ParamAccess.item;
+        this.Params.Input[1].Optional = false;
 
         unitStrainAbbreviation = Strain.GetAbbreviation(_strainUnit);
 
-        Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
-        Params.Input[2].NickName = "εu";
-        Params.Input[2].Description = "Failure strain for Mander model";
-        Params.Input[2].Access = GH_ParamAccess.item;
-        Params.Input[2].Optional = false;
+        this.Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
+        this.Params.Input[2].NickName = "εu";
+        this.Params.Input[2].Description = "Failure strain for Mander model";
+        this.Params.Input[2].Access = GH_ParamAccess.item;
+        this.Params.Input[2].Optional = false;
       }
 
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)6)
+      else if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle)
       {
-        Params.Input[0].Name = "Yield Point";
-        Params.Input[0].NickName = "SPy";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Yield Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
+        this.Params.Input[0].Name = "Yield Point";
+        this.Params.Input[0].NickName = "SPy";
+        this.Params.Input[0].Description = "AdSec Stress Strain Point representing the Yield Point";
+        this.Params.Input[0].Access = GH_ParamAccess.item;
+        this.Params.Input[0].Optional = false;
 
         unitStrainAbbreviation = Strain.GetAbbreviation(_strainUnit);
 
-        Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
-        Params.Input[1].NickName = "εu";
-        Params.Input[1].Description = "Failure strain from FIB model code";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
+        this.Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
+        this.Params.Input[1].NickName = "εu";
+        this.Params.Input[1].Description = "Failure strain from FIB model code";
+        this.Params.Input[1].Access = GH_ParamAccess.item;
+        this.Params.Input[1].Optional = false;
       }
 
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)7)
+      else if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Park)
       {
-        Params.Input[0].Name = "Yield Point";
-        Params.Input[0].NickName = "SPy";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Yield Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
+        this.Params.Input[0].Name = "Yield Point";
+        this.Params.Input[0].NickName = "SPy";
+        this.Params.Input[0].Description = "AdSec Stress Strain Point representing the Yield Point";
+        this.Params.Input[0].Access = GH_ParamAccess.item;
+        this.Params.Input[0].Optional = false;
       }
 
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)8)
+      else if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics)
       {
-        Params.Input[0].Name = "Peak Point";
-        Params.Input[0].NickName = "SPt";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Peak Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
+        this.Params.Input[0].Name = "Peak Point";
+        this.Params.Input[0].NickName = "SPt";
+        this.Params.Input[0].Description = "AdSec Stress Strain Point representing the Peak Point";
+        this.Params.Input[0].Access = GH_ParamAccess.item;
+        this.Params.Input[0].Optional = false;
 
         unitStrainAbbreviation = Strain.GetAbbreviation(_strainUnit);
 
-        Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
-        Params.Input[1].NickName = "εu";
-        Params.Input[1].Description = "Failure strain from Popovic model";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
+        this.Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
+        this.Params.Input[1].NickName = "εu";
+        this.Params.Input[1].Description = "Failure strain from Popovic model";
+        this.Params.Input[1].Access = GH_ParamAccess.item;
+        this.Params.Input[1].Optional = false;
       }
 
-      if (this._mode == (AdSecStressStrainCurveGoo.StressStrainCurveType)9)
+      else if (this._mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular)
       {
-        Params.Input[0].Name = "Yield Point";
-        Params.Input[0].NickName = "SPy";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Yield Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
+        this.Params.Input[0].Name = "Yield Point";
+        this.Params.Input[0].NickName = "SPy";
+        this.Params.Input[0].Description = "AdSec Stress Strain Point representing the Yield Point";
+        this.Params.Input[0].Access = GH_ParamAccess.item;
+        this.Params.Input[0].Optional = false;
 
         unitStrainAbbreviation = Strain.GetAbbreviation(_strainUnit);
 
-        Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
-        Params.Input[1].NickName = "εu";
-        Params.Input[1].Description = "Failure strain";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
+        this.Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
+        this.Params.Input[1].NickName = "εu";
+        this.Params.Input[1].Description = "Failure strain";
+        this.Params.Input[1].Access = GH_ParamAccess.item;
+        this.Params.Input[1].Optional = false;
       }
     }
   }

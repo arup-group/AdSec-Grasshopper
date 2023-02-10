@@ -107,7 +107,7 @@ namespace AdSecGH.Components
       ITensionCompressionCurve slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
 
       // create api material based on type
-      switch (_type)
+      switch (this._type)
       {
         case AdSecMaterial.AdSecMaterialType.Concrete:
           if (concreteCrack == null)

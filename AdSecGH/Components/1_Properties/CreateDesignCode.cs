@@ -17,6 +17,7 @@ namespace AdSecGH.Components
     public override GH_Exposure Exposure => GH_Exposure.septenary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateDesignCode;
+    private Dictionary<string, FieldInfo> _designCodes;
 
     public CreateDesignCode() : base(
       "Create" + AdSecDesignCodeGoo.Name.Replace(" ", string.Empty),
@@ -28,7 +29,9 @@ namespace AdSecGH.Components
     #endregion
 
     #region Input and output
-    protected override void RegisterInputParams(GH_InputParamManager pManager) { }
+    protected override void RegisterInputParams(GH_InputParamManager pManager)
+    {
+    }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
@@ -39,7 +42,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // update selected material
-      selectedCode = designCodes[this.SelectedItems.Last()];
+      FieldInfo selectedCode = this._designCodes[this.SelectedItems.Last()];
 
       // create new material
       AdSecDesignCode dc = new AdSecDesignCode(selectedCode);
@@ -48,13 +51,6 @@ namespace AdSecGH.Components
     }
 
     #region Custom UI
-    // get list of material types defined in material parameter
-    List<string> designCodeGroups;
-    // list of materials
-    Dictionary<string, FieldInfo> designCodes;
-    FieldInfo selectedCode;
-    Dictionary<string, Type> designCodeKVP;
-
     public override void InitialiseDropdowns()
     {
       this.SpacerDescriptions = new List<string>(new string[] {
@@ -70,8 +66,7 @@ namespace AdSecGH.Components
       this.DropDownItems = new List<List<string>>();
       this.SelectedItems = new List<string>();
 
-      if (designCodeGroups == null)
-        designCodeGroups = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
+      List<string> designCodeGroups = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
 
       List<string> tempList = new List<string>();
       foreach (string dc in designCodeGroups)
@@ -95,7 +90,7 @@ namespace AdSecGH.Components
       }
       if (this.DropDownItems.Count == 1)
       {
-        designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+        Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
         // create string for selected item to use for type search while drilling
         string typeString = this.SelectedItems.Last();
@@ -127,11 +122,11 @@ namespace AdSecGH.Components
           {
             // if kvp is empty we have reached the field level
             // where we set the materials by reflecting the type
-            designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
+            this._designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
             // if kvp has values we add them to create a new dropdown list
-            this.DropDownItems.Add(designCodes.Keys.ToList());
+            this.DropDownItems.Add(this._designCodes.Keys.ToList());
             // with first item being the selected
-            this.SelectedItems.Add(designCodes.Keys.First().ToString());
+            this.SelectedItems.Add(this._designCodes.Keys.First().ToString());
             // stop drilling
             drill = false;
           }
@@ -159,7 +154,7 @@ namespace AdSecGH.Components
         }
 
         // get list of standard codes for the selected material
-        designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+        Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
         // create string for selected item to use for type search while drilling
         int level = 0;
@@ -209,11 +204,11 @@ namespace AdSecGH.Components
           {
             // if kvp is empty we have reached the field level
             // where we set the materials by reflecting the type
-            designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
+            this._designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
             // if kvp has values we add them to create a new dropdown list
-            this.DropDownItems.Add(designCodes.Keys.ToList());
+            this.DropDownItems.Add(this._designCodes.Keys.ToList());
             // with first item being the selected
-            this.SelectedItems.Add(designCodes.Keys.First().ToString());
+            this.SelectedItems.Add(this._designCodes.Keys.First().ToString());
             // stop drilling
             drill = false;
 
@@ -233,7 +228,7 @@ namespace AdSecGH.Components
     public override void UpdateUIFromSelectedItems()
     {
       // get list of standard codes for the selected material
-      designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+      Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
       // create string for selected item to use for type search while drilling
       int level = 0;
@@ -272,7 +267,7 @@ namespace AdSecGH.Components
         {
           // if kvp is empty we have reached the field level
           // where we set the materials by reflecting the type
-          designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
+          this._designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
           // stop drilling
           drill = false;
 

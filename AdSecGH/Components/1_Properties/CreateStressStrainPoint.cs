@@ -71,10 +71,10 @@ namespace AdSecGH.Components
       this.SelectedItems = new List<string>();
 
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-      this.SelectedItems.Add(this._strainUnit.ToString());
+      this.SelectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
 
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
-      this.SelectedItems.Add(this._stressUnit.ToString());
+      this.SelectedItems.Add(Pressure.GetAbbreviation(this._stressUnit));
 
       this.IsInitialised = true;
     }

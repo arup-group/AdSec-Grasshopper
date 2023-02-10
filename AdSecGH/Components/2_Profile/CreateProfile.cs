@@ -44,11 +44,8 @@ namespace AdSecGH.Components
     #endregion
 
     #region Custom UI
-    //This region overrides the typical component layout
     public override void CreateAttributes()
     {
-      if (first)
-      {
         Dictionary<string, Type> profileTypesInitial = ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.Profiles");
         this.ProfileTypes = new Dictionary<string, Type>();
         foreach (KeyValuePair<string, Type> kvp in profileTypesInitial)
@@ -92,7 +89,6 @@ namespace AdSecGH.Components
         // length
         this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
         this.SelectedItems.Add(LengthUnit.ToString());
-      }
 
       m_attributes = new DropDownComponentAttributes(this, this.SetSelected, this.DropDownItems, this.SelectedItems, this.SpacerDescriptions);
     }
@@ -753,20 +749,19 @@ namespace AdSecGH.Components
       Catalogue,
       Other
     }
-    private bool first = true;
     private FoldMode _mode = FoldMode.Other;
 
     private void Mode1Clicked()
     {
-      // remove plane
+      // tempoarily removing plane
       IGH_Param param_Plane = this.Params.Input[Params.Input.Count - 1];
       this.Params.UnregisterInputParameter(this.Params.Input[this.Params.Input.Count - 1], false);
 
-      //remove input parameters
+      // input parameters
       while (this.Params.Input.Count > 0)
         this.Params.UnregisterInputParameter(this.Params.Input[0], true);
 
-      //register input parameter
+      // register input parameter
       this.Params.RegisterInputParam(new Param_String());
       this.Params.RegisterInputParam(new Param_Boolean());
 
@@ -780,7 +775,7 @@ namespace AdSecGH.Components
 
     private void SetNumberOfGenericInputs(int inputs, bool isSecantPile = false)
     {
-      _numberOfInputs = inputs;
+      this._numberOfInputs = inputs;
 
       // if last input previously was a bool and we no longer need that
       if (lastInputWasSecant || isSecantPile)

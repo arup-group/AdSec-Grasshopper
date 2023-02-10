@@ -11,7 +11,7 @@ namespace AdSecGHTests.Properties
   {
     public static GH_OasysDropDownComponent ComponentMother()
     {
-      var comp = new CreateConcreteCrackCalculationParameters();
+      var comp = new CreateConcreteCrackParameters();
       comp.CreateAttributes();
       
       comp.SetSelected(0, 0); // change dropdown to ?
