@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
@@ -17,7 +18,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
-  public class CreateStressStrainCurve : GH_OasysDropDownComponent
+    public class CreateStressStrainCurve : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -33,8 +34,8 @@ namespace AdSecGH.Components
       "Create StressStrainCrv",
       "StressStrainCrv",
       "Create a Stress Strain Curve for AdSec Material",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat1())
+      CategoryName.Name(),
+      SubCategoryName.Cat1())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }

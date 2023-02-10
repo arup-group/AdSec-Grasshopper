@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
@@ -11,7 +12,7 @@ using OasysGH.Components;
 
 namespace AdSecGH.Components
 {
-  public class CreateStandardMaterial : GH_OasysDropDownComponent
+    public class CreateStandardMaterial : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -25,8 +26,8 @@ namespace AdSecGH.Components
       "Standard Material",
       "Material",
       "Create a new AdSec Design Code based standard material",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat1())
+      CategoryName.Name(),
+      SubCategoryName.Cat1())
     {
       this.Hidden = true; // sets the initial state of the component to hidden
     }

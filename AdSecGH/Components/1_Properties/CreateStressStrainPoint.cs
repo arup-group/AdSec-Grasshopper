@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using OasysGH;
@@ -12,7 +13,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  public class CreateStressStrainPoint : GH_OasysDropDownComponent
+    public class CreateStressStrainPoint : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -27,8 +28,8 @@ namespace AdSecGH.Components
       "Create StressStrainPt",
       "StressStrainPt",
       "Create a Stress Strain Point for AdSec Stress Strain Curve",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat1())
+      CategoryName.Name(),
+      SubCategoryName.Cat1())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }

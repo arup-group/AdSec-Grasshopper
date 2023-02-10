@@ -1,5 +1,6 @@
 ﻿using System;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec.Materials;
@@ -12,7 +13,7 @@ using OasysUnits;
 
 namespace AdSecGH.Components
 {
-  public class EditConcreteCrackCalculationParameters : GH_OasysComponent
+    public class EditConcreteCrackCalculationParameters : GH_OasysComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -25,8 +26,8 @@ namespace AdSecGH.Components
       "Edit CrackCalcParams",
       "EditCalcParams",
       "Edit Concrete Crack Calculation Parameters for AdSec Material",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat1())
+      CategoryName.Name(),
+      SubCategoryName.Cat1())
     {
       this.Hidden = true; // sets the initial state of the component to hidden
     }

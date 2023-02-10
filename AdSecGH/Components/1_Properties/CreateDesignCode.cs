@@ -6,10 +6,11 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
+using AdSecGH.Helpers.GH;
 
 namespace AdSecGH.Components
 {
-  public class CreateDesignCode : GH_OasysDropDownComponent
+    public class CreateDesignCode : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -23,8 +24,8 @@ namespace AdSecGH.Components
       "Create" + AdSecDesignCodeGoo.Name.Replace(" ", string.Empty),
       AdSecDesignCodeGoo.Name.Replace(" ", string.Empty),
       "Create a " + AdSecDesignCodeGoo.Description,
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat1())
+      CategoryName.Name(),
+      SubCategoryName.Cat1())
     { this.Hidden = true; } // sets the initial state of the component to hidden
     #endregion
 
