@@ -129,8 +129,8 @@ namespace AdSecGH.Components
       this.DropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
       this.SelectedItems.Add(this.DropDownItems[0][0]);
 
-      this.SelectedItems.Add(this._lengthUnit.ToString());
-      this.SelectedItems.Add(this._angleUnit.ToString());
+      this.SelectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
+      this.SelectedItems.Add(Angle.GetAbbreviation(this._angleUnit));
 
       this.IsInitialised = true;
     }
@@ -183,8 +183,8 @@ namespace AdSecGH.Components
       this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this.SelectedItems[0]);
       this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this.SelectedItems[1]);
       this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this.SelectedItems[2]);
-      this.CreateAttributes();
       this.ToggleInput();
+      base.UpdateUIFromSelectedItems();
     }
     #endregion
 
@@ -230,8 +230,6 @@ namespace AdSecGH.Components
           this.Params.RegisterInputParam(new Param_GenericObject());
           break;
       }
-
-      this.UpdateUI();
     }
 
     public override void VariableParameterMaintenance()

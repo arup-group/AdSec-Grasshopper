@@ -15,7 +15,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
-    public class NMDiagram : GH_OasysDropDownComponent
+  public class NMDiagram : GH_OasysDropDownComponent
   {
     private enum FoldMode
     {
@@ -123,7 +123,7 @@ namespace AdSecGH.Components
 
       // force
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
-      this.SelectedItems.Add(_angleUnit.ToString());
+      this.SelectedItems.Add(Angle.GetAbbreviation(this._angleUnit));
 
       this.IsInitialised = true;
     }
@@ -137,13 +137,13 @@ namespace AdSecGH.Components
         switch (this.SelectedItems[0])
         {
           case ("N-M"):
-            _mode = FoldMode.NM;
+            this._mode = FoldMode.NM;
             this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle);
             this.SelectedItems[1] = _angleUnit.ToString();
             break;
 
           case ("M-M"):
-            _mode = FoldMode.MM;
+            this._mode = FoldMode.MM;
             this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
             this.SelectedItems[1] = _forceUnit.ToString();
             break;
@@ -164,27 +164,25 @@ namespace AdSecGH.Components
       base.UpdateUI();
     }
 
-    #region (de)serialization
-    public override bool Write(GH_IO.Serialization.GH_IWriter writer)
+    public override void UpdateUIFromSelectedItems()
     {
-      writer.SetString("force", this._forceUnit.ToString());
-      writer.SetString("angle", this._angleUnit.ToString());
-      return base.Write(writer);
-    }
+      switch (this.SelectedItems[0])
+      {
+        case ("N-M"):
+          this._mode = FoldMode.NM;
+          this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this.SelectedItems[1]);
+          break;
 
-    public override bool Read(GH_IO.Serialization.GH_IReader reader)
-    {
-      this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), reader.GetString("force"));
-      this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), reader.GetString("angle"));
-      return base.Read(reader);
+        case ("M-M"):
+          this._mode = FoldMode.MM;
+          this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[1]);
+          break;
+      }
+      base.UpdateUIFromSelectedItems();
     }
-    #endregion
 
     public override void VariableParameterMaintenance()
     {
-      if (this.SelectedItems == null)
-        return;
-
       switch (this.SelectedItems[0])
       {
         case ("N-M"):

@@ -105,7 +105,7 @@ namespace AdSecGH.Components
 
       // length
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-      this.SelectedItems.Add(_lengthUnit.ToString());
+      this.SelectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
 
       this.IsInitialised = true;
     }
@@ -133,7 +133,7 @@ namespace AdSecGH.Components
             this.SelectedItems.Add(this._lengthUnit.ToString());
           }
         }
-        ToggleInput();
+        this.ToggleInput();
       }
       else
       {
@@ -146,15 +146,15 @@ namespace AdSecGH.Components
       this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this.SelectedItems[0]);
       if (this._mode == FoldMode.Distance)
         this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this.SelectedItems[1]);
-      CreateAttributes();
-      ToggleInput();
+      this.ToggleInput();
+      base.UpdateUIFromSelectedItems();
     }
     #endregion
 
     #region menu override
     private void ToggleInput()
     {
-      switch (_mode)
+      switch (this._mode)
       {
         case FoldMode.Distance:
           // remove any additional input parameters
@@ -172,22 +172,6 @@ namespace AdSecGH.Components
           this.Params.RegisterInputParam(new Param_Integer());
           break;
       }
-      base.UpdateUI();
-    }
-    #endregion
-
-    #region (de)serialization
-    public override bool Write(GH_IO.Serialization.GH_IWriter writer)
-    {
-      writer.SetString("mode", this._mode.ToString());
-      return base.Write(writer);
-    }
-
-    public override bool Read(GH_IO.Serialization.GH_IReader reader)
-    {
-      this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
-      this.UpdateUIFromSelectedItems();
-      return base.Read(reader);
     }
     #endregion
 

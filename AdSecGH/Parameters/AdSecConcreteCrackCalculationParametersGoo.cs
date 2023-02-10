@@ -15,7 +15,7 @@ namespace AdSecGH.Parameters
     public static string Description => "AdSec Concrete Crack Calculation Parameters";
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
 
-    public AdSecConcreteCrackCalculationParametersGoo(IConcreteCrackCalculationParameters item) : base(item) 
+    public AdSecConcreteCrackCalculationParametersGoo(IConcreteCrackCalculationParameters item) : base(item)
     {
     }
 

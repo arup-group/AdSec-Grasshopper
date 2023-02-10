@@ -17,7 +17,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    public class CreateRebar : GH_OasysDropDownComponent
+  public class CreateRebar : GH_OasysDropDownComponent
   {
     private enum FoldMode
     {
@@ -105,7 +105,7 @@ namespace AdSecGH.Components
       this.SelectedItems.Add(this.DropDownItems[0][0]);
 
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-      this.SelectedItems.Add(this._lengthUnit.ToString());
+      this.SelectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
 
       this.IsInitialised = true;
     }
@@ -126,9 +126,10 @@ namespace AdSecGH.Components
 
     public override void UpdateUIFromSelectedItems()
     {
+      this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this.SelectedItems[0]);
       this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this.SelectedItems[1]);
-      CreateAttributes();
-      ToggleInput();
+      this.ToggleInput();
+      base.UpdateUIFromSelectedItems();
     }
     #endregion
 
@@ -136,8 +137,7 @@ namespace AdSecGH.Components
 
     private void ToggleInput()
     {
-      RecordUndoEvent("Changed dropdown");
-
+      this.RecordUndoEvent("Changed dropdown");
       switch (this._mode)
       {
         case FoldMode.Single:
@@ -152,22 +152,6 @@ namespace AdSecGH.Components
             this.Params.RegisterInputParam(new Param_Integer());
           break;
       }
-      base.UpdateUI();
-    }
-    #endregion
-
-    #region (de)serialization
-    public override bool Write(GH_IO.Serialization.GH_IWriter writer)
-    {
-      writer.SetString("mode", this._mode.ToString());
-      return base.Write(writer);
-    }
-
-    public override bool Read(GH_IO.Serialization.GH_IReader reader)
-    {
-      this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), reader.GetString("mode"));
-      this.UpdateUIFromSelectedItems();
-      return base.Read(reader);
     }
     #endregion
 

@@ -10,7 +10,7 @@ using AdSecGH.Helpers.GH;
 
 namespace AdSecGH.Components
 {
-    public class CreateDesignCode : GH_OasysDropDownComponent
+  public class CreateDesignCode : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon

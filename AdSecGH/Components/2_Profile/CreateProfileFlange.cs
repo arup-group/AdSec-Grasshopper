@@ -14,7 +14,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    public class CreateProfileFlange : GH_OasysDropDownComponent
+  public class CreateProfileFlange : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -53,8 +53,8 @@ namespace AdSecGH.Components
     {
       AdSecProfileFlangeGoo flange = new AdSecProfileFlangeGoo(
         IFlange.Create(
-          (Length)Input.UnitNumber(this, DA, 0, _lengthUnit),
-          (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
+          (Length)Input.UnitNumber(this, DA, 0, this._lengthUnit),
+          (Length)Input.UnitNumber(this, DA, 1, this._lengthUnit)));
 
       DA.SetData(0, flange);
     }
@@ -71,9 +71,9 @@ namespace AdSecGH.Components
 
       // length
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-      this.SelectedItems.Add(_lengthUnit.ToString());
+      this.SelectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
 
-      IQuantity quantity = new Length(0, _lengthUnit);
+      IQuantity quantity = new Length(0, this._lengthUnit);
 
       this.IsInitialised = true;
     }

@@ -76,11 +76,11 @@ namespace AdSecGH.Components
 
       // strain
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-      this.SelectedItems.Add(_strainUnit.ToString());
+      this.SelectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
 
       // curvature
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Curvature));
-      this.SelectedItems.Add(this._curvatureUnit.ToString());
+      this.SelectedItems.Add(Curvature.GetAbbreviation(this._curvatureUnit));
 
       this.IsInitialised = true;
     }

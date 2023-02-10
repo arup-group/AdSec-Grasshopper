@@ -17,7 +17,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    public class CreateReinforcementGroup : GH_OasysDropDownComponent
+  public class CreateReinforcementGroup : GH_OasysDropDownComponent
   {
     private enum FoldMode
     {
@@ -165,7 +165,6 @@ namespace AdSecGH.Components
     }
 
     #region Custom UI
-    //This region overrides the typical component layout
     public override void InitialiseDropdowns()
     {
       this.SpacerDescriptions = new List<string>(new string[] {
@@ -178,7 +177,7 @@ namespace AdSecGH.Components
 
       this.DropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
       this.SelectedItems.Add(this.DropDownItems[0][0]);
-      this.SelectedItems.Add(_lengthUnit.ToString());
+      this.SelectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
 
       this.IsInitialised = true;
     }
@@ -201,8 +200,8 @@ namespace AdSecGH.Components
     {
       this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this.SelectedItems[0]);
       this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this.SelectedItems[1]);
-      this.CreateAttributes();
       this.ToggleInput();
+      base.UpdateUIFromSelectedItems();
     }
     #endregion
 
@@ -226,8 +225,6 @@ namespace AdSecGH.Components
       }
       // add cover back
       this.Params.RegisterInputParam(param_Cover);
-
-      this.UpdateUI();
     }
     #endregion
 

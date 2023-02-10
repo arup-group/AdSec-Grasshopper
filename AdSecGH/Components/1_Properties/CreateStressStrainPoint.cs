@@ -13,7 +13,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    public class CreateStressStrainPoint : GH_OasysDropDownComponent
+  public class CreateStressStrainPoint : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -100,7 +100,6 @@ namespace AdSecGH.Components
     {
       this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[0]);
       this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[1]);
-
       base.UpdateUIFromSelectedItems();
     }
     #endregion

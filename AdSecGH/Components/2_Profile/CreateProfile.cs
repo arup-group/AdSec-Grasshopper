@@ -993,8 +993,6 @@ namespace AdSecGH.Components
     #region (de)serialization
     public override bool Write(GH_IO.Serialization.GH_IWriter writer)
     {
-      writer.SetString("mode", _mode.ToString());
-      writer.SetString("lengthUnit", LengthUnit.ToString());
       writer.SetBoolean("inclSS", _inclSS);
       writer.SetInt32("NumberOfInputs", _numberOfInputs);
       writer.SetInt32("catalogueIndex", _catalogueIndex);

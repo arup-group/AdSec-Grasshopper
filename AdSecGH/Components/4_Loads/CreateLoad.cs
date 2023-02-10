@@ -88,12 +88,11 @@ namespace AdSecGH.Components
 
       // force
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
-      this.SelectedItems.Add(this._forceUnit.ToString());
+      this.SelectedItems.Add(Force.GetAbbreviation(this._forceUnit));
 
       // moment
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Moment));
-      this.SelectedItems.Add(this._momentUnit.ToString());
-
+      this.SelectedItems.Add(Moment.GetAbbreviation(this._momentUnit));
 
       this.IsInitialised = true;
     }

@@ -62,7 +62,7 @@ namespace AdSecGH.Components
       AdSecSolutionGoo solution = AdSecInput.Solution(this, DA, 0);
       if (solution == null)
       {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Results input is null");
+        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Results input is null");
         return;
       }
 
@@ -79,13 +79,13 @@ namespace AdSecGH.Components
         }
         else
         {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
+          this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
           return;
         }
       }
       else
       {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
+        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
         return;
       }
 

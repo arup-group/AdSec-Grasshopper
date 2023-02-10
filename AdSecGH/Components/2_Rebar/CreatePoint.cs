@@ -76,7 +76,7 @@ namespace AdSecGH.Components
       this.SelectedItems = new List<string>();
 
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-      this.SelectedItems.Add(_lengthUnit.ToString());
+      this.SelectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
 
       this.IsInitialised = true;
     }
