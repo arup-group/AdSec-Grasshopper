@@ -66,7 +66,7 @@ steps:
     Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
     ls $(System.DefaultWorkingDirectory)\
     cd $(System.DefaultWorkingDirectory)\
-    .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_adsecgh.xml -F gsagh
+    .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_adsecgh.xml -F adsecgh
     .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_integration.xml -F integration
   env:
     CODECOV_TOKEN: $(CODECOV_TOKEN)
