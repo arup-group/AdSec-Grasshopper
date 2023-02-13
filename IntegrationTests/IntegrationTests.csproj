@@ -18,7 +18,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AdSecGHTests\AdSecGHTests.csproj" />
     <ProjectReference Include="..\AdSecGH\AdSecGH.csproj" />
   </ItemGroup>
 
