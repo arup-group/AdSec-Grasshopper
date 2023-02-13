@@ -18,12 +18,7 @@ steps:
 - powershell: Remove-Item -Path C:\Users\**\AppData\Roaming\Grasshopper\Libraries\*.ghlink
   displayName: 'Delete orphan .ghlink files'
 
-steps:
 - task: NuGetToolInstaller@1
-
-- task: NuGetAuthenticate@1
-  inputs:
-    forceReinstallCredentialProvider: true
 
 - task: NuGetCommand@2
   displayName: 'Restoring NuGet packages'
