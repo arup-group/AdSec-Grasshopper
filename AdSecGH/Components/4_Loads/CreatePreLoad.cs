@@ -66,13 +66,13 @@ namespace AdSecGH.Components
       switch (this.SelectedItems[0])
       {
         case ("Force"):
-          load = IPreForce.Create((Force)Input.UnitNumber(this, DA, 1, _forceUnit));
+          load = IPreForce.Create((Force)Input.UnitNumber(this, DA, 1, this._forceUnit));
           break;
         case ("Strain"):
-          load = IPreStrain.Create((Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
+          load = IPreStrain.Create((Strain)Input.UnitNumber(this, DA, 1, this._strainUnit));
           break;
         case ("Stress"):
-          load = IPreStress.Create((Pressure)Input.UnitNumber(this, DA, 1, _stressUnit));
+          load = IPreStress.Create((Pressure)Input.UnitNumber(this, DA, 1, this._stressUnit));
           break;
       }
       ILongitudinalGroup longitudinal = (ILongitudinalGroup)in_rebar.Value;
@@ -119,15 +119,15 @@ namespace AdSecGH.Components
         {
           case ("Force"):
             this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
-            this.SelectedItems[0] = _forceUnit.ToString();
+            this.SelectedItems[0] = "Force";
             break;
           case ("Strain"):
             this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
-            this.SelectedItems[0] = _strainUnit.ToString();
+            this.SelectedItems[0] = "Strain";
             break;
           case ("Stress"):
             this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
-            this.SelectedItems[0] = _stressUnit.ToString();
+            this.SelectedItems[0] = "Stress";
             break;
         }
       }
