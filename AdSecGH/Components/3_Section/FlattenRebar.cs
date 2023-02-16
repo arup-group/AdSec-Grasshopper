@@ -17,7 +17,7 @@ using OasysUnits;
 
 namespace AdSecGH.Components
 {
-    public class FlattenRebar : GH_OasysComponent
+  public class FlattenRebar : GH_OasysComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -103,7 +103,7 @@ namespace AdSecGH.Components
             pointGoos.Add(new AdSecPointGoo(pos));
 
             // diameter
-            diameters.Add(new GH_UnitNumber(new Length(snglBrs.BarBundle.Diameter.As(DefaultUnits.LengthUnitGeometry), DefaultUnits.LengthUnitGeometry)));
+            diameters.Add(new GH_UnitNumber(snglBrs.BarBundle.Diameter.ToUnit(DefaultUnits.LengthUnitGeometry)));
 
             // bundle count
             counts.Add(snglBrs.BarBundle.CountPerBundle);
@@ -114,19 +114,19 @@ namespace AdSecGH.Components
               try
               {
                 IPreForce force = (IPreForce)snglBrs.Preload;
-                prestresses.Add(new GH_UnitNumber(new Force(force.Force.As(DefaultUnits.ForceUnit), DefaultUnits.ForceUnit)));
+                prestresses.Add(new GH_UnitNumber(force.Force.ToUnit(DefaultUnits.ForceUnit)));
               }
               catch (Exception)
               {
                 try
                 {
                   IPreStress stress = (IPreStress)snglBrs.Preload;
-                  prestresses.Add(new GH_UnitNumber(new Pressure(stress.Stress.As(DefaultUnits.StressUnitResult), DefaultUnits.StressUnitResult)));
+                  prestresses.Add(new GH_UnitNumber(stress.Stress.ToUnit(DefaultUnits.StressUnitResult)));
                 }
                 catch (Exception)
                 {
                   IPreStrain strain = (IPreStrain)snglBrs.Preload;
-                  prestresses.Add(new GH_UnitNumber(new Strain(strain.Strain.As(DefaultUnits.StrainUnitResult), DefaultUnits.StrainUnitResult)));
+                  prestresses.Add(new GH_UnitNumber(strain.Strain.ToUnit(DefaultUnits.StrainUnitResult)));
                 }
               }
             }

@@ -113,10 +113,9 @@ namespace AdSecGH.Components
 
         // #### set outputs ####
         DA.SetData(0, concreteCrack);
-        DA.SetData(1, new GH_UnitNumber(new Pressure(e.As(DefaultUnits.StressUnitResult), DefaultUnits.StressUnitResult)));
-        DA.SetData(2, new GH_UnitNumber(new Pressure(fck.As(DefaultUnits.StressUnitResult), DefaultUnits.StressUnitResult)));
-        DA.SetData(3, new GH_UnitNumber(new Pressure(ft.As(DefaultUnits.StressUnitResult), DefaultUnits.StressUnitResult)));
-
+        DA.SetData(1, new GH_UnitNumber(e.ToUnit(DefaultUnits.StressUnitResult)));
+        DA.SetData(2, new GH_UnitNumber(fck.ToUnit(DefaultUnits.StressUnitResult)));
+        DA.SetData(3, new GH_UnitNumber(ft.ToUnit(DefaultUnits.StressUnitResult)));
       }
       else
       {
