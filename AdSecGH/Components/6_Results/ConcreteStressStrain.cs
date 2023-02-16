@@ -45,8 +45,7 @@ namespace AdSecGH.Components
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
       string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
-      IQuantity stress = new Pressure(0, DefaultUnits.StressUnitResult);
-      string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
+      string stressUnitAbbreviation = Pressure.GetAbbreviation(DefaultUnits.StressUnitResult);
 
       pManager.AddGenericParameter("ULS Strain [" + strainUnitAbbreviation + "]", "εd", "ULS strain at Vertex Point", GH_ParamAccess.item);
       pManager.AddGenericParameter("ULS Stress [" + stressUnitAbbreviation + "]", "σd", "ULS stress at Vertex Point", GH_ParamAccess.item);

@@ -14,7 +14,6 @@ using Oasys.Profiles;
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.Helpers;
-using OasysGH.UI;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;
 using OasysUnits;
