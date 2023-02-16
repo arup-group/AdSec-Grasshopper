@@ -93,7 +93,7 @@ namespace AdSecGH.Components
     #region Custom UI
     public override void InitialiseDropdowns()
     {
-      List<string> spacerDescriptions = new List<string>(new string[] {
+      this.SpacerDescriptions = new List<string>(new string[] {
         "Rebar Type",
         "Measure"
       });
