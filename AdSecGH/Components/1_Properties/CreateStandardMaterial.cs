@@ -122,18 +122,9 @@ namespace AdSecGH.Components
       // get list of material types defined in material parameter
       List<string> materialTypes = Enum.GetNames(typeof(AdSecMaterial.AdSecMaterialType)).ToList();
 
-      if (this.SelectedItems == null)
-      {
-        // create a new list of selected items and add the first material type
-        this.SelectedItems = new List<string>();
-        this.SelectedItems.Add(materialTypes[0]);
-      }
-      if (this.DropDownItems == null)
-      {
-        // create a new list of selected items and add the first material type
-        this.DropDownItems = new List<List<string>>();
-        this.DropDownItems.Add(materialTypes);
-      }
+      this.DropDownItems.Add(materialTypes);
+      this.SelectedItems.Add(materialTypes[0]);
+
       if (this.DropDownItems.Count == 1)
       {
         //Enum.TryParse(this.SelectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
