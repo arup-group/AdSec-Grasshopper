@@ -1,11 +1,28 @@
-#codecov:
-#    notify:
-#        after_n_builds: 2
-#flags:
-#  adsecgh:
-#    carryforward: false
-#  integration:
-#    carryforward: false
+codecov:
+    notify:
+        after_n_builds: 2
+comment:
+  behavior: new
+  layout: reach, diff, tree
+  show_carryforward_flags: false
+coverage:
+  precision: 1
+  range:
+  - 30.0
+  - 90.0
+  round: up
+  threshold: 1%
+  status:
+    changes: false
+    default_rules:
+      flag_coverage_not_uploaded_behavior: include
+    patch: true
+    project: true
+flags:
+  adsecgh:
+    carryforward: false
+  integration:
+    carryforward: false
 ignore:
   - "AdSecGHTests"  # ignore folders and all its contents
   - "AdSecGH/Components/GraveyardComp"  # ignore old versions of components in
@@ -14,6 +31,3 @@ ignore:
   - "AdSecGH/Resources" # ignore icons etc
   - "AdSecGH/Parameters/**/*Parameter.cs" # ignore all files ending with *Parameter.cs (scaffolding for params, no logic should be placed here)
   - "AdSecGH/Parameters/**/*Goo.cs" # ignore all files ending with *Goo.cs (scaffolding for params, no logic should be placed here)
-comment:     # this is a top-level key
-  layout: "reach, diff, tree"
-  behavior: new

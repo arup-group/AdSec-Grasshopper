@@ -17,10 +17,6 @@ steps:
   
 - task: NuGetToolInstaller@1
 
-- task: NuGetAuthenticate@1
-  inputs:
-    forceReinstallCredentialProvider: true
-
 - task: NuGetCommand@2
   displayName: 'Restoring NuGet packages'
   inputs:
@@ -39,8 +35,39 @@ steps:
     MSBUILDDISABLENODEREUSE: 1
 
 - powershell: |
-    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.1.0\build --results-directory .\results\adsecgh\ .\AdSecGHTests\bin\x64\Release\net6.0\AdSecGHTests.dll
+    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.2.0\build --results-directory .\results\adsecgh .\AdSecGHTests\bin\x64\Release\net48\AdSecGHTests.dll
+    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.2.0\build --results-directory .\results\integration  .\IntegrationTests\bin\x64\Release\net48\IntegrationTests.dll
   displayName: dotnet tests
+  failOnStderr: true
+  
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'cobertura'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/results/adsecgh/**/coverage.cobertura.xml'
+    pathToSources: '$(System.DefaultWorkingDirectory)'
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'cobertura'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/results/integration/**/coverage.cobertura.xml'
+    pathToSources: '$(System.DefaultWorkingDirectory)'
+
+- powershell: |
+    $coverage_file_adsecgh = (Resolve-Path $(System.DefaultWorkingDirectory)/results/adsecgh/*/coverage.cobertura.xml).Path
+    echo $coverage_file_adsecgh
+    $coverage_file_integration = (Resolve-Path $(System.DefaultWorkingDirectory)/results/integration/*/coverage.cobertura.xml).Path
+    echo $coverage_file_integration
+    Copy-Item $coverage_file_adsecgh $(System.DefaultWorkingDirectory)\results\coverage_adsecgh.xml
+    Copy-Item $coverage_file_integration $(System.DefaultWorkingDirectory)\results\coverage_integration.xml
+    $ProgressPreference = 'SilentlyContinue'
+    Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
+    ls $(System.DefaultWorkingDirectory)\
+    cd $(System.DefaultWorkingDirectory)\
+    .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_adsecgh.xml -F adsecgh
+    .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_integration.xml -F integration
+  env:
+    CODECOV_TOKEN: $(CODECOV_TOKEN)
+  displayName: Upload Code Coverage to codecovio
   failOnStderr: true
 
 - task: PublishCodeCoverageResults@1

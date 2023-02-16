@@ -13,7 +13,6 @@ namespace ComposGHTests
     private bool _isDisposed;
     private static string _linkFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Grasshopper", "Libraries");
     private static string _linkFileName = "IntegrationTests.ghlink";
-
     static GrasshopperFixture()
     {
       // This MUST be included in a static constructor to ensure that no Rhino DLLs
@@ -22,7 +21,6 @@ namespace ComposGHTests
       // assemblies to be loaded before this is called.
       RhinoInside.Resolver.Initialize();
     }
-
     public GrasshopperFixture()
     {
       AddPluginToGH();
@@ -81,7 +79,6 @@ namespace ComposGHTests
         return _Core as Rhino.Runtime.InProcess.RhinoCore;
       }
     }
-
     public Grasshopper.Plugin.GH_RhinoScriptInterface GHPlugin
     {
       get
