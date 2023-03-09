@@ -1,20 +1,34 @@
-﻿using Grasshopper.Kernel;
-using System;
-using System.IO;
+﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using AdSecGH.Helpers;
+using Grasshopper.Kernel;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
-using AdSecGH.Helpers;
+using OasysGH;
 
 namespace AdSecGH
 {
+  internal sealed class PluginInfo
+  {
+    private static readonly Lazy<OasysPluginInfo> lazy =
+      new Lazy<OasysPluginInfo>(() => new OasysPluginInfo(
+        AdSecGHInfo.ProductName,
+        AdSecGHInfo.PluginName,
+        AdSecGHInfo.Vers,
+        AdSecGHInfo.isBeta,
+        "phc_alOp3OccDM3D18xJTWDoW44Y1cJvbEScm5LJSX8qnhs"
+        ));
+
+    public static OasysPluginInfo Instance { get { return lazy.Value; } }
+
+    private PluginInfo() { }
+  }
+
   public class AddReferencePriority : GH_AssemblyPriority
   {
+
     /// <summary>
     /// This method finds the location of the AdSec plugin and add's the path to the system environment to load referenced dll files.
     /// Method also tries to load the adsec_api.dll file and provides grasshopper loading error messages if it fails.
