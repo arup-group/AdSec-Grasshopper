@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -9,32 +8,21 @@ using Oasys.AdSec.DesignCode;
 using OasysGH;
 using OasysGH.Helpers;
 
-using AdSecGH.Helpers;
-using Grasshopper.Kernel;
-using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
-using OasysGH;
-
 namespace AdSecGH
 {
-  internal sealed class PluginInfo
-  {
-    private static readonly Lazy<OasysPluginInfo> lazy =
-      new Lazy<OasysPluginInfo>(() => new OasysPluginInfo(
-        AdSecGHInfo.ProductName,
-        AdSecGHInfo.PluginName,
-        AdSecGHInfo.Vers,
-        AdSecGHInfo.isBeta,
-        "phc_alOp3OccDM3D18xJTWDoW44Y1cJvbEScm5LJSX8qnhs"
-        ));
-
-    public static OasysPluginInfo Instance { get { return lazy.Value; } }
-
-    private PluginInfo() { }
-  }
-
   public class AddReferencePriority : GH_AssemblyPriority
   {
+    public static string PluginPath
+    {
+      get
+      {
+        if (_pluginPath == null)
+          _pluginPath = TryFindPluginPath("AdSec.gha");
+        return _pluginPath;
+      }
+    }
+    private static string _pluginPath;
+
     /// <summary>
     /// This method finds the location of the AdSec plugin and add's the path to the system environment to load referenced dll files.
     /// Method also tries to load the adsec_api.dll file and provides grasshopper loading error messages if it fails.
@@ -43,7 +31,7 @@ namespace AdSecGH
     /// <returns></returns>
     public override GH_LoadingInstruction PriorityLoad()
     {
-      if (!TryFindPluginPath("AdSec_API.dll"))
+      if (TryFindPluginPath("AdSec.dll") == "")
         return GH_LoadingInstruction.Abort;
 
       // ### Set system environment variables to allow user rights to read above dll ###
@@ -104,13 +92,13 @@ namespace AdSecGH
       return GH_LoadingInstruction.Proceed;
     }
 
-    private bool TryFindPluginPath(string keyword)
+    private static string TryFindPluginPath(string keyword)
     {
       // ### Search for plugin path ###
 
       // initially look in %appdata% folder where package manager will store the plugin
       string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-      path = Path.Combine(path, "McNeel", "Rhinoceros", "Packages", Rhino.RhinoApp.ExeVersion + ".0", AssemblyInfo.ProductName);
+      path = Path.Combine(path, "McNeel", "Rhinoceros", "Packages", Rhino.RhinoApp.ExeVersion + ".0", AdSecGHInfo.ProductName);
 
       if (!File.Exists(Path.Combine(path, keyword))) // if no plugin file is found there continue search
       {
@@ -131,8 +119,7 @@ namespace AdSecGH
             if (files.Length > 0)
             {
               path = files[0].Replace(keyword, string.Empty);
-              PluginPath = Path.GetDirectoryName(path);
-              return true;
+              return Path.GetDirectoryName(path);
             }
           }
           string message =
@@ -144,14 +131,13 @@ namespace AdSecGH
             message += Environment.NewLine + pluginFolder.Folder;
 
           Exception exception = new Exception(message);
-          GH_LoadingException gH_LoadingException = new GH_LoadingException(AssemblyInfo.ProductName + ": " + keyword + " loading failed", exception);
+          GH_LoadingException gH_LoadingException = new GH_LoadingException(AdSecGHInfo.ProductName + ": " + keyword + " loading failed", exception);
           Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
-          PostHog.PluginLoaded(PluginInfo.Instance, message);
-          return false;
+          PostHog.PluginLoaded(AdSecGH.PluginInfo.Instance, message);
+          return "";
         }
       }
-      PluginPath = Path.GetDirectoryName(path);
-      return true;
+      return Path.GetDirectoryName(path);
     }
   }
 
@@ -159,10 +145,10 @@ namespace AdSecGH
   {
     private static readonly Lazy<OasysPluginInfo> lazy =
         new Lazy<OasysPluginInfo>(() => new OasysPluginInfo(
-          AssemblyInfo.ProductName,
-          AssemblyInfo.PluginName,
-          AssemblyInfo.Vers,
-          AssemblyInfo.isBeta,
+          AdSecGHInfo.ProductName,
+          AdSecGHInfo.PluginName,
+          AdSecGHInfo.Vers,
+          AdSecGHInfo.isBeta,
           "phc_alOp3OccDM3D18xJTWDoW44Y1cJvbEScm5LJSX8qnhs"
           ));
 
@@ -173,7 +159,7 @@ namespace AdSecGH
     }
   }
 
-  public class AssemblyInfo : GH_AssemblyInfo
+  public class AdSecGHInfo : GH_AssemblyInfo
   {
     internal static Guid GUID = new Guid("f815c29a-e1eb-4ca6-9e56-0554777ff9c9");
     internal const string Company = "Oasys";
