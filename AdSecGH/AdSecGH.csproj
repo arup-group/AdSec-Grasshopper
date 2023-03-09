@@ -29,6 +29,9 @@ Copyright © Oasys 1985 - 2022</Description>
     <None Remove="Properties\Icons\Icons\**" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="OasysGH">
+      <HintPath>..\..\OasysGH\OasysGH\bin\x64\Debug\net48\OasysGH.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -58,9 +61,6 @@ Copyright © Oasys 1985 - 2022</Description>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.2</Version>
-    </PackageReference>
-    <PackageReference Include="OasysGH">
-      <Version>0.5.2-beta</Version>
     </PackageReference>
     <PackageReference Include="OasysUnits">
       <Version>1.0.0</Version>
