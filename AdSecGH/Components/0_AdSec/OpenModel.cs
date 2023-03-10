@@ -57,7 +57,7 @@ namespace AdSecGH.Components
     {
       m_attributes = new ButtonComponentAttributes(this, "Open", OpenFile, "Open AdSec file");
     }
-    public override void InitialiseDropdowns()
+    protected override void InitialiseDropdowns()
     {
     }
 

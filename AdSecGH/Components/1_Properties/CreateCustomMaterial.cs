@@ -139,7 +139,7 @@ namespace AdSecGH.Components
     }
 
     #region Custom UI
-    public override void InitialiseDropdowns()
+    protected override void InitialiseDropdowns()
     {
       this.SpacerDescriptions = new List<string>(new string[] {
         "Material Type"
@@ -171,7 +171,7 @@ namespace AdSecGH.Components
       base.UpdateUI();
     }
 
-    public override void UpdateUIFromSelectedItems()
+    protected override void UpdateUIFromSelectedItems()
     {
       // cast selection to material type enum
       Enum.TryParse(this.SelectedItems[0], out _type);

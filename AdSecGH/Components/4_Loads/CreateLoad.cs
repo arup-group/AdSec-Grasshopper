@@ -76,7 +76,7 @@ namespace AdSecGH.Components
     }
 
     #region Custom UI
-    public override void InitialiseDropdowns()
+    protected override void InitialiseDropdowns()
     {
       this.SpacerDescriptions = new List<string>(new string[] {
         "Force Unit",
@@ -114,7 +114,7 @@ namespace AdSecGH.Components
       base.UpdateUI();
     }
 
-    public override void UpdateUIFromSelectedItems()
+    protected override void UpdateUIFromSelectedItems()
     {
       this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[0]);
       this._momentUnit = (MomentUnit)UnitsHelper.Parse(typeof(MomentUnit), this.SelectedItems[1]);

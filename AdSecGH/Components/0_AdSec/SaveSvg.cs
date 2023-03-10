@@ -123,7 +123,7 @@ namespace AdSecGH.Components
     {
     }
 
-    public override void InitialiseDropdowns()
+    protected override void InitialiseDropdowns()
     {
     }
 

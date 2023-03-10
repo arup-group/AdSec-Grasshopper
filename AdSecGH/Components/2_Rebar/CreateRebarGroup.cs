@@ -165,7 +165,7 @@ namespace AdSecGH.Components
     }
 
     #region Custom UI
-    public override void InitialiseDropdowns()
+    protected override void InitialiseDropdowns()
     {
       this.SpacerDescriptions = new List<string>(new string[] {
         "Group Type",
@@ -196,7 +196,7 @@ namespace AdSecGH.Components
       }
     }
 
-    public override void UpdateUIFromSelectedItems()
+    protected override void UpdateUIFromSelectedItems()
     {
       this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this.SelectedItems[0]);
       this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this.SelectedItems[1]);

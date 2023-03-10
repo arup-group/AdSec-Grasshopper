@@ -63,7 +63,7 @@ namespace AdSecGH.Components
     }
 
     #region Custom UI
-    public override void InitialiseDropdowns()
+    protected override void InitialiseDropdowns()
     {
       this.SpacerDescriptions = new List<string>(new string[]
       {
@@ -101,7 +101,7 @@ namespace AdSecGH.Components
       base.UpdateUI();
     }
 
-    public override void UpdateUIFromSelectedItems()
+    protected override void UpdateUIFromSelectedItems()
     {
       this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[0]);
       this._curvatureUnit = (CurvatureUnit)UnitsHelper.Parse(typeof(CurvatureUnit), this.SelectedItems[1]);

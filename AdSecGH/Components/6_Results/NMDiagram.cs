@@ -107,7 +107,7 @@ namespace AdSecGH.Components
       }
     }
 
-    public override void InitialiseDropdowns()
+    protected override void InitialiseDropdowns()
     {
       this.SpacerDescriptions = new List<string>(new string[] {
         "Interaction",
@@ -164,7 +164,7 @@ namespace AdSecGH.Components
       base.UpdateUI();
     }
 
-    public override void UpdateUIFromSelectedItems()
+    protected override void UpdateUIFromSelectedItems()
     {
       switch (this.SelectedItems[0])
       {

@@ -32,7 +32,7 @@ namespace AdSecGH
     /// <returns></returns>
     public override GH_LoadingInstruction PriorityLoad()
     {
-      if (TryFindPluginPath("AdSec.dll") == "")
+      if (TryFindPluginPath("AdSec.gha") == "")
         return GH_LoadingInstruction.Abort;
 
       // ### Set system environment variables to allow user rights to read above dll ###

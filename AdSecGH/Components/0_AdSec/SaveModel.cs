@@ -244,7 +244,7 @@ namespace AdSecGH.Components
     #region Custom UI
     public override void SetSelected(int i, int j) { }
 
-    public override void InitialiseDropdowns() { }
+    protected override void InitialiseDropdowns() { }
 
     public override void CreateAttributes()
     {
