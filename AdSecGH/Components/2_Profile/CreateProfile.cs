@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
@@ -35,8 +36,8 @@ namespace AdSecGH.Components
       "Create Profile",
       "Profile",
       "Create Profile for AdSec Section",
-      Ribbon.CategoryName.Name(),
-      Ribbon.SubCategoryName.Cat2())
+      CategoryName.Name(),
+      SubCategoryName.Cat2())
     {
       this.Hidden = false; // sets the initial state of the component to hidden
     }
@@ -723,80 +724,34 @@ namespace AdSecGH.Components
 
 
     #region menu override
-    private bool first = true;
-
-    private void Mode1Clicked()
+    internal override void Mode1Clicked()
     {
-      if (_mode == FoldMode.Catalogue)
-        if (!comingFromSave) { return; }
-
       // remove plane
-      IGH_Param param_Plane = Params.Input[Params.Input.Count - 1];
+      IGH_Param plane = Params.Input[Params.Input.Count - 1];
       Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
 
-      //remove input parameters
-      while (Params.Input.Count > 0)
-        Params.UnregisterInputParameter(Params.Input[0], true);
+      // remove input parameters
+      while (this.Params.Input.Count > 0)
+        this.Params.UnregisterInputParameter(this.Params.Input[0], true);
 
-      //register input parameter
-      Params.RegisterInputParam(new Param_String());
-      Params.RegisterInputParam(new Param_Boolean());
+      // register input parameter
+      this.Params.RegisterInputParam(new Param_String());
+      this.Params.RegisterInputParam(new Param_Boolean());
 
       // add plane
-      Params.RegisterInputParam(param_Plane);
+      Params.RegisterInputParam(plane);
 
-      _mode = FoldMode.Catalogue;
+      this._mode = FoldMode.Catalogue;
 
-      (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-      Params.OnParametersChanged();
-      ExpireSolution(true);
-    }
-    private void SetNumberOfGenericInputs(int inputs, bool isSecantPile = false)
-    {
-      numberOfInputs = inputs;
-
-      // if last input previously was a bool and we no longer need that
-      if (lastInputWasSecant || isSecantPile)
-      {
-        if (Params.Input.Count > 0)
-        {
-          // make sure to remove last param
-          Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], true);
-          Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], true);
-        }
-      }
-
-      // remove any additional inputs
-      while (Params.Input.Count > inputs)
-        Params.UnregisterInputParameter(Params.Input[inputs], true);
-
-      if (isSecantPile) // add two less generic than input says
-      {
-        while (Params.Input.Count > inputs + 2)
-          Params.UnregisterInputParameter(Params.Input[inputs + 2], true);
-        inputs -= 2;
-      }
-
-      // add inputs parameter
-      while (Params.Input.Count < inputs)
-        Params.RegisterInputParam(new Param_GenericObject());
-
-      if (isSecantPile) // finally add int and bool param if secant
-      {
-        Params.RegisterInputParam(new Param_Integer());
-        Params.RegisterInputParam(new Param_Boolean());
-        lastInputWasSecant = true;
-      }
+      base.UpdateUI();
     }
 
-    private bool lastInputWasSecant;
-    private int numberOfInputs;
     private Type typ = typeof(IRectangleProfile);
 
     private void Mode2Clicked()
     {
       // remove plane
-      IGH_Param param_Plane = Params.Input[Params.Input.Count - 1];
+      IGH_Param plane = Params.Input[Params.Input.Count - 1];
       Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
 
       // check if mode is correct
@@ -959,7 +914,7 @@ namespace AdSecGH.Components
       }
 
       // add plane
-      Params.RegisterInputParam(param_Plane);
+      Params.RegisterInputParam(plane);
 
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
       Params.OnParametersChanged();

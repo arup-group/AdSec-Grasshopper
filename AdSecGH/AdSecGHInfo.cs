@@ -12,6 +12,7 @@ namespace AdSecGH
 {
   public class AddReferencePriority : GH_AssemblyPriority
   {
+    public static Assembly AdSecAPI;
     public static string PluginPath
     {
       get
