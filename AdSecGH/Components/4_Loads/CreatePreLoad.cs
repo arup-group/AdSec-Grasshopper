@@ -166,7 +166,7 @@ namespace AdSecGH.Components
           load = IPreStress.Create(GetInput.GetStress(this, DA, 1, stressUnit));
           break;
       }
-      ILongitudinalGroup longitudinal = (ILongitudinalGroup)in_rebar.Value;
+      ILongitudinalGroup longitudinal = (ILongitudinalGroup)in_rebar.Value.Group;
       longitudinal.Preload = load;
       AdSecRebarGroupGoo out_rebar = new AdSecRebarGroupGoo(longitudinal);
       if (in_rebar.Cover != null)
