@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
-using Grasshopper;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Oasys.Interop;
 using Oasys.Taxonomy.Profiles;
@@ -51,22 +49,11 @@ namespace AdSecGH.Components
     //{
     //        "Profile type", "Measure", "Type", "Profile"
     //});
+    // do we exclude certain profiles?
     //List<string> excludedInterfaces = new List<string>(new string[]
     //{
     //    "IProfile", "IPoint", "IPolygon", "IFlange", "IWeb", "IWebConstant", "IWebTapered", "ITrapezoidProfileAbstractInterface", "IIBeamProfile"
     //});
-    //Dictionary<string, Type> profileTypes;
-    //Dictionary<string, FieldInfo> profileFields;
-    //// Sections
-    //List<string> filteredlist = new List<string>();
-    //int catalogueIndex = -1; //-1 is all
-    //int typeIndex = -1;
-    //// displayed selections
-    //string typeName = "All";
-    //string sectionName = "All";
-    //// list of sections as outcome from selections
-    //string profileString = "HE HE200.B";
-    //string search = "";
 
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
@@ -89,63 +76,22 @@ namespace AdSecGH.Components
       for (int i = 0; i < this.Params.Input.Count; i++)
         this.Params.Input[i].ClearRuntimeMessages();
 
+      Plane local = Plane.WorldYZ;
+      Plane temp = Plane.Unset;
+      if (DA.GetData(Params.Input.Count - 1, ref temp))
+        local = temp;
+
       if (this._mode == FoldMode.Catalogue)
       {
         List<IProfile> profiles = this.SolveInstanceForCatalogueProfile(DA);
+        Oasys.Profiles.IProfile adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
 
-        if (profiles.Count > 100)
-        {
-
-          DataTree<string> tree = new DataTree<string>();
-
-          int pathCount = 0;
-          if (this.Params.Output[0].VolatileDataCount > 0)
-            pathCount = this.Params.Output[0].VolatileData.PathCount;
-
-          GH_Path path = new GH_Path(new int[] { pathCount });
-          tree.AddRange(this._profileDescriptions, path);
-
-          DA.SetDataTree(0, tree);
-        }
-        else
-        {
-          List<AdSecProfileGoo> adSecProfiles = new List<AdSecProfileGoo>();
-          foreach (IProfile profile in profiles)
-            adSecProfiles.Add(new AdSecProfileGoo(AdSecProfiles.CreateProfile(profile), Plane.WorldYZ));
-
-          DataTree<AdSecProfileGoo> tree = new DataTree<AdSecProfileGoo>();
-
-          int pathCount = 0;
-          if (this.Params.Output[0].VolatileDataCount > 0)
-            pathCount = this.Params.Output[0].VolatileData.PathCount;
-
-          GH_Path path = new GH_Path(new int[] { pathCount });
-          tree.AddRange(adSecProfiles, path);
-
-          DA.SetDataTree(0, tree);
-        }
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
       }
       else if (this._mode == FoldMode.Other)
       {
         IProfile profile = this.SolveInstanceForStandardProfile(DA);
         Oasys.Profiles.IProfile adSecProfile = AdSecProfiles.CreateProfile(profile);
-
-        //try
-        //{
-        //    Oasys.Collections.IList<Oasys.AdSec.IWarning> warn = profile.Validate();
-        //    foreach (Oasys.AdSec.IWarning warning in warn)
-        //        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, warning.Description);
-        //}
-        //catch (Exception e)
-        //{
-        //    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
-        //    return;
-        //}
-
-        Plane local = Plane.WorldYZ;
-        Plane temp = Plane.Unset;
-        if (DA.GetData(Params.Input.Count - 1, ref temp))
-          local = temp;
 
         DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
         return;
