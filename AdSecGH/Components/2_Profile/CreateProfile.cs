@@ -45,16 +45,6 @@ namespace AdSecGH.Components
     #endregion
 
     #region Input and output
-    //List<string> spacerDescriptions = new List<string>(new string[]
-    //{
-    //        "Profile type", "Measure", "Type", "Profile"
-    //});
-    // do we exclude certain profiles?
-    //List<string> excludedInterfaces = new List<string>(new string[]
-    //{
-    //    "IProfile", "IPoint", "IPolygon", "IFlange", "IWeb", "IWebConstant", "IWebTapered", "ITrapezoidProfileAbstractInterface", "IIBeamProfile"
-    //});
-
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
