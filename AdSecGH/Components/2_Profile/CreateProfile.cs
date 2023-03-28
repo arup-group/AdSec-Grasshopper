@@ -92,20 +92,38 @@ namespace AdSecGH.Components
       if (this._mode == FoldMode.Catalogue)
       {
         List<IProfile> profiles = this.SolveInstanceForCatalogueProfile(DA);
-        List<Oasys.Profiles.IProfile> adSecProfiles = new List<Oasys.Profiles.IProfile>();
-        foreach (IProfile profile in profiles)
-          adSecProfiles.Add(AdSecProfiles.CreateProfile(profile));
 
-        DataTree<Oasys.Profiles.IProfile> tree = new DataTree<Oasys.Profiles.IProfile>();
+        if (profiles.Count > 100)
+        {
 
-        int pathCount = 0;
-        if (this.Params.Output[0].VolatileDataCount > 0)
-          pathCount = this.Params.Output[0].VolatileData.PathCount;
+          DataTree<string> tree = new DataTree<string>();
 
-        GH_Path path = new GH_Path(new int[] { pathCount });
-        tree.AddRange(adSecProfiles, path);
+          int pathCount = 0;
+          if (this.Params.Output[0].VolatileDataCount > 0)
+            pathCount = this.Params.Output[0].VolatileData.PathCount;
 
-        DA.SetDataTree(0, tree);
+          GH_Path path = new GH_Path(new int[] { pathCount });
+          tree.AddRange(this._profileDescriptions, path);
+
+          DA.SetDataTree(0, tree);
+        }
+        else
+        {
+          List<AdSecProfileGoo> adSecProfiles = new List<AdSecProfileGoo>();
+          foreach (IProfile profile in profiles)
+            adSecProfiles.Add(new AdSecProfileGoo(AdSecProfiles.CreateProfile(profile), Plane.WorldYZ));
+
+          DataTree<AdSecProfileGoo> tree = new DataTree<AdSecProfileGoo>();
+
+          int pathCount = 0;
+          if (this.Params.Output[0].VolatileDataCount > 0)
+            pathCount = this.Params.Output[0].VolatileData.PathCount;
+
+          GH_Path path = new GH_Path(new int[] { pathCount });
+          tree.AddRange(adSecProfiles, path);
+
+          DA.SetDataTree(0, tree);
+        }
       }
       else if (this._mode == FoldMode.Other)
       {
