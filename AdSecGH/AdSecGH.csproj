@@ -30,10 +30,13 @@ Copyright © Oasys 1985 - 2022</Description>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Oasys.Interop">
-      <HintPath>..\..\oasys-structural-taxonomy\Oasys.Interop\bin\x64\Debug\net48\Oasys.Interop.dll</HintPath>
+      <HintPath>..\..\OasysGH\lib\Oasys.Interop.dll</HintPath>
     </Reference>
     <Reference Include="Oasys.Taxonomy.IProfiles">
-      <HintPath>..\..\oasys-structural-taxonomy\Oasys.Taxonomy.IProfiles\bin\x64\Debug\net48\Oasys.Taxonomy.IProfiles.dll</HintPath>
+      <HintPath>..\..\OasysGH\lib\Oasys.Taxonomy.IProfiles.dll</HintPath>
+    </Reference>
+    <Reference Include="Oasys.Taxonomy.Profiles">
+      <HintPath>..\..\OasysGH\lib\Oasys.Taxonomy.Profiles.dll</HintPath>
     </Reference>
     <Reference Include="OasysGH">
       <HintPath>..\..\OasysGH\OasysGH\bin\x64\Debug\net48\OasysGH.dll</HintPath>

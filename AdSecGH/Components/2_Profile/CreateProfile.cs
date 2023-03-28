@@ -156,10 +156,10 @@ namespace AdSecGH.Components
       base.UpdateUI();
     }
 
-    protected void Mode2Clicked()
+    protected override void Mode2Clicked()
     {
-      // remove plane
       IGH_Param plane = Params.Input[Params.Input.Count - 1];
+      // remove plane
       Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
 
       // check if mode is correct
@@ -173,7 +173,7 @@ namespace AdSecGH.Components
         _mode = FoldMode.Other;
       }
 
-      this.SetNumberOfGenericInputs();
+      this.UpdateParameters();
 
       // add plane
       Params.RegisterInputParam(plane);
