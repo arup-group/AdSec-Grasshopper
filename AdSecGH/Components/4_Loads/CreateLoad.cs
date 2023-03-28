@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -30,7 +29,8 @@ namespace AdSecGH.Components
       "Create" + AdSecLoadGoo.Name.Replace(" ", string.Empty),
       AdSecLoadGoo.Name.Replace(" ", string.Empty),
       "Create an" + AdSecLoadGoo.Description + " from an axial force and biaxial moments",
-      CategoryName.Name(), SubCategoryName.Cat5())
+      CategoryName.Name(),
+      SubCategoryName.Cat5())
     {
       this.Hidden = true; // sets the initial state of the component to hidden
     }

@@ -11,7 +11,6 @@ using Oasys.AdSec.Reinforcement.Preloads;
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.Helpers;
-using OasysGH.UI;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;
 using OasysUnits;
@@ -19,17 +18,20 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
+  /// <summary>
+  /// Component to create a new Stress Strain Point
+  /// </summary>
   public class CreatePreLoad : GH_OasysDropDownComponent
   {
     #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
+    public override Guid ComponentGuid => new Guid("cbab2b12-2a01-4f05-ba24-2c79827c7415");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    public override Guid ComponentGuid => new Guid("cbab2b12-2a01-4f05-ba24-2c79827c7415");
     protected override System.Drawing.Bitmap Icon => Properties.Resources.Prestress;
     private ForceUnit _forceUnit = DefaultUnits.ForceUnit;
+    private StrainUnit _strainUnit = DefaultUnits.MaterialStrainUnit;
     private PressureUnit _stressUnit = DefaultUnits.StressUnitResult;
-    private StrainUnit _strainUnit = DefaultUnits.StrainUnitResult;
 
     public CreatePreLoad() : base(
       "Create Prestress",
@@ -59,47 +61,52 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // get rebargroup
-      AdSecRebarGroupGoo in_rebar = AdSecInput.ReinforcementGroup(this, DA, 0);
+      AdSecRebarGroupGoo rebar = AdSecInput.ReinforcementGroup(this, DA, 0);
 
       IPreload load = null;
       // Create new load
-      switch (this.SelectedItems[0])
+      switch (SelectedItems[0])
       {
         case ("Force"):
-          load = IPreForce.Create((Force)Input.UnitNumber(this, DA, 1, this._forceUnit));
+          load = IPreForce.Create((Force)Input.UnitNumber(this, DA, 1, _forceUnit));
           break;
         case ("Strain"):
-          load = IPreStrain.Create((Strain)Input.UnitNumber(this, DA, 1, this._strainUnit));
+          load = IPreStrain.Create((Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
           break;
         case ("Stress"):
-          load = IPreStress.Create((Pressure)Input.UnitNumber(this, DA, 1, this._stressUnit));
+          load = IPreStress.Create((Pressure)Input.UnitNumber(this, DA, 1, _stressUnit));
           break;
       }
-      ILongitudinalGroup longitudinal = (ILongitudinalGroup)in_rebar.Value;
+      ILongitudinalGroup longitudinal = (ILongitudinalGroup)rebar.Value.Group;
       longitudinal.Preload = load;
       AdSecRebarGroupGoo out_rebar = new AdSecRebarGroupGoo(longitudinal);
-      if (in_rebar.Cover != null)
-        out_rebar.Cover = ICover.Create(in_rebar.Cover.UniformCover);
+      if (rebar.Cover != null)
+        out_rebar.Cover = ICover.Create(rebar.Cover.UniformCover);
 
       DA.SetData(0, out_rebar);
 
-      AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Applying prestress will change the up-stream (backwards) rebar object as well - please make a copy of the input if you want to have both a rebar with and without prestress. This will change in future releases, apologies for the inconvenience...");
+      AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Applying prestress will change the up-stream (backwards) rebar object as well " +
+          "- please make a copy of the input if you want to have both a rebar with and without prestress. " +
+          "This will change in future releases, apologies for the inconvenience...");
     }
 
-    #region Custom UI
+
+    #region Custom 
     protected override void InitialiseDropdowns()
     {
-      this.SpacerDescriptions = new List<string>(new string[]{
-        "Type",
-        "Measure"
-      });
+      this.SpacerDescriptions = new List<string>() {
+        "Force",
+        "Strain",
+        "Stress"
+      };
 
       this.DropDownItems = new List<List<string>>();
       this.SelectedItems = new List<string>();
 
       // type
-      this.DropDownItems.Add(new List<string>() { "Force", "Strain", "Stress" });
-      this.SelectedItems.Add(this.DropDownItems[0][0]);
+      List<string> types = new List<string>() { "Force", "Strain", "Stress" };
+      this.DropDownItems.Add(types);
+      this.SelectedItems.Add(DropDownItems[0][0]);
 
       // force
       this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
@@ -110,72 +117,84 @@ namespace AdSecGH.Components
 
     public override void SetSelected(int i, int j)
     {
-      // change selected item
       this.SelectedItems[i] = this.DropDownItems[i][j];
 
       if (i == 0)
       {
-        switch (this.SelectedItems[0])
+        switch (SelectedItems[0])
         {
           case ("Force"):
-            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
-            this.SelectedItems[0] = "Force";
+            DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
+            SelectedItems[0] = _forceUnit.ToString();
             break;
           case ("Strain"):
-            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
-            this.SelectedItems[0] = "Strain";
+            DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
+            SelectedItems[0] = _strainUnit.ToString();
             break;
           case ("Stress"):
-            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
-            this.SelectedItems[0] = "Stress";
+            DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
+            SelectedItems[0] = _stressUnit.ToString();
             break;
         }
       }
       else
       {
-        switch (this.SelectedItems[0])
+        switch (SelectedItems[0])
         {
           case ("Force"):
-            this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[i]);
+            _forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), SelectedItems[i]);
             break;
           case ("Strain"):
-            this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[i]);
+            _strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), SelectedItems[i]);
             break;
           case ("Stress"):
-            this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
+            _stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), SelectedItems[i]);
             break;
         }
       }
+
       base.UpdateUI();
     }
+    #endregion
 
-    protected override void UpdateUIFromSelectedItems()
+    #region (de)serialization
+    public override bool Write(GH_IO.Serialization.GH_IWriter writer)
     {
-      this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[0]);
-      this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[1]);
-      this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[2]);
-      base.UpdateUIFromSelectedItems();
+      writer.SetString("force", _forceUnit.ToString());
+      writer.SetString("strain", _strainUnit.ToString());
+      writer.SetString("stress", _stressUnit.ToString());
+      return base.Write(writer);
+    }
+
+    public override bool Read(GH_IO.Serialization.GH_IReader reader)
+    {
+      _forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), reader.GetString("force"));
+      _strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), reader.GetString("strain"));
+      _stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), reader.GetString("stress"));
+      return base.Read(reader);
     }
     #endregion
+
 
     public override void VariableParameterMaintenance()
     {
       string forceUnitAbbreviation = Force.GetAbbreviation(this._forceUnit);
       string strainUnitAbbreviation = Strain.GetAbbreviation(this._strainUnit);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(this._stressUnit);
-      switch (this.SelectedItems[0])
+
+      switch (SelectedItems[0])
       {
         case ("Force"):
-          this.Params.Input[1].Name = "Force [" + forceUnitAbbreviation + "]";
-          this.Params.Input[1].NickName = "P";
+          Params.Input[1].Name = "Force [" + forceUnitAbbreviation + "]";
+          Params.Input[1].NickName = "P";
           break;
         case ("Strain"):
-          this.Params.Input[1].Name = "Strain [" + strainUnitAbbreviation + "]";
-          this.Params.Input[1].NickName = "ε";
+          Params.Input[1].Name = "Strain [" + strainUnitAbbreviation + "]";
+          Params.Input[1].NickName = "ε";
           break;
         case ("Stress"):
-          this.Params.Input[1].Name = "Stress [" + stressUnitAbbreviation + "]";
-          this.Params.Input[1].NickName = "σ";
+          Params.Input[1].Name = "Stress [" + stressUnitAbbreviation + "]";
+          Params.Input[1].NickName = "σ";
           break;
       }
     }
