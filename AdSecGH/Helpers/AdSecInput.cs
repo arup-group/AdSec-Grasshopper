@@ -531,108 +531,108 @@ namespace AdSecGH.Helpers
       return null;
     }
 
-    internal static AdSecProfileGoo Boundaries(GH_Component owner, IGH_DataAccess DA, int inputid_Boundary, int inputid_Voids, LengthUnit lengthUnit, bool isOptional = false)
-    {
-      owner.ClearRuntimeMessages();
-      AdSecProfileGoo perimeter = null;
-      GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid_Boundary, ref gh_typ))
-      {
-        Brep brep = null;
-        Curve crv = null;
-        Polyline solid = null;
-        if (GH_Convert.ToBrep(gh_typ.Value, ref brep, GH_Conversion.Both))
-        {
-          perimeter = new AdSecProfileGoo(brep, lengthUnit);
-        }
-        else if (GH_Convert.ToCurve(gh_typ.Value, ref crv, GH_Conversion.Both))
-        {
-          if (crv.TryGetPolyline(out solid))
-          {
-            perimeter = new AdSecProfileGoo(solid, lengthUnit);
-          }
-          else
-          {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Boundary].NickName + " to Polyline");
-            return null;
-          }
-        }
-        else
-        {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid_Boundary].NickName + " to Boundary");
-          return null;
-        }
+    //internal static AdSecProfileGoo Boundaries(GH_Component owner, IGH_DataAccess DA, int inputid_Boundary, int inputid_Voids, LengthUnit lengthUnit, bool isOptional = false)
+    //{
+    //  owner.ClearRuntimeMessages();
+    //  AdSecProfileGoo perimeter = null;
+    //  GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+    //  if (DA.GetData(inputid_Boundary, ref gh_typ))
+    //  {
+    //    Brep brep = null;
+    //    Curve crv = null;
+    //    Polyline solid = null;
+    //    if (GH_Convert.ToBrep(gh_typ.Value, ref brep, GH_Conversion.Both))
+    //    {
+    //      perimeter = new AdSecProfileGoo(brep, lengthUnit);
+    //    }
+    //    else if (GH_Convert.ToCurve(gh_typ.Value, ref crv, GH_Conversion.Both))
+    //    {
+    //      if (crv.TryGetPolyline(out solid))
+    //      {
+    //        perimeter = new AdSecProfileGoo(solid, lengthUnit);
+    //      }
+    //      else
+    //      {
+    //        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Boundary].NickName + " to Polyline");
+    //        return null;
+    //      }
+    //    }
+    //    else
+    //    {
+    //      owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid_Boundary].NickName + " to Boundary");
+    //      return null;
+    //    }
 
-        if (inputid_Voids >= 0)
-        {
-          // try get voids
-          List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
-          if (DA.GetDataList(inputid_Voids, gh_typs))
-          {
-            List<Polyline> voids = new List<Polyline>();
+    //    if (inputid_Voids >= 0)
+    //    {
+    //      // try get voids
+    //      List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
+    //      if (DA.GetDataList(inputid_Voids, gh_typs))
+    //      {
+    //        List<Polyline> voids = new List<Polyline>();
 
-            for (int i = 0; i < gh_typs.Count; i++)
-            {
-              if (GH_Convert.ToCurve(gh_typs[i].Value, ref crv, GH_Conversion.Both))
-              {
-                Polyline voidCrv = null;
-                if (crv.TryGetPolyline(out voidCrv))
-                {
-                  voids.Add(voidCrv);
-                }
-                else
-                {
-                  owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " (item " + i + ") to Polyline");
-                }
-              }
-              else
-              {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " (item " + i + ") to Polyline");
-              }
-            }
+    //        for (int i = 0; i < gh_typs.Count; i++)
+    //        {
+    //          if (GH_Convert.ToCurve(gh_typs[i].Value, ref crv, GH_Conversion.Both))
+    //          {
+    //            Polyline voidCrv = null;
+    //            if (crv.TryGetPolyline(out voidCrv))
+    //            {
+    //              voids.Add(voidCrv);
+    //            }
+    //            else
+    //            {
+    //              owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " (item " + i + ") to Polyline");
+    //            }
+    //          }
+    //          else
+    //          {
+    //            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " (item " + i + ") to Polyline");
+    //          }
+    //        }
 
-            perimeter = new AdSecProfileGoo(solid, voids, lengthUnit);
-          }
-          else if (owner.Params.Input[inputid_Voids].SourceCount > 0)
-          {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " input to Polyline(s)");
-            return null;
-          }
-        }
-        return (AdSecProfileGoo)perimeter;
-      }
-      else if (!isOptional)
-      {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid_Boundary].NickName + " failed to collect data!");
-      }
-      return null;
-    }
+    //        perimeter = new AdSecProfileGoo(solid, voids, lengthUnit);
+    //      }
+    //      else if (owner.Params.Input[inputid_Voids].SourceCount > 0)
+    //      {
+    //        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " input to Polyline(s)");
+    //        return null;
+    //      }
+    //    }
+    //    return (AdSecProfileGoo)perimeter;
+    //  }
+    //  else if (!isOptional)
+    //  {
+    //    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid_Boundary].NickName + " failed to collect data!");
+    //  }
+    //  return null;
+    //}
 
-    internal static IProfile Profile(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
-    {
-      IProfile prfl = null;
-      GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ))
-      {
-        // try cast directly to quantity type
-        if (gh_typ.Value is AdSecProfileGoo)
-        {
-          AdSecProfileGoo a1 = (AdSecProfileGoo)gh_typ.Value;
-          prfl = a1.Profile;
-        }
-        else
-        {
-          prfl = Boundaries(owner, DA, inputid, -1, DefaultUnits.LengthUnitGeometry).Profile;
-        }
+    //internal static IProfile Profile(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
+    //{
+    //  IProfile prfl = null;
+    //  GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+    //  if (DA.GetData(inputid, ref gh_typ))
+    //  {
+    //    // try cast directly to quantity type
+    //    if (gh_typ.Value is AdSecProfileGoo)
+    //    {
+    //      AdSecProfileGoo a1 = (AdSecProfileGoo)gh_typ.Value;
+    //      prfl = a1.Profile;
+    //    }
+    //    else
+    //    {
+    //      prfl = Boundaries(owner, DA, inputid, -1, DefaultUnits.LengthUnitGeometry).Profile;
+    //    }
 
-        return prfl;
-      }
-      else if (!isOptional)
-      {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
-      }
-      return null;
-    }
+    //    return prfl;
+    //  }
+    //  else if (!isOptional)
+    //  {
+    //    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+    //  }
+    //  return null;
+    //}
 
     internal static AdSecProfileGoo AdSecProfileGoo(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
     {
@@ -647,7 +647,8 @@ namespace AdSecGH.Helpers
         }
         else
         {
-          prfl = Boundaries(owner, DA, inputid, -1, DefaultUnits.LengthUnitGeometry);
+          return null;
+          //prfl = Boundaries(owner, DA, inputid, -1, DefaultUnits.LengthUnitGeometry);
         }
         return prfl;
       }
