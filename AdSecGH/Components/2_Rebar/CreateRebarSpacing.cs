@@ -92,60 +92,60 @@ namespace AdSecGH.Components
     #region Custom UI
     protected override void InitialiseDropdowns()
     {
-      this.SpacerDescriptions = new List<string>(new string[] {
+      this._spacerDescriptions = new List<string>(new string[] {
         "Spacing method",
         "Measure"
       });
 
-      this.DropDownItems = new List<List<string>>();
-      this.SelectedItems = new List<string>();
+      this._dropDownItems = new List<List<string>>();
+      this._selectedItems = new List<string>();
 
-      this.DropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
-      this.SelectedItems.Add(this.DropDownItems[0][0]);
+      this._dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
+      this._selectedItems.Add(this._dropDownItems[0][0]);
 
       // length
-      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-      this.SelectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
+      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
+      this._selectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
 
-      this.IsInitialised = true;
+      this._isInitialised = true;
     }
 
     public override void SetSelected(int i, int j)
     {
-      this.SelectedItems[i] = this.DropDownItems[i][j];
+      this._selectedItems[i] = this._dropDownItems[i][j];
       if (i == 0)
       {
-        this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this.SelectedItems[i]);
+        this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[i]);
         if (this._mode == FoldMode.Count)
         {
           // remove the second dropdown (length)
-          while (this.DropDownItems.Count > 1)
-            this.DropDownItems.RemoveAt(this.DropDownItems.Count - 1);
-          while (this.SelectedItems.Count > 1)
-            this.SelectedItems.RemoveAt(this.SelectedItems.Count - 1);
+          while (this._dropDownItems.Count > 1)
+            this._dropDownItems.RemoveAt(this._dropDownItems.Count - 1);
+          while (this._selectedItems.Count > 1)
+            this._selectedItems.RemoveAt(this._selectedItems.Count - 1);
         }
         else
         {
           // add second dropdown (length)
-          if (this.DropDownItems.Count != 2)
+          if (this._dropDownItems.Count != 2)
           {
-            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-            this.SelectedItems.Add(this._lengthUnit.ToString());
+            this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
+            this._selectedItems.Add(this._lengthUnit.ToString());
           }
         }
         this.ToggleInput();
       }
       else
       {
-        this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this.SelectedItems[i]);
+        this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[i]);
       }
     }
 
     protected override void UpdateUIFromSelectedItems()
     {
-      this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this.SelectedItems[0]);
+      this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[0]);
       if (this._mode == FoldMode.Distance)
-        this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this.SelectedItems[1]);
+        this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[1]);
       this.ToggleInput();
       base.UpdateUIFromSelectedItems();
     }

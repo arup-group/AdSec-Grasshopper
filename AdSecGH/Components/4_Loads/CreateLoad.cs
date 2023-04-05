@@ -78,36 +78,36 @@ namespace AdSecGH.Components
     #region Custom UI
     protected override void InitialiseDropdowns()
     {
-      this.SpacerDescriptions = new List<string>(new string[] {
+      this._spacerDescriptions = new List<string>(new string[] {
         "Force Unit",
         "Moment Unit"
       });
 
-      this.DropDownItems = new List<List<string>>();
-      this.SelectedItems = new List<string>();
+      this._dropDownItems = new List<List<string>>();
+      this._selectedItems = new List<string>();
 
       // force
-      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
-      this.SelectedItems.Add(Force.GetAbbreviation(this._forceUnit));
+      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
+      this._selectedItems.Add(Force.GetAbbreviation(this._forceUnit));
 
       // moment
-      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Moment));
-      this.SelectedItems.Add(Moment.GetAbbreviation(this._momentUnit));
+      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Moment));
+      this._selectedItems.Add(Moment.GetAbbreviation(this._momentUnit));
 
-      this.IsInitialised = true;
+      this._isInitialised = true;
     }
 
     public override void SetSelected(int i, int j)
     {
-      this.SelectedItems[i] = this.DropDownItems[i][j];
+      this._selectedItems[i] = this._dropDownItems[i][j];
 
       switch (i)
       {
         case 0:
-          this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[i]);
+          this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this._selectedItems[i]);
           break;
         case 1:
-          this._momentUnit = (MomentUnit)UnitsHelper.Parse(typeof(MomentUnit), this.SelectedItems[i]);
+          this._momentUnit = (MomentUnit)UnitsHelper.Parse(typeof(MomentUnit), this._selectedItems[i]);
           break;
       }
 
@@ -116,8 +116,8 @@ namespace AdSecGH.Components
 
     protected override void UpdateUIFromSelectedItems()
     {
-      this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[0]);
-      this._momentUnit = (MomentUnit)UnitsHelper.Parse(typeof(MomentUnit), this.SelectedItems[1]);
+      this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this._selectedItems[0]);
+      this._momentUnit = (MomentUnit)UnitsHelper.Parse(typeof(MomentUnit), this._selectedItems[1]);
       base.UpdateUIFromSelectedItems();
     }
 

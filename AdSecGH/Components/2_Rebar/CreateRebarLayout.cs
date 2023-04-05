@@ -117,47 +117,47 @@ namespace AdSecGH.Components
     #region Custom UI
     protected override void InitialiseDropdowns()
     {
-      this.SpacerDescriptions = new List<string>(new string[] {
+      this._spacerDescriptions = new List<string>(new string[] {
         "Layout Type",
         "Measure",
         "Angular measure"
       });
 
-      this.DropDownItems = new List<List<string>>();
-      this.SelectedItems = new List<string>();
+      this._dropDownItems = new List<List<string>>();
+      this._selectedItems = new List<string>();
 
-      this.DropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
-      this.SelectedItems.Add(this.DropDownItems[0][0]);
+      this._dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
+      this._selectedItems.Add(this._dropDownItems[0][0]);
 
-      this.SelectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
-      this.SelectedItems.Add(Angle.GetAbbreviation(this._angleUnit));
+      this._selectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
+      this._selectedItems.Add(Angle.GetAbbreviation(this._angleUnit));
 
-      this.IsInitialised = true;
+      this._isInitialised = true;
     }
 
     public override void SetSelected(int i, int j)
     {
       // set selected item
-      this.SelectedItems[i] = this.DropDownItems[i][j];
+      this._selectedItems[i] = this._dropDownItems[i][j];
       if (i == 0)
       {
-        this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this.SelectedItems[i]);
+        this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[i]);
 
         switch (this._mode)
         {
           case FoldMode.Line:
           case FoldMode.SingleBars:
-            while (this.DropDownItems.Count > 1)
-              this.DropDownItems.RemoveAt(1);
-            this.SpacerDescriptions[1] = "Measure";
+            while (this._dropDownItems.Count > 1)
+              this._dropDownItems.RemoveAt(1);
+            this._spacerDescriptions[1] = "Measure";
             break;
           case FoldMode.Arc:
           case FoldMode.Circle:
-            if (this.DropDownItems.Count < 2)
-              this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-            if (this.DropDownItems.Count < 3)
-              this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
-            this.SpacerDescriptions[1] = "Length measure";
+            if (this._dropDownItems.Count < 2)
+              this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
+            if (this._dropDownItems.Count < 3)
+              this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
+            this._spacerDescriptions[1] = "Length measure";
             break;
         }
 
@@ -168,11 +168,11 @@ namespace AdSecGH.Components
         switch (i)
         {
           case 1:
-            this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this.SelectedItems[i]);
+            this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[i]);
             break;
 
           case 2:
-            this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this.SelectedItems[i]);
+            this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this._selectedItems[i]);
             break;
         }
       }
@@ -180,9 +180,9 @@ namespace AdSecGH.Components
 
     protected override void UpdateUIFromSelectedItems()
     {
-      this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this.SelectedItems[0]);
-      this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this.SelectedItems[1]);
-      this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this.SelectedItems[2]);
+      this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[0]);
+      this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[1]);
+      this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this._selectedItems[2]);
       this.ToggleInput();
       base.UpdateUIFromSelectedItems();
     }

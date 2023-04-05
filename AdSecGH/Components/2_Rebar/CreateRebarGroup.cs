@@ -167,39 +167,39 @@ namespace AdSecGH.Components
     #region Custom UI
     protected override void InitialiseDropdowns()
     {
-      this.SpacerDescriptions = new List<string>(new string[] {
+      this._spacerDescriptions = new List<string>(new string[] {
         "Group Type",
         "Measure",
       });
 
-      this.DropDownItems = new List<List<string>>();
-      this.SelectedItems = new List<string>();
+      this._dropDownItems = new List<List<string>>();
+      this._selectedItems = new List<string>();
 
-      this.DropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
-      this.SelectedItems.Add(this.DropDownItems[0][0]);
-      this.SelectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
+      this._dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
+      this._selectedItems.Add(this._dropDownItems[0][0]);
+      this._selectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
 
-      this.IsInitialised = true;
+      this._isInitialised = true;
     }
 
     public override void SetSelected(int i, int j)
     {
-      this.SelectedItems[i] = this.DropDownItems[i][j];
+      this._selectedItems[i] = this._dropDownItems[i][j];
       if (i == 0)
       {
-        this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this.SelectedItems[i]);
+        this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[i]);
         this.ToggleInput();
       }
       else
       {
-        this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this.SelectedItems[i]);
+        this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[i]);
       }
     }
 
     protected override void UpdateUIFromSelectedItems()
     {
-      this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this.SelectedItems[0]);
-      this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this.SelectedItems[1]);
+      this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[0]);
+      this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[1]);
       this.ToggleInput();
       base.UpdateUIFromSelectedItems();
     }

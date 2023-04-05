@@ -143,32 +143,32 @@ namespace AdSecGH.Components
     #region Custom UI
     protected override void InitialiseDropdowns()
     {
-      this.SpacerDescriptions = new List<string>(new string[] {
+      this._spacerDescriptions = new List<string>(new string[] {
         "Curve Type",
         "Strain Unit",
         "Stress Unit",
       });
 
-      this.DropDownItems = new List<List<string>>();
-      this.SelectedItems = new List<string>();
+      this._dropDownItems = new List<List<string>>();
+      this._selectedItems = new List<string>();
 
-      this.DropDownItems.Add(Enum.GetNames(typeof(AdSecStressStrainCurveGoo.StressStrainCurveType)).ToList());
-      this.DropDownItems[0].RemoveAt(this.DropDownItems[0].Count - 1);
-      this.SelectedItems.Add(this._mode.ToString());
+      this._dropDownItems.Add(Enum.GetNames(typeof(AdSecStressStrainCurveGoo.StressStrainCurveType)).ToList());
+      this._dropDownItems[0].RemoveAt(this._dropDownItems[0].Count - 1);
+      this._selectedItems.Add(this._mode.ToString());
 
-      this.IsInitialised = true;
+      this._isInitialised = true;
     }
 
     public override void SetSelected(int i, int j)
     {
-      this.SelectedItems[i] = this.DropDownItems[i][j];
+      this._selectedItems[i] = this._dropDownItems[i][j];
 
       // toggle case
       if (i == 0)
       {
         // remove dropdown lists beyond first level
-        while (this.DropDownItems.Count > 1)
-          this.DropDownItems.RemoveAt(1);
+        while (this._dropDownItems.Count > 1)
+          this._dropDownItems.RemoveAt(1);
 
         switch (j)
         {
@@ -180,12 +180,12 @@ namespace AdSecGH.Components
             break;
           case 2:
             // add strain dropdown
-            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-            this.SelectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
+            this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
+            this._selectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
 
             // add stress dropdown
-            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
-            this.SelectedItems.Add(Pressure.GetAbbreviation(this._stressUnit));
+            this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
+            this._selectedItems.Add(Pressure.GetAbbreviation(this._stressUnit));
 
             this.Mode2Clicked();
             break;
@@ -194,14 +194,14 @@ namespace AdSecGH.Components
             break;
           case 4:
             // add strain dropdown
-            //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
-            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-            this.SelectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
+            //this._dropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
+            this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
+            this._selectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
 
             // add pressure dropdown
-            //this.DropDownItems.Add(Enum.GetNames(typeof(PressureUnit)).ToList());
-            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
-            this.SelectedItems.Add(Pressure.GetAbbreviation(this._stressUnit));
+            //this._dropDownItems.Add(Enum.GetNames(typeof(PressureUnit)).ToList());
+            this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
+            this._selectedItems.Add(Pressure.GetAbbreviation(this._stressUnit));
 
             this.Mode4Clicked();
             break;
@@ -210,9 +210,9 @@ namespace AdSecGH.Components
             break;
           case 6:
             // add strain dropdown
-            //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
-            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-            this.SelectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
+            //this._dropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
+            this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
+            this._selectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
 
             this.Mode6Clicked();
             break;
@@ -221,16 +221,16 @@ namespace AdSecGH.Components
             break;
           case 8:
             // add strain dropdown
-            //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
-            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-            this.SelectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
+            //this._dropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
+            this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
+            this._selectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
             this.Mode8Clicked();
             break;
           case 9:
             // add strain dropdown
-            //this.DropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
-            this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-            this.SelectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
+            //this._dropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
+            this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
+            this._selectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
             this.Mode9Clicked();
             break;
         }
@@ -240,10 +240,10 @@ namespace AdSecGH.Components
         switch (i)
         {
           case 1:
-            this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[i]);
+            this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this._selectedItems[i]);
             break;
           case 2:
-            this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[i]);
+            this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this._selectedItems[i]);
             break;
         }
       }
@@ -252,9 +252,9 @@ namespace AdSecGH.Components
 
     protected override void UpdateUIFromSelectedItems()
     {
-      this._mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)Enum.Parse(typeof(AdSecStressStrainCurveGoo.StressStrainCurveType), this.SelectedItems[0]);
-      this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this.SelectedItems[1]);
-      this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this.SelectedItems[2]);
+      this._mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)Enum.Parse(typeof(AdSecStressStrainCurveGoo.StressStrainCurveType), this._selectedItems[0]);
+      this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this._selectedItems[1]);
+      this._stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), this._selectedItems[2]);
 
       switch (this._mode)
       {

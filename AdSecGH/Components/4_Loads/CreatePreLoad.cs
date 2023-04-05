@@ -65,7 +65,7 @@ namespace AdSecGH.Components
 
       IPreload load = null;
       // Create new load
-      switch (SelectedItems[0])
+      switch (_selectedItems[0])
       {
         case ("Force"):
           load = IPreForce.Create((Force)Input.UnitNumber(this, DA, 1, _forceUnit));
@@ -94,61 +94,61 @@ namespace AdSecGH.Components
     #region Custom 
     protected override void InitialiseDropdowns()
     {
-      this.SpacerDescriptions = new List<string>() {
+      this._spacerDescriptions = new List<string>() {
         "Force",
         "Strain",
         "Stress"
       };
 
-      this.DropDownItems = new List<List<string>>();
-      this.SelectedItems = new List<string>();
+      this._dropDownItems = new List<List<string>>();
+      this._selectedItems = new List<string>();
 
       // type
       List<string> types = new List<string>() { "Force", "Strain", "Stress" };
-      this.DropDownItems.Add(types);
-      this.SelectedItems.Add(DropDownItems[0][0]);
+      this._dropDownItems.Add(types);
+      this._selectedItems.Add(_dropDownItems[0][0]);
 
       // force
-      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
-      this.SelectedItems.Add(Force.GetAbbreviation(this._forceUnit));
+      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
+      this._selectedItems.Add(Force.GetAbbreviation(this._forceUnit));
 
-      this.IsInitialised = true;
+      this._isInitialised = true;
     }
 
     public override void SetSelected(int i, int j)
     {
-      this.SelectedItems[i] = this.DropDownItems[i][j];
+      this._selectedItems[i] = this._dropDownItems[i][j];
 
       if (i == 0)
       {
-        switch (SelectedItems[0])
+        switch (_selectedItems[0])
         {
           case ("Force"):
-            DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
-            SelectedItems[0] = _forceUnit.ToString();
+            _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
+            _selectedItems[0] = _forceUnit.ToString();
             break;
           case ("Strain"):
-            DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
-            SelectedItems[0] = _strainUnit.ToString();
+            _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
+            _selectedItems[0] = _strainUnit.ToString();
             break;
           case ("Stress"):
-            DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
-            SelectedItems[0] = _stressUnit.ToString();
+            _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
+            _selectedItems[0] = _stressUnit.ToString();
             break;
         }
       }
       else
       {
-        switch (SelectedItems[0])
+        switch (_selectedItems[0])
         {
           case ("Force"):
-            _forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), SelectedItems[i]);
+            _forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), _selectedItems[i]);
             break;
           case ("Strain"):
-            _strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), SelectedItems[i]);
+            _strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), _selectedItems[i]);
             break;
           case ("Stress"):
-            _stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), SelectedItems[i]);
+            _stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), _selectedItems[i]);
             break;
         }
       }
@@ -182,7 +182,7 @@ namespace AdSecGH.Components
       string strainUnitAbbreviation = Strain.GetAbbreviation(this._strainUnit);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(this._stressUnit);
 
-      switch (SelectedItems[0])
+      switch (_selectedItems[0])
       {
         case ("Force"):
           Params.Input[1].Name = "Force [" + forceUnitAbbreviation + "]";

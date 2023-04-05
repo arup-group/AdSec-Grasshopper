@@ -29,18 +29,6 @@ Copyright © Oasys 1985 - 2022</Description>
     <None Remove="Properties\Icons\Icons\**" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Oasys.Interop">
-      <HintPath>..\..\OasysGH\lib\Oasys.Interop.dll</HintPath>
-    </Reference>
-    <Reference Include="Oasys.Taxonomy.IProfiles">
-      <HintPath>..\..\OasysGH\lib\Oasys.Taxonomy.IProfiles.dll</HintPath>
-    </Reference>
-    <Reference Include="Oasys.Taxonomy.Profiles">
-      <HintPath>..\..\OasysGH\lib\Oasys.Taxonomy.Profiles.dll</HintPath>
-    </Reference>
-    <Reference Include="OasysGH">
-      <HintPath>..\..\OasysGH\OasysGH\bin\x64\Debug\net48\OasysGH.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -69,8 +57,9 @@ Copyright © Oasys 1985 - 2022</Description>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.2</Version>
+      <Version>13.0.3</Version>
     </PackageReference>
+    <PackageReference Include="OasysGH" Version="0.6.1-beta" />
     <PackageReference Include="OasysUnits">
       <Version>1.0.0</Version>
     </PackageReference>
@@ -78,9 +67,6 @@ Copyright © Oasys 1985 - 2022</Description>
       <Version>6.27.20176.5001</Version>
       <IncludeAssets>compile;build</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="System.Data.SQLite">
-      <Version>1.0.117</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

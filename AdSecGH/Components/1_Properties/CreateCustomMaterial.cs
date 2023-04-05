@@ -141,27 +141,27 @@ namespace AdSecGH.Components
     #region Custom UI
     protected override void InitialiseDropdowns()
     {
-      this.SpacerDescriptions = new List<string>(new string[] {
+      this._spacerDescriptions = new List<string>(new string[] {
         "Material Type"
       });
 
-      this.DropDownItems = new List<List<string>>();
-      this.SelectedItems = new List<string>();
+      this._dropDownItems = new List<List<string>>();
+      this._selectedItems = new List<string>();
 
-      this.DropDownItems.Add(Enum.GetNames(typeof(AdSecMaterial.AdSecMaterialType)).ToList());
-      this.SelectedItems.Add(AdSecMaterial.AdSecMaterialType.Concrete.ToString());
+      this._dropDownItems.Add(Enum.GetNames(typeof(AdSecMaterial.AdSecMaterialType)).ToList());
+      this._selectedItems.Add(AdSecMaterial.AdSecMaterialType.Concrete.ToString());
 
-      this.IsInitialised = true;
+      this._isInitialised = true;
     }
 
     public override void SetSelected(int i, int j)
     {
-      this.SelectedItems[i] = this.DropDownItems[i][j];
+      this._selectedItems[i] = this._dropDownItems[i][j];
 
-      Enum.TryParse(this.SelectedItems[0], out _type);
+      Enum.TryParse(this._selectedItems[0], out _type);
 
       // set bool if selection is concrete
-      if (this.SelectedItems[i] == AdSecMaterial.AdSecMaterialType.Concrete.ToString())
+      if (this._selectedItems[i] == AdSecMaterial.AdSecMaterialType.Concrete.ToString())
         this._isConcrete = true;
       else
         this._isConcrete = false;
@@ -174,7 +174,7 @@ namespace AdSecGH.Components
     protected override void UpdateUIFromSelectedItems()
     {
       // cast selection to material type enum
-      Enum.TryParse(this.SelectedItems[0], out _type);
+      Enum.TryParse(this._selectedItems[0], out _type);
 
       // don´t know if this needs to happen before ChangeMode()
       this.CreateAttributes();

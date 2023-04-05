@@ -39,22 +39,22 @@ namespace AdSecGHTests.Helpers
       Duplicates.AreEqual(originalComponent, deserializedComponent, true);
     }
 
-    public static void ChangeDropDownTest(GH_OasysDropDownComponent comp, bool ignoreSpacerDescriptionsCount = false)
+    public static void ChangeDropDownTest(GH_OasysDropDownComponent comp, bool ignore_spacerDescriptionsCount = false)
     {
-      Assert.True(comp.IsInitialised);
-      if (!ignoreSpacerDescriptionsCount)
-        Assert.Equal(comp.DropDownItems.Count, comp.SpacerDescriptions.Count);
-      Assert.Equal(comp.DropDownItems.Count, comp.SelectedItems.Count);
+      Assert.True(comp._isInitialised);
+      if (!ignore_spacerDescriptionsCount)
+        Assert.Equal(comp._dropDownItems.Count, comp._spacerDescriptions.Count);
+      Assert.Equal(comp._dropDownItems.Count, comp._selectedItems.Count);
 
-      for (int i = 0; i < comp.DropDownItems.Count; i++)
+      for (int i = 0; i < comp._dropDownItems.Count; i++)
       {
         comp.SetSelected(i, 0);
 
-        for (int j = 0; j < comp.DropDownItems[i].Count; j++)
+        for (int j = 0; j < comp._dropDownItems[i].Count; j++)
         {
           comp.SetSelected(i, j);
           DeserializeTest(comp);
-          Assert.Equal(comp.SelectedItems[i], comp.DropDownItems[i][j]);
+          Assert.Equal(comp._selectedItems[i], comp._dropDownItems[i][j]);
         }
       }
     }

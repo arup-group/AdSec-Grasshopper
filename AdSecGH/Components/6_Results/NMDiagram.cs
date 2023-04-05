@@ -109,55 +109,55 @@ namespace AdSecGH.Components
 
     protected override void InitialiseDropdowns()
     {
-      this.SpacerDescriptions = new List<string>(new string[] {
+      this._spacerDescriptions = new List<string>(new string[] {
         "Interaction",
         "Measure"
       });
 
-      this.DropDownItems = new List<List<string>>();
-      this.SelectedItems = new List<string>();
+      this._dropDownItems = new List<List<string>>();
+      this._selectedItems = new List<string>();
 
       // type
-      this.DropDownItems.Add(new List<string>() { "N-M", "M-M" });
-      this.SelectedItems.Add(this.DropDownItems[0][0]);
+      this._dropDownItems.Add(new List<string>() { "N-M", "M-M" });
+      this._selectedItems.Add(this._dropDownItems[0][0]);
 
       // force
-      this.DropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
-      this.SelectedItems.Add(Angle.GetAbbreviation(this._angleUnit));
+      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
+      this._selectedItems.Add(Angle.GetAbbreviation(this._angleUnit));
 
-      this.IsInitialised = true;
+      this._isInitialised = true;
     }
 
     public override void SetSelected(int i, int j)
     {
-      this.SelectedItems[i] = this.DropDownItems[i][j];
+      this._selectedItems[i] = this._dropDownItems[i][j];
 
       if (i == 0)
       {
-        switch (this.SelectedItems[0])
+        switch (this._selectedItems[0])
         {
           case ("N-M"):
             this._mode = FoldMode.NM;
-            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle);
-            this.SelectedItems[1] = _angleUnit.ToString();
+            this._dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle);
+            this._selectedItems[1] = _angleUnit.ToString();
             break;
 
           case ("M-M"):
             this._mode = FoldMode.MM;
-            this.DropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
-            this.SelectedItems[1] = _forceUnit.ToString();
+            this._dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
+            this._selectedItems[1] = _forceUnit.ToString();
             break;
         }
       }
       else
       {
-        switch (this.SelectedItems[0])
+        switch (this._selectedItems[0])
         {
           case ("N-M"):
-            _angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this.SelectedItems[i]);
+            _angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this._selectedItems[i]);
             break;
           case ("M-M"):
-            _forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[i]);
+            _forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this._selectedItems[i]);
             break;
         }
       }
@@ -166,16 +166,16 @@ namespace AdSecGH.Components
 
     protected override void UpdateUIFromSelectedItems()
     {
-      switch (this.SelectedItems[0])
+      switch (this._selectedItems[0])
       {
         case ("N-M"):
           this._mode = FoldMode.NM;
-          this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this.SelectedItems[1]);
+          this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this._selectedItems[1]);
           break;
 
         case ("M-M"):
           this._mode = FoldMode.MM;
-          this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this.SelectedItems[1]);
+          this._forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), this._selectedItems[1]);
           break;
       }
       base.UpdateUIFromSelectedItems();
@@ -183,7 +183,7 @@ namespace AdSecGH.Components
 
     public override void VariableParameterMaintenance()
     {
-      switch (this.SelectedItems[0])
+      switch (this._selectedItems[0])
       {
         case ("N-M"):
           string angleUnitAbbreviation = Angle.GetAbbreviation(this._angleUnit);
