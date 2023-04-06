@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
 
 namespace AdSecGH.Helpers
 {
@@ -39,6 +35,7 @@ namespace AdSecGH.Helpers
       }
       return dict;
     }
+
     internal static Dictionary<string, FieldInfo> ReflectFields(Type type)
     {
       Dictionary<string, FieldInfo> materials = new Dictionary<string, FieldInfo>();
@@ -66,7 +63,5 @@ namespace AdSecGH.Helpers
       }
       return dict;
     }
-
-
   }
 }

@@ -1,155 +1,102 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.Profiles;
+using OasysGH;
+using OasysGH.Components;
+using OasysGH.Helpers;
+using OasysGH.Units;
+using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-  public class CreateProfileFlange : GH_OasysComponent, IGH_VariableParameterComponent
+  public class CreateProfileFlange : GH_OasysDropDownComponent
+  {
+    #region Name and Ribbon Layout
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
+    public override Guid ComponentGuid => new Guid("c182921f-0ace-49ca-8fb7-5722dbf2ba30");
+    public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateFlange;
+    private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
+
+    public CreateProfileFlange() : base(
+      "Create Flange",
+      "Flange",
+      "Create a Flange for AdSec Profile",
+      CategoryName.Name(),
+      SubCategoryName.Cat2())
     {
-        #region Name and Ribbon Layout
-        // This region handles how the component in displayed on the ribbon
-        // including name, exposure level and icon
-        public override Guid ComponentGuid => new Guid("c182921f-0ace-49ca-8fb7-5722dbf2ba30");
-        public CreateProfileFlange()
-          : base("Create Flange", "Flange", "Create a Flange for AdSec Profile",
-                Ribbon.CategoryName.Name(),
-                Ribbon.SubCategoryName.Cat2())
-        { this.Hidden = true; } // sets the initial state of the component to hidden
-
-        public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
-
-        protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateFlange;
-        #endregion
-
-        #region Custom UI
-        //This region overrides the typical component layout
-        public override void CreateAttributes()
-        {
-            if (first)
-            {
-                dropdownitems = new List<List<string>>();
-                selecteditems = new List<string>();
-
-                // length
-                //dropdownitems.Add(Enum.GetNames(typeof(Units.LengthUnit)).ToList());
-                dropdownitems.Add(Units.FilteredLengthUnits);
-                selecteditems.Add(lengthUnit.ToString());
-
-                IQuantity quantity = new Length(0, lengthUnit);
-                unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
-
-                first = false;
-            }
-
-            m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
-        }
-        public void SetSelected(int i, int j)
-        {
-            // change selected item
-            selecteditems[i] = dropdownitems[i][j];
-
-            lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[i]);
-
-            // update name of inputs (to display unit on sliders)
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            ExpireSolution(true);
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
-        }
-        private void UpdateUIFromSelectedItems()
-        {
-            lengthUnit = (LengthUnit)Enum.Parse(typeof(LengthUnit), selecteditems[0]);
-
-            CreateAttributes();
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            ExpireSolution(true);
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
-        }
-        // list of lists with all dropdown lists conctent
-        List<List<string>> dropdownitems;
-        // list of selected items
-        List<string> selecteditems;
-        // list of descriptions 
-        List<string> spacerDescriptions = new List<string>(new string[]
-        {
-            "Measure"
-        });
-        private bool first = true;
-        private LengthUnit lengthUnit = Units.LengthUnit;
-        string unitAbbreviation;
-        #endregion
-
-        #region Input and output
-
-        protected override void RegisterInputParams(GH_InputParamManager pManager)
-        {
-            pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Flange width", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Flange thickness", GH_ParamAccess.item);
-        }
-        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-        {
-            pManager.AddGenericParameter("FlangeProfile", "Fla", "Flange Profile for AdSec Profile", GH_ParamAccess.item);
-        }
-        #endregion
-
-        protected override void SolveInstance(IGH_DataAccess DA)
-        {
-
-            AdSecProfileFlangeGoo flange = new AdSecProfileFlangeGoo(
-                IFlange.Create(
-                    GetInput.GetLength(this, DA, 0, lengthUnit), 
-                    GetInput.GetLength(this, DA, 1, lengthUnit)));
-
-            DA.SetData(0, flange);
-        }
-        #region (de)serialization
-        public override bool Write(GH_IO.Serialization.GH_IWriter writer)
-        {
-            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
-
-            return base.Write(writer);
-        }
-        public override bool Read(GH_IO.Serialization.GH_IReader reader)
-        {
-            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-
-            UpdateUIFromSelectedItems();
-
-            first = false;
-            return base.Read(reader);
-        }
-        bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
-        {
-            return false;
-        }
-        bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
-        {
-            return false;
-        }
-        IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
-        {
-            return null;
-        }
-        bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
-        {
-            return false;
-        }
-        #endregion
-
-        #region IGH_VariableParameterComponent null implementation
-        void IGH_VariableParameterComponent.VariableParameterMaintenance()
-        {
-            IQuantity quantity = new Length(0, lengthUnit);
-            unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
-            Params.Input[0].Name = "Width [" + unitAbbreviation + "]";
-            Params.Input[1].Name = "Thickness [" + unitAbbreviation + "]";
-        }
-        #endregion
+      this.Hidden = true; // sets the initial state of the component to hidden
     }
+    #endregion
+
+    #region Input and output
+    protected override void RegisterInputParams(GH_InputParamManager pManager)
+    {
+      string unitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
+      pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Flange width", GH_ParamAccess.item);
+      pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Flange thickness", GH_ParamAccess.item);
+    }
+
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
+    {
+      pManager.AddGenericParameter("FlangeProfile", "Fla", "Flange Profile for AdSec Profile", GH_ParamAccess.item);
+    }
+    #endregion
+
+    protected override void SolveInstance(IGH_DataAccess DA)
+    {
+      AdSecProfileFlangeGoo flange = new AdSecProfileFlangeGoo(
+        IFlange.Create(
+          (Length)Input.UnitNumber(this, DA, 0, this._lengthUnit),
+          (Length)Input.UnitNumber(this, DA, 1, this._lengthUnit)));
+
+      DA.SetData(0, flange);
+    }
+
+    #region Custom UI
+    protected override void InitialiseDropdowns()
+    {
+      this._spacerDescriptions = new List<string>(new string[] {
+        "Measure"
+      });
+
+      this._dropDownItems = new List<List<string>>();
+      this._selectedItems = new List<string>();
+
+      // length
+      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
+      this._selectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
+
+      IQuantity quantity = new Length(0, this._lengthUnit);
+
+      this._isInitialised = true;
+    }
+
+    public override void SetSelected(int i, int j)
+    {
+      this._selectedItems[i] = this._dropDownItems[i][j];
+      this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[i]);
+      base.UpdateUI();
+    }
+
+    protected override void UpdateUIFromSelectedItems()
+    {
+      this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[0]);
+      base.UpdateUIFromSelectedItems();
+    }
+    #endregion
+
+    public override void VariableParameterMaintenance()
+    {
+      string unitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
+      Params.Input[0].Name = "Width [" + unitAbbreviation + "]";
+      Params.Input[1].Name = "Thickness [" + unitAbbreviation + "]";
+    }
+  }
 }

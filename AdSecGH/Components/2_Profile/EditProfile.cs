@@ -1,191 +1,131 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
-using OasysUnits.Units;
-using OasysUnits;
-using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.AdSec.StandardMaterials;
-using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.AdSec.Reinforcement.Layers;
-using AdSecGH.Parameters;
-using Rhino.Geometry;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
+using AdSecGH.Parameters;
+using Grasshopper.Kernel;
+using OasysGH;
+using OasysGH.Components;
+using OasysGH.Helpers;
+using OasysGH.UI;
+using OasysGH.Units.Helpers;
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Components
 {
-    public class EditProfile : GH_OasysComponent, IGH_VariableParameterComponent
+    public class EditProfile : GH_OasysDropDownComponent
+  {
+    #region Name and Ribbon Layout
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
+    public override Guid ComponentGuid => new Guid("78f26bee-c72c-4d88-9b30-492190df2910");
+    public override GH_Exposure Exposure => GH_Exposure.primary;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.EditProfile;
+    private AngleUnit _angleUnit = AngleUnit.Radian;
+
+    public EditProfile() : base(
+      "Edit Profile",
+      "ProfileEdit",
+      "Modify an AdSec Profile",
+      CategoryName.Name(),
+      SubCategoryName.Cat2())
     {
-        #region Name and Ribbon Layout
-        // This region handles how the component in displayed on the ribbon
-        // including name, exposure level and icon
-        public override Guid ComponentGuid => new Guid("78f26bee-c72c-4d88-9b30-492190df2910");
-        public EditProfile()
-          : base("Edit Profile", "ProfileEdit", "Modify an AdSec Profile",
-                Ribbon.CategoryName.Name(),
-                Ribbon.SubCategoryName.Cat2())
-        { this.Hidden = false; } // sets the initial state of the component to hidden
-
-        public override GH_Exposure Exposure => GH_Exposure.primary;
-
-        protected override System.Drawing.Bitmap Icon => Properties.Resources.EditProfile;
-        #endregion
-
-        #region Custom UI
-        //This region overrides the typical component layout
-        public override void CreateAttributes()
-        {
-            if (Grasshopper.Instances.DocumentEditor == null) { base.CreateAttributes(); return; } // skip this class during GH loading
-
-            if (first)
-            {
-                dropdownitems = new List<List<string>>();
-                dropdownitems.Add(Units.FilteredAngleUnits);
-
-                IQuantity quantityAngle = new Angle(0, angleUnit);
-                angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
-
-                selecteditems = new List<string>();
-                selecteditems.Add(angleUnit.ToString());
-
-                first = false;
-            }
-
-            m_attributes = new UI.MultiDropDownComponentUI(this, SetSelected, dropdownitems, selecteditems, spacerDescriptions);
-        }
-        public void SetSelected(int i, int j)
-        {
-            // set selected item
-            selecteditems[i] = dropdownitems[i][j];
-            angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[i]);
-            ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
-        }
-
-        private void UpdateUIFromSelectedItems()
-        {
-            angleUnit = (AngleUnit)Enum.Parse(typeof(AngleUnit), selecteditems[0]);
-            CreateAttributes();
-            ExpireSolution(true);
-            (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-            Params.OnParametersChanged();
-            this.OnDisplayExpired(true);
-        }
-        #endregion
-
-
-        #region Input and output
-        List<List<string>> dropdownitems;
-        List<string> selecteditems;
-        List<string> spacerDescriptions = new List<string>(new string[]
-        {
-            "Measure"
-        });
-        private AngleUnit angleUnit = AngleUnit.Radian;
-        string angleAbbreviation;
-        bool first = true;
-        protected override void RegisterInputParams(GH_InputParamManager pManager)
-        {
-            pManager.AddGenericParameter("Profile", "Pf", "AdSet Profile to Edit or get information from", GH_ParamAccess.item);
-            pManager.AddGenericParameter("Rotation [" + angleAbbreviation + "]", "R", "[Optional] The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.", GH_ParamAccess.item);
-            pManager.AddBooleanParameter("isReflectedY", "rY", "[Optional] Reflects the profile over the y-axis in the local coordinate system.", GH_ParamAccess.item);
-            pManager.AddBooleanParameter("isReflectedZ", "rZ", "[Optional] Reflects the profile over the z-axis in the local coordinate system.", GH_ParamAccess.item);
-            
-            // make all but first input optional
-            for (int i = 1; i < pManager.ParamCount; i++)
-                pManager[i].Optional = true;
-        }
-
-        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-        {
-            pManager.AddGenericParameter("Profile", "Pf", "Modified AdSet Profile", GH_ParamAccess.item);
-        }
-        #endregion
-
-        protected override void SolveInstance(IGH_DataAccess DA)
-        {
-            // #### get material input and duplicate it ####
-            AdSecProfileGoo editPrf = GetInput.AdSecProfileGoo(this, DA, 0);
-
-            if (editPrf != null)
-            {
-                // #### get the remaining inputs ####
-
-                // 1 Rotation
-                if (Params.Input[1].SourceCount > 0)
-                {
-                    editPrf.Rotation = GetInput.GetAngle(this, DA, 1, angleUnit);
-                }
-
-                // 2 ReflectionY
-                bool refY = false;
-                if (DA.GetData(2, ref refY))
-                {
-                    editPrf.IsReflectedY = refY;
-                }
-
-                // 3 Reflection3
-                bool refZ = false;
-                if (DA.GetData(3, ref refZ))
-                {
-                    editPrf.IsReflectedZ = refZ;
-                }
-
-                DA.SetData(0, new AdSecProfileGoo(editPrf.Profile, editPrf.LocalPlane));
-            }
-        }
-
-        #region (de)serialization
-        public override bool Write(GH_IO.Serialization.GH_IWriter writer)
-        {
-            Helpers.DeSerialization.writeDropDownComponents(ref writer, dropdownitems, selecteditems, spacerDescriptions);
-            return base.Write(writer);
-        }
-        public override bool Read(GH_IO.Serialization.GH_IReader reader)
-        {
-            if (Grasshopper.Instances.DocumentEditor == null) { return base.Read(reader); } // skip this class during GH loading
-
-            Helpers.DeSerialization.readDropDownComponents(ref reader, ref dropdownitems, ref selecteditems, ref spacerDescriptions);
-            
-            UpdateUIFromSelectedItems();
-            
-            first = false;
-
-            return base.Read(reader);
-        }
-        bool IGH_VariableParameterComponent.CanInsertParameter(GH_ParameterSide side, int index)
-        {
-            return false;
-        }
-        bool IGH_VariableParameterComponent.CanRemoveParameter(GH_ParameterSide side, int index)
-        {
-            return false;
-        }
-        IGH_Param IGH_VariableParameterComponent.CreateParameter(GH_ParameterSide side, int index)
-        {
-            return null;
-        }
-        bool IGH_VariableParameterComponent.DestroyParameter(GH_ParameterSide side, int index)
-        {
-            return false;
-        }
-        #endregion
-
-        #region IGH_VariableParameterComponent null implementation
-        void IGH_VariableParameterComponent.VariableParameterMaintenance()
-        {
-            IQuantity quantityAngle = new Angle(0, angleUnit);
-            angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
-            Params.Input[1].Name = "Rotation [" + angleAbbreviation + "]";
-        }
-        #endregion
+      this.Hidden = false; // sets the initial state of the component to hidden
     }
+    #endregion
+
+    #region Input and output
+    protected override void RegisterInputParams(GH_InputParamManager pManager)
+    {
+      string angleAbbreviation = Angle.GetAbbreviation(this._angleUnit);
+
+      pManager.AddGenericParameter("Profile", "Pf", "AdSet Profile to Edit or get information from", GH_ParamAccess.item);
+      pManager.AddGenericParameter("Rotation [" + angleAbbreviation + "]", "R", "[Optional] The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.", GH_ParamAccess.item);
+      pManager.AddBooleanParameter("isReflectedY", "rY", "[Optional] Reflects the profile over the y-axis in the local coordinate system.", GH_ParamAccess.item);
+      pManager.AddBooleanParameter("isReflectedZ", "rZ", "[Optional] Reflects the profile over the z-axis in the local coordinate system.", GH_ParamAccess.item);
+
+      // make all but first input optional
+      for (int i = 1; i < pManager.ParamCount; i++)
+        pManager[i].Optional = true;
+    }
+
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
+    {
+      pManager.AddGenericParameter("Profile", "Pf", "Modified AdSet Profile", GH_ParamAccess.item);
+    }
+    #endregion
+
+    protected override void SolveInstance(IGH_DataAccess DA)
+    {
+      // #### get material input and duplicate it ####
+      AdSecProfileGoo editPrf = AdSecInput.AdSecProfileGoo(this, DA, 0);
+
+      if (editPrf != null)
+      {
+        // #### get the remaining inputs ####
+
+        // 1 Rotation
+        if (Params.Input[1].SourceCount > 0)
+        {
+          editPrf.Rotation = (Angle)Input.UnitNumber(this, DA, 1, _angleUnit);
+        }
+
+        // 2 ReflectionY
+        bool refY = false;
+        if (DA.GetData(2, ref refY))
+        {
+          editPrf.IsReflectedY = refY;
+        }
+
+        // 3 Reflection3
+        bool refZ = false;
+        if (DA.GetData(3, ref refZ))
+        {
+          editPrf.IsReflectedZ = refZ;
+        }
+
+        DA.SetData(0, new AdSecProfileGoo(editPrf.Profile, editPrf.LocalPlane));
+      }
+    }
+
+    #region Custom UI
+    protected override void InitialiseDropdowns()
+    {
+      this._spacerDescriptions = new List<string>(new string[] {
+        "Measure"
+      });
+
+      this._dropDownItems = new List<List<string>>();
+      this._selectedItems = new List<string>();
+
+      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
+      this._selectedItems.Add(_angleUnit.ToString());
+
+      this._isInitialised = true;
+    }
+
+    public override void SetSelected(int i, int j)
+    {
+      this._selectedItems[i] = this._dropDownItems[i][j];
+      this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this._selectedItems[i]);
+      base.UpdateUI();
+    }
+
+    protected override void UpdateUIFromSelectedItems()
+    {
+      this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this._selectedItems[0]);
+      base.UpdateUIFromSelectedItems();
+    }
+    #endregion
+
+    public override void VariableParameterMaintenance()
+    {
+      string angleAbbreviation = Angle.GetAbbreviation(this._angleUnit);
+      IQuantity quantityAngle = new Angle(0, _angleUnit);
+      angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
+      Params.Input[1].Name = "Rotation [" + angleAbbreviation + "]";
+    }
+  }
 }

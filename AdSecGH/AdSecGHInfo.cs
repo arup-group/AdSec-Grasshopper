@@ -1,20 +1,29 @@
-﻿using Grasshopper.Kernel;
-using System;
-using System.IO;
+﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using Grasshopper.Kernel;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
-using AdSecGH.Helpers;
+using OasysGH;
+using OasysGH.Helpers;
 
 namespace AdSecGH
 {
   public class AddReferencePriority : GH_AssemblyPriority
   {
+    public static Assembly AdSecAPI;
+    public static string PluginPath
+    {
+      get
+      {
+        if (_pluginPath == null)
+          _pluginPath = TryFindPluginPath("AdSec.gha");
+        return _pluginPath;
+      }
+    }
+    private static string _pluginPath;
+
     /// <summary>
     /// This method finds the location of the AdSec plugin and add's the path to the system environment to load referenced dll files.
     /// Method also tries to load the adsec_api.dll file and provides grasshopper loading error messages if it fails.
@@ -23,7 +32,7 @@ namespace AdSecGH
     /// <returns></returns>
     public override GH_LoadingInstruction PriorityLoad()
     {
-      if (!TryFindPluginPath("AdSec_API.dll"))
+      if (TryFindPluginPath("AdSec.gha") == "")
         return GH_LoadingInstruction.Abort;
 
       // ### Set system environment variables to allow user rights to read above dll ###
@@ -50,10 +59,9 @@ namespace AdSecGH
         Exception exception = new Exception(message);
         GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec: AdSec_API.dll loading", exception);
         Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
-        PostHog.PluginLoaded(message);
+        PostHog.PluginLoaded(PluginInfo.Instance, message);
         return GH_LoadingInstruction.Abort;
       }
-
 
       // ### Trigger a license check ###
       try
@@ -66,28 +74,26 @@ namespace AdSecGH
         Exception exception = new Exception(message);
         GH_LoadingException gH_LoadingException = new GH_LoadingException("AdSec: License", exception);
         Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
-        PostHog.PluginLoaded(message);
+        PostHog.PluginLoaded(PluginInfo.Instance, message);
         return GH_LoadingInstruction.Abort;
       }
 
       // ### Queue up Main menu loader ###
-      Grasshopper.Instances.CanvasCreated += UI.Menu.MenuLoad.OnStartup;
+      Grasshopper.Instances.CanvasCreated += Graphics.Menu.MenuLoad.OnStartup;
 
       // ### Create Ribbon Category name and icon ###
       Grasshopper.Instances.ComponentServer.AddCategorySymbolName("AdSec", 'A');
       Grasshopper.Instances.ComponentServer.AddCategoryIcon("AdSec", Properties.Resources.AdSecLogo);
 
-      // ### Setup units ###
-      Units.SetupUnits();
+      // ### Setup OasysGH and shared Units ###
+      Utility.InitialiseMainMenuAndDefaultUnits();
 
-      PostHog.PluginLoaded();
+      PostHog.PluginLoaded(AdSecGH.PluginInfo.Instance);
 
       return GH_LoadingInstruction.Proceed;
     }
-    public static Assembly AdSecAPI;
-    public static string PluginPath;
 
-    private bool TryFindPluginPath(string keyword)
+    private static string TryFindPluginPath(string keyword)
     {
       // ### Search for plugin path ###
 
@@ -114,8 +120,7 @@ namespace AdSecGH
             if (files.Length > 0)
             {
               path = files[0].Replace(keyword, string.Empty);
-              PluginPath = Path.GetDirectoryName(path);
-              return true;
+              return Path.GetDirectoryName(path);
             }
           }
           string message =
@@ -129,12 +134,29 @@ namespace AdSecGH
           Exception exception = new Exception(message);
           GH_LoadingException gH_LoadingException = new GH_LoadingException(AdSecGHInfo.ProductName + ": " + keyword + " loading failed", exception);
           Grasshopper.Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
-          PostHog.PluginLoaded(message);
-          return false;
+          PostHog.PluginLoaded(AdSecGH.PluginInfo.Instance, message);
+          return "";
         }
       }
-      PluginPath = Path.GetDirectoryName(path);
-      return true;
+      return Path.GetDirectoryName(path);
+    }
+  }
+
+  internal sealed class PluginInfo
+  {
+    private static readonly Lazy<OasysPluginInfo> lazy =
+        new Lazy<OasysPluginInfo>(() => new OasysPluginInfo(
+          AdSecGHInfo.ProductName,
+          AdSecGHInfo.PluginName,
+          AdSecGHInfo.Vers,
+          AdSecGHInfo.isBeta,
+          "phc_alOp3OccDM3D18xJTWDoW44Y1cJvbEScm5LJSX8qnhs"
+          ));
+
+    public static OasysPluginInfo Instance { get { return lazy.Value; } }
+
+    private PluginInfo()
+    {
     }
   }
 
@@ -144,7 +166,7 @@ namespace AdSecGH
     internal const string Company = "Oasys";
     internal const string Copyright = "Copyright © Oasys 1985 - 2022";
     internal const string Contact = "https://www.oasys-software.com/";
-    internal const string Vers = "0.9.16";
+    internal const string Vers = "0.9.17";
     internal static bool isBeta = true;
     internal const string ProductName = "AdSec";
     internal const string PluginName = "AdSecGH";

@@ -1,45 +1,41 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
+using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using OasysUnits.Units;
-using OasysUnits;
 using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.AdSec.StandardMaterials;
-using Oasys.Profiles;
-using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.AdSec.Reinforcement.Layers;
-using AdSecGH.Parameters;
-using Rhino.Geometry;
-using System.Collections.Generic;
+using OasysGH;
+using OasysGH.Components;
 using OasysGH.Parameters;
-using System.Drawing;
+using OasysGH.Units;
+using OasysUnits;
+using OasysUnits.Units;
+using Rhino.Geometry;
 
 namespace AdSecGH.Components
 {
   public class ResultsULS : GH_OasysComponent
   {
     #region Name and Ribbon Layout
-    // This region handles how the component in displayed on the ribbon
-    // including name, exposure level and icon
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("146bd264-66ac-4484-856f-8557be762a33");
-    public ResultsULS()
-      : base("Strength Result", "ULS", "Performs strength checks (ULS), for a given Load or Deformation.",
-            Ribbon.CategoryName.Name(),
-            Ribbon.SubCategoryName.Cat7())
-    { this.Hidden = false; } // sets the initial state of the component to hidden
-
     public override GH_Exposure Exposure => GH_Exposure.primary;
-
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.ULS;
-    #endregion
-
     private Line _failureLine;
+
+    public ResultsULS() : base("Strength Result",
+      "ULS",
+      "Performs strength checks (ULS), for a given Load or Deformation.",
+      CategoryName.Name(),
+      SubCategoryName.Cat7())
+    {
+      this.Hidden = false;  // sets the initial state of the component to hidden
+    }
+    #endregion
 
     #region Input and output
     protected override void RegisterInputParams(GH_InputParamManager pManager)
@@ -50,10 +46,10 @@ namespace AdSecGH.Components
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
-      string strainUnitAbbreviation = Strain.GetAbbreviation(Units.StrainUnit);
-      IQuantity curvature = new Curvature(0, Units.CurvatureUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
+      IQuantity curvature = new Curvature(0, DefaultUnits.CurvatureUnit);
       string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
-      IQuantity moment = new Moment(0, Units.MomentUnit);
+      IQuantity moment = new Moment(0, DefaultUnits.MomentUnit);
       string momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
 
       pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." +
@@ -98,7 +94,7 @@ namespace AdSecGH.Components
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       // get solution input
-      AdSecSolutionGoo solution = GetInput.Solution(this, DA, 0);
+      AdSecSolutionGoo solution = AdSecInput.Solution(this, DA, 0);
 
       IStrengthResult uls = null;
       IStrengthResult failure = null;
@@ -148,9 +144,9 @@ namespace AdSecGH.Components
 
       IDeformation ulsDeformationResult = uls.Deformation;
       DA.SetData(2, new Vector3d(
-          ulsDeformationResult.X.As(Units.StrainUnit),
-          ulsDeformationResult.YY.As(Units.CurvatureUnit),
-          ulsDeformationResult.ZZ.As(Units.CurvatureUnit)));
+          ulsDeformationResult.X.As(DefaultUnits.StrainUnitResult),
+          ulsDeformationResult.YY.As(DefaultUnits.CurvatureUnit),
+          ulsDeformationResult.ZZ.As(DefaultUnits.CurvatureUnit)));
       double defUtil = uls.DeformationUtilisation.As(RatioUnit.DecimalFraction);
       DA.SetData(3, defUtil);
       if (defUtil > 1)
@@ -160,8 +156,8 @@ namespace AdSecGH.Components
       foreach (IMomentRange mrng in uls.MomentRanges)
       {
         Interval interval = new Interval(
-            mrng.Min.As(Units.MomentUnit),
-            mrng.Max.As(Units.MomentUnit));
+            mrng.Min.As(DefaultUnits.MomentUnit),
+            mrng.Max.As(DefaultUnits.MomentUnit));
         momentRanges.Add(new GH_Interval(interval));
       }
       DA.SetDataList(4, momentRanges);
@@ -176,9 +172,9 @@ namespace AdSecGH.Components
 
       IDeformation failureDeformationResult = failure.Deformation;
       DA.SetData(8, new Vector3d(
-          failureDeformationResult.X.As(Units.StrainUnit),
-          failureDeformationResult.YY.As(Units.CurvatureUnit),
-          failureDeformationResult.ZZ.As(Units.CurvatureUnit)));
+          failureDeformationResult.X.As(DefaultUnits.StrainUnitResult),
+          failureDeformationResult.YY.As(DefaultUnits.CurvatureUnit),
+          failureDeformationResult.ZZ.As(DefaultUnits.CurvatureUnit)));
       Length offsetFailure = CalculateOffset(failureDeformationResult);
       double angleRadiansFailure = CalculateAngle(failureDeformationResult);
 
@@ -201,10 +197,10 @@ namespace AdSecGH.Components
         offsetSI = 0.0;
 
       // temp length in SI units
-      Length tempOffset = new Length(offsetSI, LengthUnit.Meter);
+      Length tempOffset = new Length(offsetSI, DefaultUnits.LengthUnitResult);
 
       // offset in user selected unit
-      return new Length(tempOffset.As(Units.LengthUnit), Units.LengthUnit);
+      return tempOffset;
     }
 
     private double CalculateAngle(IDeformation ulsDeformationResult)
@@ -241,7 +237,7 @@ namespace AdSecGH.Components
       offsVec.Rotate(Math.PI / 2, local.ZAxis);
       offsVec.Unitize();
       // move the line
-      double off = offset.As(Units.LengthUnit);
+      double off = offset.As(DefaultUnits.LengthUnitResult);
       ln.Transform(Transform.Translation(offsVec.X * off, offsVec.Y * off, offsVec.Z * off));
       return ln;
     }

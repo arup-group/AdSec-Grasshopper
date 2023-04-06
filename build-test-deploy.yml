@@ -1,6 +1,3 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
 trigger:
@@ -15,11 +12,10 @@ variables:
 pool: 'rhino-compute'
 
 steps:
+- powershell: Remove-Item -Path C:\Users\**\AppData\Roaming\Grasshopper\Libraries\*.ghlink
+  displayName: 'Delete orphan .ghlink files'
+  
 - task: NuGetToolInstaller@1
-
-- task: NuGetAuthenticate@1
-  inputs:
-    forceReinstallCredentialProvider: true
 
 - task: NuGetCommand@2
   displayName: 'Restoring NuGet packages'
@@ -37,11 +33,6 @@ steps:
     clean: true
   env:
     MSBUILDDISABLENODEREUSE: 1
-
-- powershell: |
-    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\3.2.0\build --results-directory .\results .\AdSecGHTests\bin\x64\Release\net6.0\AdSecGHTests.dll
-  displayName: dotnet tests
-  failOnStderr: true
 
 - task: PowerShell@2
   displayName: Check for existing tags

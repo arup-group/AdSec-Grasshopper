@@ -1,0 +1,23 @@
+﻿using Grasshopper.Kernel.Types;
+using OasysGH;
+using OasysGH.Parameters;
+
+namespace AdSecGH.Parameters
+{
+  /// <summary>
+  /// Goo wrapper class, makes sure <see cref="AdSecDesignCode"/> can be used in Grasshopper.
+  /// </summary>
+  public class AdSecDesignCodeGoo : GH_OasysGoo<AdSecDesignCode>
+  {
+    public static string Name => "DesignCode";
+    public static string NickName => "DC";
+    public static string Description => "AdSec Design Code";
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+
+    public AdSecDesignCodeGoo(AdSecDesignCode item) : base(item)
+    {
+    }
+
+    public override IGH_Goo Duplicate() => new AdSecDesignCodeGoo(this.Value);
+  }
+}
