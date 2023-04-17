@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -11,12 +9,11 @@ using OasysGH.Units;
 using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
+using System;
+using System.Collections.Generic;
 
-namespace AdSecGH.Components
-{
-  public class CreateProfileFlange : GH_OasysDropDownComponent
-  {
-    #region Name and Ribbon Layout
+namespace AdSecGH.Components {
+  public class CreateProfileFlange : GH_OasysDropDownComponent {
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("c182921f-0ace-49ca-8fb7-5722dbf2ba30");
     public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
@@ -29,39 +26,23 @@ namespace AdSecGH.Components
       "Flange",
       "Create a Flange for AdSec Profile",
       CategoryName.Name(),
-      SubCategoryName.Cat2())
-    {
+      SubCategoryName.Cat2()) {
       this.Hidden = true; // sets the initial state of the component to hidden
     }
-    #endregion
 
-    #region Input and output
-    protected override void RegisterInputParams(GH_InputParamManager pManager)
-    {
+    public override void SetSelected(int i, int j) {
+      this._selectedItems[i] = this._dropDownItems[i][j];
+      this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[i]);
+      base.UpdateUI();
+    }
+
+    public override void VariableParameterMaintenance() {
       string unitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
-      pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Flange width", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Flange thickness", GH_ParamAccess.item);
+      Params.Input[0].Name = "Width [" + unitAbbreviation + "]";
+      Params.Input[1].Name = "Thickness [" + unitAbbreviation + "]";
     }
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
-      pManager.AddGenericParameter("FlangeProfile", "Fla", "Flange Profile for AdSec Profile", GH_ParamAccess.item);
-    }
-    #endregion
-
-    protected override void SolveInstance(IGH_DataAccess DA)
-    {
-      AdSecProfileFlangeGoo flange = new AdSecProfileFlangeGoo(
-        IFlange.Create(
-          (Length)Input.UnitNumber(this, DA, 0, this._lengthUnit),
-          (Length)Input.UnitNumber(this, DA, 1, this._lengthUnit)));
-
-      DA.SetData(0, flange);
-    }
-
-    #region Custom UI
-    protected override void InitialiseDropdowns()
-    {
+    protected override void InitialiseDropdowns() {
       this._spacerDescriptions = new List<string>(new string[] {
         "Measure"
       });
@@ -78,25 +59,28 @@ namespace AdSecGH.Components
       this._isInitialised = true;
     }
 
-    public override void SetSelected(int i, int j)
-    {
-      this._selectedItems[i] = this._dropDownItems[i][j];
-      this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[i]);
-      base.UpdateUI();
+    protected override void RegisterInputParams(GH_InputParamManager pManager) {
+      string unitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
+      pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Flange width", GH_ParamAccess.item);
+      pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Flange thickness", GH_ParamAccess.item);
     }
 
-    protected override void UpdateUIFromSelectedItems()
-    {
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
+      pManager.AddGenericParameter("FlangeProfile", "Fla", "Flange Profile for AdSec Profile", GH_ParamAccess.item);
+    }
+
+    protected override void SolveInstance(IGH_DataAccess DA) {
+      AdSecProfileFlangeGoo flange = new AdSecProfileFlangeGoo(
+        IFlange.Create(
+          (Length)Input.UnitNumber(this, DA, 0, this._lengthUnit),
+          (Length)Input.UnitNumber(this, DA, 1, this._lengthUnit)));
+
+      DA.SetData(0, flange);
+    }
+
+    protected override void UpdateUIFromSelectedItems() {
       this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[0]);
       base.UpdateUIFromSelectedItems();
-    }
-    #endregion
-
-    public override void VariableParameterMaintenance()
-    {
-      string unitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
-      Params.Input[0].Name = "Width [" + unitAbbreviation + "]";
-      Params.Input[1].Name = "Thickness [" + unitAbbreviation + "]";
     }
   }
 }

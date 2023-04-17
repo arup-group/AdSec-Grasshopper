@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 //using Oasys.AdSec;
 //using Oasys.AdSec.Materials;
 //using Oasys.AdSec.Reinforcement;
@@ -10,10 +7,8 @@ using System.Threading.Tasks;
 //using Oasys.AdSec.Reinforcement.Layers;
 //using Oasys.Profiles;
 
-namespace AdSecGHAdapter
-{
-  public static class InteropAdSecComputeTypes
-  {
+namespace AdSecGHAdapter {
+  public static class InteropAdSecComputeTypes {
     //public static object CastToBarBundle(IBarBundle barBundle, string codeName)
     //{
     //    AdSecComputeTypes.BarBundle outBarBundle = new AdSecComputeTypes.BarBundle();
@@ -220,8 +215,7 @@ namespace AdSecGHAdapter
     //    return outWeb;
     //}
 
-    public static Type GetType(Type type)
-    {
+    public static Type GetType(Type type) {
       //switch (type.Name)
       //{
       //    case nameof(IAdSecSection):
@@ -232,8 +226,7 @@ namespace AdSecGHAdapter
       //}
     }
 
-    public static bool IsPresent()
-    {
+    public static bool IsPresent() {
       //    try
       //    {
       //        AdSecComputeTypes.Section section = new AdSecComputeTypes.Section();

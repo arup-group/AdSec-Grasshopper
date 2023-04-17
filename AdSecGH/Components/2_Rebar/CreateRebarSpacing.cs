@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
@@ -14,18 +11,17 @@ using OasysGH.Units;
 using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace AdSecGH.Components
-{
-    public class CreateRebarSpacing : GH_OasysDropDownComponent
-  {
-    private enum FoldMode
-    {
+namespace AdSecGH.Components {
+  public class CreateRebarSpacing : GH_OasysDropDownComponent {
+    private enum FoldMode {
       Distance,
       Count
     }
 
-    #region Name and Ribbon Layout
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("846d546a-4284-4d69-906b-0e6985d7ddd3");
     public override GH_Exposure Exposure => GH_Exposure.primary;
@@ -39,35 +35,88 @@ namespace AdSecGH.Components
       "Spacing",
       "Create Rebar spacing (by Count or Pitch) for an AdSec Section",
       CategoryName.Name(),
-      SubCategoryName.Cat3())
-    {
+      SubCategoryName.Cat3()) {
       this.Hidden = false; // sets the initial state of the component to hidden
     }
-    #endregion
 
-    #region Input and output
+    public override void SetSelected(int i, int j) {
+      this._selectedItems[i] = this._dropDownItems[i][j];
+      if (i == 0) {
+        this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[i]);
+        if (this._mode == FoldMode.Count) {
+          // remove the second dropdown (length)
+          while (this._dropDownItems.Count > 1)
+            this._dropDownItems.RemoveAt(this._dropDownItems.Count - 1);
+          while (this._selectedItems.Count > 1)
+            this._selectedItems.RemoveAt(this._selectedItems.Count - 1);
+        }
+        else {
+          // add second dropdown (length)
+          if (this._dropDownItems.Count != 2) {
+            this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
+            this._selectedItems.Add(this._lengthUnit.ToString());
+          }
+        }
+        this.ToggleInput();
+      }
+      else {
+        this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[i]);
+      }
+    }
 
-    #endregion
-    protected override void RegisterInputParams(GH_InputParamManager pManager)
-    {
+    public override void VariableParameterMaintenance() {
+      if (this._mode == FoldMode.Distance) {
+        string unitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
+        this.Params.Input[1].Name = "Spacing [" + unitAbbreviation + "]";
+        this.Params.Input[1].NickName = "S";
+        this.Params.Input[1].Description = "Number of bars is calculated based on the available length and the given bar pitch. The bar pitch is re-calculated to place the bars at equal spacing, with a maximum final pitch of the given value. Example: If the available length for the bars is 1000mm and the given bar pitch is 300mm, then the number of spacings that can fit in the available length is calculated as 1000 / 300 i.e. 3.333. The number of spacings is rounded up (3.333 rounds up to 4) and the bar pitch re-calculated (1000mm / 4), resulting in a final pitch of 250mm.";
+        this.Params.Input[1].Access = GH_ParamAccess.item;
+        this.Params.Input[1].Optional = false;
+      }
+      if (this._mode == FoldMode.Count) {
+        this.Params.Input[1].Name = "Count";
+        this.Params.Input[1].NickName = "N";
+        this.Params.Input[1].Description = "The number of bundles or single bars. The bundles or single bars are spaced out evenly over the available space.";
+        this.Params.Input[1].Access = GH_ParamAccess.item;
+        this.Params.Input[1].Optional = false;
+      }
+    }
+
+    protected override void InitialiseDropdowns() {
+      this._spacerDescriptions = new List<string>(new string[] {
+        "Spacing method",
+        "Measure"
+      });
+
+      this._dropDownItems = new List<List<string>>();
+      this._selectedItems = new List<string>();
+
+      this._dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
+      this._selectedItems.Add(this._dropDownItems[0][0]);
+
+      // length
+      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
+      this._selectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
+
+      this._isInitialised = true;
+    }
+
+    protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
       pManager.AddGenericParameter("Rebar", "Rb", "AdSec Rebar (single or bundle)", GH_ParamAccess.item);
       pManager.AddGenericParameter("Spacing [" + unitAbbreviation + "]", "S", "Number of bars is calculated based on the available length and the given bar pitch. The bar pitch is re-calculated to place the bars at equal spacing, with a maximum final pitch of the given value. Example: If the available length for the bars is 1000mm and the given bar pitch is 300mm, then the number of spacings that can fit in the available length is calculated as 1000 / 300 i.e. 3.333. The number of spacings is rounded up (3.333 rounds up to 4) and the bar pitch re-calculated (1000mm / 4), resulting in a final pitch of 250mm.", GH_ParamAccess.item);
       this._mode = FoldMode.Distance;
     }
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       pManager.AddGenericParameter("Spaced Rebars", "RbS", "Rebars Spaced in a Layer for AdSec Reinforcement", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA)
-    {
+    protected override void SolveInstance(IGH_DataAccess DA) {
       // 0 rebar input
       AdSecRebarBundleGoo rebar = AdSecInput.AdSecRebarBundleGoo(this, DA, 0);
 
-      switch (this._mode)
-      {
+      switch (this._mode) {
         case FoldMode.Distance:
           AdSecRebarLayerGoo bundleD = new AdSecRebarLayerGoo(
             ILayerByBarPitch.Create(
@@ -89,73 +138,16 @@ namespace AdSecGH.Components
       }
     }
 
-    #region Custom UI
-    protected override void InitialiseDropdowns()
-    {
-      this._spacerDescriptions = new List<string>(new string[] {
-        "Spacing method",
-        "Measure"
-      });
-
-      this._dropDownItems = new List<List<string>>();
-      this._selectedItems = new List<string>();
-
-      this._dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
-      this._selectedItems.Add(this._dropDownItems[0][0]);
-
-      // length
-      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-      this._selectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
-
-      this._isInitialised = true;
-    }
-
-    public override void SetSelected(int i, int j)
-    {
-      this._selectedItems[i] = this._dropDownItems[i][j];
-      if (i == 0)
-      {
-        this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[i]);
-        if (this._mode == FoldMode.Count)
-        {
-          // remove the second dropdown (length)
-          while (this._dropDownItems.Count > 1)
-            this._dropDownItems.RemoveAt(this._dropDownItems.Count - 1);
-          while (this._selectedItems.Count > 1)
-            this._selectedItems.RemoveAt(this._selectedItems.Count - 1);
-        }
-        else
-        {
-          // add second dropdown (length)
-          if (this._dropDownItems.Count != 2)
-          {
-            this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-            this._selectedItems.Add(this._lengthUnit.ToString());
-          }
-        }
-        this.ToggleInput();
-      }
-      else
-      {
-        this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[i]);
-      }
-    }
-
-    protected override void UpdateUIFromSelectedItems()
-    {
+    protected override void UpdateUIFromSelectedItems() {
       this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[0]);
       if (this._mode == FoldMode.Distance)
         this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[1]);
       this.ToggleInput();
       base.UpdateUIFromSelectedItems();
     }
-    #endregion
 
-    #region menu override
-    private void ToggleInput()
-    {
-      switch (this._mode)
-      {
+    private void ToggleInput() {
+      switch (this._mode) {
         case FoldMode.Distance:
           // remove any additional input parameters
           while (this.Params.Input.Count > 1)
@@ -171,28 +163,6 @@ namespace AdSecGH.Components
 
           this.Params.RegisterInputParam(new Param_Integer());
           break;
-      }
-    }
-    #endregion
-
-    public override void VariableParameterMaintenance()
-    {
-      if (this._mode == FoldMode.Distance)
-      {
-        string unitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
-        this.Params.Input[1].Name = "Spacing [" + unitAbbreviation + "]";
-        this.Params.Input[1].NickName = "S";
-        this.Params.Input[1].Description = "Number of bars is calculated based on the available length and the given bar pitch. The bar pitch is re-calculated to place the bars at equal spacing, with a maximum final pitch of the given value. Example: If the available length for the bars is 1000mm and the given bar pitch is 300mm, then the number of spacings that can fit in the available length is calculated as 1000 / 300 i.e. 3.333. The number of spacings is rounded up (3.333 rounds up to 4) and the bar pitch re-calculated (1000mm / 4), resulting in a final pitch of 250mm.";
-        this.Params.Input[1].Access = GH_ParamAccess.item;
-        this.Params.Input[1].Optional = false;
-      }
-      if (this._mode == FoldMode.Count)
-      {
-        this.Params.Input[1].Name = "Count";
-        this.Params.Input[1].NickName = "N";
-        this.Params.Input[1].Description = "The number of bundles or single bars. The bundles or single bars are spaced out evenly over the available space.";
-        this.Params.Input[1].Access = GH_ParamAccess.item;
-        this.Params.Input[1].Optional = false;
       }
     }
   }

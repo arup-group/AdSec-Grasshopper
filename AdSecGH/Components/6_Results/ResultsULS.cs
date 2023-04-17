@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
@@ -14,12 +11,12 @@ using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace AdSecGH.Components
-{
-  public class ResultsULS : GH_OasysComponent
-  {
-    #region Name and Ribbon Layout
+namespace AdSecGH.Components {
+  public class ResultsULS : GH_OasysComponent {
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("146bd264-66ac-4484-856f-8557be762a33");
     public override GH_Exposure Exposure => GH_Exposure.primary;
@@ -31,21 +28,22 @@ namespace AdSecGH.Components
       "ULS",
       "Performs strength checks (ULS), for a given Load or Deformation.",
       CategoryName.Name(),
-      SubCategoryName.Cat7())
-    {
+      SubCategoryName.Cat7()) {
       this.Hidden = false;  // sets the initial state of the component to hidden
     }
-    #endregion
 
-    #region Input and output
-    protected override void RegisterInputParams(GH_InputParamManager pManager)
-    {
+    public override void DrawViewportWires(IGH_PreviewArgs args) {
+      base.DrawViewportWires(args);
+      if (_failureLine != null)
+        args.Display.DrawDottedLine(_failureLine, this.Attributes.Selected ? args.WireColour_Selected : args.WireColour);
+    }
+
+    protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Results", "Res", "AdSec Results to perform strenght check on.", GH_ParamAccess.item);
       pManager.AddGenericParameter("Load", "Ld", "AdSec Load (Load or Deformation) for which the strength results are to be calculated.", GH_ParamAccess.item);
     }
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
       IQuantity curvature = new Curvature(0, DefaultUnits.CurvatureUnit);
       string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
@@ -89,10 +87,8 @@ namespace AdSecGH.Components
       pManager.AddGenericParameter("Failure Neutral Axis Offset", "FaO", "The Offset of the Neutral Axis at failure from the Sections centroid", GH_ParamAccess.item);
       pManager.AddNumberParameter("Failure Neutral Axis Angle", "FaA", "The Angle [rad] of the Neutral Axis at failure from the Sections centroid", GH_ParamAccess.item);
     }
-    #endregion
 
-    protected override void SolveInstance(IGH_DataAccess DA)
-    {
+    protected override void SolveInstance(IGH_DataAccess DA) {
       // get solution input
       AdSecSolutionGoo solution = AdSecInput.Solution(this, DA, 0);
 
@@ -101,11 +97,9 @@ namespace AdSecGH.Components
 
       // get load - can be either load or deformation
       GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(1, ref gh_typ))
-      {
+      if (DA.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
-        if (gh_typ.Value is AdSecLoadGoo)
-        {
+        if (gh_typ.Value is AdSecLoadGoo) {
           AdSecLoadGoo load = (AdSecLoadGoo)gh_typ.Value;
           uls = solution.Value.Strength.Check(load.Value);
           ILoad failureLoad = ILoad.Create(
@@ -114,8 +108,7 @@ namespace AdSecGH.Components
             load.Value.ZZ / uls.LoadUtilisation.DecimalFractions * 0.999);
           failure = solution.Value.Strength.Check(failureLoad);
         }
-        else if (gh_typ.Value is AdSecDeformationGoo)
-        {
+        else if (gh_typ.Value is AdSecDeformationGoo) {
           AdSecDeformationGoo def = (AdSecDeformationGoo)gh_typ.Value;
           uls = solution.Value.Strength.Check(def.Value);
           IDeformation failureLoad = IDeformation.Create(
@@ -124,14 +117,12 @@ namespace AdSecGH.Components
             def.Value.ZZ / uls.LoadUtilisation.DecimalFractions * 0.999);
           failure = solution.Value.Strength.Check(failureLoad);
         }
-        else
-        {
+        else {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
           return;
         }
       }
-      else
-      {
+      else {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
         return;
       }
@@ -153,8 +144,7 @@ namespace AdSecGH.Components
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Deformation utilisation is above 1!");
 
       List<GH_Interval> momentRanges = new List<GH_Interval>();
-      foreach (IMomentRange mrng in uls.MomentRanges)
-      {
+      foreach (IMomentRange mrng in uls.MomentRanges) {
         Interval interval = new Interval(
             mrng.Min.As(DefaultUnits.MomentUnit),
             mrng.Max.As(DefaultUnits.MomentUnit));
@@ -184,8 +174,13 @@ namespace AdSecGH.Components
       DA.SetData(11, angleRadiansFailure);
     }
 
-    private Length CalculateOffset(IDeformation ulsDeformationResult)
-    {
+    private double CalculateAngle(IDeformation ulsDeformationResult) {
+      double kYY = ulsDeformationResult.YY.As(CurvatureUnit.PerMeter);
+      double kZZ = ulsDeformationResult.ZZ.As(CurvatureUnit.PerMeter);
+      return Math.Atan2(kZZ, kYY);
+    }
+
+    private Length CalculateOffset(IDeformation ulsDeformationResult) {
       // neutral line
       double defX = ulsDeformationResult.X.As(StrainUnit.Ratio);
       double kYY = ulsDeformationResult.YY.As(CurvatureUnit.PerMeter);
@@ -203,15 +198,7 @@ namespace AdSecGH.Components
       return tempOffset;
     }
 
-    private double CalculateAngle(IDeformation ulsDeformationResult)
-    {
-      double kYY = ulsDeformationResult.YY.As(CurvatureUnit.PerMeter);
-      double kZZ = ulsDeformationResult.ZZ.As(CurvatureUnit.PerMeter);
-      return Math.Atan2(kZZ, kYY);
-    }
-
-    private Line CreateNeutralLine(Length offset, double angleRadians, Plane local, Polyline profile)
-    {
+    private Line CreateNeutralLine(Length offset, double angleRadians, Plane local, Polyline profile) {
       // calculate temp plane for width of neutral line
       Plane tempPlane = local.Clone();
       tempPlane.Rotate(angleRadians, tempPlane.ZAxis);
@@ -240,13 +227,6 @@ namespace AdSecGH.Components
       double off = offset.As(DefaultUnits.LengthUnitResult);
       ln.Transform(Transform.Translation(offsVec.X * off, offsVec.Y * off, offsVec.Z * off));
       return ln;
-    }
-
-    public override void DrawViewportWires(IGH_PreviewArgs args)
-    {
-      base.DrawViewportWires(args);
-      if (_failureLine != null)
-        args.Display.DrawDottedLine(_failureLine, this.Attributes.Selected ? args.WireColour_Selected : args.WireColour);
     }
   }
 }

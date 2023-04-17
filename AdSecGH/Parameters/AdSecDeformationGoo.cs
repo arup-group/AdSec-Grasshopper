@@ -1,30 +1,24 @@
-﻿using System;
-using System.Linq;
-using Grasshopper.Kernel.Types;
+﻿using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using OasysGH.Units;
 using OasysUnits;
+using System;
+using System.Linq;
 
-namespace AdSecGH.Parameters
-{
-  public class AdSecDeformationGoo : GH_Goo<IDeformation>
-  {
-    public override string TypeName => "Deformation";
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+namespace AdSecGH.Parameters {
+  public class AdSecDeformationGoo : GH_Goo<IDeformation> {
     public override bool IsValid => true;
+    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public override string TypeName => "Deformation";
 
-    public AdSecDeformationGoo(IDeformation deformation) : base(deformation)
-    {
+    public AdSecDeformationGoo(IDeformation deformation) : base(deformation) {
     }
 
-    #region methods
-    public override IGH_Goo Duplicate()
-    {
+    public override IGH_Goo Duplicate() {
       return new AdSecDeformationGoo(this.Value);
     }
 
-    public override string ToString()
-    {
+    public override string ToString() {
       string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
       IQuantity curvature = new Curvature(0, DefaultUnits.CurvatureUnit);
       string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
@@ -33,6 +27,5 @@ namespace AdSecGH.Parameters
         + Math.Round(this.Value.YY.As(DefaultUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + ", "
         + Math.Round(this.Value.ZZ.As(DefaultUnits.CurvatureUnit), 4) + curvatureUnitAbbreviation + "}";
     }
-    #endregion
   }
 }

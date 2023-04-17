@@ -1,34 +1,25 @@
-﻿using System;
+﻿using Grasshopper.Kernel;
+using System;
 using System.IO;
 using System.Reflection;
-using Grasshopper.Kernel;
 using Xunit;
 
-namespace IntegrationTests.Components
-{
+namespace IntegrationTests.Components {
   [Collection("GrasshopperFixture collection")]
-  public class AdSecGH_Example2_CompositeColumnTests
-  {
-    public static GH_Document Document
-    {
-      get
-      {
+  public class AdSecGH_Example2_CompositeColumnTests {
+    public static GH_Document Document {
+      get {
         if (_document == null)
           _document = OpenDocument();
         return _document;
       }
     }
     private static GH_Document _document = null;
-    private static GH_Document OpenDocument()
-    {
-      Type thisClass = MethodBase.GetCurrentMethod().DeclaringType;
-      string fileName = thisClass.Name + ".gh";
-      fileName = fileName.Replace(thisClass.Namespace, string.Empty).Replace("Tests", string.Empty);
 
-      string solutiondir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName;
-      string path = Path.Combine(new string[] { solutiondir, "ExampleFiles" });
-
-      return Helper.CreateDocument(Path.Combine(path, fileName));
+    [Fact]
+    public void NoRuntimeErrorTest() {
+      Helper.TestNoRuntimeMessagesInDocument(Document, GH_RuntimeMessageLevel.Error);
+      Helper.TestNoRuntimeMessagesInDocument(Document, GH_RuntimeMessageLevel.Warning);
     }
 
     [Theory]
@@ -41,17 +32,20 @@ namespace IntegrationTests.Components
     [InlineData("RebarSlsStressTest", new double[] { 12.908482, 11.178755, 2.212077, -9.795945, -19.226623, -21.667238, -15.9758, -4.815395, 6.591898 })]
     [InlineData("LoadUtilisationTest", 0.128236)]
     [InlineData("CrackUtilisationTest", 1.315612)]
-    public void Test(string groupIdentifier, object expected, int tolerance = 6)
-    {
+    public void Test(string groupIdentifier, object expected, int tolerance = 6) {
       IGH_Param param = Helper.FindParameter(Document, groupIdentifier);
       Helper.TestGHPrimitives(param, expected, tolerance);
     }
 
-    [Fact]
-    public void NoRuntimeErrorTest()
-    {
-      Helper.TestNoRuntimeMessagesInDocument(Document, GH_RuntimeMessageLevel.Error);
-      Helper.TestNoRuntimeMessagesInDocument(Document, GH_RuntimeMessageLevel.Warning);
+    private static GH_Document OpenDocument() {
+      Type thisClass = MethodBase.GetCurrentMethod().DeclaringType;
+      string fileName = thisClass.Name + ".gh";
+      fileName = fileName.Replace(thisClass.Namespace, string.Empty).Replace("Tests", string.Empty);
+
+      string solutiondir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName;
+      string path = Path.Combine(new string[] { solutiondir, "ExampleFiles" });
+
+      return Helper.CreateDocument(Path.Combine(path, fileName));
     }
   }
 }

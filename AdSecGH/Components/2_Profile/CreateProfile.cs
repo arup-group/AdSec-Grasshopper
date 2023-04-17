@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -11,20 +8,20 @@ using OasysGH;
 using OasysGH.Components;
 using OasysUnits;
 using Rhino.Geometry;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
-namespace AdSecGH.Components
-{
+namespace AdSecGH.Components {
   /// <summary>
   /// Component to create AdSec profile
   /// </summary>
-  public class CreateProfile : CreateOasysProfile
-  {
-    #region Name and Ribbon Layout
+  public class CreateProfile : CreateOasysProfile {
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("ea0741e5-905e-4ecb-8270-a584e3f99aa3");
+    public override string DataSource => Path.Combine(AddReferencePriority.PluginPath, "sectlib.db3");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    public override string DataSource => Path.Combine(AddReferencePriority.PluginPath, "sectlib.db3");
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateProfile;
 
     public CreateProfile() : base(
@@ -32,64 +29,16 @@ namespace AdSecGH.Components
       "Profile",
       "Create Profile for AdSec Section",
       CategoryName.Name(),
-      SubCategoryName.Cat2())
-    {
+      SubCategoryName.Cat2()) {
       this.Hidden = false; // sets the initial state of the component to hidden
     }
 
-    protected override string HtmlHelp_Source()
-    {
+    protected override string HtmlHelp_Source() {
       string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.Profiles.html";
       return help;
     }
-    #endregion
 
-    #region Input and output
-    protected override void RegisterInputParams(GH_InputParamManager pManager)
-    {
-      string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Profile width", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Depth [" + unitAbbreviation + "]", "H", "Profile depth", GH_ParamAccess.item);
-      pManager.AddPlaneParameter("LocalPlane", "P", "[Optional] Plane representing local coordinate system, by default a YZ-plane is used", GH_ParamAccess.item, Plane.WorldYZ);
-      pManager.HideParameter(2);
-    }
-
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
-      pManager.AddGenericParameter("Profile", "Pf", "Profile for AdSec Section", GH_ParamAccess.item);
-    }
-
-    #endregion
-    protected override void SolveInstance(IGH_DataAccess DA)
-    {
-      this.ClearRuntimeMessages();
-      for (int i = 0; i < this.Params.Input.Count; i++)
-        this.Params.Input[i].ClearRuntimeMessages();
-
-      Plane local = Plane.WorldYZ;
-      Plane temp = Plane.Unset;
-      if (DA.GetData(Params.Input.Count - 1, ref temp))
-        local = temp;
-
-      if (this._mode == FoldMode.Catalogue)
-      {
-        List<IProfile> profiles = this.SolveInstanceForCatalogueProfile(DA);
-        Oasys.Profiles.IProfile adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
-
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
-      }
-      else if (this._mode == FoldMode.Other)
-      {
-        IProfile profile = this.SolveInstanceForStandardProfile(DA);
-        Oasys.Profiles.IProfile adSecProfile = AdSecProfiles.CreateProfile(profile);
-
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
-        return;
-      }
-    }
-
-    protected override void Mode1Clicked()
-    {
+    protected override void Mode1Clicked() {
       // remove plane
       IGH_Param plane = Params.Input[Params.Input.Count - 1];
       Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
@@ -110,15 +59,13 @@ namespace AdSecGH.Components
       base.UpdateUI();
     }
 
-    protected override void Mode2Clicked()
-    {
+    protected override void Mode2Clicked() {
       IGH_Param plane = Params.Input[Params.Input.Count - 1];
       // remove plane
       Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
 
       // check if mode is correct
-      if (_mode != FoldMode.Other)
-      {
+      if (_mode != FoldMode.Other) {
         // if we come from catalogue mode remove all input parameters
         while (Params.Input.Count > 0)
           Params.UnregisterInputParameter(Params.Input[0], true);
@@ -135,6 +82,43 @@ namespace AdSecGH.Components
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
       Params.OnParametersChanged();
       ExpireSolution(true);
+    }
+
+    protected override void RegisterInputParams(GH_InputParamManager pManager) {
+      string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
+      pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Profile width", GH_ParamAccess.item);
+      pManager.AddGenericParameter("Depth [" + unitAbbreviation + "]", "H", "Profile depth", GH_ParamAccess.item);
+      pManager.AddPlaneParameter("LocalPlane", "P", "[Optional] Plane representing local coordinate system, by default a YZ-plane is used", GH_ParamAccess.item, Plane.WorldYZ);
+      pManager.HideParameter(2);
+    }
+
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
+      pManager.AddGenericParameter("Profile", "Pf", "Profile for AdSec Section", GH_ParamAccess.item);
+    }
+
+    protected override void SolveInstance(IGH_DataAccess DA) {
+      this.ClearRuntimeMessages();
+      for (int i = 0; i < this.Params.Input.Count; i++)
+        this.Params.Input[i].ClearRuntimeMessages();
+
+      Plane local = Plane.WorldYZ;
+      Plane temp = Plane.Unset;
+      if (DA.GetData(Params.Input.Count - 1, ref temp))
+        local = temp;
+
+      if (this._mode == FoldMode.Catalogue) {
+        List<IProfile> profiles = this.SolveInstanceForCatalogueProfile(DA);
+        Oasys.Profiles.IProfile adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
+
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
+      }
+      else if (this._mode == FoldMode.Other) {
+        IProfile profile = this.SolveInstanceForStandardProfile(DA);
+        Oasys.Profiles.IProfile adSecProfile = AdSecProfiles.CreateProfile(profile);
+
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
+        return;
+      }
     }
   }
 }

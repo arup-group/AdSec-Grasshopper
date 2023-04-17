@@ -1,15 +1,30 @@
-﻿using System;
-using System.IO;
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
 using OasysGH.Components;
+using System;
+using System.IO;
 using Xunit;
 
-namespace AdSecGHTests.Helpers
-{
-  public class OasysDropDownComponentTestHelper
-  {
-    public static void DeserializeTest(GH_OasysDropDownComponent comp, string customIdentifier = "")
-    {
+namespace AdSecGHTests.Helpers {
+  public class OasysDropDownComponentTestHelper {
+
+    public static void ChangeDropDownTest(GH_OasysDropDownComponent comp, bool ignoreSpacerDescriptionsCount = false) {
+      Assert.True(comp._isInitialised);
+      if (!ignoreSpacerDescriptionsCount)
+        Assert.Equal(comp._dropDownItems.Count, comp._spacerDescriptions.Count);
+      Assert.Equal(comp._dropDownItems.Count, comp._selectedItems.Count);
+
+      for (int i = 0; i < comp._dropDownItems.Count; i++) {
+        comp.SetSelected(i, 0);
+
+        for (int j = 0; j < comp._dropDownItems[i].Count; j++) {
+          comp.SetSelected(i, j);
+          DeserializeTest(comp);
+          Assert.Equal(comp._selectedItems[i], comp._dropDownItems[i][j]);
+        }
+      }
+    }
+
+    public static void DeserializeTest(GH_OasysDropDownComponent comp, string customIdentifier = "") {
       comp.CreateAttributes();
 
       var doc = new GH_Document();
@@ -25,7 +40,7 @@ namespace AdSecGHTests.Helpers
       string path = Path.Combine(Environment.CurrentDirectory, "GH-Test-Files");
       Directory.CreateDirectory(path);
       Type myType = comp.GetType();
-      string pathFileName = Path.Combine(path, myType.Name) + customIdentifier +".gh";
+      string pathFileName = Path.Combine(path, myType.Name) + customIdentifier + ".gh";
       Assert.True(serialize.SaveQuiet(pathFileName));
 
       GH_DocumentIO deserialize = new GH_DocumentIO();
@@ -37,26 +52,6 @@ namespace AdSecGHTests.Helpers
       deserializedComponent.Params.Output[0].CollectData();
 
       Duplicates.AreEqual(originalComponent, deserializedComponent, true);
-    }
-
-    public static void ChangeDropDownTest(GH_OasysDropDownComponent comp, bool ignoreSpacerDescriptionsCount = false)
-    {
-      Assert.True(comp._isInitialised);
-      if (!ignoreSpacerDescriptionsCount)
-        Assert.Equal(comp._dropDownItems.Count, comp._spacerDescriptions.Count);
-      Assert.Equal(comp._dropDownItems.Count, comp._selectedItems.Count);
-
-      for (int i = 0; i < comp._dropDownItems.Count; i++)
-      {
-        comp.SetSelected(i, 0);
-
-        for (int j = 0; j < comp._dropDownItems[i].Count; j++)
-        {
-          comp.SetSelected(i, j);
-          DeserializeTest(comp);
-          Assert.Equal(comp._selectedItems[i], comp._dropDownItems[i][j]);
-        }
-      }
     }
   }
 }

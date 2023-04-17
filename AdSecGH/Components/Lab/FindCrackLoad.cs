@@ -1,4 +1,3 @@
-using System;
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
@@ -11,32 +10,26 @@ using OasysGH.Helpers;
 using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
+using System;
 
-namespace AdSecGH.Components
-{
-    public class FindCrackLoad : GH_OasysComponent
-  {
-    #region Name and Ribbon Layout
+namespace AdSecGH.Components {
+  public class FindCrackLoad : GH_OasysComponent {
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("f0b27be7-f367-4a2c-b90c-3ba0f66ae584");
     public override GH_Exposure Exposure => GH_Exposure.quarternary | GH_Exposure.obscure;
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.CrackLoad;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.CrackLoad;
 
     public FindCrackLoad() : base(
-      "Find Crack Load",
-      "CrackLd",
-      "Increases the load until set crack width is reached",
-      CategoryName.Name(),
-      SubCategoryName.Cat7())
-    {
+  "Find Crack Load",
+  "CrackLd",
+  "Increases the load until set crack width is reached",
+  CategoryName.Name(),
+  SubCategoryName.Cat7()) {
       this.Hidden = false; // sets the initial state of the component to hidden
     }
-    #endregion
 
-    #region Input and output
-    protected override void RegisterInputParams(GH_InputParamManager pManager)
-    {
+    protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Results", "Res", "AdSec Results to perform serviceability check on.", GH_ParamAccess.item);
       pManager.AddGenericParameter("BaseLoad", "Ld", "AdSec Load to start the optimisation from.", GH_ParamAccess.item);
       pManager.AddTextParameter("OptimiseLd", "Opt", "Text input to select which load component to optimise for, X, YY or ZZ (default 'YY')", GH_ParamAccess.item, "YY");
@@ -46,22 +39,18 @@ namespace AdSecGH.Components
       pManager[3].Optional = true;
     }
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       pManager.AddGenericParameter("Load", "Ld", "The section load under the applied action." +
           Environment.NewLine + "If the applied deformation is outside the capacity range of the section, the returned load will be zero.", GH_ParamAccess.item);
       pManager.AddGenericParameter("MaximumCrack", "Crk", "The crack result from Cracks that corresponds to the maximum crack width." +
           Environment.NewLine + "If the applied action is outside the capacity range of the section, the returned maximum width crack result will be maximum " +
           "double value.", GH_ParamAccess.item);
     }
-    #endregion
 
-    protected override void SolveInstance(IGH_DataAccess DA)
-    {
+    protected override void SolveInstance(IGH_DataAccess DA) {
       // get solution input
       AdSecSolutionGoo solution = AdSecInput.Solution(this, DA, 0);
-      if (solution == null)
-      {
+      if (solution == null) {
         this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Results input is null");
         return;
       }
@@ -69,22 +58,18 @@ namespace AdSecGH.Components
       // get load - can be either load or deformation
       GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
       AdSecLoadGoo load = null;
-      if (DA.GetData(1, ref gh_typ))
-      {
+      if (DA.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
-        if (gh_typ.Value is AdSecLoadGoo)
-        {
+        if (gh_typ.Value is AdSecLoadGoo) {
           AdSecLoadGoo ld = (AdSecLoadGoo)gh_typ.Value;
           load = new AdSecLoadGoo(ILoad.Create(ld.Value.X, ld.Value.YY, ld.Value.ZZ));
         }
-        else
-        {
+        else {
           this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
           return;
         }
       }
-      else
-      {
+      else {
         this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
         return;
       }
@@ -102,56 +87,55 @@ namespace AdSecGH.Components
       ForceUnit forceUnit = DefaultUnits.ForceUnit;
       MomentUnit momentUnit = DefaultUnits.MomentUnit;
 
-      while (sls.MaximumWidthCrack.Width <= maxCrack)
-      {
+      while (sls.MaximumWidthCrack.Width <= maxCrack) {
         // update load
-        switch (loadComponent.ToLower().Trim())
-        {
+        switch (loadComponent.ToLower().Trim()) {
           case "x":
           case "xx":
           case "fx":
           case "fxx":
             load.Value = ILoad.Create(new Force(load.Value.X.As(forceUnit) + increment, forceUnit), load.Value.YY, load.Value.ZZ);
             break;
+
           case "y":
           case "yy":
           case "my":
           case "myy":
             load.Value = ILoad.Create(load.Value.X, new Moment(load.Value.YY.As(momentUnit) + increment, momentUnit), load.Value.ZZ);
             break;
+
           case "z":
           case "zz":
           case "mz":
           case "mzz":
             load.Value = ILoad.Create(load.Value.X, load.Value.YY, new Moment(load.Value.ZZ.As(momentUnit) + increment, momentUnit));
             break;
-
         }
         sls = solution.Value.Serviceability.Check(load.Value);
       }
 
       // update load to one step back
-      switch (loadComponent.ToLower().Trim())
-      {
+      switch (loadComponent.ToLower().Trim()) {
         case "x":
         case "xx":
         case "fx":
         case "fxx":
           load.Value = ILoad.Create(new Force(load.Value.X.As(forceUnit) - increment, forceUnit), load.Value.YY, load.Value.ZZ);
           break;
+
         case "y":
         case "yy":
         case "my":
         case "myy":
           load.Value = ILoad.Create(load.Value.X, new Moment(load.Value.YY.As(momentUnit) - increment, momentUnit), load.Value.ZZ);
           break;
+
         case "z":
         case "zz":
         case "mz":
         case "mzz":
           load.Value = ILoad.Create(load.Value.X, load.Value.YY, new Moment(load.Value.ZZ.As(momentUnit) - increment, momentUnit));
           break;
-
       }
       sls = solution.Value.Serviceability.Check(load.Value);
 

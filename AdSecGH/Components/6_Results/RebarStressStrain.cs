@@ -1,6 +1,5 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
+using AdSecGH.Helpers;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
@@ -9,17 +8,14 @@ using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.Profiles;
 using OasysGH;
 using OasysGH.Components;
-using OasysUnits;
 using OasysGH.Parameters;
 using OasysGH.Units;
-using AdSecGH.Helpers;
-using AdSecGH.Helpers.GH;
+using OasysUnits;
+using System;
+using System.Collections.Generic;
 
-namespace AdSecGH.Components
-{
-    public class RebarStressStrain : GH_OasysComponent
-  {
-    #region Name and Ribbon Layout
+namespace AdSecGH.Components {
+  public class RebarStressStrain : GH_OasysComponent {
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("bb9fe65b-76e1-466b-be50-3dd9c7a3283f");
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
@@ -31,21 +27,16 @@ namespace AdSecGH.Components
       "RSS",
       "Calculate the Rebar Stress/Strains in the Section for a given Load or Deformation.",
       CategoryName.Name(),
-      SubCategoryName.Cat7())
-    {
+      SubCategoryName.Cat7()) {
       this.Hidden = true; // sets the initial state of the component to hidden
     }
-    #endregion
 
-    #region Input and output
-    protected override void RegisterInputParams(GH_InputParamManager pManager)
-    {
+    protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Results", "Res", "AdSec Results to perform serviceability check on.", GH_ParamAccess.item);
       pManager.AddGenericParameter("Load", "Ld", "AdSec Load (Load or Deformation) for which the strength results are to be calculated.", GH_ParamAccess.item);
     }
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       string lengthUnitAbbreviation = Length.GetAbbreviation(DefaultUnits.LengthUnitResult);
       string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(DefaultUnits.StressUnitResult);
@@ -55,10 +46,8 @@ namespace AdSecGH.Components
       pManager.AddGenericParameter("SLS Strain [" + strainUnitAbbreviation + "]", "εk", "SLS strain for each rebar position", GH_ParamAccess.list);
       pManager.AddGenericParameter("SLS Stress [" + stressUnitAbbreviation + "]", "σk", "SLS stress for each rebar position", GH_ParamAccess.list);
     }
-    #endregion
 
-    protected override void SolveInstance(IGH_DataAccess DA)
-    {
+    protected override void SolveInstance(IGH_DataAccess DA) {
       // get solution input
       AdSecSolutionGoo solution = AdSecInput.Solution(this, DA, 0);
 
@@ -67,29 +56,24 @@ namespace AdSecGH.Components
 
       // get load - can be either load or deformation
       GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(1, ref gh_typ))
-      {
+      if (DA.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
-        if (gh_typ.Value is AdSecLoadGoo)
-        {
+        if (gh_typ.Value is AdSecLoadGoo) {
           AdSecLoadGoo load = (AdSecLoadGoo)gh_typ.Value;
           uls = solution.Value.Strength.Check(load.Value);
           sls = solution.Value.Serviceability.Check(load.Value);
         }
-        else if (gh_typ.Value is AdSecDeformationGoo)
-        {
+        else if (gh_typ.Value is AdSecDeformationGoo) {
           AdSecDeformationGoo def = (AdSecDeformationGoo)gh_typ.Value;
           uls = solution.Value.Strength.Check(def.Value);
           sls = solution.Value.Serviceability.Check(def.Value);
         }
-        else
-        {
+        else {
           this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
           return;
         }
       }
-      else
-      {
+      else {
         this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
         return;
       }
@@ -101,8 +85,7 @@ namespace AdSecGH.Components
         IAdSec adSec = IAdSec.Create(solution.m_section.DesignCode);
         flat = adSec.Flatten(solution.m_section.Section);
       }
-      else
-      {
+      else {
         IPerimeterProfile prof = IPerimeterProfile.Create(solution.m_section.Section.Profile);
         flat = ISection.Create(prof, solution.m_section.Section.Material);
       }
@@ -114,13 +97,11 @@ namespace AdSecGH.Components
       List<GH_UnitNumber> outStressSLS = new List<GH_UnitNumber>();
 
       // loop through rebar groups in flattened section
-      foreach (IGroup rebargrp in flat.ReinforcementGroups)
-      {
+      foreach (IGroup rebargrp in flat.ReinforcementGroups) {
         try // first try if not a link group type
         {
           ISingleBars snglBrs = (ISingleBars)rebargrp;
-          foreach (IPoint pos in snglBrs.Positions)
-          {
+          foreach (IPoint pos in snglBrs.Positions) {
             // position
             pointGoos.Add(new AdSecPointGoo(pos));
 
@@ -139,11 +120,9 @@ namespace AdSecGH.Components
             // SLS stress in bar material from strain
             Pressure stressSLS = snglBrs.BarBundle.Material.Serviceability.StressAt(strainSLS);
             outStressSLS.Add(new GH_UnitNumber(stressSLS.ToUnit(DefaultUnits.StressUnitResult)));
-
           }
         }
-        catch (Exception)
-        {
+        catch (Exception) {
           // do nothing if rebar is link
         }
       }

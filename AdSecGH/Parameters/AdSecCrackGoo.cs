@@ -1,25 +1,20 @@
-﻿using System;
-using System.Drawing;
-using Grasshopper;
+﻿using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Parameters;
 using Rhino.Geometry;
+using System;
+using System.Drawing;
 
-namespace AdSecGH.Parameters
-{
-  public class AdSecCrackGoo : GH_OasysGeometricGoo<ICrack>, IGH_PreviewData
-  {
+namespace AdSecGH.Parameters {
+  public class AdSecCrackGoo : GH_OasysGeometricGoo<ICrack>, IGH_PreviewData {
+    public static string Description => "AdSec Crack Parameter";
     public static string Name => "Crack";
     public static string NickName => "Cr";
-    public static string Description => "AdSec Crack Parameter";
-    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    public override BoundingBox Boundingbox
-    {
-      get
-      {
+    public override BoundingBox Boundingbox {
+      get {
         if (this.Value == null)
           return BoundingBox.Empty;
         if (this.m_line == null)
@@ -28,21 +23,18 @@ namespace AdSecGH.Parameters
         return crv.GetBoundingBox(false);
       }
     }
-    public override BoundingBox ClippingBox
-    {
+    public override BoundingBox ClippingBox {
       get { return this.Boundingbox; }
     }
-    private Point3d m_point = Point3d.Unset;
-    private Plane m_plane;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     private Line m_line;
+    private Plane m_plane;
+    private Point3d m_point = Point3d.Unset;
 
-    #region constructors
-    public AdSecCrackGoo(ICrack item) : base(item)
-    {
+    public AdSecCrackGoo(ICrack item) : base(item) {
     }
 
-    public AdSecCrackGoo(ICrack crack, Plane local) : base(crack)
-    {
+    public AdSecCrackGoo(ICrack crack, Plane local) : base(crack) {
       this.m_value = crack;
       m_plane = local;
 
@@ -79,63 +71,55 @@ namespace AdSecGH.Parameters
 
       m_line = new Line(crackStart, crackWidth);
     }
-    #endregion
 
-    #region methods
-    public override IGH_GeometricGoo Duplicate() => new AdSecCrackGoo(this.Value);
+    public override bool CastFrom(object source) {
+      if (source == null)
+        return false;
+      return false;
+    }
 
-    public override bool CastTo<Q>(out Q target)
-    {
-      if (typeof(Q).IsAssignableFrom(typeof(AdSecCrackGoo)))
-      {
+    public override bool CastTo<Q>(out Q target) {
+      if (typeof(Q).IsAssignableFrom(typeof(AdSecCrackGoo))) {
         target = (Q)(object)new AdSecCrackGoo(this.Value, this.m_plane);
         return true;
       }
 
-      if (typeof(Q).IsAssignableFrom(typeof(Point3d)))
-      {
+      if (typeof(Q).IsAssignableFrom(typeof(Point3d))) {
         target = (Q)(object)m_point;
         return true;
       }
 
-      if (typeof(Q).IsAssignableFrom(typeof(GH_Point)))
-      {
+      if (typeof(Q).IsAssignableFrom(typeof(GH_Point))) {
         target = (Q)(object)new GH_Point(m_point);
         return true;
       }
 
-      if (typeof(Q).IsAssignableFrom(typeof(Vector3d)))
-      {
+      if (typeof(Q).IsAssignableFrom(typeof(Vector3d))) {
         target = (Q)(object)new Vector3d(this.Value.Width.Value, m_point.Y, m_point.Z);
         return true;
       }
 
-      if (typeof(Q).IsAssignableFrom(typeof(GH_Vector)))
-      {
+      if (typeof(Q).IsAssignableFrom(typeof(GH_Vector))) {
         target = (Q)(object)new GH_Vector(new Vector3d(this.Value.Width.Value, m_point.Y, m_point.Z));
         return true;
       }
 
-      if (typeof(Q).IsAssignableFrom(typeof(Line)))
-      {
+      if (typeof(Q).IsAssignableFrom(typeof(Line))) {
         target = (Q)(object)m_line;
         return true;
       }
 
-      if (typeof(Q).IsAssignableFrom(typeof(GH_Line)))
-      {
+      if (typeof(Q).IsAssignableFrom(typeof(GH_Line))) {
         target = (Q)(object)new GH_Line(m_line);
         return true;
       }
 
-      if (typeof(Q).IsAssignableFrom(typeof(GH_UnitNumber)))
-      {
+      if (typeof(Q).IsAssignableFrom(typeof(GH_UnitNumber))) {
         target = (Q)(object)new GH_UnitNumber(this.Value.Width);
         return true;
       }
 
-      if (typeof(Q).IsAssignableFrom(typeof(GH_Number)))
-      {
+      if (typeof(Q).IsAssignableFrom(typeof(GH_Number))) {
         target = (Q)(object)new GH_Number(this.Value.Width.Value);
         return true;
       }
@@ -144,25 +128,11 @@ namespace AdSecGH.Parameters
       return false;
     }
 
-    public override bool CastFrom(object source)
-    {
-      if (source == null)
-        return false;
-      return false;
+    public override void DrawViewportMeshes(GH_PreviewMeshArgs args) {
     }
 
-    public override string ToString()
-    {
-      return "AdSec " + TypeName + " {"
-          + "Y:" + Math.Round(this.Value.Position.Y.Value, 4) + this.Value.Position.Y.Unit + ", "
-          + "Z:" + Math.Round(this.Value.Position.Z.Value, 4) + this.Value.Position.Z.Unit + ", "
-          + "Width:" + Math.Round(this.Value.Width.Value, 4) + this.Value.Width.Unit + "}";
-    }
-
-    public override void DrawViewportWires(GH_PreviewWireArgs args)
-    {
-      if (m_point.IsValid)
-      {
+    public override void DrawViewportWires(GH_PreviewWireArgs args) {
+      if (m_point.IsValid) {
         Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
         if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
           args.Pipeline.DrawLine(m_line, UI.Colour.OasysBlue, 5);
@@ -171,18 +141,14 @@ namespace AdSecGH.Parameters
       }
     }
 
-    public override void DrawViewportMeshes(GH_PreviewMeshArgs args)
-    {
-    }
+    public override IGH_GeometricGoo Duplicate() => new AdSecCrackGoo(this.Value);
 
-    public override IGH_GeometricGoo DuplicateGeometry()
-    {
+    public override IGH_GeometricGoo DuplicateGeometry() {
       AdSecCrackGoo dup = new AdSecCrackGoo(Value, m_plane);
       return dup;
     }
 
-    public override BoundingBox GetBoundingBox(Transform xform)
-    {
+    public override BoundingBox GetBoundingBox(Transform xform) {
       if (Value == null)
         return BoundingBox.Empty;
       if (m_point == null)
@@ -191,20 +157,23 @@ namespace AdSecGH.Parameters
       return crv.GetBoundingBox(xform);
     }
 
-    public override IGH_GeometricGoo Transform(Transform xform)
-    {
+    public override GeometryBase GetGeometry() {
       return null;
     }
 
-    public override IGH_GeometricGoo Morph(SpaceMorph xmorph)
-    {
+    public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
       return null;
     }
 
-    public override GeometryBase GetGeometry()
-    {
+    public override string ToString() {
+      return "AdSec " + TypeName + " {"
+          + "Y:" + Math.Round(this.Value.Position.Y.Value, 4) + this.Value.Position.Y.Unit + ", "
+          + "Z:" + Math.Round(this.Value.Position.Z.Value, 4) + this.Value.Position.Z.Unit + ", "
+          + "Width:" + Math.Round(this.Value.Width.Value, 4) + this.Value.Width.Unit + "}";
+    }
+
+    public override IGH_GeometricGoo Transform(Transform xform) {
       return null;
     }
-    #endregion
   }
 }
