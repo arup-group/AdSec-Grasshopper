@@ -1,12 +1,12 @@
-﻿using Grasshopper;
+﻿using System;
+using System.Drawing;
+using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Parameters;
 using Rhino.Geometry;
-using System;
-using System.Drawing;
 
 namespace AdSecGH.Parameters {
   public class AdSecCrackGoo : GH_OasysGeometricGoo<ICrack>, IGH_PreviewData {
@@ -15,17 +15,17 @@ namespace AdSecGH.Parameters {
     public static string NickName => "Cr";
     public override BoundingBox Boundingbox {
       get {
-        if (Value == null)
+        if (Value == null) {
           return BoundingBox.Empty;
-        if (m_line == null)
+        }
+        if (m_line == null) {
           return BoundingBox.Empty;
-        LineCurve crv = new LineCurve(m_line);
+        }
+        var crv = new LineCurve(m_line);
         return crv.GetBoundingBox(false);
       }
     }
-    public override BoundingBox ClippingBox {
-      get { return Boundingbox; }
-    }
+    public override BoundingBox ClippingBox => Boundingbox;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     private Line m_line;
     private Plane m_plane;
@@ -39,30 +39,30 @@ namespace AdSecGH.Parameters {
       m_plane = local;
 
       // create point from crack position in global axis
-      Point3d point = new Point3d(
+      var point = new Point3d(
           crack.Position.Y.Value,
           crack.Position.Z.Value,
           0);
 
       // remap to local coordinate system
-      Transform mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
+      var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
       point.Transform(mapFromLocal);
       m_point = point;
 
       // move starting point of line by half the width
-      Vector3d halfCrack = new Vector3d(local.ZAxis);
+      var halfCrack = new Vector3d(local.ZAxis);
       halfCrack.Unitize();
       halfCrack = new Vector3d(
           halfCrack.X * crack.Width.Value / 2,
           halfCrack.Y * crack.Width.Value / 2,
           halfCrack.Z * crack.Width.Value / 2);
 
-      Transform move = Rhino.Geometry.Transform.Translation(halfCrack);
-      Point3d crackStart = new Point3d(m_point);
+      var move = Rhino.Geometry.Transform.Translation(halfCrack);
+      var crackStart = new Point3d(m_point);
       crackStart.Transform(move);
 
       // create line in opposite direction from move point
-      Vector3d crackWidth = new Vector3d(halfCrack);
+      var crackWidth = new Vector3d(halfCrack);
       crackWidth.Unitize();
       crackWidth = new Vector3d(
           crackWidth.X * crack.Width.Value * -1,
@@ -73,8 +73,9 @@ namespace AdSecGH.Parameters {
     }
 
     public override bool CastFrom(object source) {
-      if (source == null)
+      if (source == null) {
         return false;
+      }
       return false;
     }
 
@@ -124,7 +125,7 @@ namespace AdSecGH.Parameters {
         return true;
       }
 
-      target = default(Q);
+      target = default;
       return false;
     }
 
@@ -134,26 +135,32 @@ namespace AdSecGH.Parameters {
     public override void DrawViewportWires(GH_PreviewWireArgs args) {
       if (m_point.IsValid) {
         Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-        if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
+        if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) {
+          // not selected
           args.Pipeline.DrawLine(m_line, UI.Colour.OasysBlue, 5);
-        else
+        } else {
           args.Pipeline.DrawLine(m_line, UI.Colour.OasysYellow, 7);
+        }
       }
     }
 
-    public override IGH_GeometricGoo Duplicate() => new AdSecCrackGoo(Value);
+    public override IGH_GeometricGoo Duplicate() {
+      return new AdSecCrackGoo(Value);
+    }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      AdSecCrackGoo dup = new AdSecCrackGoo(Value, m_plane);
+      var dup = new AdSecCrackGoo(Value, m_plane);
       return dup;
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null)
+      if (Value == null) {
         return BoundingBox.Empty;
-      if (m_point == null)
+      }
+      if (m_point == null) {
         return BoundingBox.Empty;
-      LineCurve crv = new LineCurve(m_line);
+      }
+      var crv = new LineCurve(m_line);
       return crv.GetBoundingBox(xform);
     }
 

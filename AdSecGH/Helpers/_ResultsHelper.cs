@@ -7,12 +7,12 @@ namespace AdSecGH.Helpers {
     /// Axis scales a min/max value appropriately for the purpose of graphs
     /// <remarks>Code taken and modified from http://peltiertech.com/WordPress/calculate-nice-axis-scales-in-excel-vba/</remarks>
     /// </summary>
-    internal struct GridAxis {
+    internal readonly struct GridAxis {
       public float[] MajorRange {
         get {
           float[] res = new float[major_count + 1];
           for (int i = 0; i < res.Length; i++) {
-            res[i] = min_value + major_step * i;
+            res[i] = min_value + (major_step * i);
           }
           return res;
         }
@@ -21,7 +21,7 @@ namespace AdSecGH.Helpers {
         get {
           float[] res = new float[minor_count + 1];
           for (int i = 0; i < res.Length; i++) {
-            res[i] = min_value + minor_step * i;
+            res[i] = min_value + (minor_step * i);
           }
           return res;
         }
@@ -46,17 +46,15 @@ namespace AdSecGH.Helpers {
         }
         //Check if dMax is bigger than dMin - swap them if not
         if (x_max < x_min) {
-          float temp = x_min;
-          x_min = x_max;
-          x_max = temp;
+          (x_max, x_min) = (x_min, x_max);
         }
 
         //Make dMax a little bigger and dMin a little smaller (by 1% of their difference)
         float delta = (x_max - x_min) / 2;
         float x_mid = (x_max + x_min) / 2;
 
-        x_max = x_mid + 1.01f * delta;
-        x_min = x_mid - 1.01f * delta;
+        x_max = x_mid + (1.01f * delta);
+        x_min = x_mid - (1.01f * delta);
 
         //What if they are both 0?
         if (x_max == 0 && x_min == 0) {
@@ -72,16 +70,13 @@ namespace AdSecGH.Helpers {
         if (scl > 0 && scl <= 2.5) {
           major_step = 0.2f;
           minor_step = 0.05f;
-        }
-        else if (scl > 2.5 && scl < 5) {
+        } else if (scl > 2.5 && scl < 5) {
           major_step = 0.5f;
           minor_step = 0.1f;
-        }
-        else if (scl > 5 && scl < 7.5) {
+        } else if (scl > 5 && scl < 7.5) {
           major_step = 1f;
           minor_step = 0.2f;
-        }
-        else {
+        } else {
           major_step = 2f;
           minor_step = 0.5f;
         }
@@ -98,22 +93,23 @@ namespace AdSecGH.Helpers {
 
     internal static float CalcStepSize(float range, float targetSteps) {
       // calculate an initial guess at step size
-      var tempStep = range / targetSteps;
+      float tempStep = range / targetSteps;
 
       // get the magnitude of the step size
-      var mag = (float)Math.Floor(Math.Log10(tempStep));
-      var magPow = (float)Math.Pow(10, mag);
+      float mag = (float)Math.Floor(Math.Log10(tempStep));
+      float magPow = (float)Math.Pow(10, mag);
 
       // calculate most significant digit of the new step size
-      var magMsd = (int)(tempStep / magPow + 0.5);
+      float magMsd = (int)((tempStep / magPow) + 0.5);
 
       // promote the MSD to either 1, 2, or 5
-      if (magMsd > 5)
+      if (magMsd > 5) {
         magMsd = 10;
-      else if (magMsd > 2)
+      } else if (magMsd > 2) {
         magMsd = 5;
-      else if (magMsd > 1)
+      } else if (magMsd > 1) {
         magMsd = 2;
+      }
 
       return magMsd * magPow;
     }
@@ -124,8 +120,7 @@ namespace AdSecGH.Helpers {
     internal static double RoundToSignificantDigits(double d, int digits) {
       if (d == 0.0) {
         return 0.0;
-      }
-      else {
+      } else {
         double leftSideNumbers = Math.Floor(Math.Log10(Math.Abs(d))) + 1;
         double scale = Math.Pow(10, leftSideNumbers);
         double result = scale * Math.Round(d / scale, digits, MidpointRounding.AwayFromZero);
@@ -133,10 +128,10 @@ namespace AdSecGH.Helpers {
         // Clean possible precision error.
         if ((int)leftSideNumbers >= digits) {
           return Math.Round(result, 0, MidpointRounding.AwayFromZero);
-        }
-        else {
-          if (Math.Abs(digits - (int)leftSideNumbers) > 15)
+        } else {
+          if (Math.Abs(digits - (int)leftSideNumbers) > 15) {
             return 0.0;
+          }
           return Math.Round(result, digits - (int)leftSideNumbers, MidpointRounding.AwayFromZero);
         }
       }
@@ -150,22 +145,22 @@ namespace AdSecGH.Helpers {
       double scale = RoundToSignificantDigits(val, 4);
 
       // list to hold output values
-      List<double> roundedvals = new List<double>();
+      var roundedvals = new List<double>();
 
       // do max
-      if (max == 0)
+      if (max == 0) {
         roundedvals.Add(0);
-      else {
-        double tempmax = scale * Math.Round(max / (scale), 4);
+      } else {
+        double tempmax = scale * Math.Round(max / scale, 4);
         tempmax = Math.Ceiling(tempmax * 1000) / 1000;
         roundedvals.Add(tempmax);
       }
 
       // do min
-      if (min == 0)
+      if (min == 0) {
         roundedvals.Add(0);
-      else {
-        double tempmin = scale * Math.Round(min / (scale), 4);
+      } else {
+        double tempmin = scale * Math.Round(min / scale, 4);
         tempmin = Math.Floor(tempmin * 1000) / 1000;
         roundedvals.Add(tempmin);
       }

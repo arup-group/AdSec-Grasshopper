@@ -1,26 +1,18 @@
-﻿using AdSecGH.Helpers.GH;
-using Grasshopper.Kernel;
-using Rhino.Geometry;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using AdSecGH.Helpers.GH;
+using Grasshopper.Kernel;
+using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
   public class AdSecSectionParameter : GH_PersistentGeometryParam<AdSecSectionGoo>, IGH_PreviewObject {
-    public BoundingBox ClippingBox {
-      get {
-        return Preview_ComputeClippingBox();
-      }
-    }
+    public BoundingBox ClippingBox => Preview_ComputeClippingBox();
     public override Guid ComponentGuid => new Guid("fa647c2d-4767-49f1-a574-32bf66a66568");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public bool Hidden { get; set; }
-    public bool IsPreviewCapable {
-      get {
-        return true;
-      }
-    }
+    public bool IsPreviewCapable => true;
     protected override Bitmap Icon => Properties.Resources.SectionParam;
 
     public AdSecSectionParameter() : base(new GH_InstanceDescription(
@@ -42,7 +34,7 @@ namespace AdSecGH.Parameters {
     }
 
     protected override ToolStripMenuItem Menu_CustomMultiValueItem() {
-      ToolStripMenuItem item = new ToolStripMenuItem {
+      var item = new ToolStripMenuItem {
         Text = "Not available",
         Visible = false
       };
@@ -50,7 +42,7 @@ namespace AdSecGH.Parameters {
     }
 
     protected override ToolStripMenuItem Menu_CustomSingleValueItem() {
-      ToolStripMenuItem item = new ToolStripMenuItem {
+      var item = new ToolStripMenuItem {
         Text = "Not available",
         Visible = false
       };

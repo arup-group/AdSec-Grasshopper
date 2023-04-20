@@ -1,13 +1,12 @@
-﻿using AdSecGH.Parameters;
-using Oasys.AdSec.DesignCode;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AdSecGH.Parameters;
+using Oasys.AdSec.DesignCode;
 
 namespace AdSecGH.Helpers {
   internal class AdSecFile {
-    internal static Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>()
-{
+    internal static Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>() {
       { "ACI318M_02",  ACI318.Edition_2002.US },
       { "ACI318M_05",  ACI318.Edition_2005.US },
       { "ACI318M_08",  ACI318.Edition_2008.US },
@@ -124,16 +123,19 @@ namespace AdSecGH.Helpers {
       // "codes":{"concrete":"EC2_GB_04"}
 
       string[] jsonSplit = json.Split(new string[] { "\"codes\": {\r\n        \"concrete\": \"" }, StringSplitOptions.None);
-      if (jsonSplit.Length == 1)
+      if (jsonSplit.Length == 1) {
         jsonSplit = json.Split(new string[] { "codes\":{\"concrete\":\"" }, StringSplitOptions.None);
-      if (jsonSplit.Length < 2)
+      }
+      if (jsonSplit.Length < 2) {
         return null;
+      }
       string codeName = jsonSplit[1].Split('"')[0];
 
-      if (!CodesStrings.TryGetValue(codeName, out string codeString))
+      if (!CodesStrings.TryGetValue(codeName, out string codeString)) {
         return null;
+      }
 
-      List<string> designCodeLevelsSplit = codeString.Split('+').ToList();
+      var designCodeLevelsSplit = codeString.Split('+').ToList();
 
       return new AdSecDesignCode(designCodeLevelsSplit);
     }

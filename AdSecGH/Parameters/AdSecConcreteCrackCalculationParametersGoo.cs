@@ -16,7 +16,9 @@ namespace AdSecGH.Parameters {
     public AdSecConcreteCrackCalculationParametersGoo(IConcreteCrackCalculationParameters item) : base(item) {
     }
 
-    public override IGH_Goo Duplicate() => new AdSecConcreteCrackCalculationParametersGoo(Value);
+    public override IGH_Goo Duplicate() {
+      return new AdSecConcreteCrackCalculationParametersGoo(Value);
+    }
 
     public override string ToString() {
       return "AdSec " + TypeName +

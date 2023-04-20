@@ -1,25 +1,16 @@
-﻿using AdSecGH.Helpers.GH;
-using Grasshopper.Kernel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using AdSecGH.Helpers.GH;
+using Grasshopper.Kernel;
 
 namespace AdSecGH.Parameters {
   public class AdSecRebarGroupParameter : GH_PersistentParam<AdSecRebarGroupGoo> {
     public override Guid ComponentGuid => new Guid("6d666276-61f6-47ce-81bc-9fabdd39edc2");
     public override GH_Exposure Exposure => GH_Exposure.primary;
-    public bool Hidden {
-      get {
-        return true;
-      }
-      //set { m_hidden = value; }
-    }
-    public bool IsPreviewCapable {
-      get {
-        return false;
-      }
-    }
+    public bool Hidden => true;
+    public bool IsPreviewCapable => false;
     protected override Bitmap Icon => Properties.Resources.RebarGroupParam;
 
     public AdSecRebarGroupParameter() : base(new GH_InstanceDescription(
@@ -31,7 +22,7 @@ namespace AdSecGH.Parameters {
     }
 
     protected override ToolStripMenuItem Menu_CustomMultiValueItem() {
-      ToolStripMenuItem item = new ToolStripMenuItem {
+      var item = new ToolStripMenuItem {
         Text = "Not available",
         Visible = false
       };
@@ -39,7 +30,7 @@ namespace AdSecGH.Parameters {
     }
 
     protected override ToolStripMenuItem Menu_CustomSingleValueItem() {
-      ToolStripMenuItem item = new ToolStripMenuItem {
+      var item = new ToolStripMenuItem {
         Text = "Not available",
         Visible = false
       };

@@ -57,8 +57,9 @@ namespace AdSecGH.Parameters {
     }
 
     public override bool CastFrom(object source) {
-      if (source == null)
+      if (source == null) {
         return false;
+      }
       return false;
     }
 
@@ -72,7 +73,7 @@ namespace AdSecGH.Parameters {
         target = (Q)(object)new AdSecSectionGoo(_section.Duplicate());
         return true;
       }
-      target = default(Q);
+      target = default;
       return false;
     }
 

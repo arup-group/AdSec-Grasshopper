@@ -1,38 +1,39 @@
-﻿using Grasshopper.Kernel;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace AdSecGH.Parameters {
   public class AdSecSectionGoo : GH_GeometricGoo<AdSecSection>, IGH_PreviewData {
     public override BoundingBox Boundingbox {
       get {
-        if (Value == null)
+        if (Value == null) {
           return BoundingBox.Empty;
-        if (Value.SolidBrep == null)
+        }
+        if (Value.SolidBrep == null) {
           return BoundingBox.Empty;
+        }
         return Value.SolidBrep.GetBoundingBox(false);
       }
     }
-    public BoundingBox ClippingBox {
-      get {
-        return Boundingbox;
-      }
-    }
+    public BoundingBox ClippingBox => Boundingbox;
     public override bool IsValid {
       get {
-        if (Value == null)
+        if (Value == null) {
           return false;
-        if (Value.SolidBrep == null || Value.IsValid == false)
+        }
+        if (Value.SolidBrep == null || Value.IsValid == false) {
           return false;
+        }
         return true;
       }
     }
     public override string IsValidWhyNot {
       get {
-        if (Value.IsValid)
+        if (Value.IsValid) {
           return string.Empty;
+        }
         return Value.IsValid.ToString();
       }
     }
@@ -43,15 +44,17 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecSectionGoo(AdSecSection section) {
-      if (section == null)
+      if (section == null) {
         Value = null;
-      else
+      } else {
         Value = section.Duplicate();
+      }
     }
 
     public override bool CastFrom(object source) {
-      if (source == null)
+      if (source == null) {
         return false;
+      }
 
       return false;
     }
@@ -72,38 +75,43 @@ namespace AdSecGH.Parameters {
       //  }
       //}
       if (typeof(Q).IsAssignableFrom(typeof(AdSecSectionGoo))) {
-        if (Value == null)
+        if (Value == null) {
           target = default;
-        else
+        } else {
           target = (Q)(object)Value.Duplicate();
+        }
         return true;
       }
       if (typeof(Q).IsAssignableFrom(typeof(AdSecSection))) {
-        if (Value == null)
+        if (Value == null) {
           target = default;
-        else
+        } else {
           target = (Q)(object)new AdSecSection(Value.Section, Value.DesignCode, Value._codeName, Value._materialName, Value.LocalPlane);
+        }
         return true;
       }
       if (typeof(Q).IsAssignableFrom(typeof(AdSecProfileGoo))) {
-        if (Value == null)
+        if (Value == null) {
           target = default;
-        else
+        } else {
           target = (Q)(object)new AdSecProfileGoo(Value.Section.Profile, Value.LocalPlane);
+        }
         return true;
       }
       if (typeof(Q).IsAssignableFrom(typeof(Brep))) {
-        if (Value == null)
+        if (Value == null) {
           target = default;
-        else
+        } else {
           target = (Q)(object)Value.SolidBrep.DuplicateBrep();
+        }
         return true;
       }
       if (typeof(Q).IsAssignableFrom(typeof(GH_Brep))) {
-        if (Value == null)
+        if (Value == null) {
           target = default;
-        else
+        } else {
           target = (Q)(object)Value.SolidBrep.DuplicateBrep();
+        }
         return true;
       }
 
@@ -161,9 +169,8 @@ namespace AdSecGH.Parameters {
             args.Pipeline.DrawCurve(crv, Color.Black, 1);
           }
         }
-      }
-      else // selected
-      {
+      } else // selected
+        {
         args.Pipeline.DrawPolyline(Value.m_profileEdge, UI.Colour.OasysYellow, 3);
         if (Value.m_profileVoidEdges != null) {
           foreach (Polyline crv in Value.m_profileVoidEdges) {
@@ -202,10 +209,11 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecSectionGoo DuplicateAdSecSection() {
-      if (Value == null)
+      if (Value == null) {
         return null;
-      else
+      } else {
         return new AdSecSectionGoo(Value.Duplicate());
+      }
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
@@ -213,10 +221,12 @@ namespace AdSecGH.Parameters {
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null)
+      if (Value == null) {
         return BoundingBox.Empty;
-      if (Value.SolidBrep == null)
+      }
+      if (Value.SolidBrep == null) {
         return BoundingBox.Empty;
+      }
       return Value.SolidBrep.GetBoundingBox(xform);
     }
 
@@ -226,10 +236,11 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      if (Value == null)
+      if (Value == null) {
         return "Null AdSec Section";
-      else
+      } else {
         return "AdSec " + TypeName + " {" + Value.ToString() + "}";
+      }
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {

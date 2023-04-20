@@ -1,8 +1,8 @@
-﻿using Grasshopper.Kernel.Types;
+﻿using System;
+using Grasshopper.Kernel.Types;
 using Oasys.AdSec.Reinforcement.Layers;
 using OasysGH.Units;
 using OasysUnits;
-using System;
 
 namespace AdSecGH.Parameters {
   public class AdSecRebarLayerGoo : GH_Goo<ILayer> {
@@ -27,16 +27,14 @@ namespace AdSecGH.Parameters {
 
       string str = "";
       try {
-        ILayerByBarCount byBarCount = (ILayerByBarCount)Value;
+        var byBarCount = (ILayerByBarCount)Value;
         str = byBarCount.Count.ToString() + "No. " + bar;
-      }
-      catch (Exception) {
+      } catch (Exception) {
         try {
-          ILayerByBarPitch byBarPitch = (ILayerByBarPitch)Value;
+          var byBarPitch = (ILayerByBarPitch)Value;
           Length spacing = byBarPitch.Pitch.ToUnit(DefaultUnits.LengthUnitGeometry);
           str = bar + " bars / " + spacing.ToString();
-        }
-        catch (Exception) {
+        } catch (Exception) {
         }
       }
       return "AdSec " + TypeName + " {" + str + "}";

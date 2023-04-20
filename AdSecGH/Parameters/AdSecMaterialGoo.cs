@@ -15,6 +15,8 @@ namespace AdSecGH.Parameters {
     public AdSecMaterialGoo(AdSecMaterial item) : base(item) {
     }
 
-    public override IGH_Goo Duplicate() => new AdSecMaterialGoo(Value);
+    public override IGH_Goo Duplicate() {
+      return new AdSecMaterialGoo(Value);
+    }
   }
 }

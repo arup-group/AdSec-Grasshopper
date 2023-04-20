@@ -1,64 +1,58 @@
-﻿using Grasshopper.Kernel;
+﻿using System;
+using System.Linq;
+using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using OasysGH.Units;
 using OasysUnits;
 using Rhino.Geometry;
-using System;
-using System.Linq;
 
 namespace AdSecGH.Parameters {
   public class AdSecStressStrainPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData {
     public override BoundingBox Boundingbox {
       get {
-        if (Value == null)
+        if (Value == null) {
           return BoundingBox.Empty;
-        Point3d pt1 = new Point3d(Value);
+        }
+        var pt1 = new Point3d(Value);
         pt1.Z += 0.25;
-        Point3d pt2 = new Point3d(Value);
+        var pt2 = new Point3d(Value);
         pt2.Z += -0.25;
-        Line ln = new Line(pt1, pt2);
-        LineCurve crv = new LineCurve(ln);
+        var ln = new Line(pt1, pt2);
+        var crv = new LineCurve(ln);
         return crv.GetBoundingBox(false);
       }
     }
-    public BoundingBox ClippingBox {
-      get { return Boundingbox; }
-    }
-    public IStressStrainPoint StressStrainPoint {
-      get {
-        return m_SSpoint;
-      }
-    }
+    public BoundingBox ClippingBox => Boundingbox;
+    public IStressStrainPoint StressStrainPoint { get; private set; }
     public override string TypeDescription => "AdSec " + TypeName + " Parameter";
     public override string TypeName => "StressStrainPoint";
-    private IStressStrainPoint m_SSpoint;
 
     public AdSecStressStrainPointGoo(Point3d point) : base(point) {
       m_value = point;
-      m_SSpoint = IStressStrainPoint.Create(
+      StressStrainPoint = IStressStrainPoint.Create(
         new Pressure(m_value.Y, DefaultUnits.StressUnitResult),
         new Strain(m_value.X, DefaultUnits.StrainUnitResult));
     }
 
     public AdSecStressStrainPointGoo(AdSecStressStrainPointGoo stressstrainPoint) {
-      m_SSpoint = stressstrainPoint.StressStrainPoint;
+      StressStrainPoint = stressstrainPoint.StressStrainPoint;
       m_value = new Point3d(Value);
     }
 
     public AdSecStressStrainPointGoo(IStressStrainPoint stressstrainPoint) {
-      m_SSpoint = stressstrainPoint;
+      StressStrainPoint = stressstrainPoint;
       m_value = new Point3d(
-        m_SSpoint.Strain.As(DefaultUnits.StrainUnitResult),
-        m_SSpoint.Stress.As(DefaultUnits.StressUnitResult),
+        StressStrainPoint.Strain.As(DefaultUnits.StrainUnitResult),
+        StressStrainPoint.Stress.As(DefaultUnits.StressUnitResult),
         0);
     }
 
     public AdSecStressStrainPointGoo(Pressure stress, Strain strain) {
-      m_SSpoint = IStressStrainPoint.Create(stress, strain);
+      StressStrainPoint = IStressStrainPoint.Create(stress, strain);
       m_value = new Point3d(
-        m_SSpoint.Strain.As(DefaultUnits.StrainUnitResult),
-        m_SSpoint.Stress.As(DefaultUnits.StressUnitResult),
+        StressStrainPoint.Strain.As(DefaultUnits.StrainUnitResult),
+        StressStrainPoint.Stress.As(DefaultUnits.StressUnitResult),
         0);
     }
 
@@ -69,36 +63,36 @@ namespace AdSecGH.Parameters {
     }
 
     public override bool CastFrom(object source) {
-      if (source == null)
+      if (source == null) {
         return false;
+      }
 
-      if (source is Point3d) {
-        AdSecStressStrainPointGoo temp = new AdSecStressStrainPointGoo((Point3d)source);
+      if (source is Point3d d) {
+        var temp = new AdSecStressStrainPointGoo(d);
         m_value = temp.Value;
-        m_SSpoint = temp.StressStrainPoint;
+        StressStrainPoint = temp.StressStrainPoint;
         return true;
       }
 
-      if (source is IStressStrainPoint) {
-        AdSecStressStrainPointGoo temp = new AdSecStressStrainPointGoo((IStressStrainPoint)source);
+      if (source is IStressStrainPoint point) {
+        var temp = new AdSecStressStrainPointGoo(point);
         m_value = temp.Value;
-        m_SSpoint = temp.StressStrainPoint;
+        StressStrainPoint = temp.StressStrainPoint;
         return true;
       }
 
-      GH_Point ptGoo = source as GH_Point;
-      if (ptGoo != null) {
-        AdSecStressStrainPointGoo temp = new AdSecStressStrainPointGoo(ptGoo.Value);
+      if (source is GH_Point ptGoo) {
+        var temp = new AdSecStressStrainPointGoo(ptGoo.Value);
         m_value = temp.Value;
-        m_SSpoint = temp.StressStrainPoint;
+        StressStrainPoint = temp.StressStrainPoint;
         return true;
       }
 
-      Point3d pt = new Point3d();
+      var pt = new Point3d();
       if (GH_Convert.ToPoint3d(source, ref pt, GH_Conversion.Both)) {
-        AdSecStressStrainPointGoo temp = new AdSecStressStrainPointGoo(pt);
+        var temp = new AdSecStressStrainPointGoo(pt);
         m_value = temp.Value;
-        m_SSpoint = temp.StressStrainPoint;
+        StressStrainPoint = temp.StressStrainPoint;
         return true;
       }
       return false;
@@ -126,7 +120,7 @@ namespace AdSecGH.Parameters {
             new Strain(Value.X, DefaultUnits.StrainUnitResult));
         return true;
       }
-      target = default(Q);
+      target = default;
       return false;
     }
 
@@ -145,10 +139,10 @@ namespace AdSecGH.Parameters {
 
     public override BoundingBox GetBoundingBox(Transform xform) {
       if (Value == null) { return BoundingBox.Empty; }
-      Point3d pt = new Point3d(Value);
+      var pt = new Point3d(Value);
       pt.Z += 0.001;
-      Line ln = new Line(Value, pt);
-      LineCurve crv = new LineCurve(ln);
+      var ln = new Line(Value, pt);
+      var crv = new LineCurve(ln);
       return crv.GetBoundingBox(xform);
     }
 
