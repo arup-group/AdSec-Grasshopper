@@ -2,31 +2,33 @@
 using System.IO;
 using Xunit;
 
-namespace ComposGHTests {
+namespace IntegrationTests {
   public class GrasshopperFixture : IDisposable {
     public Rhino.Runtime.InProcess.RhinoCore Core {
       get {
-        if (null == _Core)
+        if (null == _Core) {
           InitializeCore();
+        }
         return _Core as Rhino.Runtime.InProcess.RhinoCore;
       }
     }
     public Grasshopper.Kernel.GH_DocumentIO DocIO {
       get {
-        if (null == _DocIO)
+        if (null == _docIo) {
           InitializeDocIO();
-        return _DocIO as Grasshopper.Kernel.GH_DocumentIO;
+        }
+        return _docIo as Grasshopper.Kernel.GH_DocumentIO;
       }
     }
     public Grasshopper.Plugin.GH_RhinoScriptInterface GHPlugin {
       get {
-        if (null == _GHPlugin)
+        if (null == _GHPlugin) {
           InitializeGrasshopperPlugin();
+        }
         return _GHPlugin as Grasshopper.Plugin.GH_RhinoScriptInterface;
       }
     }
-    private object _Doc { get; set; }
-    private object _DocIO { get; set; }
+    private object _docIo = null;
     private static string _linkFileName = "IntegrationTests.ghlink";
     private static string _linkFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Grasshopper", "Libraries");
     private object _Core = null;
@@ -65,10 +67,11 @@ namespace ComposGHTests {
     }
 
     protected virtual void Dispose(bool disposing) {
-      if (_isDisposed) return;
+      if (_isDisposed) {
+        return;
+      }
       if (disposing) {
-        _Doc = null;
-        _DocIO = null;
+        _docIo = null;
         GHPlugin.CloseAllDocuments();
         _GHPlugin = null;
         Core.Dispose();
@@ -92,18 +95,21 @@ namespace ComposGHTests {
     private void InitializeDocIO() {
       // we do this in a seperate function to absolutely ensure that the core is initialized before we load the GH plugin,
       // which will happen automatically when we enter the function containing GH references
-      if (null == _GHPlugin) InitializeGrasshopperPlugin();
+      if (null == _GHPlugin) {
+        InitializeGrasshopperPlugin();
+      }
       InitializeDocIO2();
     }
 
     private void InitializeDocIO2() {
       var docIO = new Grasshopper.Kernel.GH_DocumentIO();
-      _DocIO = docIO;
+      _docIo = docIO;
     }
 
     private void InitializeGrasshopperPlugin() {
-      if (null == _Core)
+      if (null == _Core) {
         InitializeCore();
+      }
       // we do this in a seperate function to absolutely ensure that the core is initialized before we load the GH plugin,
       // which will happen automatically when we enter the function containing GH references
       InitializeGrasshopperPlugin2();

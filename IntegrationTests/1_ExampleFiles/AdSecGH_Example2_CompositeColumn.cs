@@ -1,7 +1,7 @@
-﻿using Grasshopper.Kernel;
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
+using Grasshopper.Kernel;
 using Xunit;
 
 namespace IntegrationTests.Components {
@@ -9,8 +9,9 @@ namespace IntegrationTests.Components {
   public class AdSecGH_Example2_CompositeColumnTests {
     public static GH_Document Document {
       get {
-        if (_document == null)
+        if (_document == null) {
           _document = OpenDocument();
+        }
         return _document;
       }
     }

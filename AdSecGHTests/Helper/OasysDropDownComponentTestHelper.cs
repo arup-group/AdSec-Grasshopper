@@ -1,7 +1,7 @@
-﻿using Grasshopper.Kernel;
-using OasysGH.Components;
-using System;
+﻿using System;
 using System.IO;
+using Grasshopper.Kernel;
+using OasysGH.Components;
 using Xunit;
 
 namespace AdSecGHTests.Helpers {
@@ -9,8 +9,9 @@ namespace AdSecGHTests.Helpers {
 
     public static void ChangeDropDownTest(GH_OasysDropDownComponent comp, bool ignoreSpacerDescriptionsCount = false) {
       Assert.True(comp._isInitialised);
-      if (!ignoreSpacerDescriptionsCount)
+      if (!ignoreSpacerDescriptionsCount) {
         Assert.Equal(comp._dropDownItems.Count, comp._spacerDescriptions.Count);
+      }
       Assert.Equal(comp._dropDownItems.Count, comp._selectedItems.Count);
 
       for (int i = 0; i < comp._dropDownItems.Count; i++) {
@@ -30,9 +31,10 @@ namespace AdSecGHTests.Helpers {
       var doc = new GH_Document();
       doc.AddObject(comp, true);
 
-      GH_DocumentIO serialize = new GH_DocumentIO();
-      serialize.Document = doc;
-      GH_Component originalComponent = (GH_Component)serialize.Document.Objects[0];
+      var serialize = new GH_DocumentIO {
+        Document = doc
+      };
+      var originalComponent = (GH_Component)serialize.Document.Objects[0];
       originalComponent.Attributes.PerformLayout();
       originalComponent.ExpireSolution(true);
       originalComponent.Params.Output[0].CollectData();
@@ -43,10 +45,10 @@ namespace AdSecGHTests.Helpers {
       string pathFileName = Path.Combine(path, myType.Name) + customIdentifier + ".gh";
       Assert.True(serialize.SaveQuiet(pathFileName));
 
-      GH_DocumentIO deserialize = new GH_DocumentIO();
+      var deserialize = new GH_DocumentIO();
       Assert.True(deserialize.Open(pathFileName));
 
-      GH_Component deserializedComponent = (GH_Component)deserialize.Document.Objects[0];
+      var deserializedComponent = (GH_Component)deserialize.Document.Objects[0];
       deserializedComponent.Attributes.PerformLayout();
       deserializedComponent.ExpireSolution(true);
       deserializedComponent.Params.Output[0].CollectData();

@@ -1,16 +1,17 @@
-﻿using AdSecGH.UI;
+﻿using System.Threading;
+using System.Windows.Forms;
+using AdSecGH.UI;
 using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
-using System.Threading;
-using System.Windows.Forms;
 
 namespace AdSecGH.Graphics.Menu {
   public class MenuLoad {
     private static ToolStripMenuItem oasysMenu;
 
     internal static void OnStartup(GH_Canvas canvas) {
-      oasysMenu = new ToolStripMenuItem("Oasys");
-      oasysMenu.Name = "Oasys";
+      oasysMenu = new ToolStripMenuItem("Oasys") {
+        Name = "Oasys"
+      };
 
       PopulateSub(oasysMenu);
 
@@ -21,9 +22,9 @@ namespace AdSecGH.Graphics.Menu {
         Thread.Sleep(321);
       }
 
-      if (!editor.MainMenuStrip.Items.ContainsKey("Oasys"))
+      if (!editor.MainMenuStrip.Items.ContainsKey("Oasys")) {
         editor.MainMenuStrip.Items.Add(oasysMenu);
-      else {
+      } else {
         oasysMenu = (ToolStripMenuItem)editor.MainMenuStrip.Items["Oasys"];
         lock (oasysMenu) {
           oasysMenu.DropDown.Items.Add(new ToolStripSeparator());
@@ -55,7 +56,7 @@ namespace AdSecGH.Graphics.Menu {
       //});
       // add info
       menuItem.DropDown.Items.Add("AdSecGH Info", Properties.Resources.AdSecInfo, (s, a) => {
-        AboutBox aboutBox = new AboutBox();
+        var aboutBox = new AboutBox();
         aboutBox.ShowDialog();
       });
     }

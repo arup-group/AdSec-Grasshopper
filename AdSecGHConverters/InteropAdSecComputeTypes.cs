@@ -216,14 +216,13 @@ namespace AdSecGHAdapter {
     //}
 
     public static Type GetType(Type type) {
-      //switch (type.Name)
-      //{
-      //    case nameof(IAdSecSection):
-      //        return typeof(AdSecComputeTypes.Section);
+      switch (type.Name) {
+        //case nameof(IAdSecSection):
+        //  return typeof(AdSecComputeTypes.Section);
 
-      //    default:
-      return null;
-      //}
+        default:
+          return null;
+      }
     }
 
     public static bool IsPresent() {

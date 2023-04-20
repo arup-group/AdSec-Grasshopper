@@ -41,9 +41,10 @@ namespace AdSecGH.Components {
 
       // toggle case
       if (i == 0) {
-        // remove dropdown lists beyond first level
-        while (_dropDownItems.Count > 1)
+        // remove dropdown lists beyond first level 
+        while (_dropDownItems.Count > 1) {
           _dropDownItems.RemoveAt(1);
+        }
 
         switch (j) {
           case 0:

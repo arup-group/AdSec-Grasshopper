@@ -1,8 +1,8 @@
-﻿using Grasshopper.Kernel;
+﻿using System.Collections.Generic;
+using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
-using System.Collections.Generic;
 
 namespace AdSecGHTests.Helpers {
   public class ComponentTestHelper {
@@ -47,8 +47,9 @@ namespace AdSecGHTests.Helpers {
       var input = new Param_GenericObject();
       input.CreateAttributes();
       input.Access = GH_ParamAccess.list;
-      foreach (object obj in generic_input)
+      foreach (object obj in generic_input) {
         input.PersistentData.Append(new GH_ObjectWrapper(obj));
+      }
       component.Params.Input[index].AddSource(input);
     }
 

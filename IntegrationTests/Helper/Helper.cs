@@ -1,15 +1,15 @@
-﻿using Grasshopper.Kernel;
+﻿using System;
+using System.IO;
+using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
-using System;
-using System.IO;
 using Xunit;
 
 namespace IntegrationTests {
   internal class Helper {
 
     public static GH_Document CreateDocument(string path) {
-      GH_DocumentIO io = new GH_DocumentIO();
+      var io = new GH_DocumentIO();
 
       Assert.True(File.Exists(path));
       Assert.True(io.Open(path));
@@ -19,14 +19,14 @@ namespace IntegrationTests {
     }
 
     public static GH_Component FindComponent(GH_Document doc, string groupIdentifier) {
-      foreach (var obj in doc.Objects) {
+      foreach (IGH_DocumentObject obj in doc.Objects) {
         if (obj is GH_Group group) {
           if (group.NickName == groupIdentifier) {
             Guid componentguid = group.ObjectIDs[0];
 
-            foreach (var obj2 in (doc.Objects)) {
+            foreach (IGH_DocumentObject obj2 in doc.Objects) {
               if (obj2.InstanceGuid == componentguid) {
-                GH_Component comp = (GH_Component)obj2;
+                var comp = (GH_Component)obj2;
                 Assert.NotNull(comp);
                 comp.Params.Output[0].CollectData();
                 return comp;
@@ -42,14 +42,14 @@ namespace IntegrationTests {
     }
 
     public static IGH_Param FindParameter(GH_Document doc, string groupIdentifier) {
-      foreach (var obj in doc.Objects) {
+      foreach (IGH_DocumentObject obj in doc.Objects) {
         if (obj is GH_Group group) {
           if (group.NickName == groupIdentifier) {
             Guid componentguid = group.ObjectIDs[0];
 
-            foreach (var obj2 in (doc.Objects)) {
+            foreach (IGH_DocumentObject obj2 in doc.Objects) {
               if (obj2.InstanceGuid == componentguid) {
-                IGH_Param param = (IGH_Param)(object)obj2;
+                var param = (IGH_Param)(object)obj2;
                 Assert.NotNull(param);
                 param.CollectData();
                 return param;
@@ -66,57 +66,51 @@ namespace IntegrationTests {
 
     public static void TestGHPrimitives(IGH_Param param, object expected, int tolerance = 6) {
       if (expected.GetType() == typeof(string)) {
-        GH_String valOut = (GH_String)param.VolatileData.get_Branch(0)[0];
+        var valOut = (GH_String)param.VolatileData.get_Branch(0)[0];
         Assert.Equal(expected, valOut.Value);
-      }
-      else if (expected.GetType() == typeof(int)) {
-        GH_Integer valOut = (GH_Integer)param.VolatileData.get_Branch(0)[0];
+      } else if (expected.GetType() == typeof(int)) {
+        var valOut = (GH_Integer)param.VolatileData.get_Branch(0)[0];
         Assert.Equal(expected, valOut.Value);
-      }
-      else if (expected.GetType() == typeof(double)) {
-        GH_Number valOut = (GH_Number)param.VolatileData.get_Branch(0)[0];
+      } else if (expected.GetType() == typeof(double)) {
+        var valOut = (GH_Number)param.VolatileData.get_Branch(0)[0];
         Assert.Equal((double)expected, valOut.Value, tolerance);
-      }
-      else if (expected.GetType() == typeof(bool)) {
-        GH_Boolean valOut = (GH_Boolean)param.VolatileData.get_Branch(0)[0];
+      } else if (expected.GetType() == typeof(bool)) {
+        var valOut = (GH_Boolean)param.VolatileData.get_Branch(0)[0];
         Assert.Equal(expected, valOut.Value);
-      }
-      else if (expected.GetType() == typeof(bool[])) {
+      } else if (expected.GetType() == typeof(bool[])) {
         for (int i = 0; i < ((bool[])expected).Length; i++) {
-          GH_Boolean valOut = (GH_Boolean)param.VolatileData.get_Branch(0)[i];
+          var valOut = (GH_Boolean)param.VolatileData.get_Branch(0)[i];
           Assert.Equal(((bool[])expected)[i], valOut.Value);
         }
-      }
-      else if (expected.GetType() == typeof(string[])) {
+      } else if (expected.GetType() == typeof(string[])) {
         for (int i = 0; i < ((string[])expected).Length; i++) {
-          GH_String valOut = (GH_String)param.VolatileData.get_Branch(0)[i];
+          var valOut = (GH_String)param.VolatileData.get_Branch(0)[i];
           Assert.Equal(((string[])expected)[i], valOut.Value);
         }
-      }
-      else if (expected.GetType() == typeof(int[])) {
+      } else if (expected.GetType() == typeof(int[])) {
         for (int i = 0; i < ((int[])expected).Length; i++) {
-          GH_Integer valOut = (GH_Integer)param.VolatileData.get_Branch(0)[i];
+          var valOut = (GH_Integer)param.VolatileData.get_Branch(0)[i];
           Assert.Equal(((int[])expected)[i], valOut.Value);
         }
-      }
-      else if (expected.GetType() == typeof(double[])) {
+      } else if (expected.GetType() == typeof(double[])) {
         for (int i = 0; i < ((double[])expected).Length; i++) {
-          GH_Number valOut = (GH_Number)param.VolatileData.get_Branch(0)[i];
+          var valOut = (GH_Number)param.VolatileData.get_Branch(0)[i];
           Assert.Equal(((double[])expected)[i], valOut.Value, tolerance);
         }
-      }
-      else
+      } else {
         Assert.True(false, "Expected type not found!");
+      }
     }
 
     public static void TestNoRuntimeMessagesInDocument(GH_Document doc, GH_RuntimeMessageLevel runtimeMessageLevel, string exceptComponentNamed = "") {
-      foreach (var obj in doc.Objects) {
+      foreach (IGH_DocumentObject obj in doc.Objects) {
         if (obj is GH_Component comp) {
           comp.CollectData();
           comp.Params.Output[0].CollectData();
           comp.Params.Output[0].VolatileData.get_Branch(0);
-          if (comp.Name != exceptComponentNamed)
+          if (comp.Name != exceptComponentNamed) {
             Assert.Empty(comp.RuntimeMessages(runtimeMessageLevel));
+          }
         }
       }
     }
