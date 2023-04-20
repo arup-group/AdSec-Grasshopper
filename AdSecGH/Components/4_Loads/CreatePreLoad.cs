@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
@@ -12,8 +14,6 @@ using OasysGH.Units;
 using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
-using System;
-using System.Collections.Generic;
 
 namespace AdSecGH.Components {
   /// <summary>
@@ -35,7 +35,7 @@ namespace AdSecGH.Components {
       "Create an AdSec Prestress Load for Reinforcement Layout as either Preforce, Prestrain or Prestress",
       CategoryName.Name(),
       SubCategoryName.Cat5()) {
-      this.Hidden = false; // sets the initial state of the component to hidden
+      Hidden = false; // sets the initial state of the component to hidden
     }
 
     public override bool Read(GH_IO.Serialization.GH_IReader reader) {
@@ -46,37 +46,36 @@ namespace AdSecGH.Components {
     }
 
     public override void SetSelected(int i, int j) {
-      this._selectedItems[i] = this._dropDownItems[i][j];
+      _selectedItems[i] = _dropDownItems[i][j];
 
       if (i == 0) {
         switch (_selectedItems[0]) {
-          case ("Force"):
+          case "Force":
             _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
             _selectedItems[0] = _forceUnit.ToString();
             break;
 
-          case ("Strain"):
+          case "Strain":
             _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
             _selectedItems[0] = _strainUnit.ToString();
             break;
 
-          case ("Stress"):
+          case "Stress":
             _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
             _selectedItems[0] = _stressUnit.ToString();
             break;
         }
-      }
-      else {
+      } else {
         switch (_selectedItems[0]) {
-          case ("Force"):
+          case "Force":
             _forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), _selectedItems[i]);
             break;
 
-          case ("Strain"):
+          case "Strain":
             _strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), _selectedItems[i]);
             break;
 
-          case ("Stress"):
+          case "Stress":
             _stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), _selectedItems[i]);
             break;
         }
@@ -86,22 +85,22 @@ namespace AdSecGH.Components {
     }
 
     public override void VariableParameterMaintenance() {
-      string forceUnitAbbreviation = Force.GetAbbreviation(this._forceUnit);
-      string strainUnitAbbreviation = Strain.GetAbbreviation(this._strainUnit);
-      string stressUnitAbbreviation = Pressure.GetAbbreviation(this._stressUnit);
+      string forceUnitAbbreviation = Force.GetAbbreviation(_forceUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(_strainUnit);
+      string stressUnitAbbreviation = Pressure.GetAbbreviation(_stressUnit);
 
       switch (_selectedItems[0]) {
-        case ("Force"):
+        case "Force":
           Params.Input[1].Name = "Force [" + forceUnitAbbreviation + "]";
           Params.Input[1].NickName = "P";
           break;
 
-        case ("Strain"):
+        case "Strain":
           Params.Input[1].Name = "Strain [" + strainUnitAbbreviation + "]";
           Params.Input[1].NickName = "ε";
           break;
 
-        case ("Stress"):
+        case "Stress":
           Params.Input[1].Name = "Stress [" + stressUnitAbbreviation + "]";
           Params.Input[1].NickName = "σ";
           break;
@@ -116,29 +115,29 @@ namespace AdSecGH.Components {
     }
 
     protected override void InitialiseDropdowns() {
-      this._spacerDescriptions = new List<string>() {
+      _spacerDescriptions = new List<string>() {
         "Force",
         "Strain",
         "Stress"
       };
 
-      this._dropDownItems = new List<List<string>>();
-      this._selectedItems = new List<string>();
+      _dropDownItems = new List<List<string>>();
+      _selectedItems = new List<string>();
 
       // type
-      List<string> types = new List<string>() { "Force", "Strain", "Stress" };
-      this._dropDownItems.Add(types);
-      this._selectedItems.Add(_dropDownItems[0][0]);
+      var types = new List<string>() { "Force", "Strain", "Stress" };
+      _dropDownItems.Add(types);
+      _selectedItems.Add(_dropDownItems[0][0]);
 
       // force
-      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
-      this._selectedItems.Add(Force.GetAbbreviation(this._forceUnit));
+      _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
+      _selectedItems.Add(Force.GetAbbreviation(_forceUnit));
 
-      this._isInitialised = true;
+      _isInitialised = true;
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      string forceUnitAbbreviation = Force.GetAbbreviation(this._forceUnit);
+      string forceUnitAbbreviation = Force.GetAbbreviation(_forceUnit);
       pManager.AddGenericParameter("RebarGroup", "RbG", "AdSec Reinforcement Group to apply Preload to", GH_ParamAccess.item);
       pManager.AddGenericParameter("Force [" + forceUnitAbbreviation + "]", "P", "The pre-load per reinforcement bar. Positive value is tension.", GH_ParamAccess.item);
     }
@@ -154,23 +153,24 @@ namespace AdSecGH.Components {
       IPreload load = null;
       // Create new load
       switch (_selectedItems[0]) {
-        case ("Force"):
+        case "Force":
           load = IPreForce.Create((Force)Input.UnitNumber(this, DA, 1, _forceUnit));
           break;
 
-        case ("Strain"):
+        case "Strain":
           load = IPreStrain.Create((Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
           break;
 
-        case ("Stress"):
+        case "Stress":
           load = IPreStress.Create((Pressure)Input.UnitNumber(this, DA, 1, _stressUnit));
           break;
       }
-      ILongitudinalGroup longitudinal = (ILongitudinalGroup)rebar.Value.Group;
+      var longitudinal = (ILongitudinalGroup)rebar.Value.Group;
       longitudinal.Preload = load;
-      AdSecRebarGroupGoo out_rebar = new AdSecRebarGroupGoo(longitudinal);
-      if (rebar.Cover != null)
+      var out_rebar = new AdSecRebarGroupGoo(longitudinal);
+      if (rebar.Cover != null) {
         out_rebar.Cover = ICover.Create(rebar.Cover.UniformCover);
+      }
 
       DA.SetData(0, out_rebar);
 

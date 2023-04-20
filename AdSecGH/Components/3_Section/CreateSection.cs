@@ -1,12 +1,12 @@
-﻿using AdSecGH.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Components;
-using System;
-using System.Collections.Generic;
 
 namespace AdSecGH.Components {
   public class CreateSection : GH_OasysComponent {
@@ -22,7 +22,7 @@ namespace AdSecGH.Components {
       "Create an AdSec Section",
       CategoryName.Name(),
       SubCategoryName.Cat4()) {
-      this.Hidden = false; // sets the initial state of the component to hidden
+      Hidden = false; // sets the initial state of the component to hidden
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
@@ -32,8 +32,9 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("SubComponent", "Sub", "[Optional] AdSet Subcomponents contained within the section", GH_ParamAccess.list);
 
       // make all from second input optional
-      for (int i = 2; i < pManager.ParamCount; i++)
+      for (int i = 2; i < pManager.ParamCount; i++) {
         pManager[i].Optional = true;
+      }
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
@@ -48,17 +49,19 @@ namespace AdSecGH.Components {
       AdSecMaterial material = AdSecInput.AdSecMaterial(this, DA, 1);
 
       // 2 Rebars
-      List<AdSecRebarGroup> reinforcements = new List<AdSecRebarGroup>();
-      if (Params.Input[2].SourceCount > 0)
+      var reinforcements = new List<AdSecRebarGroup>();
+      if (Params.Input[2].SourceCount > 0) {
         reinforcements = AdSecInput.ReinforcementGroups(this, DA, 2, true);
+      }
 
       // 3 Subcomponents
-      Oasys.Collections.IList<ISubComponent> subComponents = Oasys.Collections.IList<ISubComponent>.Create();
-      if (Params.Input[3].SourceCount > 0)
+      var subComponents = Oasys.Collections.IList<ISubComponent>.Create();
+      if (Params.Input[3].SourceCount > 0) {
         subComponents = AdSecInput.SubComponents(this, DA, 3, true);
+      }
 
       // create section
-      AdSecSection section = new AdSecSection(profile.Profile, profile.LocalPlane, material, reinforcements, subComponents);
+      var section = new AdSecSection(profile.Profile, profile.LocalPlane, material, reinforcements, subComponents);
 
       DA.SetData(0, new AdSecSectionGoo(section));
     }

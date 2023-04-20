@@ -1,4 +1,7 @@
-﻿using AdSecGH.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -10,9 +13,6 @@ using OasysGH.Components;
 using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace AdSecGH.Components {
   public class CreateCustomMaterial : GH_OasysDropDownComponent {
@@ -30,32 +30,33 @@ namespace AdSecGH.Components {
   "Create a custom AdSec Material",
   CategoryName.Name(),
   SubCategoryName.Cat1()) {
-      this.Hidden = true; // sets the initial state of the component to hidden
+      Hidden = true; // sets the initial state of the component to hidden
     }
 
     public override bool Read(GH_IO.Serialization.GH_IReader reader) {
-      this._isConcrete = reader.GetBoolean("isConcrete");
+      _isConcrete = reader.GetBoolean("isConcrete");
       return base.Read(reader);
     }
 
     public override void SetSelected(int i, int j) {
-      this._selectedItems[i] = this._dropDownItems[i][j];
+      _selectedItems[i] = _dropDownItems[i][j];
 
-      Enum.TryParse(this._selectedItems[0], out _type);
+      Enum.TryParse(_selectedItems[0], out _type);
 
       // set bool if selection is concrete
-      if (this._selectedItems[i] == AdSecMaterial.AdSecMaterialType.Concrete.ToString())
-        this._isConcrete = true;
-      else
-        this._isConcrete = false;
+      if (_selectedItems[i] == AdSecMaterial.AdSecMaterialType.Concrete.ToString()) {
+        _isConcrete = true;
+      } else {
+        _isConcrete = false;
+      }
 
       // update input params
-      this.ChangeMode();
+      ChangeMode();
       base.UpdateUI();
     }
 
     public override void VariableParameterMaintenance() {
-      if (this._isConcrete) {
+      if (_isConcrete) {
         Params.Input[5].Name = "Yield PointCrack Calc Params";
         Params.Input[5].NickName = "CCP";
         Params.Input[5].Description = "[Optional] Material's Crack Calculation Parameters";
@@ -65,22 +66,22 @@ namespace AdSecGH.Components {
     }
 
     public override bool Write(GH_IO.Serialization.GH_IWriter writer) {
-      writer.SetBoolean("isConcrete", this._isConcrete);
+      writer.SetBoolean("isConcrete", _isConcrete);
       return base.Write(writer);
     }
 
     protected override void InitialiseDropdowns() {
-      this._spacerDescriptions = new List<string>(new string[] {
+      _spacerDescriptions = new List<string>(new string[] {
         "Material Type"
       });
 
-      this._dropDownItems = new List<List<string>>();
-      this._selectedItems = new List<string>();
+      _dropDownItems = new List<List<string>>();
+      _selectedItems = new List<string>();
 
-      this._dropDownItems.Add(Enum.GetNames(typeof(AdSecMaterial.AdSecMaterialType)).ToList());
-      this._selectedItems.Add(AdSecMaterial.AdSecMaterialType.Concrete.ToString());
+      _dropDownItems.Add(Enum.GetNames(typeof(AdSecMaterial.AdSecMaterialType)).ToList());
+      _selectedItems.Add(AdSecMaterial.AdSecMaterialType.Concrete.ToString());
 
-      this._isInitialised = true;
+      _isInitialised = true;
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
@@ -116,14 +117,15 @@ namespace AdSecGH.Components {
 
       // 5 Cracked params
       IConcreteCrackCalculationParameters concreteCrack = null;
-      if (this._isConcrete) {
+      if (_isConcrete) {
         concreteCrack = AdSecInput.ConcreteCrackCalculationParameters(this, DA, 5);
       }
 
       // create new empty material
-      AdSecMaterial material = new AdSecMaterial();
-      if (designCode != null)
+      var material = new AdSecMaterial();
+      if (designCode != null) {
         material.DesignCode = designCode;
+      }
 
       // set material type from dropdown input
       material.Type = _type;
@@ -140,16 +142,17 @@ namespace AdSecGH.Components {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "ULS Stress Strain Curve for Compression has zero failure strain.");
         return;
       }
-      ITensionCompressionCurve ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.StressStrainCurve, ulsCompCrv.StressStrainCurve);
-      ITensionCompressionCurve slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
+      var ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.StressStrainCurve, ulsCompCrv.StressStrainCurve);
+      var slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
 
       // create api material based on type
-      switch (this._type) {
+      switch (_type) {
         case AdSecMaterial.AdSecMaterialType.Concrete:
-          if (concreteCrack == null)
+          if (concreteCrack == null) {
             material.Material = IConcrete.Create(ulsTC, slsTC);
-          else
+          } else {
             material.Material = IConcrete.Create(ulsTC, slsTC, concreteCrack);
+          }
           break;
 
         case AdSecMaterial.AdSecMaterialType.FRP:
@@ -175,34 +178,37 @@ namespace AdSecGH.Components {
 
     protected override void UpdateUIFromSelectedItems() {
       // cast selection to material type enum
-      Enum.TryParse(this._selectedItems[0], out _type);
+      Enum.TryParse(_selectedItems[0], out _type);
 
       // don´t know if this needs to happen before ChangeMode()
-      this.CreateAttributes();
+      CreateAttributes();
 
-      this.ChangeMode();
+      ChangeMode();
 
-      this.UpdateUI(); ;
+      UpdateUI(); ;
     }
 
     private void ChangeMode() {
-      if (this._isConcrete)
+      if (_isConcrete) {
         if (Params.Input.Count == 6) {
           return;
         }
+      }
 
-      if (!this._isConcrete)
+      if (!_isConcrete) {
         if (Params.Input.Count == 5) {
           return;
         }
+      }
 
-      this.RecordUndoEvent("Changed dropdown");
+      RecordUndoEvent("Changed dropdown");
 
       // change number of input parameters
-      if (this._isConcrete)
+      if (_isConcrete) {
         Params.RegisterInputParam(new Param_GenericObject());
-      else
+      } else {
         Params.UnregisterInputParameter(Params.Input[5], true);
+      }
 
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
     }

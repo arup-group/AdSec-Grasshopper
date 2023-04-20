@@ -17,9 +17,9 @@ namespace AdSecGH.Parameters {
     public static string NickName => "Ld";
     public override BoundingBox Boundingbox {
       get {
-        if (this.Value == null)
+        if (Value == null)
           return BoundingBox.Empty;
-        if (this.m_point == null)
+        if (m_point == null)
           return BoundingBox.Empty;
         Point3d pt1 = new Point3d(m_point);
         pt1.Z += 0.25;
@@ -36,7 +36,7 @@ namespace AdSecGH.Parameters {
       }
     }
     public override bool IsValid => true;
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
     public override string TypeName => "Load";
     private Point3d m_point = Point3d.Unset;
 
@@ -44,7 +44,7 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecLoadGoo(ILoad load, Plane local) {
-      this.m_value = load;
+      m_value = load;
       Point3d point = new Point3d(
         load.ZZ.As(DefaultUnits.MomentUnit),
         load.YY.As(DefaultUnits.MomentUnit),
@@ -64,7 +64,7 @@ namespace AdSecGH.Parameters {
             new Moment(point.Y, DefaultUnits.MomentUnit),
             new Moment(point.Z, DefaultUnits.MomentUnit));
         AdSecLoadGoo temp = new AdSecLoadGoo(load);
-        this.Value = temp.Value;
+        Value = temp.Value;
         return true;
       }
 
@@ -76,7 +76,7 @@ namespace AdSecGH.Parameters {
             new Moment(point.Y, DefaultUnits.MomentUnit),
             new Moment(point.Z, DefaultUnits.MomentUnit));
         AdSecLoadGoo temp = new AdSecLoadGoo(load);
-        this.Value = temp.Value;
+        Value = temp.Value;
         return true;
       }
 
@@ -88,7 +88,7 @@ namespace AdSecGH.Parameters {
             new Moment(point.Y, DefaultUnits.MomentUnit),
             new Moment(point.Z, DefaultUnits.MomentUnit));
         AdSecLoadGoo temp = new AdSecLoadGoo(load);
-        this.Value = temp.Value;
+        Value = temp.Value;
         return true;
       }
 
@@ -97,7 +97,7 @@ namespace AdSecGH.Parameters {
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecLoadGoo))) {
-        target = (Q)(object)new AdSecLoadGoo(this.Value);
+        target = (Q)(object)new AdSecLoadGoo(Value);
         return true;
       }
 
@@ -133,7 +133,7 @@ namespace AdSecGH.Parameters {
       }
     }
 
-    public override IGH_Goo Duplicate() => new AdSecLoadGoo(this.Value);
+    public override IGH_Goo Duplicate() => new AdSecLoadGoo(Value);
 
     public override IGH_GeometricGoo DuplicateGeometry() {
       AdSecLoadGoo dup = new AdSecLoadGoo(Value);
@@ -163,9 +163,9 @@ namespace AdSecGH.Parameters {
       IQuantity quantityForce = new Force(0, DefaultUnits.ForceUnit);
       string unitforceAbbreviation = string.Concat(quantityForce.ToString().Where(char.IsLetter));
       return "AdSec " + TypeName + " {"
-        + Math.Round(this.Value.X.As(DefaultUnits.ForceUnit), 4) + unitforceAbbreviation + ", "
-        + Math.Round(this.Value.YY.As(DefaultUnits.MomentUnit), 4) + unitMomentAbbreviation + ", "
-        + Math.Round(this.Value.ZZ.As(DefaultUnits.MomentUnit), 4) + unitMomentAbbreviation + "}";
+        + Math.Round(Value.X.As(DefaultUnits.ForceUnit), 4) + unitforceAbbreviation + ", "
+        + Math.Round(Value.YY.As(DefaultUnits.MomentUnit), 4) + unitMomentAbbreviation + ", "
+        + Math.Round(Value.ZZ.As(DefaultUnits.MomentUnit), 4) + unitMomentAbbreviation + "}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {

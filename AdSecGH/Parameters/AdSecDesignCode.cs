@@ -14,7 +14,7 @@ namespace AdSecGH.Parameters {
     public string DesignCodeName { get; set; }
     public bool IsValid {
       get {
-        if (this.DesignCode == null)
+        if (DesignCode == null)
           return false;
         return true;
       }
@@ -24,8 +24,8 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecDesignCode(IDesignCode designCode, string designCodeName) {
-      this.DesignCode = designCode;
-      this.DesignCodeName = designCodeName;
+      DesignCode = designCode;
+      DesignCodeName = designCodeName;
     }
 
     internal AdSecDesignCode(FieldInfo fieldDesignCode) {
@@ -35,13 +35,13 @@ namespace AdSecGH.Parameters {
     }
 
     internal AdSecDesignCode(List<string> designCodeReflectedLevels) {
-      this.CreateFromReflectedLevels(designCodeReflectedLevels);
+      CreateFromReflectedLevels(designCodeReflectedLevels);
     }
 
     public AdSecDesignCode Duplicate() {
       if (this == null)
         return null;
-      AdSecDesignCode dup = (AdSecDesignCode)this.MemberwiseClone();
+      AdSecDesignCode dup = (AdSecDesignCode)MemberwiseClone();
       return dup;
     }
 
@@ -80,11 +80,11 @@ namespace AdSecGH.Parameters {
         if (type.IsInterface && type.Namespace == "Oasys.AdSec.DesignCode")
           foreach (var field in type.GetFields())
             if (field.DeclaringType.FullName == searchFor)
-              this.DesignCode = (IDesignCode)field.GetValue(null);
+              DesignCode = (IDesignCode)field.GetValue(null);
       }
 
-      if (this.DesignCode == null) { return false; }
-      this.DesignCodeName = designcodeName.TrimEnd(' ') + " " + designCodeReflectedLevels.Last();
+      if (DesignCode == null) { return false; }
+      DesignCodeName = designcodeName.TrimEnd(' ') + " " + designCodeReflectedLevels.Last();
       return true;
     }
   }

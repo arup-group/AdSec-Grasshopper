@@ -1,4 +1,7 @@
-﻿using AdSecGH.Helpers;
+﻿using System;
+using System.Drawing;
+using System.IO;
+using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -8,9 +11,6 @@ using Oasys.Profiles;
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.UI;
-using System;
-using System.Drawing;
-using System.IO;
 
 namespace AdSecGH.Components {
   public class SaveSVG : GH_OasysDropDownComponent {
@@ -29,7 +29,7 @@ namespace AdSecGH.Components {
   "Creates a SVG file from an AdSec Section",
   CategoryName.Name(),
   SubCategoryName.Cat0()) {
-      this.Hidden = true; // sets the initial state of the component to hidden
+      Hidden = true; // sets the initial state of the component to hidden
     }
 
     // This region handles input and output parameters
@@ -39,38 +39,39 @@ namespace AdSecGH.Components {
     }
 
     public void OpenSVGexe() {
-      if (this._fileName != null) {
-        if (this._fileName != "") {
-          if (this._canOpen)
-            System.Diagnostics.Process.Start(this._fileName);
-          else {
-            File.WriteAllText(this._fileName, imageSVG);
-            this._canOpen = true;
+      if (_fileName != null) {
+        if (_fileName != "") {
+          if (_canOpen) {
+            System.Diagnostics.Process.Start(_fileName);
+          } else {
+            File.WriteAllText(_fileName, imageSVG);
+            _canOpen = true;
           }
         }
       }
     }
 
     public override bool Read(GH_IO.Serialization.GH_IReader reader) {
-      this._fileName = reader.GetString("File");
+      _fileName = reader.GetString("File");
       return base.Read(reader);
     }
 
     public void SaveAsFile() {
       var fdi = new Rhino.UI.SaveFileDialog { Filter = "SVG File (*.svg)|*.svg|All files (*.*)|*.*" };
-      var res = fdi.ShowSaveDialog();
+      bool res = fdi.ShowSaveDialog();
       if (res) // == DialogResult.OK)
       {
-        this._fileName = fdi.FileName;
+        _fileName = fdi.FileName;
         // write to file
-        File.WriteAllText(this._fileName, imageSVG);
+        File.WriteAllText(_fileName, imageSVG);
 
         _canOpen = true;
 
         //add panel input with string
         //delete existing inputs if any
-        while (this.Params.Input[2].Sources.Count > 0)
-          Grasshopper.Instances.ActiveCanvas.Document.RemoveObject(this.Params.Input[2].Sources[0], false);
+        while (Params.Input[2].Sources.Count > 0) {
+          Grasshopper.Instances.ActiveCanvas.Document.RemoveObject(Params.Input[2].Sources[0], false);
+        }
 
         //instantiate  new panel
         var panel = new Grasshopper.Kernel.Special.GH_Panel();
@@ -80,25 +81,25 @@ namespace AdSecGH.Components {
             panel.Attributes.Bounds.Width - 40, (float)Attributes.DocObject.Attributes.Bounds.Bottom - panel.Attributes.Bounds.Height);
 
         //populate value list with our own data
-        panel.UserText = this._fileName;
+        panel.UserText = _fileName;
 
         //Until now, the panel is a hypothetical object.
         // This command makes it 'real' and adds it to the canvas.
         Grasshopper.Instances.ActiveCanvas.Document.AddObject(panel, false);
 
         //Connect the new slider to this component
-        this.Params.Input[2].AddSource(panel);
-        this.Params.OnParametersChanged();
+        Params.Input[2].AddSource(panel);
+        Params.OnParametersChanged();
         ExpireSolution(true);
       }
     }
 
     public void SaveFile() {
-      if (this._fileName == null | this._fileName == "")
+      if (_fileName == null | _fileName == "") {
         SaveAsFile();
-      else {
+      } else {
         // write to file
-        File.WriteAllText(this._fileName, imageSVG);
+        File.WriteAllText(_fileName, imageSVG);
         _canOpen = true;
       }
     }
@@ -112,7 +113,7 @@ namespace AdSecGH.Components {
     }
 
     public override bool Write(GH_IO.Serialization.GH_IWriter writer) {
-      writer.SetString("File", this._fileName);
+      writer.SetString("File", _fileName);
       return base.Write(writer);
     }
 
@@ -133,22 +134,22 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       AdSecSection section = AdSecInput.AdSecSection(this, DA, 0);
-      if (section == null)
+      if (section == null) {
         return;
+      }
 
       // create a flattened section
       ISection flat = null;
       if (section.DesignCode != null) {
-        IAdSec adSec = IAdSec.Create(section.DesignCode);
+        var adSec = IAdSec.Create(section.DesignCode);
         flat = adSec.Flatten(section.Section);
-      }
-      else {
-        IPerimeterProfile prof = IPerimeterProfile.Create(section.Section.Profile);
+      } else {
+        var prof = IPerimeterProfile.Create(section.Section.Profile);
         flat = ISection.Create(prof, section.Section.Material);
       }
 
       // construct image converter
-      SectionImageBuilder sectionImageBuilder = new SectionImageBuilder(flat);
+      var sectionImageBuilder = new SectionImageBuilder(flat);
 
       // create svg string
       imageSVG = sectionImageBuilder.Svg();
@@ -167,8 +168,8 @@ namespace AdSecGH.Components {
       // filepath
       string pathString = "";
       if (DA.GetData(2, ref pathString)) {
-        if (this._fileName != pathString) {
-          this._fileName = pathString;
+        if (_fileName != pathString) {
+          _fileName = pathString;
           _canOpen = false;
         }
       }
@@ -178,7 +179,7 @@ namespace AdSecGH.Components {
       if (DA.GetData(1, ref save)) {
         if (save) {
           // write to file
-          File.WriteAllText(this._fileName, imageSVG);
+          File.WriteAllText(_fileName, imageSVG);
           _canOpen = true;
         }
       }

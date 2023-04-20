@@ -10,7 +10,7 @@ using System.Linq;
 namespace AdSecGH.Parameters {
   public class AdSecRebarGroupGoo : GH_Goo<AdSecRebarGroup> {
     public override bool IsValid => true;
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
     public override string TypeName => "Rebar Group";
     internal ICover Cover {
       get {
@@ -25,13 +25,13 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecRebarGroupGoo(IGroup group) {
-      this.Value = new AdSecRebarGroup(group);
+      Value = new AdSecRebarGroup(group);
     }
 
     public AdSecRebarGroupGoo(AdSecRebarGroup goo) {
       if (goo == null)
         goo = new AdSecRebarGroup();
-      this.Value = goo;
+      Value = goo;
     }
 
     public override bool CastFrom(object source) {
@@ -61,7 +61,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_Goo Duplicate() {
-      AdSecRebarGroupGoo dup = new AdSecRebarGroupGoo(this.Value);
+      AdSecRebarGroupGoo dup = new AdSecRebarGroupGoo(Value);
       if (Value.Cover != null)
         dup.Value.Cover = ICover.Create(Value.Cover.UniformCover);
       return dup;

@@ -85,14 +85,14 @@ namespace AdSecGH.Helpers {
           major_step = 2f;
           minor_step = 0.5f;
         }
-        this.major_step = (float)(Math.Pow(10, Math.Floor(pwr)) * major_step);
-        this.minor_step = (float)(Math.Pow(10, Math.Floor(pwr)) * minor_step);
-        this.major_count = (int)Math.Ceiling((x_max - x_min) / major_step);
-        this.minor_count = (int)Math.Ceiling((x_max - x_min) / minor_step);
+        major_step = (float)(Math.Pow(10, Math.Floor(pwr)) * major_step);
+        minor_step = (float)(Math.Pow(10, Math.Floor(pwr)) * minor_step);
+        major_count = (int)Math.Ceiling((x_max - x_min) / major_step);
+        minor_count = (int)Math.Ceiling((x_max - x_min) / minor_step);
         int i_1 = (int)Math.Floor(x_min / major_step);
         int i_2 = (int)Math.Ceiling(x_max / major_step);
-        this.min_value = i_1 * major_step;
-        this.max_value = i_2 * major_step;
+        min_value = i_1 * major_step;
+        max_value = i_2 * major_step;
       }
     }
 

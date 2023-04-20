@@ -15,6 +15,6 @@ namespace AdSecGH.Parameters {
     public AdSecDesignCodeGoo(AdSecDesignCode item) : base(item) {
     }
 
-    public override IGH_Goo Duplicate() => new AdSecDesignCodeGoo(this.Value);
+    public override IGH_Goo Duplicate() => new AdSecDesignCodeGoo(Value);
   }
 }

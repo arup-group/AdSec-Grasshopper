@@ -15,58 +15,58 @@ namespace AdSecGH.Parameters {
   public class AdSecProfileGoo : GH_GeometricGoo<Polyline>, IGH_PreviewData {
     public override BoundingBox Boundingbox {
       get {
-        if (this.Value == null)
+        if (Value == null)
           return BoundingBox.Empty;
-        return this.Value.BoundingBox;
+        return Value.BoundingBox;
       }
     }
     public BoundingBox ClippingBox {
       get {
-        return this.Boundingbox;
+        return Boundingbox;
       }
     }
     public bool IsReflectedY {
       get {
-        return this.m_profile.IsReflectedY;
+        return m_profile.IsReflectedY;
       }
       set {
-        this.m_profile = this.Clone();
-        this.m_profile.IsReflectedY = value;
+        m_profile = Clone();
+        m_profile.IsReflectedY = value;
       }
     }
     public bool IsReflectedZ {
       get {
-        return this.m_profile.IsReflectedZ;
+        return m_profile.IsReflectedZ;
       }
       set {
-        this.m_profile = this.Clone();
-        this.m_profile.IsReflectedZ = value;
+        m_profile = Clone();
+        m_profile.IsReflectedZ = value;
       }
     }
     public Plane LocalPlane {
       get {
-        return this.m_plane;
+        return m_plane;
       }
     }
     public IProfile Profile {
       get {
-        return this.m_profile;
+        return m_profile;
       }
     }
     public Angle Rotation {
       get {
-        return this.m_profile.Rotation;
+        return m_profile.Rotation;
       }
       set {
-        this.m_profile = this.Clone();
-        this.m_profile.Rotation = value;
+        m_profile = Clone();
+        m_profile.Rotation = value;
       }
     }
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
     public override string TypeName => "Profile";
     public List<Polyline> VoidEdges {
       get {
-        return this.m_voidEdges;
+        return m_voidEdges;
       }
     }
     private Plane m_plane = Plane.WorldYZ;
@@ -77,12 +77,12 @@ namespace AdSecGH.Parameters {
     private Line previewZaxis;
 
     public AdSecProfileGoo(IProfile profile, Plane local) {
-      this.m_profile = profile;
+      m_profile = profile;
       Tuple<Polyline, List<Polyline>> edges = PolylinesFromAdSecProfile(profile, local);
-      this.m_value = edges.Item1;
-      this.m_voidEdges = edges.Item2;
-      this.m_plane = local;
-      this.UpdatePreview();
+      m_value = edges.Item1;
+      m_voidEdges = edges.Item2;
+      m_plane = local;
+      UpdatePreview();
     }
 
     public AdSecProfileGoo(Polyline polygon, LengthUnit lengthUnit) : base(polygon) {
@@ -94,10 +94,10 @@ namespace AdSecGH.Parameters {
 
       perimprofile.SolidPolygon = PolygonFromRhinoPolyline(polygon, lengthUnit, plane);
       // create Profile
-      this.m_profile = perimprofile;
-      this.m_voidEdges = null;
-      this.m_plane = plane;
-      this.m_profile = perimprofile;
+      m_profile = perimprofile;
+      m_voidEdges = null;
+      m_plane = plane;
+      m_profile = perimprofile;
       UpdatePreview();
     }
 
@@ -111,9 +111,9 @@ namespace AdSecGH.Parameters {
         Polyline poly;
         if (crv.TryGetPolyline(out poly)) {
           AdSecProfileGoo temp = new AdSecProfileGoo(poly, DefaultUnits.LengthUnitGeometry);
-          this.m_value = temp.m_value;
-          this.m_profile = temp.m_profile;
-          this.m_voidEdges = temp.m_voidEdges;
+          m_value = temp.m_value;
+          m_profile = temp.m_profile;
+          m_voidEdges = temp.m_voidEdges;
           return true;
         }
       }
@@ -144,139 +144,139 @@ namespace AdSecGH.Parameters {
       IProfile dup = null;
 
       // angle
-      if (this.m_profile.GetType().ToString().Equals(typeof(IAngleProfile).ToString() + "_Implementation")) {
-        IAngleProfile angle = (IAngleProfile)this.m_profile;
+      if (m_profile.GetType().ToString().Equals(typeof(IAngleProfile).ToString() + "_Implementation")) {
+        IAngleProfile angle = (IAngleProfile)m_profile;
         dup = IAngleProfile.Create(angle.Depth, angle.Flange, angle.Web);
       }
 
       // catalogue
-      else if (this.m_profile.GetType().ToString().Equals(typeof(ICatalogueProfile).ToString() + "_Implementation")) {
-        dup = ICatalogueProfile.Create(this.m_profile.Description());
+      else if (m_profile.GetType().ToString().Equals(typeof(ICatalogueProfile).ToString() + "_Implementation")) {
+        dup = ICatalogueProfile.Create(m_profile.Description());
       }
 
       // channel
-      else if (this.m_profile.GetType().ToString().Equals(typeof(IChannelProfile).ToString() + "_Implementation")) {
-        IChannelProfile channel = (IChannelProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(IChannelProfile).ToString() + "_Implementation")) {
+        IChannelProfile channel = (IChannelProfile)m_profile;
         dup = IChannelProfile.Create(channel.Depth, channel.Flanges, channel.Web);
       }
 
       // circle hollow
-      else if (this.m_profile.GetType().ToString().Equals(typeof(ICircleHollowProfile).ToString() + "_Implementation")) {
-        ICircleHollowProfile circleHollow = (ICircleHollowProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(ICircleHollowProfile).ToString() + "_Implementation")) {
+        ICircleHollowProfile circleHollow = (ICircleHollowProfile)m_profile;
         dup = ICircleHollowProfile.Create(circleHollow.Diameter, circleHollow.WallThickness);
       }
 
       // circle
-      else if (this.m_profile.GetType().ToString().Equals(typeof(ICircleProfile).ToString() + "_Implementation")) {
-        ICircleProfile circle = (ICircleProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(ICircleProfile).ToString() + "_Implementation")) {
+        ICircleProfile circle = (ICircleProfile)m_profile;
         dup = ICircleProfile.Create(circle.Diameter);
       }
 
       // ICruciformSymmetricalProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(ICruciformSymmetricalProfile).ToString() + "_Implementation")) {
-        ICruciformSymmetricalProfile cruciformSymmetrical = (ICruciformSymmetricalProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(ICruciformSymmetricalProfile).ToString() + "_Implementation")) {
+        ICruciformSymmetricalProfile cruciformSymmetrical = (ICruciformSymmetricalProfile)m_profile;
         dup = ICruciformSymmetricalProfile.Create(cruciformSymmetrical.Depth, cruciformSymmetrical.Flange, cruciformSymmetrical.Web);
       }
 
       // IEllipseHollowProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(IEllipseHollowProfile).ToString() + "_Implementation")) {
-        IEllipseHollowProfile ellipseHollow = (IEllipseHollowProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(IEllipseHollowProfile).ToString() + "_Implementation")) {
+        IEllipseHollowProfile ellipseHollow = (IEllipseHollowProfile)m_profile;
         dup = IEllipseHollowProfile.Create(ellipseHollow.Depth, ellipseHollow.Width, ellipseHollow.WallThickness);
       }
 
       // IEllipseProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(IEllipseProfile).ToString() + "_Implementation")) {
-        IEllipseProfile ellipse = (IEllipseProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(IEllipseProfile).ToString() + "_Implementation")) {
+        IEllipseProfile ellipse = (IEllipseProfile)m_profile;
         dup = IEllipseProfile.Create(ellipse.Depth, ellipse.Width);
       }
 
       // IGeneralCProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(IGeneralCProfile).ToString() + "_Implementation")) {
-        IGeneralCProfile generalC = (IGeneralCProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(IGeneralCProfile).ToString() + "_Implementation")) {
+        IGeneralCProfile generalC = (IGeneralCProfile)m_profile;
         dup = IGeneralCProfile.Create(generalC.Depth, generalC.FlangeWidth, generalC.Lip, generalC.Thickness);
       }
 
       // IGeneralZProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(IGeneralZProfile).ToString() + "_Implementation")) {
-        IGeneralZProfile generalZ = (IGeneralZProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(IGeneralZProfile).ToString() + "_Implementation")) {
+        IGeneralZProfile generalZ = (IGeneralZProfile)m_profile;
         dup = IGeneralZProfile.Create(generalZ.Depth, generalZ.TopFlangeWidth, generalZ.BottomFlangeWidth, generalZ.TopLip, generalZ.BottomLip, generalZ.Thickness);
       }
 
       // IIBeamAsymmetricalProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(IIBeamAsymmetricalProfile).ToString() + "_Implementation")) {
-        IIBeamAsymmetricalProfile iBeamAsymmetrical = (IIBeamAsymmetricalProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(IIBeamAsymmetricalProfile).ToString() + "_Implementation")) {
+        IIBeamAsymmetricalProfile iBeamAsymmetrical = (IIBeamAsymmetricalProfile)m_profile;
         dup = IIBeamAsymmetricalProfile.Create(iBeamAsymmetrical.Depth, iBeamAsymmetrical.TopFlange, iBeamAsymmetrical.BottomFlange, iBeamAsymmetrical.Web);
       }
 
       // IIBeamCellularProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(IIBeamCellularProfile).ToString() + "_Implementation")) {
-        IIBeamCellularProfile iBeamCellular = (IIBeamCellularProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(IIBeamCellularProfile).ToString() + "_Implementation")) {
+        IIBeamCellularProfile iBeamCellular = (IIBeamCellularProfile)m_profile;
         dup = IIBeamCellularProfile.Create(iBeamCellular.Depth, iBeamCellular.Flanges, iBeamCellular.Web, iBeamCellular.WebOpening);
       }
 
       // IIBeamSymmetricalProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(IIBeamSymmetricalProfile).ToString() + "_Implementation")) {
-        IIBeamSymmetricalProfile iBeamSymmetrical = (IIBeamSymmetricalProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(IIBeamSymmetricalProfile).ToString() + "_Implementation")) {
+        IIBeamSymmetricalProfile iBeamSymmetrical = (IIBeamSymmetricalProfile)m_profile;
         dup = IIBeamSymmetricalProfile.Create(iBeamSymmetrical.Depth, iBeamSymmetrical.Flanges, iBeamSymmetrical.Web);
       }
 
       // IRectangleHollowProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(IRectangleHollowProfile).ToString() + "_Implementation")) {
-        IRectangleHollowProfile rectangleHollow = (IRectangleHollowProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(IRectangleHollowProfile).ToString() + "_Implementation")) {
+        IRectangleHollowProfile rectangleHollow = (IRectangleHollowProfile)m_profile;
         dup = IRectangleHollowProfile.Create(rectangleHollow.Depth, rectangleHollow.Flanges, rectangleHollow.Webs);
       }
 
       // IRectangleProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(IRectangleProfile).ToString() + "_Implementation")) {
-        IRectangleProfile rectangle = (IRectangleProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(IRectangleProfile).ToString() + "_Implementation")) {
+        IRectangleProfile rectangle = (IRectangleProfile)m_profile;
         dup = IRectangleProfile.Create(rectangle.Depth, rectangle.Width);
       }
 
       // IRectoEllipseProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(IRectoEllipseProfile).ToString() + "_Implementation")) {
-        IRectoEllipseProfile rectoEllipse = (IRectoEllipseProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(IRectoEllipseProfile).ToString() + "_Implementation")) {
+        IRectoEllipseProfile rectoEllipse = (IRectoEllipseProfile)m_profile;
         dup = IRectoEllipseProfile.Create(rectoEllipse.Depth, rectoEllipse.DepthFlat, rectoEllipse.Width, rectoEllipse.WidthFlat);
       }
 
       // ISecantPileProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(ISecantPileProfile).ToString() + "_Implementation")) {
-        ISecantPileProfile secantPile = (ISecantPileProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(ISecantPileProfile).ToString() + "_Implementation")) {
+        ISecantPileProfile secantPile = (ISecantPileProfile)m_profile;
         dup = ISecantPileProfile.Create(secantPile.Diameter, secantPile.PileCentres, secantPile.PileCount, secantPile.IsWallNotSection);
       }
 
       // ISheetPileProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(ISheetPileProfile).ToString() + "_Implementation")) {
-        ISheetPileProfile sheetPile = (ISheetPileProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(ISheetPileProfile).ToString() + "_Implementation")) {
+        ISheetPileProfile sheetPile = (ISheetPileProfile)m_profile;
         dup = ISheetPileProfile.Create(sheetPile.Depth, sheetPile.Width, sheetPile.TopFlangeWidth, sheetPile.BottomFlangeWidth, sheetPile.FlangeThickness, sheetPile.WebThickness);
       }
 
       // IStadiumProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(IStadiumProfile).ToString() + "_Implementation")) {
-        IStadiumProfile stadium = (IStadiumProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(IStadiumProfile).ToString() + "_Implementation")) {
+        IStadiumProfile stadium = (IStadiumProfile)m_profile;
         dup = IStadiumProfile.Create(stadium.Depth, stadium.Width);
       }
 
       // ITrapezoidProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(ITrapezoidProfile).ToString() + "_Implementation")) {
-        ITrapezoidProfile trapezoid = (ITrapezoidProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(ITrapezoidProfile).ToString() + "_Implementation")) {
+        ITrapezoidProfile trapezoid = (ITrapezoidProfile)m_profile;
         dup = ITrapezoidProfile.Create(trapezoid.Depth, trapezoid.TopWidth, trapezoid.BottomWidth);
       }
 
       // ITSectionProfile
-      else if (this.m_profile.GetType().ToString().Equals(typeof(ITSectionProfile).ToString() + "_Implementation")) {
-        ITSectionProfile tSection = (ITSectionProfile)this.m_profile;
+      else if (m_profile.GetType().ToString().Equals(typeof(ITSectionProfile).ToString() + "_Implementation")) {
+        ITSectionProfile tSection = (ITSectionProfile)m_profile;
         dup = ITSectionProfile.Create(tSection.Depth, tSection.Flange, tSection.Web);
       }
 
       // IPerimeterProfile (last chance...)
       else {
-        dup = IPerimeterProfile.Create(this.m_profile);
+        dup = IPerimeterProfile.Create(m_profile);
       }
 
       // modifications
-      dup.IsReflectedY = this.m_profile.IsReflectedY;
-      dup.IsReflectedZ = this.m_profile.IsReflectedZ;
-      dup.Rotation = this.m_profile.Rotation;
+      dup.IsReflectedY = m_profile.IsReflectedY;
+      dup.IsReflectedZ = m_profile.IsReflectedZ;
+      dup.Rotation = m_profile.Rotation;
 
       return dup;
     }
@@ -290,7 +290,7 @@ namespace AdSecGH.Parameters {
         if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
         {
           args.Pipeline.DrawPolyline(Value, UI.Colour.OasysBlue, 2);
-          if (this.m_voidEdges != null) {
+          if (m_voidEdges != null) {
             foreach (Polyline crv in m_voidEdges) {
               args.Pipeline.DrawPolyline(crv, UI.Colour.OasysBlue, 1);
             }
@@ -299,7 +299,7 @@ namespace AdSecGH.Parameters {
         else // selected
         {
           args.Pipeline.DrawPolyline(Value, UI.Colour.OasysYellow, 3);
-          if (this.m_voidEdges != null) {
+          if (m_voidEdges != null) {
             foreach (Polyline crv in m_voidEdges) {
               args.Pipeline.DrawPolyline(crv, UI.Colour.OasysYellow, 2);
             }
@@ -315,7 +315,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecProfileGoo(this.Clone(), new Plane(m_plane));
+      return new AdSecProfileGoo(Clone(), new Plane(m_plane));
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {

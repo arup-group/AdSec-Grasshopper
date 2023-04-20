@@ -30,35 +30,35 @@ namespace AdSecGH.Parameters {
         return m_SSpoint;
       }
     }
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
     public override string TypeName => "StressStrainPoint";
     private IStressStrainPoint m_SSpoint;
 
     public AdSecStressStrainPointGoo(Point3d point) : base(point) {
-      this.m_value = point;
-      this.m_SSpoint = IStressStrainPoint.Create(
-        new Pressure(this.m_value.Y, DefaultUnits.StressUnitResult),
-        new Strain(this.m_value.X, DefaultUnits.StrainUnitResult));
+      m_value = point;
+      m_SSpoint = IStressStrainPoint.Create(
+        new Pressure(m_value.Y, DefaultUnits.StressUnitResult),
+        new Strain(m_value.X, DefaultUnits.StrainUnitResult));
     }
 
     public AdSecStressStrainPointGoo(AdSecStressStrainPointGoo stressstrainPoint) {
-      this.m_SSpoint = stressstrainPoint.StressStrainPoint;
-      this.m_value = new Point3d(Value);
+      m_SSpoint = stressstrainPoint.StressStrainPoint;
+      m_value = new Point3d(Value);
     }
 
     public AdSecStressStrainPointGoo(IStressStrainPoint stressstrainPoint) {
-      this.m_SSpoint = stressstrainPoint;
-      this.m_value = new Point3d(
-        this.m_SSpoint.Strain.As(DefaultUnits.StrainUnitResult),
-        this.m_SSpoint.Stress.As(DefaultUnits.StressUnitResult),
+      m_SSpoint = stressstrainPoint;
+      m_value = new Point3d(
+        m_SSpoint.Strain.As(DefaultUnits.StrainUnitResult),
+        m_SSpoint.Stress.As(DefaultUnits.StressUnitResult),
         0);
     }
 
     public AdSecStressStrainPointGoo(Pressure stress, Strain strain) {
-      this.m_SSpoint = IStressStrainPoint.Create(stress, strain);
-      this.m_value = new Point3d(
-        this.m_SSpoint.Strain.As(DefaultUnits.StrainUnitResult),
-        this.m_SSpoint.Stress.As(DefaultUnits.StressUnitResult),
+      m_SSpoint = IStressStrainPoint.Create(stress, strain);
+      m_value = new Point3d(
+        m_SSpoint.Strain.As(DefaultUnits.StrainUnitResult),
+        m_SSpoint.Stress.As(DefaultUnits.StressUnitResult),
         0);
     }
 
@@ -74,31 +74,31 @@ namespace AdSecGH.Parameters {
 
       if (source is Point3d) {
         AdSecStressStrainPointGoo temp = new AdSecStressStrainPointGoo((Point3d)source);
-        this.m_value = temp.Value;
-        this.m_SSpoint = temp.StressStrainPoint;
+        m_value = temp.Value;
+        m_SSpoint = temp.StressStrainPoint;
         return true;
       }
 
       if (source is IStressStrainPoint) {
         AdSecStressStrainPointGoo temp = new AdSecStressStrainPointGoo((IStressStrainPoint)source);
-        this.m_value = temp.Value;
-        this.m_SSpoint = temp.StressStrainPoint;
+        m_value = temp.Value;
+        m_SSpoint = temp.StressStrainPoint;
         return true;
       }
 
       GH_Point ptGoo = source as GH_Point;
       if (ptGoo != null) {
         AdSecStressStrainPointGoo temp = new AdSecStressStrainPointGoo(ptGoo.Value);
-        this.m_value = temp.Value;
-        this.m_SSpoint = temp.StressStrainPoint;
+        m_value = temp.Value;
+        m_SSpoint = temp.StressStrainPoint;
         return true;
       }
 
       Point3d pt = new Point3d();
       if (GH_Convert.ToPoint3d(source, ref pt, GH_Conversion.Both)) {
         AdSecStressStrainPointGoo temp = new AdSecStressStrainPointGoo(pt);
-        this.m_value = temp.Value;
-        this.m_SSpoint = temp.StressStrainPoint;
+        m_value = temp.Value;
+        m_SSpoint = temp.StressStrainPoint;
         return true;
       }
       return false;
@@ -106,7 +106,7 @@ namespace AdSecGH.Parameters {
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecStressStrainPointGoo))) {
-        target = (Q)(object)new AdSecStressStrainPointGoo(this.Value);
+        target = (Q)(object)new AdSecStressStrainPointGoo(Value);
         return true;
       }
 
@@ -140,7 +140,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecStressStrainPointGoo(new Point3d(this.Value));
+      return new AdSecStressStrainPointGoo(new Point3d(Value));
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {

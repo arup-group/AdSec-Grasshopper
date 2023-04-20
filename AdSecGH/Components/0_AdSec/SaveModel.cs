@@ -1,4 +1,8 @@
-﻿using AdSecGH.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -8,10 +12,6 @@ using Oasys.AdSec.IO.Serialization;
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.UI;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 
 namespace AdSecGH.Components {
   public class SaveModel : GH_OasysDropDownComponent {
@@ -31,7 +31,7 @@ namespace AdSecGH.Components {
       "Saves your AdSec Section with loads from this parametric nightmare",
       CategoryName.Name(),
       SubCategoryName.Cat0()) {
-      this.Hidden = true; // sets the initial state of the component to hidden
+      Hidden = true; // sets the initial state of the component to hidden
     }
 
     public override void CreateAttributes() {
@@ -41,9 +41,9 @@ namespace AdSecGH.Components {
     public void OpenAdSecexe() {
       if (_fileName != null) {
         if (_fileName != "") {
-          if (canOpen)
+          if (canOpen) {
             System.Diagnostics.Process.Start(_fileName);
-          else {
+          } else {
             File.WriteAllText(_fileName, _jsonString);
             canOpen = true;
           }
@@ -52,13 +52,13 @@ namespace AdSecGH.Components {
     }
 
     public override bool Read(GH_IO.Serialization.GH_IReader reader) {
-      this._fileName = reader.GetString("File");
+      _fileName = reader.GetString("File");
       return base.Read(reader);
     }
 
     public void SaveAsFile() {
       var fdi = new Rhino.UI.SaveFileDialog { Filter = "AdSec File (*.ads)|*.ads|All files (*.*)|*.*" };
-      var res = fdi.ShowSaveDialog();
+      bool res = fdi.ShowSaveDialog();
       if (res) // == DialogResult.OK)
       {
         _fileName = fdi.FileName;
@@ -69,8 +69,9 @@ namespace AdSecGH.Components {
 
         //add panel input with string
         //delete existing inputs if any
-        while (Params.Input[3].Sources.Count > 0)
+        while (Params.Input[3].Sources.Count > 0) {
           Grasshopper.Instances.ActiveCanvas.Document.RemoveObject(Params.Input[3].Sources[0], false);
+        }
 
         //instantiate  new panel
         var panel = new Grasshopper.Kernel.Special.GH_Panel();
@@ -94,12 +95,12 @@ namespace AdSecGH.Components {
     }
 
     public void SaveFile() {
-      if (this._fileName == null | this._fileName == "")
+      if (_fileName == null | _fileName == "") {
         SaveAsFile();
-      else {
+      } else {
         // write to file
-        File.WriteAllText(this._fileName, _jsonString);
-        this.canOpen = true;
+        File.WriteAllText(_fileName, _jsonString);
+        canOpen = true;
       }
     }
 
@@ -113,13 +114,14 @@ namespace AdSecGH.Components {
     }
 
     public override bool Write(GH_IO.Serialization.GH_IWriter writer) {
-      writer.SetString("File", this._fileName);
+      writer.SetString("File", _fileName);
       return base.Write(writer);
     }
 
     internal static string CombineJSonStrings(List<string> jsonStrings) {
-      if (jsonStrings == null | jsonStrings.Count == 0)
+      if (jsonStrings == null | jsonStrings.Count == 0) {
         return null;
+      }
       string jsonString = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
       for (int i = 1; i < jsonStrings.Count; i++) {
         string jsonString2 = jsonStrings[i];
@@ -149,16 +151,18 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       List<AdSecSection> sections = AdSecInput.AdSecSections(this, DA, 0);
-      if (sections.Count == 0)
+      if (sections.Count == 0) {
         return;
+      }
 
-      if (sections.Count > 1)
+      if (sections.Count > 1) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Note that the first Section's designcode will be used for all sections in list");
+      }
 
-      List<string> jsonStrings = new List<string>();
+      var jsonStrings = new List<string>();
 
       // construct json converter
-      JsonConverter json = new JsonConverter(sections[0].DesignCode);
+      var json = new JsonConverter(sections[0].DesignCode);
 
       //GH_Structure<IGH_Goo> loads = new GH_Structure<IGH_Goo>();
       //List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
@@ -171,86 +175,72 @@ namespace AdSecGH.Components {
               // convert to json without loads method
               try {
                 jsonStrings.Add(json.SectionToJson(sections[i].Section));
-              }
-              catch (Exception e) {
+              } catch (Exception e) {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Error with section at index " + i + ": " + e.InnerException.Message);
               }
-            }
-            else if (loads.Branches[i][0].CastTo(out AdSecLoadGoo notusedLoad)) {
+            } else if (loads.Branches[i][0].CastTo(out AdSecLoadGoo notusedLoad)) {
               // create new list of loads
-              Oasys.Collections.IList<Oasys.AdSec.ILoad> lds = Oasys.Collections.IList<Oasys.AdSec.ILoad>.Create();
+              var lds = Oasys.Collections.IList<Oasys.AdSec.ILoad>.Create();
               // loop through input list
               for (int j = 0; j < loads.Branches[i].Count; j++) {
                 // check if item is load type
                 if (loads[i][j].CastTo(out AdSecLoadGoo loadGoo)) {
-                  AdSecLoadGoo load = (AdSecLoadGoo)loadGoo;
+                  var load = (AdSecLoadGoo)loadGoo;
                   lds.Add(load.Value);
-                }
-                else {
+                } else {
                   AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + Params.Input[1].NickName + " path " + i + " index " + j + " to AdSec Load. Section will be saved without this load.");
                 }
               }
               // convert to json with load method
               try {
                 jsonStrings.Add(json.SectionToJson(sections[i].Section, lds));
-              }
-              catch (Exception e) {
+              } catch (Exception e) {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Error with section at index " + i + ": " + e.InnerException.Message);
               }
-            }
-            else if (loads.Branches[i][0] is AdSecDeformationGoo) {
+            } else if (loads.Branches[i][0] is AdSecDeformationGoo) {
               // create new list of deformations
-              Oasys.Collections.IList<Oasys.AdSec.IDeformation> defs = Oasys.Collections.IList<Oasys.AdSec.IDeformation>.Create();
+              var defs = Oasys.Collections.IList<Oasys.AdSec.IDeformation>.Create();
               // loop through input list
               for (int j = 0; j < loads.Branches[i].Count; j++) {
                 // check if item is load type
-                if (loads[i][j] is AdSecDeformationGoo) {
-                  AdSecDeformationGoo def = (AdSecDeformationGoo)loads[i][j];
+                if (loads[i][j] is AdSecDeformationGoo def) {
                   defs.Add(def.Value);
-                }
-                else {
+                } else {
                   AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert " + Params.Input[1].NickName + " path " + i + " index " + j + " to AdSec Load. Section will be saved without this load.");
                 }
               }
               // convert to json with deformation method
               try {
                 jsonStrings.Add(json.SectionToJson(sections[i].Section, defs));
-              }
-              catch (Exception e) {
+              } catch (Exception e) {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Error with section at index " + i + ": " + e.InnerException.Message);
               }
-            }
-            else {
+            } else {
               AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Error converting " + Params.Input[1].NickName + " to AdSec Load/Deformation. Section will be saved without loads.");
               // convert to json without loads method
               try {
                 jsonStrings.Add(json.SectionToJson(sections[i].Section));
-              }
-              catch (Exception e) {
+              } catch (Exception e) {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Error with section at index " + i + ": " + e.InnerException.Message);
               }
             }
           }
-        }
-        else {
+        } else {
           for (int i = 0; i < sections.Count; i++) {
             // if no loads are inputted then just convert section
             try {
               jsonStrings.Add(json.SectionToJson(sections[i].Section));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
               AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Error with section at index " + i + ": " + e.InnerException.Message);
             }
           }
         }
-      }
-      else {
+      } else {
         for (int i = 0; i < sections.Count; i++) {
           // if no loads are inputted then just convert section
           try {
             jsonStrings.Add(json.SectionToJson(sections[i].Section));
-          }
-          catch (Exception e) {
+          } catch (Exception e) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Error with section at index " + i + ": " + e.InnerException.Message);
           }
         }

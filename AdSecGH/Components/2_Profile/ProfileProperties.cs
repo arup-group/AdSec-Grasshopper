@@ -1,4 +1,5 @@
-﻿using AdSecGH.Helpers;
+﻿using System;
+using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -10,7 +11,6 @@ using OasysGH.Parameters;
 using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
-using System;
 
 namespace AdSecGH.Components {
   public class ProfileProperties : GH_OasysComponent {
@@ -25,7 +25,7 @@ namespace AdSecGH.Components {
       "Properties of an AdSec Profile",
       CategoryName.Name(),
       SubCategoryName.Cat2()) {
-      this.Hidden = false; // sets the initial state of the component to hidden
+      Hidden = false; // sets the initial state of the component to hidden
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
@@ -65,8 +65,8 @@ namespace AdSecGH.Components {
 
       LengthUnit lengthUnit = DefaultUnits.LengthUnitGeometry;
       BaseUnits SI = UnitSystem.SI.BaseUnits;
-      BaseUnits baseUnits = new BaseUnits(lengthUnit, SI.Mass, SI.Time, SI.Current, SI.Temperature, SI.Amount, SI.LuminousIntensity);
-      UnitSystem unitSystem = new UnitSystem(baseUnits);
+      var baseUnits = new BaseUnits(lengthUnit, SI.Mass, SI.Time, SI.Current, SI.Temperature, SI.Amount, SI.LuminousIntensity);
+      var unitSystem = new UnitSystem(baseUnits);
       AreaUnit areaUnit = new Area(1, unitSystem).Unit;
 
       SectionModulusUnit wUnit = SectionModulusUnit.Undefined;

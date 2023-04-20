@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -8,9 +11,6 @@ using OasysGH;
 using OasysGH.Components;
 using OasysUnits;
 using Rhino.Geometry;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace AdSecGH.Components {
   /// <summary>
@@ -30,7 +30,7 @@ namespace AdSecGH.Components {
       "Create Profile for AdSec Section",
       CategoryName.Name(),
       SubCategoryName.Cat2()) {
-      this.Hidden = false; // sets the initial state of the component to hidden
+      Hidden = false; // sets the initial state of the component to hidden
     }
 
     protected override string HtmlHelp_Source() {
@@ -44,17 +44,18 @@ namespace AdSecGH.Components {
       Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
 
       // remove input parameters
-      while (this.Params.Input.Count > 0)
-        this.Params.UnregisterInputParameter(this.Params.Input[0], true);
+      while (Params.Input.Count > 0) {
+        Params.UnregisterInputParameter(Params.Input[0], true);
+      }
 
       // register input parameter
-      this.Params.RegisterInputParam(new Param_String());
-      this.Params.RegisterInputParam(new Param_Boolean());
+      Params.RegisterInputParam(new Param_String());
+      Params.RegisterInputParam(new Param_Boolean());
 
       // add plane
       Params.RegisterInputParam(plane);
 
-      this._mode = FoldMode.Catalogue;
+      _mode = FoldMode.Catalogue;
 
       base.UpdateUI();
     }
@@ -67,14 +68,15 @@ namespace AdSecGH.Components {
       // check if mode is correct
       if (_mode != FoldMode.Other) {
         // if we come from catalogue mode remove all input parameters
-        while (Params.Input.Count > 0)
+        while (Params.Input.Count > 0) {
           Params.UnregisterInputParameter(Params.Input[0], true);
+        }
 
         // set mode to other
         _mode = FoldMode.Other;
       }
 
-      this.UpdateParameters();
+      UpdateParameters();
 
       // add plane
       Params.RegisterInputParam(plane);
@@ -97,23 +99,24 @@ namespace AdSecGH.Components {
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {
-      this.ClearRuntimeMessages();
-      for (int i = 0; i < this.Params.Input.Count; i++)
-        this.Params.Input[i].ClearRuntimeMessages();
+      ClearRuntimeMessages();
+      for (int i = 0; i < Params.Input.Count; i++) {
+        Params.Input[i].ClearRuntimeMessages();
+      }
 
       Plane local = Plane.WorldYZ;
       Plane temp = Plane.Unset;
-      if (DA.GetData(Params.Input.Count - 1, ref temp))
+      if (DA.GetData(Params.Input.Count - 1, ref temp)) {
         local = temp;
+      }
 
-      if (this._mode == FoldMode.Catalogue) {
-        List<IProfile> profiles = this.SolveInstanceForCatalogueProfile(DA);
+      if (_mode == FoldMode.Catalogue) {
+        List<IProfile> profiles = SolveInstanceForCatalogueProfile(DA);
         Oasys.Profiles.IProfile adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
 
         DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
-      }
-      else if (this._mode == FoldMode.Other) {
-        IProfile profile = this.SolveInstanceForStandardProfile(DA);
+      } else if (_mode == FoldMode.Other) {
+        IProfile profile = SolveInstanceForStandardProfile(DA);
         Oasys.Profiles.IProfile adSecProfile = AdSecProfiles.CreateProfile(profile);
 
         DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));

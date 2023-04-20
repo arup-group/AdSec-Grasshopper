@@ -33,7 +33,7 @@ namespace AdSecGH.Parameters {
         return Boundingbox;
       }
     }
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
     public override string TypeName => (m_type == InteractionCurveType.NM) ? "N-M" : "M-M";
     internal ILoadCurve LoadCurve;
     private List<Line> m_axes = new List<Line>();
@@ -125,7 +125,7 @@ namespace AdSecGH.Parameters {
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecNMMCurveGoo))) {
-        target = (Q)(object)new AdSecNMMCurveGoo(this.m_value.Duplicate(), this.LoadCurve, this.m_type, this.m_plotBounds);
+        target = (Q)(object)new AdSecNMMCurveGoo(m_value.Duplicate(), LoadCurve, m_type, m_plotBounds);
         return true;
       }
 
@@ -135,7 +135,7 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Curve))) {
-        PolylineCurve pln = this.m_value.ToPolylineCurve();
+        PolylineCurve pln = m_value.ToPolylineCurve();
         target = (Q)(object)new GH_Curve(pln);
         return true;
       }
@@ -164,11 +164,11 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecNMMCurveGoo(this.m_value.Duplicate(), this.LoadCurve, this.m_type, this.m_plotBounds);
+      return new AdSecNMMCurveGoo(m_value.Duplicate(), LoadCurve, m_type, m_plotBounds);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      Polyline dup = this.m_value.Duplicate();
+      Polyline dup = m_value.Duplicate();
       dup.Transform(xform);
       return dup.BoundingBox;
     }
@@ -192,7 +192,7 @@ namespace AdSecGH.Parameters {
 
     private void UpdatePreview(Rectangle3d plotBoundary) {
       // get bounding box of load curve polyline
-      BoundingBox unitbbox = this.m_value.BoundingBox;
+      BoundingBox unitbbox = m_value.BoundingBox;
       // get bounding box of plot boundary
       BoundingBox plotbbox = plotBoundary.BoundingBox;
 
@@ -205,7 +205,7 @@ namespace AdSecGH.Parameters {
         plotbbox.PointAt(0, 0, 0).X - xAxis.min_value,
         plotbbox.PointAt(0, 0, 0).Y - yAxis.min_value,
         0);
-      this.m_value.Transform(Rhino.Geometry.Transform.Translation(translate));
+      m_value.Transform(Rhino.Geometry.Transform.Translation(translate));
 
       // set plane for NU scaling operation
       Plane pln = Plane.WorldXY;
@@ -220,7 +220,7 @@ namespace AdSecGH.Parameters {
         (yAxis.max_value - yAxis.min_value);
 
       // scale unit polyline to fit in plot boundary
-      this.m_value.Transform(Rhino.Geometry.Transform.Scale(
+      m_value.Transform(Rhino.Geometry.Transform.Scale(
         pln, sclX, sclY, 1));
 
       // set annotation text size

@@ -40,14 +40,14 @@ namespace AdSecGH.UI {
       string pluginloc = adsecPlugin.Location;
 
       InitializeComponent();
-      this.Text = String.Format("About {0}", "AdSecGH");
-      this.labelProductName.Text = "AdSec Grasshopper Plugin";
-      this.labelVersion.Text = String.Format("Version {0}", pluginvers);
-      this.labelApiVersion.Text = String.Format("API Version {0}", api);
-      this.labelCompanyName.Text = AssemblyCompany;
-      this.linkWebsite.Text = @"www.oasys-software.com";
-      this.labelContact.Text = "Contact and support:";
-      this.linkEmail.Text = @"oasys@arup.com";
+      Text = String.Format("About {0}", "AdSecGH");
+      labelProductName.Text = "AdSec Grasshopper Plugin";
+      labelVersion.Text = String.Format("Version {0}", pluginvers);
+      labelApiVersion.Text = String.Format("API Version {0}", api);
+      labelCompanyName.Text = AssemblyCompany;
+      linkWebsite.Text = @"www.oasys-software.com";
+      labelContact.Text = "Contact and support:";
+      linkEmail.Text = @"oasys@arup.com";
     }
 
     private void AboutBox_Load(object sender, EventArgs e) {
@@ -77,7 +77,7 @@ namespace AdSecGH.UI {
     }
 
     private void okButton_Click(object sender, EventArgs e) {
-      this.Close();
+      Close();
     }
   }
 }

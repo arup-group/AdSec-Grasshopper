@@ -15,16 +15,16 @@ namespace AdSecGH.Parameters {
     public static string NickName => "Cr";
     public override BoundingBox Boundingbox {
       get {
-        if (this.Value == null)
+        if (Value == null)
           return BoundingBox.Empty;
-        if (this.m_line == null)
+        if (m_line == null)
           return BoundingBox.Empty;
-        LineCurve crv = new LineCurve(this.m_line);
+        LineCurve crv = new LineCurve(m_line);
         return crv.GetBoundingBox(false);
       }
     }
     public override BoundingBox ClippingBox {
-      get { return this.Boundingbox; }
+      get { return Boundingbox; }
     }
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     private Line m_line;
@@ -35,7 +35,7 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecCrackGoo(ICrack crack, Plane local) : base(crack) {
-      this.m_value = crack;
+      m_value = crack;
       m_plane = local;
 
       // create point from crack position in global axis
@@ -80,7 +80,7 @@ namespace AdSecGH.Parameters {
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecCrackGoo))) {
-        target = (Q)(object)new AdSecCrackGoo(this.Value, this.m_plane);
+        target = (Q)(object)new AdSecCrackGoo(Value, m_plane);
         return true;
       }
 
@@ -95,12 +95,12 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(Vector3d))) {
-        target = (Q)(object)new Vector3d(this.Value.Width.Value, m_point.Y, m_point.Z);
+        target = (Q)(object)new Vector3d(Value.Width.Value, m_point.Y, m_point.Z);
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Vector))) {
-        target = (Q)(object)new GH_Vector(new Vector3d(this.Value.Width.Value, m_point.Y, m_point.Z));
+        target = (Q)(object)new GH_Vector(new Vector3d(Value.Width.Value, m_point.Y, m_point.Z));
         return true;
       }
 
@@ -115,12 +115,12 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_UnitNumber))) {
-        target = (Q)(object)new GH_UnitNumber(this.Value.Width);
+        target = (Q)(object)new GH_UnitNumber(Value.Width);
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Number))) {
-        target = (Q)(object)new GH_Number(this.Value.Width.Value);
+        target = (Q)(object)new GH_Number(Value.Width.Value);
         return true;
       }
 
@@ -141,7 +141,7 @@ namespace AdSecGH.Parameters {
       }
     }
 
-    public override IGH_GeometricGoo Duplicate() => new AdSecCrackGoo(this.Value);
+    public override IGH_GeometricGoo Duplicate() => new AdSecCrackGoo(Value);
 
     public override IGH_GeometricGoo DuplicateGeometry() {
       AdSecCrackGoo dup = new AdSecCrackGoo(Value, m_plane);
@@ -167,9 +167,9 @@ namespace AdSecGH.Parameters {
 
     public override string ToString() {
       return "AdSec " + TypeName + " {"
-          + "Y:" + Math.Round(this.Value.Position.Y.Value, 4) + this.Value.Position.Y.Unit + ", "
-          + "Z:" + Math.Round(this.Value.Position.Z.Value, 4) + this.Value.Position.Z.Unit + ", "
-          + "Width:" + Math.Round(this.Value.Width.Value, 4) + this.Value.Width.Unit + "}";
+          + "Y:" + Math.Round(Value.Position.Y.Value, 4) + Value.Position.Y.Unit + ", "
+          + "Z:" + Math.Round(Value.Position.Z.Value, 4) + Value.Position.Z.Unit + ", "
+          + "Width:" + Math.Round(Value.Width.Value, 4) + Value.Width.Unit + "}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {

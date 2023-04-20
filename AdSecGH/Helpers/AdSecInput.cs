@@ -163,7 +163,7 @@ namespace AdSecGH.Helpers {
         }
         else if (gh_typ.Value is AdSecSubComponentGoo) {
           AdSecSubComponentGoo a2 = (AdSecSubComponentGoo)gh_typ.Value;
-          return a2.section;
+          return a2._section;
         }
         else {
           owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid].NickName + " to Section");

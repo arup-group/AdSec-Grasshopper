@@ -7,7 +7,7 @@ namespace AdSecGH.Parameters {
     public IGroup Group { get; set; }
     public bool IsValid {
       get {
-        if (this.Group == null)
+        if (Group == null)
           return false;
         return true;
       }
@@ -17,13 +17,13 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecRebarGroup(IGroup group) {
-      this.Group = group;
+      Group = group;
     }
 
     public AdSecRebarGroup Duplicate() {
       if (this == null)
         return null;
-      AdSecRebarGroup dup = (AdSecRebarGroup)this.MemberwiseClone();
+      AdSecRebarGroup dup = (AdSecRebarGroup)MemberwiseClone();
       return dup;
     }
 

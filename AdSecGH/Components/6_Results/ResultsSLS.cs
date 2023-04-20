@@ -1,4 +1,7 @@
-﻿using AdSecGH.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -10,9 +13,6 @@ using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace AdSecGH.Components {
   public class ResultsSLS : GH_OasysComponent {
@@ -28,7 +28,7 @@ namespace AdSecGH.Components {
       "Performs serviceability analysis (SLS), for a given Load or Deformation.",
       CategoryName.Name(),
       SubCategoryName.Cat7()) {
-      this.Hidden = false; // sets the initial state of the component to hidden
+      Hidden = false; // sets the initial state of the component to hidden
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
@@ -83,45 +83,43 @@ namespace AdSecGH.Components {
       IServiceabilityResult sls = null;
 
       // get load - can be either load or deformation
-      GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+      var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
-        if (gh_typ.Value is AdSecLoadGoo) {
-          AdSecLoadGoo load = (AdSecLoadGoo)gh_typ.Value;
+        if (gh_typ.Value is AdSecLoadGoo load) {
           sls = solution.Value.Serviceability.Check(load.Value);
-        }
-        else if (gh_typ.Value is AdSecDeformationGoo) {
-          AdSecDeformationGoo def = (AdSecDeformationGoo)gh_typ.Value;
+        } else if (gh_typ.Value is AdSecDeformationGoo def) {
           sls = solution.Value.Serviceability.Check(def.Value);
-        }
-        else {
+        } else {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
           return;
         }
-      }
-      else {
+      } else {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
         return;
       }
 
       DA.SetData(0, new AdSecLoadGoo(sls.Load, solution.LocalPlane));
 
-      List<AdSecCrackGoo> cracks = new List<AdSecCrackGoo>();
-      foreach (ICrack crack in sls.Cracks)
+      var cracks = new List<AdSecCrackGoo>();
+      foreach (ICrack crack in sls.Cracks) {
         cracks.Add(new AdSecCrackGoo(crack, solution.LocalPlane));
+      }
 
       DA.SetDataList(1, cracks);
 
-      if (sls.MaximumWidthCrack != null && sls.MaximumWidthCrack.Width.Meters < 1)
+      if (sls.MaximumWidthCrack != null && sls.MaximumWidthCrack.Width.Meters < 1) {
         DA.SetData(2, new AdSecCrackGoo(sls.MaximumWidthCrack, solution.LocalPlane));
+      }
 
       double util = sls.CrackingUtilisation.As(RatioUnit.DecimalFraction);
       DA.SetData(3, util);
       if (util > 1) {
-        if (cracks.Count == 0)
+        if (cracks.Count == 0) {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "The section is failing and the cracks are so large we can't even compute them!");
-        else
+        } else {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "The section is cracked");
+        }
       }
 
       DA.SetData(4, new Vector3d(
@@ -134,9 +132,9 @@ namespace AdSecGH.Components {
         sls.SecantStiffness.YY.As(DefaultUnits.BendingStiffnessUnit),
         sls.SecantStiffness.ZZ.As(DefaultUnits.BendingStiffnessUnit)));
 
-      List<GH_Interval> momentRanges = new List<GH_Interval>();
+      var momentRanges = new List<GH_Interval>();
       foreach (IMomentRange mrng in sls.UncrackedMomentRanges) {
-        Interval interval = new Interval(
+        var interval = new Interval(
           mrng.Min.As(DefaultUnits.MomentUnit),
           mrng.Max.As(DefaultUnits.MomentUnit));
         momentRanges.Add(new GH_Interval(interval));

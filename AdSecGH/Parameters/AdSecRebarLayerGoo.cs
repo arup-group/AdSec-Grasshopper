@@ -7,22 +7,22 @@ using System;
 namespace AdSecGH.Parameters {
   public class AdSecRebarLayerGoo : GH_Goo<ILayer> {
     public override bool IsValid => true;
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
     public override string TypeName => "Rebar Spacing";
 
     public AdSecRebarLayerGoo(ILayer layer) : base(layer) {
     }
 
     public override IGH_Goo Duplicate() {
-      return new AdSecRebarLayerGoo(this.Value);
+      return new AdSecRebarLayerGoo(Value);
     }
 
     public override string ToString() {
       string bar = "";
-      Length dia = this.Value.BarBundle.Diameter.ToUnit(DefaultUnits.LengthUnitGeometry);
+      Length dia = Value.BarBundle.Diameter.ToUnit(DefaultUnits.LengthUnitGeometry);
       bar += "Ø" + dia.ToString();
-      if (this.Value.BarBundle.CountPerBundle > 1) {
-        bar += ", Bundle (" + this.Value.BarBundle.CountPerBundle + ")";
+      if (Value.BarBundle.CountPerBundle > 1) {
+        bar += ", Bundle (" + Value.BarBundle.CountPerBundle + ")";
       }
 
       string str = "";

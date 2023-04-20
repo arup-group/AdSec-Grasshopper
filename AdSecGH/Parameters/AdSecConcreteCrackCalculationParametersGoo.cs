@@ -16,13 +16,13 @@ namespace AdSecGH.Parameters {
     public AdSecConcreteCrackCalculationParametersGoo(IConcreteCrackCalculationParameters item) : base(item) {
     }
 
-    public override IGH_Goo Duplicate() => new AdSecConcreteCrackCalculationParametersGoo(this.Value);
+    public override IGH_Goo Duplicate() => new AdSecConcreteCrackCalculationParametersGoo(Value);
 
     public override string ToString() {
-      return "AdSec " + this.TypeName +
-        " {E:" + this.Value.ElasticModulus.ToString() +
-        ", fc:" + this.Value.CharacteristicCompressiveStrength.ToString() +
-        ", ft: " + this.Value.CharacteristicTensileStrength.ToString() + "}";
+      return "AdSec " + TypeName +
+        " {E:" + Value.ElasticModulus.ToString() +
+        ", fc:" + Value.CharacteristicCompressiveStrength.ToString() +
+        ", ft: " + Value.CharacteristicTensileStrength.ToString() + "}";
     }
   }
 }

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
@@ -11,9 +14,6 @@ using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace AdSecGH.Components {
   public class ResultsULS : GH_OasysComponent {
@@ -29,13 +29,14 @@ namespace AdSecGH.Components {
       "Performs strength checks (ULS), for a given Load or Deformation.",
       CategoryName.Name(),
       SubCategoryName.Cat7()) {
-      this.Hidden = false;  // sets the initial state of the component to hidden
+      Hidden = false;  // sets the initial state of the component to hidden
     }
 
     public override void DrawViewportWires(IGH_PreviewArgs args) {
       base.DrawViewportWires(args);
-      if (_failureLine != null)
-        args.Display.DrawDottedLine(_failureLine, this.Attributes.Selected ? args.WireColour_Selected : args.WireColour);
+      if (_failureLine != null) {
+        args.Display.DrawDottedLine(_failureLine, Attributes.Selected ? args.WireColour_Selected : args.WireColour);
+      }
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
@@ -96,33 +97,28 @@ namespace AdSecGH.Components {
       IStrengthResult failure = null;
 
       // get load - can be either load or deformation
-      GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+      var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
-        if (gh_typ.Value is AdSecLoadGoo) {
-          AdSecLoadGoo load = (AdSecLoadGoo)gh_typ.Value;
+        if (gh_typ.Value is AdSecLoadGoo load) {
           uls = solution.Value.Strength.Check(load.Value);
-          ILoad failureLoad = ILoad.Create(
+          var failureLoad = ILoad.Create(
             load.Value.X / uls.LoadUtilisation.DecimalFractions * 0.999,
             load.Value.YY / uls.LoadUtilisation.DecimalFractions * 0.999,
             load.Value.ZZ / uls.LoadUtilisation.DecimalFractions * 0.999);
           failure = solution.Value.Strength.Check(failureLoad);
-        }
-        else if (gh_typ.Value is AdSecDeformationGoo) {
-          AdSecDeformationGoo def = (AdSecDeformationGoo)gh_typ.Value;
+        } else if (gh_typ.Value is AdSecDeformationGoo def) {
           uls = solution.Value.Strength.Check(def.Value);
-          IDeformation failureLoad = IDeformation.Create(
+          var failureLoad = IDeformation.Create(
             def.Value.X / uls.LoadUtilisation.DecimalFractions * 0.999,
             def.Value.YY / uls.LoadUtilisation.DecimalFractions * 0.999,
             def.Value.ZZ / uls.LoadUtilisation.DecimalFractions * 0.999);
           failure = solution.Value.Strength.Check(failureLoad);
-        }
-        else {
+        } else {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
           return;
         }
-      }
-      else {
+      } else {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
         return;
       }
@@ -130,8 +126,9 @@ namespace AdSecGH.Components {
       DA.SetData(0, new AdSecLoadGoo(uls.Load, solution.LocalPlane));
       double util = uls.LoadUtilisation.As(RatioUnit.DecimalFraction);
       DA.SetData(1, util);
-      if (util > 1)
+      if (util > 1) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Utilisation is above 1!");
+      }
 
       IDeformation ulsDeformationResult = uls.Deformation;
       DA.SetData(2, new Vector3d(
@@ -140,12 +137,13 @@ namespace AdSecGH.Components {
           ulsDeformationResult.ZZ.As(DefaultUnits.CurvatureUnit)));
       double defUtil = uls.DeformationUtilisation.As(RatioUnit.DecimalFraction);
       DA.SetData(3, defUtil);
-      if (defUtil > 1)
+      if (defUtil > 1) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Deformation utilisation is above 1!");
+      }
 
-      List<GH_Interval> momentRanges = new List<GH_Interval>();
+      var momentRanges = new List<GH_Interval>();
       foreach (IMomentRange mrng in uls.MomentRanges) {
-        Interval interval = new Interval(
+        var interval = new Interval(
             mrng.Min.As(DefaultUnits.MomentUnit),
             mrng.Max.As(DefaultUnits.MomentUnit));
         momentRanges.Add(new GH_Interval(interval));
@@ -188,11 +186,12 @@ namespace AdSecGH.Components {
 
       // compute offset
       double offsetSI = -defX / Math.Sqrt(Math.Pow(kYY, 2) + Math.Pow(kZZ, 2));
-      if (double.IsNaN(offsetSI))
+      if (double.IsNaN(offsetSI)) {
         offsetSI = 0.0;
+      }
 
       // temp length in SI units
-      Length tempOffset = new Length(offsetSI, DefaultUnits.LengthUnitResult);
+      var tempOffset = new Length(offsetSI, DefaultUnits.LengthUnitResult);
 
       // offset in user selected unit
       return tempOffset;
@@ -210,17 +209,17 @@ namespace AdSecGH.Components {
       double width = 1.05 * bbox.PointAt(0, 0, 0).DistanceTo(bbox.PointAt(1, 0, 0));
 
       // get direction as vector
-      Vector3d direction = new Vector3d(local.XAxis);
+      var direction = new Vector3d(local.XAxis);
       direction.Rotate(angleRadians, local.ZAxis);
       direction.Unitize();
 
       // starting point for rotated line
-      Point3d start = new Point3d(local.Origin);
+      var start = new Point3d(local.Origin);
       start.Transform(Transform.Translation(direction.X * width / 2 * -1, direction.Y * width / 2 * -1, direction.Z * width / 2 * -1));
-      Line ln = new Line(start, direction, width);
+      var ln = new Line(start, direction, width);
 
       // offset vector
-      Vector3d offsVec = new Vector3d(direction);
+      var offsVec = new Vector3d(direction);
       offsVec.Rotate(Math.PI / 2, local.ZAxis);
       offsVec.Unitize();
       // move the line

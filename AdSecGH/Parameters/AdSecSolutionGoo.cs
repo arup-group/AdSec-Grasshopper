@@ -5,7 +5,7 @@ using Rhino.Geometry;
 namespace AdSecGH.Parameters {
   public class AdSecSolutionGoo : GH_Goo<ISolution> {
     public override bool IsValid => true;
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
     public override string TypeName => "Results";
     internal Plane LocalPlane {
       get {
@@ -28,7 +28,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_Goo Duplicate() {
-      return new AdSecSolutionGoo(this.Value, m_section);
+      return new AdSecSolutionGoo(Value, m_section);
     }
 
     public override string ToString() {

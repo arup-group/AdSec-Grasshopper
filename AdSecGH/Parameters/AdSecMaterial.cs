@@ -21,15 +21,15 @@ namespace AdSecGH.Parameters {
     public AdSecDesignCode DesignCode { get; set; }
     public string DesignCodeName {
       get {
-        if (this.DesignCode == null)
+        if (DesignCode == null)
           return null;
-        return this.DesignCode.DesignCodeName;
+        return DesignCode.DesignCodeName;
       }
     }
     public string GradeName { get; set; }
     public bool IsValid {
       get {
-        if (this.Material == null)
+        if (Material == null)
           return false;
         return true;
       }
@@ -37,7 +37,7 @@ namespace AdSecGH.Parameters {
     public IMaterial Material { get; set; }
     public string TypeName {
       get {
-        return this.Type.ToString();
+        return Type.ToString();
       }
     }
     internal AdSecMaterialType Type { get; set; }
@@ -47,7 +47,7 @@ namespace AdSecGH.Parameters {
 
     public AdSecMaterial(IMaterial material, string materialGradeName) {
       if (materialGradeName != null)
-        this.GradeName = materialGradeName;
+        GradeName = materialGradeName;
 
       // StressStrain ULS Compression
       Tuple<Curve, List<Point3d>> ulsComp = AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Compression, true);
@@ -73,31 +73,31 @@ namespace AdSecGH.Parameters {
         // try cast to concrete material
         IConcrete concrete = (IConcrete)material;
         if (concrete.ConcreteCrackCalculationParameters == null)
-          this.Material = IConcrete.Create(ulsTC, slsTC);
+          Material = IConcrete.Create(ulsTC, slsTC);
         else
-          this.Material = IConcrete.Create(ulsTC, slsTC, concrete.ConcreteCrackCalculationParameters);
-        this.Type = AdSecMaterialType.Concrete;
+          Material = IConcrete.Create(ulsTC, slsTC, concrete.ConcreteCrackCalculationParameters);
+        Type = AdSecMaterialType.Concrete;
       }
       catch (Exception) {
         try {
           // try cast to steel material
           ISteel steel = (ISteel)material;
-          this.Material = ISteel.Create(ulsTC, slsTC);
-          this.Type = AdSecMaterialType.Steel;
+          Material = ISteel.Create(ulsTC, slsTC);
+          Type = AdSecMaterialType.Steel;
         }
         catch (Exception) {
           try {
             // try cast to rebar material
             IReinforcement reinforcement = (IReinforcement)material;
-            this.Material = IReinforcement.Create(ulsTC, slsTC);
-            this.Type = AdSecMaterialType.Rebar;
+            Material = IReinforcement.Create(ulsTC, slsTC);
+            Type = AdSecMaterialType.Rebar;
           }
           catch (Exception) {
             try {
               // try cast to frp material
               IFrp frp = (IFrp)material;
-              this.Material = IFrp.Create(ulsTC, slsTC);
-              this.Type = AdSecMaterialType.FRP;
+              Material = IFrp.Create(ulsTC, slsTC);
+              Type = AdSecMaterialType.FRP;
             }
             catch (Exception) {
               throw new Exception("unable to cast to known material type");
@@ -109,9 +109,9 @@ namespace AdSecGH.Parameters {
 
     internal AdSecMaterial(FieldInfo fieldGrade) {
       // convert reflected interface to member
-      this.Material = (IMaterial)fieldGrade.GetValue(null);
+      Material = (IMaterial)fieldGrade.GetValue(null);
       // get the name of the grade
-      this.GradeName = fieldGrade.Name;
+      GradeName = fieldGrade.Name;
 
       // Get material type
       string designCodeReflectedLevels = fieldGrade.DeclaringType.FullName.Replace("Oasys.AdSec.StandardMaterials.", "");
@@ -120,26 +120,26 @@ namespace AdSecGH.Parameters {
       // set material type
       if (designCodeLevelsSplit[0].StartsWith("Reinforcement")) {
         if (designCodeLevelsSplit[1].StartsWith("Steel"))
-          this.Type = AdSecMaterialType.Rebar;
+          Type = AdSecMaterialType.Rebar;
         else
-          this.Type = AdSecMaterialType.Tendon;
+          Type = AdSecMaterialType.Tendon;
         designCodeLevelsSplit.RemoveRange(0, 2);
       }
       else {
         AdSecMaterialType type;
         Enum.TryParse(designCodeLevelsSplit[0], out type);
-        this.Type = type;
+        Type = type;
         designCodeLevelsSplit.RemoveRange(0, 1);
       }
 
       // set designcode
-      this.DesignCode = new AdSecDesignCode(designCodeLevelsSplit);
+      DesignCode = new AdSecDesignCode(designCodeLevelsSplit);
     }
 
     public AdSecMaterial Duplicate() {
       if (this == null)
         return null;
-      AdSecMaterial dup = (AdSecMaterial)this.MemberwiseClone();
+      AdSecMaterial dup = (AdSecMaterial)MemberwiseClone();
       return dup;
     }
 

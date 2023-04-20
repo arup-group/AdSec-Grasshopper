@@ -32,13 +32,13 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportMeshes(IGH_PreviewArgs args) {
-      //Use a standard method to draw gunk, you don't have to specifically implement this.
-      this.Preview_DrawMeshes(args);
+      //Use a standard method to draw gunk, you don't have to specifically implement 
+      Preview_DrawMeshes(args);
     }
 
     public void DrawViewportWires(IGH_PreviewArgs args) {
-      //Use a standard method to draw gunk, you don't have to specifically implement this.
-      this.Preview_DrawWires(args);
+      //Use a standard method to draw gunk, you don't have to specifically implement 
+      Preview_DrawWires(args);
     }
 
     protected override ToolStripMenuItem Menu_CustomMultiValueItem() {

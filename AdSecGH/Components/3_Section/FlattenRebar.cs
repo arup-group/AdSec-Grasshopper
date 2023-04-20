@@ -1,4 +1,7 @@
-﻿using AdSecGH.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -11,9 +14,6 @@ using OasysGH.Components;
 using OasysGH.Parameters;
 using OasysGH.Units;
 using OasysUnits;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace AdSecGH.Components {
   public class FlattenRebar : GH_OasysComponent {
@@ -29,7 +29,7 @@ namespace AdSecGH.Components {
       "Flatten all rebars in a section into single bars.",
       CategoryName.Name(),
       SubCategoryName.Cat4()) {
-      this.Hidden = true; // sets the initial state of the component to hidden
+      Hidden = true; // sets the initial state of the component to hidden
     }
 
     //This region overrides the typical component layout
@@ -63,25 +63,24 @@ namespace AdSecGH.Components {
       ISection flat = null;
       if (section.DesignCode != null) //{ code = Oasys.AdSec.DesignCode.EN1992.Part1_1.Edition_2004.NationalAnnex.NoNationalAnnex; }
       {
-        IAdSec adSec = IAdSec.Create(section.DesignCode);
+        var adSec = IAdSec.Create(section.DesignCode);
         flat = adSec.Flatten(section.Section);
-      }
-      else {
-        IPerimeterProfile prof = IPerimeterProfile.Create(section.Section.Profile);
+      } else {
+        var prof = IPerimeterProfile.Create(section.Section.Profile);
         flat = ISection.Create(prof, section.Section.Material);
       }
 
-      List<AdSecPointGoo> pointGoos = new List<AdSecPointGoo>();
-      List<GH_UnitNumber> diameters = new List<GH_UnitNumber>();
-      List<int> counts = new List<int>();
-      List<GH_UnitNumber> prestresses = new List<GH_UnitNumber>();
-      List<string> materialType = new List<string>();
+      var pointGoos = new List<AdSecPointGoo>();
+      var diameters = new List<GH_UnitNumber>();
+      var counts = new List<int>();
+      var prestresses = new List<GH_UnitNumber>();
+      var materialType = new List<string>();
 
       // loop through rebar groups in flattened section
       foreach (IGroup rebargrp in flat.ReinforcementGroups) {
         try // first try if not a link group type
         {
-          ISingleBars snglBrs = (ISingleBars)rebargrp;
+          var snglBrs = (ISingleBars)rebargrp;
           foreach (IPoint pos in snglBrs.Positions) {
             // position
             pointGoos.Add(new AdSecPointGoo(pos));
@@ -95,16 +94,14 @@ namespace AdSecGH.Components {
             // preload
             if (snglBrs.Preload != null) {
               try {
-                IPreForce force = (IPreForce)snglBrs.Preload;
+                var force = (IPreForce)snglBrs.Preload;
                 prestresses.Add(new GH_UnitNumber(force.Force.ToUnit(DefaultUnits.ForceUnit)));
-              }
-              catch (Exception) {
+              } catch (Exception) {
                 try {
-                  IPreStress stress = (IPreStress)snglBrs.Preload;
+                  var stress = (IPreStress)snglBrs.Preload;
                   prestresses.Add(new GH_UnitNumber(stress.Stress.ToUnit(DefaultUnits.StressUnitResult)));
-                }
-                catch (Exception) {
-                  IPreStrain strain = (IPreStrain)snglBrs.Preload;
+                } catch (Exception) {
+                  var strain = (IPreStrain)snglBrs.Preload;
                   prestresses.Add(new GH_UnitNumber(strain.Strain.ToUnit(DefaultUnits.StrainUnitResult)));
                 }
               }
@@ -116,8 +113,7 @@ namespace AdSecGH.Components {
             rebmat = rebmat.Replace("_Implementation", "");
             materialType.Add(rebmat);
           }
-        }
-        catch (Exception) {
+        } catch (Exception) {
           // do nothing if rebar is link
         }
       }

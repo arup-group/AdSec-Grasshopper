@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
@@ -11,9 +14,6 @@ using OasysGH.Units;
 using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace AdSecGH.Components {
   public class CreateReinforcementLayout : GH_OasysDropDownComponent {
@@ -39,158 +39,160 @@ namespace AdSecGH.Components {
       "Create a Reinforcement Layout for an AdSec Section",
       CategoryName.Name(),
       SubCategoryName.Cat3()) {
-      this.Hidden = false; // sets the initial state of the component to hidden
+      Hidden = false; // sets the initial state of the component to hidden
     }
 
     public override void SetSelected(int i, int j) {
       // set selected item
-      this._selectedItems[i] = this._dropDownItems[i][j];
+      _selectedItems[i] = _dropDownItems[i][j];
       if (i == 0) {
-        this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[i]);
+        _mode = (FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[i]);
 
-        switch (this._mode) {
+        switch (_mode) {
           case FoldMode.Line:
           case FoldMode.SingleBars:
-            while (this._dropDownItems.Count > 1)
-              this._dropDownItems.RemoveAt(1);
-            this._spacerDescriptions[1] = "Measure";
+            while (_dropDownItems.Count > 1) {
+              _dropDownItems.RemoveAt(1);
+            }
+            _spacerDescriptions[1] = "Measure";
             break;
 
           case FoldMode.Arc:
           case FoldMode.Circle:
-            if (this._dropDownItems.Count < 2)
-              this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-            if (this._dropDownItems.Count < 3)
-              this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
-            this._spacerDescriptions[1] = "Length measure";
+            if (_dropDownItems.Count < 2) {
+              _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
+            }
+            if (_dropDownItems.Count < 3) {
+              _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
+            }
+            _spacerDescriptions[1] = "Length measure";
             break;
         }
 
-        this.ToggleInput();
-      }
-      else {
+        ToggleInput();
+      } else {
         switch (i) {
           case 1:
-            this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[i]);
+            _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
             break;
 
           case 2:
-            this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this._selectedItems[i]);
+            _angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), _selectedItems[i]);
             break;
         }
       }
     }
 
     public override void VariableParameterMaintenance() {
-      string angleUnitAbbreviation = Angle.GetAbbreviation(this._angleUnit);
-      string lengthUnitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
-      if (this._mode == FoldMode.Line) {
-        this.Params.Input[0].Name = "Spaced Rebars";
-        this.Params.Input[0].NickName = "RbS";
-        this.Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
-        this.Params.Input[0].Access = GH_ParamAccess.item;
-        this.Params.Input[0].Optional = false;
+      string angleUnitAbbreviation = Angle.GetAbbreviation(_angleUnit);
+      string lengthUnitAbbreviation = Length.GetAbbreviation(_lengthUnit);
+      if (_mode == FoldMode.Line) {
+        Params.Input[0].Name = "Spaced Rebars";
+        Params.Input[0].NickName = "RbS";
+        Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
+        Params.Input[0].Access = GH_ParamAccess.item;
+        Params.Input[0].Optional = false;
 
-        this.Params.Input[1].Name = "Position 1";
-        this.Params.Input[1].NickName = "Vx1";
-        this.Params.Input[1].Description = "First bar position";
-        this.Params.Input[1].Access = GH_ParamAccess.item;
-        this.Params.Input[1].Optional = false;
+        Params.Input[1].Name = "Position 1";
+        Params.Input[1].NickName = "Vx1";
+        Params.Input[1].Description = "First bar position";
+        Params.Input[1].Access = GH_ParamAccess.item;
+        Params.Input[1].Optional = false;
 
-        this.Params.Input[2].Name = "Position 2";
-        this.Params.Input[2].NickName = "Vx2";
-        this.Params.Input[2].Description = "Last bar position";
-        this.Params.Input[2].Access = GH_ParamAccess.item;
-        this.Params.Input[2].Optional = false;
+        Params.Input[2].Name = "Position 2";
+        Params.Input[2].NickName = "Vx2";
+        Params.Input[2].Description = "Last bar position";
+        Params.Input[2].Access = GH_ParamAccess.item;
+        Params.Input[2].Optional = false;
       }
-      if (this._mode == FoldMode.SingleBars) {
-        this.Params.Input[0].Name = "Rebar";
-        this.Params.Input[0].NickName = "Rb";
-        this.Params.Input[0].Description = "AdSec Rebar (single or bundle)";
-        this.Params.Input[0].Access = GH_ParamAccess.item;
-        this.Params.Input[0].Optional = false;
+      if (_mode == FoldMode.SingleBars) {
+        Params.Input[0].Name = "Rebar";
+        Params.Input[0].NickName = "Rb";
+        Params.Input[0].Description = "AdSec Rebar (single or bundle)";
+        Params.Input[0].Access = GH_ParamAccess.item;
+        Params.Input[0].Optional = false;
 
-        this.Params.Input[1].Name = "Position(s)";
-        this.Params.Input[1].NickName = "Vxs";
-        this.Params.Input[1].Description = "List of bar positions";
-        this.Params.Input[1].Access = GH_ParamAccess.list;
-        this.Params.Input[1].Optional = false;
+        Params.Input[1].Name = "Position(s)";
+        Params.Input[1].NickName = "Vxs";
+        Params.Input[1].Description = "List of bar positions";
+        Params.Input[1].Access = GH_ParamAccess.list;
+        Params.Input[1].Optional = false;
       }
-      if (this._mode == FoldMode.Circle) {
-        this.Params.Input[0].Name = "Spaced Rebars";
-        this.Params.Input[0].NickName = "RbS";
-        this.Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
-        this.Params.Input[0].Access = GH_ParamAccess.item;
-        this.Params.Input[0].Optional = false;
+      if (_mode == FoldMode.Circle) {
+        Params.Input[0].Name = "Spaced Rebars";
+        Params.Input[0].NickName = "RbS";
+        Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
+        Params.Input[0].Access = GH_ParamAccess.item;
+        Params.Input[0].Optional = false;
 
-        this.Params.Input[1].Name = "Centre";
-        this.Params.Input[1].NickName = "CVx";
-        this.Params.Input[1].Description = "Vertex Point representing the centre of the circle";
-        this.Params.Input[1].Access = GH_ParamAccess.item;
-        this.Params.Input[1].Optional = true;
+        Params.Input[1].Name = "Centre";
+        Params.Input[1].NickName = "CVx";
+        Params.Input[1].Description = "Vertex Point representing the centre of the circle";
+        Params.Input[1].Access = GH_ParamAccess.item;
+        Params.Input[1].Optional = true;
 
-        this.Params.Input[2].Name = "Radius [" + lengthUnitAbbreviation + "]";
-        this.Params.Input[2].NickName = "r";
-        this.Params.Input[2].Description = "Distance representing the radius of the circle";
-        this.Params.Input[2].Access = GH_ParamAccess.item;
-        this.Params.Input[2].Optional = false;
+        Params.Input[2].Name = "Radius [" + lengthUnitAbbreviation + "]";
+        Params.Input[2].NickName = "r";
+        Params.Input[2].Description = "Distance representing the radius of the circle";
+        Params.Input[2].Access = GH_ParamAccess.item;
+        Params.Input[2].Optional = false;
 
-        this.Params.Input[3].Name = "StartAngle [" + angleUnitAbbreviation + "]";
-        this.Params.Input[3].NickName = "s°";
-        this.Params.Input[3].Description = "[Optional] The starting angle (in " + angleUnitAbbreviation + ") of the circle. Positive angle is considered anti-clockwise. Default is 0";
-        this.Params.Input[3].Access = GH_ParamAccess.item;
-        this.Params.Input[3].Optional = true;
+        Params.Input[3].Name = "StartAngle [" + angleUnitAbbreviation + "]";
+        Params.Input[3].NickName = "s°";
+        Params.Input[3].Description = "[Optional] The starting angle (in " + angleUnitAbbreviation + ") of the circle. Positive angle is considered anti-clockwise. Default is 0";
+        Params.Input[3].Access = GH_ParamAccess.item;
+        Params.Input[3].Optional = true;
       }
-      if (this._mode == FoldMode.Arc) {
-        this.Params.Input[0].Name = "Spaced Rebars";
-        this.Params.Input[0].NickName = "RbS";
-        this.Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
-        this.Params.Input[0].Access = GH_ParamAccess.item;
-        this.Params.Input[0].Optional = false;
+      if (_mode == FoldMode.Arc) {
+        Params.Input[0].Name = "Spaced Rebars";
+        Params.Input[0].NickName = "RbS";
+        Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
+        Params.Input[0].Access = GH_ParamAccess.item;
+        Params.Input[0].Optional = false;
 
-        this.Params.Input[1].Name = "Centre";
-        this.Params.Input[1].NickName = "CVx";
-        this.Params.Input[1].Description = "Vertex Point representing the centre of the circle";
-        this.Params.Input[1].Access = GH_ParamAccess.item;
-        this.Params.Input[1].Optional = true;
+        Params.Input[1].Name = "Centre";
+        Params.Input[1].NickName = "CVx";
+        Params.Input[1].Description = "Vertex Point representing the centre of the circle";
+        Params.Input[1].Access = GH_ParamAccess.item;
+        Params.Input[1].Optional = true;
 
-        this.Params.Input[2].Name = "Radius [" + lengthUnitAbbreviation + "]";
-        this.Params.Input[2].NickName = "r";
-        this.Params.Input[2].Description = "Distance representing the radius of the circle";
-        this.Params.Input[2].Access = GH_ParamAccess.item;
-        this.Params.Input[2].Optional = false;
+        Params.Input[2].Name = "Radius [" + lengthUnitAbbreviation + "]";
+        Params.Input[2].NickName = "r";
+        Params.Input[2].Description = "Distance representing the radius of the circle";
+        Params.Input[2].Access = GH_ParamAccess.item;
+        Params.Input[2].Optional = false;
 
-        this.Params.Input[3].Name = "StartAngle [" + angleUnitAbbreviation + "]";
-        this.Params.Input[3].NickName = "s°";
-        this.Params.Input[3].Description = "[Optional] The starting angle (in " + angleUnitAbbreviation + ")) of the circle. Positive angle is considered anti-clockwise. Default is 0";
-        this.Params.Input[3].Access = GH_ParamAccess.item;
-        this.Params.Input[3].Optional = true;
+        Params.Input[3].Name = "StartAngle [" + angleUnitAbbreviation + "]";
+        Params.Input[3].NickName = "s°";
+        Params.Input[3].Description = "[Optional] The starting angle (in " + angleUnitAbbreviation + ")) of the circle. Positive angle is considered anti-clockwise. Default is 0";
+        Params.Input[3].Access = GH_ParamAccess.item;
+        Params.Input[3].Optional = true;
 
-        this.Params.Input[4].Name = "SweepAngle [" + angleUnitAbbreviation + "]";
-        this.Params.Input[4].NickName = "e°";
-        this.Params.Input[4].Description = "The angle (in " + angleUnitAbbreviation + ") sweeped by the arc from its start angle. Positive angle is considered anti-clockwise. Default is π/2";
-        this.Params.Input[4].Access = GH_ParamAccess.item;
-        this.Params.Input[4].Optional = true;
+        Params.Input[4].Name = "SweepAngle [" + angleUnitAbbreviation + "]";
+        Params.Input[4].NickName = "e°";
+        Params.Input[4].Description = "The angle (in " + angleUnitAbbreviation + ") sweeped by the arc from its start angle. Positive angle is considered anti-clockwise. Default is π/2";
+        Params.Input[4].Access = GH_ParamAccess.item;
+        Params.Input[4].Optional = true;
       }
     }
 
     protected override void InitialiseDropdowns() {
-      this._spacerDescriptions = new List<string>(new string[] {
+      _spacerDescriptions = new List<string>(new string[] {
         "Layout Type",
         "Measure",
         "Angular measure"
       });
 
-      this._dropDownItems = new List<List<string>>();
-      this._selectedItems = new List<string>();
+      _dropDownItems = new List<List<string>>();
+      _selectedItems = new List<string>();
 
-      this._dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
-      this._selectedItems.Add(this._dropDownItems[0][0]);
+      _dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
+      _selectedItems.Add(_dropDownItems[0][0]);
 
-      this._selectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
-      this._selectedItems.Add(Angle.GetAbbreviation(this._angleUnit));
+      _selectedItems.Add(Length.GetAbbreviation(_lengthUnit));
+      _selectedItems.Add(Angle.GetAbbreviation(_angleUnit));
 
-      this._isInitialised = true;
+      _isInitialised = true;
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
@@ -207,7 +209,7 @@ namespace AdSecGH.Components {
     protected override void SolveInstance(IGH_DataAccess DA) {
       AdSecRebarGroupGoo group = null;
 
-      switch (this._mode) {
+      switch (_mode) {
         case FoldMode.Line:
           // create line group
           group = new AdSecRebarGroupGoo(
@@ -222,8 +224,8 @@ namespace AdSecGH.Components {
           group = new AdSecRebarGroupGoo(
             ICircleGroup.Create(
               AdSecInput.IPoint(this, DA, 1, true),
-              (Length)Input.UnitNumber(this, DA, 2, this._lengthUnit),
-              (Angle)Input.UnitNumber(this, DA, 3, this._angleUnit, true),
+              (Length)Input.UnitNumber(this, DA, 2, _lengthUnit),
+              (Angle)Input.UnitNumber(this, DA, 3, _angleUnit, true),
               AdSecInput.ILayer(this, DA, 0)));
           break;
 
@@ -232,15 +234,15 @@ namespace AdSecGH.Components {
           group = new AdSecRebarGroupGoo(
             IArcGroup.Create(
               AdSecInput.IPoint(this, DA, 1, true),
-              (Length)Input.UnitNumber(this, DA, 2, this._lengthUnit),
-              (Angle)Input.UnitNumber(this, DA, 3, this._angleUnit),
-              (Angle)Input.UnitNumber(this, DA, 4, this._angleUnit),
+              (Length)Input.UnitNumber(this, DA, 2, _lengthUnit),
+              (Angle)Input.UnitNumber(this, DA, 3, _angleUnit),
+              (Angle)Input.UnitNumber(this, DA, 4, _angleUnit),
               AdSecInput.ILayer(this, DA, 0)));
           break;
 
         case FoldMode.SingleBars:
           // create single rebar group
-          ISingleBars bars = ISingleBars.Create(
+          var bars = ISingleBars.Create(
             AdSecInput.IBarBundle(this, DA, 0));
 
           bars.Positions = AdSecInput.IPoints(this, DA, 1);
@@ -254,51 +256,55 @@ namespace AdSecGH.Components {
     }
 
     protected override void UpdateUIFromSelectedItems() {
-      this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[0]);
-      this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[1]);
-      this._angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), this._selectedItems[2]);
-      this.ToggleInput();
+      _mode = (FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[0]);
+      _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
+      _angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), _selectedItems[2]);
+      ToggleInput();
       base.UpdateUIFromSelectedItems();
     }
 
     private void ToggleInput() {
-      switch (this._mode) {
+      switch (_mode) {
         case FoldMode.Line:
           // remove any additional input parameters
-          while (this.Params.Input.Count > 1)
-            this.Params.UnregisterInputParameter(this.Params.Input[1], true);
+          while (Params.Input.Count > 1) {
+            Params.UnregisterInputParameter(Params.Input[1], true);
+          }
           // register 2 generic
-          this.Params.RegisterInputParam(new Param_GenericObject());
-          this.Params.RegisterInputParam(new Param_GenericObject());
+          Params.RegisterInputParam(new Param_GenericObject());
+          Params.RegisterInputParam(new Param_GenericObject());
           break;
 
         case FoldMode.SingleBars:
           // remove any additional input parameters
-          while (this.Params.Input.Count > 1)
-            this.Params.UnregisterInputParameter(this.Params.Input[1], true);
+          while (Params.Input.Count > 1) {
+            Params.UnregisterInputParameter(Params.Input[1], true);
+          }
           // register 1 generic
-          this.Params.RegisterInputParam(new Param_GenericObject());
+          Params.RegisterInputParam(new Param_GenericObject());
           break;
 
         case FoldMode.Circle:
           // remove any additional input parameters
-          while (this.Params.Input.Count > 1)
-            this.Params.UnregisterInputParameter(this.Params.Input[1], true);
+          while (Params.Input.Count > 1) {
+            Params.UnregisterInputParameter(Params.Input[1], true);
+          }
           // register 3 generic
-          this.Params.RegisterInputParam(new Param_GenericObject());
-          this.Params.RegisterInputParam(new Param_GenericObject());
-          this.Params.RegisterInputParam(new Param_GenericObject());
+          Params.RegisterInputParam(new Param_GenericObject());
+          Params.RegisterInputParam(new Param_GenericObject());
+          Params.RegisterInputParam(new Param_GenericObject());
           break;
 
         case FoldMode.Arc:
           // remove any additional input parameters
-          while (this.Params.Input.Count > 1)
-            this.Params.UnregisterInputParameter(this.Params.Input[1], true);
+          while (Params.Input.Count > 1) {
+            Params.UnregisterInputParameter(Params.Input[1], true);
+          }
           // register 4 generic
-          this.Params.RegisterInputParam(new Param_GenericObject());
-          this.Params.RegisterInputParam(new Param_GenericObject());
-          this.Params.RegisterInputParam(new Param_GenericObject());
-          this.Params.RegisterInputParam(new Param_GenericObject());
+          Params.RegisterInputParam(new Param_GenericObject());
+          Params.RegisterInputParam(new Param_GenericObject());
+          Params.RegisterInputParam(new Param_GenericObject());
+          Params.RegisterInputParam(new Param_GenericObject());
           break;
       }
     }

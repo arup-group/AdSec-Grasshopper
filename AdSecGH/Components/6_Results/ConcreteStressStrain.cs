@@ -1,3 +1,4 @@
+using System;
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
@@ -9,7 +10,6 @@ using OasysGH.Components;
 using OasysGH.Parameters;
 using OasysGH.Units;
 using OasysUnits;
-using System;
 
 namespace AdSecGH.Components {
   public class ConcreteStressStrain : GH_OasysComponent {
@@ -25,7 +25,7 @@ namespace AdSecGH.Components {
       "Calculate the Concrete Stress/Strain at a point on the Section for a given Load or Deformation.",
       CategoryName.Name(),
       SubCategoryName.Cat7()) {
-      this.Hidden = true; // sets the initial state of the component to hidden
+      Hidden = true; // sets the initial state of the component to hidden
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
@@ -52,47 +52,42 @@ namespace AdSecGH.Components {
       IServiceabilityResult sls = null;
 
       // get load - can be either load or deformation
-      GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+      var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
-        if (gh_typ.Value is AdSecLoadGoo) {
-          AdSecLoadGoo load = (AdSecLoadGoo)gh_typ.Value;
+        if (gh_typ.Value is AdSecLoadGoo load) {
           uls = solution.Value.Strength.Check(load.Value);
           sls = solution.Value.Serviceability.Check(load.Value);
-        }
-        else if (gh_typ.Value is AdSecDeformationGoo) {
-          AdSecDeformationGoo def = (AdSecDeformationGoo)gh_typ.Value;
+        } else if (gh_typ.Value is AdSecDeformationGoo def) {
           uls = solution.Value.Strength.Check(def.Value);
           sls = solution.Value.Serviceability.Check(def.Value);
-        }
-        else {
+        } else {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
           return;
         }
-      }
-      else {
+      } else {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
         return;
       }
 
       // ULS strain
       Strain strainULS = uls.Deformation.StrainAt(AdSecInput.IPoint(this, DA, 2, false));
-      GH_UnitNumber outStrainULS = new GH_UnitNumber(strainULS.ToUnit(DefaultUnits.StrainUnitResult));
+      var outStrainULS = new GH_UnitNumber(strainULS.ToUnit(DefaultUnits.StrainUnitResult));
       DA.SetData(0, outStrainULS);
 
       // ULS stress in concrete material from strain
       Pressure stressULS = solution.m_section.Section.Material.Strength.StressAt(strainULS);
-      GH_UnitNumber outStressULS = new GH_UnitNumber(stressULS.ToUnit(DefaultUnits.StressUnitResult));
+      var outStressULS = new GH_UnitNumber(stressULS.ToUnit(DefaultUnits.StressUnitResult));
       DA.SetData(1, outStressULS);
 
       // SLS strain
       Strain strainSLS = sls.Deformation.StrainAt(AdSecInput.IPoint(this, DA, 2, false));
-      GH_UnitNumber outStrainSLS = new GH_UnitNumber(strainSLS.ToUnit(DefaultUnits.StrainUnitResult));
+      var outStrainSLS = new GH_UnitNumber(strainSLS.ToUnit(DefaultUnits.StrainUnitResult));
       DA.SetData(2, outStrainSLS);
 
       // SLS stress in concrete material from strain
       Pressure stressSLS = solution.m_section.Section.Material.Serviceability.StressAt(strainSLS);
-      GH_UnitNumber outStressSLS = new GH_UnitNumber(stressSLS.ToUnit(DefaultUnits.StressUnitResult));
+      var outStressSLS = new GH_UnitNumber(stressSLS.ToUnit(DefaultUnits.StressUnitResult));
 
       DA.SetData(3, outStressSLS);
     }

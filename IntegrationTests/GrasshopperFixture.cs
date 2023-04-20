@@ -6,23 +6,23 @@ namespace ComposGHTests {
   public class GrasshopperFixture : IDisposable {
     public Rhino.Runtime.InProcess.RhinoCore Core {
       get {
-        if (null == this._Core)
+        if (null == _Core)
           InitializeCore();
-        return this._Core as Rhino.Runtime.InProcess.RhinoCore;
+        return _Core as Rhino.Runtime.InProcess.RhinoCore;
       }
     }
     public Grasshopper.Kernel.GH_DocumentIO DocIO {
       get {
-        if (null == this._DocIO)
-          this.InitializeDocIO();
-        return this._DocIO as Grasshopper.Kernel.GH_DocumentIO;
+        if (null == _DocIO)
+          InitializeDocIO();
+        return _DocIO as Grasshopper.Kernel.GH_DocumentIO;
       }
     }
     public Grasshopper.Plugin.GH_RhinoScriptInterface GHPlugin {
       get {
-        if (null == this._GHPlugin)
+        if (null == _GHPlugin)
           InitializeGrasshopperPlugin();
-        return this._GHPlugin as Grasshopper.Plugin.GH_RhinoScriptInterface;
+        return _GHPlugin as Grasshopper.Plugin.GH_RhinoScriptInterface;
       }
     }
     private object _Doc { get; set; }
@@ -42,9 +42,9 @@ namespace ComposGHTests {
     }
 
     public GrasshopperFixture() {
-      this.AddPluginToGH();
+      AddPluginToGH();
 
-      this.InitializeCore();
+      InitializeCore();
 
       // setup headless units
       OasysGH.Units.Utility.SetupUnitsDuringLoad(true);
@@ -59,7 +59,7 @@ namespace ComposGHTests {
 
     public void Dispose() {
       // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-      this.Dispose(disposing: true);
+      Dispose(disposing: true);
       GC.SuppressFinalize(this);
       File.Delete(Path.Combine(_linkFilePath, _linkFileName));
     }
@@ -67,16 +67,16 @@ namespace ComposGHTests {
     protected virtual void Dispose(bool disposing) {
       if (_isDisposed) return;
       if (disposing) {
-        this._Doc = null;
-        this._DocIO = null;
+        _Doc = null;
+        _DocIO = null;
         GHPlugin.CloseAllDocuments();
-        this._GHPlugin = null;
-        this.Core.Dispose();
+        _GHPlugin = null;
+        Core.Dispose();
       }
 
       // TODO: free unmanaged resources (unmanaged objects) and override finalizer
       // TODO: set large fields to null
-      this._isDisposed = true;
+      _isDisposed = true;
     }
 
     // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
@@ -86,31 +86,31 @@ namespace ComposGHTests {
     //     Dispose(disposing: false);
     // }
     private void InitializeCore() {
-      this._Core = new Rhino.Runtime.InProcess.RhinoCore();
+      _Core = new Rhino.Runtime.InProcess.RhinoCore();
     }
 
     private void InitializeDocIO() {
       // we do this in a seperate function to absolutely ensure that the core is initialized before we load the GH plugin,
       // which will happen automatically when we enter the function containing GH references
-      if (null == this._GHPlugin) InitializeGrasshopperPlugin();
+      if (null == _GHPlugin) InitializeGrasshopperPlugin();
       InitializeDocIO2();
     }
 
     private void InitializeDocIO2() {
       var docIO = new Grasshopper.Kernel.GH_DocumentIO();
-      this._DocIO = docIO;
+      _DocIO = docIO;
     }
 
     private void InitializeGrasshopperPlugin() {
-      if (null == this._Core)
-        this.InitializeCore();
+      if (null == _Core)
+        InitializeCore();
       // we do this in a seperate function to absolutely ensure that the core is initialized before we load the GH plugin,
       // which will happen automatically when we enter the function containing GH references
       InitializeGrasshopperPlugin2();
     }
 
     private void InitializeGrasshopperPlugin2() {
-      this._GHPlugin = Rhino.RhinoApp.GetPlugInObject("Grasshopper");
+      _GHPlugin = Rhino.RhinoApp.GetPlugInObject("Grasshopper");
       var ghp = _GHPlugin as Grasshopper.Plugin.GH_RhinoScriptInterface;
       ghp.RunHeadless();
     }

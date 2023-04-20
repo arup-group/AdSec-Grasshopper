@@ -26,7 +26,7 @@ namespace AdSecGH.Parameters {
         return m_loadsurface;
       }
     }
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
     public override string TypeName => "FailureSurface";
     internal Rhino.Display.Text3d negMyy;
     internal Rhino.Display.Text3d negMzz;
@@ -46,17 +46,17 @@ namespace AdSecGH.Parameters {
 
     public AdSecFailureSurfaceGoo(ILoadSurface loadsurface, Plane local, Mesh mesh = null) : base(mesh) {
       if (mesh == null)
-        this.m_value = MeshFromILoadSurface(loadsurface, local);
-      this.m_loadsurface = loadsurface;
-      this.m_plane = local;
-      this.UpdatePreview();
+        m_value = MeshFromILoadSurface(loadsurface, local);
+      m_loadsurface = loadsurface;
+      m_plane = local;
+      UpdatePreview();
     }
 
     public AdSecFailureSurfaceGoo(ILoadSurface loadsurface, Plane local) {
-      this.m_value = MeshFromILoadSurface(loadsurface, local);
-      this.m_loadsurface = loadsurface;
-      this.m_plane = local;
-      this.UpdatePreview();
+      m_value = MeshFromILoadSurface(loadsurface, local);
+      m_loadsurface = loadsurface;
+      m_plane = local;
+      UpdatePreview();
     }
 
     public override bool CastFrom(object source) {
@@ -68,7 +68,7 @@ namespace AdSecGH.Parameters {
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecFailureSurfaceGoo))) {
-        target = (Q)(object)new AdSecFailureSurfaceGoo(this.FailureSurface, this.m_plane, this.Value);
+        target = (Q)(object)new AdSecFailureSurfaceGoo(FailureSurface, m_plane, Value);
         return true;
       }
 
@@ -120,7 +120,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecFailureSurfaceGoo(this.FailureSurface, m_plane);
+      return new AdSecFailureSurfaceGoo(FailureSurface, m_plane);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
@@ -136,7 +136,7 @@ namespace AdSecGH.Parameters {
       xmorph.Morph(m);
       Plane local = new Plane(m_plane);
       xmorph.Morph(ref local);
-      return new AdSecFailureSurfaceGoo(this.FailureSurface, local, m);
+      return new AdSecFailureSurfaceGoo(FailureSurface, local, m);
     }
 
     public override string ToString() {
@@ -151,7 +151,7 @@ namespace AdSecGH.Parameters {
       m.Transform(xform);
       Plane local = new Plane(m_plane);
       local.Transform(xform);
-      return new AdSecFailureSurfaceGoo(this.FailureSurface, local, m);
+      return new AdSecFailureSurfaceGoo(FailureSurface, local, m);
     }
 
     internal Mesh MeshFromILoadSurface(ILoadSurface loadsurface, Plane local) {

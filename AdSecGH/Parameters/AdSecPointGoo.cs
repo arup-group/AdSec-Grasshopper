@@ -34,25 +34,25 @@ namespace AdSecGH.Parameters {
         return Boundingbox;
       }
     }
-    public override string TypeDescription => "AdSec " + this.TypeName + " Parameter";
+    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
     public override string TypeName => "Vertex";
     private IPoint m_AdSecPoint;
 
     public AdSecPointGoo(Point3d point) : base(point) {
       m_value = point;
-      this.m_AdSecPoint = IPoint.Create(
+      m_AdSecPoint = IPoint.Create(
         new Length(m_value.Y, DefaultUnits.LengthUnitGeometry),
         new Length(m_value.Z, DefaultUnits.LengthUnitGeometry));
     }
 
     public AdSecPointGoo(AdSecPointGoo adsecPoint) {
       m_AdSecPoint = adsecPoint.AdSecPoint;
-      this.m_value = new Point3d(Value);
+      m_value = new Point3d(Value);
     }
 
     public AdSecPointGoo(IPoint adsecPoint) {
       m_AdSecPoint = adsecPoint;
-      this.m_value = new Point3d(
+      m_value = new Point3d(
         0,
         m_AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
         m_AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
@@ -81,31 +81,31 @@ namespace AdSecGH.Parameters {
 
       if (source is Point3d) {
         AdSecPointGoo temp = new AdSecPointGoo((Point3d)source);
-        this.m_value = temp.Value;
-        this.m_AdSecPoint = temp.AdSecPoint;
+        m_value = temp.Value;
+        m_AdSecPoint = temp.AdSecPoint;
         return true;
       }
 
       if (source is IPoint) {
         AdSecPointGoo temp = new AdSecPointGoo((IPoint)source);
-        this.m_value = temp.Value;
-        this.m_AdSecPoint = temp.AdSecPoint;
+        m_value = temp.Value;
+        m_AdSecPoint = temp.AdSecPoint;
         return true;
       }
 
       GH_Point ptGoo = source as GH_Point;
       if (ptGoo != null) {
         AdSecPointGoo temp = new AdSecPointGoo(ptGoo.Value);
-        this.m_value = temp.Value;
-        this.m_AdSecPoint = temp.AdSecPoint;
+        m_value = temp.Value;
+        m_AdSecPoint = temp.AdSecPoint;
         return true;
       }
 
       Point3d pt = new Point3d();
       if (GH_Convert.ToPoint3d(source, ref pt, GH_Conversion.Both)) {
         AdSecPointGoo temp = new AdSecPointGoo(pt);
-        this.m_value = temp.Value;
-        this.m_AdSecPoint = temp.AdSecPoint;
+        m_value = temp.Value;
+        m_AdSecPoint = temp.AdSecPoint;
         return true;
       }
 
@@ -114,7 +114,7 @@ namespace AdSecGH.Parameters {
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecPointGoo))) {
-        target = (Q)(object)new AdSecPointGoo(this.Value);
+        target = (Q)(object)new AdSecPointGoo(Value);
         return true;
       }
 
@@ -150,7 +150,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecPointGoo(new Point3d(this.Value));
+      return new AdSecPointGoo(new Point3d(Value));
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {

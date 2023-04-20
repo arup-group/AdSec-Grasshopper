@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -9,8 +11,6 @@ using OasysGH.Units;
 using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
-using System;
-using System.Collections.Generic;
 
 namespace AdSecGH.Components {
   public class CreateProfileFlange : GH_OasysDropDownComponent {
@@ -27,40 +27,40 @@ namespace AdSecGH.Components {
       "Create a Flange for AdSec Profile",
       CategoryName.Name(),
       SubCategoryName.Cat2()) {
-      this.Hidden = true; // sets the initial state of the component to hidden
+      Hidden = true; // sets the initial state of the component to hidden
     }
 
     public override void SetSelected(int i, int j) {
-      this._selectedItems[i] = this._dropDownItems[i][j];
-      this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[i]);
+      _selectedItems[i] = _dropDownItems[i][j];
+      _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       base.UpdateUI();
     }
 
     public override void VariableParameterMaintenance() {
-      string unitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
+      string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
       Params.Input[0].Name = "Width [" + unitAbbreviation + "]";
       Params.Input[1].Name = "Thickness [" + unitAbbreviation + "]";
     }
 
     protected override void InitialiseDropdowns() {
-      this._spacerDescriptions = new List<string>(new string[] {
+      _spacerDescriptions = new List<string>(new string[] {
         "Measure"
       });
 
-      this._dropDownItems = new List<List<string>>();
-      this._selectedItems = new List<string>();
+      _dropDownItems = new List<List<string>>();
+      _selectedItems = new List<string>();
 
       // length
-      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-      this._selectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
+      _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
+      _selectedItems.Add(Length.GetAbbreviation(_lengthUnit));
 
-      IQuantity quantity = new Length(0, this._lengthUnit);
+      IQuantity quantity = new Length(0, _lengthUnit);
 
-      this._isInitialised = true;
+      _isInitialised = true;
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      string unitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
+      string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
       pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Flange width", GH_ParamAccess.item);
       pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Flange thickness", GH_ParamAccess.item);
     }
@@ -70,16 +70,16 @@ namespace AdSecGH.Components {
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {
-      AdSecProfileFlangeGoo flange = new AdSecProfileFlangeGoo(
+      var flange = new AdSecProfileFlangeGoo(
         IFlange.Create(
-          (Length)Input.UnitNumber(this, DA, 0, this._lengthUnit),
-          (Length)Input.UnitNumber(this, DA, 1, this._lengthUnit)));
+          (Length)Input.UnitNumber(this, DA, 0, _lengthUnit),
+          (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
 
       DA.SetData(0, flange);
     }
 
     protected override void UpdateUIFromSelectedItems() {
-      this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[0]);
+      _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[0]);
       base.UpdateUIFromSelectedItems();
     }
   }

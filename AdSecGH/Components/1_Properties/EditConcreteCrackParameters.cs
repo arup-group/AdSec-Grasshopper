@@ -1,4 +1,5 @@
-﻿using AdSecGH.Helpers;
+﻿using System;
+using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -9,7 +10,6 @@ using OasysGH.Helpers;
 using OasysGH.Parameters;
 using OasysGH.Units;
 using OasysUnits;
-using System;
 
 namespace AdSecGH.Components {
   public class EditConcreteCrackCalculationParameters : GH_OasysComponent {
@@ -25,7 +25,7 @@ namespace AdSecGH.Components {
       "Edit Concrete Crack Calculation Parameters for AdSec Material",
       CategoryName.Name(),
       SubCategoryName.Cat1()) {
-      this.Hidden = true; // sets the initial state of the component to hidden
+      Hidden = true; // sets the initial state of the component to hidden
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
@@ -35,8 +35,9 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Compression [" + unitAbbreviation + "]", "fc", "[Optional] Overwrite Value for Characteristic Compressive Strength", GH_ParamAccess.item);
       pManager.AddGenericParameter("Tension [" + unitAbbreviation + "]", "ft", "[Optional] Overwrite Value for Characteristic Tension Strength", GH_ParamAccess.item);
       // make all but first input optional
-      for (int i = 1; i < pManager.ParamCount; i++)
+      for (int i = 1; i < pManager.ParamCount; i++) {
         pManager[i].Optional = true;
+      }
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
@@ -48,7 +49,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // 0 Cracked params
-      AdSecConcreteCrackCalculationParametersGoo concreteCrack = new AdSecConcreteCrackCalculationParametersGoo(AdSecInput.ConcreteCrackCalculationParameters(this, DA, 0));
+      var concreteCrack = new AdSecConcreteCrackCalculationParametersGoo(AdSecInput.ConcreteCrackCalculationParameters(this, DA, 0));
 
       if (concreteCrack != null && concreteCrack.Value != null) {
         // #### get the remaining inputs ####
@@ -61,7 +62,7 @@ namespace AdSecGH.Components {
         if (Params.Input[1].SourceCount > 0) {
           e = (Pressure)Input.UnitNumber(this, DA, 1, DefaultUnits.StressUnitResult);
           if (e.Value < 0) {
-            this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
             e = new Pressure(Math.Abs(e.Value), e.Unit);
           }
           reCreate = true;
@@ -71,7 +72,7 @@ namespace AdSecGH.Components {
         if (Params.Input[2].SourceCount > 0) {
           fck = (Pressure)Input.UnitNumber(this, DA, 2, DefaultUnits.StressUnitResult);
           if (fck.Value > 0) {
-            this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
             fck = new Pressure(fck.Value * -1, fck.Unit);
           }
           reCreate = true;
@@ -81,14 +82,14 @@ namespace AdSecGH.Components {
         if (Params.Input[3].SourceCount > 0) {
           ft = (Pressure)Input.UnitNumber(this, DA, 3, DefaultUnits.StressUnitResult);
           if (ft.Value < 0) {
-            this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
             ft = new Pressure(Math.Abs(ft.Value), ft.Unit);
           }
           reCreate = true;
         }
 
         if (reCreate) {
-          IConcreteCrackCalculationParameters ccp = IConcreteCrackCalculationParameters.Create(e, fck, ft);
+          var ccp = IConcreteCrackCalculationParameters.Create(e, fck, ft);
           concreteCrack = new AdSecConcreteCrackCalculationParametersGoo(ccp);
         }
 
@@ -97,9 +98,8 @@ namespace AdSecGH.Components {
         DA.SetData(1, new GH_UnitNumber(e.ToUnit(DefaultUnits.StressUnitResult)));
         DA.SetData(2, new GH_UnitNumber(fck.ToUnit(DefaultUnits.StressUnitResult)));
         DA.SetData(3, new GH_UnitNumber(ft.ToUnit(DefaultUnits.StressUnitResult)));
-      }
-      else {
-        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "ConcreteCrackCalculationParameters are null");
+      } else {
+        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "ConcreteCrackCalculationParameters are null");
         return;
       }
     }

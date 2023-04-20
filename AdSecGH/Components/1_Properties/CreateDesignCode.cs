@@ -1,12 +1,12 @@
-﻿using AdSecGH.Helpers.GH;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace AdSecGH.Components {
   public class CreateDesignCode : GH_OasysDropDownComponent {
@@ -22,20 +22,20 @@ namespace AdSecGH.Components {
       AdSecDesignCodeGoo.Name.Replace(" ", string.Empty),
       "Create a " + AdSecDesignCodeGoo.Description,
       CategoryName.Name(),
-      SubCategoryName.Cat1()) { this.Hidden = true; } // sets the initial state of the component to hidden
+      SubCategoryName.Cat1()) { Hidden = true; } // sets the initial state of the component to hidden
 
     public override void SetSelected(int i, int j) {
       // change selected item
-      this._selectedItems[i] = this._dropDownItems[i][j];
+      _selectedItems[i] = _dropDownItems[i][j];
 
       // if selected item is not in the last dropdown then we need to update lists
-      if (this._selectedItems.Count - 1 != i) {
+      if (_selectedItems.Count - 1 != i) {
         // remove all sub dropdowns and selected items below changed list
-        while (this._dropDownItems.Count > 1) {
-          this._dropDownItems.RemoveAt(1);
+        while (_dropDownItems.Count > 1) {
+          _dropDownItems.RemoveAt(1);
         }
-        while (this._selectedItems.Count > i + 1) {
-          this._selectedItems.RemoveAt(i + 1);
+        while (_selectedItems.Count > i + 1) {
+          _selectedItems.RemoveAt(i + 1);
         }
 
         // get list of standard codes for the selected material
@@ -43,7 +43,7 @@ namespace AdSecGH.Components {
 
         // create string for selected item to use for type search while drilling
         int level = 0;
-        string typeString = this._selectedItems[level];
+        string typeString = _selectedItems[level];
         bool drill = true;
         while (drill) {
           // get the type of the most recent selected from level above
@@ -57,48 +57,53 @@ namespace AdSecGH.Components {
             level++;
 
             // if kvp has >1 values we add them to create a new dropdown list
-            this._dropDownItems.Add(designCodeKVP.Keys.ToList());
+            _dropDownItems.Add(designCodeKVP.Keys.ToList());
 
             // with first item being the selected
-            if (this._selectedItems.Count - 1 < level) {
-              this._selectedItems.Add(designCodeKVP.Keys.First());
+            if (_selectedItems.Count - 1 < level) {
+              _selectedItems.Add(designCodeKVP.Keys.First());
               // and set the next search item to this
-              typeString = this._selectedItems.Last();
+              typeString = _selectedItems.Last();
+            } else {
+              typeString = _selectedItems[level];
             }
-            else
-              typeString = this._selectedItems[level];
 
-            if (typeString.StartsWith("Edition"))
-              this._spacerDescriptions[level] = "Edition";
-            if (typeString.StartsWith("Part"))
-              this._spacerDescriptions[level] = "Part";
-            if (typeString.StartsWith("Metric") | typeString.StartsWith("US"))
-              this._spacerDescriptions[level] = "Unit";
-            if (typeString.StartsWith("National"))
-              this._spacerDescriptions[level] = "National Annex";
-          }
-          else if (designCodeKVP.Count == 1) {
+            if (typeString.StartsWith("Edition")) {
+              _spacerDescriptions[level] = "Edition";
+            }
+            if (typeString.StartsWith("Part")) {
+              _spacerDescriptions[level] = "Part";
+            }
+            if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
+              _spacerDescriptions[level] = "Unit";
+            }
+            if (typeString.StartsWith("National")) {
+              _spacerDescriptions[level] = "National Annex";
+            }
+          } else if (designCodeKVP.Count == 1) {
             // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
             typeString = designCodeKVP.Keys.First();
-          }
-          else {
+          } else {
             // if kvp is empty we have reached the field level
             // where we set the materials by reflecting the type
-            this._designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
+            _designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
             // if kvp has values we add them to create a new dropdown list
-            this._dropDownItems.Add(this._designCodes.Keys.ToList());
+            _dropDownItems.Add(_designCodes.Keys.ToList());
             // with first item being the selected
-            this._selectedItems.Add(this._designCodes.Keys.First().ToString());
+            _selectedItems.Add(_designCodes.Keys.First().ToString());
             // stop drilling
             drill = false;
 
-            this._spacerDescriptions[this._selectedItems.Count - 1] = "Design Code";
-            if (typeString.StartsWith("Edition"))
-              this._spacerDescriptions[this._selectedItems.Count - 1] = "Edition";
-            if (typeString.StartsWith("Part"))
-              this._spacerDescriptions[this._selectedItems.Count - 1] = "Part";
-            if (typeString.StartsWith("Metric") | typeString.StartsWith("US"))
-              this._spacerDescriptions[this._selectedItems.Count - 1] = "Unit";
+            _spacerDescriptions[_selectedItems.Count - 1] = "Design Code";
+            if (typeString.StartsWith("Edition")) {
+              _spacerDescriptions[_selectedItems.Count - 1] = "Edition";
+            }
+            if (typeString.StartsWith("Part")) {
+              _spacerDescriptions[_selectedItems.Count - 1] = "Part";
+            }
+            if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
+              _spacerDescriptions[_selectedItems.Count - 1] = "Unit";
+            }
           }
         }
       }
@@ -106,7 +111,7 @@ namespace AdSecGH.Components {
     }
 
     protected override void InitialiseDropdowns() {
-      this._spacerDescriptions = new List<string>(new string[] {
+      _spacerDescriptions = new List<string>(new string[] {
         "Code Group",
         "Part",
         "National Annex",
@@ -116,26 +121,27 @@ namespace AdSecGH.Components {
         "This is so deep"
       });
 
-      this._dropDownItems = new List<List<string>>();
-      this._selectedItems = new List<string>();
+      _dropDownItems = new List<List<string>>();
+      _selectedItems = new List<string>();
 
-      List<string> designCodeGroups = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
+      var designCodeGroups = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
 
-      List<string> tempList = new List<string>();
+      var tempList = new List<string>();
       foreach (string dc in designCodeGroups) {
-        if (!dc.StartsWith("IDesignCode"))
+        if (!dc.StartsWith("IDesignCode")) {
           tempList.Add(dc);
+        }
       }
       designCodeGroups = tempList;
 
-      this._selectedItems.Add(designCodeGroups[4]);
-      this._dropDownItems.Add(designCodeGroups);
+      _selectedItems.Add(designCodeGroups[4]);
+      _dropDownItems.Add(designCodeGroups);
 
-      if (this._dropDownItems.Count == 1) {
+      if (_dropDownItems.Count == 1) {
         Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
         // create string for selected item to use for type search while drilling
-        string typeString = this._selectedItems.Last();
+        string typeString = _selectedItems.Last();
         bool drill = true;
         while (drill) {
           // get the type of the most recent selected from level above
@@ -147,30 +153,28 @@ namespace AdSecGH.Components {
           // determine if we have reached the fields layer
           if (designCodeKVP.Count > 1) {
             // if kvp has >1 values we add them to create a new dropdown list
-            this._dropDownItems.Add(designCodeKVP.Keys.ToList());
+            _dropDownItems.Add(designCodeKVP.Keys.ToList());
             // with first item being the selected
-            this._selectedItems.Add(designCodeKVP.Keys.First());
+            _selectedItems.Add(designCodeKVP.Keys.First());
             // and set the next search item to this
-            typeString = this._selectedItems.Last();
-          }
-          else if (designCodeKVP.Count == 1) {
+            typeString = _selectedItems.Last();
+          } else if (designCodeKVP.Count == 1) {
             // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
             typeString = designCodeKVP.Keys.First();
-          }
-          else {
+          } else {
             // if kvp is empty we have reached the field level
             // where we set the materials by reflecting the type
-            this._designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
+            _designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
             // if kvp has values we add them to create a new dropdown list
-            this._dropDownItems.Add(this._designCodes.Keys.ToList());
+            _dropDownItems.Add(_designCodes.Keys.ToList());
             // with first item being the selected
-            this._selectedItems.Add(this._designCodes.Keys.First().ToString());
+            _selectedItems.Add(_designCodes.Keys.First().ToString());
             // stop drilling
             drill = false;
           }
         }
       }
-      this._isInitialised = true;
+      _isInitialised = true;
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
@@ -182,10 +186,10 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // update selected material
-      FieldInfo selectedCode = this._designCodes[this._selectedItems.Last()];
+      FieldInfo selectedCode = _designCodes[_selectedItems.Last()];
 
       // create new material
-      AdSecDesignCode dc = new AdSecDesignCode(selectedCode);
+      var dc = new AdSecDesignCode(selectedCode);
 
       DA.SetData(0, new AdSecDesignCodeGoo(dc));
     }
@@ -196,7 +200,7 @@ namespace AdSecGH.Components {
 
       // create string for selected item to use for type search while drilling
       int level = 0;
-      string typeString = this._selectedItems[level];
+      string typeString = _selectedItems[level];
       bool drill = true;
       while (drill) {
         // get the type of the most recent selected from level above
@@ -209,38 +213,43 @@ namespace AdSecGH.Components {
         if (designCodeKVP.Count > 1) {
           level++;
 
-          typeString = this._selectedItems[level];
+          typeString = _selectedItems[level];
 
-          if (typeString.StartsWith("Edition"))
-            this._spacerDescriptions[level] = "Edition";
-          if (typeString.StartsWith("Part"))
-            this._spacerDescriptions[level] = "Part";
-          if (typeString.StartsWith("Metric") | typeString.StartsWith("US"))
-            this._spacerDescriptions[level] = "Unit";
-          if (typeString.StartsWith("National"))
-            this._spacerDescriptions[level] = "National Annex";
-        }
-        else if (designCodeKVP.Count == 1) {
+          if (typeString.StartsWith("Edition")) {
+            _spacerDescriptions[level] = "Edition";
+          }
+          if (typeString.StartsWith("Part")) {
+            _spacerDescriptions[level] = "Part";
+          }
+          if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
+            _spacerDescriptions[level] = "Unit";
+          }
+          if (typeString.StartsWith("National")) {
+            _spacerDescriptions[level] = "National Annex";
+          }
+        } else if (designCodeKVP.Count == 1) {
           // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
           typeString = designCodeKVP.Keys.First();
-        }
-        else {
+        } else {
           // if kvp is empty we have reached the field level
           // where we set the materials by reflecting the type
-          this._designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
+          _designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
           // stop drilling
           drill = false;
 
-          this._spacerDescriptions[this._selectedItems.Count - 1] = "Design Code";
-          if (typeString.StartsWith("Edition"))
-            this._spacerDescriptions[this._selectedItems.Count - 1] = "Edition";
-          if (typeString.StartsWith("Part"))
-            this._spacerDescriptions[this._selectedItems.Count - 1] = "Part";
-          if (typeString.StartsWith("Metric") | typeString.StartsWith("US"))
-            this._spacerDescriptions[this._selectedItems.Count - 1] = "Unit";
+          _spacerDescriptions[_selectedItems.Count - 1] = "Design Code";
+          if (typeString.StartsWith("Edition")) {
+            _spacerDescriptions[_selectedItems.Count - 1] = "Edition";
+          }
+          if (typeString.StartsWith("Part")) {
+            _spacerDescriptions[_selectedItems.Count - 1] = "Part";
+          }
+          if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
+            _spacerDescriptions[_selectedItems.Count - 1] = "Unit";
+          }
         }
       }
-      this.UpdateUIFromSelectedItems();
+      UpdateUIFromSelectedItems();
     }
   }
 }

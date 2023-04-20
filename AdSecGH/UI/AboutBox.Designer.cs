@@ -28,203 +28,203 @@ namespace AdSecGH.UI
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.logoPictureBox = new System.Windows.Forms.PictureBox();
-            this.labelProductName = new System.Windows.Forms.Label();
-            this.labelVersion = new System.Windows.Forms.Label();
-            this.labelApiVersion = new System.Windows.Forms.Label();
-            this.labelCompanyName = new System.Windows.Forms.Label();
-            this.okButton = new System.Windows.Forms.Button();
-            this.labelContact = new System.Windows.Forms.Label();
-            this.linkWebsite = new System.Windows.Forms.LinkLabel();
-            this.linkEmail = new System.Windows.Forms.LinkLabel();
-            this.Check = new System.Windows.Forms.Button();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.tableLayoutPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            logoPictureBox = new System.Windows.Forms.PictureBox();
+            labelProductName = new System.Windows.Forms.Label();
+            labelVersion = new System.Windows.Forms.Label();
+            labelApiVersion = new System.Windows.Forms.Label();
+            labelCompanyName = new System.Windows.Forms.Label();
+            okButton = new System.Windows.Forms.Button();
+            labelContact = new System.Windows.Forms.Label();
+            linkWebsite = new System.Windows.Forms.LinkLabel();
+            linkEmail = new System.Windows.Forms.LinkLabel();
+            Check = new System.Windows.Forms.Button();
+            imageList1 = new System.Windows.Forms.ImageList(components);
+            tableLayoutPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(logoPictureBox)).BeginInit();
+            SuspendLayout();
             // 
             // tableLayoutPanel
             // 
-            this.tableLayoutPanel.ColumnCount = 3;
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32.66939F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.4964F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.88969F));
-            this.tableLayoutPanel.Controls.Add(this.logoPictureBox, 0, 0);
-            this.tableLayoutPanel.Controls.Add(this.labelProductName, 1, 0);
-            this.tableLayoutPanel.Controls.Add(this.labelVersion, 1, 1);
-            this.tableLayoutPanel.Controls.Add(this.labelApiVersion, 1, 2);
-            this.tableLayoutPanel.Controls.Add(this.labelCompanyName, 1, 3);
-            this.tableLayoutPanel.Controls.Add(this.okButton, 2, 5);
-            this.tableLayoutPanel.Controls.Add(this.labelContact, 1, 4);
-            this.tableLayoutPanel.Controls.Add(this.linkWebsite, 0, 5);
-            this.tableLayoutPanel.Controls.Add(this.linkEmail, 2, 4);
-            this.tableLayoutPanel.Controls.Add(this.Check, 2, 1);
-            this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel.Name = "tableLayoutPanel";
-            this.tableLayoutPanel.RowCount = 6;
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel.Size = new System.Drawing.Size(417, 163);
-            this.tableLayoutPanel.TabIndex = 0;
+            tableLayoutPanel.ColumnCount = 3;
+            tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32.66939F));
+            tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.4964F));
+            tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.88969F));
+            tableLayoutPanel.Controls.Add(logoPictureBox, 0, 0);
+            tableLayoutPanel.Controls.Add(labelProductName, 1, 0);
+            tableLayoutPanel.Controls.Add(labelVersion, 1, 1);
+            tableLayoutPanel.Controls.Add(labelApiVersion, 1, 2);
+            tableLayoutPanel.Controls.Add(labelCompanyName, 1, 3);
+            tableLayoutPanel.Controls.Add(okButton, 2, 5);
+            tableLayoutPanel.Controls.Add(labelContact, 1, 4);
+            tableLayoutPanel.Controls.Add(linkWebsite, 0, 5);
+            tableLayoutPanel.Controls.Add(linkEmail, 2, 4);
+            tableLayoutPanel.Controls.Add(Check, 2, 1);
+            tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            tableLayoutPanel.Location = new System.Drawing.Point(9, 9);
+            tableLayoutPanel.Name = "tableLayoutPanel";
+            tableLayoutPanel.RowCount = 6;
+            tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            tableLayoutPanel.Size = new System.Drawing.Size(417, 163);
+            tableLayoutPanel.TabIndex = 0;
             // 
             // logoPictureBox
             // 
-            this.logoPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logoPictureBox.Image = global::AdSecGH.Properties.Resources.AdSecLogo128;
-            this.logoPictureBox.Location = new System.Drawing.Point(3, 3);
-            this.logoPictureBox.Name = "logoPictureBox";
-            this.tableLayoutPanel.SetRowSpan(this.logoPictureBox, 5);
-            this.logoPictureBox.Size = new System.Drawing.Size(130, 129);
-            this.logoPictureBox.TabIndex = 12;
-            this.logoPictureBox.TabStop = false;
+            logoPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            logoPictureBox.Image = global::AdSecGH.Properties.Resources.AdSecLogo128;
+            logoPictureBox.Location = new System.Drawing.Point(3, 3);
+            logoPictureBox.Name = "logoPictureBox";
+            tableLayoutPanel.SetRowSpan(logoPictureBox, 5);
+            logoPictureBox.Size = new System.Drawing.Size(130, 129);
+            logoPictureBox.TabIndex = 12;
+            logoPictureBox.TabStop = false;
             // 
             // labelProductName
             // 
-            this.tableLayoutPanel.SetColumnSpan(this.labelProductName, 2);
-            this.labelProductName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelProductName.Location = new System.Drawing.Point(142, 0);
-            this.labelProductName.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.labelProductName.MaximumSize = new System.Drawing.Size(0, 17);
-            this.labelProductName.Name = "labelProductName";
-            this.labelProductName.Size = new System.Drawing.Size(272, 17);
-            this.labelProductName.TabIndex = 19;
-            this.labelProductName.Text = "AdSec Grasshopper Plugin";
-            this.labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.labelProductName.Click += new System.EventHandler(this.labelProductName_Click);
+            tableLayoutPanel.SetColumnSpan(labelProductName, 2);
+            labelProductName.Dock = System.Windows.Forms.DockStyle.Fill;
+            labelProductName.Location = new System.Drawing.Point(142, 0);
+            labelProductName.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
+            labelProductName.MaximumSize = new System.Drawing.Size(0, 17);
+            labelProductName.Name = "labelProductName";
+            labelProductName.Size = new System.Drawing.Size(272, 17);
+            labelProductName.TabIndex = 19;
+            labelProductName.Text = "AdSec Grasshopper Plugin";
+            labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            labelProductName.Click += new System.EventHandler(labelProductName_Click);
             // 
             // labelVersion
             // 
-            this.labelVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelVersion.Location = new System.Drawing.Point(142, 27);
-            this.labelVersion.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.labelVersion.MaximumSize = new System.Drawing.Size(0, 17);
-            this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(113, 17);
-            this.labelVersion.TabIndex = 0;
-            this.labelVersion.Text = "Plugin Version";
-            this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.labelVersion.Click += new System.EventHandler(this.labelVersion_Click);
+            labelVersion.Dock = System.Windows.Forms.DockStyle.Fill;
+            labelVersion.Location = new System.Drawing.Point(142, 27);
+            labelVersion.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
+            labelVersion.MaximumSize = new System.Drawing.Size(0, 17);
+            labelVersion.Name = "labelVersion";
+            labelVersion.Size = new System.Drawing.Size(113, 17);
+            labelVersion.TabIndex = 0;
+            labelVersion.Text = "Plugin Version";
+            labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            labelVersion.Click += new System.EventHandler(labelVersion_Click);
             // 
             // labelApiVersion
             // 
-            this.tableLayoutPanel.SetColumnSpan(this.labelApiVersion, 2);
-            this.labelApiVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelApiVersion.Location = new System.Drawing.Point(142, 54);
-            this.labelApiVersion.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.labelApiVersion.MaximumSize = new System.Drawing.Size(0, 17);
-            this.labelApiVersion.Name = "labelApiVersion";
-            this.labelApiVersion.Size = new System.Drawing.Size(272, 17);
-            this.labelApiVersion.TabIndex = 21;
-            this.labelApiVersion.Text = "API Version";
-            this.labelApiVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.labelApiVersion.Click += new System.EventHandler(this.labelApiVersion_Click);
+            tableLayoutPanel.SetColumnSpan(labelApiVersion, 2);
+            labelApiVersion.Dock = System.Windows.Forms.DockStyle.Fill;
+            labelApiVersion.Location = new System.Drawing.Point(142, 54);
+            labelApiVersion.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
+            labelApiVersion.MaximumSize = new System.Drawing.Size(0, 17);
+            labelApiVersion.Name = "labelApiVersion";
+            labelApiVersion.Size = new System.Drawing.Size(272, 17);
+            labelApiVersion.TabIndex = 21;
+            labelApiVersion.Text = "API Version";
+            labelApiVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            labelApiVersion.Click += new System.EventHandler(labelApiVersion_Click);
             // 
             // labelCompanyName
             // 
-            this.tableLayoutPanel.SetColumnSpan(this.labelCompanyName, 2);
-            this.labelCompanyName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelCompanyName.Location = new System.Drawing.Point(142, 81);
-            this.labelCompanyName.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.labelCompanyName.MaximumSize = new System.Drawing.Size(0, 17);
-            this.labelCompanyName.Name = "labelCompanyName";
-            this.labelCompanyName.Size = new System.Drawing.Size(272, 17);
-            this.labelCompanyName.TabIndex = 22;
-            this.labelCompanyName.Text = "Company";
-            this.labelCompanyName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            tableLayoutPanel.SetColumnSpan(labelCompanyName, 2);
+            labelCompanyName.Dock = System.Windows.Forms.DockStyle.Fill;
+            labelCompanyName.Location = new System.Drawing.Point(142, 81);
+            labelCompanyName.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
+            labelCompanyName.MaximumSize = new System.Drawing.Size(0, 17);
+            labelCompanyName.Name = "labelCompanyName";
+            labelCompanyName.Size = new System.Drawing.Size(272, 17);
+            labelCompanyName.TabIndex = 22;
+            labelCompanyName.Text = "Company";
+            labelCompanyName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // okButton
             // 
-            this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.okButton.Location = new System.Drawing.Point(339, 139);
-            this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(75, 21);
-            this.okButton.TabIndex = 24;
-            this.okButton.Text = "&OK";
-            this.okButton.Click += new System.EventHandler(this.okButton_Click);
+            okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            okButton.Location = new System.Drawing.Point(339, 139);
+            okButton.Name = "okButton";
+            okButton.Size = new System.Drawing.Size(75, 21);
+            okButton.TabIndex = 24;
+            okButton.Text = "&OK";
+            okButton.Click += new System.EventHandler(okButton_Click);
             // 
             // labelContact
             // 
-            this.labelContact.Location = new System.Drawing.Point(142, 108);
-            this.labelContact.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.labelContact.Name = "labelContact";
-            this.labelContact.Size = new System.Drawing.Size(113, 17);
-            this.labelContact.TabIndex = 22;
-            this.labelContact.Text = "Contact and support:";
-            this.labelContact.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            labelContact.Location = new System.Drawing.Point(142, 108);
+            labelContact.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
+            labelContact.Name = "labelContact";
+            labelContact.Size = new System.Drawing.Size(113, 17);
+            labelContact.TabIndex = 22;
+            labelContact.Text = "Contact and support:";
+            labelContact.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // linkWebsite
             // 
-            this.linkWebsite.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.linkWebsite.AutoSize = true;
-            this.tableLayoutPanel.SetColumnSpan(this.linkWebsite, 2);
-            this.linkWebsite.Location = new System.Drawing.Point(6, 142);
-            this.linkWebsite.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.linkWebsite.Name = "linkWebsite";
-            this.linkWebsite.Size = new System.Drawing.Size(127, 13);
-            this.linkWebsite.TabIndex = 25;
-            this.linkWebsite.TabStop = true;
-            this.linkWebsite.Text = "www.oasys-software.com";
-            this.linkWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            linkWebsite.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            linkWebsite.AutoSize = true;
+            tableLayoutPanel.SetColumnSpan(linkWebsite, 2);
+            linkWebsite.Location = new System.Drawing.Point(6, 142);
+            linkWebsite.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
+            linkWebsite.Name = "linkWebsite";
+            linkWebsite.Size = new System.Drawing.Size(127, 13);
+            linkWebsite.TabIndex = 25;
+            linkWebsite.TabStop = true;
+            linkWebsite.Text = "www.oasys-software.com";
+            linkWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(linkLabel1_LinkClicked);
             // 
             // linkEmail
             // 
-            this.linkEmail.Location = new System.Drawing.Point(264, 108);
-            this.linkEmail.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.linkEmail.Name = "linkEmail";
-            this.linkEmail.Size = new System.Drawing.Size(107, 17);
-            this.linkEmail.TabIndex = 26;
-            this.linkEmail.TabStop = true;
-            this.linkEmail.Text = "oasys@arup.com";
-            this.linkEmail.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkEmail_LinkClicked);
+            linkEmail.Location = new System.Drawing.Point(264, 108);
+            linkEmail.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
+            linkEmail.Name = "linkEmail";
+            linkEmail.Size = new System.Drawing.Size(107, 17);
+            linkEmail.TabIndex = 26;
+            linkEmail.TabStop = true;
+            linkEmail.Text = "oasys@arup.com";
+            linkEmail.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            linkEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(linkEmail_LinkClicked);
             // 
             // Check
             // 
-            this.Check.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Check.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.Check.Location = new System.Drawing.Point(302, 30);
-            this.Check.Name = "Check";
-            this.Check.Size = new System.Drawing.Size(112, 21);
-            this.Check.TabIndex = 27;
-            this.Check.Text = "&Check for Updates";
-            this.Check.UseVisualStyleBackColor = true;
-            this.Check.Click += new System.EventHandler(this.button1_Click);
+            Check.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            Check.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            Check.Location = new System.Drawing.Point(302, 30);
+            Check.Name = "Check";
+            Check.Size = new System.Drawing.Size(112, 21);
+            Check.TabIndex = 27;
+            Check.Text = "&Check for Updates";
+            Check.UseVisualStyleBackColor = true;
+            Check.Click += new System.EventHandler(button1_Click);
             // 
             // imageList1
             // 
-            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            imageList1.ImageSize = new System.Drawing.Size(16, 16);
+            imageList1.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // AboutAdSecBox
             // 
-            this.AcceptButton = this.okButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(435, 181);
-            this.Controls.Add(this.tableLayoutPanel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "AboutAdSecBox";
-            this.Padding = new System.Windows.Forms.Padding(9);
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "About AdSec";
-            this.Load += new System.EventHandler(this.AboutBox_Load);
-            this.tableLayoutPanel.ResumeLayout(false);
-            this.tableLayoutPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).EndInit();
-            this.ResumeLayout(false);
+            AcceptButton = okButton;
+            AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(435, 181);
+            Controls.Add(tableLayoutPanel);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "AboutAdSecBox";
+            Padding = new System.Windows.Forms.Padding(9);
+            ShowIcon = false;
+            ShowInTaskbar = false;
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            Text = "About AdSec";
+            Load += new System.EventHandler(AboutBox_Load);
+            tableLayoutPanel.ResumeLayout(false);
+            tableLayoutPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(logoPictureBox)).EndInit();
+            ResumeLayout(false);
 
         }
 

@@ -1,3 +1,4 @@
+using System;
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
@@ -10,7 +11,6 @@ using OasysGH.Helpers;
 using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
-using System;
 
 namespace AdSecGH.Components {
   public class FindCrackLoad : GH_OasysComponent {
@@ -26,7 +26,7 @@ namespace AdSecGH.Components {
   "Increases the load until set crack width is reached",
   CategoryName.Name(),
   SubCategoryName.Cat7()) {
-      this.Hidden = false; // sets the initial state of the component to hidden
+      Hidden = false; // sets the initial state of the component to hidden
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
@@ -51,26 +51,23 @@ namespace AdSecGH.Components {
       // get solution input
       AdSecSolutionGoo solution = AdSecInput.Solution(this, DA, 0);
       if (solution == null) {
-        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Results input is null");
+        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Results input is null");
         return;
       }
 
       // get load - can be either load or deformation
-      GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
+      var gh_typ = new GH_ObjectWrapper();
       AdSecLoadGoo load = null;
       if (DA.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
-        if (gh_typ.Value is AdSecLoadGoo) {
-          AdSecLoadGoo ld = (AdSecLoadGoo)gh_typ.Value;
+        if (gh_typ.Value is AdSecLoadGoo ld) {
           load = new AdSecLoadGoo(ILoad.Create(ld.Value.X, ld.Value.YY, ld.Value.ZZ));
-        }
-        else {
-          this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
+        } else {
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
           return;
         }
-      }
-      else {
-        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
+      } else {
+        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
         return;
       }
 
@@ -82,7 +79,7 @@ namespace AdSecGH.Components {
       double increment = 1;
       DA.GetData(3, ref increment);
 
-      Length maxCrack = (Length)Input.UnitNumber(this, DA, 4, DefaultUnits.LengthUnitGeometry);
+      var maxCrack = (Length)Input.UnitNumber(this, DA, 4, DefaultUnits.LengthUnitGeometry);
 
       ForceUnit forceUnit = DefaultUnits.ForceUnit;
       MomentUnit momentUnit = DefaultUnits.MomentUnit;
@@ -141,8 +138,9 @@ namespace AdSecGH.Components {
 
       DA.SetData(0, new AdSecLoadGoo(sls.Load, solution.LocalPlane));
 
-      if (sls.MaximumWidthCrack != null && sls.MaximumWidthCrack.Width.Meters < 1)
+      if (sls.MaximumWidthCrack != null && sls.MaximumWidthCrack.Width.Meters < 1) {
         DA.SetData(1, new AdSecCrackGoo(sls.MaximumWidthCrack, solution.LocalPlane));
+      }
     }
   }
 }

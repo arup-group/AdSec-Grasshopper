@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
@@ -9,8 +11,6 @@ using OasysGH.Units;
 using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
-using System;
-using System.Collections.Generic;
 
 namespace AdSecGH.Components {
   public class CreateDeformation : GH_OasysDropDownComponent {
@@ -27,56 +27,56 @@ namespace AdSecGH.Components {
   "Deformation",
   "Create an AdSec Deformation Load from an axial strain and biaxial curvatures", CategoryName.Name(),
   SubCategoryName.Cat5()) {
-      this.Hidden = true; // sets the initial state of the component to hidden
+      Hidden = true; // sets the initial state of the component to hidden
     }
 
     public override void SetSelected(int i, int j) {
-      this._selectedItems[i] = this._dropDownItems[i][j];
+      _selectedItems[i] = _dropDownItems[i][j];
 
       switch (i) {
         case 0:
-          this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this._selectedItems[i]);
+          _strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), _selectedItems[i]);
           break;
 
         case 1:
-          this._curvatureUnit = (CurvatureUnit)UnitsHelper.Parse(typeof(CurvatureUnit), this._selectedItems[i]);
+          _curvatureUnit = (CurvatureUnit)UnitsHelper.Parse(typeof(CurvatureUnit), _selectedItems[i]);
           break;
       }
       base.UpdateUI();
     }
 
     public override void VariableParameterMaintenance() {
-      string strainUnitAbbreviation = Strain.GetAbbreviation(this._strainUnit);
-      string curvatureUnitAbbreviation = Curvature.GetAbbreviation(this._curvatureUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(_strainUnit);
+      string curvatureUnitAbbreviation = Curvature.GetAbbreviation(_curvatureUnit);
       Params.Input[0].Name = "εx [" + strainUnitAbbreviation + "]";
       Params.Input[1].Name = "κyy [" + curvatureUnitAbbreviation + "]";
       Params.Input[2].Name = "κzz [" + curvatureUnitAbbreviation + "]";
     }
 
     protected override void InitialiseDropdowns() {
-      this._spacerDescriptions = new List<string>(new string[]
+      _spacerDescriptions = new List<string>(new string[]
       {
         "Strain Unit",
         "Curvature Unit"
       });
 
-      this._dropDownItems = new List<List<string>>();
-      this._selectedItems = new List<string>();
+      _dropDownItems = new List<List<string>>();
+      _selectedItems = new List<string>();
 
       // strain
-      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
-      this._selectedItems.Add(Strain.GetAbbreviation(this._strainUnit));
+      _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
+      _selectedItems.Add(Strain.GetAbbreviation(_strainUnit));
 
       // curvature
-      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Curvature));
-      this._selectedItems.Add(Curvature.GetAbbreviation(this._curvatureUnit));
+      _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Curvature));
+      _selectedItems.Add(Curvature.GetAbbreviation(_curvatureUnit));
 
-      this._isInitialised = true;
+      _isInitialised = true;
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      string strainUnitAbbreviation = Strain.GetAbbreviation(this._strainUnit);
-      string curvatureUnitAbbreviation = Curvature.GetAbbreviation(this._curvatureUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(_strainUnit);
+      string curvatureUnitAbbreviation = Curvature.GetAbbreviation(_curvatureUnit);
       pManager.AddGenericParameter("εx [" + strainUnitAbbreviation + "]", "X", "The axial strain. Positive X indicates tension.", GH_ParamAccess.item);
       pManager.AddGenericParameter("κyy [" + curvatureUnitAbbreviation + "]", "YY", "The curvature about local y-axis. It follows the right hand grip rule about the axis. Positive YY is anti-clockwise curvature about local y-axis.", GH_ParamAccess.item);
       pManager.AddGenericParameter("κzz [" + curvatureUnitAbbreviation + "]", "ZZ", "The curvature about local z-axis. It follows the right hand grip rule about the axis. Positive ZZ is anti-clockwise curvature about local z-axis.", GH_ParamAccess.item);
@@ -88,17 +88,17 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // Create new load
-      IDeformation deformation = IDeformation.Create(
-        (Strain)Input.UnitNumber(this, DA, 0, this._strainUnit),
-        (Curvature)Input.UnitNumber(this, DA, 1, this._curvatureUnit),
-        (Curvature)Input.UnitNumber(this, DA, 2, this._curvatureUnit));
+      var deformation = IDeformation.Create(
+        (Strain)Input.UnitNumber(this, DA, 0, _strainUnit),
+        (Curvature)Input.UnitNumber(this, DA, 1, _curvatureUnit),
+        (Curvature)Input.UnitNumber(this, DA, 2, _curvatureUnit));
 
       DA.SetData(0, new AdSecDeformationGoo(deformation));
     }
 
     protected override void UpdateUIFromSelectedItems() {
-      this._strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), this._selectedItems[0]);
-      this._curvatureUnit = (CurvatureUnit)UnitsHelper.Parse(typeof(CurvatureUnit), this._selectedItems[1]);
+      _strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), _selectedItems[0]);
+      _curvatureUnit = (CurvatureUnit)UnitsHelper.Parse(typeof(CurvatureUnit), _selectedItems[1]);
       base.UpdateUIFromSelectedItems();
     }
   }

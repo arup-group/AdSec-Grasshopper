@@ -1,11 +1,11 @@
-﻿using AdSecGH.Helpers;
+﻿using System;
+using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Oasys.AdSec;
 using OasysGH;
 using OasysGH.Components;
-using System;
 
 namespace AdSecGH.Components {
   public class Analyse : GH_OasysComponent {
@@ -21,7 +21,7 @@ namespace AdSecGH.Components {
       "Analyse an AdSec Section",
       CategoryName.Name(),
       SubCategoryName.Cat6()) {
-      this.Hidden = false; // sets the initial state of the component to hidden
+      Hidden = false; // sets the initial state of the component to hidden
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
@@ -38,15 +38,16 @@ namespace AdSecGH.Components {
       AdSecSection section = AdSecInput.AdSecSection(this, DA, 0);
 
       // create new adsec instance
-      IAdSec adSec = IAdSec.Create(section.DesignCode);
+      var adSec = IAdSec.Create(section.DesignCode);
 
       // analyse
       ISolution solution = adSec.Analyse(section.Section);
 
       // display warnings
       Oasys.Collections.IList<IWarning> warnings = solution.Warnings;
-      foreach (IWarning warn in warnings)
+      foreach (IWarning warn in warnings) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warn.Description);
+      }
 
       // set outputs
       DA.SetData(0, new AdSecSolutionGoo(solution, section));
