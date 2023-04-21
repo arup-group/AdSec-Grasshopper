@@ -17,12 +17,11 @@ namespace AdSecGH.Components {
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateDesignCode;
     private Dictionary<string, FieldInfo> _designCodes;
 
-    public CreateDesignCode() : base(
-      "Create" + AdSecDesignCodeGoo.Name.Replace(" ", string.Empty),
+    public CreateDesignCode() : base("Create" + AdSecDesignCodeGoo.Name.Replace(" ", string.Empty),
       AdSecDesignCodeGoo.Name.Replace(" ", string.Empty),
-      "Create a " + AdSecDesignCodeGoo.Description,
-      CategoryName.Name(),
-      SubCategoryName.Cat1()) { Hidden = true; } // sets the initial state of the component to hidden
+      "Create a " + AdSecDesignCodeGoo.Description, CategoryName.Name(), SubCategoryName.Cat1()) {
+      Hidden = true; // sets the initial state of the component to hidden
+    }
 
     public override void SetSelected(int i, int j) {
       // change selected item

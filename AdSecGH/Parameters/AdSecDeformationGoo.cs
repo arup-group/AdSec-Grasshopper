@@ -1,9 +1,9 @@
-﻿using Grasshopper.Kernel.Types;
+﻿using System;
+using System.Linq;
+using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using OasysGH.Units;
 using OasysUnits;
-using System;
-using System.Linq;
 
 namespace AdSecGH.Parameters {
   public class AdSecDeformationGoo : GH_Goo<IDeformation> {

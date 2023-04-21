@@ -20,12 +20,9 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.CrackLoad;
 
-    public FindCrackLoad() : base(
-  "Find Crack Load",
-  "CrackLd",
-  "Increases the load until set crack width is reached",
-  CategoryName.Name(),
-  SubCategoryName.Cat7()) {
+    public FindCrackLoad() : base("Find Crack Load", "CrackLd",
+      "Increases the load until set crack width is reached", CategoryName.Name(),
+      SubCategoryName.Cat7()) {
       Hidden = false; // sets the initial state of the component to hidden
     }
 

@@ -24,12 +24,8 @@ namespace AdSecGH.Components {
     private bool _isConcrete = true;
     private AdSecMaterial.AdSecMaterialType _type = AdSecMaterial.AdSecMaterialType.Concrete;
 
-    public CreateCustomMaterial() : base(
-  "Custom Material",
-  "CustomMaterial",
-  "Create a custom AdSec Material",
-  CategoryName.Name(),
-  SubCategoryName.Cat1()) {
+    public CreateCustomMaterial() : base("Custom Material", "CustomMaterial",
+      "Create a custom AdSec Material", CategoryName.Name(), SubCategoryName.Cat1()) {
       Hidden = true; // sets the initial state of the component to hidden
     }
 

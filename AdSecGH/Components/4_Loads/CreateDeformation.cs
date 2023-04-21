@@ -22,11 +22,9 @@ namespace AdSecGH.Components {
     private CurvatureUnit _curvatureUnit = DefaultUnits.CurvatureUnit;
     private StrainUnit _strainUnit = DefaultUnits.StrainUnitResult;
 
-    public CreateDeformation() : base(
-  "Create Deformation Load",
-  "Deformation",
-  "Create an AdSec Deformation Load from an axial strain and biaxial curvatures", CategoryName.Name(),
-  SubCategoryName.Cat5()) {
+    public CreateDeformation() : base("Create Deformation Load", "Deformation",
+      "Create an AdSec Deformation Load from an axial strain and biaxial curvatures",
+      CategoryName.Name(), SubCategoryName.Cat5()) {
       Hidden = true; // sets the initial state of the component to hidden
     }
 

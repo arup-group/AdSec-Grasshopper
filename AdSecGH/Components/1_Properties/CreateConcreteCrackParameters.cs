@@ -22,12 +22,9 @@ namespace AdSecGH.Components {
     private PressureUnit _strengthUnit = DefaultUnits.MaterialStrengthUnit;
     private PressureUnit _stressUnit = DefaultUnits.StressUnitResult;
 
-    public CreateConcreteCrackParameters() : base(
-  "Create CrackCalcParams",
-  "CrackCalcParams",
-  "Create Concrete Crack Calculation Parameters for AdSec Material",
-  CategoryName.Name(),
-  SubCategoryName.Cat1()) {
+    public CreateConcreteCrackParameters() : base("Create CrackCalcParams", "CrackCalcParams",
+      "Create Concrete Crack Calculation Parameters for AdSec Material", CategoryName.Name(),
+      SubCategoryName.Cat1()) {
       Hidden = true; // sets the initial state of the component to hidden
     }
 
