@@ -1,48 +1,36 @@
 ﻿using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 
-namespace AdSecGH.Parameters
-{
-  public class AdSecRebarGroup
-  {
-    #region properties
-    public IGroup Group { get; set; }
+namespace AdSecGH.Parameters {
+  public class AdSecRebarGroup {
     public ICover Cover { get; set; }
-    public bool IsValid
-    {
-      get
-      {
-        if (this.Group == null)
+    public IGroup Group { get; set; }
+    public bool IsValid {
+      get {
+        if (Group == null) {
           return false;
+        }
         return true;
       }
     }
-    #endregion
 
-    #region constructors
-    public AdSecRebarGroup()
-    {
+    public AdSecRebarGroup() {
     }
 
-    public AdSecRebarGroup(IGroup group)
-    {
-      this.Group = group;
+    public AdSecRebarGroup(IGroup group) {
+      Group = group;
     }
-    #endregion
 
-    #region methods
-    public AdSecRebarGroup Duplicate()
-    {
-      if (this == null)
+    public AdSecRebarGroup Duplicate() {
+      if (this == null) {
         return null;
-      AdSecRebarGroup dup = (AdSecRebarGroup)this.MemberwiseClone();
+      }
+      var dup = (AdSecRebarGroup)MemberwiseClone();
       return dup;
     }
 
-    public override string ToString()
-    {
+    public override string ToString() {
       return Group.ToString();
     }
-    #endregion
   }
 }

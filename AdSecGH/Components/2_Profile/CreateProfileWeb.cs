@@ -14,16 +14,13 @@ using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
 
-namespace AdSecGH.Components
-{
-  public class CreateProfileWeb : GH_OasysDropDownComponent
-  {
-    private enum FoldMode
-    {
+namespace AdSecGH.Components {
+  public class CreateProfileWeb : GH_OasysDropDownComponent {
+    private enum FoldMode {
       Constant,
       Tapered
     }
-    #region Name and Ribbon Layout
+
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("0f9a9223-e745-44b9-add2-8b2e5950e86a");
     public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
@@ -37,125 +34,31 @@ namespace AdSecGH.Components
       "Web",
       "Create a Web for AdSec Profile",
       CategoryName.Name(),
-      SubCategoryName.Cat2())
-    {
-      this.Hidden = true; // sets the initial state of the component to hidden
-    }
-    #endregion
-
-    #region Input and output
-    protected override void RegisterInputParams(GH_InputParamManager pManager)
-    {
-      string unitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
-      pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Web thickness", GH_ParamAccess.item);
-      this._mode = FoldMode.Constant;
+      SubCategoryName.Cat2()) {
+      Hidden = true; // sets the initial state of the component to hidden
     }
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
-      pManager.AddGenericParameter("WebProfile", "Web", "Web Profile for AdSec Profile", GH_ParamAccess.item);
-    }
-    #endregion
-
-    protected override void SolveInstance(IGH_DataAccess DA)
-    {
-      switch (this._mode)
-      {
-        case FoldMode.Constant:
-
-          AdSecProfileWebGoo webConst = new AdSecProfileWebGoo(
-            IWebConstant.Create(
-              (Length)Input.UnitNumber(this, DA, 0, this._lengthUnit)));
-
-          DA.SetData(0, webConst);
-          break;
-
-        case FoldMode.Tapered:
-          AdSecProfileWebGoo webTaper = new AdSecProfileWebGoo(
-            IWebTapered.Create(
-              (Length)Input.UnitNumber(this, DA, 0, this._lengthUnit),
-              (Length)Input.UnitNumber(this, DA, 1, this._lengthUnit)));
-
-          DA.SetData(0, webTaper);
-          break;
-      }
-    }
-
-    #region Custom UI
-    protected override void InitialiseDropdowns()
-    {
-      this._spacerDescriptions = new List<string>(new string[] {
-        "Web Type",
-        "Measure"
-      });
-
-      this._dropDownItems = new List<List<string>>();
-      this._selectedItems = new List<string>();
-
-      this._dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
-      this._selectedItems.Add(this._dropDownItems[0][0]);
-
-      this._dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-      this._selectedItems.Add(Length.GetAbbreviation(this._lengthUnit));
-
-      this._isInitialised = true;
-    }
-
-    public override void SetSelected(int i, int j)
-    {
+    public override void SetSelected(int i, int j) {
       // set selected item
-      this._selectedItems[i] = this._dropDownItems[i][j];
-      if (i == 0)
-        this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[i]);
-      else
-        this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[i]);
-      this.ToggleInput();
-    }
-
-    protected override void UpdateUIFromSelectedItems()
-    {
-      this._mode = (FoldMode)Enum.Parse(typeof(FoldMode), this._selectedItems[0]);
-      this._lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), this._selectedItems[1]);
-      this.ToggleInput();
-      base.UpdateUIFromSelectedItems();
-    }
-    #endregion
-
-    #region menu override
-    private void ToggleInput()
-    {
-      this.RecordUndoEvent("Changed dropdown");
-      switch (this._mode)
-      {
-        case FoldMode.Constant:
-          // remove any additional input parameters
-          while (Params.Input.Count > 1)
-            Params.UnregisterInputParameter(Params.Input[1], true);
-          break;
-
-        case FoldMode.Tapered:
-          // add input parameter
-          while (Params.Input.Count != 2)
-            Params.RegisterInputParam(new Param_GenericObject());
-          break;
+      _selectedItems[i] = _dropDownItems[i][j];
+      if (i == 0) {
+        _mode = (FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[i]);
+      } else {
+        _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       }
+      ToggleInput();
     }
-    #endregion
 
-    public override void VariableParameterMaintenance()
-    {
-      string unitAbbreviation = Length.GetAbbreviation(this._lengthUnit);
-      if (this._mode == FoldMode.Constant)
-      {
+    public override void VariableParameterMaintenance() {
+      string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
+      if (_mode == FoldMode.Constant) {
         Params.Input[0].Name = "Thickness [" + unitAbbreviation + "]";
         Params.Input[0].NickName = "t";
         Params.Input[0].Description = "Web thickness";
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
-
       }
-      if (this._mode == FoldMode.Tapered)
-      {
+      if (_mode == FoldMode.Tapered) {
         Params.Input[0].Name = "Top Thickness [" + unitAbbreviation + "]";
         Params.Input[0].NickName = "Tt";
         Params.Input[0].Description = "Web thickness at the top";
@@ -167,6 +70,82 @@ namespace AdSecGH.Components
         Params.Input[1].Description = "Web thickness at the bottom";
         Params.Input[1].Access = GH_ParamAccess.item;
         Params.Input[1].Optional = false;
+      }
+    }
+
+    protected override void InitialiseDropdowns() {
+      _spacerDescriptions = new List<string>(new string[] {
+        "Web Type",
+        "Measure"
+      });
+
+      _dropDownItems = new List<List<string>>();
+      _selectedItems = new List<string>();
+
+      _dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
+      _selectedItems.Add(_dropDownItems[0][0]);
+
+      _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
+      _selectedItems.Add(Length.GetAbbreviation(_lengthUnit));
+
+      _isInitialised = true;
+    }
+
+    protected override void RegisterInputParams(GH_InputParamManager pManager) {
+      string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
+      pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Web thickness", GH_ParamAccess.item);
+      _mode = FoldMode.Constant;
+    }
+
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
+      pManager.AddGenericParameter("WebProfile", "Web", "Web Profile for AdSec Profile", GH_ParamAccess.item);
+    }
+
+    protected override void SolveInstance(IGH_DataAccess DA) {
+      switch (_mode) {
+        case FoldMode.Constant:
+
+          var webConst = new AdSecProfileWebGoo(
+            IWebConstant.Create(
+              (Length)Input.UnitNumber(this, DA, 0, _lengthUnit)));
+
+          DA.SetData(0, webConst);
+          break;
+
+        case FoldMode.Tapered:
+          var webTaper = new AdSecProfileWebGoo(
+            IWebTapered.Create(
+              (Length)Input.UnitNumber(this, DA, 0, _lengthUnit),
+              (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
+
+          DA.SetData(0, webTaper);
+          break;
+      }
+    }
+
+    protected override void UpdateUIFromSelectedItems() {
+      _mode = (FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[0]);
+      _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
+      ToggleInput();
+      base.UpdateUIFromSelectedItems();
+    }
+
+    private void ToggleInput() {
+      RecordUndoEvent("Changed dropdown");
+      switch (_mode) {
+        case FoldMode.Constant:
+          // remove any additional input parameters
+          while (Params.Input.Count > 1) {
+            Params.UnregisterInputParameter(Params.Input[1], true);
+          }
+          break;
+
+        case FoldMode.Tapered:
+          // add input parameter
+          while (Params.Input.Count != 2) {
+            Params.RegisterInputParam(new Param_GenericObject());
+          }
+          break;
       }
     }
   }

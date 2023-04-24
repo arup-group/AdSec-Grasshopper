@@ -4,18 +4,16 @@ using AdSecGHTests.Helpers;
 using OasysGH.Components;
 using Xunit;
 
-namespace AdSecGHTests.Properties
-{
+namespace AdSecGHTests.Properties {
   [Collection("GrasshopperFixture collection")]
-  public class CreateConcreteCrackCalculationParametersTests
-  {
-    public static GH_OasysDropDownComponent ComponentMother()
-    {
+  public class CreateConcreteCrackCalculationParametersTests {
+
+    public static GH_OasysDropDownComponent ComponentMother() {
       var comp = new CreateConcreteCrackParameters();
       comp.CreateAttributes();
-      
+
       comp.SetSelected(0, 0); // change dropdown to ?
-      
+
       ComponentTestHelper.SetInput(comp, 130, 0);
       ComponentTestHelper.SetInput(comp, 1700, 1);
       ComponentTestHelper.SetInput(comp, 1200, 2);
@@ -24,11 +22,16 @@ namespace AdSecGHTests.Properties
     }
 
     [Fact]
-    public void CreateComponent()
-    {
-      var comp = ComponentMother();
+    public void ChangeDropDownTest() {
+      GH_OasysDropDownComponent comp = ComponentMother();
+      OasysDropDownComponentTestHelper.ChangeDropDownTest(comp);
+    }
+
+    [Fact]
+    public void CreateComponent() {
+      GH_OasysDropDownComponent comp = ComponentMother();
       comp.SetSelected(0, 0); // change dropdown to ?
-      AdSecConcreteCrackCalculationParametersGoo output = (AdSecConcreteCrackCalculationParametersGoo)ComponentTestHelper.GetOutput(comp);
+      var output = (AdSecConcreteCrackCalculationParametersGoo)ComponentTestHelper.GetOutput(comp);
       //Assert.Equal(0, output.Value.StartPosition.Value);
       //Assert.Equal(130, output.Value.OverallDepth.Millimeters);
       //Assert.Equal(1.7, output.Value.AvailableWidthLeft.Meters);
@@ -54,17 +57,9 @@ namespace AdSecGHTests.Properties
     //}
 
     [Fact]
-    public void DeserializeTest()
-    {
-      var comp = ComponentMother();
+    public void DeserializeTest() {
+      GH_OasysDropDownComponent comp = ComponentMother();
       OasysDropDownComponentTestHelper.DeserializeTest(comp);
-    }
-
-    [Fact]
-    public void ChangeDropDownTest()
-    {
-      var comp = ComponentMother();
-      OasysDropDownComponentTestHelper.ChangeDropDownTest(comp);
     }
   }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
@@ -13,11 +12,8 @@ using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
 
-namespace AdSecGH.Components
-{
-    public class ProfileProperties : GH_OasysComponent
-  {
-    #region Name and Ribbon Layout
+namespace AdSecGH.Components {
+  public class ProfileProperties : GH_OasysComponent {
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("bb540a8e-7e7e-4299-933f-08689d7b2af8");
     public override GH_Exposure Exposure => GH_Exposure.tertiary;
@@ -28,20 +24,15 @@ namespace AdSecGH.Components
       "Prop",
       "Properties of an AdSec Profile",
       CategoryName.Name(),
-      SubCategoryName.Cat2())
-    {
-      this.Hidden = false; // sets the initial state of the component to hidden
+      SubCategoryName.Cat2()) {
+      Hidden = false; // sets the initial state of the component to hidden
     }
-    #endregion
 
-    #region Input and output
-    protected override void RegisterInputParams(GH_InputParamManager pManager)
-    {
+    protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Profile", "Pf", "AdSec Profile defining the Section solid boundary", GH_ParamAccess.item);
     }
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       string lengthUnitAbbreviation = Length.GetAbbreviation(DefaultUnits.LengthUnitGeometry);
       string areahUnitAbbreviation = lengthUnitAbbreviation + "\u00B2";
       string modulusUnitAbbreviation = lengthUnitAbbreviation + "\u00B3";
@@ -67,34 +58,35 @@ namespace AdSecGH.Components
       pManager.AddGenericParameter("Principal axis angle [rad]", "Pa", "The angle of the principal axis.", GH_ParamAccess.item);
       pManager.AddGenericParameter("Surface area [" + lengthUnitAbbreviation + "]", "S/L", "The profile's surface area per unit length. This does not include the surface area of a void in case of hollow sections.", GH_ParamAccess.item);
     }
-    #endregion
 
-    protected override void SolveInstance(IGH_DataAccess DA)
-    {
+    protected override void SolveInstance(IGH_DataAccess DA) {
       // 0 profile
       AdSecProfileGoo profile = AdSecInput.AdSecProfileGoo(this, DA, 0);
 
       LengthUnit lengthUnit = DefaultUnits.LengthUnitGeometry;
       BaseUnits SI = UnitSystem.SI.BaseUnits;
-      BaseUnits baseUnits = new BaseUnits(lengthUnit, SI.Mass, SI.Time, SI.Current, SI.Temperature, SI.Amount, SI.LuminousIntensity);
-      UnitSystem unitSystem = new UnitSystem(baseUnits);
+      var baseUnits = new BaseUnits(lengthUnit, SI.Mass, SI.Time, SI.Current, SI.Temperature, SI.Amount, SI.LuminousIntensity);
+      var unitSystem = new UnitSystem(baseUnits);
       AreaUnit areaUnit = new Area(1, unitSystem).Unit;
 
       SectionModulusUnit wUnit = SectionModulusUnit.Undefined;
-      switch (lengthUnit)
-      {
+      switch (lengthUnit) {
         case LengthUnit.Millimeter:
           wUnit = SectionModulusUnit.CubicMillimeter;
           break;
+
         case LengthUnit.Centimeter:
           wUnit = SectionModulusUnit.CubicCentimeter;
           break;
+
         case LengthUnit.Meter:
           wUnit = SectionModulusUnit.CubicMeter;
           break;
+
         case LengthUnit.Foot:
           wUnit = SectionModulusUnit.CubicFoot;
           break;
+
         case LengthUnit.Inch:
           wUnit = SectionModulusUnit.CubicInch;
           break;

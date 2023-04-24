@@ -12,11 +12,8 @@ using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
 
-namespace AdSecGH.Components
-{
-  public class EditMaterial : GH_OasysComponent
-  {
-    #region Name and Ribbon Layout
+namespace AdSecGH.Components {
+  public class EditMaterial : GH_OasysComponent {
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("87f26bee-c72c-4d88-9b30-492190df2910");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
@@ -28,15 +25,11 @@ namespace AdSecGH.Components
       "MaterialEdit",
       "Modify AdSec Material",
       CategoryName.Name(),
-      SubCategoryName.Cat1())
-    {
-      this.Hidden = false; // sets the initial state of the component to hiddens
+      SubCategoryName.Cat1()) {
+      Hidden = false; // sets the initial state of the component to hiddens
     }
-    #endregion
 
-    #region Input and output
-    protected override void RegisterInputParams(GH_InputParamManager pManager)
-    {
+    protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Material", "Mat", "AdSet Material to Edit or get information from", GH_ParamAccess.item);
       pManager.AddGenericParameter("DesignCode", "Code", "[Optional] Overwrite the Material's DesignCode", GH_ParamAccess.item);
       pManager.AddGenericParameter("ULS Comp. Crv", "U_C", "ULS Stress Strain Curve for Compression", GH_ParamAccess.item);
@@ -45,12 +38,12 @@ namespace AdSecGH.Components
       pManager.AddGenericParameter("SLS Tens. Crv", "S_T", "SLS Stress Strain Curve for Tension", GH_ParamAccess.item);
       pManager.AddGenericParameter("Crack Calc Params", "CCP", "[Optional] Overwrite the Material's ConcreteCrackCalculationParameters", GH_ParamAccess.item);
       // make all but first input optional
-      for (int i = 1; i < pManager.ParamCount; i++)
+      for (int i = 1; i < pManager.ParamCount; i++) {
         pManager[i].Optional = true;
+      }
     }
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       pManager.AddGenericParameter("Material", "Mat", "Modified AdSec Material", GH_ParamAccess.item);
       pManager.AddGenericParameter("DesignCode", "Code", "DesignCode", GH_ParamAccess.item);
       pManager.AddGenericParameter("ULS Comp. Crv", "U_C", "ULS Stress Strain Curve for Compression", GH_ParamAccess.item);
@@ -59,33 +52,28 @@ namespace AdSecGH.Components
       pManager.AddGenericParameter("SLS Tens. Crv", "S_T", "SLS Stress Strain Curve for Tension", GH_ParamAccess.item);
       pManager.AddGenericParameter("Crack Calc Params", "CCP", "ConcreteCrackCalculationParameters", GH_ParamAccess.item);
     }
-    #endregion
 
-    protected override void SolveInstance(IGH_DataAccess DA)
-    {
+    protected override void SolveInstance(IGH_DataAccess DA) {
       // #### get material input and duplicate it ####
       AdSecMaterial editMat = AdSecInput.AdSecMaterial(this, DA, 0);
 
-      if (editMat != null)
-      {
+      if (editMat != null) {
         // #### get the remaining inputs ####
 
         // 1 DesignCode
-        if (Params.Input[1].SourceCount > 0)
+        if (Params.Input[1].SourceCount > 0) {
           editMat.DesignCode = AdSecInput.AdSecDesignCode(this, DA, 1);
+        }
 
         bool rebuildCurves = false;
 
         // 2 StressStrain ULS Compression
         AdSecStressStrainCurveGoo ulsCompCrv;
-        if (Params.Input[2].SourceCount > 0)
-        {
+        if (Params.Input[2].SourceCount > 0) {
           // use input
           ulsCompCrv = AdSecInput.StressStrainCurveGoo(this, DA, 2, true);
           rebuildCurves = true;
-        }
-        else
-        {
+        } else {
           // rebuild from existing material
           Tuple<Curve, List<Point3d>> ulsComp = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Compression, true);
           ulsCompCrv = new AdSecStressStrainCurveGoo(ulsComp.Item1, editMat.Material.Strength.Compression,
@@ -94,14 +82,11 @@ namespace AdSecGH.Components
 
         // 3 StressStrain ULS Tension
         AdSecStressStrainCurveGoo ulsTensCrv;
-        if (Params.Input[3].SourceCount > 0)
-        {
+        if (Params.Input[3].SourceCount > 0) {
           // use input
           ulsTensCrv = AdSecInput.StressStrainCurveGoo(this, DA, 3, false);
           rebuildCurves = true;
-        }
-        else
-        {
+        } else {
           // rebuild from existing material
           Tuple<Curve, List<Point3d>> ulsTens = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Tension, false);
           ulsTensCrv = new AdSecStressStrainCurveGoo(ulsTens.Item1, editMat.Material.Strength.Tension,
@@ -110,14 +95,11 @@ namespace AdSecGH.Components
 
         // 4 StressStrain SLS Compression
         AdSecStressStrainCurveGoo slsCompCrv;
-        if (Params.Input[4].SourceCount > 0)
-        {
+        if (Params.Input[4].SourceCount > 0) {
           // use input
           slsCompCrv = AdSecInput.StressStrainCurveGoo(this, DA, 4, true);
           rebuildCurves = true;
-        }
-        else
-        {
+        } else {
           // rebuild from existing material
           Tuple<Curve, List<Point3d>> slsComp = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Compression, true);
           slsCompCrv = new AdSecStressStrainCurveGoo(slsComp.Item1, editMat.Material.Serviceability.Compression,
@@ -126,14 +108,11 @@ namespace AdSecGH.Components
 
         // 5 StressStrain SLS Tension
         AdSecStressStrainCurveGoo slsTensCrv;
-        if (Params.Input[5].SourceCount > 0)
-        {
+        if (Params.Input[5].SourceCount > 0) {
           // use input
           slsTensCrv = AdSecInput.StressStrainCurveGoo(this, DA, 5, false);
           rebuildCurves = true;
-        }
-        else
-        {
+        } else {
           // rebuild from existing material
           Tuple<Curve, List<Point3d>> slsTens = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Tension, false);
           slsTensCrv = new AdSecStressStrainCurveGoo(slsTens.Item1, editMat.Material.Serviceability.Tension,
@@ -142,37 +121,33 @@ namespace AdSecGH.Components
 
         // 6 Cracked params
         IConcreteCrackCalculationParameters concreteCrack = null;
-        if (Params.Input[6].SourceCount > 0)
-        {
+        if (Params.Input[6].SourceCount > 0) {
           // use input
           concreteCrack = AdSecInput.ConcreteCrackCalculationParameters(this, DA, 6);
           rebuildCurves = true;
         }
 
-        if (rebuildCurves)
-        {
-          if (ulsTensCrv.StressStrainCurve.FailureStrain.Value == 0)
-          {
+        if (rebuildCurves) {
+          if (ulsTensCrv.StressStrainCurve.FailureStrain.Value == 0) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "ULS Stress Strain Curve for Tension has zero failure strain." + System.Environment.NewLine + "The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
             IStressStrainCurve crv = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
             Tuple<Curve, List<Point3d>> tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, false);
             ulsTensCrv = new AdSecStressStrainCurveGoo(tuple.Item1, crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, tuple.Item2);
           }
-          if (ulsCompCrv.StressStrainCurve.FailureStrain.Value == 0)
-          {
-            this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "ULS Stress Strain Curve for Compression has zero failure strain.");
+          if (ulsCompCrv.StressStrainCurve.FailureStrain.Value == 0) {
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "ULS Stress Strain Curve for Compression has zero failure strain.");
             return;
           }
-          ITensionCompressionCurve ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.StressStrainCurve, ulsCompCrv.StressStrainCurve);
-          ITensionCompressionCurve slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
-          switch (editMat.Type)
-          {
+          var ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.StressStrainCurve, ulsCompCrv.StressStrainCurve);
+          var slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
+          switch (editMat.Type) {
             case AdSecMaterial.AdSecMaterialType.Concrete:
 
-              if (concreteCrack == null)
+              if (concreteCrack == null) {
                 editMat.Material = IConcrete.Create(ulsTC, slsTC);
-              else
+              } else {
                 editMat.Material = IConcrete.Create(ulsTC, slsTC, concreteCrack);
+              }
               break;
 
             case AdSecMaterial.AdSecMaterialType.FRP:
@@ -198,9 +173,8 @@ namespace AdSecGH.Components
         DA.SetData(3, ulsTensCrv);
         DA.SetData(4, slsCompCrv);
         DA.SetData(5, slsTensCrv);
-        if (editMat.Type == AdSecMaterial.AdSecMaterialType.Concrete)
-        {
-          IConcrete concrete = (IConcrete)editMat.Material;
+        if (editMat.Type == AdSecMaterial.AdSecMaterialType.Concrete) {
+          var concrete = (IConcrete)editMat.Material;
           DA.SetData(6, new AdSecConcreteCrackCalculationParametersGoo(concrete.ConcreteCrackCalculationParameters));
         }
       }

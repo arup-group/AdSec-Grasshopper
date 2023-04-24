@@ -14,11 +14,8 @@ using OasysUnits;
 using OasysUnits.Units;
 using Rhino.Geometry;
 
-namespace AdSecGH.Components
-{
-    public class ResultsSLS : GH_OasysComponent
-  {
-    #region Name and Ribbon Layout
+namespace AdSecGH.Components {
+  public class ResultsSLS : GH_OasysComponent {
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("27ba3ec5-b94c-43ad-8623-087540413628");
     public override GH_Exposure Exposure => GH_Exposure.primary;
@@ -30,21 +27,16 @@ namespace AdSecGH.Components
       "SLS",
       "Performs serviceability analysis (SLS), for a given Load or Deformation.",
       CategoryName.Name(),
-      SubCategoryName.Cat7())
-    {
-      this.Hidden = false; // sets the initial state of the component to hidden
+      SubCategoryName.Cat7()) {
+      Hidden = false; // sets the initial state of the component to hidden
     }
-    #endregion
 
-    #region Input and output
-    protected override void RegisterInputParams(GH_InputParamManager pManager)
-    {
+    protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Results", "Res", "AdSec Results to perform serviceability check on.", GH_ParamAccess.item);
       pManager.AddGenericParameter("Load", "Ld", "AdSec Load (Load or Deformation) for which the strength results are to be calculated.", GH_ParamAccess.item);
     }
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
       IQuantity curvature = new Curvature(0, DefaultUnits.CurvatureUnit);
       string curvatureUnitAbbreviation = string.Concat(curvature.ToString().Where(char.IsLetter));
@@ -83,61 +75,51 @@ namespace AdSecGH.Components
       pManager.AddIntervalParameter("Uncracked Moment Ranges", "MRs", "The range of moments (in the direction of the applied moment, assuming constant axial force) " +
           "over which the section remains uncracked. Moment values are in [" + momentUnitAbbreviation + "]", GH_ParamAccess.list);
     }
-    #endregion
 
-    protected override void SolveInstance(IGH_DataAccess DA)
-    {
+    protected override void SolveInstance(IGH_DataAccess DA) {
       // get solution input
       AdSecSolutionGoo solution = AdSecInput.Solution(this, DA, 0);
 
       IServiceabilityResult sls = null;
 
       // get load - can be either load or deformation
-      GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(1, ref gh_typ))
-      {
+      var gh_typ = new GH_ObjectWrapper();
+      if (DA.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
-        if (gh_typ.Value is AdSecLoadGoo)
-        {
-          AdSecLoadGoo load = (AdSecLoadGoo)gh_typ.Value;
+        if (gh_typ.Value is AdSecLoadGoo load) {
           sls = solution.Value.Serviceability.Check(load.Value);
-        }
-        else if (gh_typ.Value is AdSecDeformationGoo)
-        {
-          AdSecDeformationGoo def = (AdSecDeformationGoo)gh_typ.Value;
+        } else if (gh_typ.Value is AdSecDeformationGoo def) {
           sls = solution.Value.Serviceability.Check(def.Value);
-        }
-        else
-        {
+        } else {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
           return;
         }
-      }
-      else
-      {
+      } else {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
         return;
       }
 
       DA.SetData(0, new AdSecLoadGoo(sls.Load, solution.LocalPlane));
 
-      List<AdSecCrackGoo> cracks = new List<AdSecCrackGoo>();
-      foreach (ICrack crack in sls.Cracks)
+      var cracks = new List<AdSecCrackGoo>();
+      foreach (ICrack crack in sls.Cracks) {
         cracks.Add(new AdSecCrackGoo(crack, solution.LocalPlane));
-      
+      }
+
       DA.SetDataList(1, cracks);
 
-      if (sls.MaximumWidthCrack != null && sls.MaximumWidthCrack.Width.Meters < 1)
+      if (sls.MaximumWidthCrack != null && sls.MaximumWidthCrack.Width.Meters < 1) {
         DA.SetData(2, new AdSecCrackGoo(sls.MaximumWidthCrack, solution.LocalPlane));
+      }
 
       double util = sls.CrackingUtilisation.As(RatioUnit.DecimalFraction);
       DA.SetData(3, util);
-      if (util > 1)
-      {
-        if (cracks.Count == 0)
+      if (util > 1) {
+        if (cracks.Count == 0) {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "The section is failing and the cracks are so large we can't even compute them!");
-        else
+        } else {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "The section is cracked");
+        }
       }
 
       DA.SetData(4, new Vector3d(
@@ -150,10 +132,9 @@ namespace AdSecGH.Components
         sls.SecantStiffness.YY.As(DefaultUnits.BendingStiffnessUnit),
         sls.SecantStiffness.ZZ.As(DefaultUnits.BendingStiffnessUnit)));
 
-      List<GH_Interval> momentRanges = new List<GH_Interval>();
-      foreach (IMomentRange mrng in sls.UncrackedMomentRanges)
-      {
-        Interval interval = new Interval(
+      var momentRanges = new List<GH_Interval>();
+      foreach (IMomentRange mrng in sls.UncrackedMomentRanges) {
+        var interval = new Interval(
           mrng.Min.As(DefaultUnits.MomentUnit),
           mrng.Max.As(DefaultUnits.MomentUnit));
         momentRanges.Add(new GH_Interval(interval));
