@@ -75,15 +75,15 @@ steps:
     ..\yak spec
     Add-Content manifest.yml 'icon: AdSecIcon.png'
     Add-Content manifest.yml 'keywords:'
-    Add-Content manifest.yml '- Oasys'
-    Add-Content manifest.yml '- AdSec'
-    Add-Content manifest.yml '- AdSecGH'
-    Add-Content manifest.yml '- Advanced Section'
-    Add-Content manifest.yml '- Section Design'
-    Add-Content manifest.yml '- Section Analysis'
-    Add-Content manifest.yml '- Concrete Design'
-    Add-Content manifest.yml '- Concrete Analysis'
-    Add-Content manifest.yml '- Structural'
+    Add-Content manifest.yml '- oasys'
+    Add-Content manifest.yml '- adsec'
+    Add-Content manifest.yml '- adsecgh'
+    Add-Content manifest.yml '- section'
+    Add-Content manifest.yml '- concrete'
+    Add-Content manifest.yml '- composite'
+    Add-Content manifest.yml '- structural'
+    Add-Content manifest.yml '- concreteanalysis'
+    Add-Content manifest.yml '- structuraldesign'
     ..\yak build --platform win
     $yakCurrentVersName = Get-ChildItem -Path . -Filter "*.yak"
     $yakRh7Name =  $yakCurrentVersName -Replace "rh6_27", "rh7_0"
