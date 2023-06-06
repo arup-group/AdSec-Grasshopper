@@ -33,6 +33,17 @@ steps:
     clean: true
   env:
     MSBUILDDISABLENODEREUSE: 1
+    
+- powershell: |
+    if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post | Select-Object StatusCode).StatusCode) { 
+      Write-Output "codecov.yml is invalid"
+      Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post
+      exit(1)
+    } else { 
+      Write-Output "codecov.yml is valid"
+    }
+  displayName: Validate codecov.yml
+  failOnStderr: true
 
 - task: PowerShell@2
   displayName: Check for existing tags
