@@ -10,8 +10,10 @@ using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
+using Oasys.Interop;
 using Oasys.Profiles;
 using OasysGH.Helpers;
+using OasysGH.Parameters;
 using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
@@ -78,17 +80,20 @@ namespace AdSecGH.Helpers {
     }
 
     internal static AdSecProfileGoo AdSecProfileGoo(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      AdSecProfileGoo prfl = null;
+      AdSecProfileGoo profileGoo = null;
       var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(inputid, ref gh_typ)) {
         // try cast directly to quantity type
-        if (gh_typ.Value is AdSecProfileGoo goo) {
-          prfl = goo;
+        if (gh_typ.Value is AdSecProfileGoo adsecGoo) {
+          profileGoo = adsecGoo;
+        } else if (gh_typ.Value is OasysProfileGoo oasysGoo) {
+          IProfile profile = AdSecProfiles.CreateProfile(oasysGoo.Value);
+          profileGoo = new AdSecProfileGoo(profile, Plane.WorldYZ);
         } else {
           return null;
           //prfl = Boundaries(owner, DA, inputid, -1, DefaultUnits.LengthUnitGeometry);
         }
-        return prfl;
+        return profileGoo;
       } else if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
       }
@@ -222,7 +227,7 @@ namespace AdSecGH.Helpers {
       return covers;
     }
 
-    internal static IFlange Flange(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
+    internal static Oasys.Profiles.IFlange Flange(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       AdSecProfileFlangeGoo flange = null;
       var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(inputid, ref gh_typ)) {
@@ -512,7 +517,7 @@ namespace AdSecGH.Helpers {
       return null;
     }
 
-    internal static IWeb Web(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
+    internal static Oasys.Profiles.IWeb Web(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       AdSecProfileWebGoo web = null;
       var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(inputid, ref gh_typ)) {
