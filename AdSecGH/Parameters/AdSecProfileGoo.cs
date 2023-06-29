@@ -307,7 +307,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return "AdSec " + TypeName + " {" + Profile.Description() + "}";
+      return Profile.Description();
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {
