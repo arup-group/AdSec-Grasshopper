@@ -35,7 +35,7 @@ namespace AdSecGH.Components {
     }
 
     public override void CreateAttributes() {
-      m_attributes = new ThreeButtonAtrributes(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile, OpenAdSecexe, true, "Save AdSec file");
+      m_attributes = new ThreeButtonComponentAttributes(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile, OpenAdSecexe, true, "Save AdSec file");
     }
 
     public void OpenAdSecexe() {
