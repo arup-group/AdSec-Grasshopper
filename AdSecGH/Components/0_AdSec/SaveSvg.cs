@@ -35,7 +35,7 @@ namespace AdSecGH.Components {
     // This region handles input and output parameters
 
     public override void CreateAttributes() {
-      m_attributes = new ThreeButtonAtrributes(this, "Save", "Save As", "Open SVG", SaveFile, SaveAsFile, OpenSVGexe, true, "Save SVG file");
+      m_attributes = new ThreeButtonComponentAttributes(this, "Save", "Save As", "Open SVG", SaveFile, SaveAsFile, OpenSVGexe, true, "Save SVG file");
     }
 
     public void OpenSVGexe() {
