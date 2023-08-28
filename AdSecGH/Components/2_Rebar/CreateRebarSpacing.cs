@@ -112,28 +112,28 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Spaced Rebars", "RbS", "Rebars Spaced in a Layer for AdSec Reinforcement", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInstance(IGH_DataAccess da) {
       // 0 rebar input
-      AdSecRebarBundleGoo rebar = AdSecInput.AdSecRebarBundleGoo(this, DA, 0);
+      AdSecRebarBundleGoo rebar = AdSecInput.AdSecRebarBundleGoo(this, da, 0);
 
       switch (_mode) {
         case FoldMode.Distance:
           var bundleD = new AdSecRebarLayerGoo(
             ILayerByBarPitch.Create(
               rebar.Value,
-              (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
-          DA.SetData(0, bundleD);
+              (Length)Input.UnitNumber(this, da, 1, _lengthUnit)));
+          da.SetData(0, bundleD);
           break;
 
         case FoldMode.Count:
           int count = 1;
-          DA.GetData(1, ref count);
+          da.GetData(1, ref count);
 
           var bundleC = new AdSecRebarLayerGoo(
             ILayerByBarCount.Create(
               count,
               rebar.Value));
-          DA.SetData(0, bundleC);
+          da.SetData(0, bundleC);
           break;
       }
     }
