@@ -24,7 +24,6 @@ namespace AdSecGH.Components {
       Arc,
     }
 
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("1250f456-de99-4834-8d7f-4019cc0c70ba");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -39,11 +38,10 @@ namespace AdSecGH.Components {
       "Create a Reinforcement Layout for an AdSec Section",
       CategoryName.Name(),
       SubCategoryName.Cat3()) {
-      Hidden = false; // sets the initial state of the component to hidden
+      Hidden = false;
     }
 
     public override void SetSelected(int i, int j) {
-      // set selected item
       _selectedItems[i] = _dropDownItems[i][j];
       if (i == 0) {
         _mode = (FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[i]);
@@ -81,6 +79,7 @@ namespace AdSecGH.Components {
             break;
         }
       }
+      base.UpdateUI();
     }
 
     public override void VariableParameterMaintenance() {
@@ -206,53 +205,52 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Layout", "RbG", "Rebar Group for AdSec Section", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInstance(IGH_DataAccess da) {
       AdSecRebarGroupGoo group = null;
-
       switch (_mode) {
         case FoldMode.Line:
           // create line group
           group = new AdSecRebarGroupGoo(
             ILineGroup.Create(
-              AdSecInput.IPoint(this, DA, 1),
-              AdSecInput.IPoint(this, DA, 2),
-              AdSecInput.ILayer(this, DA, 0)));
+              AdSecInput.IPoint(this, da, 1),
+              AdSecInput.IPoint(this, da, 2),
+              AdSecInput.ILayer(this, da, 0)));
           break;
 
         case FoldMode.Circle:
           // create circle rebar group
           group = new AdSecRebarGroupGoo(
             ICircleGroup.Create(
-              AdSecInput.IPoint(this, DA, 1, true),
-              (Length)Input.UnitNumber(this, DA, 2, _lengthUnit),
-              (Angle)Input.UnitNumber(this, DA, 3, _angleUnit, true),
-              AdSecInput.ILayer(this, DA, 0)));
+              AdSecInput.IPoint(this, da, 1, true),
+              (Length)Input.UnitNumber(this, da, 2, _lengthUnit),
+              (Angle)Input.UnitNumber(this, da, 3, _angleUnit, true),
+              AdSecInput.ILayer(this, da, 0)));
           break;
 
         case FoldMode.Arc:
           // create arc rebar grouup
           group = new AdSecRebarGroupGoo(
             IArcGroup.Create(
-              AdSecInput.IPoint(this, DA, 1, true),
-              (Length)Input.UnitNumber(this, DA, 2, _lengthUnit),
-              (Angle)Input.UnitNumber(this, DA, 3, _angleUnit),
-              (Angle)Input.UnitNumber(this, DA, 4, _angleUnit),
-              AdSecInput.ILayer(this, DA, 0)));
+              AdSecInput.IPoint(this, da, 1, true),
+              (Length)Input.UnitNumber(this, da, 2, _lengthUnit),
+              (Angle)Input.UnitNumber(this, da, 3, _angleUnit),
+              (Angle)Input.UnitNumber(this, da, 4, _angleUnit),
+              AdSecInput.ILayer(this, da, 0)));
           break;
 
         case FoldMode.SingleBars:
           // create single rebar group
           var bars = ISingleBars.Create(
-            AdSecInput.IBarBundle(this, DA, 0));
+            AdSecInput.IBarBundle(this, da, 0));
 
-          bars.Positions = AdSecInput.IPoints(this, DA, 1);
+          bars.Positions = AdSecInput.IPoints(this, da, 1);
 
           group = new AdSecRebarGroupGoo(bars);
           break;
       }
 
       // set output
-      DA.SetData(0, group);
+      da.SetData(0, group);
     }
 
     protected override void UpdateUIFromSelectedItems() {
@@ -264,43 +262,31 @@ namespace AdSecGH.Components {
     }
 
     private void ToggleInput() {
+      // remove any additional input parameters
+      while (Params.Input.Count > 1) {
+        Params.UnregisterInputParameter(Params.Input[1], true);
+      }
+
       switch (_mode) {
         case FoldMode.Line:
-          // remove any additional input parameters
-          while (Params.Input.Count > 1) {
-            Params.UnregisterInputParameter(Params.Input[1], true);
-          }
-          // register 2 generic
           Params.RegisterInputParam(new Param_GenericObject());
           Params.RegisterInputParam(new Param_GenericObject());
           break;
 
         case FoldMode.SingleBars:
-          // remove any additional input parameters
           while (Params.Input.Count > 1) {
             Params.UnregisterInputParameter(Params.Input[1], true);
           }
-          // register 1 generic
           Params.RegisterInputParam(new Param_GenericObject());
           break;
 
         case FoldMode.Circle:
-          // remove any additional input parameters
-          while (Params.Input.Count > 1) {
-            Params.UnregisterInputParameter(Params.Input[1], true);
-          }
-          // register 3 generic
           Params.RegisterInputParam(new Param_GenericObject());
           Params.RegisterInputParam(new Param_GenericObject());
           Params.RegisterInputParam(new Param_GenericObject());
           break;
 
         case FoldMode.Arc:
-          // remove any additional input parameters
-          while (Params.Input.Count > 1) {
-            Params.UnregisterInputParameter(Params.Input[1], true);
-          }
-          // register 4 generic
           Params.RegisterInputParam(new Param_GenericObject());
           Params.RegisterInputParam(new Param_GenericObject());
           Params.RegisterInputParam(new Param_GenericObject());
