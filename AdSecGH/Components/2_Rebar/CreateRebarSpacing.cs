@@ -22,7 +22,6 @@ namespace AdSecGH.Components {
       Count
     }
 
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("846d546a-4284-4d69-906b-0e6985d7ddd3");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -36,7 +35,7 @@ namespace AdSecGH.Components {
       "Create Rebar spacing (by Count or Pitch) for an AdSec Section",
       CategoryName.Name(),
       SubCategoryName.Cat3()) {
-      Hidden = false; // sets the initial state of the component to hidden
+      Hidden = false;  
     }
 
     public override void SetSelected(int i, int j) {
@@ -62,6 +61,7 @@ namespace AdSecGH.Components {
       } else {
         _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       }
+      base.UpdateUI();
     }
 
     public override void VariableParameterMaintenance() {

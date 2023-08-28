@@ -23,7 +23,6 @@ namespace AdSecGH.Components {
       Link
     }
 
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("9876f456-de99-4834-8d7f-4019cc0c70ba");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -37,7 +36,7 @@ namespace AdSecGH.Components {
       "Create a Template Reinforcement Group for an AdSec Section",
       CategoryName.Name(),
       SubCategoryName.Cat3()) {
-      Hidden = false; // sets the initial state of the component to hidden
+      Hidden = false;
     }
 
     public override void SetSelected(int i, int j) {
@@ -48,6 +47,7 @@ namespace AdSecGH.Components {
       } else {
         _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       }
+      base.UpdateUI();
     }
 
     public override void VariableParameterMaintenance() {
