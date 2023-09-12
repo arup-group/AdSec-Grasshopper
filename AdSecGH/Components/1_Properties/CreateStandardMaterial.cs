@@ -255,7 +255,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Material", "Mat", "AdSec Material", GH_ParamAccess.list);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       string search = "";
       if (DA.GetData(0, ref search)) {
         search = search.ToLower();

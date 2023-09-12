@@ -132,7 +132,7 @@ namespace AdSecGH.Components {
       pManager.AddTextParameter("SVG string", "SVG", "Text string representing the SVG file", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       AdSecSection section = AdSecInput.AdSecSection(this, DA, 0);
       if (section == null) {
         return;

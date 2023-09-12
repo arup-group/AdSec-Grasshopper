@@ -75,7 +75,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Profile", "Pf", "Modified AdSet Profile", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       // #### get material input and duplicate it ####
       AdSecProfileGoo editPrf = AdSecInput.AdSecProfileGoo(this, DA, 0);
 

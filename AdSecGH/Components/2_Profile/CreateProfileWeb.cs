@@ -101,7 +101,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("WebProfile", "Web", "Web Profile for AdSec Profile", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       switch (_mode) {
         case FoldMode.Constant:
 

@@ -84,7 +84,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("CrackCalcParams", "CCP", "AdSec ConcreteCrackCalculationParameters", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       var modulus = (Pressure)Input.UnitNumber(this, DA, 0, _stressUnit);
       if (modulus.Value < 0) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");

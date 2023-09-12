@@ -66,7 +66,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Vertex Point", "Vx", "A 2D vertex in the yz-plane for AdSec Profile and Reinforcement", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       // get inputs
       var y = (Length)Input.UnitNumber(this, DA, 0, _lengthUnit);
       var z = (Length)Input.UnitNumber(this, DA, 1, _lengthUnit);

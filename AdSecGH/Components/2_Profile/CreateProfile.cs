@@ -98,7 +98,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Profile", "Pf", "Profile for AdSec Section", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       ClearRuntimeMessages();
       for (int i = 0; i < Params.Input.Count; i++) {
         Params.Input[i].ClearRuntimeMessages();

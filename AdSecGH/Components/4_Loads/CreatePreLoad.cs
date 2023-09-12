@@ -146,7 +146,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Prestressed RebarGroup", "RbG", "Preloaded Rebar Group for AdSec Section", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       // get rebargroup
       AdSecRebarGroupGoo rebar = AdSecInput.ReinforcementGroup(this, DA, 0);
 
