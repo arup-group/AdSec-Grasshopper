@@ -296,7 +296,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("StressStrainCrv", "SCv", "AdSec Stress Strain Curve", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       IStressStrainCurve crv = null;
       try {
         switch (_mode) {

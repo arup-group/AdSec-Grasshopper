@@ -95,7 +95,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Material", "Mat", "Custom AdSec Material", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       // 0 DesignCode
       AdSecDesignCode designCode = AdSecInput.AdSecDesignCode(this, DA, 0);
 

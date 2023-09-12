@@ -183,7 +183,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("DesignCode", "Code", "AdSec Design Code", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       // update selected material
       FieldInfo selectedCode = _designCodes[_selectedItems.Last()];
 

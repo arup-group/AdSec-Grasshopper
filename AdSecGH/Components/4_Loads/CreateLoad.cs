@@ -91,7 +91,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter(AdSecLoadGoo.Name, AdSecLoadGoo.NickName, AdSecLoadGoo.Description, GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       // Create new load
       var load = ILoad.Create(
         (Force)Input.UnitNumber(this, DA, 0, _forceUnit, true),

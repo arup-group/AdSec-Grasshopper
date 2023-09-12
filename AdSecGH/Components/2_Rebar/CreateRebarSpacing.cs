@@ -112,7 +112,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Spaced Rebars", "RbS", "Rebars Spaced in a Layer for AdSec Reinforcement", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess da) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       // 0 rebar input
       AdSecRebarBundleGoo rebar = AdSecInput.AdSecRebarBundleGoo(this, da, 0);
 

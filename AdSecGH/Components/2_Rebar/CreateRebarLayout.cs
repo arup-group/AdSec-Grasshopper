@@ -205,7 +205,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Layout", "RbG", "Rebar Group for AdSec Section", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess da) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       AdSecRebarGroupGoo group = null;
       switch (_mode) {
         case FoldMode.Line:

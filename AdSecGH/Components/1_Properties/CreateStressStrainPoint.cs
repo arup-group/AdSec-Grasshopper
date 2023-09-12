@@ -81,7 +81,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("StressStrainPt", "SPt", "AdSec Stress Strain Point", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       // create new point
       var pt = new AdSecStressStrainPointGoo(
         (Pressure)Input.UnitNumber(this, DA, 1, _stressUnit),

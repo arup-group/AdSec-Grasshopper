@@ -90,7 +90,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Rebar", "Rb", "Rebar (single or bundle) for AdSec Reinforcement", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       // 0 material input
       AdSecMaterial material = AdSecInput.AdSecMaterial(this, DA, 0);
 

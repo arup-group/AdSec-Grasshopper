@@ -84,7 +84,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Load", "Ld", "AdSec Load", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess DA) {
       // Create new load
       var deformation = IDeformation.Create(
         (Strain)Input.UnitNumber(this, DA, 0, _strainUnit),
