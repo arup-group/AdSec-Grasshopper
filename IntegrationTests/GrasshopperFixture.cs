@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using OasysGH.Units;
 using Xunit;
 
 namespace IntegrationTests {
@@ -49,7 +50,7 @@ namespace IntegrationTests {
       InitializeCore();
 
       // setup headless units
-      OasysGH.Units.Utility.SetupUnitsDuringLoad(true);
+      Utility.SetupUnitsDuringLoad();
     }
 
     public void AddPluginToGH() {
