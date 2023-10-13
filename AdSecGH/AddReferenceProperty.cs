@@ -81,7 +81,7 @@ namespace AdSecGH {
       Instances.ComponentServer.AddCategoryIcon("AdSec", Resources.AdSecLogo);
 
       // ### Setup OasysGH and shared Units ###
-      Utility.InitialiseMainMenuAndDefaultUnits();
+      Utility.InitialiseMainMenuUnitsAndDependentPluginsCheck();
 
       PostHog.PluginLoaded(PluginInfo.Instance);
 

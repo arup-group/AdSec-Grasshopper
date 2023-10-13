@@ -49,7 +49,7 @@ namespace IntegrationTests {
       InitializeCore();
 
       // setup headless units
-      OasysGH.Units.Utility.SetupUnitsDuringLoad(true);
+      OasysGH.Units.Utility.SetupUnitsDuringLoad();
     }
 
     public void AddPluginToGH() {
