@@ -17,7 +17,6 @@ using OasysUnits;
 
 namespace AdSecGH.Components {
   public class FlattenRebar : GH_OasysComponent {
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("879ecac6-464d-4286-9113-c15fcf03e4e6");
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -29,10 +28,9 @@ namespace AdSecGH.Components {
       "Flatten all rebars in a section into single bars.",
       CategoryName.Name(),
       SubCategoryName.Cat4()) {
-      Hidden = true; // sets the initial state of the component to hidden
+      Hidden = true;
     }
 
-    //This region overrides the typical component layout
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Section", "Sec", "AdSec Section to get single rebars from", GH_ParamAccess.item);
@@ -61,7 +59,7 @@ namespace AdSecGH.Components {
 
       // create flattened section
       ISection flat = null;
-      if (section.DesignCode != null) //{ code = Oasys.AdSec.DesignCode.EN1992.Part1_1.Edition_2004.NationalAnnex.NoNationalAnnex; }
+      if (section.DesignCode != null) 
       {
         var adSec = IAdSec.Create(section.DesignCode);
         flat = adSec.Flatten(section.Section);
@@ -117,8 +115,6 @@ namespace AdSecGH.Components {
           // do nothing if rebar is link
         }
       }
-
-      // ### output ###
 
       DA.SetDataList(0, pointGoos);
       DA.SetDataList(1, diameters);
