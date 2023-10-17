@@ -72,9 +72,6 @@ namespace AdSecGH.Components {
         var adSec = IAdSec.Create(material.DesignCode.DesignCode);
         ISection flattened = adSec.Flatten(section.Section);
 
-        string foo1 = profile.Profile.Description();
-        string foo2 = flattened.Profile.Description();
-
         string[] coordinates1 = profile.Profile.Description().Remove(0, 11).Split(new[] { ") L(" }, StringSplitOptions.None);
         double maxY1 = double.MinValue;
         double maxZ1 = double.MinValue;

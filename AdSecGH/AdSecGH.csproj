@@ -24,8 +24,11 @@ Copyright © Oasys 1985 - 2023</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Components\OBSOLETE\**" />
     <Compile Remove="Properties\Icons\Icons\**" />
+    <EmbeddedResource Remove="Components\OBSOLETE\**" />
     <EmbeddedResource Remove="Properties\Icons\Icons\**" />
+    <None Remove="Components\OBSOLETE\**" />
     <None Remove="Properties\Icons\Icons\**" />
   </ItemGroup>
   <ItemGroup>
@@ -77,9 +80,6 @@ Copyright © Oasys 1985 - 2023</Description>
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Components\OBSOLETE\" />
   </ItemGroup>
   <PropertyGroup Condition="$(Configuration) == 'Debug' AND $([MSBuild]::IsOSPlatform(Windows))">
     <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
