@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using OasysGH.Units;
 using Xunit;
 
 namespace AdSecGHTests {
@@ -49,7 +50,7 @@ namespace AdSecGHTests {
       InitializeCore();
 
       // setup headless units
-      OasysGH.Units.Utility.SetupUnitsDuringLoad();
+      Utility.SetupUnitsDuringLoad();
     }
 
     public void AddPluginToGH() {

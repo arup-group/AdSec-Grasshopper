@@ -115,6 +115,8 @@ namespace AdSecGH.Components {
 
       _dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
       _selectedItems.Add(_dropDownItems[0][0]);
+
+      _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
       _selectedItems.Add(Length.GetAbbreviation(_lengthUnit));
 
       _isInitialised = true;
