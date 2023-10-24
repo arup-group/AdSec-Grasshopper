@@ -121,7 +121,7 @@ namespace AdSecGH.Components {
       DA.GetDataList(1, planes);
 
       var sections = new List<AdSecSectionGoo>();
-      AdSecDesignCode code = Helpers.AdSecFile.GetDesignCode(json);
+      AdSecDesignCode code = AdSecFile.GetDesignCode(json);
       if (code == null) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to read DesignCode. DesignCode set to Eurocode.");
         code = new AdSecDesignCode() {
