@@ -8,21 +8,17 @@ namespace AdSecGH.Helpers {
 
     internal static Dictionary<string, Type> ReflectAdSecNamespace(string nspace) {
       Assembly adsecAPI = AddReferencePriority.AdSecAPI;
-      try {
-        IEnumerable<Type> q = from t in adsecAPI.GetTypes()
-                              where t.IsInterface && t.Namespace == nspace
-                              select t;
-        var dict = new Dictionary<string, Type>();
-        foreach (Type typ in q) {
-          if (nspace + "." + typ.Name == typ.FullName) {
-            dict.Add(typ.Name, typ);
-          }
+      IEnumerable<Type> q = from t in adsecAPI.GetTypes()
+                            where t.IsInterface && t.Namespace == nspace
+                            select t;
+      var dict = new Dictionary<string, Type>();
+      foreach (Type typ in q) {
+        if (nspace + "." + typ.Name == typ.FullName) {
+          dict.Add(typ.Name, typ);
         }
-        return dict;
-      } catch (Exception e) {
-
-        throw e;
       }
+
+      return dict;
     }
 
     internal static Dictionary<string, FieldInfo> ReflectFields(Type type) {
