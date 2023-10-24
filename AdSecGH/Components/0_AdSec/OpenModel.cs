@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
+using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
 using OasysGH;
 using OasysGH.Components;
@@ -20,7 +22,6 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Properties.Resources.OpenAdSec;
-    private string _fileName = null;
     private Guid _panelGuid = Guid.NewGuid();
 
     public OpenModel() : base(
@@ -41,7 +42,7 @@ namespace AdSecGH.Components {
       bool res = fdi.ShowOpenDialog();
       if (res) // == DialogResult.OK)
       {
-        _fileName = fdi.FileName;
+        string fileName = fdi.FileName;
 
         // instantiate  new panel
         var panel = new Grasshopper.Kernel.Special.GH_Panel();
@@ -59,7 +60,7 @@ namespace AdSecGH.Components {
             // update the UserText in existing panel
             //RecordUndoEvent("Changed OpenGSA Component input");
             panel = input as Grasshopper.Kernel.Special.GH_Panel;
-            panel.UserText = _fileName;
+            panel.UserText = fileName;
             panel.ExpireSolution(true); // update the display of the panel
           }
 
@@ -68,7 +69,7 @@ namespace AdSecGH.Components {
         }
 
         //populate panel with our own content
-        panel.UserText = _fileName;
+        panel.UserText = fileName;
 
         // record the panel's GUID if new, so that we can update it on change
         _panelGuid = panel.InstanceGuid;
@@ -87,32 +88,18 @@ namespace AdSecGH.Components {
       }
     }
 
-    public override bool Read(GH_IO.Serialization.GH_IReader reader) {
-      _fileName = (string)reader.GetString("File");
-      return base.Read(reader);
-    }
+    public override void SetSelected(int i, int j) { }
 
-    public override void SetSelected(int i, int j) {
-    }
-
-    public override void VariableParameterMaintenance() {
-      Params.Input[0].Optional = _fileName != null; //filename can have input from user input
-      Params.Input[0].ClearRuntimeMessages(); // this needs to be called to avoid having a runtime warning message after changed to optional
-    }
-
-    public override bool Write(GH_IO.Serialization.GH_IWriter writer) {
-      writer.SetString("File", (string)_fileName);
-      return base.Write(writer);
-    }
-
-    protected override void InitialiseDropdowns() {
-    }
+    protected override void InitialiseDropdowns() { }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      pManager.AddGenericParameter("Filename and path", "File", "AdSec file to open and work with." + System.Environment.NewLine + "Input either path component, a text string with path and " + System.Environment.NewLine + "filename or an existing AdSec File created in Grasshopper.", GH_ParamAccess.item);
-      pManager.AddPlaneParameter("LocalPlane", "Pln", "[Optional] Plane representing local coordinate system, by default a YZ-plane is used", GH_ParamAccess.list, Plane.WorldYZ);
+      pManager.AddGenericParameter("Filename and path", "File", "AdSec file to open and work with."
+        + Environment.NewLine + "Input either path component, a text string with path and "
+        + Environment.NewLine + "filename or an existing AdSec File created in Grasshopper.",
+        GH_ParamAccess.item);
+      pManager.AddPlaneParameter("LocalPlane", "Pln", "[Optional] Plane representing local " +
+        "coordinate system, by default a YZ-plane is used", GH_ParamAccess.list, Plane.WorldYZ);
       pManager[1].Optional = true;
-      pManager.HideParameter(1);
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
@@ -121,40 +108,43 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(0, ref gh_typ)) {
-        if (gh_typ.Value is GH_String) {
-          if (GH_Convert.ToString(gh_typ, out string tempfile, GH_Conversion.Both)) {
-            _fileName = tempfile;
-          }
-
-          if (!_fileName.EndsWith(".ads")) {
-            _fileName += ".ads";
-          }
-
-          string json = File.ReadAllText(_fileName);
-          ParsedResult jsonParser = JsonParser.Deserialize(json);
-
-          var planes = new List<Plane>();
-          DA.GetDataList(1, planes);
-
-          var sections = new List<AdSecSectionGoo>();
-          AdSecDesignCode code = Helpers.AdSecFile.GetDesignCode(json);
-
-          for (int i = 0; i < jsonParser.Sections.Count; i++) {
-            Oasys.AdSec.ISection section = jsonParser.Sections[i];
-            Plane pln = (i > planes.Count - 1) ? planes.Last() : planes[i];
-            sections.Add(new AdSecSectionGoo(new AdSecSection(section, code.DesignCode, code.DesignCodeName, "", pln)));
-          }
-
-          if (sections.Count == 0) {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "File contains no valid sections");
-          }
-          foreach (Oasys.AdSec.IWarning warning in jsonParser.Warnings) {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning.Description);
-          }
-          DA.SetDataList(0, sections);
-        }
+      DA.GetData(0, ref gh_typ);
+      GH_Convert.ToString(gh_typ, out string fileName, GH_Conversion.Both);
+      if (!fileName.EndsWith(".ads")) {
+        fileName += ".ads";
       }
+
+      string json = File.ReadAllText(fileName);
+      ParsedResult jsonParser = JsonParser.Deserialize(json);
+
+      var planes = new List<Plane>();
+      DA.GetDataList(1, planes);
+
+      var sections = new List<AdSecSectionGoo>();
+      AdSecDesignCode code = Helpers.AdSecFile.GetDesignCode(json);
+      if (code == null) {
+        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to read DesignCode. DesignCode set to Eurocode.");
+        code = new AdSecDesignCode() {
+          DesignCode = AdSecFile.Codes["EC2_04"],
+          DesignCodeName = "EC2_04",
+        };
+      }
+
+      for (int i = 0; i < jsonParser.Sections.Count; i++) {
+        Oasys.AdSec.ISection section = jsonParser.Sections[i];
+        Plane pln = (i > planes.Count - 1) ? planes.Last() : planes[i];
+        sections.Add(new AdSecSectionGoo(new AdSecSection(section, code.DesignCode, code.DesignCodeName, "", pln)));
+      }
+
+      if (sections.Count == 0) {
+        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "File contains no valid sections");
+      }
+
+      foreach (Oasys.AdSec.IWarning warning in jsonParser.Warnings) {
+        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning.Description);
+      }
+
+      DA.SetDataList(0, sections);
     }
   }
 }
