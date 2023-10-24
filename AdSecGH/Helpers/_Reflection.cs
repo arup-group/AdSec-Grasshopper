@@ -17,6 +17,7 @@ namespace AdSecGH.Helpers {
           dict.Add(typ.Name, typ);
         }
       }
+
       return dict;
     }
 

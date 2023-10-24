@@ -373,8 +373,13 @@ namespace AdSecGH.Components {
 
     protected override void UpdateUIFromSelectedItems() {
       _mode = (AdSecStressStrainCurveGoo.StressStrainCurveType)Enum.Parse(typeof(AdSecStressStrainCurveGoo.StressStrainCurveType), _selectedItems[0]);
-      _strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), _selectedItems[1]);
-      _stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), _selectedItems[2]);
+      if (_selectedItems.Count > 1) {
+        _strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), _selectedItems[1]);
+      }
+
+      if ( _selectedItems.Count > 2) {
+        _stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), _selectedItems[2]);
+      }
 
       switch (_mode) {
         case AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear:

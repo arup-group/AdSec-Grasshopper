@@ -22,7 +22,6 @@ namespace AdSecGH.Components {
     protected override Bitmap Icon => Properties.Resources.SaveAdSec;
     private static string _jsonString;
     private string _fileName = null;
-
     private bool canOpen = false;
 
     public SaveModel() : base(
@@ -106,13 +105,6 @@ namespace AdSecGH.Components {
 
     public override void SetSelected(int i, int j) { }
 
-    public override void VariableParameterMaintenance() {
-      Params.Input[0].Optional = _fileName != null; //filename can have input from user input
-      Params.Input[0].ClearRuntimeMessages(); // this needs to be called to avoid having a runtime warning message after changed to optional
-      Params.Input[0].Access = GH_ParamAccess.list;
-      Params.Input[1].Access = GH_ParamAccess.tree;
-    }
-
     public override bool Write(GH_IO.Serialization.GH_IWriter writer) {
       writer.SetString("File", _fileName);
       return base.Write(writer);
@@ -161,13 +153,8 @@ namespace AdSecGH.Components {
 
       var jsonStrings = new List<string>();
 
-      // construct json converter
       var json = new JsonConverter(sections[0].DesignCode);
 
-      //GH_Structure<IGH_Goo> loads = new GH_Structure<IGH_Goo>();
-      //List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
-      //DA.GetDataTree(0, out GH_Structure<IGH_Goo> tree);
-      //tree = CleanTree(tree);
       if (DA.GetDataTree(1, out GH_Structure<IGH_Goo> loads)) {
         if (loads.Branches.Count > 0) {
           for (int i = 0; i < sections.Count; i++) {

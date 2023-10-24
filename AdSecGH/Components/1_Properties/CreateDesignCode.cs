@@ -248,7 +248,8 @@ namespace AdSecGH.Components {
           }
         }
       }
-      UpdateUIFromSelectedItems();
+
+      base.UpdateUIFromSelectedItems();
     }
   }
 }
