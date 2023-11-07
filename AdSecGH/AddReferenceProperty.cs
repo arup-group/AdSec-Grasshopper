@@ -47,8 +47,6 @@ namespace AdSecGH {
       // ### Reference AdSecAPI and SQLite dlls ###
       try {
         AdSecAPI = Assembly.LoadFile(PluginPath + "\\AdSec_API.dll");
-        //Assembly assTuple = Assembly.LoadFile(PluginPath + "\\System.ValueTuple.dll");
-        //Assembly assSQL = Assembly.LoadFile(PluginPath + "\\System.Data.SQLite.dll");
       } catch (Exception ex) {
         string message = ex.Message + Environment.NewLine + Environment.NewLine
           + "Error loading the file AdSec_API.dll from path " + PluginPath
@@ -56,18 +54,6 @@ namespace AdSecGH {
         var exception = new Exception(message);
         var gH_LoadingException
           = new GH_LoadingException("AdSec: AdSec_API.dll loading", exception);
-        Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
-        PostHog.PluginLoaded(PluginInfo.Instance, message);
-        return GH_LoadingInstruction.Abort;
-      }
-
-      // ### Trigger a license check ###
-      try {
-        var ad = IAdSec.Create(EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014);
-      } catch (Exception ex) {
-        string message = ex.Message;
-        var exception = new Exception(message);
-        var gH_LoadingException = new GH_LoadingException("AdSec: License", exception);
         Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
         PostHog.PluginLoaded(PluginInfo.Instance, message);
         return GH_LoadingInstruction.Abort;
