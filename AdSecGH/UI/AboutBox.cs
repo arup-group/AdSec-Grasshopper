@@ -9,7 +9,7 @@ namespace AdSecGH.UI {
   internal partial class AboutBox : Form {
     public string AssemblyCompany {
       get {
-        return "Copyright © Oasys 1985 - 2023";
+        return "Copyright © Oasys 1985 - 2024";
       }
     }
 
