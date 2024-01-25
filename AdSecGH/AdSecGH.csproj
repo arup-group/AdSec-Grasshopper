@@ -6,7 +6,7 @@
     <Platforms>x64</Platforms>
     <Title>AdSecGH</Title>
     <Company>Oasys</Company>
-    <Copyright>Copyright © Oasys 1985 - 2023</Copyright>
+    <Copyright>Copyright © Oasys 1985 - 2024</Copyright>
     <PackageProjectUrl>https://github.com/arup-group/AdSec-Grasshopper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/arup-group/AdSec-Grasshopper</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -20,7 +20,7 @@ The plugin requires a licensed version of AdSec to load.
 
 Contact oasys@arup.com to request a free trial version.
 
-Copyright © Oasys 1985 - 2023</Description>
+Copyright © Oasys 1985 - 2024</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
@@ -62,7 +62,7 @@ Copyright © Oasys 1985 - 2023</Description>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
-    <PackageReference Include="OasysGH" Version="1.0.1" />
+    <PackageReference Include="OasysGH" Version="1.0.2" />
     <PackageReference Include="OasysUnits">
       <Version>1.0.0</Version>
     </PackageReference>

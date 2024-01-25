@@ -25,7 +25,7 @@ namespace AdSecGH {
     public override string Version => isBeta ? Vers + "-beta" : Vers;
     internal const string Company = "Oasys";
     internal const string Contact = "https://www.oasys-software.com/";
-    internal const string Copyright = "Copyright © Oasys 1985 - 2023";
+    internal const string Copyright = "Copyright © Oasys 1985 - 2024";
     internal const string PluginName = "AdSecGH";
     internal const string ProductName = "AdSec";
     internal const string TermsConditions
