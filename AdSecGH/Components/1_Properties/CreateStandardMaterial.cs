@@ -50,7 +50,7 @@ namespace AdSecGH.Components {
         // get the selected material and parse it to type enum
         Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
         // get list of standard codes for the selected material
-        Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.StandardCodes(materialType);
+        Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.StandardCodes(materialType);
         // add codes for selected material to list of dropdowns
         _dropDownItems.Add(designCodeKVP.Keys.ToList());
         if (_selectedItems.Count == 1) {
@@ -86,7 +86,7 @@ namespace AdSecGH.Components {
           designCodeKVP.TryGetValue(typeString, out Type typ);
 
           // update the KVP by reflecting the type
-          designCodeKVP = Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+          designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
 
           // determine if we have reached the fields layer
           if (designCodeKVP.Count > 1) {
@@ -131,7 +131,7 @@ namespace AdSecGH.Components {
           } else {
             // if kvp is empty we have reached the field level
             // where we set the materials by reflecting the type
-            _materials = Helpers.ReflectAdSecAPI.ReflectFields(typ);
+            _materials = Helpers.ReflectionHelper.ReflectFields(typ);
             if (_materials.Count == 0) {
               _dropDownItems.Add(new List<string>() { "No material" });
               _selectedItems.Add("No material");
@@ -197,7 +197,7 @@ namespace AdSecGH.Components {
 
       if (_dropDownItems.Count == 1) {
         //Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
-        Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.StandardCodes(AdSecMaterial.AdSecMaterialType.Concrete);
+        Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.StandardCodes(AdSecMaterial.AdSecMaterialType.Concrete);
         _dropDownItems.Add(designCodeKVP.Keys.ToList());
         // select default code to EN1992
         _selectedItems.Add(designCodeKVP.Keys.ElementAt(4));
@@ -211,7 +211,7 @@ namespace AdSecGH.Components {
           designCodeKVP.TryGetValue(typeString, out Type typ);
 
           // update the KVP by reflecting the type
-          designCodeKVP = Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+          designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
 
           // determine if we have reached the fields layer
           if (designCodeKVP.Count > 1) {
@@ -232,7 +232,7 @@ namespace AdSecGH.Components {
           } else {
             // if kvp is empty we have reached the field level
             // where we set the materials by reflecting the type
-            _materials = Helpers.ReflectAdSecAPI.ReflectFields(typ);
+            _materials = Helpers.ReflectionHelper.ReflectFields(typ);
             // if kvp has values we add them to create a new dropdown list
             _dropDownItems.Add(_materials.Keys.ToList());
             // with first item being the selected
@@ -305,7 +305,7 @@ namespace AdSecGH.Components {
       // get the selected material and parse it to type enum
       Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
       // get list of standard codes for the selected material
-      Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.StandardCodes(materialType);
+      Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.StandardCodes(materialType);
       // add codes for selected material to list of dropdowns
       //_dropDownItems.Add(designCodeKVP.Keys.ToList());
 
@@ -327,7 +327,7 @@ namespace AdSecGH.Components {
         designCodeKVP.TryGetValue(typeString, out Type typ);
 
         // update the KVP by reflecting the type
-        designCodeKVP = Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+        designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
 
         // determine if we have reached the fields layer
         if (designCodeKVP.Count > 1) {
@@ -346,7 +346,7 @@ namespace AdSecGH.Components {
         } else {
           // if kvp is empty we have reached the field level
           // where we set the materials by reflecting the type
-          _materials = Helpers.ReflectAdSecAPI.ReflectFields(typ);
+          _materials = Helpers.ReflectionHelper.ReflectFields(typ);
 
           drill = false;
 
