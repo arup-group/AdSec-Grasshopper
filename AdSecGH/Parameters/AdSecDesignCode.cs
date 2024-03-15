@@ -53,7 +53,7 @@ namespace AdSecGH.Parameters {
 
     private bool CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false) {
       // Get all DesignCodes in DLL under namespace
-      Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+      Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
       // Loop through DesignCodes types to find the DesignCode type matching our input list of levels
       string designcodeName = "";
@@ -64,7 +64,7 @@ namespace AdSecGH.Parameters {
         if (typ == null) {
           return false;
         }
-        designCodeKVP = Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+        designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
       }
       if (designCodeReflectedLevels.Count == 1) {
         designcodeName = designCodeReflectedLevels[0];

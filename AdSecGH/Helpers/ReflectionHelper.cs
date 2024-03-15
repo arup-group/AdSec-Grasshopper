@@ -4,8 +4,7 @@ using System.Linq;
 using System.Reflection;
 
 namespace AdSecGH.Helpers {
-  public static class ReflectAdSecAPI {
-
+  public static class ReflectionHelper {
     internal static Dictionary<string, Type> ReflectAdSecNamespace(string nspace) {
       Assembly adsecAPI = AddReferencePriority.AdSecAPI;
       IEnumerable<Type> q = from t in adsecAPI.GetTypes()
@@ -22,23 +21,36 @@ namespace AdSecGH.Helpers {
     }
 
     internal static Dictionary<string, FieldInfo> ReflectFields(Type type) {
-      var materials = new Dictionary<string, FieldInfo>();
+      var fields = type.GetFields().ToList();
 
-      FieldInfo[] fields = type.GetFields();
-      if (fields.Length > 0) {
-        foreach (FieldInfo field in fields) {
-          materials.Add(field.Name, field);
-        }
+      Type[] types = type.GetInterfaces();
+      foreach (Type baseType in types) {
+        fields.AddRange(baseType.GetFields());
       }
+
+      var materials = new Dictionary<string, FieldInfo>();
+      foreach (FieldInfo field in fields) {
+        materials.Add(field.Name, field);
+      }
+
       return materials;
     }
 
     internal static Dictionary<string, Type> ReflectNestedTypes(Type type) {
       var dict = new Dictionary<string, Type>();
-      MemberInfo[] subClasses = type.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
-      foreach (MemberInfo subClass in subClasses) {
-        dict.Add(subClass.Name, (Type)subClass);
+      MemberInfo[] members = type.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
+      foreach (MemberInfo member in members) {
+        dict.Add(member.Name, (Type)member);
       }
+
+      Type[] types = type.GetInterfaces();
+      foreach (Type baseType in types) {
+        MemberInfo[] baseMembers = baseType.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
+        foreach (MemberInfo member in baseMembers) {
+          dict.Add(member.Name, (Type)member);
+        }
+      }
+
       return dict;
     }
 

@@ -38,7 +38,7 @@ namespace AdSecGH.Components {
         }
 
         // get list of standard codes for the selected material
-        Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+        Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
         // create string for selected item to use for type search while drilling
         int level = 0;
@@ -49,7 +49,7 @@ namespace AdSecGH.Components {
           designCodeKVP.TryGetValue(typeString, out Type typ);
 
           // update the KVP by reflecting the type
-          designCodeKVP = Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+          designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
 
           // determine if we have reached the fields layer
           if (designCodeKVP.Count > 1) {
@@ -85,7 +85,7 @@ namespace AdSecGH.Components {
           } else {
             // if kvp is empty we have reached the field level
             // where we set the materials by reflecting the type
-            _designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
+            _designCodes = Helpers.ReflectionHelper.ReflectFields(typ);
             // if kvp has values we add them to create a new dropdown list
             _dropDownItems.Add(_designCodes.Keys.ToList());
             // with first item being the selected
@@ -123,7 +123,7 @@ namespace AdSecGH.Components {
       _dropDownItems = new List<List<string>>();
       _selectedItems = new List<string>();
 
-      var designCodeGroups = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
+      var designCodeGroups = Helpers.ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
 
       var tempList = new List<string>();
       foreach (string dc in designCodeGroups) {
@@ -137,7 +137,7 @@ namespace AdSecGH.Components {
       _dropDownItems.Add(designCodeGroups);
 
       if (_dropDownItems.Count == 1) {
-        Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+        Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
         // create string for selected item to use for type search while drilling
         string typeString = _selectedItems.Last();
@@ -147,7 +147,7 @@ namespace AdSecGH.Components {
           designCodeKVP.TryGetValue(typeString, out Type typ);
 
           // update the KVP by reflecting the type
-          designCodeKVP = Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+          designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
 
           // determine if we have reached the fields layer
           if (designCodeKVP.Count > 1) {
@@ -163,7 +163,7 @@ namespace AdSecGH.Components {
           } else {
             // if kvp is empty we have reached the field level
             // where we set the materials by reflecting the type
-            _designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
+            _designCodes = Helpers.ReflectionHelper.ReflectFields(typ);
             // if kvp has values we add them to create a new dropdown list
             _dropDownItems.Add(_designCodes.Keys.ToList());
             // with first item being the selected
@@ -195,7 +195,7 @@ namespace AdSecGH.Components {
 
     protected override void UpdateUIFromSelectedItems() {
       // get list of standard codes for the selected material
-      Dictionary<string, Type> designCodeKVP = Helpers.ReflectAdSecAPI.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+      Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
       // create string for selected item to use for type search while drilling
       int level = 0;
@@ -206,7 +206,7 @@ namespace AdSecGH.Components {
         designCodeKVP.TryGetValue(typeString, out Type typ);
 
         // update the KVP by reflecting the type
-        designCodeKVP = Helpers.ReflectAdSecAPI.ReflectNestedTypes(typ);
+        designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
 
         // determine if we have reached the fields layer
         if (designCodeKVP.Count > 1) {
@@ -232,7 +232,7 @@ namespace AdSecGH.Components {
         } else {
           // if kvp is empty we have reached the field level
           // where we set the materials by reflecting the type
-          _designCodes = Helpers.ReflectAdSecAPI.ReflectFields(typ);
+          _designCodes = Helpers.ReflectionHelper.ReflectFields(typ);
           // stop drilling
           drill = false;
 
