@@ -62,7 +62,7 @@ Copyright © Oasys 1985 - 2024</Description>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
-    <PackageReference Include="OasysGH" Version="1.0.3" />
+    <PackageReference Include="OasysGH" Version="1.0.4" />
     <PackageReference Include="OasysUnits">
       <Version>1.0.0</Version>
     </PackageReference>
