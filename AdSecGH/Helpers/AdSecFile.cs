@@ -7,6 +7,11 @@ using Oasys.AdSec.DesignCode;
 namespace AdSecGH.Helpers {
   internal class AdSecFile {
     internal static Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>() {
+      { "ACI318_02",  ACI318.Edition_2002.Metric },
+      { "ACI318_05",  ACI318.Edition_2005.Metric },
+      { "ACI318_08",  ACI318.Edition_2008.Metric },
+      { "ACI318_11",  ACI318.Edition_2011.Metric },
+      { "ACI318_14",  ACI318.Edition_2014.Metric },
       { "ACI318M_02",  ACI318.Edition_2002.US },
       { "ACI318M_05",  ACI318.Edition_2005.US },
       { "ACI318M_08",  ACI318.Edition_2008.US },
@@ -64,11 +69,16 @@ namespace AdSecGH.Helpers {
 
     internal static Dictionary<string, string> CodesStrings = new Dictionary<string, string>()
 {
-      { "ACI318M_02", "ACI318+Edition_2002+US" },
-      { "ACI318M_05", "ACI318+Edition_2005+US" },
-      { "ACI318M_08", "ACI318+Edition_2008+US" },
-      { "ACI318M_11", "ACI318+Edition_2011+US" },
-      { "ACI318M_14", "ACI318+Edition_2014+US" },
+      { "ACI318_02M", "ACI318+Edition_2002+Metric" },
+      { "ACI318_05M", "ACI318+Edition_2005+Metric" },
+      { "ACI318_08M", "ACI318+Edition_2008+Metric" },
+      { "ACI318_11M", "ACI318+Edition_2011+Metric" },
+      { "ACI318_14M", "ACI318+Edition_2014+Metric" },
+      { "ACI318_02", "ACI318+Edition_2002+US" },
+      { "ACI318_05", "ACI318+Edition_2005+US" },
+      { "ACI318_08", "ACI318+Edition_2008+US" },
+      { "ACI318_11", "ACI318+Edition_2011+US" },
+      { "ACI318_14", "ACI318+Edition_2014+US" },
       { "AASHTO_17", "AASHTO+Edition_2017+US" },
       { "AASHTO_17M", "AASHTO+Edition_2017+Metric" },
       { "AS3600_01", "AS3600+Edition_2001" },
