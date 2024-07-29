@@ -95,7 +95,7 @@ namespace AdSecGH.Components {
     }
 
     public void SaveFile() {
-      if (_fileName == null | _fileName == "") {
+      if (string.IsNullOrEmpty(_fileName)) {
         SaveAsFile();
       } else {
         // write to file

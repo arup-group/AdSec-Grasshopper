@@ -223,7 +223,7 @@ namespace AdSecGH.Parameters {
 
       // local axis
       if (LocalPlane != null) {
-        if (LocalPlane != Plane.WorldXY & LocalPlane != Plane.WorldYZ & LocalPlane != Plane.WorldZX) {
+        if (LocalPlane != Plane.WorldXY && LocalPlane != Plane.WorldYZ && LocalPlane != Plane.WorldZX) {
           Area area = Section.Profile.Area();
           double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
           var length = new Length(pythogoras * 0.15, LengthUnit.Meter);

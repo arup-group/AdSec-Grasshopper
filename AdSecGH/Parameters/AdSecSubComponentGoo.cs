@@ -45,7 +45,7 @@ namespace AdSecGH.Parameters {
       _plane = local;
       // local axis
       if (_plane != null) {
-        if (_plane != Plane.WorldXY & local != Plane.WorldYZ & local != Plane.WorldZX) {
+        if (_plane != Plane.WorldXY && local != Plane.WorldYZ && local != Plane.WorldZX) {
           Area area = _section.Section.Profile.Area();
           double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
           var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
