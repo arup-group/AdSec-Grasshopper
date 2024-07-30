@@ -75,7 +75,7 @@ namespace AdSecGH.Components {
         string[] coordinates1 = profile.Profile.Description().Remove(0, 11).Split(new[] { ") L(" }, StringSplitOptions.None);
         double maxY1 = double.MinValue;
         double maxZ1 = double.MinValue;
-        foreach(string c in coordinates1) {
+        foreach (string c in coordinates1) {
           string[] value = c.Split('|');
           double y1 = double.Parse(value[0]);
           double z1 = double.Parse(value[1].Remove(value[1].Length - 2));
@@ -92,7 +92,7 @@ namespace AdSecGH.Components {
         double maxY2 = double.MinValue;
         double maxZ2 = double.MinValue;
         foreach (string c in coordinates2) {
-          string[] value = c.Split('|'); 
+          string[] value = c.Split('|');
           double y2 = double.Parse(value[0]);
           double z2 = double.Parse(value[1].Remove(value[1].Length - 2));
 
@@ -110,7 +110,7 @@ namespace AdSecGH.Components {
         var updatedReinforcement = new List<AdSecRebarGroup>();
         foreach (AdSecRebarGroup group in reinforcements) {
           var duplicate = new AdSecRebarGroup();
-          if(group.Cover != null) {
+          if (group.Cover != null) {
             duplicate.Cover = ICover.Create(group.Cover.UniformCover);
           }
 

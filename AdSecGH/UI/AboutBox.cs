@@ -1,9 +1,9 @@
-﻿using Grasshopper.Kernel;
-using Oasys.AdSec;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
+using Grasshopper.Kernel;
+using Oasys.AdSec;
 
 namespace AdSecGH.UI {
   internal partial class AboutBox : Form {

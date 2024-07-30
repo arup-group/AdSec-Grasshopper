@@ -59,8 +59,7 @@ namespace AdSecGH.Components {
 
       // create flattened section
       ISection flat = null;
-      if (section.DesignCode != null) 
-      {
+      if (section.DesignCode != null) {
         var adSec = IAdSec.Create(section.DesignCode);
         flat = adSec.Flatten(section.Section);
       } else {

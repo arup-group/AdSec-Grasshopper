@@ -377,7 +377,7 @@ namespace AdSecGH.Components {
         _strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), _selectedItems[1]);
       }
 
-      if ( _selectedItems.Count > 2) {
+      if (_selectedItems.Count > 2) {
         _stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), _selectedItems[2]);
       }
 

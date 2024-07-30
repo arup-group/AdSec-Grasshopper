@@ -35,7 +35,7 @@ namespace AdSecGH.Components {
       "Create Rebar spacing (by Count or Pitch) for an AdSec Section",
       CategoryName.Name(),
       SubCategoryName.Cat3()) {
-      Hidden = false;  
+      Hidden = false;
     }
 
     public override void SetSelected(int i, int j) {
