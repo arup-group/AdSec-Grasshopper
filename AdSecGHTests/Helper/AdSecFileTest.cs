@@ -2,9 +2,11 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+
 using AdSecGH;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
+
 using Xunit;
 
 namespace AdSecGHTests.Helper {

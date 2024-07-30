@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
+
 using Oasys.AdSec.IO.Serialization;
+
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.UI;

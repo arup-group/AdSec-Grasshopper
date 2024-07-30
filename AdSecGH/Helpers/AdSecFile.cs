@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using AdSecGH.Parameters;
+
 using Oasys.AdSec.DesignCode;
 
 namespace AdSecGH.Helpers {

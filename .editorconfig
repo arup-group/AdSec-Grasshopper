@@ -18,7 +18,7 @@ insert_final_newline = true
 #### .NET Coding Conventions ####
 
 # Organize usings
-dotnet_separate_import_directive_groups = false
+dotnet_separate_import_directive_groups = true
 dotnet_sort_system_directives_first = true
 file_header_template = unset
 
@@ -256,7 +256,7 @@ resharper_braces_for_ifelse = required
 resharper_braces_for_while = required
 resharper_csharp_keep_blank_lines_in_code = 1
 resharper_csharp_keep_blank_lines_in_declarations = 1
-resharper_csharp_max_line_length = 100
+resharper_csharp_max_line_length = 120
 resharper_csharp_wrap_arguments_style = wrap_if_long
 resharper_csharp_wrap_before_binary_opsign = true
 resharper_csharp_wrap_multiple_declaration_style = chop_always

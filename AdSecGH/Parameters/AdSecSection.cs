@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.Geometry.Paths2D;
 using Oasys.Profiles;
+
 using OasysGH.Units;
+
 using OasysUnits;
 using OasysUnits.Units;
+
 using Rhino.Display;
 using Rhino.Geometry;
 
