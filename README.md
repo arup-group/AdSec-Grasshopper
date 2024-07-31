@@ -43,6 +43,10 @@ python -m venv .venv
 .\.venv\Scripts\activate
 # Install pre-commit
 pip install pre-commit
+# Install commitizen
+pip install Commitizen
+# Install and Add commit-msg and pre-push hook types
+pre-commit install --hook-type commit-msg --hook-type pre-push
 # Setup Hooks (repeat on new branches where the configuration might be different)
 pre-commit install
 ```

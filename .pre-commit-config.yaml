@@ -9,6 +9,7 @@ repos:
       entry: msbuild /p:AppxBundlePlatforms="x64" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload /m /nr:false
       language: system
       pass_filenames: false
+      stages: [pre-push]
       always_run: true
 
     - id: dotnet-format
@@ -21,6 +22,7 @@ repos:
     - id: dotnet-test-coverage
       name: Run dotnet tests with coverage
       entry: powershell.exe -NoProfile -ExecutionPolicy Bypass -File coverage.ps1
+      stages: [pre-push]
       language: system
 
   - repo: https://github.com/commitizen-tools/commitizen
