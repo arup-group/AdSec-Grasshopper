@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.Geometry.Paths2D;
 using Oasys.Profiles;
+
 using OasysGH.Units;
+
 using OasysUnits;
 using OasysUnits.Units;
+
 using Rhino.Display;
 using Rhino.Geometry;
 
@@ -223,7 +227,7 @@ namespace AdSecGH.Parameters {
 
       // local axis
       if (LocalPlane != null) {
-        if (LocalPlane != Plane.WorldXY & LocalPlane != Plane.WorldYZ & LocalPlane != Plane.WorldZX) {
+        if (LocalPlane != Plane.WorldXY && LocalPlane != Plane.WorldYZ && LocalPlane != Plane.WorldZX) {
           Area area = Section.Profile.Area();
           double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
           var length = new Length(pythogoras * 0.15, LengthUnit.Meter);

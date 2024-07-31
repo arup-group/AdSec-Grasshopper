@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
+
 using Oasys.AdSec.IO.Serialization;
+
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.UI;
@@ -94,7 +98,7 @@ namespace AdSecGH.Components {
     }
 
     public void SaveFile() {
-      if (_fileName == null | _fileName == "") {
+      if (string.IsNullOrEmpty(_fileName)) {
         SaveAsFile();
       } else {
         // write to file
@@ -111,7 +115,7 @@ namespace AdSecGH.Components {
     }
 
     internal static string CombineJSonStrings(List<string> jsonStrings) {
-      if (jsonStrings == null | jsonStrings.Count == 0) {
+      if (jsonStrings == null || jsonStrings.Count == 0) {
         return null;
       }
       string jsonString = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
@@ -158,7 +162,7 @@ namespace AdSecGH.Components {
       if (DA.GetDataTree(1, out GH_Structure<IGH_Goo> loads)) {
         if (loads.Branches.Count > 0) {
           for (int i = 0; i < sections.Count; i++) {
-            if (loads.Branches[i] == null | loads.Branches[i].Count == 0) {
+            if (loads.Branches[i] == null || loads.Branches[i].Count == 0) {
               // convert to json without loads method
               try {
                 jsonStrings.Add(json.SectionToJson(sections[i].Section));

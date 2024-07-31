@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+
 using Grasshopper.Kernel;
+
 using Oasys.AdSec;
 using Oasys.AdSec.IO.Graphics.Section;
 using Oasys.Profiles;
+
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.UI;
@@ -95,7 +99,7 @@ namespace AdSecGH.Components {
     }
 
     public void SaveFile() {
-      if (_fileName == null | _fileName == "") {
+      if (string.IsNullOrEmpty(_fileName)) {
         SaveAsFile();
       } else {
         // write to file
