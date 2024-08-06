@@ -65,7 +65,7 @@ namespace AdSecGHTests.Parameters {
         Assert.Equal(expectedPoint.Y.Value, actualPoint.Y.Value, 4);
         Assert.Equal(expectedPoint.Z.Value, actualPoint.Z.Value, 4);
       }
-      if(!unflattened) {
+      if (!unflattened) {
         Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).Positions[0].Y.Value, ((ISingleBars)actual.ReinforcementGroups[0]).Positions[0].Y.Value, 4);
         Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).Positions[0].Z.Value, ((ISingleBars)actual.ReinforcementGroups[0]).Positions[0].Z.Value, 4);
         Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).BarBundle.CountPerBundle, ((ISingleBars)actual.ReinforcementGroups[0]).BarBundle.CountPerBundle);
