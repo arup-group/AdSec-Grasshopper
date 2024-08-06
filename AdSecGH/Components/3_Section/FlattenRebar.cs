@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+
 using Grasshopper.Kernel;
+
 using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
 using Oasys.Profiles;
+
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.Parameters;
 using OasysGH.Units;
+
 using OasysUnits;
 
 namespace AdSecGH.Components {
@@ -59,8 +64,7 @@ namespace AdSecGH.Components {
 
       // create flattened section
       ISection flat = null;
-      if (section.DesignCode != null) 
-      {
+      if (section.DesignCode != null) {
         var adSec = IAdSec.Create(section.DesignCode);
         flat = adSec.Flatten(section.Section);
       } else {

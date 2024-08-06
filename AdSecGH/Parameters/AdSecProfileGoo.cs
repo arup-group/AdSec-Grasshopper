@@ -2,13 +2,18 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
+
 using Oasys.Profiles;
+
 using OasysGH.Units;
+
 using OasysUnits;
 using OasysUnits.Units;
+
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
@@ -406,7 +411,7 @@ namespace AdSecGH.Parameters {
     private void UpdatePreview() {
       // local axis
       if (m_plane != null) {
-        if (m_plane != Plane.WorldXY & m_plane != Plane.WorldYZ & m_plane != Plane.WorldZX) {
+        if (m_plane != Plane.WorldXY && m_plane != Plane.WorldYZ && m_plane != Plane.WorldZX) {
           Area area = Profile.Area();
           double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
           var length = new Length(pythogoras * 0.15, LengthUnit.Meter);

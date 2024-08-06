@@ -1,0 +1,55 @@
+name: Pre-commit checks
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches:
+      - main
+  workflow_call:
+    inputs:
+      mark_as_draft:
+        required: false
+        type: boolean
+        description: Mark PR as draft if checks fail
+        default: false
+      skip_hooks:
+        required: false
+        type: string
+        description: Comma separated list of pre-commit hook ids to skip
+        default: ''
+
+env:
+  MARK_AS_DRAFT: ${{ github.event.inputs.mark_as_draft }}
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup python
+      uses: actions/setup-python@v5
+
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Get changed files
+      id: changed-files
+      env:
+        GITHUB_BASE_REF: ${{ github.base_ref }}
+        GITHUB_HEAD_REF: ${{ github.head_ref }}
+      run: |
+        FILES=$(git diff --name-only "origin/$GITHUB_BASE_REF" "origin/$GITHUB_HEAD_REF" | awk '{printf("\"%s\" ",$0)} END { printf "\n" }')
+        echo "files=$FILES" >> "$GITHUB_OUTPUT"
+
+    - uses: pre-commit/action@v3.0.1
+      env:
+        SKIP: ${{ inputs.skip_hooks }}
+      with:
+        extra_args: --files ${{ steps.changed-files.outputs.files }}
+
+    - name: Mark as draft
+      if: failure() && env.MARK_AS_DRAFT
+      uses: voiceflow/draft-pr@latest
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}

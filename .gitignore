@@ -1,4 +1,7 @@
+/.idea
+/results
 /.vs
+/.venv
 packages
 AdSecGH/bin
 AdSecGH/obj

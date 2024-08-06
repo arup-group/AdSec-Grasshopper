@@ -1,14 +1,20 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+
 using AdSecGH.Graphics.Menu;
 using AdSecGH.Properties;
+
 using Grasshopper;
 using Grasshopper.Kernel;
+
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
+
 using OasysGH.Helpers;
+
 using Rhino;
+
 using Utility = OasysGH.Utility;
 
 namespace AdSecGH {

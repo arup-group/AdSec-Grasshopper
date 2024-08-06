@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Linq;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
+
 using Oasys.AdSec.Materials.StressStrainCurves;
+
 using OasysGH.Units;
+
 using OasysUnits;
+
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {

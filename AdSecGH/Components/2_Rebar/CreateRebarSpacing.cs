@@ -1,17 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
+
 using Oasys.AdSec.Reinforcement.Layers;
+
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.Helpers;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;
+
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -35,7 +40,7 @@ namespace AdSecGH.Components {
       "Create Rebar spacing (by Count or Pitch) for an AdSec Section",
       CategoryName.Name(),
       SubCategoryName.Cat3()) {
-      Hidden = false;  
+      Hidden = false;
     }
 
     public override void SetSelected(int i, int j) {
