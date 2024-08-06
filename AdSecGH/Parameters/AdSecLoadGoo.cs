@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
+
 using Oasys.AdSec;
+
 using OasysGH.Units;
+
 using OasysUnits;
+
 using Rhino.Display;
 using Rhino.Geometry;
 

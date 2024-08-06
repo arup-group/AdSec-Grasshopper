@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Drawing;
+
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
+
 using Oasys.AdSec;
+
 using OasysGH;
 using OasysGH.Parameters;
+
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
