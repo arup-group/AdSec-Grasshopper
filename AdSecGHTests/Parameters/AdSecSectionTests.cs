@@ -19,64 +19,59 @@ using Xunit;
 namespace AdSecGHTests.Parameters {
   [Collection("GrasshopperFixture collection")]
   public class AdSecSectionTests {
-    [Fact(Skip = "Not Implemented Yet")]
+    [Fact]
     public void SerialiseUnflattenedSectionTest() {
-      ISection section = CreateSection();
+      var section = CreateSection();
 
-      IDesignCode designCode = EN1992.Part1_1.Edition_2004.NationalAnnex.DE.Edition_2013;
+      var designCode = EN1992.Part1_1.Edition_2004.NationalAnnex.DE.Edition_2013;
       var adSec = IAdSec.Create(designCode);
-      ISection flattened = adSec.Flatten(section);
+      var flattened = adSec.Flatten(section);
 
-      string fileName = Path.GetTempPath() + "AdSecSectionTest.ads";
+      string fileName = Path.GetTempPath() + "AdSecSectionTest-Unflattened.ads";
       File.WriteAllText(fileName, CreateJson(designCode, section));
 
       string json = File.ReadAllText(fileName);
-      ParsedResult jsonParser = JsonParser.Deserialize(json);
-      ISection actualSection = jsonParser.Sections[0];
+      var jsonParser = JsonParser.Deserialize(json);
+      var actualSection = jsonParser.Sections[0];
 
-      var expectedProfile = (IPerimeterProfile)flattened.Profile;
-      var actualProfile = (IPerimeterProfile)actualSection.Profile;
-
-      TestSection(flattened, actualSection);
+      TestSection(flattened, actualSection, true);
     }
 
     [Fact]
     public void SerialiaseFlattenedSectionTest() {
-      ISection section = CreateSection();
+      var section = CreateSection();
 
-      IDesignCode designCode = EN1992.Part1_1.Edition_2004.NationalAnnex.DE.Edition_2013;
+      var designCode = EN1992.Part1_1.Edition_2004.NationalAnnex.DE.Edition_2013;
       var adSec = IAdSec.Create(designCode);
-      ISection flattened = adSec.Flatten(section);
+      var flattened = adSec.Flatten(section);
 
       string fileName = Path.GetTempPath() + "AdSecSectionTest.ads";
       File.WriteAllText(fileName, CreateJson(designCode, flattened));
 
       string json = File.ReadAllText(fileName);
-      ParsedResult jsonParser = JsonParser.Deserialize(json);
-      ISection actualSection = jsonParser.Sections[0];
-
-      var expectedProfile = (IPerimeterProfile)flattened.Profile;
-      var actualProfile = (IPerimeterProfile)actualSection.Profile;
+      var jsonParser = JsonParser.Deserialize(json);
+      var actualSection = jsonParser.Sections[0];
 
       TestSection(flattened, actualSection);
     }
 
-    private void TestSection(ISection expected, ISection actual) {
+    private static void TestSection(ISection expected, ISection actual, bool unflattened = false) {
       var expectedProfile = (IPerimeterProfile)expected.Profile;
       var actualProfile = (IPerimeterProfile)actual.Profile;
 
       for (int i = 0; i < expectedProfile.SolidPolygon.Points.Count; i++) {
-        IPoint expectedPoint = expectedProfile.SolidPolygon.Points[i];
-        IPoint actualPoint = actualProfile.SolidPolygon.Points[i];
+        var expectedPoint = expectedProfile.SolidPolygon.Points[i];
+        var actualPoint = actualProfile.SolidPolygon.Points[i];
 
         Assert.Equal(expectedPoint.Y.Value, actualPoint.Y.Value, 4);
         Assert.Equal(expectedPoint.Z.Value, actualPoint.Z.Value, 4);
       }
-
-      Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).Positions[0].Y.Value, ((ISingleBars)actual.ReinforcementGroups[0]).Positions[0].Y.Value, 4);
-      Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).Positions[0].Z.Value, ((ISingleBars)actual.ReinforcementGroups[0]).Positions[0].Z.Value, 4);
-      Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).BarBundle.CountPerBundle, ((ISingleBars)actual.ReinforcementGroups[0]).BarBundle.CountPerBundle);
-      Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).BarBundle.Diameter, ((ISingleBars)actual.ReinforcementGroups[0]).BarBundle.Diameter);
+      if (!unflattened) {
+        Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).Positions[0].Y.Value, ((ISingleBars)actual.ReinforcementGroups[0]).Positions[0].Y.Value, 4);
+        Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).Positions[0].Z.Value, ((ISingleBars)actual.ReinforcementGroups[0]).Positions[0].Z.Value, 4);
+        Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).BarBundle.CountPerBundle, ((ISingleBars)actual.ReinforcementGroups[0]).BarBundle.CountPerBundle);
+        Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).BarBundle.Diameter, ((ISingleBars)actual.ReinforcementGroups[0]).BarBundle.Diameter);
+      }
 
       Assert.Equal(expectedProfile.ElasticModulus().Y.Value, actualProfile.ElasticModulus().Y.Value, 10);
       Assert.Equal(expectedProfile.ElasticModulus().Z.Value, actualProfile.ElasticModulus().Z.Value, 10);
@@ -95,7 +90,7 @@ namespace AdSecGHTests.Parameters {
 
     private static ISection CreateSection() {
       IMaterial material = Oasys.AdSec.StandardMaterials.Concrete.EN1992.Part1_1.Edition_2004.NationalAnnex.DE.Edition_2013.C40_50;
-      IReinforcement rebarMaterial = Oasys.AdSec.StandardMaterials.Reinforcement.Steel.EN1992.Part1_1.Edition_2004.NationalAnnex.DE.Edition_2013.S500B;
+      var rebarMaterial = Oasys.AdSec.StandardMaterials.Reinforcement.Steel.EN1992.Part1_1.Edition_2004.NationalAnnex.DE.Edition_2013.S500B;
 
       var points = new List<IPoint2d>() {
         new Point2d(new Length(3.1464410643837, LengthUnit.Meter), new Length(2.9552083887352, LengthUnit.Meter)),
@@ -134,7 +129,7 @@ namespace AdSecGHTests.Parameters {
 
       var polygon = new Polygon(points);
       var profile = new Oasys.Taxonomy.Profiles.PerimeterProfile(polygon, new List<Oasys.Taxonomy.Geometry.IPolygon>());
-      IPerimeterProfile adsecProfile = AdSecProfiles.CreatePerimeterProfile(profile);
+      var adsecProfile = AdSecProfiles.CreatePerimeterProfile(profile);
       var section = ISection.Create(adsecProfile, material);
 
       var bars = ISingleBars.Create(IBarBundle.Create(rebarMaterial, new Length(25, LengthUnit.Millimeter)));
