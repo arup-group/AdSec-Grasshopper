@@ -26,14 +26,14 @@ namespace AdSecGHTests.Parameters {
       var designCode = EN1992.Part1_1.Edition_2004.NationalAnnex.DE.Edition_2013;
       var adSec = IAdSec.Create(designCode);
       var flattened = adSec.Flatten(section);
-      
+
       string fileName = Path.GetTempPath() + "AdSecSectionTest-Unflattened.ads";
       File.WriteAllText(fileName, CreateJson(designCode, section));
-      
+
       string json = File.ReadAllText(fileName);
       var jsonParser = JsonParser.Deserialize(json);
       var actualSection = jsonParser.Sections[0];
-      
+
       TestSection(flattened, actualSection, true);
     }
 
