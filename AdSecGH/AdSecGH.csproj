@@ -54,7 +54,7 @@ Copyright © Oasys 1985 - 2024</Description>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AdSec">
-      <Version>2.0.1.1084</Version>
+      <Version>2.0.3.268</Version>
     </PackageReference>
     <PackageReference Include="Grasshopper" Version="6.27.20176.5001" IncludeAssets="compile;build">
       <PrivateAssets>all</PrivateAssets>
@@ -62,9 +62,9 @@ Copyright © Oasys 1985 - 2024</Description>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
-    <PackageReference Include="OasysGH" Version="1.1.0" />
+    <PackageReference Include="OasysGH" Version="1.2.4" />
     <PackageReference Include="OasysUnits">
-      <Version>1.1.1</Version>
+      <Version>1.2.1</Version>
     </PackageReference>
     <PackageReference Include="RhinoCommon">
       <Version>6.27.20176.5001</Version>

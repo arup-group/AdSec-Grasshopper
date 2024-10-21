@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using AdSecGH.Helpers;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.Interop;
 using Oasys.Profiles;
 using Oasys.Taxonomy.Geometry;
 using OasysUnits;

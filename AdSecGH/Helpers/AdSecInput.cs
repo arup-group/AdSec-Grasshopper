@@ -10,7 +10,6 @@ using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using Oasys.Interop;
 using Oasys.Profiles;
 using OasysGH.Helpers;
 using OasysGH.Parameters;
