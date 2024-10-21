@@ -1,6 +1,9 @@
 ﻿using Grasshopper.Kernel.Types;
+
 using Oasys.Profiles;
+
 using OasysGH.Units;
+
 using OasysUnits;
 
 namespace AdSecGH.Parameters {
@@ -21,8 +24,7 @@ namespace AdSecGH.Parameters {
       if (Value.BottomThickness.Value == Value.TopThickness.Value) {
         Length thk = Value.BottomThickness.ToUnit(DefaultUnits.LengthUnitGeometry);
         web += "Constant " + thk.ToString() + "}";
-      }
-      else {
+      } else {
         Length thk1 = Value.TopThickness.ToUnit(DefaultUnits.LengthUnitGeometry);
         Length thk2 = Value.BottomThickness.ToUnit(DefaultUnits.LengthUnitGeometry);
         web += "Tapered: Top:" + thk1.ToString() + ", Bottom:" + thk2.ToString() + "}";

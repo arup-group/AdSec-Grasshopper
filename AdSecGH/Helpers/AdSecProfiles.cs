@@ -30,7 +30,7 @@ namespace AdSecGH.Helpers {
         case ProfileType.IBeamAssymetrical:
           return CreateIBeamAsymmetricalProfile((IBeamAsymmetricalProfile)profile);
         case ProfileType.IBeamCellular:
-          return CreateIBeamCellularProfile((IBeamCellularProfile) profile);
+          return CreateIBeamCellularProfile((IBeamCellularProfile)profile);
         case ProfileType.Perimeter:
           return CreatePerimeterProfile((IPerimeterProfile)profile);
         case ProfileType.Rectangle:
@@ -172,11 +172,9 @@ namespace AdSecGH.Helpers {
     public static Oasys.Profiles.IWeb CreateWeb(IWeb web) {
       if (web is IWebConstant webConstant) {
         return CreateWebConstant(webConstant);
-      }
-      else if (web is IWebTapered webTapered) {
+      } else if (web is IWebTapered webTapered) {
         return CreateWebTapered(webTapered);
-      }
-      else { return null; }
+      } else { return null; }
 
     }
   }

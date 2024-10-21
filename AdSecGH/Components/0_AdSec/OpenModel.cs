@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
+
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
+
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.UI;
+
 using Rhino.Geometry;
 
 namespace AdSecGH.Components {

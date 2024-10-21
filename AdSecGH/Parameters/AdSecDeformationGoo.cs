@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Linq;
+
 using Grasshopper.Kernel.Types;
+
 using Oasys.AdSec;
+
 using OasysGH.Units;
+
 using OasysUnits;
 
 namespace AdSecGH.Parameters {

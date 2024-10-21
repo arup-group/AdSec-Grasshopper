@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
+
 using Rhino.Geometry;
 
 namespace AdSecGHTests.Helpers {

@@ -1,12 +1,17 @@
 ﻿using System;
+
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+
 using Grasshopper.Kernel;
+
 using Oasys.AdSec;
 using Oasys.Profiles;
+
 using OasysGH;
 using OasysGH.Components;
+
 using OasysUnits;
 
 namespace AdSecGH.Components {

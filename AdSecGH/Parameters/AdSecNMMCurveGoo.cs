@@ -2,13 +2,19 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+
 using AdSecGH.Helpers;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
+
 using Oasys.AdSec;
 using Oasys.AdSec.Mesh;
+
 using OasysGH.Units;
+
 using OasysUnits;
+
 using Rhino.Display;
 using Rhino.DocObjects;
 using Rhino.Geometry;

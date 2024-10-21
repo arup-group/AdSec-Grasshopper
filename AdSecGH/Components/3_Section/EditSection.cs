@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
+
 using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement.Groups;
+
 using OasysGH;
 using OasysGH.Components;
+
 using Rhino.Geometry;
 
 namespace AdSecGH.Components {

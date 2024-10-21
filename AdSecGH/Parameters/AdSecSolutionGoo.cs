@@ -1,5 +1,7 @@
 ﻿using Grasshopper.Kernel.Types;
+
 using Oasys.AdSec;
+
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
