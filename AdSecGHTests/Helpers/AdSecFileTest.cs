@@ -9,7 +9,7 @@ using AdSecGH.Parameters;
 
 using Xunit;
 
-namespace AdSecGHTests.Helper {
+namespace AdSecGHTests.Helpers {
   [Collection("GrasshopperFixture collection")]
   public class AdSecFileTest {
     private string CreateSampleJson(string codeName, bool valid = true) {
