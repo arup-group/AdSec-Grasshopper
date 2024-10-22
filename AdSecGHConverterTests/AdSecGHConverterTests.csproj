@@ -4,7 +4,7 @@
     <Platforms>x64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="xunit" Version="2.7.0" />
+    <PackageReference Include="xunit" Version="2.7.0"/>
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -15,12 +15,12 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AdSecGHConverters\AdSecGHConverters.csproj" />
+    <ProjectReference Include="..\AdSecGHConverters\AdSecGHConverters.csproj"/>
   </ItemGroup>
   <ItemGroup>
     <None Update="xunit.runner.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Import Project="PreBuild.targets" />
+  <Import Project="PreBuild.targets"/>
 </Project>
