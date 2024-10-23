@@ -14,7 +14,7 @@ pool: 'rhino-compute'
 steps:
 - powershell: Remove-Item -Path C:\Users\**\AppData\Roaming\Grasshopper\Libraries\*.ghlink
   displayName: 'Delete orphan .ghlink files'
-  
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
@@ -35,17 +35,17 @@ steps:
     MSBUILDDISABLENODEREUSE: 1
 
 - powershell: |
-    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.0\build --results-directory .\results\adsecgh .\AdSecGHTests\bin\x64\Release\net48\AdSecGHTests.dll
-    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.0\build --results-directory .\results\integration  .\IntegrationTests\bin\x64\Release\net48\IntegrationTests.dll
+    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecgh .\AdSecGHTests\bin\x64\Release\net48\AdSecGHTests.dll
+    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\integration  .\IntegrationTests\bin\x64\Release\net48\IntegrationTests.dll
   displayName: dotnet tests
   failOnStderr: false
 
 - powershell: |
-    if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post | Select-Object StatusCode).StatusCode) { 
+    if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post | Select-Object StatusCode).StatusCode) {
       Write-Output "codecov.yml is invalid"
       Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post
       exit(1)
-    } else { 
+    } else {
       Write-Output "codecov.yml is valid"
     }
   displayName: Validate codecov.yml
@@ -56,7 +56,7 @@ steps:
     echo $coverage_file_adsecgh
     $coverage_file_integration = (Resolve-Path $(System.DefaultWorkingDirectory)/results/integration/*/coverage.cobertura.xml).Path
     echo $coverage_file_integration
-    
+
     Copy-Item $coverage_file_adsecgh $(System.DefaultWorkingDirectory)\results\coverage_adsecgh.xml
     Copy-Item $coverage_file_integration $(System.DefaultWorkingDirectory)\results\coverage_integration.xml
     $ProgressPreference = 'SilentlyContinue'
@@ -92,7 +92,7 @@ steps:
         $underscoreSeparatedTag = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
         $tagNumbersOnlyUnderscore = $majorVersion + "_" + $minorVersion + "_" + $spVersion + "_" + $buildNumber
         $tagNumbersOnlydot = $majorVersion + "." + $minorVersion + "." + $spVersion + "." + $buildNumber
-        
+
         Write-Host ("##vso[task.setvariable variable=dotSeparatedTag]$dotSeparatedTag")
         git rev-parse $dotSeparatedTag
         if($lastExitCode -eq 0){Write-Host ("##vso[task.setvariable variable=TAG_EXISTS]true")}

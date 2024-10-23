@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 
+using AdSecGH.Helpers;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
@@ -66,7 +68,7 @@ namespace IntegrationTests {
       return null;
     }
 
-    public static void TestGHPrimitives(IGH_Param param, object expected, int tolerance = 6) {
+    public static void TestGHPrimitives(IGH_Param param, object expected) {
       if (expected.GetType() == typeof(string)) {
         var valOut = (GH_String)param.VolatileData.get_Branch(0)[0];
         Assert.Equal(expected, valOut.Value);
@@ -75,7 +77,7 @@ namespace IntegrationTests {
         Assert.Equal(expected, valOut.Value);
       } else if (expected.GetType() == typeof(double)) {
         var valOut = (GH_Number)param.VolatileData.get_Branch(0)[0];
-        Assert.Equal((double)expected, valOut.Value, tolerance);
+        Assert.Equal((double)expected, valOut.Value, new DoubleComparer());
       } else if (expected.GetType() == typeof(bool)) {
         var valOut = (GH_Boolean)param.VolatileData.get_Branch(0)[0];
         Assert.Equal(expected, valOut.Value);
@@ -97,7 +99,7 @@ namespace IntegrationTests {
       } else if (expected.GetType() == typeof(double[])) {
         for (int i = 0; i < ((double[])expected).Length; i++) {
           var valOut = (GH_Number)param.VolatileData.get_Branch(0)[i];
-          Assert.Equal(((double[])expected)[i], valOut.Value, tolerance);
+          Assert.Equal(((double[])expected)[i], valOut.Value, new DoubleComparer());
         }
       } else {
         Assert.Fail("Expected type not found!");

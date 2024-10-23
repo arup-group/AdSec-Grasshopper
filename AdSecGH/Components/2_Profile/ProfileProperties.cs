@@ -74,7 +74,7 @@ namespace AdSecGH.Components {
       var unitSystem = new UnitSystem(baseUnits);
       AreaUnit areaUnit = new Area(1, unitSystem).Unit;
 
-      SectionModulusUnit wUnit = SectionModulusUnit.Undefined;
+      SectionModulusUnit wUnit = SectionModulusUnit.CubicMeter;
       switch (lengthUnit) {
         case LengthUnit.Millimeter:
           wUnit = SectionModulusUnit.CubicMillimeter;

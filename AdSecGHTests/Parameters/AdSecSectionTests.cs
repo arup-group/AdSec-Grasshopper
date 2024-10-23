@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+
+using AdSecGH.Helpers;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
@@ -7,7 +11,6 @@ using Oasys.AdSec.IO.Serialization;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.Interop;
 using Oasys.Profiles;
 using Oasys.Taxonomy.Geometry;
 
@@ -19,12 +22,13 @@ using Xunit;
 namespace AdSecGHTests.Parameters {
   [Collection("GrasshopperFixture collection")]
   public class AdSecSectionTests {
-    [Fact(Skip = "Not Implemented Yet")]
+    [Fact]
     public void SerialiseUnflattenedSectionTest() {
       ISection section = CreateSection();
 
       IDesignCode designCode = EN1992.Part1_1.Edition_2004.NationalAnnex.DE.Edition_2013;
       var adSec = IAdSec.Create(designCode);
+
       ISection flattened = adSec.Flatten(section);
 
       string fileName = Path.GetTempPath() + "AdSecSectionTest.ads";
@@ -37,7 +41,7 @@ namespace AdSecGHTests.Parameters {
       var expectedProfile = (IPerimeterProfile)flattened.Profile;
       var actualProfile = (IPerimeterProfile)actualSection.Profile;
 
-      TestSection(flattened, actualSection);
+      TestFlattenedSection(flattened, actualSection);
     }
 
     [Fact]
@@ -58,34 +62,37 @@ namespace AdSecGHTests.Parameters {
       var expectedProfile = (IPerimeterProfile)flattened.Profile;
       var actualProfile = (IPerimeterProfile)actualSection.Profile;
 
-      TestSection(flattened, actualSection);
+      TestFlattenedSection(flattened, actualSection);
     }
 
-    private void TestSection(ISection expected, ISection actual) {
+    private void TestFlattenedSection(ISection expected, ISection actual) {
+      //A flattened section does not guarantee position points to be the same, as those sections may have positions relative
+      //to different origin sets. Additionally, the flattened section splits the bundle of bars into single bars.
       var expectedProfile = (IPerimeterProfile)expected.Profile;
       var actualProfile = (IPerimeterProfile)actual.Profile;
-
-      for (int i = 0; i < expectedProfile.SolidPolygon.Points.Count; i++) {
-        IPoint expectedPoint = expectedProfile.SolidPolygon.Points[i];
-        IPoint actualPoint = actualProfile.SolidPolygon.Points[i];
-
-        Assert.Equal(expectedPoint.Y.Value, actualPoint.Y.Value, 4);
-        Assert.Equal(expectedPoint.Z.Value, actualPoint.Z.Value, 4);
+      Assert.Equal(expectedProfile.Area().Value, actualProfile.Area().Value, new DoubleComparer());
+      double actualBarArea = 0;
+      foreach (IGroup group in actual.ReinforcementGroups) {
+        var singleBar = group as ISingleBars;
+        actualBarArea += Math.PI * Math.Pow(singleBar.BarBundle.Diameter.Value / 2.0, 2) * singleBar.BarBundle.CountPerBundle;
       }
 
-      Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).Positions[0].Y.Value, ((ISingleBars)actual.ReinforcementGroups[0]).Positions[0].Y.Value, 4);
-      Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).Positions[0].Z.Value, ((ISingleBars)actual.ReinforcementGroups[0]).Positions[0].Z.Value, 4);
-      Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).BarBundle.CountPerBundle, ((ISingleBars)actual.ReinforcementGroups[0]).BarBundle.CountPerBundle);
-      Assert.Equal(((ISingleBars)expected.ReinforcementGroups[0]).BarBundle.Diameter, ((ISingleBars)actual.ReinforcementGroups[0]).BarBundle.Diameter);
+      double expectedBarArea = 0;
+      foreach (IGroup group in expected.ReinforcementGroups) {
+        var singleBar = group as ISingleBars;
+        expectedBarArea += Math.PI * Math.Pow(singleBar.BarBundle.Diameter.Value / 2.0, 2) * singleBar.BarBundle.CountPerBundle;
+      }
 
-      Assert.Equal(expectedProfile.ElasticModulus().Y.Value, actualProfile.ElasticModulus().Y.Value, 10);
-      Assert.Equal(expectedProfile.ElasticModulus().Z.Value, actualProfile.ElasticModulus().Z.Value, 10);
-      Assert.Equal(expectedProfile.SurfaceAreaPerUnitLength().Value, actualProfile.SurfaceAreaPerUnitLength().Value, 10);
-      Assert.Equal(expectedProfile.LocalAxisSecondMomentOfArea().YY.Value, actualProfile.LocalAxisSecondMomentOfArea().YY.Value, 10);
-      Assert.Equal(expectedProfile.LocalAxisSecondMomentOfArea().ZZ.Value, actualProfile.LocalAxisSecondMomentOfArea().ZZ.Value, 10);
-      Assert.Equal(expectedProfile.LocalAxisSecondMomentOfArea().YZ.Value, actualProfile.LocalAxisSecondMomentOfArea().YZ.Value, 10);
-      Assert.Equal(expectedProfile.PrincipalAxisSecondMomentOfArea().UU.Value, actualProfile.PrincipalAxisSecondMomentOfArea().UU.Value, 10);
-      Assert.Equal(expectedProfile.PrincipalAxisSecondMomentOfArea().VV.Value, actualProfile.PrincipalAxisSecondMomentOfArea().VV.Value, 10);
+      Assert.Equal(expectedBarArea, actualBarArea, new DoubleComparer());
+
+      Assert.Equal(expectedProfile.ElasticModulus().Y.Value, actualProfile.ElasticModulus().Y.Value, new DoubleComparer());
+      Assert.Equal(expectedProfile.ElasticModulus().Z.Value, actualProfile.ElasticModulus().Z.Value, new DoubleComparer());
+      Assert.Equal(expectedProfile.SurfaceAreaPerUnitLength().Value, actualProfile.SurfaceAreaPerUnitLength().Value, new DoubleComparer());
+      Assert.Equal(expectedProfile.LocalAxisSecondMomentOfArea().YY.Value, actualProfile.LocalAxisSecondMomentOfArea().YY.Value, new DoubleComparer());
+      Assert.Equal(expectedProfile.LocalAxisSecondMomentOfArea().ZZ.Value, actualProfile.LocalAxisSecondMomentOfArea().ZZ.Value, new DoubleComparer());
+      Assert.Equal(expectedProfile.LocalAxisSecondMomentOfArea().YZ.Value, actualProfile.LocalAxisSecondMomentOfArea().YZ.Value, new DoubleComparer());
+      Assert.Equal(expectedProfile.PrincipalAxisSecondMomentOfArea().UU.Value, actualProfile.PrincipalAxisSecondMomentOfArea().UU.Value, new DoubleComparer());
+      Assert.Equal(expectedProfile.PrincipalAxisSecondMomentOfArea().VV.Value, actualProfile.PrincipalAxisSecondMomentOfArea().VV.Value, new DoubleComparer());
     }
 
     private static string CreateJson(IDesignCode designCode, ISection section) {

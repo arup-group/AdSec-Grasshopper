@@ -31,7 +31,7 @@ namespace AdSecGH {
     internal const string ProductName = "AdSec";
     internal const string TermsConditions
       = "Oasys terms and conditions apply. See https://www.oasys-software.com/terms-conditions for details. ";
-    internal const string Vers = "0.9.27";
+    internal const string Vers = "0.9.28";
     internal static string Disclaimer = PluginName
       + " is pre-release and under active development, including further testing to be undertaken. It is provided \"as-is\" and you bear the risk of using it. Future versions may contain breaking changes. Any files, results, or other types of output information created using "
       + PluginName + " should not be relied upon without thorough and independent checking. ";
