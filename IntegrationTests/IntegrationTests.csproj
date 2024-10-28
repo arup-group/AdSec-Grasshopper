@@ -3,11 +3,12 @@
     <TargetFramework>net48</TargetFramework>
     <PlatformTarget>x64</PlatformTarget>
     <Platforms>x64</Platforms>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.3" />
-    <PackageReference Include="Rhino.Inside" Version="7.0.0" />
-    <PackageReference Include="xunit" Version="2.7.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.3"/>
+    <PackageReference Include="Rhino.Inside" Version="7.0.0"/>
+    <PackageReference Include="xunit" Version="2.7.0"/>
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -18,7 +19,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AdSecGH\AdSecGH.csproj" />
+    <ProjectReference Include="..\AdSecGH\AdSecGH.csproj"/>
   </ItemGroup>
   <ItemGroup>
     <None Update="xunit.runner.json">
@@ -26,10 +27,10 @@
     </None>
   </ItemGroup>
 
-  <Import Project="PreBuild.targets" />
+  <Import Project="PreBuild.targets"/>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetDir)AdSecGH.dll&quot; &quot;$(TargetDir)AdSec.gha&quot;" />
+    <Exec Command="Copy &quot;$(TargetDir)AdSecGH.dll&quot; &quot;$(TargetDir)AdSec.gha&quot;"/>
   </Target>
 
 </Project>

@@ -5,7 +5,6 @@ using System.Reflection;
 
 using AdSecGH;
 using AdSecGH.Helpers;
-using AdSecGH.Parameters;
 
 using Xunit;
 
@@ -26,7 +25,7 @@ namespace AdSecGHTests.Helpers {
 
       foreach (string key in AdSecFile.Codes.Keys) {
         string json = CreateSampleJson(key);
-        AdSecDesignCode code = AdSecFile.GetDesignCode(json);
+        var code = AdSecFile.GetDesignCode(json);
 
         Assert.True(AdSecFile.Codes.ContainsValue(code.DesignCode));
         Assert.True(AdSecFile.CodesStrings.ContainsValue(code.DesignCodeName.Replace(" ", "+")));
@@ -41,7 +40,7 @@ namespace AdSecGHTests.Helpers {
 
       string json = CreateSampleJson("I'm invalid design code!");
 
-      AdSecDesignCode code = AdSecFile.GetDesignCode(json);
+      var code = AdSecFile.GetDesignCode(json);
 
       Assert.Null(code);
     }
@@ -54,7 +53,7 @@ namespace AdSecGHTests.Helpers {
 
       string json = CreateSampleJson(AdSecFile.Codes.Keys.FirstOrDefault(), false);
 
-      AdSecDesignCode code = AdSecFile.GetDesignCode(json);
+      var code = AdSecFile.GetDesignCode(json);
 
       Assert.Null(code);
     }
