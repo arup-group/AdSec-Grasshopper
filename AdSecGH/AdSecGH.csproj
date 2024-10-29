@@ -56,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AdSec" Version="2.0.3.300"/>
-    <PackageReference Include="Grasshopper" Version="6.27.20176.5001" IncludeAssets="compile;build">
+    <PackageReference Include="Grasshopper" Version="6.35.21222.17001" IncludeAssets="compile; build">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
@@ -67,7 +67,7 @@
       <Version>1.2.1</Version>
     </PackageReference>
     <PackageReference Include="RhinoCommon">
-      <Version>6.27.20176.5001</Version>
+      <Version>7.0.20314.3001</Version>
       <IncludeAssets>compile;build</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
