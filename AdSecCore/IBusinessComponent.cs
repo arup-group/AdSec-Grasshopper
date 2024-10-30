@@ -11,6 +11,7 @@ namespace Oasys.Business {
   public interface IBusinessComponent {
     Attribute[] GetAllInputAttributes();
     Attribute[] GetAllOutputAttributes();
+
     void UpdateInputValues(params object[] values);
     void Compute();
   }
@@ -22,8 +23,17 @@ namespace Oasys.Business {
     public string Description { get; set; }
   }
 
-  public class ParameterAttribute<T> : Attribute {
+  public interface IDefault {
+    void SetDefault();
+  }
+
+  public class ParameterAttribute<T> : Attribute, IDefault {
     public T Value { get; set; }
+    public T Default { get; set; }
+
+    public void SetDefault() {
+      Value = Default;
+    }
   }
 
   public class DoubleParameter : ParameterAttribute<double> { }
@@ -65,6 +75,8 @@ namespace Oasys.Business {
         Point,
       };
     }
+
+    public void GetDefaultValues() { throw new NotImplementedException(); }
 
     public void SetInputValue<T>(string name, T value) {
       var attribute = GetInputAttribute<T>(name);
