@@ -6,4 +6,8 @@
     <TargetFrameworks>net48;net7.0</TargetFrameworks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AdSec" Version="2.0.3.300"/>
+  </ItemGroup>
+
 </Project>
