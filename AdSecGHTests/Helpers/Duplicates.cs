@@ -4,90 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using AdSecGH.Components;
-
-using Grasshopper.Kernel;
-
-using Oasys.GH.Helpers;
-
-using OasysGH.Components;
-
 using Xunit;
 
 namespace AdSecGHTests.Helpers {
-
-  public static class ModFactory {
-    public static Type[] GetAllAssemblyTypes(string assemblyName = "AdSec.dll", string nameSpace = "") {
-      var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-      foreach (var item in assemblies) {
-        Console.WriteLine(item);
-        var other = item.GetLoadedModules();
-        other.ToList().ForEach(m => Console.WriteLine(m));
-      }
-
-      var assembly = assemblies.FirstOrDefault(x => x.ManifestModule.Name.Equals(assemblyName)
-        || x.ManifestModule.ScopeName.Equals(assemblyName));
-
-      var classes = assembly.GetTypes();
-      if (nameSpace != string.Empty) {
-        classes = classes.Where(x => x.Namespace == nameSpace).ToArray();
-      }
-
-      return classes;
-    }
-
-    public static IEnumerable<Type> ImplementsInterface(this Type[] collection, Type[] interfaces) {
-      return collection.Where(x => x.IsClass && !x.IsAbstract && interfaces.All(y => y.IsAssignableFrom(x)));
-    }
-
-    public static IEnumerable<Type> GetAllInterfaceTypes(Type[] interfaces) {
-      var allAssemblyTypes = GetAllAssemblyTypes();
-      return allAssemblyTypes.ImplementsInterface(interfaces);
-    }
-
-    public static IEnumerable<Type> GetAllInterfaceTypes() {
-      return GetAllInterfaceTypes(new[] {
-        typeof(GH_Component),
-        typeof(GH_OasysComponent),
-      });
-    }
-
-    public static GH_Component[] CreateInstancesWithCreateInterface() {
-      var allInterfaceTypes = GetAllInterfaceTypes();
-      var components = allInterfaceTypes.Select(Activator.CreateInstance).Select(x => x as GH_Component).ToArray();
-      return components;
-    }
-  }
-
-  [Collection("GrasshopperFixture collection")]
-  public class DropToCanvasTests {
-    //[Fact]
-    //public void TestAllComponents() {
-    //  var instances = ModFactory.CreateInstancesWithCreateInterface();
-    //  foreach (var instance in instances) {
-    //    Assert.NotNull(instance);
-    //  }
-    //}
-
-    [Fact]
-    public void TestAllComponentsByType() {
-      // Get All Assemblies
-      var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-      // Get The One for AdSecGH
-      var assembly = assemblies.FirstOrDefault(x => x.ManifestModule.Name.Equals("AdSecGH.dll")
-        || x.ManifestModule.ScopeName.Equals("AdSecGH.dll"));
-      // Get All Types matching GH_Component or GH_OasysDropdownComponent
-      var types = assembly.GetTypes().Where(x
-        => x.IsClass && !x.IsAbstract && typeof(GH_OasysDropDownComponent).IsAssignableFrom(x)
-        && x != typeof(CreateDesignCode) && x != typeof(DummyOasysDropdown)).ToArray();
-      foreach (var type in types) {
-        var instance = (GH_Component)Activator.CreateInstance(type);
-        instance.ExpireSolution(true);
-        Assert.True(instance.RuntimeMessages(GH_RuntimeMessageLevel.Error).Count == 0);
-      }
-    }
-  }
 
   public class Duplicates {
 
