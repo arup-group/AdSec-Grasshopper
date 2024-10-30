@@ -40,8 +40,30 @@ namespace Oasys.GH.Helpers {
         typeof(PointAttribute), a => new GH_ObjectWrapper {
           Value = new AdSecPointGoo((a as PointAttribute)?.Value),
         }
+      }, {
+        typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value)
       },
     };
+
+    public static void SetDefaultValues(this IBusinessComponent businessComponent) {
+      foreach (var attribute in businessComponent.GetAllInputAttributes()) {
+        if (attribute is IDefault @default) {
+          @default.SetDefault();
+        }
+      }
+    }
+
+    public static void SetDefaultValues(this IBusinessComponent businessComponent, GH_Component component) {
+      businessComponent.SetDefaultValues();
+
+      foreach (var attribute in businessComponent.GetAllInputAttributes()) {
+        int index = component.Params.IndexOfInputParam(attribute.Name);
+        var param = component.Params.Input[index];
+        dynamic goo = ToGoo[attribute.GetType()](attribute);
+        dynamic persistentParam = param; // as Param_Number;
+        persistentParam.PersistentData.Append(goo as GH_Number);
+      }
+    }
 
     public static void PopulateInputParams(this IBusinessComponent businessComponent, GH_Component component) {
       RegisterParams(businessComponent.GetAllInputAttributes(), param => component.Params.RegisterInputParam(param));
@@ -62,7 +84,8 @@ namespace Oasys.GH.Helpers {
     public static void SetValues(this IBusinessComponent businessComponent, GH_Component component) { }
   }
 
-  public abstract class BusinessOasysDropdownGlue<T> : GH_OasysDropDownComponent where T : IBusinessComponent {
+  public abstract class BusinessOasysDropdownGlue<T> : GH_OasysDropDownComponent, IDefaultValues
+    where T : IBusinessComponent {
     private readonly T _businessComponent = Activator.CreateInstance<T>();
 
     public BusinessOasysDropdownGlue(
@@ -72,6 +95,8 @@ namespace Oasys.GH.Helpers {
     public override Guid ComponentGuid { get; }
 
     public override OasysPluginInfo PluginInfo { get; }
+
+    public void SetDefaultValues() { _businessComponent.SetDefaultValues(this); }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       _businessComponent.PopulateInputParams(this);
@@ -93,17 +118,23 @@ namespace Oasys.GH.Helpers {
     }
   }
 
+  public interface IDefaultValues {
+    void SetDefaultValues();
+  }
+
   public class DummyBusiness : IBusinessComponent {
 
     public DoubleParameter Alpha { get; set; } = new DoubleParameter {
       Name = "Alpha",
       NickName = "A",
       Description = "Alpha description",
+      Default = 1,
     };
     public DoubleParameter Beta { get; set; } = new DoubleParameter {
       Name = "Beta",
       NickName = "B",
       Description = "Beta description",
+      Default = 2,
     };
 
     public Attribute[] GetAllInputAttributes() {
@@ -121,6 +152,8 @@ namespace Oasys.GH.Helpers {
     public void UpdateInputValues(params object[] values) { }
 
     public void Compute() { Beta.Value = Alpha.Value * 2; }
+
+    public void GetDefaultValues() { throw new NotImplementedException(); }
   }
 
   public abstract class BusinessOasysGlue<T> : GH_OasysComponent where T : IBusinessComponent {
@@ -151,6 +184,8 @@ namespace Oasys.GH.Helpers {
     public DummyOasysComponent() : base("Oasys Component Glue", "OCG", Test.thisIsForTestingPurposesOnly, "Oasys",
       "dummy") { }
 
+    public override GH_Exposure Exposure { get; } = GH_Exposure.hidden;
+
     public override Guid ComponentGuid => new Guid("CAA08C9E-417C-42AE-B734-91F214C8B87F");
 
     protected override void SolveInstance(IGH_DataAccess DA) { }
@@ -158,6 +193,7 @@ namespace Oasys.GH.Helpers {
 
   public class DummyOasysDropdown : BusinessOasysDropdownGlue<DummyBusiness> {
     public DummyOasysDropdown() : base("Business Dropdown Glue", "BDG", "description", "Oasys", "Dummy") { }
+    public override GH_Exposure Exposure { get; } = GH_Exposure.hidden;
     public override Guid ComponentGuid => new Guid("CAA08C9E-417C-42AE-B704-91F214C8C87F");
   }
 }
