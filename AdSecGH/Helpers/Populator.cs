@@ -62,12 +62,12 @@ namespace Oasys.GH.Helpers {
     public static void SetValues(this IBusinessComponent businessComponent, GH_Component component) { }
   }
 
-  public abstract class BusinessComponentGlue<T> : GH_OasysDropDownComponent where T : IBusinessComponent {
+  public abstract class BusinessOasysDropdownGlue<T> : GH_OasysDropDownComponent where T : IBusinessComponent {
     private readonly T _businessComponent = Activator.CreateInstance<T>();
 
-    public BusinessComponentGlue(string name, string nickname, string description, string category, string subCategory)
-      : base(name, nickname, description, category, subCategory) {
-    }
+    public BusinessOasysDropdownGlue(
+      string name, string nickname, string description, string category, string subCategory) : base(name, nickname,
+      description, category, subCategory) { }
 
     public override Guid ComponentGuid { get; }
 
@@ -85,7 +85,12 @@ namespace Oasys.GH.Helpers {
 
     protected override void SolveInternal(IGH_DataAccess da) { }
 
-    protected override void InitialiseDropdowns() { }
+    protected override void InitialiseDropdowns() {
+      _spacerDescriptions = new List<string>();
+      _dropDownItems = new List<List<string>>();
+      _selectedItems = new List<string>();
+      _isInitialised = true;
+    }
   }
 
   public class DummyBusiness : IBusinessComponent {
@@ -118,8 +123,41 @@ namespace Oasys.GH.Helpers {
     public void Compute() { Beta.Value = Alpha.Value * 2; }
   }
 
-  public class DummyComponent : BusinessComponentGlue<DummyBusiness> {
-    public DummyComponent() : base("name", "nickname", "description", "category", "subcategory") { }
+  public abstract class BusinessOasysGlue<T> : GH_OasysComponent where T : IBusinessComponent {
+
+    private readonly T _businessComponent = Activator.CreateInstance<T>();
+
+    public BusinessOasysGlue(string name, string nickname, string description, string category, string subCategory) :
+      base(name, nickname, description, category, subCategory) { }
+
+    public override OasysPluginInfo PluginInfo { get; } = AdSecGH.PluginInfo.Instance;
+
+    protected override void RegisterInputParams(GH_InputParamManager pManager) {
+      _businessComponent.PopulateInputParams(this);
+    }
+
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
+      _businessComponent.PopulateOutputParams(this);
+    }
+  }
+
+  public static class Test {
+
+    public const string thisIsForTestingPurposesOnly = "this is for testing purposes only";
+  }
+
+  public class DummyOasysComponent : BusinessOasysGlue<DummyBusiness> {
+
+    public DummyOasysComponent() : base("Oasys Component Glue", "OCG", Test.thisIsForTestingPurposesOnly, "Oasys",
+      "dummy") { }
+
+    public override Guid ComponentGuid => new Guid("CAA08C9E-417C-42AE-B734-91F214C8B87F");
+
+    protected override void SolveInstance(IGH_DataAccess DA) { }
+  }
+
+  public class DummyOasysDropdown : BusinessOasysDropdownGlue<DummyBusiness> {
+    public DummyOasysDropdown() : base("Business Dropdown Glue", "BDG", "description", "Oasys", "Dummy") { }
     public override Guid ComponentGuid => new Guid("CAA08C9E-417C-42AE-B704-91F214C8C87F");
   }
 }
