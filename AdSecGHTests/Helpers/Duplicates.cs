@@ -8,6 +8,8 @@ using AdSecGH.Components;
 
 using Grasshopper.Kernel;
 
+using Oasys.GH.Helpers;
+
 using OasysGH.Components;
 
 using Xunit;
@@ -78,7 +80,7 @@ namespace AdSecGHTests.Helpers {
       // Get All Types matching GH_Component or GH_OasysDropdownComponent
       var types = assembly.GetTypes().Where(x
         => x.IsClass && !x.IsAbstract && typeof(GH_OasysDropDownComponent).IsAssignableFrom(x)
-        && x != typeof(CreateDesignCode)).ToArray();
+        && x != typeof(CreateDesignCode) && x != typeof(DummyComponent)).ToArray();
       foreach (var type in types) {
         var instance = (GH_Component)Activator.CreateInstance(type);
         instance.ExpireSolution(true);
