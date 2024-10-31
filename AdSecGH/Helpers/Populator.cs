@@ -95,9 +95,13 @@ namespace Oasys.GH.Helpers {
     where T : IBusinessComponent {
     private readonly T _businessComponent = Activator.CreateInstance<T>();
 
-    public BusinessOasysDropdownGlue(
-      string name, string nickname, string description, string category, string subCategory) : base(name, nickname,
-      description, category, subCategory) { }
+    public BusinessOasysDropdownGlue() : base("", "", "", "", "") {
+      Name = _businessComponent.Metadata.Name;
+      NickName = _businessComponent.Metadata.NickName;
+      Description = _businessComponent.Metadata.Description;
+      Category = _businessComponent.Organisation.Category;
+      SubCategory = _businessComponent.Organisation.SubCategory;
+    }
 
     public override Guid ComponentGuid { get; }
 
@@ -171,6 +175,16 @@ namespace Oasys.GH.Helpers {
       Default = 2,
     };
 
+    public ComponentAttribute Metadata { get; set; } = new ComponentAttribute {
+      Name = "Dummy Business",
+      NickName = "DB",
+      Description = "Dummy Business Description",
+    };
+    public ComponentOrganisation Organisation { get; set; } = new ComponentOrganisation {
+      Category = "Dummy Category",
+      SubCategory = "Dummy SubCategory",
+    };
+
     public Attribute[] GetAllInputAttributes() {
       return new[] {
         Alpha,
@@ -208,7 +222,6 @@ namespace Oasys.GH.Helpers {
   }
 
   public class DummyOasysDropdown : BusinessOasysDropdownGlue<DummyBusiness> {
-    public DummyOasysDropdown() : base("Business Dropdown Glue", "BDG", "description", "Oasys", "Dummy") { }
     public override GH_Exposure Exposure { get; } = GH_Exposure.hidden;
     public override Guid ComponentGuid => new Guid("CAA08C9E-417C-42AE-B704-91F214C8C871");
   }

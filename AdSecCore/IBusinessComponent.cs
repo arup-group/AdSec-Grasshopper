@@ -9,11 +9,24 @@ using OasysUnits.Units;
 namespace Oasys.Business {
 
   public interface IBusinessComponent {
+
+    ComponentAttribute Metadata { get; set; }
+    ComponentOrganisation Organisation { get; set; }
     Attribute[] GetAllInputAttributes();
     Attribute[] GetAllOutputAttributes();
-
     void UpdateInputValues(params object[] values);
     void Compute();
+  }
+
+  public class ComponentAttribute {
+    public string Name { get; set; }
+    public string NickName { get; set; }
+    public string Description { get; set; }
+  }
+
+  public class ComponentOrganisation {
+    public string Category { get; set; }
+    public string SubCategory { get; set; }
   }
 
   public class Attribute {
@@ -62,6 +75,9 @@ namespace Oasys.Business {
     public void Compute() {
       Point.Value = IPoint.Create(new Length(Y.Value, LengthUnit.Meter), new Length(Z.Value, LengthUnit.Meter));
     }
+
+    public ComponentAttribute Metadata { get; set; }
+    public ComponentOrganisation Organisation { get; set; }
 
     public Attribute[] GetAllInputAttributes() {
       return new[] {
