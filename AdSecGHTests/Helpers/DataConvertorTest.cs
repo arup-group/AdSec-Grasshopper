@@ -6,7 +6,8 @@ using Xunit;
 
 namespace AdSecGHTests.Helpers {
 
-  public abstract class DataConvertorTest {
+  [Collection("GrasshopperFixture collection")]
+  public class DataConvertorTest {
     private readonly DummyBusiness dummyBusiness;
     private readonly DummyOasysDropdown oasysDropdown;
 
