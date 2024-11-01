@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+using AdSecCore.Parameters;
+
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -25,6 +27,23 @@ using Attribute = Oasys.Business.Attribute;
 namespace AdSecGH.Components {
   public class FlattenRebarComponent : IBusinessComponent {
 
+    private static readonly IQuantity length = new Length(0, DefaultUnits.LengthUnitGeometry);
+    private static readonly string lengthUnitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
+
+    public ISectionParameter Section { get; set; } = new ISectionParameter {
+      Name = "Section",
+      NickName = "Sec",
+      Description = "AdSec Section to get single rebars from",
+      Access = Access.Item,
+    };
+
+    public IPointArrayParameter Position { get; set; } = new IPointArrayParameter {
+      Name = "Position [" + DefaultUnits.ForceUnit + "]",
+      NickName = "Vx",
+      Description = "Rebar position as 2D vertex in the section's local yz-plane",
+      Access = Access.List,
+    };
+
     public ComponentAttribute Metadata { get; set; } = new ComponentAttribute {
       Name = "FlattenRebar",
       NickName = "FRb",
@@ -34,9 +53,18 @@ namespace AdSecGH.Components {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat4(),
     };
-    public Attribute[] GetAllInputAttributes() { throw new NotImplementedException(); }
 
-    public Attribute[] GetAllOutputAttributes() { throw new NotImplementedException(); }
+    public Attribute[] GetAllInputAttributes() {
+      return new Attribute[] {
+        Section,
+      };
+    }
+
+    public Attribute[] GetAllOutputAttributes() {
+      return new Attribute[] {
+        Position,
+      };
+    }
 
     public void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
 

@@ -7,6 +7,7 @@ using Oasys.Business;
 using Attribute = Oasys.Business.Attribute;
 
 namespace AdSecGHTests.Helpers {
+
   public class FakeBusiness : IBusinessComponent {
 
     public DoubleParameter Alpha { get; set; } = new DoubleParameter {

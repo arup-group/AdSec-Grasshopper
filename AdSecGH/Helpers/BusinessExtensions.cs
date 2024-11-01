@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using AdSecCore.Parameters;
+
+using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
@@ -14,6 +17,9 @@ using Oasys.Business;
 using Attribute = Oasys.Business.Attribute;
 
 namespace Oasys.GH.Helpers {
+
+  public class IAdSecSectionParameter : ParameterAttribute<AdSecSection> { }
+  public class AdSecPointArrayParameter : BaseArrayParameter<AdSecPointGoo> { }
 
   public static class BusinessExtensions {
 
@@ -32,6 +38,20 @@ namespace Oasys.GH.Helpers {
             Description = a.Description,
             Access = GH_ParamAccess.list,
           }
+        }, {
+          typeof(IAdSecSectionParameter), a => new AdSecSectionParameter {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GH_ParamAccess.list,
+          }
+        }, {
+          typeof(AdSecPointArrayParameter), a => new Param_GenericObject {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GH_ParamAccess.list,
+          }
         },
       };
 
@@ -41,6 +61,13 @@ namespace Oasys.GH.Helpers {
           typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value)
         }, {
           typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
+        }, {
+          typeof(IAdSecSectionParameter), a => new AdSecSectionGoo((a as IAdSecSectionParameter).Value)
+        }, {
+          typeof(AdSecPointArrayParameter), a => {
+            var points = (a as AdSecPointArrayParameter).Value;
+            return points?.ToList();
+          }
         },
       };
 
@@ -55,8 +82,7 @@ namespace Oasys.GH.Helpers {
     public static void SetDefaultValues(this IBusinessComponent businessComponent, GH_Component component) {
       businessComponent.SetDefaultValues();
       foreach (var attribute in businessComponent.GetAllInputAttributes()) {
-        int index = component.Params.IndexOfInputParam(attribute.Name);
-        var param = component.Params.Input[index];
+        var param = component.Params.GetInputParam(attribute.Name);
         object goo = ToGoo[attribute.GetType()](attribute);
         if (param.Access == GH_ParamAccess.item) {
           param.AddVolatileData(new GH_Path(0), 0, goo);
@@ -92,4 +118,16 @@ namespace Oasys.GH.Helpers {
     }
   }
 
+  public static class ComponentExtensions {
+
+    public static IGH_Param GetInputParam(this GH_ComponentParamServer @params, string name) {
+      int index = @params.IndexOfInputParam(name);
+      return @params.Input[index];
+    }
+
+    public static IGH_Param GetOutputParam(this GH_ComponentParamServer @params, string name) {
+      int index = @params.IndexOfOutputParam(name);
+      return @params.Input[index];
+    }
+  }
 }

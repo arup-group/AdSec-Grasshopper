@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using AdSecGH.Parameters;
+
+using Oasys.AdSec.StandardMaterials;
+
 namespace AdSecGH.Helpers {
   public static class ReflectionHelper {
-    internal static Dictionary<string, Type> ReflectAdSecNamespace(string nspace) {
-      Assembly adsecAPI = AddReferencePriority.AdSecAPI;
-      IEnumerable<Type> q = from t in adsecAPI.GetTypes()
-                            where t.IsInterface && t.Namespace == nspace
-                            select t;
+    public static Dictionary<string, Type> ReflectAdSecNamespace(string @namespace) {
+      var adsecAPI = AddReferencePriority.AdSecAPI;
+      var q = from t in adsecAPI.GetTypes() where t.IsInterface && t.Namespace == @namespace select t;
       var dict = new Dictionary<string, Type>();
-      foreach (Type typ in q) {
-        if (nspace + "." + typ.Name == typ.FullName) {
+      foreach (var typ in q) {
+        if (@namespace + "." + typ.Name == typ.FullName) {
           dict.Add(typ.Name, typ);
         }
       }
@@ -23,13 +25,13 @@ namespace AdSecGH.Helpers {
     internal static Dictionary<string, FieldInfo> ReflectFields(Type type) {
       var fields = type.GetFields().ToList();
 
-      Type[] types = type.GetInterfaces();
-      foreach (Type baseType in types) {
+      var types = type.GetInterfaces();
+      foreach (var baseType in types) {
         fields.AddRange(baseType.GetFields());
       }
 
       var materials = new Dictionary<string, FieldInfo>();
-      foreach (FieldInfo field in fields) {
+      foreach (var field in fields) {
         materials.Add(field.Name, field);
       }
 
@@ -38,15 +40,15 @@ namespace AdSecGH.Helpers {
 
     internal static Dictionary<string, Type> ReflectNestedTypes(Type type) {
       var dict = new Dictionary<string, Type>();
-      MemberInfo[] members = type.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
-      foreach (MemberInfo member in members) {
+      var members = type.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
+      foreach (var member in members) {
         dict.Add(member.Name, (Type)member);
       }
 
-      Type[] types = type.GetInterfaces();
-      foreach (Type baseType in types) {
-        MemberInfo[] baseMembers = baseType.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
-        foreach (MemberInfo member in baseMembers) {
+      var types = type.GetInterfaces();
+      foreach (var baseType in types) {
+        var baseMembers = baseType.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
+        foreach (var member in baseMembers) {
           dict.Add(member.Name, (Type)member);
         }
       }
@@ -54,23 +56,19 @@ namespace AdSecGH.Helpers {
       return dict;
     }
 
-    internal static Dictionary<string, Type> StandardCodes(Parameters.AdSecMaterial.AdSecMaterialType materialType) {
+    internal static Dictionary<string, Type> StandardCodes(AdSecMaterial.AdSecMaterialType materialType) {
       switch (materialType) {
-        case Parameters.AdSecMaterial.AdSecMaterialType.Concrete:
-          return ReflectNestedTypes(typeof(Oasys.AdSec.StandardMaterials.Concrete));
+        case AdSecMaterial.AdSecMaterialType.Concrete: return ReflectNestedTypes(typeof(Concrete));
 
-        case Parameters.AdSecMaterial.AdSecMaterialType.Steel:
-          return ReflectNestedTypes(typeof(Oasys.AdSec.StandardMaterials.Steel));
+        case AdSecMaterial.AdSecMaterialType.Steel: return ReflectNestedTypes(typeof(Steel));
 
-        case Parameters.AdSecMaterial.AdSecMaterialType.FRP:
-          return ReflectNestedTypes(typeof(Oasys.AdSec.StandardMaterials.FRP));
+        case AdSecMaterial.AdSecMaterialType.FRP: return ReflectNestedTypes(typeof(FRP));
 
-        case Parameters.AdSecMaterial.AdSecMaterialType.Rebar:
-          return ReflectNestedTypes(typeof(Oasys.AdSec.StandardMaterials.Reinforcement.Steel));
+        case AdSecMaterial.AdSecMaterialType.Rebar: return ReflectNestedTypes(typeof(Reinforcement.Steel));
 
-        case Parameters.AdSecMaterial.AdSecMaterialType.Tendon:
-          return ReflectNestedTypes(typeof(Oasys.AdSec.StandardMaterials.Reinforcement.Tendon));
+        case AdSecMaterial.AdSecMaterialType.Tendon: return ReflectNestedTypes(typeof(Reinforcement.Tendon));
       }
+
       return null;
     }
   }
