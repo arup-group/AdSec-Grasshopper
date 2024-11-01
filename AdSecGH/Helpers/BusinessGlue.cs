@@ -14,8 +14,13 @@ namespace Oasys.GH.Helpers {
 
     private readonly T _businessComponent = Activator.CreateInstance<T>();
 
-    public BusinessOasysGlue(string name, string nickname, string description, string category, string subCategory) :
-      base(name, nickname, description, category, subCategory) { }
+    public BusinessOasysGlue() : base("", "", "", "", "") {
+      Name = _businessComponent.Metadata.Name;
+      NickName = _businessComponent.Metadata.NickName;
+      Description = _businessComponent.Metadata.Description;
+      Category = _businessComponent.Organisation.Category;
+      SubCategory = _businessComponent.Organisation.SubCategory;
+    }
 
     public override OasysPluginInfo PluginInfo { get; } = AdSecGH.PluginInfo.Instance;
     public void SetDefaultValues() { _businessComponent.SetDefaultValues(this); }
