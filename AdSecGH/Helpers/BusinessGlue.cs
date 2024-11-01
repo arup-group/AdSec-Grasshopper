@@ -12,30 +12,30 @@ namespace Oasys.GH.Helpers {
 
   public abstract class BusinessOasysGlue<T> : GH_OasysComponent, IDefaultValues where T : IBusinessComponent {
 
-    private readonly T _businessComponent = Activator.CreateInstance<T>();
+    public readonly T BusinessComponent = Activator.CreateInstance<T>();
 
     public BusinessOasysGlue() : base("", "", "", "", "") {
-      Name = _businessComponent.Metadata.Name;
-      NickName = _businessComponent.Metadata.NickName;
-      Description = _businessComponent.Metadata.Description;
-      Category = _businessComponent.Organisation.Category;
-      SubCategory = _businessComponent.Organisation.SubCategory;
+      Name = BusinessComponent.Metadata.Name;
+      NickName = BusinessComponent.Metadata.NickName;
+      Description = BusinessComponent.Metadata.Description;
+      Category = BusinessComponent.Organisation.Category;
+      SubCategory = BusinessComponent.Organisation.SubCategory;
     }
 
     public override OasysPluginInfo PluginInfo { get; } = AdSecGH.PluginInfo.Instance;
-    public void SetDefaultValues() { _businessComponent.SetDefaultValues(this); }
+    public void SetDefaultValues() { BusinessComponent.SetDefaultValues(this); }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      _businessComponent.PopulateInputParams(this);
+      BusinessComponent.PopulateInputParams(this);
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      _businessComponent.PopulateOutputParams(this);
+      BusinessComponent.PopulateOutputParams(this);
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {
-      _businessComponent.Compute();
-      _businessComponent.SetOutputValues(this, DA);
+      BusinessComponent.Compute();
+      BusinessComponent.SetOutputValues(this, DA);
     }
   }
 
@@ -45,35 +45,35 @@ namespace Oasys.GH.Helpers {
 
   public abstract class BusinessOasysDropdownGlue<T> : GH_OasysDropDownComponent, IDefaultValues
     where T : IBusinessComponent {
-    private readonly T _businessComponent = Activator.CreateInstance<T>();
+    public readonly T BusinessComponent = Activator.CreateInstance<T>();
 
     public BusinessOasysDropdownGlue() : base("", "", "", "", "") {
-      Name = _businessComponent.Metadata.Name;
-      NickName = _businessComponent.Metadata.NickName;
-      Description = _businessComponent.Metadata.Description;
-      Category = _businessComponent.Organisation.Category;
-      SubCategory = _businessComponent.Organisation.SubCategory;
+      Name = BusinessComponent.Metadata.Name;
+      NickName = BusinessComponent.Metadata.NickName;
+      Description = BusinessComponent.Metadata.Description;
+      Category = BusinessComponent.Organisation.Category;
+      SubCategory = BusinessComponent.Organisation.SubCategory;
     }
 
     public override Guid ComponentGuid { get; }
 
     public override OasysPluginInfo PluginInfo { get; }
 
-    public void SetDefaultValues() { _businessComponent.SetDefaultValues(this); }
+    public void SetDefaultValues() { BusinessComponent.SetDefaultValues(this); }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      _businessComponent.PopulateInputParams(this);
+      BusinessComponent.PopulateInputParams(this);
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      _businessComponent.PopulateOutputParams(this);
+      BusinessComponent.PopulateOutputParams(this);
     }
 
     public override void SetSelected(int i, int j) { }
 
     protected override void SolveInternal(IGH_DataAccess da) {
-      _businessComponent.Compute();
-      _businessComponent.SetOutputValues(this, da);
+      BusinessComponent.Compute();
+      BusinessComponent.SetOutputValues(this, da);
     }
 
     protected override void InitialiseDropdowns() {

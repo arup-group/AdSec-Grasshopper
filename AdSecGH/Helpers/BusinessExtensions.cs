@@ -18,8 +18,11 @@ using Attribute = Oasys.Business.Attribute;
 
 namespace Oasys.GH.Helpers {
 
-  public class IAdSecSectionParameter : ParameterAttribute<AdSecSection> { }
+  public class IAdSecSectionParameter : ParameterAttribute<AdSecSectionGoo> { }
+
   public class AdSecPointArrayParameter : BaseArrayParameter<AdSecPointGoo> { }
+  // public class AdSecProfileParam : ParameterAttribute<AdSecProfileGoo> { }
+  // public class AdSecMaterialParam : ParameterAttribute<AdSecMaterialGoo> { }
 
   public static class BusinessExtensions {
 
@@ -30,27 +33,28 @@ namespace Oasys.GH.Helpers {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
+            Access = GetAccess(a),
           }
         }, {
           typeof(DoubleArrayParameter), a => new Param_Number {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
-            Access = GH_ParamAccess.list,
+            Access = GetAccess(a),
           }
         }, {
           typeof(IAdSecSectionParameter), a => new AdSecSectionParameter {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
-            Access = GH_ParamAccess.list,
+            Access = GetAccess(a),
           }
         }, {
           typeof(AdSecPointArrayParameter), a => new Param_GenericObject {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
-            Access = GH_ParamAccess.list,
+            Access = GetAccess(a),
           }
         },
       };
@@ -62,7 +66,7 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
         }, {
-          typeof(IAdSecSectionParameter), a => new AdSecSectionGoo((a as IAdSecSectionParameter).Value)
+          typeof(IAdSecSectionParameter), a => (a as IAdSecSectionParameter).Value
         }, {
           typeof(AdSecPointArrayParameter), a => {
             var points = (a as AdSecPointArrayParameter).Value;
@@ -70,6 +74,15 @@ namespace Oasys.GH.Helpers {
           }
         },
       };
+
+    private static GH_ParamAccess GetAccess(Attribute attribute) {
+      var access = (attribute as IAccessible).Access;
+      switch (access) {
+        case Access.Item: return GH_ParamAccess.item;
+        case Access.List: return GH_ParamAccess.list;
+        default: throw new ArgumentOutOfRangeException();
+      }
+    }
 
     public static void SetDefaultValues(this IBusinessComponent businessComponent) {
       foreach (var attribute in businessComponent.GetAllInputAttributes()) {
@@ -118,16 +131,4 @@ namespace Oasys.GH.Helpers {
     }
   }
 
-  public static class ComponentExtensions {
-
-    public static IGH_Param GetInputParam(this GH_ComponentParamServer @params, string name) {
-      int index = @params.IndexOfInputParam(name);
-      return @params.Input[index];
-    }
-
-    public static IGH_Param GetOutputParam(this GH_ComponentParamServer @params, string name) {
-      int index = @params.IndexOfOutputParam(name);
-      return @params.Input[index];
-    }
-  }
 }

@@ -8,6 +8,6 @@ namespace AdSecGHTests.Helpers {
 
   public class FakeComponent : BusinessOasysDropdownGlue<FakeBusiness> {
     public override GH_Exposure Exposure { get; } = GH_Exposure.hidden;
-    public override Guid ComponentGuid => new Guid("CAA08C9E-417C-42AE-B704-91F214C8C871");
+    public override Guid ComponentGuid => new Guid("caa08c9e-417c-42ae-b704-91f214c8c871");
   }
 }

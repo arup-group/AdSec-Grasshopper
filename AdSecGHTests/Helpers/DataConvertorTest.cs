@@ -1,5 +1,7 @@
 ﻿using Grasshopper.Kernel;
 
+using Oasys.GH.Helpers;
+
 using Xunit;
 
 namespace AdSecGHTests.Helpers {
@@ -38,15 +40,11 @@ namespace AdSecGHTests.Helpers {
     }
 
     private IGH_Param GetFirstInput() {
-      return GetParamAt(0);
+      return component.GetParamAt(0);
     }
 
     private IGH_Param GetSecondInput() {
-      return GetParamAt(1);
-    }
-
-    private IGH_Param GetParamAt(int index) {
-      return component.Params.Input[index];
+      return component.GetParamAt(1);
     }
 
     [Fact]
@@ -70,7 +68,7 @@ namespace AdSecGHTests.Helpers {
     }
 
     private static object GetOutputOfParam(GH_Component component, int param, int branch, int index) {
-      return component.Params.Output[param].VolatileData.get_Branch(branch)[index];
+      return component.GetParamAt(param).GetValue(branch, index);
     }
 
     [Fact]
@@ -84,6 +82,11 @@ namespace AdSecGHTests.Helpers {
     [Fact]
     public void ShouldPassTheNickname() {
       Assert.Equal("A", GetFirstInput().NickName);
+    }
+
+    [Fact]
+    public void ShouldStoreGuid() {
+      Assert.Equal("caa08c9e-417c-42ae-b704-91f214c8c871", component.ComponentGuid.ToString());
     }
   }
 
