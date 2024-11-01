@@ -30,17 +30,38 @@ namespace AdSecGH.Components {
     private static readonly IQuantity length = new Length(0, DefaultUnits.LengthUnitGeometry);
     private static readonly string lengthUnitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
 
-    public ISectionParameter Section { get; set; } = new ISectionParameter {
+    public IAdSecSectionParameter Section { get; set; } = new IAdSecSectionParameter {
       Name = "Section",
       NickName = "Sec",
       Description = "AdSec Section to get single rebars from",
       Access = Access.Item,
     };
 
-    public IPointArrayParameter Position { get; set; } = new IPointArrayParameter {
-      Name = "Position [" + DefaultUnits.ForceUnit + "]",
+    public AdSecPointArrayParameter Position { get; set; } = new AdSecPointArrayParameter {
+      Name = "Position [" + DefaultUnits.LengthUnitGeometry + "]",
       NickName = "Vx",
       Description = "Rebar position as 2D vertex in the section's local yz-plane",
+      Access = Access.List,
+    };
+
+    public DoubleArrayParameter Diameter { get; set; } = new DoubleArrayParameter {
+      Name = "Diameter [" + DefaultUnits.LengthUnitGeometry + "]",
+      NickName = "Ø",
+      Description = "Bar Diameter",
+      Access = Access.List,
+    };
+
+    public IntegerArrayParameter BundleCount { get; set; } = new IntegerArrayParameter {
+      Name = "Bundle Count",
+      NickName = "N",
+      Description = "Count per bundle (1, 2, 3 or 4)",
+      Access = Access.List,
+    };
+
+    public DoubleArrayParameter PreLoad { get; set; } = new DoubleArrayParameter {
+      Name = "PreLoad",
+      NickName = "P",
+      Description = "The pre-load per reinforcement bar. Positive value is tension.",
       Access = Access.List,
     };
 
@@ -63,6 +84,9 @@ namespace AdSecGH.Components {
     public Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
         Position,
+        Diameter,
+        BundleCount,
+        PreLoad,
       };
     }
 
