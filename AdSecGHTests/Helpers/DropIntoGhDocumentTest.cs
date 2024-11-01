@@ -9,12 +9,12 @@ namespace AdSecGHTests.Helpers {
   [Collection("GrasshopperFixture collection")]
   public class DropIntoGhDocumentTest {
     private readonly GH_Document _document;
-    private readonly Dummy oasysDropdown;
+    private readonly FakeComponent oasysDropdown;
 
     public DropIntoGhDocumentTest() {
       string tempPath = Path.Combine(Path.GetTempPath(), "AdSecGHTests", "DropIntoGhDocumentTest.gh");
 
-      oasysDropdown = new Dummy();
+      oasysDropdown = new FakeComponent();
       _document = new GH_Document();
       _document.AddObject(oasysDropdown, true);
       _document.NewSolution(true);

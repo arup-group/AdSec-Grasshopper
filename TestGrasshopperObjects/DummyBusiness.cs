@@ -5,7 +5,7 @@ using Oasys.Business;
 using Attribute = Oasys.Business.Attribute;
 
 namespace AdSecGHTests.Helpers {
-  public class DummyBusiness : IBusinessComponent {
+  public class FakeBusiness : IBusinessComponent {
 
     public DoubleParameter Alpha { get; set; } = new DoubleParameter {
       Name = "Alpha",
@@ -41,13 +41,14 @@ namespace AdSecGHTests.Helpers {
     };
 
     public Attribute[] GetAllInputAttributes() {
-      return new[] {
+      return new Attribute[] {
         Alpha,
+        Gama,
       };
     }
 
     public Attribute[] GetAllOutputAttributes() {
-      return new[] {
+      return new Attribute[] {
         Beta,
       };
     }

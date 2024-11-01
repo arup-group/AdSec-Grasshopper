@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using AdSecGH.Parameters;
@@ -25,6 +26,13 @@ namespace Oasys.GH.Helpers {
             Description = a.Description,
           }
         }, {
+          typeof(DoubleArrayParameter), a => new Param_Number {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GH_ParamAccess.list,
+          }
+        }, {
           typeof(PointAttribute), a => new Param_GenericObject {
             Name = a.Name,
             NickName = a.NickName,
@@ -33,16 +41,28 @@ namespace Oasys.GH.Helpers {
         },
       };
 
-    private static readonly Dictionary<Type, Func<Attribute, IGH_Goo>> ToGoo
-      = new Dictionary<Type, Func<Attribute, IGH_Goo>> {
+    private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
+      = new Dictionary<Type, Func<Attribute, object>> {
         {
           typeof(PointAttribute), a => new GH_ObjectWrapper {
             Value = new AdSecPointGoo((a as PointAttribute)?.Value),
           }
         }, {
           typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value)
+        }, {
+          typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
         },
       };
+
+    private static GH_Structure<GH_Number> ToTree(DoubleArrayParameter doubleArrayParameter) {
+      var structure = new GH_Structure<GH_Number>();
+      foreach (double value in doubleArrayParameter.Value) {
+        var branch = new GH_Path(0);
+        structure.Append(new GH_Number(value), branch);
+      }
+
+      return structure;
+    }
 
     public static void SetDefaultValues(this IBusinessComponent businessComponent) {
       foreach (var attribute in businessComponent.GetAllInputAttributes()) {
@@ -57,8 +77,12 @@ namespace Oasys.GH.Helpers {
       foreach (var attribute in businessComponent.GetAllInputAttributes()) {
         int index = component.Params.IndexOfInputParam(attribute.Name);
         var param = component.Params.Input[index];
-        var goo = ToGoo[attribute.GetType()](attribute);
-        param.AddVolatileData(new GH_Path(0), 0, goo);
+        object goo = ToGoo[attribute.GetType()](attribute);
+        if (param.Access == GH_ParamAccess.item) {
+          param.AddVolatileData(new GH_Path(0), 0, goo);
+        } else {
+          param.AddVolatileDataList(new GH_Path(0), goo as IEnumerable);
+        }
       }
     }
 
@@ -66,7 +90,7 @@ namespace Oasys.GH.Helpers {
       this IBusinessComponent businessComponent, GH_Component component, IGH_DataAccess dataAccess) {
       foreach (var attribute in businessComponent.GetAllOutputAttributes()) {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
-        var goo = ToGoo[attribute.GetType()](attribute);
+        object goo = ToGoo[attribute.GetType()](attribute);
         dataAccess.SetData(index, goo);
       }
     }

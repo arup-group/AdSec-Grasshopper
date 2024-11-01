@@ -43,10 +43,11 @@ namespace Oasys.GH.Helpers {
     void SetDefaultValues();
   }
 
-  public abstract class BusinessGlue<T> : GH_OasysDropDownComponent, IDefaultValues where T : IBusinessComponent {
+  public abstract class BusinessOasysDropdownGlue<T> : GH_OasysDropDownComponent, IDefaultValues
+    where T : IBusinessComponent {
     private readonly T _businessComponent = Activator.CreateInstance<T>();
 
-    public BusinessGlue() : base("", "", "", "", "") {
+    public BusinessOasysDropdownGlue() : base("", "", "", "", "") {
       Name = _businessComponent.Metadata.Name;
       NickName = _businessComponent.Metadata.NickName;
       Description = _businessComponent.Metadata.Description;
