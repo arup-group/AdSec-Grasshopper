@@ -36,6 +36,11 @@ namespace Oasys.Business {
     public string Description { get; set; }
   }
 
+  public enum Access {
+    Item,
+    List,
+  }
+
   public interface IDefault {
     void SetDefault();
   }
@@ -43,13 +48,21 @@ namespace Oasys.Business {
   public class ParameterAttribute<T> : Attribute, IDefault {
     public T Value { get; set; }
     public T Default { get; set; }
+    public virtual Access Access { get; set; } = Access.Item;
 
     public void SetDefault() {
       Value = Default;
     }
   }
 
+  public class BaseArrayParameter<T> : ParameterAttribute<T[]> {
+    public override Access Access { get; set; } = Access.List;
+  }
+
   public class DoubleParameter : ParameterAttribute<double> { }
+
+  public class DoubleArrayParameter : BaseArrayParameter<double> { }
+
   public class PointAttribute : ParameterAttribute<IPoint> { }
 
   public class IPointWrapper : IBusinessComponent {
