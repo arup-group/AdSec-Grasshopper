@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using AdSecGH.Parameters;
-
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
@@ -20,12 +18,6 @@ namespace Oasys.GH.Helpers {
     private static readonly Dictionary<Type, Func<Attribute, IGH_Param>> ToGhParam
       = new Dictionary<Type, Func<Attribute, IGH_Param>> {
         {
-          typeof(DoubleParameter), a => new Param_Number {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-          }
-        }, {
           typeof(DoubleArrayParameter), a => new Param_Number {
             Name = a.Name,
             NickName = a.NickName,
@@ -44,25 +36,11 @@ namespace Oasys.GH.Helpers {
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
         {
-          typeof(PointAttribute), a => new GH_ObjectWrapper {
-            Value = new AdSecPointGoo((a as PointAttribute)?.Value),
-          }
-        }, {
           typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value)
         }, {
           typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
         },
       };
-
-    private static GH_Structure<GH_Number> ToTree(DoubleArrayParameter doubleArrayParameter) {
-      var structure = new GH_Structure<GH_Number>();
-      foreach (double value in doubleArrayParameter.Value) {
-        var branch = new GH_Path(0);
-        structure.Append(new GH_Number(value), branch);
-      }
-
-      return structure;
-    }
 
     public static void SetDefaultValues(this IBusinessComponent businessComponent) {
       foreach (var attribute in businessComponent.GetAllInputAttributes()) {
