@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdSecGH\AdSecGH.csproj"/>
+    <ProjectReference Include="..\TestGrasshopperObjects\TestGrasshopperObjects.csproj"/>
   </ItemGroup>
   <ItemGroup>
     <None Update="xunit.runner.json">

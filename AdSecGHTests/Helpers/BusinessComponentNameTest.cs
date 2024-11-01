@@ -1,6 +1,4 @@
-﻿using Oasys.GH.Helpers;
-
-using Xunit;
+﻿using Xunit;
 
 namespace AdSecGHTests.Helpers {
   [Collection("GrasshopperFixture collection")]

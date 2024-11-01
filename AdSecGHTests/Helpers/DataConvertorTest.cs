@@ -1,7 +1,5 @@
 ﻿using Grasshopper.Kernel;
 
-using Oasys.GH.Helpers;
-
 using Xunit;
 
 namespace AdSecGHTests.Helpers {
