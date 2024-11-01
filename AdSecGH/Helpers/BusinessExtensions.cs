@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using AdSecCore.Parameters;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
@@ -18,17 +20,17 @@ namespace Oasys.GH.Helpers {
     private static readonly Dictionary<Type, Func<Attribute, IGH_Param>> ToGhParam
       = new Dictionary<Type, Func<Attribute, IGH_Param>> {
         {
+          typeof(DoubleParameter), a => new Param_Number {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+          }
+        }, {
           typeof(DoubleArrayParameter), a => new Param_Number {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
             Access = GH_ParamAccess.list,
-          }
-        }, {
-          typeof(PointAttribute), a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
           }
         },
       };
