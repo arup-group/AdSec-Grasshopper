@@ -4,6 +4,8 @@ using Grasshopper.Kernel.Parameters;
 
 using Oasys.GH.Helpers;
 
+using Rhino.Geometry;
+
 using Xunit;
 
 namespace AdSecGHTests.Helpers {
@@ -15,6 +17,11 @@ namespace AdSecGHTests.Helpers {
     public AdvancedDataConvertorTest() {
       allParameters = new AllParameters();
       component = new AllParametersComponent();
+      allParameters = component.BusinessComponent;
+      Recompute();
+    }
+
+    private void Recompute() {
       component.SetDefaultValues();
       ComponentTesting.ComputeOutputs(component);
     }
@@ -32,6 +39,22 @@ namespace AdSecGHTests.Helpers {
     [Fact]
     public void ShouldHavePointParameter() {
       Assert.NotNull(component.Params.GetInputParam("Points") as Param_GenericObject);
+    }
+
+    [Fact]
+    public void ShouldHaveSamePointOutput() {
+      allParameters.Points.Default = new[] {
+        new AdSecPointGoo(Point3d.Origin),
+      };
+      Recompute();
+      Assert.NotNull(component.Params.GetInputParam("Points").GetValue(0, 0));
+    }
+
+    [Fact]
+    public void ShouldHaveSameSectionOutput() {
+      allParameters.Section.Default = new AdSecSectionGoo();
+      Recompute();
+      Assert.NotNull(component.Params.GetInputParam("Section").GetValue(0, 0));
     }
   }
 }

@@ -37,7 +37,11 @@
     void SetDefault();
   }
 
-  public class ParameterAttribute<T> : Attribute, IDefault {
+  public interface IAccessible {
+    Access Access { get; set; }
+  }
+
+  public class ParameterAttribute<T> : Attribute, IDefault, IAccessible {
     public T Value { get; set; }
     public T Default { get; set; }
     public virtual Access Access { get; set; } = Access.Item;
