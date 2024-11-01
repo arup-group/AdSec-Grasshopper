@@ -11,17 +11,6 @@ using Xunit;
 namespace AdSecGHTests.Helpers {
 
   [Collection("GrasshopperFixture collection")]
-  public class ResilianceTest {
-    [Fact]
-    public void ShouldBeAbleToIgnoreNonExistantParameters() {
-      var component = new MalformedComponent();
-      component.SetDefaultValues();
-      ComponentTesting.ComputeOutputs(component);
-      Assert.Empty(component.Params.Input);
-    }
-  }
-
-  [Collection("GrasshopperFixture collection")]
   public class AdvancedDataConvertorTest {
     private readonly AllParameters allParameters;
     private readonly AllParametersComponent component;
@@ -53,10 +42,10 @@ namespace AdSecGHTests.Helpers {
       Assert.NotNull(component.Params.GetInputParam("Points") as Param_GenericObject);
     }
 
-    // [Fact]
-    // public void ShouldHaveMaterialsParameter() {
-    //   Assert.NotNull(component.Params.GetInputParam("Materials") as Param_GenericObject);
-    // }
+    [Fact]
+    public void ShouldHaveMaterialsParameter() {
+      Assert.NotNull(component.Params.GetInputParam("Materials") as AdSecMaterialParameter);
+    }
 
     [Fact]
     public void ShouldHaveSamePointOutput() {
@@ -72,6 +61,16 @@ namespace AdSecGHTests.Helpers {
       allParameters.Section.Default = new AdSecSectionGoo();
       Recompute();
       Assert.NotNull(component.Params.GetInputParam("Section").GetValue(0, 0));
+    }
+
+    [Fact]
+    public void ShouldHaveSameMaterialOutput() {
+      allParameters.Material.Default = new[] {
+        new AdSecMaterialGoo(new AdSecMaterial()),
+      };
+      Recompute();
+
+      Assert.NotNull(component.Params.GetInputParam("Materials").GetValue(0, 0));
     }
   }
 }

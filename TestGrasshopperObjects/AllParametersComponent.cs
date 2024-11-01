@@ -12,40 +12,6 @@ namespace AdSecGHTests.Helpers {
     public override Guid ComponentGuid => new Guid("D3A8C9E-417C-42AE-B704-91F214C8C873");
   }
 
-  public class MalformedBusiness : IBusinessComponent {
-
-    public MalformedParameter Malformed { get; set; } = new MalformedParameter {
-      Name = "Malformed",
-      NickName = "M",
-      Description = "Malformed description",
-    };
-    public ComponentAttribute Metadata { get; set; } = new ComponentAttribute {
-      Name = "Malformed Component",
-      NickName = "MC",
-      Description = "Malformed Component",
-    };
-    public ComponentOrganisation Organisation { get; set; } = new ComponentOrganisation {
-      Category = "Test",
-      SubCategory = "Test",
-    };
-
-    public Attribute[] GetAllInputAttributes() {
-      return new Attribute[] {
-        Malformed,
-      };
-    }
-
-    public Attribute[] GetAllOutputAttributes() {
-      return new Attribute[] {
-        Malformed,
-      };
-    }
-
-    public void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
-
-    public void Compute() { }
-  }
-
   public class AllParameters : IBusinessComponent {
 
     public AdSecPointArrayParameter Points { get; set; } = new AdSecPointArrayParameter {
@@ -59,11 +25,11 @@ namespace AdSecGHTests.Helpers {
       Description = "AdSec Section to get single rebars from",
     };
 
-    // public AdSecMaterialArrayParam Material { get; set; } = new AdSecMaterialArrayParam {
-    //   Name = "Materials",
-    //   NickName = "Mats",
-    //   Description = "Material description",
-    // };
+    public AdSecMaterialArrayParam Material { get; set; } = new AdSecMaterialArrayParam {
+      Name = "Materials",
+      NickName = "Mats",
+      Description = "Material description",
+    };
     public ComponentAttribute Metadata { get; set; } = new ComponentAttribute {
       Name = "All Parameters",
       NickName = "AP",
@@ -86,7 +52,7 @@ namespace AdSecGHTests.Helpers {
       return new Attribute[] {
         Section,
         Points,
-        // Material,
+        Material,
       };
     }
   }

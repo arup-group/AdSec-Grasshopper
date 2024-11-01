@@ -55,6 +55,13 @@ namespace Oasys.GH.Helpers {
             Description = a.Description,
             Access = GetAccess(a),
           }
+        }, {
+          typeof(AdSecMaterialArrayParam), a => new AdSecMaterialParameter {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
         },
       };
 
@@ -70,6 +77,11 @@ namespace Oasys.GH.Helpers {
           typeof(AdSecPointArrayParameter), a => {
             var points = (a as AdSecPointArrayParameter).Value;
             return points?.ToList();
+          }
+        }, {
+          typeof(AdSecMaterialArrayParam), a => {
+            var materials = (a as AdSecMaterialArrayParam).Value;
+            return materials?.ToList();
           }
         },
       };
