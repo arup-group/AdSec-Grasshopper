@@ -9,6 +9,18 @@ using Rhino.Geometry;
 using Xunit;
 
 namespace AdSecGHTests.Helpers {
+
+  [Collection("GrasshopperFixture collection")]
+  public class ResilianceTest {
+    [Fact]
+    public void ShouldBeAbleToIgnoreNonExistantParameters() {
+      var component = new MalformedComponent();
+      component.SetDefaultValues();
+      ComponentTesting.ComputeOutputs(component);
+      Assert.Empty(component.Params.Input);
+    }
+  }
+
   [Collection("GrasshopperFixture collection")]
   public class AdvancedDataConvertorTest {
     private readonly AllParameters allParameters;
@@ -40,6 +52,11 @@ namespace AdSecGHTests.Helpers {
     public void ShouldHavePointParameter() {
       Assert.NotNull(component.Params.GetInputParam("Points") as Param_GenericObject);
     }
+
+    // [Fact]
+    // public void ShouldHaveMaterialsParameter() {
+    //   Assert.NotNull(component.Params.GetInputParam("Materials") as Param_GenericObject);
+    // }
 
     [Fact]
     public void ShouldHaveSamePointOutput() {
