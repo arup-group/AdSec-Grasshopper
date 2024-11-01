@@ -1,5 +1,7 @@
 using System;
 
+using AdSecCore.Parameters;
+
 using Oasys.Business;
 
 using Attribute = Oasys.Business.Attribute;

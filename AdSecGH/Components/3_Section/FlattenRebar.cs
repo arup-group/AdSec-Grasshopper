@@ -3,19 +3,16 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-using AdSecGH.Helpers;
 using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
 
-using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
 using Oasys.Business;
 using Oasys.GH.Helpers;
-using Oasys.Profiles;
 
 using OasysGH;
 using OasysGH.Parameters;
@@ -84,17 +81,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // get section input
-      var section = AdSecInput.AdSecSection(this, DA, 0);
-
-      // create flattened section
-      ISection flat = null;
-      if (section.DesignCode != null) {
-        var adSec = IAdSec.Create(section.DesignCode);
-        flat = adSec.Flatten(section.Section);
-      } else {
-        var prof = IPerimeterProfile.Create(section.Section.Profile);
-        flat = ISection.Create(prof, section.Section.Material);
-      }
+      var flattenSection = AdSecSection.GetFlattenSection(this, DA, 0);
 
       var pointGoos = new List<AdSecPointGoo>();
       var diameters = new List<GH_UnitNumber>();
@@ -103,7 +90,7 @@ namespace AdSecGH.Components {
       var materialType = new List<string>();
 
       // loop through rebar groups in flattened section
-      foreach (var rebargrp in flat.ReinforcementGroups) {
+      foreach (var rebargrp in flattenSection.ReinforcementGroups) {
         try // first try if not a link group type
         {
           var snglBrs = (ISingleBars)rebargrp;
