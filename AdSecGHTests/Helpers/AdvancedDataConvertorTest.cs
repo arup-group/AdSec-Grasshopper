@@ -1,7 +1,11 @@
-﻿using AdSecGH.Parameters;
+﻿using System;
 
+using AdSecGH.Parameters;
+
+using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
+using Oasys.Business;
 using Oasys.GH.Helpers;
 
 using Rhino.Geometry;
@@ -71,6 +75,30 @@ namespace AdSecGHTests.Helpers {
       Recompute();
 
       Assert.NotNull(component.Params.GetInputParam("Materials").GetValue(0, 0));
+    }
+  }
+
+  [Collection("GrasshopperFixture collection")]
+  public class AccessConvertTests {
+    [Fact]
+    public void ShouldConvertAccessItem() {
+      var item = new ParameterAttribute<int>();
+      item.Access = Access.Item;
+      Assert.Equal(GH_ParamAccess.item, item.GetAccess());
+    }
+
+    [Fact]
+    public void ShouldConvertAccessList() {
+      var item = new ParameterAttribute<int>();
+      item.Access = Access.List;
+      Assert.Equal(GH_ParamAccess.list, item.GetAccess());
+    }
+
+    [Fact]
+    public void ShouldConvertAccessException() {
+      var item = new ParameterAttribute<int>();
+      item.Access = (Access)10;
+      Assert.Throws<ArgumentOutOfRangeException>(() => item.GetAccess());
     }
   }
 }

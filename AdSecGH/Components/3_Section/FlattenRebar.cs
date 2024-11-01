@@ -27,9 +27,6 @@ using Attribute = Oasys.Business.Attribute;
 namespace AdSecGH.Components {
   public class FlattenRebarComponent : IBusinessComponent {
 
-    private static readonly IQuantity length = new Length(0, DefaultUnits.LengthUnitGeometry);
-    private static readonly string lengthUnitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
-
     public IAdSecSectionParameter Section { get; set; } = new IAdSecSectionParameter {
       Name = "Section",
       NickName = "Sec",

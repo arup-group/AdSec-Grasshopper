@@ -86,7 +86,7 @@ namespace Oasys.GH.Helpers {
         },
       };
 
-    private static GH_ParamAccess GetAccess(Attribute attribute) {
+    public static GH_ParamAccess GetAccess(this Attribute attribute) {
       var access = (attribute as IAccessible).Access;
       switch (access) {
         case Access.Item: return GH_ParamAccess.item;
