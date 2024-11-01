@@ -13,6 +13,16 @@ namespace AdSecGHTests.Helpers {
       Description = "Alpha description",
       Default = 1,
     };
+    public DoubleArrayParameter Gama { get; set; } = new DoubleArrayParameter {
+      Name = "Gama",
+      NickName = "G",
+      Description = "Game description",
+      Default = new double[] {
+        1,
+        2,
+        3,
+      },
+    };
     public DoubleParameter Beta { get; set; } = new DoubleParameter {
       Name = "Beta",
       NickName = "B",
