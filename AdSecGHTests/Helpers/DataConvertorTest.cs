@@ -13,7 +13,7 @@ namespace AdSecGHTests.Helpers {
       fakeBusiness = new FakeBusiness();
       component = new FakeComponent();
       component.SetDefaultValues();
-      ComputeOutputs(component);
+      ComponentTesting.ComputeOutputs(component);
     }
 
     [Fact]
@@ -73,15 +73,6 @@ namespace AdSecGHTests.Helpers {
       return component.Params.Output[param].VolatileData.get_Branch(branch)[index];
     }
 
-    private static void ComputeOutputs(GH_Component component) {
-      component.ExpireSolution(true);
-      component.CollectData();
-      foreach (var param in component.Params.Output) {
-        param.ExpireSolution(true);
-        param.CollectData();
-      }
-    }
-
     [Fact]
     public void ShouldHaveDefaultValues() {
       component.SetDefaultValues();
@@ -96,4 +87,15 @@ namespace AdSecGHTests.Helpers {
     }
   }
 
+  public class ComponentTesting {
+
+    public static void ComputeOutputs(GH_Component component) {
+      component.ExpireSolution(true);
+      component.CollectData();
+      foreach (var param in component.Params.Output) {
+        param.ExpireSolution(true);
+        param.CollectData();
+      }
+    }
+  }
 }
