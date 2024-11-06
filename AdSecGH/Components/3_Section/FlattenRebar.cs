@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-using AdSecCore.Parameters;
-
-using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
@@ -25,71 +22,46 @@ using OasysUnits;
 using Attribute = Oasys.Business.Attribute;
 
 namespace AdSecGH.Components {
-  public class FlattenRebarComponent : IBusinessComponent {
+  public class FlattenRebarGhComponent : FlattenRebarComponent {
+    public AdSecPointArrayParameter AdSecPoint = new AdSecPointArrayParameter();
+    public IAdSecSectionParameter AdSecSection = new IAdSecSectionParameter();
 
-    public IAdSecSectionParameter Section { get; set; } = new IAdSecSectionParameter {
-      Name = "Section",
-      NickName = "Sec",
-      Description = "AdSec Section to get single rebars from",
-      Access = Access.Item,
-    };
+    public FlattenRebarGhComponent() {
+      var adSecSection = AdSecSection as Attribute;
+      FromAttribute(ref adSecSection, Section);
+      AdSecPoint.Name = $"Position [{DefaultUnits.LengthUnitGeometry}]";
+      var adSecPoint = AdSecPoint as Attribute;
+      FromAttribute(ref adSecPoint, Section);
+      AdSecPoint.Name = $"Position [{DefaultUnits.LengthUnitGeometry}]";
+      // Name = $"Position [{DefaultUnits.LengthUnitGeometry}]",
+    }
 
-    public AdSecPointArrayParameter Position { get; set; } = new AdSecPointArrayParameter {
-      Name = "Position [" + DefaultUnits.LengthUnitGeometry + "]",
-      NickName = "Vx",
-      Description = "Rebar position as 2D vertex in the section's local yz-plane",
-      Access = Access.List,
-    };
+    private static void FromAttribute(ref Attribute update, Attribute section) {
+      update.Name = section.Name;
+      update.NickName = section.NickName;
+      update.Description = section.Description;
 
-    public DoubleArrayParameter Diameter { get; set; } = new DoubleArrayParameter {
-      Name = "Diameter [" + DefaultUnits.LengthUnitGeometry + "]",
-      NickName = "Ø",
-      Description = "Bar Diameter",
-      Access = Access.List,
-    };
+      if (section is IAccessible accessible) {
+        if (update is IAccessible AdSecSection) {
+          AdSecSection.Access = accessible.Access;
+        }
+      }
+    }
 
-    public IntegerArrayParameter BundleCount { get; set; } = new IntegerArrayParameter {
-      Name = "Bundle Count",
-      NickName = "N",
-      Description = "Count per bundle (1, 2, 3 or 4)",
-      Access = Access.List,
-    };
-
-    public DoubleArrayParameter PreLoad { get; set; } = new DoubleArrayParameter {
-      Name = "PreLoad",
-      NickName = "P",
-      Description = "The pre-load per reinforcement bar. Positive value is tension.",
-      Access = Access.List,
-    };
-
-    public ComponentAttribute Metadata { get; set; } = new ComponentAttribute {
-      Name = "FlattenRebar",
-      NickName = "FRb",
-      Description = "Flatten all rebars in a section into single bars.",
-    };
-    public ComponentOrganisation Organisation { get; set; } = new ComponentOrganisation {
-      Category = CategoryName.Name(),
-      SubCategory = SubCategoryName.Cat4(),
-    };
-
-    public Attribute[] GetAllInputAttributes() {
+    public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
-        Section,
+        AdSecSection,
       };
     }
 
-    public Attribute[] GetAllOutputAttributes() {
+    public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
-        Position,
+        AdSecPoint,
         Diameter,
         BundleCount,
         PreLoad,
       };
     }
-
-    public void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
-
-    public void Compute() { throw new NotImplementedException(); }
   }
 
   public class FlattenRebar : BusinessOasysGlue<FlattenRebarComponent> {
@@ -117,11 +89,10 @@ namespace AdSecGH.Components {
       IQuantity force = new Force(0, DefaultUnits.ForceUnit);
       string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
 
-      pManager.AddGenericParameter("Position [" + lengthUnitAbbreviation + "]", "Vx",
+      pManager.AddGenericParameter($"Position [{lengthUnitAbbreviation}]", "Vx",
         "Rebar position as 2D vertex in the section's local yz-plane ", GH_ParamAccess.list);
       pManager.HideParameter(0);
-      pManager.AddGenericParameter("Diameter [" + lengthUnitAbbreviation + "]", "Ø", "Bar Diameter",
-        GH_ParamAccess.list);
+      pManager.AddGenericParameter($"Diameter [{lengthUnitAbbreviation}]", "Ø", "Bar Diameter", GH_ParamAccess.list);
       pManager.AddIntegerParameter("Bundle Count", "N", "Count per bundle (1, 2, 3 or 4)", GH_ParamAccess.list);
       pManager.AddGenericParameter("PreLoad", "P", "The pre-load per reinforcement bar. Positive value is tension.",
         GH_ParamAccess.list);

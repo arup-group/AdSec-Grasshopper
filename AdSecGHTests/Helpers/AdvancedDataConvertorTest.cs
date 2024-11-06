@@ -1,5 +1,6 @@
 ﻿using System;
 
+using AdSecGH.Components;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -13,6 +14,17 @@ using Rhino.Geometry;
 using Xunit;
 
 namespace AdSecGHTests.Helpers {
+
+  [Collection("GrasshopperFixture collection")]
+  public class FlattenRebarGhTests {
+    [Fact]
+    public void ShouldPassAttributeValuesFromSection() {
+      var component = new FlattenRebarGhComponent();
+      Assert.Equal(component.Section.Name, component.AdSecSection.Name);
+      Assert.Equal(component.Section.NickName, component.AdSecSection.NickName);
+      Assert.Equal(component.Section.Description, component.AdSecSection.Description);
+    }
+  }
 
   [Collection("GrasshopperFixture collection")]
   public class AdvancedDataConvertorTest {

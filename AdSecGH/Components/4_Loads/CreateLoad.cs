@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
-using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
+
+using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
 
@@ -19,22 +22,21 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateLoad : GH_OasysDropDownComponent {
+    private ForceUnit _forceUnit = DefaultUnits.ForceUnit;
+    private MomentUnit _momentUnit = DefaultUnits.MomentUnit;
+
+    public CreateLoad() : base("Create" + AdSecLoadGoo.Name.Replace(" ", string.Empty),
+      AdSecLoadGoo.Name.Replace(" ", string.Empty),
+      "Create an" + AdSecLoadGoo.Description + " from an axial force and biaxial moments", CategoryName.Name(),
+      SubCategoryName.Cat5()) {
+      Hidden = true; // sets the initial state of the component to hidden
+    }
+
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("cbab2b74-2a01-4f05-ba24-2c79827c7415");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateLoad;
-    private ForceUnit _forceUnit = DefaultUnits.ForceUnit;
-    private MomentUnit _momentUnit = DefaultUnits.MomentUnit;
-
-    public CreateLoad() : base(
-      "Create" + AdSecLoadGoo.Name.Replace(" ", string.Empty),
-      AdSecLoadGoo.Name.Replace(" ", string.Empty),
-      "Create an" + AdSecLoadGoo.Description + " from an axial force and biaxial moments",
-      CategoryName.Name(),
-      SubCategoryName.Cat5()) {
-      Hidden = true; // sets the initial state of the component to hidden
-    }
+    protected override Bitmap Icon => Resources.CreateLoad;
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
@@ -61,9 +63,9 @@ namespace AdSecGH.Components {
     }
 
     protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new string[] {
+      _spacerDescriptions = new List<string>(new[] {
         "Force Unit",
-        "Moment Unit"
+        "Moment Unit",
       });
 
       _dropDownItems = new List<List<string>>();
@@ -83,9 +85,14 @@ namespace AdSecGH.Components {
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string forceUnitAbbreviation = Force.GetAbbreviation(_forceUnit);
       string momentUnitAbbreviation = Moment.GetAbbreviation(_momentUnit);
-      pManager.AddGenericParameter("Fx [" + forceUnitAbbreviation + "]", "X", "The axial force. Positive x is tension.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Myy [" + momentUnitAbbreviation + "]", "YY", "The moment about local y-axis. Positive yy is anti - clockwise moment about local y-axis.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Mzz [" + momentUnitAbbreviation + "]", "ZZ", "The moment about local z-axis. Positive zz is anti - clockwise moment about local z-axis.", GH_ParamAccess.item);
+      pManager.AddGenericParameter("Fx [" + forceUnitAbbreviation + "]", "X", "The axial force. Positive x is tension.",
+        GH_ParamAccess.item);
+      pManager.AddGenericParameter("Myy [" + momentUnitAbbreviation + "]", "YY",
+        "The moment about local y-axis. Positive yy is anti - clockwise moment about local y-axis.",
+        GH_ParamAccess.item);
+      pManager.AddGenericParameter("Mzz [" + momentUnitAbbreviation + "]", "ZZ",
+        "The moment about local z-axis. Positive zz is anti - clockwise moment about local z-axis.",
+        GH_ParamAccess.item);
       // make all but last input optional
       for (int i = 0; i < pManager.ParamCount - 1; i++) {
         pManager[i].Optional = true;
@@ -93,21 +100,21 @@ namespace AdSecGH.Components {
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter(AdSecLoadGoo.Name, AdSecLoadGoo.NickName, AdSecLoadGoo.Description, GH_ParamAccess.item);
+      pManager.AddGenericParameter(AdSecLoadGoo.Name, AdSecLoadGoo.NickName, AdSecLoadGoo.Description,
+        GH_ParamAccess.item);
     }
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // Create new load
-      var load = ILoad.Create(
-        (Force)Input.UnitNumber(this, DA, 0, _forceUnit, true),
+      var load = ILoad.Create((Force)Input.UnitNumber(this, DA, 0, _forceUnit, true),
         (Moment)Input.UnitNumber(this, DA, 1, _momentUnit, true),
         (Moment)Input.UnitNumber(this, DA, 2, _momentUnit, true));
 
       // check for enough input parameters
-      if (Params.Input[0].SourceCount == 0 && Params.Input[1].SourceCount == 0
-          && Params.Input[2].SourceCount == 0) {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameters " + Params.Input[0].NickName + ", " +
-            Params.Input[1].NickName + ", and " + Params.Input[2].NickName + " failed to collect data!");
+      if (Params.Input[0].SourceCount == 0 && Params.Input[1].SourceCount == 0 && Params.Input[2].SourceCount == 0) {
+        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
+          "Input parameters " + Params.Input[0].NickName + ", " + Params.Input[1].NickName + ", and "
+          + Params.Input[2].NickName + " failed to collect data!");
         return;
       }
 

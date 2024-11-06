@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 
-using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
+
+using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
 
@@ -17,22 +20,19 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateStressStrainPoint : GH_OasysDropDownComponent {
+    private StrainUnit _strainUnit = DefaultUnits.StrainUnitResult;
+    private PressureUnit _stressUnit = DefaultUnits.StressUnitResult;
+
+    public CreateStressStrainPoint() : base("Create StressStrainPt", "StressStrainPt",
+      "Create a Stress Strain Point for AdSec Stress Strain Curve", CategoryName.Name(), SubCategoryName.Cat1()) {
+      Hidden = false; // sets the initial state of the component to hidden
+    }
+
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("69a789d4-c11b-4396-b237-a10efdd6d0c4");
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.StressStrainPt;
-    private StrainUnit _strainUnit = DefaultUnits.StrainUnitResult;
-    private PressureUnit _stressUnit = DefaultUnits.StressUnitResult;
-
-    public CreateStressStrainPoint() : base(
-      "Create StressStrainPt",
-      "StressStrainPt",
-      "Create a Stress Strain Point for AdSec Stress Strain Curve",
-      CategoryName.Name(),
-      SubCategoryName.Cat1()) {
-      Hidden = false; // sets the initial state of the component to hidden
-    }
+    protected override Bitmap Icon => Resources.StressStrainPt;
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
@@ -46,6 +46,7 @@ namespace AdSecGH.Components {
           _stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), _selectedItems[i]);
           break;
       }
+
       base.UpdateUI();
     }
 
@@ -57,9 +58,9 @@ namespace AdSecGH.Components {
     }
 
     protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new string[] {
+      _spacerDescriptions = new List<string>(new[] {
         "Strain Unit",
-        "Stress Unit"
+        "Stress Unit",
       });
 
       _dropDownItems = new List<List<string>>();
@@ -77,8 +78,10 @@ namespace AdSecGH.Components {
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string strainUnitAbbreviation = Strain.GetAbbreviation(_strainUnit);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(_stressUnit);
-      pManager.AddGenericParameter("Strain [" + strainUnitAbbreviation + "]", "ε", "Value for strain (X-axis)", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Stress [" + stressUnitAbbreviation + "]", "σ", "Value for stress (Y-axis)", GH_ParamAccess.item);
+      pManager.AddGenericParameter("Strain [" + strainUnitAbbreviation + "]", "ε", "Value for strain (X-axis)",
+        GH_ParamAccess.item);
+      pManager.AddGenericParameter("Stress [" + stressUnitAbbreviation + "]", "σ", "Value for stress (Y-axis)",
+        GH_ParamAccess.item);
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
@@ -87,8 +90,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // create new point
-      var pt = new AdSecStressStrainPointGoo(
-        (Pressure)Input.UnitNumber(this, DA, 1, _stressUnit),
+      var pt = new AdSecStressStrainPointGoo((Pressure)Input.UnitNumber(this, DA, 1, _stressUnit),
         (Strain)Input.UnitNumber(this, DA, 0, _strainUnit));
 
       DA.SetData(0, pt);

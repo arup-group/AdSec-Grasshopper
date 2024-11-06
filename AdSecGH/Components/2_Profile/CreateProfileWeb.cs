@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
-using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
+
+using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
@@ -21,27 +24,19 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateProfileWeb : GH_OasysDropDownComponent {
-    private enum FoldMode {
-      Constant,
-      Tapered
+    private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
+    private FoldMode _mode = FoldMode.Constant;
+
+    public CreateProfileWeb() : base("Create Web", "Web", "Create a Web for AdSec Profile", CategoryName.Name(),
+      SubCategoryName.Cat2()) {
+      Hidden = true; // sets the initial state of the component to hidden
     }
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("0f9a9223-e745-44b9-add2-8b2e5950e86a");
     public override GH_Exposure Exposure => GH_Exposure.secondary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.CreateWeb;
-    private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
-    private FoldMode _mode = FoldMode.Constant;
-
-    public CreateProfileWeb() : base(
-      "Create Web",
-      "Web",
-      "Create a Web for AdSec Profile",
-      CategoryName.Name(),
-      SubCategoryName.Cat2()) {
-      Hidden = true; // sets the initial state of the component to hidden
-    }
+    protected override Bitmap Icon => Resources.CreateWeb;
 
     public override void SetSelected(int i, int j) {
       // set selected item
@@ -51,6 +46,7 @@ namespace AdSecGH.Components {
       } else {
         _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       }
+
       ToggleInput();
     }
 
@@ -63,6 +59,7 @@ namespace AdSecGH.Components {
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
       }
+
       if (_mode == FoldMode.Tapered) {
         Params.Input[0].Name = "Top Thickness [" + unitAbbreviation + "]";
         Params.Input[0].NickName = "Tt";
@@ -79,9 +76,9 @@ namespace AdSecGH.Components {
     }
 
     protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new string[] {
+      _spacerDescriptions = new List<string>(new[] {
         "Web Type",
-        "Measure"
+        "Measure",
       });
 
       _dropDownItems = new List<List<string>>();
@@ -111,17 +108,14 @@ namespace AdSecGH.Components {
         case FoldMode.Constant:
 
           var webConst = new AdSecProfileWebGoo(
-            IWebConstant.Create(
-              (Length)Input.UnitNumber(this, DA, 0, _lengthUnit)));
+            IWebConstant.Create((Length)Input.UnitNumber(this, DA, 0, _lengthUnit)));
 
           DA.SetData(0, webConst);
           break;
 
         case FoldMode.Tapered:
-          var webTaper = new AdSecProfileWebGoo(
-            IWebTapered.Create(
-              (Length)Input.UnitNumber(this, DA, 0, _lengthUnit),
-              (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
+          var webTaper = new AdSecProfileWebGoo(IWebTapered.Create((Length)Input.UnitNumber(this, DA, 0, _lengthUnit),
+            (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
 
           DA.SetData(0, webTaper);
           break;
@@ -143,6 +137,7 @@ namespace AdSecGH.Components {
           while (Params.Input.Count > 1) {
             Params.UnregisterInputParameter(Params.Input[1], true);
           }
+
           break;
 
         case FoldMode.Tapered:
@@ -150,8 +145,14 @@ namespace AdSecGH.Components {
           while (Params.Input.Count != 2) {
             Params.RegisterInputParam(new Param_GenericObject());
           }
+
           break;
       }
+    }
+
+    private enum FoldMode {
+      Constant,
+      Tapered,
     }
   }
 }
