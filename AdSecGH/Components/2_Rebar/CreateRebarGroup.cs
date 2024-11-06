@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 using AdSecGH.Helpers;
-using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
+
+using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
-using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 
 using OasysGH;
@@ -22,27 +24,18 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateReinforcementGroup : GH_OasysDropDownComponent {
-    private enum FoldMode {
-      Template,
-      Perimeter,
-      Link
+    private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
+    private FoldMode _mode = FoldMode.Template;
+
+    public CreateReinforcementGroup() : base("Create Reinforcement Group", "Reinforcement Group",
+      "Create a Template Reinforcement Group for an AdSec Section", CategoryName.Name(), SubCategoryName.Cat3()) {
+      Hidden = false;
     }
 
     public override Guid ComponentGuid => new Guid("9876f456-de99-4834-8d7f-4019cc0c70ba");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.RebarGroup;
-    private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
-    private FoldMode _mode = FoldMode.Template;
-
-    public CreateReinforcementGroup() : base(
-      "Create Reinforcement Group",
-      "Reinforcement Group",
-      "Create a Template Reinforcement Group for an AdSec Section",
-      CategoryName.Name(),
-      SubCategoryName.Cat3()) {
-      Hidden = false;
-    }
+    protected override Bitmap Icon => Resources.RebarGroup;
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
@@ -52,6 +45,7 @@ namespace AdSecGH.Components {
       } else {
         _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       }
+
       base.UpdateUI();
     }
 
@@ -81,6 +75,7 @@ namespace AdSecGH.Components {
         Params.Input[3].Access = GH_ParamAccess.list;
         Params.Input[3].Optional = true;
       }
+
       if (_mode == FoldMode.Perimeter) {
         Params.Input[0].Name = "Spaced Rebars";
         Params.Input[0].NickName = "RbS";
@@ -88,6 +83,7 @@ namespace AdSecGH.Components {
         Params.Input[0].Access = GH_ParamAccess.list;
         Params.Input[0].Optional = false;
       }
+
       if (_mode == FoldMode.Link) {
         Params.Input[0].Name = "Rebar";
         Params.Input[0].NickName = "Rb";
@@ -105,12 +101,13 @@ namespace AdSecGH.Components {
     }
 
     protected override string HtmlHelp_Source() {
-      string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Reinforcement.Groups.ITemplateGroup.Face.html";
+      string help
+        = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Reinforcement.Groups.ITemplateGroup.Face.html";
       return help;
     }
 
     protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new string[] {
+      _spacerDescriptions = new List<string>(new[] {
         "Group Type",
         "Measure",
       });
@@ -130,10 +127,14 @@ namespace AdSecGH.Components {
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
       pManager.AddGenericParameter("Top Rebars", "TRs", "Top Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.list);
-      pManager.AddGenericParameter("Left Side Rebars", "LRs", "Left Side Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.list);
-      pManager.AddGenericParameter("Right Side Rebars", "RRs", "Right Side Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.list);
-      pManager.AddGenericParameter("Bottom Rebars", "BRs", "Bottom Face AdSec Rebars Spaced in a Layer", GH_ParamAccess.list);
-      pManager.AddGenericParameter("Cover [" + unitAbbreviation + "]", "Cov", "The reinforcement-free zone around the faces of a profile.", GH_ParamAccess.list);
+      pManager.AddGenericParameter("Left Side Rebars", "LRs", "Left Side Face AdSec Rebars Spaced in a Layer",
+        GH_ParamAccess.list);
+      pManager.AddGenericParameter("Right Side Rebars", "RRs", "Right Side Face AdSec Rebars Spaced in a Layer",
+        GH_ParamAccess.list);
+      pManager.AddGenericParameter("Bottom Rebars", "BRs", "Bottom Face AdSec Rebars Spaced in a Layer",
+        GH_ParamAccess.list);
+      pManager.AddGenericParameter("Cover [" + unitAbbreviation + "]", "Cov",
+        "The reinforcement-free zone around the faces of a profile.", GH_ParamAccess.list);
       _mode = FoldMode.Template;
       // make all but last input optional
       for (int i = 0; i < pManager.ParamCount - 1; i++) {
@@ -149,34 +150,40 @@ namespace AdSecGH.Components {
       var groups = new List<AdSecRebarGroupGoo>();
 
       // cover
-      List<ICover> covers = AdSecInput.Covers(this, da, Params.Input.Count - 1, _lengthUnit);
+      var covers = AdSecInput.Covers(this, da, Params.Input.Count - 1, _lengthUnit);
 
       switch (_mode) {
         case FoldMode.Template:
           // check for enough input parameters
-          if (Params.Input[0].SourceCount == 0 && Params.Input[1].SourceCount == 0
-              && Params.Input[2].SourceCount == 0 && Params.Input[3].SourceCount == 0) {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameters " + Params.Input[0].NickName + ", " + Params.Input[1].NickName + ", " + Params.Input[2].NickName + ", and " + Params.Input[3].NickName + " failed to collect data!");
+          if (Params.Input[0].SourceCount == 0 && Params.Input[1].SourceCount == 0 && Params.Input[2].SourceCount == 0
+            && Params.Input[3].SourceCount == 0) {
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
+              "Input parameters " + Params.Input[0].NickName + ", " + Params.Input[1].NickName + ", "
+              + Params.Input[2].NickName + ", and " + Params.Input[3].NickName + " failed to collect data!");
             return;
           }
+
           // top
           if (Params.Input[0].SourceCount != 0) {
             var grp = ITemplateGroup.Create(ITemplateGroup.Face.Top);
             grp.Layers = AdSecInput.ILayers(this, da, 0);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
+
           // left
           if (Params.Input[1].SourceCount != 0) {
             var grp = ITemplateGroup.Create(ITemplateGroup.Face.LeftSide);
             grp.Layers = AdSecInput.ILayers(this, da, 1);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
+
           // right
           if (Params.Input[2].SourceCount != 0) {
             var grp = ITemplateGroup.Create(ITemplateGroup.Face.RightSide);
             grp.Layers = AdSecInput.ILayers(this, da, 2);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
+
           // bottom
           if (Params.Input[3].SourceCount != 0) {
             var grp = ITemplateGroup.Create(ITemplateGroup.Face.Bottom);
@@ -189,30 +196,37 @@ namespace AdSecGH.Components {
         case FoldMode.Perimeter:
           // check for enough input parameters
           if (Params.Input[0].SourceCount == 0) {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
+              "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
             return;
           }
+
           // top
           if (Params.Input[0].SourceCount != 0) {
             var grp = IPerimeterGroup.Create();
             grp.Layers = AdSecInput.ILayers(this, da, 0);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
+
           break;
 
         case FoldMode.Link:
           // check for enough input parameters
           if (Params.Input[0].SourceCount == 0) {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
+              "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
             return;
           }
+
           // top
           if (Params.Input[0].SourceCount != 0) {
             var grp = ILinkGroup.Create(AdSecInput.IBarBundle(this, da, 0));
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
+
           break;
       }
+
       for (int i = 0; i < groups.Count; i++) {
         if (covers.Count > i) {
           groups[i].Cover = covers[i];
@@ -234,7 +248,7 @@ namespace AdSecGH.Components {
 
     private void ToggleInput() {
       // remove cover temporarily
-      IGH_Param param_Cover = Params.Input[Params.Input.Count - 1];
+      var param_Cover = Params.Input[Params.Input.Count - 1];
       Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
 
       // remove any additional input parameters
@@ -248,8 +262,15 @@ namespace AdSecGH.Components {
         Params.RegisterInputParam(new Param_GenericObject());
         Params.RegisterInputParam(new Param_GenericObject());
       }
+
       // add cover back
       Params.RegisterInputParam(param_Cover);
+    }
+
+    private enum FoldMode {
+      Template,
+      Perimeter,
+      Link,
     }
   }
 }

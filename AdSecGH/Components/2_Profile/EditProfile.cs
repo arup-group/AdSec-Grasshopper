@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 using AdSecGH.Helpers;
-using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
+
+using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
 
@@ -18,21 +21,18 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class EditProfile : GH_OasysDropDownComponent {
+    private AngleUnit _angleUnit = AngleUnit.Radian;
+
+    public EditProfile() : base("Edit Profile", "ProfileEdit", "Modify an AdSec Profile", CategoryName.Name(),
+      SubCategoryName.Cat2()) {
+      Hidden = false; // sets the initial state of the component to hidden
+    }
+
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("78f26bee-c72c-4d88-9b30-492190df2910");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.EditProfile;
-    private AngleUnit _angleUnit = AngleUnit.Radian;
-
-    public EditProfile() : base(
-      "Edit Profile",
-      "ProfileEdit",
-      "Modify an AdSec Profile",
-      CategoryName.Name(),
-      SubCategoryName.Cat2()) {
-      Hidden = false; // sets the initial state of the component to hidden
-    }
+    protected override Bitmap Icon => Resources.EditProfile;
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
@@ -48,8 +48,8 @@ namespace AdSecGH.Components {
     }
 
     protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new string[] {
-        "Measure"
+      _spacerDescriptions = new List<string>(new[] {
+        "Measure",
       });
 
       _dropDownItems = new List<List<string>>();
@@ -64,10 +64,15 @@ namespace AdSecGH.Components {
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string angleAbbreviation = Angle.GetAbbreviation(_angleUnit);
 
-      pManager.AddGenericParameter("Profile", "Pf", "AdSet Profile to Edit or get information from", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Rotation [" + angleAbbreviation + "]", "R", "[Optional] The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.", GH_ParamAccess.item);
-      pManager.AddBooleanParameter("isReflectedY", "rY", "[Optional] Reflects the profile over the y-axis in the local coordinate system.", GH_ParamAccess.item);
-      pManager.AddBooleanParameter("isReflectedZ", "rZ", "[Optional] Reflects the profile over the z-axis in the local coordinate system.", GH_ParamAccess.item);
+      pManager.AddGenericParameter("Profile", "Pf", "AdSet Profile to Edit or get information from",
+        GH_ParamAccess.item);
+      pManager.AddGenericParameter("Rotation [" + angleAbbreviation + "]", "R",
+        "[Optional] The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.",
+        GH_ParamAccess.item);
+      pManager.AddBooleanParameter("isReflectedY", "rY",
+        "[Optional] Reflects the profile over the y-axis in the local coordinate system.", GH_ParamAccess.item);
+      pManager.AddBooleanParameter("isReflectedZ", "rZ",
+        "[Optional] Reflects the profile over the z-axis in the local coordinate system.", GH_ParamAccess.item);
 
       // make all but first input optional
       for (int i = 1; i < pManager.ParamCount; i++) {
@@ -81,7 +86,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // #### get material input and duplicate it ####
-      AdSecProfileGoo editPrf = AdSecInput.AdSecProfileGoo(this, DA, 0);
+      var editPrf = AdSecInput.AdSecProfileGoo(this, DA, 0);
 
       if (editPrf != null) {
         // #### get the remaining inputs ####
