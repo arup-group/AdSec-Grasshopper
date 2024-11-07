@@ -57,6 +57,11 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
+    public void ShouldHaveStringArrayParameter() {
+      Assert.NotNull(component.Params.GetInputParam("MatString") as Param_String);
+    }
+
+    [Fact]
     public void ShouldHaveSamePointOutput() {
       allParameters.Points.Default = new[] {
         new AdSecPointGoo(Point3d.Origin),
