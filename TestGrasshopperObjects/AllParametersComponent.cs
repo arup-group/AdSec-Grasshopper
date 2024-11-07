@@ -1,5 +1,7 @@
 ﻿using System;
 
+using AdSecCore.Parameters;
+
 using Oasys.Business;
 using Oasys.GH.Helpers;
 
@@ -30,6 +32,12 @@ namespace AdSecGHTests.Helpers {
       NickName = "Mats",
       Description = "Material description",
     };
+
+    public IntegerArrayParameter BundleCount { get; set; } = new IntegerArrayParameter {
+      Name = "Bundle Count",
+      NickName = "BC",
+      Description = "Bundle Count description",
+    };
     public ComponentAttribute Metadata { get; set; } = new ComponentAttribute {
       Name = "All Parameters",
       NickName = "AP",
@@ -53,6 +61,7 @@ namespace AdSecGHTests.Helpers {
         Section,
         Points,
         Material,
+        BundleCount,
       };
     }
   }

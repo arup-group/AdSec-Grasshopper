@@ -19,14 +19,14 @@ namespace AdSecGH.Components {
     };
 
     public IPointArrayParameter Position { get; set; } = new IPointArrayParameter {
-      Name = "Position", // [{DefaultUnits.LengthUnitGeometry}]",
+      Name = "Position",
       NickName = "Vx",
       Description = "Rebar position as 2D vertex in the section's local yz-plane",
       Access = Access.List,
     };
 
     public DoubleArrayParameter Diameter { get; set; } = new DoubleArrayParameter {
-      Name = "Diameter", // [{DefaultUnits.LengthUnitGeometry}]",
+      Name = "Diameter",
       NickName = "Ø",
       Description = "Bar Diameter",
       Access = Access.List,

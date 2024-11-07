@@ -62,6 +62,13 @@ namespace Oasys.GH.Helpers {
             Description = a.Description,
             Access = GetAccess(a),
           }
+        }, {
+          typeof(IntegerArrayParameter), a => new Param_Integer {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
         },
       };
 
@@ -83,7 +90,10 @@ namespace Oasys.GH.Helpers {
             var materials = (a as AdSecMaterialArrayParam).Value;
             return materials?.ToList();
           }
+        }, {
+          typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value
         },
+        // }
       };
 
     public static GH_ParamAccess GetAccess(this Attribute attribute) {
