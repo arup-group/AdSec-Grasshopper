@@ -18,10 +18,23 @@ using OasysGH.Parameters;
 using OasysGH.Units;
 
 using OasysUnits;
+using OasysUnits.Units;
 
 using Attribute = Oasys.Business.Attribute;
 
 namespace AdSecGH.Components {
+  public static class UnitExtensions {
+
+    public static string GetUnit(this LengthUnit lengthUnitGeometry) {
+      IQuantity length = new Length(0, lengthUnitGeometry);
+      return string.Concat(length.ToString().Where(char.IsLetter));
+    }
+
+    public static string NameWithUnits(this Attribute attribute, LengthUnit unit) {
+      return $"{attribute.Name} [{unit.GetUnit()}]";
+    }
+  }
+
   public class FlattenRebarGhComponent : FlattenRebarComponent {
     public AdSecPointArrayParameter AdSecPoint = new AdSecPointArrayParameter();
     public IAdSecSectionParameter AdSecSection = new IAdSecSectionParameter();
@@ -29,19 +42,18 @@ namespace AdSecGH.Components {
     public FlattenRebarGhComponent() {
       var adSecSection = AdSecSection as Attribute;
       FromAttribute(ref adSecSection, Section);
-      AdSecPoint.Name = $"Position [{DefaultUnits.LengthUnitGeometry}]";
       var adSecPoint = AdSecPoint as Attribute;
-      FromAttribute(ref adSecPoint, Section);
-      AdSecPoint.Name = $"Position [{DefaultUnits.LengthUnitGeometry}]";
-      // Name = $"Position [{DefaultUnits.LengthUnitGeometry}]",
+      FromAttribute(ref adSecPoint, Position);
+      AdSecPoint.Name = Position.NameWithUnits(DefaultUnits.LengthUnitGeometry);
+      Diameter.Name = Diameter.NameWithUnits(DefaultUnits.LengthUnitGeometry);
     }
 
-    private static void FromAttribute(ref Attribute update, Attribute section) {
-      update.Name = section.Name;
-      update.NickName = section.NickName;
-      update.Description = section.Description;
+    private static void FromAttribute(ref Attribute update, Attribute from) {
+      update.Name = from.Name;
+      update.NickName = from.NickName;
+      update.Description = from.Description;
 
-      if (section is IAccessible accessible) {
+      if (from is IAccessible accessible) {
         if (update is IAccessible AdSecSection) {
           AdSecSection.Access = accessible.Access;
         }
@@ -81,8 +93,7 @@ namespace AdSecGH.Components {
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      IQuantity length = new Length(0, DefaultUnits.LengthUnitGeometry);
-      string lengthUnitAbbreviation = string.Concat(length.ToString().Where(char.IsLetter));
+      string lengthUnitAbbreviation = DefaultUnits.LengthUnitGeometry.GetUnit();
       IQuantity stress = new Pressure(0, DefaultUnits.StressUnitResult);
       string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
       string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
