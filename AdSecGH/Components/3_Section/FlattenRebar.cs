@@ -48,12 +48,6 @@ namespace AdSecGH.Components {
       Diameter.Name = Diameter.NameWithUnits(DefaultUnits.LengthUnitGeometry);
     }
 
-    public AdSecMaterialArrayParam Material { get; set; } = new AdSecMaterialArrayParam {
-      Name = "Material",
-      NickName = "Mat",
-      Description = "Material Type",
-    };
-
     private static void FromAttribute(ref Attribute update, Attribute from) {
       update.Name = from.Name;
       update.NickName = from.NickName;

@@ -46,6 +46,11 @@ namespace AdSecGH.Components {
       Access = Access.List,
     };
 
+    public StringArrayParam Material { get; set; } = new StringArrayParam {
+      Name = "Material",
+      NickName = "Mat",
+      Description = "Material Type",
+    };
     public ComponentAttribute Metadata { get; set; } = new ComponentAttribute {
       Name = "FlattenRebar",
       NickName = "FRb",
@@ -68,6 +73,7 @@ namespace AdSecGH.Components {
         Diameter,
         BundleCount,
         PreLoad,
+        Material,
       };
     }
 
