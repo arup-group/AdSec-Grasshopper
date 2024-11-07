@@ -52,6 +52,11 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
+    public void ShouldHaveIntegerArrayParameter() {
+      Assert.NotNull(component.Params.GetInputParam("Bundle Count") as Param_Integer);
+    }
+
+    [Fact]
     public void ShouldHaveSamePointOutput() {
       allParameters.Points.Default = new[] {
         new AdSecPointGoo(Point3d.Origin),

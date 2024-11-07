@@ -76,7 +76,7 @@ namespace AdSecGH.Components {
     }
   }
 
-  public class FlattenRebar : BusinessOasysGlue<FlattenRebarComponent> {
+  public class FlattenRebar : BusinessOasysGlue<FlattenRebarGhComponent> {
 
     public FlattenRebar() {
       Hidden = true;
@@ -88,27 +88,27 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.FlattenRebar;
 
-    protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      pManager.AddGenericParameter("Section", "Sec", "AdSec Section to get single rebars from", GH_ParamAccess.item);
-    }
+    // protected override void RegisterInputParams(GH_InputParamManager pManager) {
+    //   pManager.AddGenericParameter("Section", "Sec", "AdSec Section to get single rebars from", GH_ParamAccess.item);
+    // }
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      string lengthUnitAbbreviation = DefaultUnits.LengthUnitGeometry.GetUnit();
-      IQuantity stress = new Pressure(0, DefaultUnits.StressUnitResult);
-      string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
-      string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
-      IQuantity force = new Force(0, DefaultUnits.ForceUnit);
-      string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-
-      pManager.AddGenericParameter($"Position [{lengthUnitAbbreviation}]", "Vx",
-        "Rebar position as 2D vertex in the section's local yz-plane ", GH_ParamAccess.list);
-      pManager.HideParameter(0);
-      pManager.AddGenericParameter($"Diameter [{lengthUnitAbbreviation}]", "Ø", "Bar Diameter", GH_ParamAccess.list);
-      pManager.AddIntegerParameter("Bundle Count", "N", "Count per bundle (1, 2, 3 or 4)", GH_ParamAccess.list);
-      pManager.AddGenericParameter("PreLoad", "P", "The pre-load per reinforcement bar. Positive value is tension.",
-        GH_ParamAccess.list);
-      pManager.AddGenericParameter("Material", "Mat", "Material Type", GH_ParamAccess.list);
-    }
+    // protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
+    //   string lengthUnitAbbreviation = DefaultUnits.LengthUnitGeometry.GetUnit();
+    //   IQuantity stress = new Pressure(0, DefaultUnits.StressUnitResult);
+    //   string stressUnitAbbreviation = string.Concat(stress.ToString().Where(char.IsLetter));
+    //   string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
+    //   IQuantity force = new Force(0, DefaultUnits.ForceUnit);
+    //   string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
+    //
+    //   pManager.AddGenericParameter($"Position [{lengthUnitAbbreviation}]", "Vx",
+    //     "Rebar position as 2D vertex in the section's local yz-plane ", GH_ParamAccess.list);
+    //   pManager.HideParameter(0);
+    //   pManager.AddGenericParameter($"Diameter [{lengthUnitAbbreviation}]", "Ø", "Bar Diameter", GH_ParamAccess.list);
+    //   pManager.AddIntegerParameter("Bundle Count", "N", "Count per bundle (1, 2, 3 or 4)", GH_ParamAccess.list);
+    //   pManager.AddGenericParameter("PreLoad", "P", "The pre-load per reinforcement bar. Positive value is tension.",
+    //     GH_ParamAccess.list);
+    //   pManager.AddGenericParameter("Material", "Mat", "Material Type", GH_ParamAccess.list);
+    // }
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // get section input
