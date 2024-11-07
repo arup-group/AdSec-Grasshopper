@@ -12,4 +12,5 @@ namespace AdSecCore.Parameters {
 
   public class ISectionParameter : ParameterAttribute<ISection> { }
   public class IPointArrayParameter : BaseArrayParameter<IPoint> { }
+  public class StringArrayParam : BaseArrayParameter<string> { }
 }

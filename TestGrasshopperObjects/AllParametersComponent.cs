@@ -33,6 +33,12 @@ namespace AdSecGHTests.Helpers {
       Description = "Material description",
     };
 
+    public StringArrayParam MatString { get; set; } = new StringArrayParam {
+      Name = "MatString",
+      NickName = "MS",
+      Description = "Material description",
+    };
+
     public IntegerArrayParameter BundleCount { get; set; } = new IntegerArrayParameter {
       Name = "Bundle Count",
       NickName = "BC",
@@ -62,6 +68,7 @@ namespace AdSecGHTests.Helpers {
         Points,
         Material,
         BundleCount,
+        MatString,
       };
     }
   }

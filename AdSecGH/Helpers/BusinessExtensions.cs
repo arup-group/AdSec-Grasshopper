@@ -69,6 +69,13 @@ namespace Oasys.GH.Helpers {
             Description = a.Description,
             Access = GetAccess(a),
           }
+        }, {
+          typeof(StringArrayParam), a => new Param_String {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
         },
       };
 
@@ -92,8 +99,9 @@ namespace Oasys.GH.Helpers {
           }
         }, {
           typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value
+        }, {
+          typeof(StringArrayParam), a => (a as StringArrayParam).Value
         },
-        // }
       };
 
     public static GH_ParamAccess GetAccess(this Attribute attribute) {
