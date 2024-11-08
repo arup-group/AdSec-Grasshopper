@@ -413,16 +413,7 @@ namespace AdSecGH.Parameters {
     public static ISection GetFlattenSection(GH_Component component, IGH_DataAccess DA, int paramId) {
       // We simply unpack the section from GH_ObjectWrapper and add logging
       var adSecSection = AdSecInput.AdSecSection(component, DA, paramId);
-      return adSecSection.FlattenSection();
-    }
-
-    public ISection FlattenSection() {
-      if (DesignCode != null) {
-        return Section.FlattenSection(DesignCode);
-      }
-
-      return Section.FlattenSection();
+      return adSecSection.Section.FlattenSection();
     }
   }
-
 }
