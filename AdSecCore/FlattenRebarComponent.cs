@@ -7,7 +7,9 @@ using AdSecCore.Parameters;
 using AdSecGHCore.Constants;
 
 using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Preloads;
 using Oasys.Business;
+using Oasys.Profiles;
 
 using Attribute = Oasys.Business.Attribute;
 
@@ -84,14 +86,56 @@ namespace AdSecGH.Components {
 
     public void Compute() {
       var flattenSection = Section.Value.FlattenSection();
+      var lengthUnitGeometry = ContextUnits.Instance.LengthUnitGeometry;
+      // Output process
       var diameters = new List<double>();
+      var positions = new List<IPoint>();
+      var bundleCounts = new List<int>();
+      var preloads = new List<double>();
+      var materials = new List<string>();
       foreach (var reinforcementGroup in flattenSection.ReinforcementGroups) {
         if (reinforcementGroup is ISingleBars singleBars) {
-          diameters.Add(singleBars.BarBundle.Diameter.ToUnit(ContextUnits.Instance.LengthUnitGeometry).Value);
+          foreach (var position in singleBars.Positions) {
+            positions.Add(position);
+            bundleCounts.Add(singleBars.BarBundle.CountPerBundle);
+            diameters.Add(singleBars.BarBundle.Diameter.ToUnit(lengthUnitGeometry).Value);
+
+            preloads.Add(NewMethod(singleBars.Preload));
+
+            materials.Add(MaterialCleanUp(singleBars.BarBundle.Material.ToString()));
+          }
         }
       }
 
+      Position.Value = positions.ToArray();
       Diameter.Value = diameters.ToArray();
+      BundleCount.Value = bundleCounts.ToArray();
+      PreLoad.Value = preloads.ToArray();
+      Material.Value = materials.ToArray();
+    }
+
+    private static double NewMethod(IPreload preLoad) {
+      if (preLoad is IPreForce singleBarsPreload) {
+        return singleBarsPreload.Force.ToUnit(ContextUnits.Instance.ForceUnit).Value;
+      }
+
+      if (preLoad is IPreStrain singleBarsPreload2) {
+        return singleBarsPreload2.Strain.ToUnit(ContextUnits.Instance.StrainUnit).Value;
+      }
+
+      if (preLoad is IPreStress singleBarsPreload3) {
+        return singleBarsPreload3.Stress.ToUnit(ContextUnits.Instance.PressureUnit).Value;
+      }
+
+      return 0;
+    }
+
+    public static string MaterialCleanUp(string rebarMat) {
+      const string namespacePrefix = "Oasys.AdSec.Materials.I";
+      rebarMat = rebarMat.Replace(namespacePrefix, string.Empty);
+      const string suffix = "_Implementation";
+      rebarMat = rebarMat.Replace(suffix, string.Empty);
+      return rebarMat;
     }
   }
 

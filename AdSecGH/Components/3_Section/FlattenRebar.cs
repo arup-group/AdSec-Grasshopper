@@ -132,7 +132,7 @@ namespace AdSecGH.Components {
 
             // material
             // string RebarMaterial = ;
-            string reinforcementMat = MaterialCleanUp(snglBrs.BarBundle.Material.ToString());
+            string reinforcementMat = FlattenRebarComponent.MaterialCleanUp(snglBrs.BarBundle.Material.ToString());
             materialType.Add(reinforcementMat);
           }
         } catch (Exception) {
@@ -145,12 +145,6 @@ namespace AdSecGH.Components {
       DA.SetDataList(2, counts);
       DA.SetDataList(3, prestresses);
       DA.SetDataList(4, materialType);
-    }
-
-    private static string MaterialCleanUp(string rebmat) {
-      rebmat = rebmat.Replace("Oasys.AdSec.Materials.I", string.Empty);
-      rebmat = rebmat.Replace("_Implementation", string.Empty);
-      return rebmat;
     }
   }
 }
