@@ -6,7 +6,6 @@ using AdSecCore.Parameters;
 
 using AdSecGHCore.Constants;
 
-using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.Business;
 
@@ -84,8 +83,7 @@ namespace AdSecGH.Components {
     public void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
 
     public void Compute() {
-      var designCode = IS456.Edition_2000;
-      var flattenSection = Section.Value.FlattenSection(designCode);
+      var flattenSection = Section.Value.FlattenSection();
       var diameters = new List<double>();
       foreach (var reinforcementGroup in flattenSection.ReinforcementGroups) {
         if (reinforcementGroup is ISingleBars singleBars) {
@@ -96,4 +94,5 @@ namespace AdSecGH.Components {
       Diameter.Value = diameters.ToArray();
     }
   }
+
 }
