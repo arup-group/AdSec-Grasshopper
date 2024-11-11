@@ -1,12 +1,16 @@
-﻿namespace Oasys.Business {
+﻿using System;
+
+namespace Oasys.Business {
 
   public interface IBusinessComponent {
 
     ComponentAttribute Metadata { get; set; }
     ComponentOrganisation Organisation { get; set; }
     Attribute[] GetAllInputAttributes();
+
     Attribute[] GetAllOutputAttributes();
-    void UpdateInputValues(params object[] values);
+
+    // void UpdateInputValues(params object[] values);
     void Compute();
   }
 
@@ -42,13 +46,22 @@
   }
 
   public class ParameterAttribute<T> : Attribute, IDefault, IAccessible {
-    public T Value { get; set; }
+    private T _value;
+    public T Value {
+      get => _value;
+      set {
+        _value = value;
+        OnValueChanged?.Invoke(value);
+      }
+    }
     public T Default { get; set; }
     public virtual Access Access { get; set; } = Access.Item;
 
     public void SetDefault() {
       Value = Default;
     }
+
+    public event Action<T> OnValueChanged;
   }
 
   public class BaseArrayParameter<T> : ParameterAttribute<T[]> {
