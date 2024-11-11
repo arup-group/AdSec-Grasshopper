@@ -14,6 +14,7 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCoreTests {
+
   public class FlattenRebarTests {
     private readonly FlattenRebarComponent component;
     private readonly double rebarSize = 2;
@@ -93,9 +94,6 @@ namespace AdSecCoreTests {
       Assert.Single(component.PreLoad.Value);
       Assert.NotEqual(0, component.PreLoad.Value[0]);
     }
-
-    // singleBar.Preload = IPreStrain.Create(Strain.FromPercent(1));
-    // singleBar.Preload = IPreStress.Create(Pressure.FromMegapascals(1));
 
     [Fact]
     public void ShouldAddOutputsAsManyMaterialsAsRebars() {

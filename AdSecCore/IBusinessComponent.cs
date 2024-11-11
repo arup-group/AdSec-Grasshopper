@@ -47,6 +47,8 @@ namespace Oasys.Business {
 
   public class ParameterAttribute<T> : Attribute, IDefault, IAccessible {
     private T _value;
+
+    public Action<T> OnValueChanged;
     public T Value {
       get => _value;
       set {
@@ -60,8 +62,6 @@ namespace Oasys.Business {
     public void SetDefault() {
       Value = Default;
     }
-
-    public event Action<T> OnValueChanged;
   }
 
   public class BaseArrayParameter<T> : ParameterAttribute<T[]> {
