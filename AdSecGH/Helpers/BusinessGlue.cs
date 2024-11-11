@@ -34,6 +34,7 @@ namespace Oasys.GH.Helpers {
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {
+      BusinessComponent.UpdateInputValues(this, DA);
       BusinessComponent.Compute();
       BusinessComponent.SetOutputValues(this, DA);
     }

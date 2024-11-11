@@ -78,6 +78,19 @@ namespace Oasys.GH.Helpers {
           }
         },
       };
+    // private static readonly Dictionary<Type, Func<object, Attribute>> FromGoo
+    //   = new Dictionary<Type, Func<object, Attribute>> {
+    //     {
+    //       typeof(DoubleParameter), goo => new DoubleParameter {
+    //         Value = (goo as GH_Number).Value,
+    //       }
+    //     },
+    //     // {
+    //     //   typeof(ISection), goo => new ISectionParameter() {
+    //     //     Value = goo as AdSecSectionGoo,
+    //     //   }
+    //     // }
+    //   };
 
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
@@ -134,6 +147,20 @@ namespace Oasys.GH.Helpers {
           }
         }
       }
+    }
+
+    public static void UpdateInputValues(
+      this IBusinessComponent businessComponent, GH_Component component, IGH_DataAccess dataAccess) {
+      // TODO: Read values from Grasshopper Input and Assign on Attribute matching name.
+      // TODO: Internal Linked input parameters, should update automatically.
+      // i.e. when `AdSecSection` is updated, the `Section` attribute should be updated.
+      // foreach (var attribute in businessComponent.GetAllInputAttributes()) {
+      //   if (FromGoo.ContainsKey(attribute.GetType())) {
+      //     int index = component.Params.IndexOfInputParam(attribute.Name);
+      //     dynamic inputs = null;
+      //     if (dataAccess.GetData(index, ref inputs)) { }
+      //   }
+      // }
     }
 
     public static void SetOutputValues(

@@ -36,10 +36,9 @@ namespace AdSecGH.Components {
   }
 
   public class FlattenRebarGhComponent : FlattenRebarComponent {
-    public AdSecPointArrayParameter AdSecPoint = new AdSecPointArrayParameter();
-    public IAdSecSectionParameter AdSecSection = new IAdSecSectionParameter();
 
     public FlattenRebarGhComponent() {
+      AdSecSection.OnValueChanged += goo => Section.OnValueChanged?.Invoke(Section.Value);
       var adSecSection = AdSecSection as Attribute;
       FromAttribute(ref adSecSection, Section);
       var adSecPoint = AdSecPoint as Attribute;
@@ -47,6 +46,9 @@ namespace AdSecGH.Components {
       AdSecPoint.Name = Position.NameWithUnits(DefaultUnits.LengthUnitGeometry);
       Diameter.Name = Diameter.NameWithUnits(DefaultUnits.LengthUnitGeometry);
     }
+
+    public AdSecPointArrayParameter AdSecPoint { get; set; } = new AdSecPointArrayParameter();
+    public IAdSecSectionParameter AdSecSection { get; set; } = new IAdSecSectionParameter();
 
     private static void FromAttribute(ref Attribute update, Attribute from) {
       update.Name = from.Name;
