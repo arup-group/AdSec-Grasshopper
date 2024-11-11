@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -17,23 +16,9 @@ using OasysGH;
 using OasysGH.Parameters;
 using OasysGH.Units;
 
-using OasysUnits;
-using OasysUnits.Units;
-
 using Attribute = Oasys.Business.Attribute;
 
 namespace AdSecGH.Components {
-  public static class UnitExtensions {
-
-    public static string GetUnit(this LengthUnit lengthUnitGeometry) {
-      IQuantity length = new Length(0, lengthUnitGeometry);
-      return string.Concat(length.ToString().Where(char.IsLetter));
-    }
-
-    public static string NameWithUnits(this Attribute attribute, LengthUnit unit) {
-      return $"{attribute.Name} [{unit.GetUnit()}]";
-    }
-  }
 
   public class FlattenRebarGhComponent : FlattenRebarComponent {
 
