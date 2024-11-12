@@ -31,7 +31,12 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void ShouldHaveNoErrors() {
-      Assert.Empty(component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
+      var runtimeMessages = component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      foreach (string message in runtimeMessages) {
+        Assert.Equal("", message);
+      }
+
+      Assert.Empty(runtimeMessages);
     }
 
     [Fact]

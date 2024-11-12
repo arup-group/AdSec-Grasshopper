@@ -154,13 +154,21 @@ namespace Oasys.GH.Helpers {
       // TODO: Read values from Grasshopper Input and Assign on Attribute matching name.
       // TODO: Internal Linked input parameters, should update automatically.
       // i.e. when `AdSecSection` is updated, the `Section` attribute should be updated.
-      // foreach (var attribute in businessComponent.GetAllInputAttributes()) {
-      //   if (FromGoo.ContainsKey(attribute.GetType())) {
-      //     int index = component.Params.IndexOfInputParam(attribute.Name);
-      //     dynamic inputs = null;
-      //     if (dataAccess.GetData(index, ref inputs)) { }
-      //   }
-      // }
+      foreach (var attribute in businessComponent.GetAllInputAttributes()) {
+        // if (FromGoo.ContainsKey(attribute.GetType())) {
+        int index = component.Params.IndexOfInputParam(attribute.Name);
+        if (attribute.GetAccess() == GH_ParamAccess.item) {
+          dynamic inputs = null;
+          if (dataAccess.GetData(index, ref inputs)) {
+            dynamic valueBasedParameter = attribute;
+            try {
+              valueBasedParameter.Value = new AdSecSectionGoo(inputs.Value);
+            } catch (Exception e) {
+              Console.WriteLine(e);
+            }
+          }
+        }
+      }
     }
 
     public static void SetOutputValues(
