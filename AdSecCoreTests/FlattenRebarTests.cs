@@ -23,7 +23,7 @@ namespace AdSecCoreTests {
       ContextUnits.Instance.SetDefaultUnits();
       component = new FlattenRebarComponent();
       singleBars = new BuilderReinforcementGroup().WithSize(rebarSize).CreateSingleBar().AtPosition(Geometry.Zero())
-       .Build() as ISingleBars;
+       .Build();
       var section = new SectionBuilder().WithWidth(SectionSize).CreateSquareSection().WithReinforcementGroup(singleBars)
        .Build();
       component.Section.Value = section;

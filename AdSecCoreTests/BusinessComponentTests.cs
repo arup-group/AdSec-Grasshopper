@@ -21,8 +21,8 @@ namespace AdSecCoreTests {
 
       public DoubleParameter Diameter { get; set; } = new();
 
-      public ComponentAttribute Metadata { get; set; }
-      public ComponentOrganisation Organisation { get; set; }
+      public ComponentAttribute Metadata { get; set; } = new();
+      public ComponentOrganisation Organisation { get; set; } = new();
 
       public Attribute[] GetAllInputAttributes() {
         return new Attribute[] {
