@@ -73,6 +73,7 @@ namespace Oasys.GH.Helpers {
     public override void SetSelected(int i, int j) { }
 
     protected override void SolveInternal(IGH_DataAccess da) {
+      BusinessComponent.UpdateInputValues(this, da);
       BusinessComponent.Compute();
       BusinessComponent.SetOutputValues(this, da);
     }
