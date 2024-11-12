@@ -10,14 +10,14 @@ using OasysUnits;
 
 namespace AdSecCore.Builders {
 
-  public class BuilderReinforcementGroup : IBuilder<IGroup> {
+  public class BuilderReinforcementGroup : IBuilder<ISingleBars> {
     private readonly List<IPoint> positions = new List<IPoint>();
-    private IGroup group;
+    private ISingleBars group;
     private GroupType groupType;
     private IReinforcement material = Reinforcement.Steel.IS456.Edition_2000.S415;
     private double rebarDiameter = 2;
 
-    public IGroup Build() {
+    public ISingleBars Build() {
       switch (groupType) {
         case GroupType.SingleBar:
           var singleBars = ISingleBars.Create(IBarBundle.Create(material, Length.FromCentimeters(rebarDiameter), 1));

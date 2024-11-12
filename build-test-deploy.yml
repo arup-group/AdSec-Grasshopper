@@ -35,6 +35,7 @@ steps:
     MSBUILDDISABLENODEREUSE: 1
 
 - powershell: |
+    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecCore .\AdSecCoreTests\bin\Release\net7.0\AdSecCoreTests.dll
     dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecgh .\AdSecGHTests\bin\x64\Release\net48\AdSecGHTests.dll
     dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\integration  .\IntegrationTests\bin\x64\Release\net48\IntegrationTests.dll
   displayName: dotnet tests
@@ -52,17 +53,21 @@ steps:
   failOnStderr: true
 
 - powershell: |
+    $coverage_file_adsecCore = (Resolve-Path $(System.DefaultWorkingDirectory)/results/adsecCore/*/coverage.cobertura.xml).Path
+    echo $coverage_file_adsecCore
     $coverage_file_adsecgh = (Resolve-Path $(System.DefaultWorkingDirectory)/results/adsecgh/*/coverage.cobertura.xml).Path
     echo $coverage_file_adsecgh
     $coverage_file_integration = (Resolve-Path $(System.DefaultWorkingDirectory)/results/integration/*/coverage.cobertura.xml).Path
     echo $coverage_file_integration
 
+    Copy-Item $coverage_file_adsecCore $(System.DefaultWorkingDirectory)\results\coverage_adsecCore.xml
     Copy-Item $coverage_file_adsecgh $(System.DefaultWorkingDirectory)\results\coverage_adsecgh.xml
     Copy-Item $coverage_file_integration $(System.DefaultWorkingDirectory)\results\coverage_integration.xml
     $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
     ls $(System.DefaultWorkingDirectory)\
     cd $(System.DefaultWorkingDirectory)\
+    .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_adsecCore.xml -F adsecCore
     .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_adsecgh.xml -F adsecgh
     .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_integration.xml -F adsecgh_integration
   env:
