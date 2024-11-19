@@ -16,7 +16,7 @@ namespace AdSecGHCore.Constants {
       set => instance = value;
     }
 
-    private UnitSet CurrentUnits { get; set; }
+    private UnitSet CurrentUnits { get; set; } = new DefaultUnitSet();
 
     public LengthUnit LengthUnitGeometry {
       get => CurrentUnits.LengthUnitGeometry;

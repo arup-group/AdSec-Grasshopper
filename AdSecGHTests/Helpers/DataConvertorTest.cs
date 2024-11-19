@@ -45,11 +45,11 @@ namespace AdSecGHTests.Helpers {
     }
 
     private IGH_Param GetFirstInput() {
-      return component.GetParamAt(0);
+      return component.GetInputParamAt(0);
     }
 
     private IGH_Param GetSecondInput() {
-      return component.GetParamAt(1);
+      return component.GetInputParamAt(1);
     }
 
     [Fact]
@@ -73,7 +73,7 @@ namespace AdSecGHTests.Helpers {
     }
 
     private static object GetOutputOfParam(GH_Component component, int param, int branch, int index) {
-      return component.GetParamAt(param).GetValue(branch, index);
+      return component.GetInputParamAt(param).GetValue(branch, index);
     }
 
     [Fact]
@@ -101,7 +101,7 @@ namespace AdSecGHTests.Helpers {
       component.ExpireSolution(true);
       component.CollectData();
       foreach (var param in component.Params.Output) {
-        param.ExpireSolution(true);
+        //param.ExpireSolution(true);
         param.CollectData();
       }
     }
