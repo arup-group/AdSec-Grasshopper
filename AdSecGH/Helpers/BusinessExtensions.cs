@@ -100,12 +100,14 @@ namespace Oasys.GH.Helpers {
           typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
         }, {
           typeof(IAdSecSectionParameter), a => (a as IAdSecSectionParameter).Value
-        }, {
-          typeof(AdSecPointArrayParameter), a => {
-            var points = (a as AdSecPointArrayParameter).Value;
-            return points?.ToList();
-          }
-        }, {
+        },
+        // {
+        //   typeof(AdSecPointArrayParameter), a => {
+        //     var points = (a as AdSecPointArrayParameter).Value;
+        //     return points?.ToList();
+        //   }
+        // }, 
+        {
           typeof(AdSecMaterialArrayParam), a => {
             var materials = (a as AdSecMaterialArrayParam).Value;
             return materials?.ToList();
@@ -176,8 +178,12 @@ namespace Oasys.GH.Helpers {
       foreach (var attribute in businessComponent.GetAllOutputAttributes()) {
         if (ToGoo.ContainsKey(attribute.GetType())) {
           int index = component.Params.IndexOfOutputParam(attribute.Name);
-          object goo = ToGoo[attribute.GetType()](attribute);
-          dataAccess.SetData(index, goo);
+          dynamic goo = ToGoo[attribute.GetType()](attribute);
+          if (attribute.GetAccess() == GH_ParamAccess.item) {
+            dataAccess.SetData(index, goo);
+          } else {
+            dataAccess.SetDataList(index, goo);
+          }
         }
       }
     }

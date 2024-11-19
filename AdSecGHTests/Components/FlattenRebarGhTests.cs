@@ -1,4 +1,5 @@
 ﻿using AdSecCore.Builders;
+using AdSecCore.Helpers;
 
 using AdSecGH.Components;
 using AdSecGH.Parameters;
@@ -6,6 +7,7 @@ using AdSecGH.Parameters;
 using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
@@ -50,27 +52,47 @@ namespace AdSecGHTests.Components {
   public class FlattenRebarTests {
     private readonly AdSecSectionGoo adSecSectionGoo;
     private readonly FlattenRebar component;
+    private readonly ISection Section;
 
     private readonly IDesignCode designCode = IS456.Edition_2000;
 
     public FlattenRebarTests() {
       component = new FlattenRebar();
+
+      var singleBars = new BuilderReinforcementGroup().WithSize(2).CreateSingleBar().AtPosition(Geometry.Zero())
+       .Build();
+      Section = new SectionBuilder().WithWidth(40).CreateSquareSection().WithReinforcementGroup(singleBars).Build();
+
       var secSection = new AdSecSection(Section, designCode, "", "", Plane.WorldXY);
       adSecSectionGoo = new AdSecSectionGoo(secSection);
-      component.SetParamAt(0, adSecSectionGoo);
-    }
+      component.SetInputParamAt(0, adSecSectionGoo);
 
-    private ISection Section => new SectionBuilder().WithWidth(40).CreateSquareSection().Build();
+      ComponentTesting.ComputeOutputs(component);
+      //component.CollectData();
+    }
 
     [Fact]
     public void ShouldPassDataFromGhInputToSection() {
-      Assert.True(component.SetParamAt(0, adSecSectionGoo));
-      ComponentTesting.ComputeOutputs(component);
-      component.CollectData();
-      var runtimeMessages = component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
-      var messages = component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
       Assert.NotNull(component.BusinessComponent.Section.Value);
     }
+
+    [Fact]
+    public void ShouldPassDataToDiameterOutput() {
+      var outputParamAt = component.GetOutputParamAt(1);
+      var diameter = outputParamAt.GetValue(0,0) as GH_Number;
+      Assert.NotNull(diameter);
+      Assert.Equal(0.02, diameter.Value);
+    }
+
+    // [Fact]
+    // public void ShouldPassDataToMaterialOutput() {
+    //   Assert.Equal("Reinforcement", component.BusinessComponent.Material.Value[0]);
+    // }
+    //
+    // [Fact]
+    // public void ShouldPassDataToASDOutput() {
+    //   Assert.Equal(1, component.BusinessComponent.BundleCount.Value[0]);
+    // }
 
     [Fact]
     public void ShouldHaveNoWarning() {
