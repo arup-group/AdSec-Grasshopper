@@ -100,14 +100,12 @@ namespace Oasys.GH.Helpers {
           typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
         }, {
           typeof(IAdSecSectionParameter), a => (a as IAdSecSectionParameter).Value
-        },
-        // {
-        //   typeof(AdSecPointArrayParameter), a => {
-        //     var points = (a as AdSecPointArrayParameter).Value;
-        //     return points?.ToList();
-        //   }
-        // }, 
-        {
+        }, {
+          typeof(AdSecPointArrayParameter), a => {
+            var points = (a as AdSecPointArrayParameter).Value;
+            return points?.ToList();
+          }
+        }, {
           typeof(AdSecMaterialArrayParam), a => {
             var materials = (a as AdSecMaterialArrayParam).Value;
             return materials?.ToList();

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 
+using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
@@ -20,6 +22,9 @@ namespace AdSecGH.Components {
     public FlattenRebarGhComponent() {
       AdSecSection.OnValueChanged += goo => {
         Section.Value = goo.Value?.Section;
+      };
+      Position.OnValueChanged += goo => {
+        AdSecPoint.Value = goo.Select(x => new AdSecPointGoo(x)).ToArray();
       };
       var adSecSection = AdSecSection as Attribute;
       FromAttribute(ref adSecSection, Section);

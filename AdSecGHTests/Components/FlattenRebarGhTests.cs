@@ -6,6 +6,7 @@ using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
 
+using Grasshopper.Documentation;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
@@ -68,7 +69,6 @@ namespace AdSecGHTests.Components {
       component.SetInputParamAt(0, adSecSectionGoo);
 
       ComponentTesting.ComputeOutputs(component);
-      //component.CollectData();
     }
 
     [Fact]
@@ -77,22 +77,45 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
+    public void ShouldPassDataFromPositionToAdSecPoint() {
+      Assert.NotNull(component.BusinessComponent.AdSecPoint);
+    }
+
+    [Fact]
+    public void ShouldPassDataToPositionOutput() {
+      var position = component.GetOutputParamAt(0).GetValue<AdSecPointGoo>(0, 0);
+      Assert.NotNull(position);
+      Assert.Equal(0, position.AdSecPoint.Y.Value);
+      Assert.Equal(0, position.AdSecPoint.Z.Value);
+    }
+
+    [Fact]
     public void ShouldPassDataToDiameterOutput() {
-      var outputParamAt = component.GetOutputParamAt(1);
-      var diameter = outputParamAt.GetValue(0,0) as GH_Number;
+      var diameter = component.GetOutputParamAt(1).GetValue<GH_Number>(0, 0);
       Assert.NotNull(diameter);
       Assert.Equal(0.02, diameter.Value);
     }
 
-    // [Fact]
-    // public void ShouldPassDataToMaterialOutput() {
-    //   Assert.Equal("Reinforcement", component.BusinessComponent.Material.Value[0]);
-    // }
-    //
-    // [Fact]
-    // public void ShouldPassDataToASDOutput() {
-    //   Assert.Equal(1, component.BusinessComponent.BundleCount.Value[0]);
-    // }
+    [Fact]
+    public void ShouldPassDataToBundleCountOutput() {
+      var bundleCount = component.GetOutputParamAt(2).GetValue<GH_Integer>(0, 0);
+      Assert.NotNull(bundleCount);
+      Assert.Equal(1, bundleCount.Value);
+    }
+
+    [Fact]
+    public void ShouldPassDataToPreLoadOutput() {
+      var preLoad = component.GetOutputParamAt(3).GetValue<GH_Number>(0, 0);
+      Assert.NotNull(preLoad);
+      Assert.Equal(0, preLoad.Value);
+    }
+
+    [Fact]
+    public void ShouldPassDataToMaterialOutput() {
+      var material = component.GetOutputParamAt(4).GetValue<GH_String>(0, 0);
+      Assert.NotNull(material);
+      Assert.Equal("Reinforcement", material.Value);
+    }
 
     [Fact]
     public void ShouldHaveNoWarning() {
