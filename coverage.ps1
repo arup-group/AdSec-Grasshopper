@@ -58,13 +58,13 @@ function GenerateTestCoverageReport {
     foreach ($project in $Projects) {
         $projectName = [System.IO.Path]::GetFileNameWithoutExtension($project)
         $projectResultsDirectory = "$ResultsDirectory\$projectName"
-        
+
         # Run Tests
         dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:"$env:UserProfile\.nuget\packages\coverlet.collector\6.0.0\build" --results-directory "$projectResultsDirectory" $project
 
         # Find the latest coverage report
         $coverageFile = Get-ChildItem -Path "$projectResultsDirectory\**\*" -Filter 'coverage.cobertura.xml' | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-        
+
         if ($coverageFile) {
             # Add coverage file to the list for combined reporting
             $coverageFiles += $coverageFile.FullName
@@ -112,4 +112,3 @@ function Get-TestProjectDlls {
 #
 
 GenerateTestCoverageReport -Solution AdSecGH.sln
-
