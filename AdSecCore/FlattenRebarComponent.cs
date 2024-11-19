@@ -100,7 +100,7 @@ namespace AdSecGH.Components {
             bundleCounts.Add(singleBars.BarBundle.CountPerBundle);
             diameters.Add(singleBars.BarBundle.Diameter.ToUnit(lengthUnitGeometry).Value);
 
-            preloads.Add(NewMethod(singleBars.Preload));
+            preloads.Add(GetPreLoad(singleBars.Preload));
 
             materials.Add(MaterialCleanUp(singleBars.BarBundle.Material.ToString()));
           }
@@ -114,7 +114,7 @@ namespace AdSecGH.Components {
       Material.Value = materials.ToArray();
     }
 
-    private static double NewMethod(IPreload preLoad) {
+    private static double GetPreLoad(IPreload preLoad) {
       if (preLoad is IPreForce singleBarsPreload) {
         return singleBarsPreload.Force.ToUnit(ContextUnits.Instance.ForceUnit).Value;
       }
