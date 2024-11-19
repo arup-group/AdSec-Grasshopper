@@ -34,7 +34,7 @@ namespace AdSecCoreTests {
     public void ShouldHaveOneInput() {
       Assert.Single(component.GetAllInputAttributes());
     }
-    
+
     [Fact]
     public void ShouldHaveFiveOutputs() {
       Assert.Equal(5, component.GetAllOutputAttributes().Length);
