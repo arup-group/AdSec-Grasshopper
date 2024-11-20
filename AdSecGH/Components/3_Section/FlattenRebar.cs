@@ -13,6 +13,7 @@ using Oasys.GH.Helpers;
 using OasysGH;
 using OasysGH.Units;
 
+using AdSecSectionParameter = Oasys.GH.Helpers.AdSecSectionParameter;
 using Attribute = Oasys.Business.Attribute;
 
 namespace AdSecGH.Components {
@@ -35,7 +36,7 @@ namespace AdSecGH.Components {
     }
 
     public AdSecPointArrayParameter AdSecPoint { get; set; } = new AdSecPointArrayParameter();
-    public IAdSecSectionParameter AdSecSection { get; set; } = new IAdSecSectionParameter();
+    public AdSecSectionParameter AdSecSection { get; set; } = new AdSecSectionParameter();
 
     private static void FromAttribute(ref Attribute update, Attribute from) {
       update.Name = from.Name;

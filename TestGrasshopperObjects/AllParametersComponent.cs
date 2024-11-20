@@ -21,7 +21,7 @@ namespace AdSecGHTests.Helpers {
       NickName = "P",
       Description = "Points description",
     };
-    public IAdSecSectionParameter Section { get; set; } = new IAdSecSectionParameter {
+    public AdSecSectionParameter Section { get; set; } = new AdSecSectionParameter {
       Name = "Section",
       NickName = "Sec",
       Description = "AdSec Section to get single rebars from",

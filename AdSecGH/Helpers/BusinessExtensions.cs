@@ -18,8 +18,7 @@ using Attribute = Oasys.Business.Attribute;
 
 namespace Oasys.GH.Helpers {
 
-  public class IAdSecSectionParameter : ParameterAttribute<AdSecSectionGoo> { }
-
+  public class AdSecSectionParameter : ParameterAttribute<AdSecSectionGoo> { }
   public class AdSecPointArrayParameter : BaseArrayParameter<AdSecPointGoo> { }
   public class AdSecMaterialArrayParam : BaseArrayParameter<AdSecMaterialGoo> { }
 
@@ -42,7 +41,7 @@ namespace Oasys.GH.Helpers {
             Access = GetAccess(a),
           }
         }, {
-          typeof(IAdSecSectionParameter), a => new AdSecSectionParameter {
+          typeof(AdSecSectionParameter), a => new AdSecGH.Parameters.AdSecSectionParameter {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
@@ -78,19 +77,6 @@ namespace Oasys.GH.Helpers {
           }
         },
       };
-    // private static readonly Dictionary<Type, Func<object, Attribute>> FromGoo
-    //   = new Dictionary<Type, Func<object, Attribute>> {
-    //     {
-    //       typeof(DoubleParameter), goo => new DoubleParameter {
-    //         Value = (goo as GH_Number).Value,
-    //       }
-    //     },
-    //     // {
-    //     //   typeof(ISection), goo => new ISectionParameter() {
-    //     //     Value = goo as AdSecSectionGoo,
-    //     //   }
-    //     // }
-    //   };
 
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
@@ -99,7 +85,7 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
         }, {
-          typeof(IAdSecSectionParameter), a => (a as IAdSecSectionParameter).Value
+          typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value
         }, {
           typeof(AdSecPointArrayParameter), a => {
             var points = (a as AdSecPointArrayParameter).Value;
@@ -136,15 +122,13 @@ namespace Oasys.GH.Helpers {
 
     public static void SetDefaultValues(this IBusinessComponent businessComponent, GH_Component component) {
       businessComponent.SetDefaultValues();
-      foreach (var attribute in businessComponent.GetAllInputAttributes()) {
-        if (ToGoo.ContainsKey(attribute.GetType())) {
-          var param = component.Params.GetInputParam(attribute.Name);
-          object goo = ToGoo[attribute.GetType()](attribute);
-          if (param.Access == GH_ParamAccess.item) {
-            param.AddVolatileData(new GH_Path(0), 0, goo);
-          } else {
-            param.AddVolatileDataList(new GH_Path(0), goo as IEnumerable);
-          }
+      foreach (var attribute in businessComponent.GetAllInputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
+        var param = component.Params.GetInputParam(attribute.Name);
+        object goo = ToGoo[attribute.GetType()](attribute);
+        if (param.Access == GH_ParamAccess.item) {
+          param.AddVolatileData(new GH_Path(0), 0, goo);
+        } else {
+          param.AddVolatileDataList(new GH_Path(0), goo as IEnumerable);
         }
       }
     }
@@ -155,7 +139,6 @@ namespace Oasys.GH.Helpers {
       // TODO: Internal Linked input parameters, should update automatically.
       // i.e. when `AdSecSection` is updated, the `Section` attribute should be updated.
       foreach (var attribute in businessComponent.GetAllInputAttributes()) {
-        // if (FromGoo.ContainsKey(attribute.GetType())) {
         int index = component.Params.IndexOfInputParam(attribute.Name);
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           dynamic inputs = null;
@@ -173,15 +156,13 @@ namespace Oasys.GH.Helpers {
 
     public static void SetOutputValues(
       this IBusinessComponent businessComponent, GH_Component component, IGH_DataAccess dataAccess) {
-      foreach (var attribute in businessComponent.GetAllOutputAttributes()) {
-        if (ToGoo.ContainsKey(attribute.GetType())) {
-          int index = component.Params.IndexOfOutputParam(attribute.Name);
-          dynamic goo = ToGoo[attribute.GetType()](attribute);
-          if (attribute.GetAccess() == GH_ParamAccess.item) {
-            dataAccess.SetData(index, goo);
-          } else {
-            dataAccess.SetDataList(index, goo);
-          }
+      foreach (var attribute in businessComponent.GetAllOutputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
+        int index = component.Params.IndexOfOutputParam(attribute.Name);
+        dynamic goo = ToGoo[attribute.GetType()](attribute);
+        if (attribute.GetAccess() == GH_ParamAccess.item) {
+          dataAccess.SetData(index, goo);
+        } else {
+          dataAccess.SetDataList(index, goo);
         }
       }
     }
@@ -191,12 +172,10 @@ namespace Oasys.GH.Helpers {
     }
 
     private static void RegisterParams(Attribute[] attributesSelector, Action<IGH_Param> action) {
-      foreach (var attribute in attributesSelector) {
-        if (ToGhParam.ContainsKey(attribute.GetType())) {
-          var func = ToGhParam[attribute.GetType()];
-          var param = func(attribute);
-          action(param);
-        }
+      foreach (var attribute in attributesSelector.Where(x => ToGhParam.ContainsKey(x.GetType()))) {
+        var func = ToGhParam[attribute.GetType()];
+        var param = func(attribute);
+        action(param);
       }
     }
 

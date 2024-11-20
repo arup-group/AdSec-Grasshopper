@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using AdSecCore;
 using AdSecCore.Parameters;
@@ -16,14 +15,14 @@ using Attribute = Oasys.Business.Attribute;
 namespace AdSecGH.Components {
   public class FlattenRebarComponent : IBusinessComponent {
 
-    public ISectionParameter Section { get; set; } = new ISectionParameter {
+    public SectionParameter Section { get; set; } = new SectionParameter {
       Name = "Section",
       NickName = "Sec",
       Description = "AdSec Section to get single rebars from",
       Access = Access.Item,
     };
 
-    public IPointArrayParameter Position { get; set; } = new IPointArrayParameter {
+    public PointArrayParameter Position { get; set; } = new PointArrayParameter {
       Name = "Position",
       NickName = "Vx",
       Description = "Rebar position as 2D vertex in the section's local yz-plane",
@@ -82,8 +81,6 @@ namespace AdSecGH.Components {
       };
     }
 
-    public void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
-
     public void Compute() {
       var flattenSection = Section.Value.FlattenSection();
       var lengthUnitGeometry = ContextUnits.Instance.LengthUnitGeometry;
@@ -130,7 +127,7 @@ namespace AdSecGH.Components {
       return 0;
     }
 
-    public static string MaterialCleanUp(string rebarMat) {
+    private static string MaterialCleanUp(string rebarMat) {
       const string namespacePrefix = "Oasys.AdSec.Materials.I";
       rebarMat = rebarMat.Replace(namespacePrefix, string.Empty);
       const string suffix = "_Implementation";

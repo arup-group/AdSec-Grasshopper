@@ -21,7 +21,6 @@ namespace AdSecCore.Builders {
     public ISection Build() {
       switch (sectionType) {
         case SectionType.Square:
-          material = Concrete.IS456.Edition_2000.M10;
           section = ISection.Create(
             IRectangleProfile.Create(Length.FromCentimeters(_width), Length.FromCentimeters(_width)), material);
           break;
