@@ -21,6 +21,7 @@ jobs:
         args: >
           -Dsonar.organization=psarras
           -Dsonar.projectKey=adsec-gh
+          -Dsonar.branch.name=main
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         
