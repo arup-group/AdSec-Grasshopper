@@ -12,6 +12,8 @@ using Rhino.Geometry;
 
 using Xunit;
 
+using AdSecSectionParameter = AdSecGH.Parameters.AdSecSectionParameter;
+
 namespace AdSecGHTests.Helpers {
 
   [Collection("GrasshopperFixture collection")]

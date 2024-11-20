@@ -10,7 +10,7 @@ namespace AdSecCore.Parameters {
 
   public class IntegerArrayParameter : BaseArrayParameter<int> { }
 
-  public class ISectionParameter : ParameterAttribute<ISection> { }
-  public class IPointArrayParameter : BaseArrayParameter<IPoint> { }
+  public class SectionParameter : ParameterAttribute<ISection> { }
+  public class PointArrayParameter : BaseArrayParameter<IPoint> { }
   public class StringArrayParam : BaseArrayParameter<string> { }
 }

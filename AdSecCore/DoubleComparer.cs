@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AdSecGHCore.Helpers {
   public class DoubleComparer : IEqualityComparer<double> {
-    private readonly double _epsilon = 0.01; //default accuracy in %
+    private readonly double _epsilon;
     private readonly bool _margin;
 
     public DoubleComparer(double epsilon = 0.01, bool useEpsilonAsMargin = false) {

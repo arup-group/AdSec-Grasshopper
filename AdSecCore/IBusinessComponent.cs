@@ -10,7 +10,6 @@ namespace Oasys.Business {
 
     Attribute[] GetAllOutputAttributes();
 
-    // void UpdateInputValues(params object[] values);
     void Compute();
   }
 
@@ -48,7 +47,7 @@ namespace Oasys.Business {
   public class ParameterAttribute<T> : Attribute, IDefault, IAccessible {
     private T _value;
 
-    public Action<T> OnValueChanged;
+    public event Action<T> OnValueChanged;
     public T Value {
       get => _value;
       set {
