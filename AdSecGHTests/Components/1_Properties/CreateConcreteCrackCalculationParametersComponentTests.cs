@@ -17,7 +17,7 @@ namespace AdSecGHTests.Properties {
 
       comp.SetSelected(0, 0); // change dropdown to ?
 
-      ComponentTestHelper.SetInput(comp, 130, 0);
+      ComponentTestHelper.SetInput(comp, 130);
       ComponentTestHelper.SetInput(comp, 1700, 1);
       ComponentTestHelper.SetInput(comp, 1200, 2);
 
@@ -26,13 +26,13 @@ namespace AdSecGHTests.Properties {
 
     [Fact]
     public void ChangeDropDownTest() {
-      GH_OasysDropDownComponent comp = ComponentMother();
+      var comp = ComponentMother();
       OasysDropDownComponentTestHelper.ChangeDropDownTest(comp);
     }
 
     [Fact]
     public void CreateComponent() {
-      GH_OasysDropDownComponent comp = ComponentMother();
+      var comp = ComponentMother();
       comp.SetSelected(0, 0); // change dropdown to ?
       var output = (AdSecConcreteCrackCalculationParametersGoo)ComponentTestHelper.GetOutput(comp);
       //Assert.Equal(0, output.Value.StartPosition.Value);
@@ -61,7 +61,7 @@ namespace AdSecGHTests.Properties {
 
     [Fact]
     public void DeserializeTest() {
-      GH_OasysDropDownComponent comp = ComponentMother();
+      var comp = ComponentMother();
       OasysDropDownComponentTestHelper.DeserializeTest(comp);
     }
   }

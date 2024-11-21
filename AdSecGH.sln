@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdSecGHConverters", "AdSecG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdSecGHConverterTests", "AdSecGHConverterTests\AdSecGHConverterTests.csproj", "{885C7D18-8B54-4430-A84B-8FD37CF7AD27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecCore", "AdSecCore\AdSecCore.csproj", "{D7A31820-EC4F-42EC-863C-51BB3647A145}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecCoreTests", "AdSecCoreTests\AdSecCoreTests.csproj", "{DF259C79-A298-44B9-B702-573D4206A3C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -39,6 +43,14 @@ Global
 		{885C7D18-8B54-4430-A84B-8FD37CF7AD27}.Debug|x64.Build.0 = Debug|x64
 		{885C7D18-8B54-4430-A84B-8FD37CF7AD27}.Release|x64.ActiveCfg = Release|x64
 		{885C7D18-8B54-4430-A84B-8FD37CF7AD27}.Release|x64.Build.0 = Release|x64
+		{D7A31820-EC4F-42EC-863C-51BB3647A145}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D7A31820-EC4F-42EC-863C-51BB3647A145}.Debug|x64.Build.0 = Debug|Any CPU
+		{D7A31820-EC4F-42EC-863C-51BB3647A145}.Release|x64.ActiveCfg = Release|Any CPU
+		{D7A31820-EC4F-42EC-863C-51BB3647A145}.Release|x64.Build.0 = Release|Any CPU
+		{DF259C79-A298-44B9-B702-573D4206A3C2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DF259C79-A298-44B9-B702-573D4206A3C2}.Debug|x64.Build.0 = Debug|Any CPU
+		{DF259C79-A298-44B9-B702-573D4206A3C2}.Release|x64.ActiveCfg = Release|Any CPU
+		{DF259C79-A298-44B9-B702-573D4206A3C2}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

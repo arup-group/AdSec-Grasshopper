@@ -3,6 +3,8 @@
 /.vs
 /.venv
 packages
+bin/
+obj/
 AdSecGH/bin
 AdSecGH/obj
 AdSecGHConverters/bin

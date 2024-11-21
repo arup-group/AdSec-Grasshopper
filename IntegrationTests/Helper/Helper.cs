@@ -1,7 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
-using AdSecGH.Helpers;
+using AdSecGHCore.Helpers;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
@@ -23,12 +22,12 @@ namespace IntegrationTests {
     }
 
     public static GH_Component FindComponent(GH_Document doc, string groupIdentifier) {
-      foreach (IGH_DocumentObject obj in doc.Objects) {
+      foreach (var obj in doc.Objects) {
         if (obj is GH_Group group) {
           if (group.NickName == groupIdentifier) {
-            Guid componentguid = group.ObjectIDs[0];
+            var componentguid = group.ObjectIDs[0];
 
-            foreach (IGH_DocumentObject obj2 in doc.Objects) {
+            foreach (var obj2 in doc.Objects) {
               if (obj2.InstanceGuid == componentguid) {
                 var comp = (GH_Component)obj2;
                 Assert.NotNull(comp);
@@ -36,34 +35,38 @@ namespace IntegrationTests {
                 return comp;
               }
             }
+
             Assert.Fail("Unable to find component in group with Nickname " + groupIdentifier);
             return null;
           }
         }
       }
+
       Assert.Fail("Unable to find group with Nickname " + groupIdentifier);
       return null;
     }
 
     public static IGH_Param FindParameter(GH_Document doc, string groupIdentifier) {
-      foreach (IGH_DocumentObject obj in doc.Objects) {
+      foreach (var obj in doc.Objects) {
         if (obj is GH_Group group) {
           if (group.NickName == groupIdentifier) {
-            Guid componentguid = group.ObjectIDs[0];
+            var componentguid = group.ObjectIDs[0];
 
-            foreach (IGH_DocumentObject obj2 in doc.Objects) {
+            foreach (var obj2 in doc.Objects) {
               if (obj2.InstanceGuid == componentguid) {
-                var param = (IGH_Param)(object)obj2;
+                var param = (IGH_Param)obj2;
                 Assert.NotNull(param);
                 param.CollectData();
                 return param;
               }
             }
+
             Assert.Fail("Unable to find parameter in group with Nickname " + groupIdentifier);
             return null;
           }
         }
       }
+
       Assert.Fail("Unable to find group with Nickname " + groupIdentifier);
       return null;
     }
@@ -106,8 +109,9 @@ namespace IntegrationTests {
       }
     }
 
-    public static void TestNoRuntimeMessagesInDocument(GH_Document doc, GH_RuntimeMessageLevel runtimeMessageLevel, string exceptComponentNamed = "") {
-      foreach (IGH_DocumentObject obj in doc.Objects) {
+    public static void TestNoRuntimeMessagesInDocument(
+      GH_Document doc, GH_RuntimeMessageLevel runtimeMessageLevel, string exceptComponentNamed = "") {
+      foreach (var obj in doc.Objects) {
         if (obj is GH_Component comp) {
           comp.CollectData();
           comp.Params.Output[0].CollectData();

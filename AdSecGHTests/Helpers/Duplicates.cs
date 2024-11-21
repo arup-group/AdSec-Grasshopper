@@ -4,36 +4,118 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using AdSecGH.Components;
+
+using Grasshopper.Kernel;
+
+using OasysGH.Components;
+
 using Xunit;
 
 namespace AdSecGHTests.Helpers {
+
+  public static class ModFactory {
+    public static Type[] GetAllAssemblyTypes(string assemblyName = "AdSec.dll", string nameSpace = "") {
+      var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+      foreach (var item in assemblies) {
+        Console.WriteLine(item);
+        var other = item.GetLoadedModules();
+        other.ToList().ForEach(m => Console.WriteLine(m));
+      }
+
+      var assembly = assemblies.FirstOrDefault(x => x.ManifestModule.Name.Equals(assemblyName)
+        || x.ManifestModule.ScopeName.Equals(assemblyName));
+
+      var classes = assembly.GetTypes();
+      if (nameSpace != string.Empty) {
+        classes = classes.Where(x => x.Namespace == nameSpace).ToArray();
+      }
+
+      return classes;
+    }
+
+    public static IEnumerable<Type> ImplementsInterface(this Type[] collection, Type[] interfaces) {
+      return collection.Where(x => x.IsClass && !x.IsAbstract && interfaces.All(y => y.IsAssignableFrom(x)));
+    }
+
+    public static IEnumerable<Type> GetAllInterfaceTypes(Type[] interfaces) {
+      var allAssemblyTypes = GetAllAssemblyTypes();
+      return allAssemblyTypes.ImplementsInterface(interfaces);
+    }
+
+    public static IEnumerable<Type> GetAllInterfaceTypes() {
+      return GetAllInterfaceTypes(new[] {
+        typeof(GH_Component),
+        typeof(GH_OasysComponent),
+      });
+    }
+
+    public static GH_Component[] CreateInstancesWithCreateInterface() {
+      var allInterfaceTypes = GetAllInterfaceTypes();
+      var components = allInterfaceTypes.Select(Activator.CreateInstance).Select(x => x as GH_Component).ToArray();
+      return components;
+    }
+  }
+
+  [Collection("GrasshopperFixture collection")]
+  public class DropToCanvasTests {
+    //[Fact]
+    //public void TestAllComponents() {
+    //  var instances = ModFactory.CreateInstancesWithCreateInterface();
+    //  foreach (var instance in instances) {
+    //    Assert.NotNull(instance);
+    //  }
+    //}
+
+    [Fact]
+    public void TestAllComponentsByType() {
+      // Get All Assemblies
+      var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+      // Get The One for AdSecGH
+      var assembly = assemblies.FirstOrDefault(x => x.ManifestModule.Name.Equals("AdSecGH.dll")
+        || x.ManifestModule.ScopeName.Equals("AdSecGH.dll"));
+      // Get All Types matching GH_Component or GH_OasysDropdownComponent
+      var types = assembly.GetTypes().Where(x
+        => x.IsClass && !x.IsAbstract && typeof(GH_OasysDropDownComponent).IsAssignableFrom(x)
+        && x != typeof(CreateDesignCode)).ToArray();
+      foreach (var type in types) {
+        var instance = (GH_Component)Activator.CreateInstance(type);
+        instance.ExpireSolution(true);
+        Assert.True(instance.RuntimeMessages(GH_RuntimeMessageLevel.Error).Count == 0);
+      }
+    }
+  }
+
   public class Duplicates {
 
     public static bool AreEqual(object objA, object objB, bool excludeGuid = false) {
-      if (!(excludeGuid && objA.Equals(typeof(System.Guid)))) {
+      if (!(excludeGuid && objA.Equals(typeof(Guid)))) {
         Assert.Equal(objA.ToString(), objB.ToString());
       }
 
-      Type typeA = objA.GetType();
-      Type typeB = objB.GetType();
+      var typeA = objA.GetType();
+      var typeB = objB.GetType();
 
-      PropertyInfo[] propertyInfoA = typeA.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-      PropertyInfo[] propertyInfoB = typeB.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      var propertyInfoA = typeA.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      var propertyInfoB = typeB.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
       for (int i = 0; i < propertyInfoA.Length; i++) {
-        PropertyInfo propertyA = propertyInfoA[i];
-        PropertyInfo propertyB = propertyInfoB[i];
+        var propertyA = propertyInfoA[i];
+        var propertyB = propertyInfoB[i];
 
         if (!propertyA.CanWrite && !propertyB.CanWrite) {
           continue;
-        } else if (!propertyA.CanWrite || !propertyB.CanWrite) {
+        }
+
+        if (!propertyA.CanWrite || !propertyB.CanWrite) {
           Assert.Equal(objA, objB);
         }
 
         object objPropertyValueA;
         object objPropertyValueB;
-        Type propertyTypeA = propertyA.PropertyType;
-        Type propertyTypeB = propertyB.PropertyType;
+        var propertyTypeA = propertyA.PropertyType;
+        var propertyTypeB = propertyB.PropertyType;
 
         try {
           objPropertyValueA = propertyA.GetValue(objA, null);
@@ -45,6 +127,7 @@ namespace AdSecGHTests.Helpers {
               propertyTypeA = objPropertyValueA.GetType();
             }
           }
+
           if (propertyTypeB.IsInterface) {
             if (objPropertyValueB != null) {
               propertyTypeB = objPropertyValueB.GetType();
@@ -53,21 +136,24 @@ namespace AdSecGHTests.Helpers {
 
           // check wether property is an enumerable
           if (typeof(IEnumerable).IsAssignableFrom(propertyTypeA) && !typeof(string).IsAssignableFrom(propertyTypeA)) {
-            if (typeof(IEnumerable).IsAssignableFrom(propertyTypeB) && !typeof(string).IsAssignableFrom(propertyTypeB)) {
+            if (typeof(IEnumerable).IsAssignableFrom(propertyTypeB)
+              && !typeof(string).IsAssignableFrom(propertyTypeB)) {
               if (objPropertyValueA == null || objPropertyValueB == null) {
                 Assert.Equal(objPropertyValueA, objPropertyValueB);
               } else {
-                IEnumerable<object> enumerableA = ((IEnumerable)objPropertyValueA).Cast<object>();
-                IEnumerable<object> enumerableB = ((IEnumerable)objPropertyValueB).Cast<object>();
+                var enumerableA = ((IEnumerable)objPropertyValueA).Cast<object>();
+                var enumerableB = ((IEnumerable)objPropertyValueB).Cast<object>();
 
                 Type enumrableTypeA = null;
                 Type enumrableTypeB = null;
                 if (enumerableA.GetType().GetGenericArguments().Length > 0) {
                   enumrableTypeA = enumerableA.GetType().GetGenericArguments()[0];
                 }
+
                 if (enumerableB.GetType().GetGenericArguments().Length > 0) {
                   enumrableTypeB = enumerableB.GetType().GetGenericArguments()[0];
                 }
+
                 Assert.Equal(enumrableTypeA, enumrableTypeB);
 
                 // if type is a struct, we have to check the actual list items
@@ -79,6 +165,7 @@ namespace AdSecGHTests.Helpers {
                     continue; // can´t get type of struct in empty list?
                   }
                 }
+
                 if (enumrableTypeB.ToString() is "System.Object") {
                   if (enumerableB.Any()) {
                     enumrableTypeB = enumerableB.First().GetType();
@@ -87,13 +174,13 @@ namespace AdSecGHTests.Helpers {
                   }
                 }
 
-                Type genericListTypeA = typeof(List<>).MakeGenericType(enumrableTypeA);
-                Type genericListTypeB = typeof(List<>).MakeGenericType(enumrableTypeB);
+                var genericListTypeA = typeof(List<>).MakeGenericType(enumrableTypeA);
+                var genericListTypeB = typeof(List<>).MakeGenericType(enumrableTypeB);
                 Assert.Equal(genericListTypeA, genericListTypeB);
 
-                IEnumerator<object> enumeratorB = enumerableB.GetEnumerator();
+                var enumeratorB = enumerableB.GetEnumerator();
 
-                using (IEnumerator<object> enumeratorA = enumerableA.GetEnumerator()) {
+                using (var enumeratorA = enumerableA.GetEnumerator()) {
                   while (enumeratorA.MoveNext()) {
                     Assert.True(enumeratorB.MoveNext());
                     AreEqual(enumeratorA.Current, enumeratorB.Current);
@@ -106,21 +193,23 @@ namespace AdSecGHTests.Helpers {
           }
           // check whether property type is value type, enum or string type
           else if (propertyTypeA.IsValueType || propertyTypeA.IsEnum || propertyTypeA.Equals(typeof(string))) {
-            if (excludeGuid && propertyTypeA.Equals(typeof(System.Guid))) {
+            if (excludeGuid && propertyTypeA.Equals(typeof(Guid))) {
               continue;
             }
+
             Assert.Equal(objPropertyValueA, objPropertyValueB);
           } else if (objPropertyValueA == null || objPropertyValueB == null) {
             Assert.Equal(objPropertyValueA, objPropertyValueB);
           } else
-            // property type is object/complex type, so need to recursively call this method until the end of the tree is reached
-            {
+          // property type is object/complex type, so need to recursively call this method until the end of the tree is reached
+          {
             AreEqual(objPropertyValueA, objPropertyValueB, excludeGuid);
           }
         } catch (TargetParameterCountException) {
           propertyTypeA = propertyA.PropertyType;
         }
       }
+
       return true;
     }
   }
