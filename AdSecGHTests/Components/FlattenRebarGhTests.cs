@@ -6,7 +6,6 @@ using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
 
-using Grasshopper.Documentation;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
@@ -23,13 +22,13 @@ namespace AdSecGHTests.Components {
   public class FlattenRebarGhTests {
     private readonly FlattenRebarGhComponent component;
     private readonly IDesignCode designCode = IS456.Edition_2000;
+
+    private readonly ISection Section = new SectionBuilder().WithWidth(40).CreateSquareSection().Build();
     private bool valueChanged;
 
     public FlattenRebarGhTests() {
       component = new FlattenRebarGhComponent();
     }
-
-    private ISection Section => new SectionBuilder().WithWidth(40).CreateSquareSection().Build();
 
     [Fact]
     public void WhenAdSecSectionChangesSectionChanges() {
@@ -53,9 +52,9 @@ namespace AdSecGHTests.Components {
   public class FlattenRebarTests {
     private readonly AdSecSectionGoo adSecSectionGoo;
     private readonly FlattenRebar component;
-    private readonly ISection Section;
 
     private readonly IDesignCode designCode = IS456.Edition_2000;
+    private readonly ISection Section;
 
     public FlattenRebarTests() {
       component = new FlattenRebar();

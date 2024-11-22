@@ -43,10 +43,8 @@ namespace AdSecGH.Components {
       update.NickName = from.NickName;
       update.Description = from.Description;
 
-      if (from is IAccessible accessible) {
-        if (update is IAccessible AdSecSection) {
-          AdSecSection.Access = accessible.Access;
-        }
+      if (from is IAccessible accessible && update is IAccessible AdSecSection) {
+        AdSecSection.Access = accessible.Access;
       }
     }
 
@@ -78,63 +76,5 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.FlattenRebar;
-
-    // protected override void SolveInstance(IGH_DataAccess DA) {
-    //   // get section input
-    //   var flattenSection = AdSecSection.GetFlattenSection(this, DA, 0);
-    //
-    //   var pointGoos = new List<AdSecPointGoo>();
-    //   var diameters = new List<GH_UnitNumber>();
-    //   var counts = new List<int>();
-    //   var prestresses = new List<GH_UnitNumber>();
-    //   var materialType = new List<string>();
-    //
-    //   // loop through rebar groups in flattened section
-    //   foreach (var rebargrp in flattenSection.ReinforcementGroups) {
-    //     try // first try if not a link group type
-    //     {
-    //       var snglBrs = (ISingleBars)rebargrp;
-    //       foreach (var pos in snglBrs.Positions) {
-    //         // position
-    //         pointGoos.Add(new AdSecPointGoo(pos));
-    //
-    //         // diameter
-    //         diameters.Add(new GH_UnitNumber(snglBrs.BarBundle.Diameter.ToUnit(DefaultUnits.LengthUnitGeometry)));
-    //
-    //         // bundle count
-    //         counts.Add(snglBrs.BarBundle.CountPerBundle);
-    //
-    //         // preload
-    //         if (snglBrs.Preload != null) {
-    //           try {
-    //             var force = (IPreForce)snglBrs.Preload;
-    //             prestresses.Add(new GH_UnitNumber(force.Force.ToUnit(DefaultUnits.ForceUnit)));
-    //           } catch (Exception) {
-    //             try {
-    //               var stress = (IPreStress)snglBrs.Preload;
-    //               prestresses.Add(new GH_UnitNumber(stress.Stress.ToUnit(DefaultUnits.StressUnitResult)));
-    //             } catch (Exception) {
-    //               var strain = (IPreStrain)snglBrs.Preload;
-    //               prestresses.Add(new GH_UnitNumber(strain.Strain.ToUnit(DefaultUnits.StrainUnitResult)));
-    //             }
-    //           }
-    //         }
-    //
-    //         // material
-    //         // string RebarMaterial = ;
-    //         string reinforcementMat = FlattenRebarComponent.MaterialCleanUp(snglBrs.BarBundle.Material.ToString());
-    //         materialType.Add(reinforcementMat);
-    //       }
-    //     } catch (Exception) {
-    //       // do nothing if rebar is link
-    //     }
-    //   }
-    //
-    //   DA.SetDataList(0, pointGoos);
-    //   DA.SetDataList(1, diameters);
-    //   DA.SetDataList(2, counts);
-    //   DA.SetDataList(3, prestresses);
-    //   DA.SetDataList(4, materialType);
-    // }
   }
 }
