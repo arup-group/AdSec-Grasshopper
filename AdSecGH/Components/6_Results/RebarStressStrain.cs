@@ -64,8 +64,8 @@ namespace AdSecGH.Components {
       // get solution input
       var solution = AdSecInput.Solution(this, DA, 0);
 
-      IStrengthResult uls = null;
-      IServiceabilityResult sls = null;
+      IStrengthResult uls;
+      IServiceabilityResult sls;
 
       // get load - can be either load or deformation
       var gh_typ = new GH_ObjectWrapper();
@@ -89,17 +89,7 @@ namespace AdSecGH.Components {
       }
 
       // create flattened section to extract rebars
-      ISection flat = null;
-      if (
-        solution.m_section.DesignCode
-        != null) //{ code = Oasys.AdSec.DesignCode.EN1992.Part1_1.Edition_2004.NationalAnnex.NoNationalAnnex; }
-      {
-        var adSec = IAdSec.Create(solution.m_section.DesignCode);
-        flat = adSec.Flatten(solution.m_section.Section);
-      } else {
-        var prof = IPerimeterProfile.Create(solution.m_section.Section.Profile);
-        flat = ISection.Create(prof, solution.m_section.Section.Material);
-      }
+      var flat = FlatSection(solution);
 
       var pointGoos = new List<AdSecPointGoo>();
       var outStressULS = new List<GH_UnitNumber>();
@@ -111,26 +101,37 @@ namespace AdSecGH.Components {
       foreach (var rebargrp in flat.ReinforcementGroups) {
         try // first try if not a link group type
         {
-          var snglBrs = (ISingleBars)rebargrp;
-          foreach (var pos in snglBrs.Positions) {
-            // position
-            pointGoos.Add(new AdSecPointGoo(pos));
+          switch (rebargrp) {
+            case ISingleBars singleBars:
+              var positions = singleBars.Positions;
 
-            // ULS strain
-            var strainULS = uls.Deformation.StrainAt(pos);
-            outStrainULS.Add(new GH_UnitNumber(strainULS.ToUnit(DefaultUnits.StrainUnitResult)));
+              if (positions == null) {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Positions are null for the rebar group.");
+                continue;
+              }
 
-            // ULS stress in bar material from strain
-            var stressULS = snglBrs.BarBundle.Material.Strength.StressAt(strainULS);
-            outStressULS.Add(new GH_UnitNumber(stressULS.ToUnit(DefaultUnits.StressUnitResult)));
+              foreach (var pos in positions) {
+                // position
+                pointGoos.Add(new AdSecPointGoo(pos));
 
-            // SLS strain
-            var strainSLS = sls.Deformation.StrainAt(pos);
-            outStrainSLS.Add(new GH_UnitNumber(strainSLS.ToUnit(DefaultUnits.StrainUnitResult)));
+                // ULS strain
+                var strainULS = uls.Deformation.StrainAt(pos);
+                outStrainULS.Add(new GH_UnitNumber(strainULS.ToUnit(DefaultUnits.StrainUnitResult)));
 
-            // SLS stress in bar material from strain
-            var stressSLS = snglBrs.BarBundle.Material.Serviceability.StressAt(strainSLS);
-            outStressSLS.Add(new GH_UnitNumber(stressSLS.ToUnit(DefaultUnits.StressUnitResult)));
+                // ULS stress in bar material from strain
+                var stressULS = singleBars.BarBundle.Material.Strength.StressAt(strainULS);
+                outStressULS.Add(new GH_UnitNumber(stressULS.ToUnit(DefaultUnits.StressUnitResult)));
+
+                // SLS strain
+                var strainSLS = sls.Deformation.StrainAt(pos);
+                outStrainSLS.Add(new GH_UnitNumber(strainSLS.ToUnit(DefaultUnits.StrainUnitResult)));
+
+                // SLS stress in bar material from strain
+                var stressSLS = singleBars.BarBundle.Material.Serviceability.StressAt(strainSLS);
+                outStressSLS.Add(new GH_UnitNumber(stressSLS.ToUnit(DefaultUnits.StressUnitResult)));
+              }
+
+              break;
           }
         } catch (Exception) {
           // do nothing if rebar is link
@@ -142,6 +143,19 @@ namespace AdSecGH.Components {
       DA.SetDataList(2, outStressULS);
       DA.SetDataList(3, outStrainSLS);
       DA.SetDataList(4, outStressSLS);
+    }
+
+    private static ISection FlatSection(AdSecSolutionGoo solution) {
+      ISection flat;
+      if (solution.m_section.DesignCode != null) {
+        var adSec = IAdSec.Create(solution.m_section.DesignCode);
+        flat = adSec.Flatten(solution.m_section.Section);
+      } else {
+        var prof = IPerimeterProfile.Create(solution.m_section.Section.Profile);
+        flat = ISection.Create(prof, solution.m_section.Section.Material);
+      }
+
+      return flat;
     }
   }
 }
