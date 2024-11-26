@@ -6,7 +6,7 @@
   ///   Sorting of categories in the ribbon is controlled with a number of spaces in front of the name
   ///   to avoid naming each category with a number in front. Spaces will automatically be removed when displayed
   /// </summary>
-  public class SubCategoryName {
+  public static class SubCategoryName {
 
     public static string Cat0() {
       return new string(' ', 8) + "File";

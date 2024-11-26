@@ -204,7 +204,6 @@ namespace AdSecGH.Components {
       ChangeMode();
 
       UpdateUI();
-      ;
     }
 
     private void ChangeMode() {
