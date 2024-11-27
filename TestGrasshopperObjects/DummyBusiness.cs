@@ -8,7 +8,7 @@ using Attribute = Oasys.Business.Attribute;
 
 namespace AdSecGHTests.Helpers {
 
-  public class FakeBusiness : IBusinessComponent {
+  public class FakeBusiness : IFunction {
 
     public DoubleParameter Alpha { get; set; } = new DoubleParameter {
       Name = "Alpha",
@@ -33,12 +33,12 @@ namespace AdSecGHTests.Helpers {
       Default = 2,
     };
 
-    public ComponentAttribute Metadata { get; set; } = new ComponentAttribute {
+    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Name = "Dummy Business",
       NickName = "DB",
       Description = "Dummy Business Description",
     };
-    public ComponentOrganisation Organisation { get; set; } = new ComponentOrganisation {
+    public Organisation Organisation { get; set; } = new Organisation {
       Category = "Dummy Category",
       SubCategory = "Dummy SubCategory",
     };
@@ -56,9 +56,9 @@ namespace AdSecGHTests.Helpers {
       };
     }
 
-    public void UpdateInputValues(params object[] values) { }
-
     public void Compute() { Beta.Value = (Alpha.Value * 2) + 10; }
+
+    public void UpdateInputValues(params object[] values) { }
 
     public void GetDefaultValues() { throw new NotImplementedException(); }
   }

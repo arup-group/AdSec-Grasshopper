@@ -5,7 +5,7 @@ using Grasshopper.Kernel;
 using Oasys.GH.Helpers;
 
 namespace AdSecGHTests.Helpers {
-  public class DummyOasysComponent : BusinessOasysGlue<FakeBusiness> {
+  public class DummyOasysComponent : ComponentAdapter<FakeBusiness> {
 
     public override GH_Exposure Exposure { get; } = GH_Exposure.hidden;
 

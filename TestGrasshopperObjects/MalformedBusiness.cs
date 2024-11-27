@@ -5,19 +5,19 @@ using Oasys.Business;
 using Attribute = Oasys.Business.Attribute;
 
 namespace AdSecGHTests.Helpers {
-  public class MalformedBusiness : IBusinessComponent {
+  public class MalformedFunction : IFunction {
 
     public MalformedParameter Malformed { get; set; } = new MalformedParameter {
       Name = "Malformed",
       NickName = "M",
       Description = "Malformed description",
     };
-    public ComponentAttribute Metadata { get; set; } = new ComponentAttribute {
+    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Name = "Malformed Component",
       NickName = "MC",
       Description = "Malformed Component",
     };
-    public ComponentOrganisation Organisation { get; set; } = new ComponentOrganisation {
+    public Organisation Organisation { get; set; } = new Organisation {
       Category = "Test",
       SubCategory = "Test",
     };
@@ -34,8 +34,8 @@ namespace AdSecGHTests.Helpers {
       };
     }
 
-    public void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
-
     public void Compute() { }
+
+    public void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
   }
 }

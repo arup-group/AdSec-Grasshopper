@@ -11,18 +11,18 @@ namespace AdSecCoreTests {
 
     [Fact]
     public void ShouldNotifyOnValueChanged() {
-      var component = new FakeComponent();
+      var component = new FakeFunc();
       component.Diameter.OnValueChanged += newValue => spyCalled = true;
       component.Diameter.Value = 1;
       Assert.True(spyCalled);
     }
 
-    public class FakeComponent : IBusinessComponent {
+    public class FakeFunc : IOperation {
 
       public DoubleParameter Diameter { get; set; } = new();
 
-      public ComponentAttribute Metadata { get; set; } = new();
-      public ComponentOrganisation Organisation { get; set; } = new();
+      public FuncAttribute Metadata { get; set; } = new();
+      public Organisation Organisation { get; set; } = new();
 
       public Attribute[] GetAllInputAttributes() {
         return new Attribute[] {

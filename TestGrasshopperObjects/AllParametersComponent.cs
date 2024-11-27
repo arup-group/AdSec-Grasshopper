@@ -10,11 +10,11 @@ using Attribute = Oasys.Business.Attribute;
 namespace AdSecGHTests.Helpers {
   public class MalformedParameter : ParameterAttribute<object> { }
 
-  public class MalformedComponent : BusinessOasysGlue<MalformedBusiness> {
+  public class MalformedComponent : ComponentAdapter<MalformedFunction> {
     public override Guid ComponentGuid => new Guid("D3A8C9E-417C-42AE-B704-91F214C8C873");
   }
 
-  public class AllParameters : IBusinessComponent {
+  public class AllParameters : IFunction {
 
     public AdSecPointArrayParameter Points { get; set; } = new AdSecPointArrayParameter {
       Name = "Points",
@@ -44,12 +44,12 @@ namespace AdSecGHTests.Helpers {
       NickName = "BC",
       Description = "Bundle Count description",
     };
-    public ComponentAttribute Metadata { get; set; } = new ComponentAttribute {
+    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Name = "All Parameters",
       NickName = "AP",
       Description = "Get all parameters",
     };
-    public ComponentOrganisation Organisation { get; set; } = new ComponentOrganisation {
+    public Organisation Organisation { get; set; } = new Organisation {
       Category = "Test",
       SubCategory = "Test",
     };
@@ -58,9 +58,9 @@ namespace AdSecGHTests.Helpers {
 
     public Attribute[] GetAllOutputAttributes() { return GetAllParams(); }
 
-    public void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
-
     public void Compute() { }
+
+    public void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
 
     private Attribute[] GetAllParams() {
       return new Attribute[] {
@@ -73,7 +73,7 @@ namespace AdSecGHTests.Helpers {
     }
   }
 
-  public class AllParametersComponent : BusinessOasysGlue<AllParameters> {
+  public class AllParametersComponent : ComponentAdapter<AllParameters> {
     public override Guid ComponentGuid => new Guid("CAA08C9E-417C-42AE-B704-91F214C8C873");
   }
 }

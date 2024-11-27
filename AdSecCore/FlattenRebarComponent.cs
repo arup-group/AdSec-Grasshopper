@@ -13,7 +13,7 @@ using Oasys.Profiles;
 using Attribute = Oasys.Business.Attribute;
 
 namespace AdSecGH.Components {
-  public class FlattenRebarComponent : IBusinessComponent {
+  public class FlattenRebarFunction : IFunction {
 
     public SectionParameter Section { get; set; } = new SectionParameter {
       Name = "Section",
@@ -55,12 +55,12 @@ namespace AdSecGH.Components {
       NickName = "Mat",
       Description = "Material Type",
     };
-    public ComponentAttribute Metadata { get; set; } = new ComponentAttribute {
+    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Name = "FlattenRebar",
       NickName = "FRb",
       Description = "Flatten all rebars in a section into single bars.",
     };
-    public ComponentOrganisation Organisation { get; set; } = new ComponentOrganisation {
+    public Organisation Organisation { get; set; } = new Organisation {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat4(),
     };

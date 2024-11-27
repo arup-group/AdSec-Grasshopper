@@ -18,9 +18,9 @@ using Attribute = Oasys.Business.Attribute;
 
 namespace AdSecGH.Components {
 
-  public class FlattenRebarGhComponent : FlattenRebarComponent {
+  public class FlattenRebarGh : FlattenRebarFunction {
 
-    public FlattenRebarGhComponent() {
+    public FlattenRebarGh() {
       AdSecSection.OnValueChanged += goo => {
         Section.Value = goo.Value?.Section;
       };
@@ -65,7 +65,7 @@ namespace AdSecGH.Components {
     }
   }
 
-  public class FlattenRebar : BusinessOasysGlue<FlattenRebarGhComponent> {
+  public class FlattenRebar : ComponentAdapter<FlattenRebarGh> {
 
     public FlattenRebar() {
       Hidden = true;

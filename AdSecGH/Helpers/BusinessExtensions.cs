@@ -112,17 +112,17 @@ namespace Oasys.GH.Helpers {
       }
     }
 
-    public static void SetDefaultValues(this IBusinessComponent businessComponent) {
-      foreach (var attribute in businessComponent.GetAllInputAttributes()) {
+    public static void SetDefaultValues(this IFunction function) {
+      foreach (var attribute in function.GetAllInputAttributes()) {
         if (attribute is IDefault @default) {
           @default.SetDefault();
         }
       }
     }
 
-    public static void SetDefaultValues(this IBusinessComponent businessComponent, GH_Component component) {
-      businessComponent.SetDefaultValues();
-      foreach (var attribute in businessComponent.GetAllInputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
+    public static void SetDefaultValues(this IFunction function, GH_Component component) {
+      function.SetDefaultValues();
+      foreach (var attribute in function.GetAllInputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
         var param = component.Params.GetInputParam(attribute.Name);
         object goo = ToGoo[attribute.GetType()](attribute);
         if (param.Access == GH_ParamAccess.item) {
@@ -133,12 +133,11 @@ namespace Oasys.GH.Helpers {
       }
     }
 
-    public static void UpdateInputValues(
-      this IBusinessComponent businessComponent, GH_Component component, IGH_DataAccess dataAccess) {
+    public static void UpdateInputValues(this IFunction function, GH_Component component, IGH_DataAccess dataAccess) {
       // TODO: Read values from Grasshopper Input and Assign on Attribute matching name.
       // TODO: Internal Linked input parameters, should update automatically.
       // i.e. when `AdSecSection` is updated, the `Section` attribute should be updated.
-      foreach (var attribute in businessComponent.GetAllInputAttributes()) {
+      foreach (var attribute in function.GetAllInputAttributes()) {
         int index = component.Params.IndexOfInputParam(attribute.Name);
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           dynamic inputs = null;
@@ -154,9 +153,8 @@ namespace Oasys.GH.Helpers {
       }
     }
 
-    public static void SetOutputValues(
-      this IBusinessComponent businessComponent, GH_Component component, IGH_DataAccess dataAccess) {
-      foreach (var attribute in businessComponent.GetAllOutputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
+    public static void SetOutputValues(this IFunction function, GH_Component component, IGH_DataAccess dataAccess) {
+      foreach (var attribute in function.GetAllOutputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
         dynamic goo = ToGoo[attribute.GetType()](attribute);
         if (attribute.GetAccess() == GH_ParamAccess.item) {
@@ -167,8 +165,8 @@ namespace Oasys.GH.Helpers {
       }
     }
 
-    public static void PopulateInputParams(this IBusinessComponent businessComponent, GH_Component component) {
-      RegisterParams(businessComponent.GetAllInputAttributes(), param => component.Params.RegisterInputParam(param));
+    public static void PopulateInputParams(this IFunction function, GH_Component component) {
+      RegisterParams(function.GetAllInputAttributes(), param => component.Params.RegisterInputParam(param));
     }
 
     private static void RegisterParams(Attribute[] attributesSelector, Action<IGH_Param> action) {
@@ -179,8 +177,8 @@ namespace Oasys.GH.Helpers {
       }
     }
 
-    public static void PopulateOutputParams(this IBusinessComponent businessComponent, GH_Component component) {
-      RegisterParams(businessComponent.GetAllOutputAttributes(), param => component.Params.RegisterOutputParam(param));
+    public static void PopulateOutputParams(this IFunction function, GH_Component component) {
+      RegisterParams(function.GetAllOutputAttributes(), param => component.Params.RegisterOutputParam(param));
     }
   }
 

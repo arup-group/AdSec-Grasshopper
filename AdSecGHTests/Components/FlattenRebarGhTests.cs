@@ -20,21 +20,21 @@ using Xunit;
 namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
   public class FlattenRebarGhTests {
-    private readonly FlattenRebarGhComponent component;
     private readonly IDesignCode designCode = IS456.Edition_2000;
+    private readonly FlattenRebarGh func;
 
     private readonly ISection Section = new SectionBuilder().WithWidth(40).CreateSquareSection().Build();
     private bool valueChanged;
 
     public FlattenRebarGhTests() {
-      component = new FlattenRebarGhComponent();
+      func = new FlattenRebarGh();
     }
 
     [Fact]
     public void WhenAdSecSectionChangesSectionChanges() {
       valueChanged = false;
-      component.Section.OnValueChanged += section => valueChanged = true;
-      component.AdSecSection.Value = new AdSecSectionGoo();
+      func.Section.OnValueChanged += section => valueChanged = true;
+      func.AdSecSection.Value = new AdSecSectionGoo();
       Assert.True(valueChanged);
     }
 
@@ -43,8 +43,8 @@ namespace AdSecGHTests.Components {
     public void WhenAdSecSectionChangesSectionGetsTheSameValue() {
       var secSection = new AdSecSection(Section, designCode, "", "", Plane.WorldXY);
       var adSecSectionGoo = new AdSecSectionGoo(secSection);
-      component.AdSecSection.Value = adSecSectionGoo;
-      Assert.True(Equals(Section, component.Section.Value));
+      func.AdSecSection.Value = adSecSectionGoo;
+      Assert.True(Equals(Section, func.Section.Value));
     }
   }
 

@@ -2,10 +2,10 @@
 
 namespace Oasys.Business {
 
-  public interface IBusinessComponent {
+  public interface IFunction {
 
-    ComponentAttribute Metadata { get; set; }
-    ComponentOrganisation Organisation { get; set; }
+    FuncAttribute Metadata { get; set; }
+    Organisation Organisation { get; set; }
     Attribute[] GetAllInputAttributes();
 
     Attribute[] GetAllOutputAttributes();
@@ -13,13 +13,13 @@ namespace Oasys.Business {
     void Compute();
   }
 
-  public class ComponentAttribute {
+  public class FuncAttribute {
     public string Name { get; set; }
     public string NickName { get; set; }
     public string Description { get; set; }
   }
 
-  public class ComponentOrganisation {
+  public class Organisation {
     public string Category { get; set; }
     public string SubCategory { get; set; }
   }
@@ -46,8 +46,6 @@ namespace Oasys.Business {
 
   public class ParameterAttribute<T> : Attribute, IDefault, IAccessible {
     private T _value;
-
-    public event Action<T> OnValueChanged;
     public T Value {
       get => _value;
       set {
@@ -61,6 +59,8 @@ namespace Oasys.Business {
     public void SetDefault() {
       Value = Default;
     }
+
+    public event Action<T> OnValueChanged;
   }
 
   public class BaseArrayParameter<T> : ParameterAttribute<T[]> {

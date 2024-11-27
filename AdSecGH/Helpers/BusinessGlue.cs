@@ -10,11 +10,11 @@ using OasysGH.Components;
 
 namespace Oasys.GH.Helpers {
 
-  public abstract class BusinessOasysGlue<T> : GH_OasysComponent, IDefaultValues where T : IBusinessComponent {
+  public abstract class ComponentAdapter<T> : GH_OasysComponent, IDefaultValues where T : IFunction {
 
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
 
-    public BusinessOasysGlue() : base("", "", "", "", "") {
+    public ComponentAdapter() : base("", "", "", "", "") {
       Name = BusinessComponent.Metadata.Name;
       NickName = BusinessComponent.Metadata.NickName;
       Description = BusinessComponent.Metadata.Description;
@@ -44,11 +44,10 @@ namespace Oasys.GH.Helpers {
     void SetDefaultValues();
   }
 
-  public abstract class BusinessOasysDropdownGlue<T> : GH_OasysDropDownComponent, IDefaultValues
-    where T : IBusinessComponent {
+  public abstract class DropdownAdapter<T> : GH_OasysDropDownComponent, IDefaultValues where T : IFunction {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
 
-    public BusinessOasysDropdownGlue() : base("", "", "", "", "") {
+    public DropdownAdapter() : base("", "", "", "", "") {
       Name = BusinessComponent.Metadata.Name;
       NickName = BusinessComponent.Metadata.NickName;
       Description = BusinessComponent.Metadata.Description;
