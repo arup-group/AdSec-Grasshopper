@@ -17,7 +17,7 @@ namespace AdSecCoreTests {
       Assert.True(spyCalled);
     }
 
-    public class FakeFunc : IOperation {
+    public class FakeFunc : IFunction {
 
       public DoubleParameter Diameter { get; set; } = new();
 
