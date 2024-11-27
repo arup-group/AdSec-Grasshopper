@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
 using AdSecGH.Helpers;
@@ -60,6 +61,7 @@ namespace AdSecGH.Components {
         "SLS stress for each rebar position", GH_ParamAccess.list);
     }
 
+    [SuppressMessage("SonarLint", "S2259", Justification = "Justification for suppressing the rule")]
     protected override void SolveInstance(IGH_DataAccess DA) {
       // get solution input
       var solution = AdSecInput.Solution(this, DA, 0);
@@ -99,42 +101,37 @@ namespace AdSecGH.Components {
 
       // loop through rebar groups in flattened section
       foreach (var rebargrp in flat.ReinforcementGroups) {
-        try // first try if not a link group type
-        {
-          switch (rebargrp) {
-            case ISingleBars singleBars:
-              var positions = singleBars.Positions;
+        switch (rebargrp) {
+          case ISingleBars singleBars:
+            var positions = singleBars.Positions;
 
-              if (positions == null) {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Positions are null for the rebar group.");
-                continue;
-              }
+            if (positions == null) {
+              AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Positions are null for the rebar group.");
+              return;
+            }
 
-              foreach (var pos in positions) {
-                // position
-                pointGoos.Add(new AdSecPointGoo(pos));
+            foreach (var pos in positions) {
+              // position
+              pointGoos.Add(new AdSecPointGoo(pos));
 
-                // ULS strain
-                var strainULS = uls.Deformation.StrainAt(pos);
-                outStrainULS.Add(new GH_UnitNumber(strainULS.ToUnit(DefaultUnits.StrainUnitResult)));
+              // ULS strain
+              var strainULS = uls.Deformation.StrainAt(pos);
+              outStrainULS.Add(new GH_UnitNumber(strainULS.ToUnit(DefaultUnits.StrainUnitResult)));
 
-                // ULS stress in bar material from strain
-                var stressULS = singleBars.BarBundle.Material.Strength.StressAt(strainULS);
-                outStressULS.Add(new GH_UnitNumber(stressULS.ToUnit(DefaultUnits.StressUnitResult)));
+              // ULS stress in bar material from strain
+              var stressULS = singleBars.BarBundle.Material.Strength.StressAt(strainULS);
+              outStressULS.Add(new GH_UnitNumber(stressULS.ToUnit(DefaultUnits.StressUnitResult)));
 
-                // SLS strain
-                var strainSLS = sls.Deformation.StrainAt(pos);
-                outStrainSLS.Add(new GH_UnitNumber(strainSLS.ToUnit(DefaultUnits.StrainUnitResult)));
+              // SLS strain
+              var strainSLS = sls.Deformation.StrainAt(pos);
+              outStrainSLS.Add(new GH_UnitNumber(strainSLS.ToUnit(DefaultUnits.StrainUnitResult)));
 
-                // SLS stress in bar material from strain
-                var stressSLS = singleBars.BarBundle.Material.Serviceability.StressAt(strainSLS);
-                outStressSLS.Add(new GH_UnitNumber(stressSLS.ToUnit(DefaultUnits.StressUnitResult)));
-              }
+              // SLS stress in bar material from strain
+              var stressSLS = singleBars.BarBundle.Material.Serviceability.StressAt(strainSLS);
+              outStressSLS.Add(new GH_UnitNumber(stressSLS.ToUnit(DefaultUnits.StressUnitResult)));
+            }
 
-              break;
-          }
-        } catch (Exception) {
-          // do nothing if rebar is link
+            break;
         }
       }
 
