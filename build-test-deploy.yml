@@ -17,6 +17,11 @@ steps:
 
 - task: NuGetToolInstaller@1
 
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '7.x.x'  # Specify the version you need, e.g., '7.0.100'
+
 - task: NuGetCommand@2
   displayName: 'Restoring NuGet packages'
   inputs:
