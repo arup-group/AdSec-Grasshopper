@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
 using AdSecGH.Helpers;
@@ -61,7 +60,6 @@ namespace AdSecGH.Components {
         "SLS stress for each rebar position", GH_ParamAccess.list);
     }
 
-    [SuppressMessage("SonarLint", "S2259", Justification = "Justification for suppressing the rule")]
     protected override void SolveInstance(IGH_DataAccess DA) {
       // get solution input
       var solution = AdSecInput.Solution(this, DA, 0);
