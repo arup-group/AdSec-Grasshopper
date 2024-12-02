@@ -1,8 +1,7 @@
 ﻿using Oasys.AdSec;
-using Oasys.Business;
 using Oasys.Profiles;
 
-namespace AdSecCore.Parameters {
+namespace AdSecCore.Functions {
 
   public class DoubleParameter : ParameterAttribute<double> { }
 

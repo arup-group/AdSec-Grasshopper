@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 
-using Oasys.Business;
+using AdSecCore.Functions;
 
 using OasysUnits;
 using OasysUnits.Units;
 
-namespace AdSecGH.Components {
+namespace AdSecCore {
   public static class UnitExtensions {
 
     public static string GetUnit(this LengthUnit lengthUnitGeometry) {

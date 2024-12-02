@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-using AdSecGHCore.Helpers;
+using AdSecCore;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;

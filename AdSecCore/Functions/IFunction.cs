@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Oasys.Business {
+namespace AdSecCore.Functions {
 
   public interface IFunction {
 

@@ -1,8 +1,6 @@
-﻿using AdSecCore.Parameters;
+﻿using AdSecCore.Functions;
 
-using Oasys.Business;
-
-using Attribute = Oasys.Business.Attribute;
+using Attribute = AdSecCore.Functions.Attribute;
 
 namespace AdSecCoreTests {
   public class BusinessComponentTests {

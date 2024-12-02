@@ -1,8 +1,8 @@
 ﻿using System;
 
-using Oasys.Business;
+using AdSecCore.Functions;
 
-using Attribute = Oasys.Business.Attribute;
+using Attribute = AdSecCore.Functions.Attribute;
 
 namespace AdSecGHTests.Helpers {
   public class MalformedFunction : IFunction {

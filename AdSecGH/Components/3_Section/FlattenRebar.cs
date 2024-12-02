@@ -2,19 +2,21 @@
 using System.Drawing;
 using System.Linq;
 
+using AdSecCore;
+using AdSecCore.Functions;
+
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
 
-using Oasys.Business;
 using Oasys.GH.Helpers;
 
 using OasysGH;
 using OasysGH.Units;
 
 using AdSecSectionParameter = Oasys.GH.Helpers.AdSecSectionParameter;
-using Attribute = Oasys.Business.Attribute;
+using Attribute = AdSecCore.Functions.Attribute;
 
 namespace AdSecGH.Components {
 

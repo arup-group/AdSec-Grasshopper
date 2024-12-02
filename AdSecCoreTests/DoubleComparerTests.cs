@@ -1,4 +1,4 @@
-using AdSecGHCore.Helpers;
+using AdSecCore;
 
 namespace AdSecCoreTests {
   public class DoubleComparerTests {

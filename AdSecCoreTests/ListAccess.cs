@@ -1,6 +1,5 @@
-﻿using AdSecCore.Parameters;
-
-using Oasys.Business;
+﻿using AdSecCore;
+using AdSecCore.Functions;
 
 namespace AdSecCoreTests {
   public class ListAccess {

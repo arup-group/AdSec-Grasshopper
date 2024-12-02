@@ -1,18 +1,12 @@
 ﻿using System.Collections.Generic;
 
-using AdSecCore;
-using AdSecCore.Parameters;
-
 using AdSecGHCore.Constants;
 
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
-using Oasys.Business;
 using Oasys.Profiles;
 
-using Attribute = Oasys.Business.Attribute;
-
-namespace AdSecGH.Components {
+namespace AdSecCore.Functions {
   public class FlattenRebarFunction : IFunction {
 
     public SectionParameter Section { get; set; } = new SectionParameter {

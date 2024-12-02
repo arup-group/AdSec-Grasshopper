@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using AdSecCore.Parameters;
+using AdSecCore.Functions;
 
 using AdSecGH.Parameters;
 
@@ -12,9 +12,7 @@ using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
-using Oasys.Business;
-
-using Attribute = Oasys.Business.Attribute;
+using Attribute = AdSecCore.Functions.Attribute;
 
 namespace Oasys.GH.Helpers {
 

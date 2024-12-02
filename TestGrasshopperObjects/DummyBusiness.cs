@@ -1,10 +1,8 @@
 using System;
 
-using AdSecCore.Parameters;
+using AdSecCore.Functions;
 
-using Oasys.Business;
-
-using Attribute = Oasys.Business.Attribute;
+using Attribute = AdSecCore.Functions.Attribute;
 
 namespace AdSecGHTests.Helpers {
 
@@ -43,6 +41,8 @@ namespace AdSecGHTests.Helpers {
       SubCategory = "Dummy SubCategory",
     };
 
+    public void Compute() { Beta.Value = (Alpha.Value * 2) + 10; }
+
     public Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
         Alpha,
@@ -55,8 +55,6 @@ namespace AdSecGHTests.Helpers {
         Beta,
       };
     }
-
-    public void Compute() { Beta.Value = (Alpha.Value * 2) + 10; }
 
     public void UpdateInputValues(params object[] values) { }
 

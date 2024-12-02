@@ -1,11 +1,10 @@
 ﻿using System;
 
-using AdSecCore.Parameters;
+using AdSecCore.Functions;
 
-using Oasys.Business;
 using Oasys.GH.Helpers;
 
-using Attribute = Oasys.Business.Attribute;
+using Attribute = AdSecCore.Functions.Attribute;
 
 namespace AdSecGHTests.Helpers {
   public class MalformedParameter : ParameterAttribute<object> { }
@@ -54,11 +53,11 @@ namespace AdSecGHTests.Helpers {
       SubCategory = "Test",
     };
 
+    public void Compute() { }
+
     public Attribute[] GetAllInputAttributes() { return GetAllParams(); }
 
     public Attribute[] GetAllOutputAttributes() { return GetAllParams(); }
-
-    public void Compute() { }
 
     public void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
 
