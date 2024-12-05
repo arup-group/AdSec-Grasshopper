@@ -29,6 +29,16 @@ namespace AdSecCore.Functions {
     public string Name { get; set; }
     public string NickName { get; set; }
     public string Description { get; set; }
+
+    public void Update(ref Attribute update) {
+      update.Name = Name;
+      update.NickName = NickName;
+      update.Description = Description;
+
+      if (this is IAccessible accessible && update is IAccessible AdSecSection) {
+        AdSecSection.Access = accessible.Access;
+      }
+    }
   }
 
   public enum Access {

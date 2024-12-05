@@ -23,32 +23,24 @@ namespace AdSecGH.Components {
   public class FlattenRebarGh : FlattenRebarFunction {
 
     public FlattenRebarGh() {
+      var adSecSection = AdSecSection as Attribute;
+      Section.Update(ref adSecSection);
       AdSecSection.OnValueChanged += goo => {
         Section.Value = goo.Value?.Section;
       };
+
+      var adSecPoint = AdSecPoint as Attribute;
+      Position.Update(ref adSecPoint);
       Position.OnValueChanged += goo => {
         AdSecPoint.Value = goo.Select(x => new AdSecPointGoo(x)).ToArray();
       };
-      var adSecSection = AdSecSection as Attribute;
-      FromAttribute(ref adSecSection, Section);
-      var adSecPoint = AdSecPoint as Attribute;
-      FromAttribute(ref adSecPoint, Position);
+
       AdSecPoint.Name = Position.NameWithUnits(DefaultUnits.LengthUnitGeometry);
       Diameter.Name = Diameter.NameWithUnits(DefaultUnits.LengthUnitGeometry);
     }
 
     public AdSecPointArrayParameter AdSecPoint { get; set; } = new AdSecPointArrayParameter();
     public AdSecSectionParameter AdSecSection { get; set; } = new AdSecSectionParameter();
-
-    private static void FromAttribute(ref Attribute update, Attribute from) {
-      update.Name = from.Name;
-      update.NickName = from.NickName;
-      update.Description = from.Description;
-
-      if (from is IAccessible accessible && update is IAccessible AdSecSection) {
-        AdSecSection.Access = accessible.Access;
-      }
-    }
 
     public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
