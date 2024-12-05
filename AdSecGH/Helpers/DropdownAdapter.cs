@@ -13,12 +13,10 @@ namespace Oasys.GH.Helpers {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
 
     protected DropdownAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
-      Name = BusinessComponent.Metadata.Name;
-      NickName = BusinessComponent.Metadata.NickName;
-      Description = BusinessComponent.Metadata.Description;
-      Category = BusinessComponent.Organisation.Category;
-      SubCategory = BusinessComponent.Organisation.SubCategory;
+      BusinessComponent.UpdateProperties(this);
     }
+
+
     public override OasysPluginInfo PluginInfo { get; } = AdSecGH.PluginInfo.Instance;
     public void SetDefaultValues() { BusinessComponent.SetDefaultValues(this); }
 

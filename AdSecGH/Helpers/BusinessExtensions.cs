@@ -22,6 +22,14 @@ namespace Oasys.GH.Helpers {
 
   public static class BusinessExtensions {
 
+    public static void UpdateProperties(this IFunction BusinessComponent, GH_Component component) {
+      component.Name = BusinessComponent.Metadata.Name;
+      component.NickName = BusinessComponent.Metadata.NickName;
+      component.Description = BusinessComponent.Metadata.Description;
+      component.Category = BusinessComponent.Organisation.Category;
+      component.SubCategory = BusinessComponent.Organisation.SubCategory;
+    }
+
     private static readonly Dictionary<Type, Func<Attribute, IGH_Param>> ToGhParam
       = new Dictionary<Type, Func<Attribute, IGH_Param>> {
         {
