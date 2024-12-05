@@ -132,9 +132,6 @@ namespace Oasys.GH.Helpers {
     }
 
     public static void UpdateInputValues(this IFunction function, GH_Component component, IGH_DataAccess dataAccess) {
-      // TODO: Read values from Grasshopper Input and Assign on Attribute matching name.
-      // TODO: Internal Linked input parameters, should update automatically.
-      // i.e. when `AdSecSection` is updated, the `Section` attribute should be updated.
       foreach (var attribute in function.GetAllInputAttributes()) {
         int index = component.Params.IndexOfInputParam(attribute.Name);
         if (attribute.GetAccess() == GH_ParamAccess.item) {
