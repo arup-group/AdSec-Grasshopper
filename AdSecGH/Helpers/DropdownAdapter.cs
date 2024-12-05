@@ -8,8 +8,7 @@ using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
 
-namespace Oasys.GH.Helpers
-{
+namespace Oasys.GH.Helpers {
   public abstract class DropdownAdapter<T> : GH_OasysDropDownComponent, IDefaultValues where T : IFunction {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
 
