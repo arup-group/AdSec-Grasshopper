@@ -33,7 +33,7 @@ namespace AdSecGHTests.Helpers {
     public void ShouldHaveNoErrors() {
       var runtimeMessages = component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
       foreach (string message in runtimeMessages) {
-        Assert.Equal("", message);
+        Assert.Equal(string.Empty, message);
       }
 
       Assert.Empty(runtimeMessages);
@@ -68,19 +68,25 @@ namespace AdSecGHTests.Helpers {
       Assert.NotNull(output.Value);
     }
 
+    [Fact]
+    public void ShouldComputeTheRightResult() {
+      dynamic output = GetFirstOutput(component);
+      Assert.Equal(12, output.Value);
+    }
+
     private static object GetFirstOutput(GH_Component component) {
       return GetOutputOfParam(component, 0, 0, 0);
     }
 
     private static object GetOutputOfParam(GH_Component component, int param, int branch, int index) {
-      return component.GetInputParamAt(param).GetValue(branch, index);
+      return component.GetOutputParamAt(param).GetValue(branch, index);
     }
 
     [Fact]
     public void ShouldHaveDefaultValues() {
       component.SetDefaultValues();
       component.CollectData();
-      dynamic actual = GetFirstInput().VolatileData.get_Branch(0)[0]; // as GH_Number;
+      dynamic actual = GetFirstInput().VolatileData.get_Branch(0)[0];
       Assert.Equal((float)fakeBusiness.Alpha.Default, actual.Value, 0.01f);
     }
 
