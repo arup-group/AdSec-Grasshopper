@@ -2,17 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using AdSecGHCore.Constants;
-
 using Grasshopper.Kernel;
 
+using Oasys.GH.Helpers;
 using Oasys.Profiles;
 
-using OasysGH;
-using OasysGH.Components;
 using OasysGH.Helpers;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;
@@ -21,19 +20,16 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
-  public class CreatePoint : GH_OasysDropDownComponent {
+
+  public class CreatePointGh : PointRebarFunction { }
+
+  public class CreatePoint : DropdownAdapter<CreatePointGh> {
     private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
 
-    public CreatePoint() : base("Create Vertex Point", "Vertex Point",
-      "Create a 2D vertex in local yz-plane for AdSec Profile and Reinforcement", CategoryName.Name(),
-      SubCategoryName.Cat3()) {
-      Hidden = false; // sets the initial state of the component to hidden
-    }
+    public CreatePoint() { Hidden = false; }
 
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("1a0cdb3c-d66d-420e-a9d8-35d31587a122");
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
-    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.VertexPoint;
 
     public override void SetSelected(int i, int j) {
