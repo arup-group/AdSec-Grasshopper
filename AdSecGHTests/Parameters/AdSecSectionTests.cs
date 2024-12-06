@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 
-using AdSecGH.Helpers;
+using AdSecCore;
 
-using AdSecGHCore.Helpers;
+using AdSecGH.Helpers;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;

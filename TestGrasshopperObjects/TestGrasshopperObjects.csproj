@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grasshopper" Version="6.27.20176.5001"/>
+    <PackageReference Include="RhinoCommon" Version="6.27.20176.5001"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdSecGH\AdSecGH.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>

@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 using AdSecGH.Helpers;
-using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
+
+using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
@@ -22,29 +25,19 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateReinforcementLayout : GH_OasysDropDownComponent {
-    private enum FoldMode {
-      Line,
-      SingleBars,
-      Circle,
-      Arc,
+    private AngleUnit _angleUnit = AngleUnit.Radian;
+    private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
+    private FoldMode _mode = FoldMode.Line;
+
+    public CreateReinforcementLayout() : base("Create Reinforcement Layout", "Reinforcement Layout",
+      "Create a Reinforcement Layout for an AdSec Section", CategoryName.Name(), SubCategoryName.Cat3()) {
+      Hidden = false;
     }
 
     public override Guid ComponentGuid => new Guid("1250f456-de99-4834-8d7f-4019cc0c70ba");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.RebarLayout;
-    private AngleUnit _angleUnit = AngleUnit.Radian;
-    private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
-    private FoldMode _mode = FoldMode.Line;
-
-    public CreateReinforcementLayout() : base(
-      "Create Reinforcement Layout",
-      "Reinforcement Layout",
-      "Create a Reinforcement Layout for an AdSec Section",
-      CategoryName.Name(),
-      SubCategoryName.Cat3()) {
-      Hidden = false;
-    }
+    protected override Bitmap Icon => Resources.RebarLayout;
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
@@ -57,6 +50,7 @@ namespace AdSecGH.Components {
             while (_dropDownItems.Count > 1) {
               _dropDownItems.RemoveAt(1);
             }
+
             _spacerDescriptions[1] = "Measure";
             break;
 
@@ -65,9 +59,11 @@ namespace AdSecGH.Components {
             if (_dropDownItems.Count < 2) {
               _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
             }
+
             if (_dropDownItems.Count < 3) {
               _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
             }
+
             _spacerDescriptions[1] = "Length measure";
             break;
         }
@@ -84,6 +80,7 @@ namespace AdSecGH.Components {
             break;
         }
       }
+
       base.UpdateUI();
     }
 
@@ -109,6 +106,7 @@ namespace AdSecGH.Components {
         Params.Input[2].Access = GH_ParamAccess.item;
         Params.Input[2].Optional = false;
       }
+
       if (_mode == FoldMode.SingleBars) {
         Params.Input[0].Name = "Rebar";
         Params.Input[0].NickName = "Rb";
@@ -122,6 +120,7 @@ namespace AdSecGH.Components {
         Params.Input[1].Access = GH_ParamAccess.list;
         Params.Input[1].Optional = false;
       }
+
       if (_mode == FoldMode.Circle) {
         Params.Input[0].Name = "Spaced Rebars";
         Params.Input[0].NickName = "RbS";
@@ -143,10 +142,12 @@ namespace AdSecGH.Components {
 
         Params.Input[3].Name = "StartAngle [" + angleUnitAbbreviation + "]";
         Params.Input[3].NickName = "s°";
-        Params.Input[3].Description = "[Optional] The starting angle (in " + angleUnitAbbreviation + ") of the circle. Positive angle is considered anti-clockwise. Default is 0";
+        Params.Input[3].Description = "[Optional] The starting angle (in " + angleUnitAbbreviation
+          + ") of the circle. Positive angle is considered anti-clockwise. Default is 0";
         Params.Input[3].Access = GH_ParamAccess.item;
         Params.Input[3].Optional = true;
       }
+
       if (_mode == FoldMode.Arc) {
         Params.Input[0].Name = "Spaced Rebars";
         Params.Input[0].NickName = "RbS";
@@ -168,23 +169,25 @@ namespace AdSecGH.Components {
 
         Params.Input[3].Name = "StartAngle [" + angleUnitAbbreviation + "]";
         Params.Input[3].NickName = "s°";
-        Params.Input[3].Description = "[Optional] The starting angle (in " + angleUnitAbbreviation + ")) of the circle. Positive angle is considered anti-clockwise. Default is 0";
+        Params.Input[3].Description = "[Optional] The starting angle (in " + angleUnitAbbreviation
+          + ")) of the circle. Positive angle is considered anti-clockwise. Default is 0";
         Params.Input[3].Access = GH_ParamAccess.item;
         Params.Input[3].Optional = true;
 
         Params.Input[4].Name = "SweepAngle [" + angleUnitAbbreviation + "]";
         Params.Input[4].NickName = "e°";
-        Params.Input[4].Description = "The angle (in " + angleUnitAbbreviation + ") sweeped by the arc from its start angle. Positive angle is considered anti-clockwise. Default is π/2";
+        Params.Input[4].Description = "The angle (in " + angleUnitAbbreviation
+          + ") sweeped by the arc from its start angle. Positive angle is considered anti-clockwise. Default is π/2";
         Params.Input[4].Access = GH_ParamAccess.item;
         Params.Input[4].Optional = true;
       }
     }
 
     protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new string[] {
+      _spacerDescriptions = new List<string>(new[] {
         "Layout Type",
         "Measure",
-        "Angular measure"
+        "Angular measure",
       });
 
       _dropDownItems = new List<List<string>>();
@@ -215,38 +218,27 @@ namespace AdSecGH.Components {
       switch (_mode) {
         case FoldMode.Line:
           // create line group
-          group = new AdSecRebarGroupGoo(
-            ILineGroup.Create(
-              AdSecInput.IPoint(this, da, 1),
-              AdSecInput.IPoint(this, da, 2),
-              AdSecInput.ILayer(this, da, 0)));
+          group = new AdSecRebarGroupGoo(ILineGroup.Create(AdSecInput.IPoint(this, da, 1),
+            AdSecInput.IPoint(this, da, 2), AdSecInput.ILayer(this, da, 0)));
           break;
 
         case FoldMode.Circle:
           // create circle rebar group
-          group = new AdSecRebarGroupGoo(
-            ICircleGroup.Create(
-              AdSecInput.IPoint(this, da, 1, true),
-              (Length)Input.UnitNumber(this, da, 2, _lengthUnit),
-              (Angle)Input.UnitNumber(this, da, 3, _angleUnit, true),
-              AdSecInput.ILayer(this, da, 0)));
+          group = new AdSecRebarGroupGoo(ICircleGroup.Create(AdSecInput.IPoint(this, da, 1, true),
+            (Length)Input.UnitNumber(this, da, 2, _lengthUnit), (Angle)Input.UnitNumber(this, da, 3, _angleUnit, true),
+            AdSecInput.ILayer(this, da, 0)));
           break;
 
         case FoldMode.Arc:
           // create arc rebar grouup
-          group = new AdSecRebarGroupGoo(
-            IArcGroup.Create(
-              AdSecInput.IPoint(this, da, 1, true),
-              (Length)Input.UnitNumber(this, da, 2, _lengthUnit),
-              (Angle)Input.UnitNumber(this, da, 3, _angleUnit),
-              (Angle)Input.UnitNumber(this, da, 4, _angleUnit),
-              AdSecInput.ILayer(this, da, 0)));
+          group = new AdSecRebarGroupGoo(IArcGroup.Create(AdSecInput.IPoint(this, da, 1, true),
+            (Length)Input.UnitNumber(this, da, 2, _lengthUnit), (Angle)Input.UnitNumber(this, da, 3, _angleUnit),
+            (Angle)Input.UnitNumber(this, da, 4, _angleUnit), AdSecInput.ILayer(this, da, 0)));
           break;
 
         case FoldMode.SingleBars:
           // create single rebar group
-          var bars = ISingleBars.Create(
-            AdSecInput.IBarBundle(this, da, 0));
+          var bars = ISingleBars.Create(AdSecInput.IBarBundle(this, da, 0));
 
           bars.Positions = AdSecInput.IPoints(this, da, 1);
 
@@ -282,6 +274,7 @@ namespace AdSecGH.Components {
           while (Params.Input.Count > 1) {
             Params.UnregisterInputParameter(Params.Input[1], true);
           }
+
           Params.RegisterInputParam(new Param_GenericObject());
           break;
 
@@ -298,6 +291,13 @@ namespace AdSecGH.Components {
           Params.RegisterInputParam(new Param_GenericObject());
           break;
       }
+    }
+
+    private enum FoldMode {
+      Line,
+      SingleBars,
+      Circle,
+      Arc,
     }
   }
 }

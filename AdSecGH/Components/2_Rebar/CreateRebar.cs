@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 using AdSecGH.Helpers;
-using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
+
+using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement;
 
 using OasysGH;
@@ -22,27 +26,19 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateRebar : GH_OasysDropDownComponent {
-    private enum FoldMode {
-      Single,
-      Bundle
+    private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
+    private FoldMode _mode = FoldMode.Single;
+
+    public CreateRebar() : base("Create Rebar", "Rebar", "Create Rebar (single or bundle) for an AdSec Section",
+      CategoryName.Name(), SubCategoryName.Cat3()) {
+      Hidden = false; // sets the initial state of the component to hidden
     }
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("024d241a-b6cc-4134-9f5c-ac9a6dcb2c4b");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.Rebar;
-    private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
-    private FoldMode _mode = FoldMode.Single;
-
-    public CreateRebar() : base(
-      "Create Rebar",
-      "Rebar",
-      "Create Rebar (single or bundle) for an AdSec Section",
-      CategoryName.Name(),
-      SubCategoryName.Cat3()) {
-      Hidden = false; // sets the initial state of the component to hidden
-    }
+    protected override Bitmap Icon => Resources.Rebar;
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
@@ -67,9 +63,9 @@ namespace AdSecGH.Components {
     }
 
     protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new string[] {
+      _spacerDescriptions = new List<string>(new[] {
         "Rebar Type",
-        "Measure"
+        "Measure",
       });
 
       _dropDownItems = new List<List<string>>();
@@ -92,19 +88,18 @@ namespace AdSecGH.Components {
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("Rebar", "Rb", "Rebar (single or bundle) for AdSec Reinforcement", GH_ParamAccess.item);
+      pManager.AddGenericParameter("Rebar", "Rb", "Rebar (single or bundle) for AdSec Reinforcement",
+        GH_ParamAccess.item);
     }
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // 0 material input
-      AdSecMaterial material = AdSecInput.AdSecMaterial(this, DA, 0);
+      var material = AdSecInput.AdSecMaterial(this, DA, 0);
 
       switch (_mode) {
         case FoldMode.Single:
-          var rebar = new AdSecRebarBundleGoo(
-            IBarBundle.Create(
-              (Oasys.AdSec.Materials.IReinforcement)material.Material,
-              (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
+          var rebar = new AdSecRebarBundleGoo(IBarBundle.Create((IReinforcement)material.Material,
+            (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
           DA.SetData(0, rebar);
           break;
 
@@ -112,11 +107,8 @@ namespace AdSecGH.Components {
           int count = 1;
           DA.GetData(2, ref count);
 
-          var bundle = new AdSecRebarBundleGoo(
-            IBarBundle.Create(
-              (Oasys.AdSec.Materials.IReinforcement)material.Material,
-              (Length)Input.UnitNumber(this, DA, 1, _lengthUnit),
-              count));
+          var bundle = new AdSecRebarBundleGoo(IBarBundle.Create((IReinforcement)material.Material,
+            (Length)Input.UnitNumber(this, DA, 1, _lengthUnit), count));
 
           DA.SetData(0, bundle);
           break;
@@ -138,6 +130,7 @@ namespace AdSecGH.Components {
           while (Params.Input.Count > 2) {
             Params.UnregisterInputParameter(Params.Input[2], true);
           }
+
           break;
 
         case FoldMode.Bundle:
@@ -145,8 +138,14 @@ namespace AdSecGH.Components {
           while (Params.Input.Count != 3) {
             Params.RegisterInputParam(new Param_Integer());
           }
+
           break;
       }
+    }
+
+    private enum FoldMode {
+      Single,
+      Bundle,
     }
   }
 }

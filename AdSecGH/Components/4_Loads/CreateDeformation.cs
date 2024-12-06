@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
-using AdSecGH.Helpers.GH;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
+
+using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
 
@@ -19,19 +22,20 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateDeformation : GH_OasysDropDownComponent {
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
-    public override Guid ComponentGuid => new Guid("cbab2b58-2a01-4f05-ba24-2c79827c7415");
-    public override GH_Exposure Exposure => GH_Exposure.primary;
-    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.DeformationLoad;
     private CurvatureUnit _curvatureUnit = DefaultUnits.CurvatureUnit;
     private StrainUnit _strainUnit = DefaultUnits.StrainUnitResult;
 
     public CreateDeformation() : base("Create Deformation Load", "Deformation",
-      "Create an AdSec Deformation Load from an axial strain and biaxial curvatures",
-      CategoryName.Name(), SubCategoryName.Cat5()) {
+      "Create an AdSec Deformation Load from an axial strain and biaxial curvatures", CategoryName.Name(),
+      SubCategoryName.Cat5()) {
       Hidden = true; // sets the initial state of the component to hidden
     }
+
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
+    public override Guid ComponentGuid => new Guid("cbab2b58-2a01-4f05-ba24-2c79827c7415");
+    public override GH_Exposure Exposure => GH_Exposure.primary;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override Bitmap Icon => Resources.DeformationLoad;
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
@@ -45,6 +49,7 @@ namespace AdSecGH.Components {
           _curvatureUnit = (CurvatureUnit)UnitsHelper.Parse(typeof(CurvatureUnit), _selectedItems[i]);
           break;
       }
+
       base.UpdateUI();
     }
 
@@ -57,10 +62,9 @@ namespace AdSecGH.Components {
     }
 
     protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new string[]
-      {
+      _spacerDescriptions = new List<string>(new[] {
         "Strain Unit",
-        "Curvature Unit"
+        "Curvature Unit",
       });
 
       _dropDownItems = new List<List<string>>();
@@ -80,9 +84,14 @@ namespace AdSecGH.Components {
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string strainUnitAbbreviation = Strain.GetAbbreviation(_strainUnit);
       string curvatureUnitAbbreviation = Curvature.GetAbbreviation(_curvatureUnit);
-      pManager.AddGenericParameter("εx [" + strainUnitAbbreviation + "]", "X", "The axial strain. Positive X indicates tension.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("κyy [" + curvatureUnitAbbreviation + "]", "YY", "The curvature about local y-axis. It follows the right hand grip rule about the axis. Positive YY is anti-clockwise curvature about local y-axis.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("κzz [" + curvatureUnitAbbreviation + "]", "ZZ", "The curvature about local z-axis. It follows the right hand grip rule about the axis. Positive ZZ is anti-clockwise curvature about local z-axis.", GH_ParamAccess.item);
+      pManager.AddGenericParameter("εx [" + strainUnitAbbreviation + "]", "X",
+        "The axial strain. Positive X indicates tension.", GH_ParamAccess.item);
+      pManager.AddGenericParameter("κyy [" + curvatureUnitAbbreviation + "]", "YY",
+        "The curvature about local y-axis. It follows the right hand grip rule about the axis. Positive YY is anti-clockwise curvature about local y-axis.",
+        GH_ParamAccess.item);
+      pManager.AddGenericParameter("κzz [" + curvatureUnitAbbreviation + "]", "ZZ",
+        "The curvature about local z-axis. It follows the right hand grip rule about the axis. Positive ZZ is anti-clockwise curvature about local z-axis.",
+        GH_ParamAccess.item);
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
@@ -91,8 +100,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // Create new load
-      var deformation = IDeformation.Create(
-        (Strain)Input.UnitNumber(this, DA, 0, _strainUnit),
+      var deformation = IDeformation.Create((Strain)Input.UnitNumber(this, DA, 0, _strainUnit),
         (Curvature)Input.UnitNumber(this, DA, 1, _curvatureUnit),
         (Curvature)Input.UnitNumber(this, DA, 2, _curvatureUnit));
 

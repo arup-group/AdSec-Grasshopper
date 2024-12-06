@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecCore", "AdSecCore\AdSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdSecCoreTests", "AdSecCoreTests\AdSecCoreTests.csproj", "{DF259C79-A298-44B9-B702-573D4206A3C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestGrasshopperObjects", "TestGrasshopperObjects\TestGrasshopperObjects.csproj", "{9D376477-DEDE-4DCC-B12F-7361BF763BFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,10 @@ Global
 		{DF259C79-A298-44B9-B702-573D4206A3C2}.Debug|x64.Build.0 = Debug|Any CPU
 		{DF259C79-A298-44B9-B702-573D4206A3C2}.Release|x64.ActiveCfg = Release|Any CPU
 		{DF259C79-A298-44B9-B702-573D4206A3C2}.Release|x64.Build.0 = Release|Any CPU
+		{9D376477-DEDE-4DCC-B12F-7361BF763BFF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9D376477-DEDE-4DCC-B12F-7361BF763BFF}.Debug|x64.Build.0 = Debug|Any CPU
+		{9D376477-DEDE-4DCC-B12F-7361BF763BFF}.Release|x64.ActiveCfg = Release|Any CPU
+		{9D376477-DEDE-4DCC-B12F-7361BF763BFF}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

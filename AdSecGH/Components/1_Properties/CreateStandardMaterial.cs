@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-using AdSecGH.Helpers.GH;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
+
+using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
@@ -15,21 +19,18 @@ using OasysGH.Components;
 
 namespace AdSecGH.Components {
   public class CreateStandardMaterial : GH_OasysDropDownComponent {
+    private Dictionary<string, FieldInfo> _materials;
+
+    public CreateStandardMaterial() : base("Standard Material", "Material",
+      "Create a new AdSec Design Code based standard material", CategoryName.Name(), SubCategoryName.Cat1()) {
+      Hidden = true; // sets the initial state of the component to hidden
+    }
+
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("42f42580-8ed7-42fb-9cc7-c6f6171a0248");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override System.Drawing.Bitmap Icon => Properties.Resources.StandardMaterial;
-    private Dictionary<string, FieldInfo> _materials;
-
-    public CreateStandardMaterial() : base(
-      "Standard Material",
-      "Material",
-      "Create a new AdSec Design Code based standard material",
-      CategoryName.Name(),
-      SubCategoryName.Cat1()) {
-      Hidden = true; // sets the initial state of the component to hidden
-    }
+    protected override Bitmap Icon => Resources.StandardMaterial;
 
     public override void SetSelected(int i, int j) {
       // change selected item
@@ -42,8 +43,8 @@ namespace AdSecGH.Components {
           _dropDownItems.RemoveAt(1);
         }
 
-        string prevSelectedCode = _selectedItems[1].ToString();
-        string prevSelectedNA = _selectedItems[2].ToString();
+        string prevSelectedCode = _selectedItems[1];
+        string prevSelectedNA = _selectedItems[2];
 
         // remove all selected items after the dropdown that has been changed
         while (_selectedItems.Count > i + 1) {
@@ -53,7 +54,7 @@ namespace AdSecGH.Components {
         // get the selected material and parse it to type enum
         Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
         // get list of standard codes for the selected material
-        Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.StandardCodes(materialType);
+        var designCodeKVP = ReflectionHelper.StandardCodes(materialType);
         // add codes for selected material to list of dropdowns
         _dropDownItems.Add(designCodeKVP.Keys.ToList());
         if (_selectedItems.Count == 1) {
@@ -86,10 +87,10 @@ namespace AdSecGH.Components {
         bool drill = true;
         while (drill) {
           // get the type of the most recent selected from level above
-          designCodeKVP.TryGetValue(typeString, out Type typ);
+          designCodeKVP.TryGetValue(typeString, out var typ);
 
           // update the KVP by reflecting the type
-          designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
+          designCodeKVP = ReflectionHelper.ReflectNestedTypes(typ);
 
           // determine if we have reached the fields layer
           if (designCodeKVP.Count > 1) {
@@ -125,6 +126,7 @@ namespace AdSecGH.Components {
             if (typeString.StartsWith("Edition")) {
               _spacerDescriptions[level] = "Edition";
             }
+
             if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
               _spacerDescriptions[level] = "Unit";
             }
@@ -134,9 +136,11 @@ namespace AdSecGH.Components {
           } else {
             // if kvp is empty we have reached the field level
             // where we set the materials by reflecting the type
-            _materials = Helpers.ReflectionHelper.ReflectFields(typ);
+            _materials = ReflectionHelper.ReflectFields(typ);
             if (_materials.Count == 0) {
-              _dropDownItems.Add(new List<string>() { "No material" });
+              _dropDownItems.Add(new List<string> {
+                "No material",
+              });
               _selectedItems.Add("No material");
             } else {
               // if kvp has values we add them to create a new dropdown list
@@ -164,6 +168,7 @@ namespace AdSecGH.Components {
           }
         }
       }
+
       base.UpdateUI();
     }
 
@@ -172,21 +177,22 @@ namespace AdSecGH.Components {
         Params.RegisterInputParam(new Param_String());
         Params.Input[0].NickName = "S";
         Params.Input[0].Name = "Search";
-        Params.Input[0].Description = "[Optional] Search for Grade " + System.Environment.NewLine + "Note: input 'all' to list all grades from the selected code";
+        Params.Input[0].Description = "[Optional] Search for Grade " + Environment.NewLine
+          + "Note: input 'all' to list all grades from the selected code";
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = true;
       }
     }
 
     protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new string[] {
+      _spacerDescriptions = new List<string>(new[] {
         "Material Type",
         "Design Code",
         "National Annex",
         "Edition",
         "Grade",
         "Another other",
-        "This is so deep"
+        "This is so deep",
       });
 
       _dropDownItems = new List<List<string>>();
@@ -200,7 +206,7 @@ namespace AdSecGH.Components {
 
       if (_dropDownItems.Count == 1) {
         //Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
-        Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.StandardCodes(AdSecMaterial.AdSecMaterialType.Concrete);
+        var designCodeKVP = ReflectionHelper.StandardCodes(AdSecMaterial.AdSecMaterialType.Concrete);
         _dropDownItems.Add(designCodeKVP.Keys.ToList());
         // select default code to EN1992
         _selectedItems.Add(designCodeKVP.Keys.ElementAt(4));
@@ -211,10 +217,10 @@ namespace AdSecGH.Components {
         bool drill = true;
         while (drill) {
           // get the type of the most recent selected from level above
-          designCodeKVP.TryGetValue(typeString, out Type typ);
+          designCodeKVP.TryGetValue(typeString, out var typ);
 
           // update the KVP by reflecting the type
-          designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
+          designCodeKVP = ReflectionHelper.ReflectNestedTypes(typ);
 
           // determine if we have reached the fields layer
           if (designCodeKVP.Count > 1) {
@@ -227,6 +233,7 @@ namespace AdSecGH.Components {
             } else {
               _selectedItems.Add(designCodeKVP.Keys.First());
             }
+
             // and set the next search item to this
             typeString = _selectedItems.Last();
           } else if (designCodeKVP.Count == 1) {
@@ -235,7 +242,7 @@ namespace AdSecGH.Components {
           } else {
             // if kvp is empty we have reached the field level
             // where we set the materials by reflecting the type
-            _materials = Helpers.ReflectionHelper.ReflectFields(typ);
+            _materials = ReflectionHelper.ReflectFields(typ);
             // if kvp has values we add them to create a new dropdown list
             _dropDownItems.Add(_materials.Keys.ToList());
             // with first item being the selected
@@ -245,12 +252,14 @@ namespace AdSecGH.Components {
           }
         }
       }
+
       _isInitialised = true;
     }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      pManager.AddTextParameter("Search", "S", "[Optional] Search for Grade " +
-              System.Environment.NewLine + "Note: input 'all' to list all grades from the selected code", GH_ParamAccess.item);
+      pManager.AddTextParameter("Search", "S",
+        "[Optional] Search for Grade " + Environment.NewLine
+        + "Note: input 'all' to list all grades from the selected code", GH_ParamAccess.item);
       pManager[0].Optional = true;
     }
 
@@ -276,8 +285,9 @@ namespace AdSecGH.Components {
                 filteredMaterials.Add(new AdSecMaterialGoo(new AdSecMaterial(_materials[materialsList[i]])));
                 _selectedItems[_selectedItems.Count - 1] = materialsList[i];
               }
+
               if (!search.Any(char.IsDigit)) {
-                string test = materialsList[i].ToString();
+                string test = materialsList[i];
                 test = Regex.Replace(test, "[0-9]", string.Empty);
                 test = test.Replace(".", string.Empty);
                 test = test.Replace("-", string.Empty);
@@ -296,7 +306,7 @@ namespace AdSecGH.Components {
       }
 
       // update selected material
-      FieldInfo selectedMaterial = _materials[_selectedItems.Last()];
+      var selectedMaterial = _materials[_selectedItems.Last()];
 
       // create new material
       var mat = new AdSecMaterial(selectedMaterial);
@@ -308,7 +318,7 @@ namespace AdSecGH.Components {
       // get the selected material and parse it to type enum
       Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
       // get list of standard codes for the selected material
-      Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.StandardCodes(materialType);
+      var designCodeKVP = ReflectionHelper.StandardCodes(materialType);
       // add codes for selected material to list of dropdowns
       //_dropDownItems.Add(designCodeKVP.Keys.ToList());
 
@@ -327,10 +337,10 @@ namespace AdSecGH.Components {
       bool drill = true;
       while (drill) {
         // get the type of the most recent selected from level above
-        designCodeKVP.TryGetValue(typeString, out Type typ);
+        designCodeKVP.TryGetValue(typeString, out var typ);
 
         // update the KVP by reflecting the type
-        designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
+        designCodeKVP = ReflectionHelper.ReflectNestedTypes(typ);
 
         // determine if we have reached the fields layer
         if (designCodeKVP.Count > 1) {
@@ -340,6 +350,7 @@ namespace AdSecGH.Components {
           if (typeString.StartsWith("Edition")) {
             _spacerDescriptions[level] = "Edition";
           }
+
           if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
             _spacerDescriptions[level] = "Unit";
           }
@@ -349,13 +360,14 @@ namespace AdSecGH.Components {
         } else {
           // if kvp is empty we have reached the field level
           // where we set the materials by reflecting the type
-          _materials = Helpers.ReflectionHelper.ReflectFields(typ);
+          _materials = ReflectionHelper.ReflectFields(typ);
 
           drill = false;
 
           _spacerDescriptions[_selectedItems.Count - 1] = "Grade";
         }
       }
+
       base.UpdateUIFromSelectedItems();
     }
   }

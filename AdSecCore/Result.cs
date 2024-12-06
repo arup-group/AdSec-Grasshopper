@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AdSecGHCore.Helpers {
+namespace AdSecCore {
 
   internal class Result {
 
