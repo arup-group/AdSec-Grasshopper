@@ -27,6 +27,12 @@ namespace Oasys.GH.Helpers {
       return ghParam.AddVolatileData(new GH_Path(0), 0, value);
     }
 
+    public static void ClearInputs(this GH_Component component) {
+      foreach (var param in component.Params.Input) {
+        param.ClearData();
+      }
+    }
+
     public static T GetValue<T>(this IGH_Param param, int branch, int index) where T : class {
       return param.VolatileData.get_Branch(branch)[index] as T;
     }

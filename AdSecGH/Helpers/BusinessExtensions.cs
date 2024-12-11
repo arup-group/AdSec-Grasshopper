@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using AdSecCore;
 using AdSecCore.Functions;
 
 using AdSecGH.Parameters;
@@ -12,23 +13,20 @@ using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
+using OasysGH.Units;
+
+using OasysUnits;
+
 using Attribute = AdSecCore.Functions.Attribute;
 
 namespace Oasys.GH.Helpers {
 
   public class AdSecSectionParameter : ParameterAttribute<AdSecSectionGoo> { }
   public class AdSecPointArrayParameter : BaseArrayParameter<AdSecPointGoo> { }
+  public class AdSecPointParameter : ParameterAttribute<AdSecPointGoo> { }
   public class AdSecMaterialArrayParam : BaseArrayParameter<AdSecMaterialGoo> { }
 
   public static class BusinessExtensions {
-
-    public static void UpdateProperties(this IFunction BusinessComponent, GH_Component component) {
-      component.Name = BusinessComponent.Metadata.Name;
-      component.NickName = BusinessComponent.Metadata.NickName;
-      component.Description = BusinessComponent.Metadata.Description;
-      component.Category = BusinessComponent.Organisation.Category;
-      component.SubCategory = BusinessComponent.Organisation.SubCategory;
-    }
 
     private static readonly Dictionary<Type, Func<Attribute, IGH_Param>> ToGhParam
       = new Dictionary<Type, Func<Attribute, IGH_Param>> {
@@ -61,6 +59,20 @@ namespace Oasys.GH.Helpers {
             Access = GetAccess(a),
           }
         }, {
+          typeof(AdSecPointParameter), a => new Param_GenericObject {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
+        }, {
+          typeof(PointParameter), a => new Param_GenericObject {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
+        }, {
           typeof(AdSecMaterialArrayParam), a => new AdSecMaterialParameter {
             Name = a.Name,
             NickName = a.NickName,
@@ -76,6 +88,13 @@ namespace Oasys.GH.Helpers {
           }
         }, {
           typeof(StringArrayParam), a => new Param_String {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
+        }, {
+          typeof(LengthParameter), a => new Param_GenericObject {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
@@ -98,6 +117,8 @@ namespace Oasys.GH.Helpers {
             return points?.ToList();
           }
         }, {
+          typeof(AdSecPointParameter), a => (a as AdSecPointParameter).Value
+        }, {
           typeof(AdSecMaterialArrayParam), a => {
             var materials = (a as AdSecMaterialArrayParam).Value;
             return materials?.ToList();
@@ -108,6 +129,36 @@ namespace Oasys.GH.Helpers {
           typeof(StringArrayParam), a => (a as StringArrayParam).Value
         },
       };
+
+    private static readonly Dictionary<Type, Func<object, object>> GooToParam
+      = new Dictionary<Type, Func<object, object>> {
+        {
+          typeof(LengthParameter), goo => {
+            return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry);
+          }
+        }, {
+          typeof(AdSecSectionParameter), goo => {
+            dynamic gooDynamic = goo;
+            return new AdSecSectionGoo(gooDynamic);
+          }
+        }, {
+          typeof(DoubleParameter), goo => {
+            if (goo is double value) {
+              return value;
+            }
+
+            return null;
+          }
+        },
+      };
+
+    public static void UpdateProperties(this IFunction BusinessComponent, GH_Component component) {
+      component.Name = BusinessComponent.Metadata.Name;
+      component.NickName = BusinessComponent.Metadata.NickName;
+      component.Description = BusinessComponent.Metadata.Description;
+      component.Category = BusinessComponent.Organisation.Category;
+      component.SubCategory = BusinessComponent.Organisation.SubCategory;
+    }
 
     public static GH_ParamAccess GetAccess(this Attribute attribute) {
       var access = (attribute as IAccessible).Access;
@@ -146,11 +197,8 @@ namespace Oasys.GH.Helpers {
           dynamic inputs = null;
           if (dataAccess.GetData(index, ref inputs)) {
             dynamic valueBasedParameter = attribute;
-            try {
-              valueBasedParameter.Value = new AdSecSectionGoo(inputs.Value);
-            } catch (Exception e) {
-              Console.WriteLine(e);
-            }
+            dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
+            valueBasedParameter.Value = newValue;
           }
         }
       }
