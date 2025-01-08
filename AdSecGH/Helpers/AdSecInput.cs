@@ -488,27 +488,7 @@ namespace AdSecGH.Helpers {
       AdSecStressStrainCurveGoo ssCrv = null;
       var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(inputid, ref gh_typ)) {
-        Curve polycurve = null;
-        if (gh_typ.Value is AdSecStressStrainCurveGoo goo) {
-          // try direct cast
-          ssCrv = goo;
-        } else if (GH_Convert.ToCurve(gh_typ.Value, ref polycurve, GH_Conversion.Both)) {
-          // try convert to polylinecurve
-          var curve = (PolylineCurve)polycurve;
-          var pts = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
-          var exCrv = IExplicitStressStrainCurve.Create();
-          exCrv.Points = pts;
-          var tuple = AdSecStressStrainCurveGoo.Create(exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit,
-            compression);
-          ssCrv = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv,
-            AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, tuple.Item2);
-        } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainCurve");
-          return null;
-        }
-
-        return ssCrv;
+        return TryCastToCurve(owner, inputid, compression, gh_typ);
       }
 
       if (!isOptional) {
@@ -517,6 +497,32 @@ namespace AdSecGH.Helpers {
       }
 
       return null;
+    }
+
+    public static AdSecStressStrainCurveGoo TryCastToCurve(
+      GH_Component owner, int inputid, bool compression, GH_ObjectWrapper gh_typ) {
+      AdSecStressStrainCurveGoo ssCrv;
+      Curve polycurve = null;
+      if (gh_typ.Value is AdSecStressStrainCurveGoo goo) {
+        // try direct cast
+        ssCrv = goo;
+      } else if (GH_Convert.ToCurve(gh_typ.Value, ref polycurve, GH_Conversion.Both)) {
+        // try convert to polylinecurve
+        var curve = (PolylineCurve)polycurve;
+        var pts = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
+        var exCrv = IExplicitStressStrainCurve.Create();
+        exCrv.Points = pts;
+        var tuple = AdSecStressStrainCurveGoo.Create(exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit,
+          compression);
+        ssCrv = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv,
+          AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, tuple.Item2);
+      } else {
+        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
+          "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainCurve");
+        return null;
+      }
+
+      return ssCrv;
     }
 
     internal static IStressStrainPoint StressStrainPoint(
