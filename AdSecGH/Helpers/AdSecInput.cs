@@ -437,7 +437,7 @@ namespace AdSecGH.Helpers {
       AdSecStressStrainCurveGoo ssCrv = null;
       var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(inputid, ref gh_typ)) {
-        return TryCastToCurve(owner, inputid, compression, gh_typ);
+        return TryCastToStressStrainCurve(owner, inputid, compression, gh_typ);
       }
 
       if (!isOptional) {
@@ -447,7 +447,7 @@ namespace AdSecGH.Helpers {
       return null;
     }
 
-    public static AdSecStressStrainCurveGoo TryCastToCurve(
+    public static AdSecStressStrainCurveGoo TryCastToStressStrainCurve(
       GH_Component owner, int inputid, bool compression, GH_ObjectWrapper gh_typ) {
       AdSecStressStrainCurveGoo ssCrv;
       Curve polycurve = null;
@@ -587,8 +587,18 @@ namespace AdSecGH.Helpers {
       return null;
     }
 
-    private static void ShowWarningForOptionalParam(GH_Component owner, int inputid) {
-      owner.AddRuntimeWarning("Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+    private static void ShowWarningForOptionalParam(IGH_Component owner, int inputid) {
+      owner.AddRuntimeWarning($"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
+    }
+
+    private static void ShowConvertToError(string desiredType, IGH_Component owner, int inputid) {
+      ShowConvertFromToError(string.Empty, desiredType, owner, inputid);
+    }
+
+    private static void ShowConvertFromToError(string fromType, string desiredType, IGH_Component owner, int inputid) {
+      string fromObjectString = string.IsNullOrEmpty(fromType) ? $"from {fromType} " : string.Empty;
+      owner.AddRuntimeError(
+        $"Unable to convert {owner.Params.Input[inputid].NickName} {fromObjectString}to {desiredType}");
     }
   }
 }

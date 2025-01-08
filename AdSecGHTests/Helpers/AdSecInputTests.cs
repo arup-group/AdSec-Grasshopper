@@ -78,20 +78,20 @@ namespace AdSecGHTests.Helpers {
       var result = AdSecInput.StressStrainCurveGoo(component, dataAccess.Object, 0, false);
       Assert.Null(result);
 
-      var runtimeMessages = component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
-      Assert.Single(runtimeMessages);
-      Assert.Contains("failed", runtimeMessages.First());
+      var runtimeWarnings = component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
+      Assert.Single(runtimeWarnings);
+      Assert.Contains("failed", runtimeWarnings.First());
     }
 
     [Fact]
     public void StressStrainCurveGooReturnsErrorWhenCantConvert() {
       var objwrap = new GH_ObjectWrapper();
-      var result = AdSecInput.TryCastToCurve(component, 0, false, objwrap);
+      var result = AdSecInput.TryCastToStressStrainCurve(component, 0, false, objwrap);
       Assert.Null(result);
 
-      var runtimeMessages = component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
-      Assert.Single(runtimeMessages);
-      Assert.Contains("Unable to convert", runtimeMessages.First());
+      var runtimeErrors = component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      Assert.Single(runtimeErrors);
+      Assert.Equal("Unable to convert ε to StressStrainCurve", runtimeErrors.First());
     }
 
     [Fact]
@@ -101,7 +101,7 @@ namespace AdSecGHTests.Helpers {
       var tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, false);
 
       var objwrap = new GH_ObjectWrapper(tuple.Item1);
-      var result = AdSecInput.TryCastToCurve(component, 0, false, objwrap);
+      var result = AdSecInput.TryCastToStressStrainCurve(component, 0, false, objwrap);
 
       Assert.NotNull(result);
       Assert.True(result.Value.IsPolyline());
@@ -117,7 +117,7 @@ namespace AdSecGHTests.Helpers {
         AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, tuple.Item2);
 
       var objwrap = new GH_ObjectWrapper(goo);
-      var result = AdSecInput.TryCastToCurve(component, 0, false, objwrap);
+      var result = AdSecInput.TryCastToStressStrainCurve(component, 0, false, objwrap);
 
       Assert.NotNull(result);
       Assert.Null(result.Value);
