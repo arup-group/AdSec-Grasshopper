@@ -34,8 +34,7 @@ namespace AdSecGH.Helpers {
         if (gh_typ.Value is AdSecDesignCodeGoo) {
           gh_typ.CastTo(ref designCode);
         } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to DesignCode");
+          owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to DesignCode");
           return null;
         }
 
@@ -43,8 +42,7 @@ namespace AdSecGH.Helpers {
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -58,16 +56,14 @@ namespace AdSecGH.Helpers {
         if (gh_typ.Value is AdSecMaterialGoo) {
           gh_typ.CastTo(ref material);
         } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to an AdSec Material");
+          owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to an AdSec Material");
         }
 
         return material;
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -84,16 +80,14 @@ namespace AdSecGH.Helpers {
         } else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both)) {
           pt = new AdSecPointGoo(ghpt);
         } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to an Vertex Point");
+          owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to an Vertex Point");
         }
 
         return pt;
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       } else if (isOptional) {
         return new AdSecPointGoo(Oasys.Profiles.IPoint.Create(new Length(0, DefaultUnits.LengthUnitGeometry),
           new Length(0, DefaultUnits.LengthUnitGeometry)));
@@ -107,7 +101,6 @@ namespace AdSecGH.Helpers {
       AdSecProfileGoo profileGoo = null;
       var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(inputid, ref gh_typ)) {
-        // try cast directly to quantity type
         if (gh_typ.Value is AdSecProfileGoo adsecGoo) {
           profileGoo = adsecGoo;
         } else if (gh_typ.Value is OasysProfileGoo oasysGoo) {
@@ -115,15 +108,13 @@ namespace AdSecGH.Helpers {
           profileGoo = new AdSecProfileGoo(profile, Plane.WorldYZ);
         } else {
           return null;
-          //prfl = Boundaries(owner, DA, inputid, -1, DefaultUnits.LengthUnitGeometry);
         }
 
         return profileGoo;
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -138,20 +129,17 @@ namespace AdSecGH.Helpers {
           rebar = goo;
         } else if (gh_typ.Value is AdSecRebarLayerGoo spacing) {
           rebar = new AdSecRebarBundleGoo(spacing.Value.BarBundle);
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
-            "Converted " + owner.Params.Input[inputid].NickName
+          owner.AddRuntimeRemark("Converted " + owner.Params.Input[inputid].NickName
             + " from RebarSpacing to an AdSec Rebar. All spacing information has been lost!");
         } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to Rebar");
+          owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to Rebar");
         }
 
         return rebar;
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -165,16 +153,14 @@ namespace AdSecGH.Helpers {
         if (gh_typ.Value is AdSecRebarLayerGoo goo) {
           spacing = goo;
         } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarSpacing");
+          owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarSpacing");
         }
 
         return spacing;
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -184,7 +170,6 @@ namespace AdSecGH.Helpers {
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(inputid, ref gh_typ)) {
-        // try cast directly to quantity type
         if (gh_typ.Value is AdSecSectionGoo a1) {
           return a1.Value;
         }
@@ -193,14 +178,12 @@ namespace AdSecGH.Helpers {
           return a2._section;
         }
 
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          "Unable to convert " + owner.Params.Input[inputid].NickName + " to Section");
+        owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to Section");
         return null;
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -217,8 +200,8 @@ namespace AdSecGH.Helpers {
           } else if (gh_typs[i].Value is AdSecSectionGoo subcomp) {
             subs.Add(subcomp.Value);
           } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i + ") to Section");
+            owner.AddRuntimeWarning("Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i
+              + ") to Section");
           }
         }
 
@@ -226,8 +209,7 @@ namespace AdSecGH.Helpers {
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -244,8 +226,8 @@ namespace AdSecGH.Helpers {
         } else if (gh_typ.Value is AdSecConcreteCrackCalculationParametersGoo adsecccp) {
           concreteCrack = adsecccp.Value;
         } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to ConcreteCrackCalculationParameters");
+          owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName
+            + " to ConcreteCrackCalculationParameters");
           return null;
         }
 
@@ -253,8 +235,7 @@ namespace AdSecGH.Helpers {
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -275,24 +256,19 @@ namespace AdSecGH.Helpers {
       AdSecProfileFlangeGoo flange = null;
       var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(inputid, ref gh_typ)) {
-        // try cast directly to quantity type
         if (gh_typ.Value is AdSecProfileFlangeGoo goo) {
           flange = goo;
           return flange.Value;
         }
-        // try cast from web
 
         if (gh_typ.Value is AdSecProfileWebGoo) {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " from Web to Flange");
+          owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " from Web to Flange");
         } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to Flange");
+          owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to Flange");
           return null;
         }
       } else if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -317,8 +293,8 @@ namespace AdSecGH.Helpers {
           } else if (gh_typs[i].Value is AdSecRebarLayerGoo rebarGoo) {
             grps.Add(rebarGoo.Value);
           } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i + ") to RebarLayer");
+            owner.AddRuntimeWarning("Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i
+              + ") to RebarLayer");
           }
         }
 
@@ -326,8 +302,7 @@ namespace AdSecGH.Helpers {
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -362,8 +337,7 @@ namespace AdSecGH.Helpers {
             var curve = (PolylineCurve)polycurve;
             pts = Parameters.AdSecPointGoo.PtsFromPolylineCurve(curve);
           } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i
+            owner.AddRuntimeWarning("Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i
               + ") to StressStrainPoint or Polyline");
           }
         }
@@ -371,17 +345,15 @@ namespace AdSecGH.Helpers {
         if (tempPts.Count > 0) {
           if (tempPts.Count == 1) {
             pts.Add(Parameters.AdSecPointGoo.CreateFromPoint3d(tempPts[0], Plane.WorldYZ));
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
+            owner.AddRuntimeRemark(
               "Single Point converted to local point. Assumed that local coordinate system is in a YZ-Plane");
           } else {
             Plane.FitPlaneToPoints(tempPts, out var plane);
-            //Polyline pol = new Polyline(tempPts);
-            //plane.Origin = pol.CenterPoint();
             foreach (var pt in tempPts) {
               pts.Add(Parameters.AdSecPointGoo.CreateFromPoint3d(pt, plane));
             }
 
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
+            owner.AddRuntimeRemark(
               "List of Points have been converted to local points. Assumed that local coordinate system is matching best-fit plane through points");
           }
         }
@@ -390,8 +362,7 @@ namespace AdSecGH.Helpers {
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -405,14 +376,12 @@ namespace AdSecGH.Helpers {
           return goo;
         }
 
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          "Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarLayout");
+        owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarLayout");
         return null;
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -429,8 +398,8 @@ namespace AdSecGH.Helpers {
           } else if (gh_typs[i].Value is AdSecRebarGroupGoo rebarGoo) {
             grps.Add(rebarGoo.Value);
           } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i + ") to RebarGroup");
+            owner.AddRuntimeWarning("Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i
+              + ") to RebarGroup");
           }
         }
 
@@ -438,46 +407,26 @@ namespace AdSecGH.Helpers {
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
     }
 
-    //        perimeter = new AdSecProfileGoo(solid, voids, lengthUnit);
-    //      }
-    //      else if (owner.Params.Input[inputid_Voids].SourceCount > 0)
-    //      {
-    //        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " input to Polyline(s)");
-    //        return null;
-    //      }
-    //    }
-    //    return (AdSecProfileGoo)perimeter;
-    //  }
-    //  else if (!isOptional)
-    //  {
-    //    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Input parameter " + owner.Params.Input[inputid_Boundary].NickName + " failed to collect data!");
-    //  }
-    //  return null;
-    //}
     internal static AdSecSolutionGoo Solution(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(inputid, ref gh_typ)) {
-        // try cast directly to quantity type
         if (gh_typ.Value is AdSecSolutionGoo goo) {
           return goo;
         }
 
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          "Unable to convert " + owner.Params.Input[inputid].NickName + " to AdSec Results");
+        owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to AdSec Results");
         return null;
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -492,8 +441,7 @@ namespace AdSecGH.Helpers {
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -504,10 +452,8 @@ namespace AdSecGH.Helpers {
       AdSecStressStrainCurveGoo ssCrv;
       Curve polycurve = null;
       if (gh_typ.Value is AdSecStressStrainCurveGoo goo) {
-        // try direct cast
         ssCrv = goo;
       } else if (GH_Convert.ToCurve(gh_typ.Value, ref polycurve, GH_Conversion.Both)) {
-        // try convert to polylinecurve
         var curve = (PolylineCurve)polycurve;
         var pts = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
         var exCrv = IExplicitStressStrainCurve.Create();
@@ -517,8 +463,7 @@ namespace AdSecGH.Helpers {
         ssCrv = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv,
           AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, tuple.Item2);
       } else {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainCurve");
+        owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainCurve");
         return null;
       }
 
@@ -538,8 +483,7 @@ namespace AdSecGH.Helpers {
         } else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both)) {
           pt1 = AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
         } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainPoint");
+          owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainPoint");
           return null;
         }
 
@@ -547,8 +491,7 @@ namespace AdSecGH.Helpers {
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -572,14 +515,13 @@ namespace AdSecGH.Helpers {
             var curve = (PolylineCurve)polycurve;
             pts = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
           } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainPoint or a Polyline");
+            owner.AddRuntimeWarning("Unable to convert " + owner.Params.Input[inputid].NickName
+              + " to StressStrainPoint or a Polyline");
           }
         }
 
         if (pts.Count < 2) {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-            "Input must contain at least 2 points to create an Explicit Stress Strain Curve");
+          owner.AddRuntimeWarning("Input must contain at least 2 points to create an Explicit Stress Strain Curve");
           return null;
         }
 
@@ -587,32 +529,12 @@ namespace AdSecGH.Helpers {
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
     }
 
-    //        for (int i = 0; i < gh_typs.Count; i++)
-    //        {
-    //          if (GH_Convert.ToCurve(gh_typs[i].Value, ref crv, GH_Conversion.Both))
-    //          {
-    //            Polyline voidCrv = null;
-    //            if (crv.TryGetPolyline(out voidCrv))
-    //            {
-    //              voids.Add(voidCrv);
-    //            }
-    //            else
-    //            {
-    //              owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " (item " + i + ") to Polyline");
-    //            }
-    //          }
-    //          else
-    //          {
-    //            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to convert input " + owner.Params.Input[inputid_Voids].NickName + " (item " + i + ") to Polyline");
-    //          }
-    //        }
     internal static Oasys.Collections.IList<ISubComponent> SubComponents(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       var subs = Oasys.Collections.IList<ISubComponent>.Create();
@@ -628,8 +550,7 @@ namespace AdSecGH.Helpers {
             var sub = ISubComponent.Create(section.Value.Section, offset);
             subs.Add(sub);
           } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i
+            owner.AddRuntimeWarning("Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i
               + ") to SubComponent or Section");
           }
         }
@@ -638,8 +559,7 @@ namespace AdSecGH.Helpers {
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
@@ -649,67 +569,26 @@ namespace AdSecGH.Helpers {
       AdSecProfileWebGoo web = null;
       var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(inputid, ref gh_typ)) {
-        // try cast directly to quantity type
         if (gh_typ.Value is AdSecProfileWebGoo goo) {
           web = goo;
           return web.Value;
         }
-        // try cast from web
 
         if (gh_typ.Value is AdSecProfileFlangeGoo) {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " from Flange to Web");
+          owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " from Flange to Web");
         } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to Web");
+          owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to Web");
           return null;
         }
       } else if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        ShowWarningForOptionalParam(owner, inputid);
       }
 
       return null;
     }
 
-    //internal static AdSecProfileGoo Boundaries(GH_Component owner, IGH_DataAccess DA, int inputid_Boundary, int inputid_Voids, LengthUnit lengthUnit, bool isOptional = false)
-    //{
-    //  owner.ClearRuntimeMessages();
-    //  AdSecProfileGoo perimeter = null;
-    //  GH_ObjectWrapper gh_typ = new GH_ObjectWrapper();
-    //  if (DA.GetData(inputid_Boundary, ref gh_typ))
-    //  {
-    //    Brep brep = null;
-    //    Curve crv = null;
-    //    Polyline solid = null;
-    //    if (GH_Convert.ToBrep(gh_typ.Value, ref brep, GH_Conversion.Both))
-    //    {
-    //      perimeter = new AdSecProfileGoo(brep, lengthUnit);
-    //    }
-    //    else if (GH_Convert.ToCurve(gh_typ.Value, ref crv, GH_Conversion.Both))
-    //    {
-    //      if (crv.TryGetPolyline(out solid))
-    //      {
-    //        perimeter = new AdSecProfileGoo(solid, lengthUnit);
-    //      }
-    //      else
-    //      {
-    //        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert input " + owner.Params.Input[inputid_Boundary].NickName + " to Polyline");
-    //        return null;
-    //      }
-    //    }
-    //    else
-    //    {
-    //      owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Unable to convert " + owner.Params.Input[inputid_Boundary].NickName + " to Boundary");
-    //      return null;
-    //    }
-
-    //    if (inputid_Voids >= 0)
-    //    {
-    //      // try get voids
-    //      List<GH_ObjectWrapper> gh_typs = new List<GH_ObjectWrapper>();
-    //      if (DA.GetDataList(inputid_Voids, gh_typs))
-    //      {
-    //        List<Polyline> voids = new List<Polyline>();
+    private static void ShowWarningForOptionalParam(GH_Component owner, int inputid) {
+      owner.AddRuntimeWarning("Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+    }
   }
 }
