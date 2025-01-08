@@ -15,12 +15,57 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void ConvertErrorShouldAddErrorIntoParam() {
-      owner.Params.Input[0].ConvertError("test");
+    public void ConvertToErrorShouldAddErrorIntoParam() {
+      owner.Params.Input[0].ConvertToError("test");
 
       var actualResult = owner.RuntimeMessages(GH_RuntimeMessageLevel.Error);
       Assert.Single(actualResult);
       Assert.Contains("test", actualResult[0]);
+    }
+
+    [Fact]
+    public void ConvertToErrorShouldAddCorrectErrorWithIntoParam() {
+      owner.Params.Input[0].ConvertToError(null);
+
+      var actualResult = owner.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      Assert.Single(actualResult);
+      Assert.Contains("to ", actualResult[0]);
+    }
+
+    [Fact]
+    public void ConvertToErrorShouldAddEmptyErrorWithIntoParam() {
+      owner.Params.Input[0].ConvertToError(string.Empty);
+
+      var actualResult = owner.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      Assert.Single(actualResult);
+      Assert.Contains("to ", actualResult[0]);
+    }
+
+    [Fact]
+    public void ConvertFromToErrorShouldAddErrorIntoParam() {
+      owner.Params.Input[0].ConvertFromToError("test", "test1");
+
+      var actualResult = owner.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      Assert.Single(actualResult);
+      Assert.Contains("from test to test1", actualResult[0]);
+    }
+
+    [Fact]
+    public void ConvertFromToErrorShouldAddCorrectErrorIntoParam() {
+      owner.Params.Input[0].ConvertFromToError(null, null);
+
+      var actualResult = owner.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      Assert.Single(actualResult);
+      Assert.Contains("to ", actualResult[0]);
+    }
+
+    [Fact]
+    public void ConvertFromToErrorShouldAddEmptyErrorIntoParam() {
+      owner.Params.Input[0].ConvertFromToError(string.Empty, string.Empty);
+
+      var actualResult = owner.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      Assert.Single(actualResult);
+      Assert.Contains("to ", actualResult[0]);
     }
 
     [Fact]
