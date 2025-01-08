@@ -22,50 +22,10 @@ namespace AdSecGHTests.Helpers {
     private CreateStressStrainPoint component;
     private Mock<IGH_DataAccess> dataAccess;
 
-    //StressStrainPoint
-    //StressStrainPoints
-    //StressStrainCurveGoo
-    //IStressStrainPoint StressStrainPoint(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
-    //Oasys.Collections.IList<IStressStrainPoint> StressStrainPoints(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false)
     public AdSecInputTests() {
       component = new CreateStressStrainPoint();
       dataAccess = new Mock<IGH_DataAccess>();
     }
-    //internal static AdSecStressStrainCurveGoo StressStrainCurveGoo(
-    //  GH_Component owner, IGH_DataAccess DA, int inputid, bool compression, bool isOptional = false) {
-    //  AdSecStressStrainCurveGoo ssCrv = null;
-    //  var gh_typ = new GH_ObjectWrapper();
-    //  if (DA.GetData(inputid, ref gh_typ)) {
-    //    Curve polycurve = null;
-    //    if (gh_typ.Value is AdSecStressStrainCurveGoo goo) {
-    //      // try direct cast
-    //      ssCrv = goo;
-    //    } else if (GH_Convert.ToCurve(gh_typ.Value, ref polycurve, GH_Conversion.Both)) {
-    //      // try convert to polylinecurve
-    //      var curve = (PolylineCurve)polycurve;
-    //      var pts = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
-    //      var exCrv = IExplicitStressStrainCurve.Create();
-    //      exCrv.Points = pts;
-    //      var tuple = AdSecStressStrainCurveGoo.Create(exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit,
-    //        compression);
-    //      ssCrv = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv,
-    //        AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, tuple.Item2);
-    //    } else {
-    //      owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-    //        "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainCurve");
-    //      return null;
-    //    }
-
-    //    return ssCrv;
-    //  }
-
-    //  if (!isOptional) {
-    //    owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-    //      "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
-    //  }
-
-    //  return null;
-    //}
 
     [Fact]
     public void StressStrainCurveGooReturnsNull() {
