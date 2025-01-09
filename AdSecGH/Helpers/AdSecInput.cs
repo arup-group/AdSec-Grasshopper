@@ -461,7 +461,6 @@ namespace AdSecGH.Helpers {
 
     internal static AdSecStressStrainCurveGoo StressStrainCurveGoo(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool compression, bool isOptional = false) {
-      AdSecStressStrainCurveGoo ssCrv = null;
       var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(inputid, ref gh_typ)) {
         return TryCastToStressStrainCurve(owner, inputid, compression, gh_typ);
@@ -476,28 +475,13 @@ namespace AdSecGH.Helpers {
 
     internal static IStressStrainPoint StressStrainPoint(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      IStressStrainPoint pt1 = null;
       var gh_typ = new GH_ObjectWrapper();
       if (DA.GetData(inputid, ref gh_typ)) {
-        var ghpt = new Point3d();
-        if (gh_typ.Value is IStressStrainPoint point) {
-          pt1 = point;
-        } else if (gh_typ.Value is AdSecStressStrainPointGoo sspt) {
-          pt1 = sspt.StressStrainPoint;
-        } else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both)) {
-          pt1 = AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
-        } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainPoint");
-          return null;
-        }
-
-        return pt1;
+        return TryCastToStressStrainPoint(owner, inputid, gh_typ);
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+        owner.Params.Input[inputid].FailedToCollectDataWarning();
       }
 
       return null;
@@ -616,11 +600,29 @@ namespace AdSecGH.Helpers {
         ssCrv = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv,
           AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, tuple.Item2);
       } else {
-        owner.AddRuntimeError("Unable to convert " + owner.Params.Input[inputid].NickName + " to StressStrainCurve");
+        owner.Params.Input[inputid].ConvertToError("StressStrainCurve");
         return null;
       }
 
       return ssCrv;
+    }
+
+    public static IStressStrainPoint TryCastToStressStrainPoint(
+      GH_Component owner, int inputid, GH_ObjectWrapper gh_typ) {
+      IStressStrainPoint pt1;
+      var ghpt = new Point3d();
+      if (gh_typ.Value is IStressStrainPoint point) {
+        pt1 = point;
+      } else if (gh_typ.Value is AdSecStressStrainPointGoo sspt) {
+        pt1 = sspt.StressStrainPoint;
+      } else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both)) {
+        pt1 = AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
+      } else {
+        owner.Params.Input[inputid].ConvertToError("StressStrainPoint");
+        return null;
+      }
+
+      return pt1;
     }
   }
 }
