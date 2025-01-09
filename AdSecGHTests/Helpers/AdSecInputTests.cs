@@ -220,6 +220,15 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
+    public void TryCastToStressStrainPointsReturnsFalseWhenNullPoints() {
+      var objwrap = new List<GH_ObjectWrapper>();
+      _stressStrainPoints = null;
+      bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objwrap, ref _stressStrainPoints);
+      Assert.False(castSuccessful);
+      Assert.Null(_stressStrainPoints);
+    }
+
+    [Fact]
     public void TryCastToStressStrainPointsReturnsSamePoints() {
       var crv = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
 
