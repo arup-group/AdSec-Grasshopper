@@ -1,4 +1,7 @@
-﻿using Grasshopper.Kernel;
+﻿using System;
+using System.Drawing;
+
+using Grasshopper.Kernel;
 
 using Oasys.GH.Helpers;
 
@@ -19,6 +22,17 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
+    public void ShouldNotReturnResultForInvalidInput() {
+      component.ClearInputs();
+      var invalidInput = new Point();
+      bool result1 = component.SetInputParamAt(0, invalidInput);
+      bool result2 = component.SetInputParamAt(1, invalidInput);
+      Assert.False(result1 && result2);
+      ComponentTesting.ComputeOutputs(component);
+      Assert.Throws<ArgumentOutOfRangeException>(() => GetFirstOutput(component));
+    }
+
+    [Fact]
     public void ShouldHaveTheSameNumberOfInputs() {
       Assert.Equal(fakeBusiness.GetAllInputAttributes().Length, component.Params.Input.Count);
     }
@@ -33,7 +47,7 @@ namespace AdSecGHTests.Helpers {
     public void ShouldHaveNoErrors() {
       var runtimeMessages = component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
       foreach (string message in runtimeMessages) {
-        Assert.Equal("", message);
+        Assert.Equal(string.Empty, message);
       }
 
       Assert.Empty(runtimeMessages);
@@ -68,19 +82,25 @@ namespace AdSecGHTests.Helpers {
       Assert.NotNull(output.Value);
     }
 
+    [Fact]
+    public void ShouldComputeTheRightResult() {
+      dynamic output = GetFirstOutput(component);
+      Assert.Equal(12, output.Value);
+    }
+
     private static object GetFirstOutput(GH_Component component) {
       return GetOutputOfParam(component, 0, 0, 0);
     }
 
     private static object GetOutputOfParam(GH_Component component, int param, int branch, int index) {
-      return component.GetInputParamAt(param).GetValue(branch, index);
+      return component.GetOutputParamAt(param).GetValue(branch, index);
     }
 
     [Fact]
     public void ShouldHaveDefaultValues() {
       component.SetDefaultValues();
       component.CollectData();
-      dynamic actual = GetFirstInput().VolatileData.get_Branch(0)[0]; // as GH_Number;
+      dynamic actual = GetFirstInput().VolatileData.get_Branch(0)[0];
       Assert.Equal((float)fakeBusiness.Alpha.Default, actual.Value, 0.01f);
     }
 
