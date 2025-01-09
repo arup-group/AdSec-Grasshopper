@@ -461,46 +461,60 @@ namespace AdSecGH.Helpers {
 
     internal static AdSecStressStrainCurveGoo StressStrainCurveGoo(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool compression, bool isOptional = false) {
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        return TryCastToStressStrainCurve(owner, inputid, compression, gh_typ);
-      }
+      var wrapper = new GH_ObjectWrapper();
 
-      if (!isOptional) {
+      bool isDataAvailable = DA.GetData(inputid, ref wrapper);
+      if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputid].FailedToCollectDataWarning();
       }
 
-      return null;
+      AdSecStressStrainCurveGoo curveGoo = null;
+      if (isDataAvailable && !TryCastToStressStrainCurve(compression, wrapper, ref curveGoo)) {
+        owner.Params.Input[inputid].ConvertToError("StressStrainCurve");
+      }
+
+      return curveGoo;
     }
 
     internal static IStressStrainPoint StressStrainPoint(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        return TryCastToStressStrainPoint(owner, inputid, gh_typ);
-      }
+      var wrapper = new GH_ObjectWrapper();
 
-      if (!isOptional) {
+      bool isDataAvailable = DA.GetData(inputid, ref wrapper);
+      if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputid].FailedToCollectDataWarning();
       }
 
-      return null;
+      IStressStrainPoint stressStrainPoint = null;
+      if (isDataAvailable && !TryCastToStressStrainPoint(wrapper, ref stressStrainPoint)) {
+        owner.Params.Input[inputid].ConvertToError("StressStrainPoint");
+      }
+
+      return stressStrainPoint;
     }
 
     internal static Oasys.Collections.IList<IStressStrainPoint> StressStrainPoints(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var gh_typs = new List<GH_ObjectWrapper>();
-      if (DA.GetDataList(inputid, gh_typs)) {
-        return TryCastToStressStrainPoints(owner, inputid, gh_typs);
-      }
+      var wrappers = new List<GH_ObjectWrapper>();
 
-      if (!isOptional) {
+      bool isDataAvailable = DA.GetData(inputid, ref wrappers);
+      if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputid].FailedToCollectDataWarning();
       }
 
+      var points = Oasys.Collections.IList<IStressStrainPoint>.Create();
+      if (isDataAvailable && !TryCastToStressStrainPoints(wrappers, ref points)) {
+        owner.Params.Input[inputid].ConvertToError("StressStrainPoint or a Polyline");
+      }
+
+      if (points.Count >= 2) {
+        return points;
+      }
+
+      owner.AddRuntimeWarning("Input must contain at least 2 points to create an Explicit Stress Strain Curve");
+
       return null;
     }
-
 
     internal static Oasys.Collections.IList<ISubComponent> SubComponents(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
@@ -559,12 +573,12 @@ namespace AdSecGH.Helpers {
       return null;
     }
 
-    public static AdSecStressStrainCurveGoo TryCastToStressStrainCurve(
-      GH_Component owner, int inputid, bool compression, GH_ObjectWrapper gh_typ) {
-      AdSecStressStrainCurveGoo ssCrv;
+    public static bool TryCastToStressStrainCurve(
+      bool compression, GH_ObjectWrapper gh_typ, ref AdSecStressStrainCurveGoo curveGoo) {
+      bool castSuccess = true;
       Curve polycurve = null;
       if (gh_typ.Value is AdSecStressStrainCurveGoo goo) {
-        ssCrv = goo;
+        curveGoo = goo;
       } else if (GH_Convert.ToCurve(gh_typ.Value, ref polycurve, GH_Conversion.Both)) {
         var curve = (PolylineCurve)polycurve;
         var pts = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
@@ -572,60 +586,47 @@ namespace AdSecGH.Helpers {
         exCrv.Points = pts;
         var tuple = AdSecStressStrainCurveGoo.Create(exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit,
           compression);
-        ssCrv = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv,
+        curveGoo = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv,
           AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, tuple.Item2);
       } else {
-        owner.Params.Input[inputid].ConvertToError("StressStrainCurve");
-        return null;
+        castSuccess = false;
       }
 
-      return ssCrv;
+      return castSuccess;
     }
 
-    public static IStressStrainPoint TryCastToStressStrainPoint(
-      GH_Component owner, int inputid, GH_ObjectWrapper gh_typ) {
-      IStressStrainPoint pt1;
-      var ghpt = new Point3d();
-      if (gh_typ.Value is IStressStrainPoint point) {
-        pt1 = point;
-      } else if (gh_typ.Value is AdSecStressStrainPointGoo sspt) {
-        pt1 = sspt.StressStrainPoint;
-      } else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both)) {
-        pt1 = AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt);
+    public static bool TryCastToStressStrainPoint(GH_ObjectWrapper ghType, ref IStressStrainPoint stressStrainPoint) {
+      bool castSuccessful = true;
+      var point3d = new Point3d();
+      if (ghType.Value is IStressStrainPoint point) {
+        stressStrainPoint = point;
+      } else if (ghType.Value is AdSecStressStrainPointGoo pointGoo) {
+        stressStrainPoint = pointGoo.StressStrainPoint;
+      } else if (GH_Convert.ToPoint3d(ghType.Value, ref point3d, GH_Conversion.Both)) {
+        stressStrainPoint = AdSecStressStrainPointGoo.CreateFromPoint3d(point3d);
       } else {
-        owner.Params.Input[inputid].ConvertToError("StressStrainPoint");
-        return null;
+        castSuccessful = false;
       }
 
-      return pt1;
+      return castSuccessful;
     }
 
-    public static Oasys.Collections.IList<IStressStrainPoint> TryCastToStressStrainPoints(
-      GH_Component owner, int inputid, List<GH_ObjectWrapper> gh_typs) {
-      var pts = Oasys.Collections.IList<IStressStrainPoint>.Create();
-      for (int i = 0; i < gh_typs.Count; i++) {
+    public static bool TryCastToStressStrainPoints(
+      List<GH_ObjectWrapper> ghTypes, ref Oasys.Collections.IList<IStressStrainPoint> points) {
+      foreach (var ghType in ghTypes) {
         Curve polycurve = null;
-        var ghpt = new Point3d();
-        if (gh_typs[i].Value is IStressStrainPoint point) {
-          pts.Add(point);
-        } else if (gh_typs[i].Value is AdSecStressStrainPointGoo sspt) {
-          pts.Add(sspt.StressStrainPoint);
-        } else if (GH_Convert.ToPoint3d(gh_typs[i].Value, ref ghpt, GH_Conversion.Both)) {
-          pts.Add(AdSecStressStrainPointGoo.CreateFromPoint3d(ghpt));
-        } else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both)) {
+        IStressStrainPoint stressStrainPoint = null;
+        if (GH_Convert.ToCurve(ghType.Value, ref polycurve, GH_Conversion.Both)) {
           var curve = (PolylineCurve)polycurve;
-          pts = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
+          points = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
+        } else if (TryCastToStressStrainPoint(ghType, ref stressStrainPoint)) {
+          points.Add(stressStrainPoint);
         } else {
-          owner.Params.Input[inputid].ConvertToError("StressStrainPoint or a Polyline");
+          return false;
         }
       }
 
-      if (pts.Count >= 2) {
-        return pts;
-      }
-
-      owner.AddRuntimeWarning("Input must contain at least 2 points to create an Explicit Stress Strain Curve");
-      return null;
+      return points?.Count > 0;
     }
   }
 }
