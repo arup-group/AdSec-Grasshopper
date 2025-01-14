@@ -461,12 +461,12 @@ namespace AdSecGH.Helpers {
 
     internal static AdSecStressStrainCurveGoo StressStrainCurveGoo(
       IGH_Component owner, IGH_DataAccess DA, int inputid, bool compression, bool isOptional = false) {
-      var wrapper = new List<GH_ObjectWrapper>();
+      var wrapper = new GH_ObjectWrapper();
 
       bool isDataAvailable = TryCollectData(owner, DA, inputid, isOptional, ref wrapper);
 
       AdSecStressStrainCurveGoo curveGoo = null;
-      if (isDataAvailable && !TryCastToStressStrainCurve(compression, wrapper.First(), ref curveGoo)) {
+      if (isDataAvailable && !TryCastToStressStrainCurve(compression, wrapper, ref curveGoo)) {
         owner.Params.Input[inputid].ConvertToError("StressStrainCurve");
       }
 
@@ -475,12 +475,12 @@ namespace AdSecGH.Helpers {
 
     internal static IStressStrainPoint StressStrainPoint(
       IGH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var wrapper = new List<GH_ObjectWrapper>();
+      var wrapper = new GH_ObjectWrapper();
 
       bool isDataAvailable = TryCollectData(owner, DA, inputid, isOptional, ref wrapper);
 
       IStressStrainPoint stressStrainPoint = null;
-      if (isDataAvailable && !TryCastToStressStrainPoint(wrapper.First(), ref stressStrainPoint)) {
+      if (isDataAvailable && !TryCastToStressStrainPoint(wrapper, ref stressStrainPoint)) {
         owner.Params.Input[inputid].ConvertToError("StressStrainPoint");
       }
 
@@ -491,7 +491,7 @@ namespace AdSecGH.Helpers {
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       var wrappers = new List<GH_ObjectWrapper>();
 
-      bool isDataAvailable = TryCollectData(owner, DA, inputid, isOptional, ref wrappers);
+      bool isDataAvailable = TryCollectDataList(owner, DA, inputid, isOptional, ref wrappers);
 
       var points = Oasys.Collections.IList<IStressStrainPoint>.Create();
       if (isDataAvailable && !TryCastToStressStrainPoints(wrappers, ref points)) {
@@ -621,8 +621,18 @@ namespace AdSecGH.Helpers {
     }
 
     private static bool TryCollectData(
+      IGH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional, ref GH_ObjectWrapper wrapper) {
+      bool isDataAvailable = DA.GetData(inputid, ref wrapper);
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputid].FailedToCollectDataWarning();
+      }
+
+      return isDataAvailable;
+    }
+
+    private static bool TryCollectDataList(
       IGH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional, ref List<GH_ObjectWrapper> wrappers) {
-      bool isDataAvailable = DA.GetData(inputid, ref wrappers);
+      bool isDataAvailable = DA.GetDataList(inputid, wrappers);
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputid].FailedToCollectDataWarning();
       }
