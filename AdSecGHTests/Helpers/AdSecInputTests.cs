@@ -37,22 +37,6 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void StressStrainCurveGooReturnsNull() {
-      var result = AdSecInput.StressStrainCurveGoo(null, _dataAccess.Object, 0, false, true);
-      Assert.Null(result);
-    }
-
-    [Fact]
-    public void StressStrainCurveGooReturnsWarningWhenInputIsNonOptional() {
-      var result = AdSecInput.StressStrainCurveGoo(_component, _dataAccess.Object, 0, false);
-      Assert.Null(result);
-
-      var runtimeWarnings = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
-      Assert.Single(runtimeWarnings);
-      Assert.Contains("failed", runtimeWarnings.First());
-    }
-
-    [Fact]
     public void TryCastToStressStrainCurveReturnsFalseWhenCantConvert() {
       var objwrap = new GH_ObjectWrapper();
       bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(false, objwrap, ref _curveGoo);

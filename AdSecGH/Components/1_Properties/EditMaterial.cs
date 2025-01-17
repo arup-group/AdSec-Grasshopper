@@ -82,7 +82,7 @@ namespace AdSecGH.Components {
         AdSecStressStrainCurveGoo ulsCompCrv;
         if (Params.Input[2].SourceCount > 0) {
           // use input
-          ulsCompCrv = AdSecInput.StressStrainCurveGoo(this, DA, 2, true);
+          ulsCompCrv = this.GetStressStrainCurveGoo(DA, 2, true);
           rebuildCurves = true;
         } else {
           // rebuild from existing material
@@ -95,7 +95,7 @@ namespace AdSecGH.Components {
         AdSecStressStrainCurveGoo ulsTensCrv;
         if (Params.Input[3].SourceCount > 0) {
           // use input
-          ulsTensCrv = AdSecInput.StressStrainCurveGoo(this, DA, 3, false);
+          ulsTensCrv = this.GetStressStrainCurveGoo(DA, 3, false);
           rebuildCurves = true;
         } else {
           // rebuild from existing material
@@ -108,7 +108,7 @@ namespace AdSecGH.Components {
         AdSecStressStrainCurveGoo slsCompCrv;
         if (Params.Input[4].SourceCount > 0) {
           // use input
-          slsCompCrv = AdSecInput.StressStrainCurveGoo(this, DA, 4, true);
+          slsCompCrv = this.GetStressStrainCurveGoo(DA, 4, true);
           rebuildCurves = true;
         } else {
           // rebuild from existing material
@@ -121,7 +121,7 @@ namespace AdSecGH.Components {
         AdSecStressStrainCurveGoo slsTensCrv;
         if (Params.Input[5].SourceCount > 0) {
           // use input
-          slsTensCrv = AdSecInput.StressStrainCurveGoo(this, DA, 5, false);
+          slsTensCrv = this.GetStressStrainCurveGoo(DA, 5, false);
           rebuildCurves = true;
         } else {
           // rebuild from existing material

@@ -459,20 +459,6 @@ namespace AdSecGH.Helpers {
       return null;
     }
 
-    internal static AdSecStressStrainCurveGoo StressStrainCurveGoo(
-      IGH_Component owner, IGH_DataAccess DA, int inputid, bool compression, bool isOptional = false) {
-      var wrapper = new GH_ObjectWrapper();
-
-      bool isDataAvailable = TryCollectData(owner, DA, inputid, isOptional, ref wrapper);
-
-      AdSecStressStrainCurveGoo curveGoo = null;
-      if (isDataAvailable && !TryCastToStressStrainCurve(compression, wrapper, ref curveGoo)) {
-        owner.Params.Input[inputid].ConvertToError("StressStrainCurve");
-      }
-
-      return curveGoo;
-    }
-
     internal static IStressStrainPoint StressStrainPoint(
       IGH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       var wrapper = new GH_ObjectWrapper();
