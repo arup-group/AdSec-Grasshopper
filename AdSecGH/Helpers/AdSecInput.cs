@@ -459,20 +459,6 @@ namespace AdSecGH.Helpers {
       return null;
     }
 
-    internal static IStressStrainPoint StressStrainPoint(
-      IGH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var wrapper = new GH_ObjectWrapper();
-
-      bool isDataAvailable = TryCollectData(owner, DA, inputid, isOptional, ref wrapper);
-
-      IStressStrainPoint stressStrainPoint = null;
-      if (isDataAvailable && !TryCastToStressStrainPoint(wrapper, ref stressStrainPoint)) {
-        owner.Params.Input[inputid].ConvertToError("StressStrainPoint");
-      }
-
-      return stressStrainPoint;
-    }
-
     internal static Oasys.Collections.IList<IStressStrainPoint> StressStrainPoints(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       var wrappers = new List<GH_ObjectWrapper>();

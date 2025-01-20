@@ -38,8 +38,8 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToStressStrainCurveReturnsFalseWhenCantConvert() {
-      var objwrap = new GH_ObjectWrapper();
-      bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(false, objwrap, ref _curveGoo);
+      var objectWrapper = new GH_ObjectWrapper();
+      bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(false, objectWrapper, ref _curveGoo);
 
       Assert.False(castSuccessful);
       Assert.Null(_curveGoo);
@@ -53,8 +53,8 @@ namespace AdSecGHTests.Helpers {
         IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
       var tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, false);
 
-      var objwrap = new GH_ObjectWrapper(tuple.Item1);
-      bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(compression, objwrap, ref _curveGoo);
+      var objectWrapper = new GH_ObjectWrapper(tuple.Item1);
+      bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(compression, objectWrapper, ref _curveGoo);
 
       Assert.True(castSuccessful);
       Assert.NotNull(_curveGoo);
@@ -64,14 +64,14 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToStressStrainCurveReturnsGooFromAnotherGoo() {
-      var exCrv = IExplicitStressStrainCurve.Create();
-      var tuple = AdSecStressStrainCurveGoo.Create(exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit,
+      var curve = IExplicitStressStrainCurve.Create();
+      var tuple = AdSecStressStrainCurveGoo.Create(curve, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit,
         false);
-      var goo = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv,
+      var goo = new AdSecStressStrainCurveGoo(tuple.Item1, curve,
         AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, tuple.Item2);
 
-      var objwrap = new GH_ObjectWrapper(goo);
-      bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(false, objwrap, ref _curveGoo);
+      var objectWrapper = new GH_ObjectWrapper(goo);
+      bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(false, objectWrapper, ref _curveGoo);
 
       Assert.True(castSuccessful);
       Assert.NotNull(_curveGoo);
@@ -80,35 +80,19 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void StressStrainPointReturnsNull() {
-      var result = AdSecInput.StressStrainPoint(null, _dataAccess.Object, 0, true);
-      Assert.Null(result);
-    }
-
-    [Fact]
-    public void StressStrainPointReturnsWarningWhenInputIsNonOptional() {
-      var result = AdSecInput.StressStrainPoint(_component, _dataAccess.Object, 0);
-      Assert.Null(result);
-
-      var runtimeWarnings = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
-      Assert.Single(runtimeWarnings);
-      Assert.Contains("failed", runtimeWarnings.First());
-    }
-
-    [Fact]
     public void TryCastToStressStrainPointReturnsFalseWhenCantConvert() {
-      var objwrap = new GH_ObjectWrapper();
-      bool castSuccessful = AdSecInput.TryCastToStressStrainPoint(objwrap, ref _stressStrainPoint);
+      var objectWrapper = new GH_ObjectWrapper();
+      bool castSuccessful = AdSecInput.TryCastToStressStrainPoint(objectWrapper, ref _stressStrainPoint);
       Assert.False(castSuccessful);
       Assert.Null(_stressStrainPoint);
     }
 
     [Fact]
     public void TryCastToStressStrainPointReturnsSamePoint() {
-      var crv = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
+      var point = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
 
-      var objwrap = new GH_ObjectWrapper(crv);
-      bool castSuccessful = AdSecInput.TryCastToStressStrainPoint(objwrap, ref _stressStrainPoint);
+      var objectWrapper = new GH_ObjectWrapper(point);
+      bool castSuccessful = AdSecInput.TryCastToStressStrainPoint(objectWrapper, ref _stressStrainPoint);
 
       Assert.True(castSuccessful);
       Assert.NotNull(_stressStrainPoint);
@@ -123,8 +107,8 @@ namespace AdSecGHTests.Helpers {
         Y = 2,
         Z = 3,
       };
-      var objwrap = new GH_ObjectWrapper(new AdSecStressStrainPointGoo(point));
-      bool castSuccessful = AdSecInput.TryCastToStressStrainPoint(objwrap, ref _stressStrainPoint);
+      var objectWrapper = new GH_ObjectWrapper(new AdSecStressStrainPointGoo(point));
+      bool castSuccessful = AdSecInput.TryCastToStressStrainPoint(objectWrapper, ref _stressStrainPoint);
 
       Assert.True(castSuccessful);
       Assert.NotNull(_stressStrainPoint);
@@ -139,8 +123,8 @@ namespace AdSecGHTests.Helpers {
         Y = 1,
         Z = 2,
       };
-      var objwrap = new GH_ObjectWrapper(point);
-      bool castSuccessful = AdSecInput.TryCastToStressStrainPoint(objwrap, ref _stressStrainPoint);
+      var objectWrapper = new GH_ObjectWrapper(point);
+      bool castSuccessful = AdSecInput.TryCastToStressStrainPoint(objectWrapper, ref _stressStrainPoint);
 
       Assert.True(castSuccessful);
       Assert.NotNull(_stressStrainPoint);
@@ -150,8 +134,8 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToStressStrainPointReturnsNull() {
-      var objwrap = new GH_ObjectWrapper(null);
-      bool castSuccessful = AdSecInput.TryCastToStressStrainPoint(objwrap, ref _stressStrainPoint);
+      var objectWrapper = new GH_ObjectWrapper(null);
+      bool castSuccessful = AdSecInput.TryCastToStressStrainPoint(objectWrapper, ref _stressStrainPoint);
 
       Assert.False(castSuccessful);
       Assert.Null(_stressStrainPoint);
@@ -176,18 +160,18 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToStressStrainPointsReturnsFalseWhenEmptyPoints() {
-      var objwrap = new List<GH_ObjectWrapper>();
-      bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objwrap, ref _stressStrainPoints);
+      var objectWrappers = new List<GH_ObjectWrapper>();
+      bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objectWrappers, ref _stressStrainPoints);
       Assert.False(castSuccessful);
       Assert.Empty(_stressStrainPoints);
     }
 
     [Fact]
     public void TryCastToStressStrainsPointReturnsNull() {
-      var objwrap = new GH_ObjectWrapper(null);
+      var objectWrapper = new GH_ObjectWrapper(null);
       var objectWrappers = new List<GH_ObjectWrapper>() {
-        objwrap,
-        objwrap,
+        objectWrapper,
+        objectWrapper,
       };
       bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objectWrappers, ref _stressStrainPoints);
 
@@ -197,32 +181,32 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToStressStrainPointsReturnsFalseWhenCantConvert() {
-      var objwrap = new List<GH_ObjectWrapper>() {
+      var objectWrappers = new List<GH_ObjectWrapper>() {
         new GH_ObjectWrapper(null),
       };
-      bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objwrap, ref _stressStrainPoints);
+      bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objectWrappers, ref _stressStrainPoints);
       Assert.False(castSuccessful);
       Assert.Empty(_stressStrainPoints);
     }
 
     [Fact]
     public void TryCastToStressStrainPointsReturnsFalseWhenNullPoints() {
-      var objwrap = new List<GH_ObjectWrapper>();
+      var objectWrappers = new List<GH_ObjectWrapper>();
       _stressStrainPoints = null;
-      bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objwrap, ref _stressStrainPoints);
+      bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objectWrappers, ref _stressStrainPoints);
       Assert.False(castSuccessful);
       Assert.Null(_stressStrainPoints);
     }
 
     [Fact]
     public void TryCastToStressStrainPointsReturnsSamePoints() {
-      var crv = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
+      var point = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
 
-      var objwrap = new List<GH_ObjectWrapper> {
-        new GH_ObjectWrapper(crv),
-        new GH_ObjectWrapper(crv),
+      var objectWrappers = new List<GH_ObjectWrapper> {
+        new GH_ObjectWrapper(point),
+        new GH_ObjectWrapper(point),
       };
-      bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objwrap, ref _stressStrainPoints);
+      bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objectWrappers, ref _stressStrainPoints);
 
       Assert.True(castSuccessful);
       Assert.NotEmpty(_stressStrainPoints);
@@ -240,11 +224,11 @@ namespace AdSecGHTests.Helpers {
         Y = 2,
         Z = 3,
       };
-      var objwrap = new GH_ObjectWrapper(new AdSecStressStrainPointGoo(point));
+      var objectWrapper = new GH_ObjectWrapper(new AdSecStressStrainPointGoo(point));
       var objectWrappers = new List<GH_ObjectWrapper>() {
-        objwrap,
-        objwrap,
-        objwrap,
+        objectWrapper,
+        objectWrapper,
+        objectWrapper,
       };
       bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objectWrappers, ref _stressStrainPoints);
 
@@ -264,10 +248,10 @@ namespace AdSecGHTests.Helpers {
         Y = 1,
         Z = 2,
       };
-      var objwrap = new GH_ObjectWrapper(point);
+      var objectWrapper = new GH_ObjectWrapper(point);
       var objectWrappers = new List<GH_ObjectWrapper>() {
-        objwrap,
-        objwrap,
+        objectWrapper,
+        objectWrapper,
       };
       bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objectWrappers, ref _stressStrainPoints);
 
@@ -282,13 +266,14 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToStressStrainPointsReturnsStressPointsFromCurves() {
-      IStressStrainCurve crv = ILinearStressStrainCurve.Create(
+      IStressStrainCurve curve = ILinearStressStrainCurve.Create(
         IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
-      var tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, false);
+      var tuple = AdSecStressStrainCurveGoo.Create(curve, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear,
+        false);
 
-      var objwrap = new GH_ObjectWrapper(tuple.Item1);
+      var objectWrapper = new GH_ObjectWrapper(tuple.Item1);
       var objectWrappers = new List<GH_ObjectWrapper>() {
-        objwrap,
+        objectWrapper,
       };
       bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objectWrappers, ref _stressStrainPoints);
 

@@ -1,6 +1,4 @@
-﻿using AdSecGH.Parameters;
-
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
 
 using Oasys.AdSec.Materials.StressStrainCurves;
 
@@ -12,13 +10,12 @@ using TestGrasshopperObjects.Extensions;
 using Xunit;
 
 namespace AdSecGHTests.Helpers.Extensions {
-
   [Collection("GrasshopperFixture collection")]
-  public class AdSecStressStrainCurveTests {
-    private AdSecStressStrainCurveTestComponent _component;
+  public class AdSecStressStrainPointTests {
+    private AdSecStressStrainPointTestComponent _component;
 
-    public AdSecStressStrainCurveTests() {
-      _component = new AdSecStressStrainCurveTestComponent();
+    public AdSecStressStrainPointTests() {
+      _component = new AdSecStressStrainPointTestComponent();
     }
 
     [Fact]
@@ -84,15 +81,13 @@ namespace AdSecGHTests.Helpers.Extensions {
     }
 
     [Fact]
-    public void ReturnsCurveWhenDataCorrect() {
-      IStressStrainCurve crv = ILinearStressStrainCurve.Create(
-        IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
-      var tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, false);
+    public void ReturnsIStressStrainPointWhenDataCorrect() {
+      var point = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
 
-      ComponentTestHelper.SetInput(_component, tuple.Item1);
+      ComponentTestHelper.SetInput(_component, point);
 
       object result = ComponentTestHelper.GetOutput(_component);
-      Assert.True(result is AdSecStressStrainCurveGoo);
+      Assert.NotNull(result);
 
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
