@@ -45,14 +45,16 @@ namespace AdSecGHTests.Helpers {
       Assert.Null(_curveGoo);
     }
 
-    [Fact]
-    public void TryCastToStressStrainCurveReturnsGooFromPolyline() {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void TryCastToStressStrainCurveReturnsGooFromPolylineCompressionIs(bool compression) {
       IStressStrainCurve crv = ILinearStressStrainCurve.Create(
         IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
       var tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, false);
 
       var objwrap = new GH_ObjectWrapper(tuple.Item1);
-      bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(false, objwrap, ref _curveGoo);
+      bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(compression, objwrap, ref _curveGoo);
 
       Assert.True(castSuccessful);
       Assert.NotNull(_curveGoo);
