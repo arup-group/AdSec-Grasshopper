@@ -13,6 +13,8 @@ namespace AdSecGHTests.Helpers.Extensions {
   [Collection("GrasshopperFixture collection")]
   public class AdSecStressStrainPointTests {
     private AdSecStressStrainPointTestComponent _component;
+    private readonly string _failToRetrieveDataWarning = "failed";
+    private readonly string _convertDataError = "convert";
 
     public AdSecStressStrainPointTests() {
       _component = new AdSecStressStrainPointTestComponent();
@@ -29,7 +31,7 @@ namespace AdSecGHTests.Helpers.Extensions {
       var runtimeWarnings = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
 
       Assert.Single(runtimeWarnings);
-      Assert.Contains("failed", runtimeWarnings[runtimeWarnings.Count - 1]);
+      Assert.Contains(_failToRetrieveDataWarning, runtimeWarnings[runtimeWarnings.Count - 1]);
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
@@ -59,7 +61,7 @@ namespace AdSecGHTests.Helpers.Extensions {
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
 
       Assert.Single(runtimeMessages);
-      Assert.Contains("convert", runtimeMessages[runtimeMessages.Count - 1]);
+      Assert.Contains(_convertDataError, runtimeMessages[runtimeMessages.Count - 1]);
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
@@ -75,7 +77,7 @@ namespace AdSecGHTests.Helpers.Extensions {
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
 
       Assert.Single(runtimeMessages);
-      Assert.Contains("convert", runtimeMessages[runtimeMessages.Count - 1]);
+      Assert.Contains(_convertDataError, runtimeMessages[runtimeMessages.Count - 1]);
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
