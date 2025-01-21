@@ -1,4 +1,6 @@
-﻿using AdSecGH.Parameters;
+﻿using System.Collections.Generic;
+
+using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
@@ -37,6 +39,29 @@ namespace AdSecGH.Helpers {
       }
 
       return stressStrainPoint;
+    }
+
+    public static Oasys.Collections.IList<IStressStrainPoint> GetStressStrainPoints(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      var inputData = new List<GH_ObjectWrapper>();
+
+      DA.GetDataList(inputId, inputData);
+      bool isDataAvailable = inputData.TrueForAll(item => item != null);
+      var points = Oasys.Collections.IList<IStressStrainPoint>.Create();
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToStressStrainPoints(inputData, ref points)) {
+        owner.Params.Input[inputId].ConvertToError("StressStrainPoint or a Polyline");
+      }
+
+      if (points.Count >= 2) {
+        return points;
+      }
+
+      owner.AddRuntimeWarning("Input must contain at least 2 points to create an Explicit Stress Strain Curve");
+
+      return null;
     }
   }
 }

@@ -142,23 +142,6 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void StressStrainPointsReturnsNull() {
-      var result = AdSecInput.StressStrainPoints(_component, _dataAccess.Object, 0, true);
-      Assert.Null(result);
-    }
-
-    [Fact]
-    public void StressStrainPointsReturnsWarningWhenInputIsNonOptional() {
-      var result = AdSecInput.StressStrainPoints(_component, _dataAccess.Object, 0);
-      Assert.Null(result);
-
-      var runtimeWarnings = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
-      Assert.Equal(2, runtimeWarnings.Count);
-      Assert.Contains("must contain at least 2 points", runtimeWarnings.First());
-      Assert.Contains("failed", runtimeWarnings.Last());
-    }
-
-    [Fact]
     public void TryCastToStressStrainPointsReturnsFalseWhenEmptyPoints() {
       var objectWrappers = new List<GH_ObjectWrapper>();
       bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objectWrappers, ref _stressStrainPoints);

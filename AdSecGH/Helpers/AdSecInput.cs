@@ -459,26 +459,6 @@ namespace AdSecGH.Helpers {
       return null;
     }
 
-    internal static Oasys.Collections.IList<IStressStrainPoint> StressStrainPoints(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var wrappers = new List<GH_ObjectWrapper>();
-
-      bool isDataAvailable = TryCollectDataList(owner, DA, inputid, isOptional, ref wrappers);
-
-      var points = Oasys.Collections.IList<IStressStrainPoint>.Create();
-      if (isDataAvailable && !TryCastToStressStrainPoints(wrappers, ref points)) {
-        owner.Params.Input[inputid].ConvertToError("StressStrainPoint or a Polyline");
-      }
-
-      if (points.Count >= 2) {
-        return points;
-      }
-
-      owner.AddRuntimeWarning("Input must contain at least 2 points to create an Explicit Stress Strain Curve");
-
-      return null;
-    }
-
     internal static Oasys.Collections.IList<ISubComponent> SubComponents(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       var subs = Oasys.Collections.IList<ISubComponent>.Create();
@@ -582,6 +562,10 @@ namespace AdSecGH.Helpers {
         if (GH_Convert.ToCurve(ghType.Value, ref polycurve, GH_Conversion.Both)) {
           var curve = (PolylineCurve)polycurve;
           points = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
+        } else if (ghType.Value is IExplicitStressStrainCurve iCurve) {
+          foreach (var strainPoint in iCurve.Points) {
+            points.Add(strainPoint);
+          }
         } else if (TryCastToStressStrainPoint(ghType, ref stressStrainPoint)) {
           points.Add(stressStrainPoint);
         } else {
@@ -590,26 +574,6 @@ namespace AdSecGH.Helpers {
       }
 
       return points?.Count > 0;
-    }
-
-    private static bool TryCollectData(
-      IGH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional, ref GH_ObjectWrapper wrapper) {
-      bool isDataAvailable = DA.GetData(inputid, ref wrapper);
-      if (!isDataAvailable && !isOptional) {
-        owner.Params.Input[inputid].FailedToCollectDataWarning();
-      }
-
-      return isDataAvailable;
-    }
-
-    private static bool TryCollectDataList(
-      IGH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional, ref List<GH_ObjectWrapper> wrappers) {
-      bool isDataAvailable = DA.GetDataList(inputid, wrappers);
-      if (!isDataAvailable && !isOptional) {
-        owner.Params.Input[inputid].FailedToCollectDataWarning();
-      }
-
-      return isDataAvailable;
     }
   }
 }

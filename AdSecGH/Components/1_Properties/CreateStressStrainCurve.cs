@@ -315,7 +315,7 @@ namespace AdSecGH.Components {
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit:
             var exCrv = IExplicitStressStrainCurve.Create();
-            exCrv.Points = AdSecInput.StressStrainPoints(this, DA, 0);
+            exCrv.Points = this.GetStressStrainPoints(DA, 0);
             crv = exCrv;
             break;
 
