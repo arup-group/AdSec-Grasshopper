@@ -9,10 +9,10 @@ using OasysGH.Components;
 
 namespace TestGrasshopperObjects.Extensions {
   public class AdSecStressStrainCurveTestComponent : GH_OasysComponent {
-    public bool Compression = false;
-    public bool Optional = true;
+    public bool Compression { get; set; }
+    public bool Optional { get; set; }
     public AdSecStressStrainCurveTestComponent() : base("t0", "t1", "t2", "t3", "t4") { }
-    public override Guid ComponentGuid => new Guid();
+    public override Guid ComponentGuid => Guid.NewGuid();
 
     public override OasysPluginInfo PluginInfo => null;
 

@@ -9,9 +9,9 @@ using OasysGH.Components;
 
 namespace TestGrasshopperObjects.Extensions {
   public class AdSecStressStrainPointsTestComponent : GH_OasysComponent {
-    public bool Optional = true;
+    public bool Optional { get; set; }
     public AdSecStressStrainPointsTestComponent() : base("t0", "t1", "t2", "t3", "t4") { }
-    public override Guid ComponentGuid => new Guid();
+    public override Guid ComponentGuid => Guid.NewGuid();
 
     public override OasysPluginInfo PluginInfo => null;
 
