@@ -57,7 +57,7 @@ namespace AdSecGH.Helpers {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
       } else if (isDataAvailable && !AdSecInput.TryCastToAdSecPointGoo(inputData, ref pointGoo)) {
         owner.Params.Input[inputId].ConvertToError("a Vertex Point");
-      } else if (!isDataAvailable && isOptional) {
+      } else if (!isDataAvailable) {
         pointGoo = new AdSecPointGoo(IPoint.Create(new Length(0, DefaultUnits.LengthUnitGeometry),
           new Length(0, DefaultUnits.LengthUnitGeometry)));
       }
