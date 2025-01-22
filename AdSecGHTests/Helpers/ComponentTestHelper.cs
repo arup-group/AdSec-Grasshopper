@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
@@ -16,6 +15,13 @@ namespace AdSecGHTests.Helpers {
         component.Params.Output[index].CollectData();
       }
       return component.Params.Output[index].VolatileData.get_Branch(branch)[item];
+    }
+
+    public static void SetInput(GH_Component component, int value, int index = 0) {
+      var input = new Param_Integer();
+      input.CreateAttributes();
+      input.PersistentData.Append(new GH_Integer(value));
+      component.Params.Input[index].AddSource(input);
     }
 
     public static void SetInput(GH_Component component, string text_input, int index = 0) {
