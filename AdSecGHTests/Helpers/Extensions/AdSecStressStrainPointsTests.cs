@@ -34,8 +34,8 @@ namespace AdSecGHTests.Helpers.Extensions {
       var runtimeWarnings = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
 
       Assert.Equal(2, runtimeWarnings.Count);
-      Assert.Contains(_atLeast2PointsNeededWarning, runtimeWarnings[0]);
-      Assert.Contains(_failToRetrieveDataWarning, runtimeWarnings[runtimeWarnings.Count - 1]);
+      Assert.Contains(runtimeWarnings, item => item.Contains(_atLeast2PointsNeededWarning));
+      Assert.Contains(runtimeWarnings, item => item.Contains(_failToRetrieveDataWarning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
@@ -51,7 +51,7 @@ namespace AdSecGHTests.Helpers.Extensions {
 
       Assert.Null(result);
       Assert.Single(runtimeWarnings);
-      Assert.Contains(_atLeast2PointsNeededWarning, runtimeWarnings[0]);
+      Assert.Contains(runtimeWarnings, item => item.Contains(_atLeast2PointsNeededWarning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
@@ -70,9 +70,9 @@ namespace AdSecGHTests.Helpers.Extensions {
       var runtimeWarnings = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
 
       Assert.Single(runtimeErrors);
-      Assert.Contains(_convertDataError, runtimeErrors[0]);
+      Assert.Contains(runtimeErrors, item => item.Contains(_convertDataError));
       Assert.Single(runtimeWarnings);
-      Assert.Contains(_atLeast2PointsNeededWarning, runtimeWarnings[0]);
+      Assert.Contains(runtimeWarnings, item => item.Contains(_atLeast2PointsNeededWarning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
 
@@ -89,9 +89,9 @@ namespace AdSecGHTests.Helpers.Extensions {
       var runtimeWarnings = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
 
       Assert.Single(runtimeErrors);
-      Assert.Contains(_convertDataError, runtimeErrors[0]);
+      Assert.Contains(runtimeErrors, item => item.Contains(_convertDataError));
       Assert.Single(runtimeWarnings);
-      Assert.Contains(_atLeast2PointsNeededWarning, runtimeWarnings[0]);
+      Assert.Contains(runtimeWarnings, item => item.Contains(_atLeast2PointsNeededWarning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
 

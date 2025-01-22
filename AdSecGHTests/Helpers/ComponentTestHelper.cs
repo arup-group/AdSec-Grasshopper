@@ -17,10 +17,10 @@ namespace AdSecGHTests.Helpers {
       return component.Params.Output[index].VolatileData.get_Branch(branch)[item];
     }
 
-    public static void SetInput(GH_Component component, int id, int index = 0) {
+    public static void SetInput(GH_Component component, int value, int index = 0) {
       var input = new Param_Integer();
       input.CreateAttributes();
-      input.PersistentData.Append(new GH_Integer(id));
+      input.PersistentData.Append(new GH_Integer(value));
       component.Params.Input[index].AddSource(input);
     }
 

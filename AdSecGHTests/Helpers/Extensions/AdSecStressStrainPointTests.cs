@@ -31,7 +31,7 @@ namespace AdSecGHTests.Helpers.Extensions {
       var runtimeWarnings = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
 
       Assert.Single(runtimeWarnings);
-      Assert.Contains(_failToRetrieveDataWarning, runtimeWarnings[runtimeWarnings.Count - 1]);
+      Assert.Contains(runtimeWarnings, item => item.Contains(_failToRetrieveDataWarning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
@@ -61,7 +61,7 @@ namespace AdSecGHTests.Helpers.Extensions {
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
 
       Assert.Single(runtimeMessages);
-      Assert.Contains(_convertDataError, runtimeMessages[runtimeMessages.Count - 1]);
+      Assert.Contains(runtimeMessages, item => item.Contains(_convertDataError));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
@@ -77,7 +77,7 @@ namespace AdSecGHTests.Helpers.Extensions {
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
 
       Assert.Single(runtimeMessages);
-      Assert.Contains(_convertDataError, runtimeMessages[runtimeMessages.Count - 1]);
+      Assert.Contains(runtimeMessages, item => item.Contains(_convertDataError));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
