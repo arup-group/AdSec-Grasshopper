@@ -62,7 +62,7 @@ namespace AdSecGH.Components {
       var profile = AdSecInput.AdSecProfileGoo(this, DA, 0);
 
       // 1 material
-      var material = AdSecInput.AdSecMaterial(this, DA, 1);
+      var material = this.GetAdSecMaterial(DA, 1);
 
       // 2 Rebars
       var reinforcements = new List<AdSecRebarGroup>();
