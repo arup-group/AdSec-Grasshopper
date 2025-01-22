@@ -111,7 +111,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // 0 DesignCode
-      var designCode = AdSecInput.AdSecDesignCode(this, DA, 0);
+      var designCode = this.GetAdSecDesignCode(DA, 0);
 
       // 1 StressStrain ULS Compression
       var ulsCompCrv = this.GetStressStrainCurveGoo(DA, 1, true);

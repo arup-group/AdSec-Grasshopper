@@ -66,14 +66,14 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // #### get material input and duplicate it ####
-      var editMat = AdSecInput.AdSecMaterial(this, DA, 0);
+      var editMat = this.GetAdSecMaterial(DA, 0);
 
       if (editMat != null) {
         // #### get the remaining inputs ####
 
         // 1 DesignCode
         if (Params.Input[1].SourceCount > 0) {
-          editMat.DesignCode = AdSecInput.AdSecDesignCode(this, DA, 1);
+          editMat.DesignCode = this.GetAdSecDesignCode(DA, 1);
         }
 
         bool rebuildCurves = false;
