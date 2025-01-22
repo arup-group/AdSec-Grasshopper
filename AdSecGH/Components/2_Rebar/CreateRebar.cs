@@ -94,7 +94,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // 0 material input
-      var material = AdSecInput.AdSecMaterial(this, DA, 0);
+      var material = this.GetAdSecMaterial(DA, 0);
 
       switch (_mode) {
         case FoldMode.Single:

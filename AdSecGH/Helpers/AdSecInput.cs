@@ -16,7 +16,6 @@ using Oasys.Profiles;
 
 using OasysGH.Helpers;
 using OasysGH.Parameters;
-using OasysGH.Units;
 
 using OasysUnits;
 using OasysUnits.Units;
@@ -25,82 +24,6 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
-
-    internal static AdSecDesignCode AdSecDesignCode(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var designCode = new AdSecDesignCode();
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        if (gh_typ.Value is AdSecDesignCodeGoo) {
-          gh_typ.CastTo(ref designCode);
-        } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to DesignCode");
-          return null;
-        }
-
-        return designCode;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
-      }
-
-      return null;
-    }
-
-    internal static AdSecMaterial AdSecMaterial(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var material = new AdSecMaterial();
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        if (gh_typ.Value is AdSecMaterialGoo) {
-          gh_typ.CastTo(ref material);
-        } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to an AdSec Material");
-        }
-
-        return material;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
-      }
-
-      return null;
-    }
-
-    internal static AdSecPointGoo AdSecPointGoo(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      AdSecPointGoo pt = null;
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        var ghpt = new Point3d();
-        if (gh_typ.Value is AdSecPointGoo) {
-          gh_typ.CastTo(ref pt);
-        } else if (GH_Convert.ToPoint3d(gh_typ.Value, ref ghpt, GH_Conversion.Both)) {
-          pt = new AdSecPointGoo(ghpt);
-        } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to an Vertex Point");
-        }
-
-        return pt;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
-      } else if (isOptional) {
-        return new AdSecPointGoo(Oasys.Profiles.IPoint.Create(new Length(0, DefaultUnits.LengthUnitGeometry),
-          new Length(0, DefaultUnits.LengthUnitGeometry)));
-      }
-
-      return null;
-    }
 
     internal static AdSecProfileGoo AdSecProfileGoo(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
@@ -329,11 +252,7 @@ namespace AdSecGH.Helpers {
     }
 
     internal static IPoint IPoint(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var pt = AdSecPointGoo(owner, DA, inputid, isOptional);
-      if (pt == null) {
-        return null;
-      }
-
+      var pt = owner.GetAdSecPointGoo(DA, inputid, isOptional);
       return pt.AdSecPoint;
     }
 
@@ -355,7 +274,7 @@ namespace AdSecGH.Helpers {
             tempPts.Add(ghpt);
           } else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both)) {
             var curve = (PolylineCurve)polycurve;
-            pts = Parameters.AdSecPointGoo.PtsFromPolylineCurve(curve);
+            pts = AdSecPointGoo.PtsFromPolylineCurve(curve);
           } else {
             owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
               "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i
@@ -365,13 +284,13 @@ namespace AdSecGH.Helpers {
 
         if (tempPts.Count > 0) {
           if (tempPts.Count == 1) {
-            pts.Add(Parameters.AdSecPointGoo.CreateFromPoint3d(tempPts[0], Plane.WorldYZ));
+            pts.Add(AdSecPointGoo.CreateFromPoint3d(tempPts[0], Plane.WorldYZ));
             owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
               "Single Point converted to local point. Assumed that local coordinate system is in a YZ-Plane");
           } else {
             Plane.FitPlaneToPoints(tempPts, out var plane);
             foreach (var pt in tempPts) {
-              pts.Add(Parameters.AdSecPointGoo.CreateFromPoint3d(pt, plane));
+              pts.Add(AdSecPointGoo.CreateFromPoint3d(pt, plane));
             }
 
             owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
@@ -514,6 +433,42 @@ namespace AdSecGH.Helpers {
       }
 
       return null;
+    }
+
+    public static bool TryCastToDesignCode(GH_ObjectWrapper ghType, ref AdSecDesignCode designCode) {
+      bool castSuccessful = true;
+      if (ghType.Value is AdSecDesignCodeGoo) {
+        ghType.CastTo(ref designCode);
+      } else {
+        castSuccessful = false;
+      }
+
+      return castSuccessful;
+    }
+
+    public static bool TryCastToAdSecMaterial(GH_ObjectWrapper ghType, ref AdSecMaterial material) {
+      bool castSuccessful = true;
+      if (ghType.Value is AdSecMaterialGoo) {
+        ghType.CastTo(ref material);
+      } else {
+        castSuccessful = false;
+      }
+
+      return castSuccessful;
+    }
+
+    public static bool TryCastToAdSecPointGoo(GH_ObjectWrapper ghType, ref AdSecPointGoo pointGoo) {
+      bool castSuccessful = true;
+      var ghpt = new Point3d();
+      if (ghType.Value is AdSecPointGoo) {
+        ghType.CastTo(ref pointGoo);
+      } else if (GH_Convert.ToPoint3d(ghType.Value, ref ghpt, GH_Conversion.Both)) {
+        pointGoo = new AdSecPointGoo(ghpt);
+      } else {
+        castSuccessful = false;
+      }
+
+      return castSuccessful;
     }
 
     public static bool TryCastToStressStrainCurve(
