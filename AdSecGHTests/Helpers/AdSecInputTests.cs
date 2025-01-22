@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using AdSecGH.Components;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
-using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-
-using Moq;
 
 using Oasys.AdSec.Materials.StressStrainCurves;
 
@@ -22,15 +18,11 @@ using Xunit;
 namespace AdSecGHTests.Helpers {
   [Collection("GrasshopperFixture collection")]
   public class AdSecInputTests {
-    private CreateStressStrainPoint _component;
-    private Mock<IGH_DataAccess> _dataAccess;
     private AdSecStressStrainCurveGoo _curveGoo;
     private IStressStrainPoint _stressStrainPoint;
     private Oasys.Collections.IList<IStressStrainPoint> _stressStrainPoints;
 
     public AdSecInputTests() {
-      _component = new CreateStressStrainPoint();
-      _dataAccess = new Mock<IGH_DataAccess>();
       _curveGoo = null;
       _stressStrainPoint = null;
       _stressStrainPoints = Oasys.Collections.IList<IStressStrainPoint>.Create();
