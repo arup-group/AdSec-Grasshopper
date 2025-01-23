@@ -30,7 +30,7 @@ namespace AdSecGH.Parameters {
     }
     public BoundingBox ClippingBox => Boundingbox;
     public IStressStrainPoint StressStrainPoint { get; private set; }
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "StressStrainPoint";
 
     public AdSecStressStrainPointGoo(Point3d point) : base(point) {
@@ -160,9 +160,8 @@ namespace AdSecGH.Parameters {
       string unitStrainAbbreviation = string.Concat(quantityStrain.ToString().Where(char.IsLetter));
       IQuantity quantityStress = new Pressure(0, DefaultUnits.StressUnitResult);
       string unitStressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
-      return "AdSec " + TypeName + " {"
-        + Math.Round(StressStrainPoint.Strain.As(DefaultUnits.StrainUnitResult), 4) + unitStrainAbbreviation + ", "
-        + Math.Round(StressStrainPoint.Stress.As(DefaultUnits.StressUnitResult), 4) + unitStressAbbreviation + "}";
+      return
+        $"AdSec {TypeName} {{{Math.Round(StressStrainPoint.Strain.As(DefaultUnits.StrainUnitResult), 4)}{unitStrainAbbreviation}, {Math.Round(StressStrainPoint.Stress.As(DefaultUnits.StressUnitResult), 4)}{unitStressAbbreviation}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {

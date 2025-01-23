@@ -69,7 +69,7 @@ namespace AdSecGH.UI {
       var adsecPlugin
         = Instances.ComponentServer.FindAssembly(new Guid("f815c29a-e1eb-4ca6-9e56-0554777ff9c9"));
       string pluginvers = adsecPlugin.Version;
-      Process.Start(@"mailto:oasys@arup.com?subject=Oasys AdSecGH version " + pluginvers);
+      Process.Start($@"mailto:oasys@arup.com?subject=Oasys AdSecGH version {pluginvers}");
     }
 
     private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {

@@ -9,7 +9,7 @@ using OasysUnits;
 namespace AdSecGH.Parameters {
   public class AdSecProfileWebGoo : GH_Goo<IWeb> {
     public override bool IsValid => true;
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Web Profile";
 
     public AdSecProfileWebGoo(IWeb web) : base(web) {
@@ -23,11 +23,11 @@ namespace AdSecGH.Parameters {
       string web = "AdSec Web {";
       if (Value.BottomThickness.Value == Value.TopThickness.Value) {
         Length thk = Value.BottomThickness.ToUnit(DefaultUnits.LengthUnitGeometry);
-        web += "Constant " + thk.ToString() + "}";
+        web += $"Constant {thk}}}";
       } else {
         Length thk1 = Value.TopThickness.ToUnit(DefaultUnits.LengthUnitGeometry);
         Length thk2 = Value.BottomThickness.ToUnit(DefaultUnits.LengthUnitGeometry);
-        web += "Tapered: Top:" + thk1.ToString() + ", Bottom:" + thk2.ToString() + "}";
+        web += $"Tapered: Top:{thk1}, Bottom:{thk2}}}";
       }
       return web;
     }

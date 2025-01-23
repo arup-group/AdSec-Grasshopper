@@ -7,7 +7,7 @@ using Rhino.Geometry;
 namespace AdSecGH.Parameters {
   public class AdSecSolutionGoo : GH_Goo<ISolution> {
     public override bool IsValid => true;
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Results";
     internal Plane LocalPlane => m_plane;
     internal Polyline ProfileEdge { get; }
@@ -25,7 +25,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return "AdSec " + TypeName;
+      return $"AdSec {TypeName}";
     }
   }
 }

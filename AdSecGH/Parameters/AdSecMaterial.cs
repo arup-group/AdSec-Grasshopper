@@ -145,13 +145,13 @@ namespace AdSecGH.Parameters {
     public override string ToString() {
       string grd = "Custom ";
       if (GradeName != null) {
-        grd = GradeName.Replace("  ", " ") + " ";
+        grd = $"{GradeName.Replace("  ", " ")} ";
       }
 
       string code = "";
       if (DesignCode != null) {
         if (DesignCode.DesignCodeName != null) {
-          code = " to " + DesignCodeName.Replace("  ", " ");
+          code = $" to {DesignCodeName.Replace("  ", " ")}";
         }
       }
 

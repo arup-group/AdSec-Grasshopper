@@ -69,7 +69,7 @@ namespace AdSecGH.Components {
       var in_section = AdSecInput.AdSecSection(this, DA, 0);
       if (in_section == null) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
+          $"Input parameter {Params.Input[0].NickName} failed to collect data!");
         return;
       }
 

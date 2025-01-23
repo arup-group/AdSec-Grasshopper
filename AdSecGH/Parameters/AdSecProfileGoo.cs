@@ -50,7 +50,7 @@ namespace AdSecGH.Parameters {
         Profile.Rotation = value;
       }
     }
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Profile";
     public List<Polyline> VoidEdges { get; private set; }
     private Plane m_plane = Plane.WorldYZ;
@@ -126,126 +126,126 @@ namespace AdSecGH.Parameters {
       IProfile dup = null;
 
       // angle
-      if (Profile.GetType().ToString().Equals(typeof(IAngleProfile).ToString() + "_Implementation")) {
+      if (Profile.GetType().ToString().Equals($"{typeof(IAngleProfile)}_Implementation")) {
         var angle = (IAngleProfile)Profile;
         dup = IAngleProfile.Create(angle.Depth, angle.Flange, angle.Web);
       }
 
       // catalogue
-      else if (Profile.GetType().ToString().Equals(typeof(ICatalogueProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(ICatalogueProfile)}_Implementation")) {
         dup = ICatalogueProfile.Create(Profile.Description());
       }
 
       // channel
-      else if (Profile.GetType().ToString().Equals(typeof(IChannelProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(IChannelProfile)}_Implementation")) {
         var channel = (IChannelProfile)Profile;
         dup = IChannelProfile.Create(channel.Depth, channel.Flanges, channel.Web);
       }
 
       // circle hollow
-      else if (Profile.GetType().ToString().Equals(typeof(ICircleHollowProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(ICircleHollowProfile)}_Implementation")) {
         var circleHollow = (ICircleHollowProfile)Profile;
         dup = ICircleHollowProfile.Create(circleHollow.Diameter, circleHollow.WallThickness);
       }
 
       // circle
-      else if (Profile.GetType().ToString().Equals(typeof(ICircleProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(ICircleProfile)}_Implementation")) {
         var circle = (ICircleProfile)Profile;
         dup = ICircleProfile.Create(circle.Diameter);
       }
 
       // ICruciformSymmetricalProfile
-      else if (Profile.GetType().ToString().Equals(typeof(ICruciformSymmetricalProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(ICruciformSymmetricalProfile)}_Implementation")) {
         var cruciformSymmetrical = (ICruciformSymmetricalProfile)Profile;
         dup = ICruciformSymmetricalProfile.Create(cruciformSymmetrical.Depth, cruciformSymmetrical.Flange, cruciformSymmetrical.Web);
       }
 
       // IEllipseHollowProfile
-      else if (Profile.GetType().ToString().Equals(typeof(IEllipseHollowProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(IEllipseHollowProfile)}_Implementation")) {
         var ellipseHollow = (IEllipseHollowProfile)Profile;
         dup = IEllipseHollowProfile.Create(ellipseHollow.Depth, ellipseHollow.Width, ellipseHollow.WallThickness);
       }
 
       // IEllipseProfile
-      else if (Profile.GetType().ToString().Equals(typeof(IEllipseProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(IEllipseProfile)}_Implementation")) {
         var ellipse = (IEllipseProfile)Profile;
         dup = IEllipseProfile.Create(ellipse.Depth, ellipse.Width);
       }
 
       // IGeneralCProfile
-      else if (Profile.GetType().ToString().Equals(typeof(IGeneralCProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(IGeneralCProfile)}_Implementation")) {
         var generalC = (IGeneralCProfile)Profile;
         dup = IGeneralCProfile.Create(generalC.Depth, generalC.FlangeWidth, generalC.Lip, generalC.Thickness);
       }
 
       // IGeneralZProfile
-      else if (Profile.GetType().ToString().Equals(typeof(IGeneralZProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(IGeneralZProfile)}_Implementation")) {
         var generalZ = (IGeneralZProfile)Profile;
         dup = IGeneralZProfile.Create(generalZ.Depth, generalZ.TopFlangeWidth, generalZ.BottomFlangeWidth, generalZ.TopLip, generalZ.BottomLip, generalZ.Thickness);
       }
 
       // IIBeamAsymmetricalProfile
-      else if (Profile.GetType().ToString().Equals(typeof(IIBeamAsymmetricalProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(IIBeamAsymmetricalProfile)}_Implementation")) {
         var iBeamAsymmetrical = (IIBeamAsymmetricalProfile)Profile;
         dup = IIBeamAsymmetricalProfile.Create(iBeamAsymmetrical.Depth, iBeamAsymmetrical.TopFlange, iBeamAsymmetrical.BottomFlange, iBeamAsymmetrical.Web);
       }
 
       // IIBeamCellularProfile
-      else if (Profile.GetType().ToString().Equals(typeof(IIBeamCellularProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(IIBeamCellularProfile)}_Implementation")) {
         var iBeamCellular = (IIBeamCellularProfile)Profile;
         dup = IIBeamCellularProfile.Create(iBeamCellular.Depth, iBeamCellular.Flanges, iBeamCellular.Web, iBeamCellular.WebOpening);
       }
 
       // IIBeamSymmetricalProfile
-      else if (Profile.GetType().ToString().Equals(typeof(IIBeamSymmetricalProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(IIBeamSymmetricalProfile)}_Implementation")) {
         var iBeamSymmetrical = (IIBeamSymmetricalProfile)Profile;
         dup = IIBeamSymmetricalProfile.Create(iBeamSymmetrical.Depth, iBeamSymmetrical.Flanges, iBeamSymmetrical.Web);
       }
 
       // IRectangleHollowProfile
-      else if (Profile.GetType().ToString().Equals(typeof(IRectangleHollowProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(IRectangleHollowProfile)}_Implementation")) {
         var rectangleHollow = (IRectangleHollowProfile)Profile;
         dup = IRectangleHollowProfile.Create(rectangleHollow.Depth, rectangleHollow.Flanges, rectangleHollow.Webs);
       }
 
       // IRectangleProfile
-      else if (Profile.GetType().ToString().Equals(typeof(IRectangleProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(IRectangleProfile)}_Implementation")) {
         var rectangle = (IRectangleProfile)Profile;
         dup = IRectangleProfile.Create(rectangle.Depth, rectangle.Width);
       }
 
       // IRectoEllipseProfile
-      else if (Profile.GetType().ToString().Equals(typeof(IRectoEllipseProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(IRectoEllipseProfile)}_Implementation")) {
         var rectoEllipse = (IRectoEllipseProfile)Profile;
         dup = IRectoEllipseProfile.Create(rectoEllipse.Depth, rectoEllipse.DepthFlat, rectoEllipse.Width, rectoEllipse.WidthFlat);
       }
 
       // ISecantPileProfile
-      else if (Profile.GetType().ToString().Equals(typeof(ISecantPileProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(ISecantPileProfile)}_Implementation")) {
         var secantPile = (ISecantPileProfile)Profile;
         dup = ISecantPileProfile.Create(secantPile.Diameter, secantPile.PileCentres, secantPile.PileCount, secantPile.IsWallNotSection);
       }
 
       // ISheetPileProfile
-      else if (Profile.GetType().ToString().Equals(typeof(ISheetPileProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(ISheetPileProfile)}_Implementation")) {
         var sheetPile = (ISheetPileProfile)Profile;
         dup = ISheetPileProfile.Create(sheetPile.Depth, sheetPile.Width, sheetPile.TopFlangeWidth, sheetPile.BottomFlangeWidth, sheetPile.FlangeThickness, sheetPile.WebThickness);
       }
 
       // IStadiumProfile
-      else if (Profile.GetType().ToString().Equals(typeof(IStadiumProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(IStadiumProfile)}_Implementation")) {
         var stadium = (IStadiumProfile)Profile;
         dup = IStadiumProfile.Create(stadium.Depth, stadium.Width);
       }
 
       // ITrapezoidProfile
-      else if (Profile.GetType().ToString().Equals(typeof(ITrapezoidProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(ITrapezoidProfile)}_Implementation")) {
         var trapezoid = (ITrapezoidProfile)Profile;
         dup = ITrapezoidProfile.Create(trapezoid.Depth, trapezoid.TopWidth, trapezoid.BottomWidth);
       }
 
       // ITSectionProfile
-      else if (Profile.GetType().ToString().Equals(typeof(ITSectionProfile).ToString() + "_Implementation")) {
+      else if (Profile.GetType().ToString().Equals($"{typeof(ITSectionProfile)}_Implementation")) {
         var tSection = (ITSectionProfile)Profile;
         dup = ITSectionProfile.Create(tSection.Depth, tSection.Flange, tSection.Web);
       }

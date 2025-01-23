@@ -44,8 +44,8 @@ namespace AdSecGH.Components {
 
     public override void VariableParameterMaintenance() {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      Params.Input[0].Name = "Y [" + unitAbbreviation + "]";
-      Params.Input[1].Name = "Z [" + unitAbbreviation + "]";
+      Params.Input[0].Name = $"Y [{unitAbbreviation}]";
+      Params.Input[1].Name = $"Z [{unitAbbreviation}]";
     }
 
     protected override void InitialiseDropdowns() {
@@ -64,9 +64,9 @@ namespace AdSecGH.Components {
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      pManager.AddGenericParameter("Y [" + unitAbbreviation + "]", "Y", "The local Y coordinate in yz-plane",
+      pManager.AddGenericParameter($"Y [{unitAbbreviation}]", "Y", "The local Y coordinate in yz-plane",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("Z [" + unitAbbreviation + "]", "Z", "The local Z coordinate in yz-plane",
+      pManager.AddGenericParameter($"Z [{unitAbbreviation}]", "Z", "The local Z coordinate in yz-plane",
         GH_ParamAccess.item);
     }
 

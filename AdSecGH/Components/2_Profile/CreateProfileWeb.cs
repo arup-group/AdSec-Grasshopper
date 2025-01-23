@@ -53,7 +53,7 @@ namespace AdSecGH.Components {
     public override void VariableParameterMaintenance() {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
       if (_mode == FoldMode.Constant) {
-        Params.Input[0].Name = "Thickness [" + unitAbbreviation + "]";
+        Params.Input[0].Name = $"Thickness [{unitAbbreviation}]";
         Params.Input[0].NickName = "t";
         Params.Input[0].Description = "Web thickness";
         Params.Input[0].Access = GH_ParamAccess.item;
@@ -61,13 +61,13 @@ namespace AdSecGH.Components {
       }
 
       if (_mode == FoldMode.Tapered) {
-        Params.Input[0].Name = "Top Thickness [" + unitAbbreviation + "]";
+        Params.Input[0].Name = $"Top Thickness [{unitAbbreviation}]";
         Params.Input[0].NickName = "Tt";
         Params.Input[0].Description = "Web thickness at the top";
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        Params.Input[1].Name = "Bottom Thickness [" + unitAbbreviation + "]";
+        Params.Input[1].Name = $"Bottom Thickness [{unitAbbreviation}]";
         Params.Input[1].NickName = "Bt";
         Params.Input[1].Description = "Web thickness at the bottom";
         Params.Input[1].Access = GH_ParamAccess.item;
@@ -95,7 +95,7 @@ namespace AdSecGH.Components {
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Web thickness", GH_ParamAccess.item);
+      pManager.AddGenericParameter($"Thickness [{unitAbbreviation}]", "t", "Web thickness", GH_ParamAccess.item);
       _mode = FoldMode.Constant;
     }
 

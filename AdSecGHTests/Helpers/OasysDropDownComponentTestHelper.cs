@@ -45,7 +45,7 @@ namespace AdSecGHTests.Helpers {
       string path = Path.Combine(Environment.CurrentDirectory, "GH-Test-Files");
       Directory.CreateDirectory(path);
       Type myType = comp.GetType();
-      string pathFileName = Path.Combine(path, myType.Name) + customIdentifier + ".gh";
+      string pathFileName = $"{Path.Combine(path, myType.Name)}{customIdentifier}.gh";
       Assert.True(serialize.SaveQuiet(pathFileName));
 
       var deserialize = new GH_DocumentIO();

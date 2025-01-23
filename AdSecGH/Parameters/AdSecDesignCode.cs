@@ -60,7 +60,7 @@ namespace AdSecGH.Parameters {
       string designcodeName = "";
       Type typ = null;
       for (int i = 0; i < designCodeReflectedLevels.Count - 1; i++) {
-        designcodeName = designcodeName + designCodeReflectedLevels[i] + " ";
+        designcodeName = $"{designcodeName}{designCodeReflectedLevels[i]} ";
         designCodeKVP.TryGetValue(designCodeReflectedLevels[i], out typ);
         if (typ == null) {
           return false;
@@ -78,7 +78,7 @@ namespace AdSecGH.Parameters {
       // we need to find the right type Interface under Oasys.AdSec.IAdsec in order to cast to IDesignCode
       // the string to search for depends on where we call this function from, if we come from an IMaterial type
       // we can simply use the full name but if from IDesignCode we need to add the name of the code with a +
-      string searchFor = fromDesignCode ? typ.FullName + "+" + designCodeReflectedLevels.Last() : typ.FullName;
+      string searchFor = fromDesignCode ? $"{typ.FullName}+{designCodeReflectedLevels.Last()}" : typ.FullName;
 
       // loop through all types in Oasys.AdSec.IAdsec and cast to IDesignCode if match with above string
       foreach (Type type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes()) {
@@ -92,7 +92,7 @@ namespace AdSecGH.Parameters {
       }
 
       if (DesignCode == null) { return false; }
-      DesignCodeName = designcodeName.TrimEnd(' ') + " " + designCodeReflectedLevels.Last();
+      DesignCodeName = $"{designcodeName.TrimEnd(' ')} {designCodeReflectedLevels.Last()}";
       return true;
     }
   }

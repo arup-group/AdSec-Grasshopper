@@ -93,7 +93,7 @@ namespace AdSecGH.Components {
       }
 
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      Params.Input[Params.Input.Count - 1].Name = "Cover [" + unitAbbreviation + "]";
+      Params.Input[Params.Input.Count - 1].Name = $"Cover [{unitAbbreviation}]";
       Params.Input[Params.Input.Count - 1].NickName = "Cov";
       Params.Input[Params.Input.Count - 1].Description = "AdSec Rebars Spaced in a Layer";
       Params.Input[Params.Input.Count - 1].Access = GH_ParamAccess.list;
@@ -133,7 +133,7 @@ namespace AdSecGH.Components {
         GH_ParamAccess.list);
       pManager.AddGenericParameter("Bottom Rebars", "BRs", "Bottom Face AdSec Rebars Spaced in a Layer",
         GH_ParamAccess.list);
-      pManager.AddGenericParameter("Cover [" + unitAbbreviation + "]", "Cov",
+      pManager.AddGenericParameter($"Cover [{unitAbbreviation}]", "Cov",
         "The reinforcement-free zone around the faces of a profile.", GH_ParamAccess.list);
       _mode = FoldMode.Template;
       // make all but last input optional
@@ -158,8 +158,7 @@ namespace AdSecGH.Components {
           if (Params.Input[0].SourceCount == 0 && Params.Input[1].SourceCount == 0 && Params.Input[2].SourceCount == 0
             && Params.Input[3].SourceCount == 0) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Input parameters " + Params.Input[0].NickName + ", " + Params.Input[1].NickName + ", "
-              + Params.Input[2].NickName + ", and " + Params.Input[3].NickName + " failed to collect data!");
+              $"Input parameters {Params.Input[0].NickName}, {Params.Input[1].NickName}, {Params.Input[2].NickName}, and {Params.Input[3].NickName} failed to collect data!");
             return;
           }
 
@@ -197,7 +196,7 @@ namespace AdSecGH.Components {
           // check for enough input parameters
           if (Params.Input[0].SourceCount == 0) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
+              $"Input parameter {Params.Input[0].NickName} failed to collect data!");
             return;
           }
 
@@ -214,7 +213,7 @@ namespace AdSecGH.Components {
           // check for enough input parameters
           if (Params.Input[0].SourceCount == 0) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
+              $"Input parameter {Params.Input[0].NickName} failed to collect data!");
             return;
           }
 

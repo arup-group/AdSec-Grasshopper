@@ -35,7 +35,7 @@ namespace AdSecGH.Parameters {
       }
     }
     public BoundingBox ClippingBox => Boundingbox;
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => (m_type == InteractionCurveType.NM) ? "N-M" : "M-M";
     internal ILoadCurve LoadCurve;
     private List<Line> m_axes = new List<Line>();
@@ -194,7 +194,7 @@ namespace AdSecGH.Parameters {
       } else {
         interactionType = "M-M (Moment-Moment Interaction)";
       }
-      return "AdSec " + TypeName + " {" + interactionType + "}";
+      return $"AdSec {TypeName} {{{interactionType}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {
@@ -308,12 +308,12 @@ namespace AdSecGH.Parameters {
       m_axes.AddRange(plotBoundary.ToPolyline().GetSegments());
 
       // Create axis labels
-      string momentAxis = "Moment [" + Moment.GetAbbreviation(DefaultUnits.MomentUnit) + "]";
-      string myyAxis = "Myy [" + Moment.GetAbbreviation(DefaultUnits.MomentUnit) + "]";
-      string mzzAxis = "Mzz [" + Moment.GetAbbreviation(DefaultUnits.MomentUnit) + "]";
+      string momentAxis = $"Moment [{Moment.GetAbbreviation(DefaultUnits.MomentUnit)}]";
+      string myyAxis = $"Myy [{Moment.GetAbbreviation(DefaultUnits.MomentUnit)}]";
+      string mzzAxis = $"Mzz [{Moment.GetAbbreviation(DefaultUnits.MomentUnit)}]";
       IQuantity force = new Force(0, DefaultUnits.ForceUnit);
       string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
-      string forceAxis = "Axial force [" + forceUnitAbbreviation + "]";
+      string forceAxis = $"Axial force [{forceUnitAbbreviation}]";
 
       string annoXaxis = (m_type == InteractionCurveType.NM) ? momentAxis : myyAxis;
       string annoYaxis = (m_type == InteractionCurveType.NM) ? forceAxis : mzzAxis;

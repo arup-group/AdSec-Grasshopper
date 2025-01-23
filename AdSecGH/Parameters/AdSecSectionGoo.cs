@@ -39,7 +39,7 @@ namespace AdSecGH.Parameters {
         return Value.IsValid.ToString();
       }
     }
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Section";
 
     public AdSecSectionGoo() {
@@ -241,7 +241,7 @@ namespace AdSecGH.Parameters {
       if (Value == null) {
         return "Null AdSec Section";
       } else {
-        return "AdSec " + TypeName + " {" + Value.ToString() + "}";
+        return $"AdSec {TypeName} {{{Value}}}";
       }
     }
 
