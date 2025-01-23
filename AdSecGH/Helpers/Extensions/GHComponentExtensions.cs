@@ -100,6 +100,21 @@ namespace AdSecGH.Helpers {
       return rebar;
     }
 
+    public static AdSecRebarLayerGoo GetAdSecRebarLayerGoo(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      AdSecRebarLayerGoo spacing = null;
+      GH_ObjectWrapper inputData = null;
+
+      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecRebarLayerGoo(inputData, ref spacing)) {
+        owner.Params.Input[inputId].ConvertToError("RebarSpacing");
+      }
+
+      return spacing;
+    }
+
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(
       this GH_Component owner, IGH_DataAccess DA, int inputId, bool compression, bool isOptional = false) {
       AdSecStressStrainCurveGoo curveGoo = null;

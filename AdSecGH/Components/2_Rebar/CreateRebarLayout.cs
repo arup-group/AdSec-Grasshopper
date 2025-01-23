@@ -215,25 +215,26 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess da) {
       AdSecRebarGroupGoo group = null;
+      var rebarLayerValue = this.GetAdSecRebarLayerGoo(da, 0).Value;
       switch (_mode) {
         case FoldMode.Line:
           // create line group
           group = new AdSecRebarGroupGoo(ILineGroup.Create(AdSecInput.IPoint(this, da, 1),
-            AdSecInput.IPoint(this, da, 2), AdSecInput.ILayer(this, da, 0)));
+            AdSecInput.IPoint(this, da, 2), rebarLayerValue));
           break;
 
         case FoldMode.Circle:
           // create circle rebar group
           group = new AdSecRebarGroupGoo(ICircleGroup.Create(AdSecInput.IPoint(this, da, 1, true),
             (Length)Input.UnitNumber(this, da, 2, _lengthUnit), (Angle)Input.UnitNumber(this, da, 3, _angleUnit, true),
-            AdSecInput.ILayer(this, da, 0)));
+            rebarLayerValue));
           break;
 
         case FoldMode.Arc:
           // create arc rebar grouup
           group = new AdSecRebarGroupGoo(IArcGroup.Create(AdSecInput.IPoint(this, da, 1, true),
             (Length)Input.UnitNumber(this, da, 2, _lengthUnit), (Angle)Input.UnitNumber(this, da, 3, _angleUnit),
-            (Angle)Input.UnitNumber(this, da, 4, _angleUnit), AdSecInput.ILayer(this, da, 0)));
+            (Angle)Input.UnitNumber(this, da, 4, _angleUnit), rebarLayerValue));
           break;
 
         case FoldMode.SingleBars:
