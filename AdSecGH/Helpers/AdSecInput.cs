@@ -24,32 +24,6 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
-
-    internal static AdSecProfileGoo AdSecProfileGoo(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      AdSecProfileGoo profileGoo = null;
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        if (gh_typ.Value is AdSecProfileGoo adsecGoo) {
-          profileGoo = adsecGoo;
-        } else if (gh_typ.Value is OasysProfileGoo oasysGoo) {
-          var profile = AdSecProfiles.CreateProfile(oasysGoo.Value);
-          profileGoo = new AdSecProfileGoo(profile, Plane.WorldYZ);
-        } else {
-          return null;
-        }
-
-        return profileGoo;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
-      }
-
-      return null;
-    }
-
     internal static AdSecRebarBundleGoo AdSecRebarBundleGoo(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       AdSecRebarBundleGoo rebar = null;
@@ -464,6 +438,20 @@ namespace AdSecGH.Helpers {
         ghType.CastTo(ref pointGoo);
       } else if (GH_Convert.ToPoint3d(ghType.Value, ref ghpt, GH_Conversion.Both)) {
         pointGoo = new AdSecPointGoo(ghpt);
+      } else {
+        castSuccessful = false;
+      }
+
+      return castSuccessful;
+    }
+
+    public static bool TryCastToAdSecProfileGoo(GH_ObjectWrapper ghType, ref AdSecProfileGoo profileGoo) {
+      bool castSuccessful = true;
+      if (ghType.Value is AdSecProfileGoo adsecGoo) {
+        profileGoo = adsecGoo;
+      } else if (ghType.Value is OasysProfileGoo oasysGoo) {
+        var profile = AdSecProfiles.CreateProfile(oasysGoo.Value);
+        profileGoo = new AdSecProfileGoo(profile, Plane.WorldYZ);
       } else {
         castSuccessful = false;
       }

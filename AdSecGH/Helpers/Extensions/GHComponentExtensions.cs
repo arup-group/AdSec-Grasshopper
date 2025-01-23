@@ -65,6 +65,21 @@ namespace AdSecGH.Helpers {
       return pointGoo;
     }
 
+    public static AdSecProfileGoo GetAdSecProfileGoo(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      GH_ObjectWrapper inputData = null;
+      AdSecProfileGoo profileGoo = null;
+      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecProfileGoo(inputData, ref profileGoo)) {
+        owner.Params.Input[inputId].ConvertToError("an AdSec Profile");
+      }
+
+      return profileGoo;
+    }
+
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(
       this GH_Component owner, IGH_DataAccess DA, int inputId, bool compression, bool isOptional = false) {
       AdSecStressStrainCurveGoo curveGoo = null;

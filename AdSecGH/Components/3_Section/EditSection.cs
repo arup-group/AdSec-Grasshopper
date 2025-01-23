@@ -76,7 +76,7 @@ namespace AdSecGH.Components {
       // 1 profile
       AdSecProfileGoo profile = null;
       if (Params.Input[1].SourceCount > 0) {
-        profile = AdSecInput.AdSecProfileGoo(this, DA, 1, true);
+        profile = this.GetAdSecProfileGoo(DA, 1, true);
       } else {
         profile = new AdSecProfileGoo(in_section.Section.Profile, in_section.LocalPlane);
       }
