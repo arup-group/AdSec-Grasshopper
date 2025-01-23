@@ -220,7 +220,7 @@ namespace AdSecGH.Components {
 
           // top
           if (Params.Input[0].SourceCount != 0) {
-            var grp = ILinkGroup.Create(AdSecInput.IBarBundle(this, da, 0));
+            var grp = ILinkGroup.Create(this.GetAdSecRebarBundleGoo(da, 0).Value);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
 

@@ -84,7 +84,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // 0 profile
-      var profile = AdSecInput.AdSecProfileGoo(this, DA, 0);
+      var profile = this.GetAdSecProfileGoo(DA, 0);
 
       var lengthUnit = DefaultUnits.LengthUnitGeometry;
       var SI = UnitSystem.SI.BaseUnits;

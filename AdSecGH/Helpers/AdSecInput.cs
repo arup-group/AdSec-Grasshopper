@@ -24,83 +24,6 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
-
-    internal static AdSecProfileGoo AdSecProfileGoo(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      AdSecProfileGoo profileGoo = null;
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        if (gh_typ.Value is AdSecProfileGoo adsecGoo) {
-          profileGoo = adsecGoo;
-        } else if (gh_typ.Value is OasysProfileGoo oasysGoo) {
-          var profile = AdSecProfiles.CreateProfile(oasysGoo.Value);
-          profileGoo = new AdSecProfileGoo(profile, Plane.WorldYZ);
-        } else {
-          return null;
-        }
-
-        return profileGoo;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
-      }
-
-      return null;
-    }
-
-    internal static AdSecRebarBundleGoo AdSecRebarBundleGoo(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      AdSecRebarBundleGoo rebar = null;
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        if (gh_typ.Value is AdSecRebarBundleGoo goo) {
-          rebar = goo;
-        } else if (gh_typ.Value is AdSecRebarLayerGoo spacing) {
-          rebar = new AdSecRebarBundleGoo(spacing.Value.BarBundle);
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
-            "Converted " + owner.Params.Input[inputid].NickName
-            + " from RebarSpacing to an AdSec Rebar. All spacing information has been lost!");
-        } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to Rebar");
-        }
-
-        return rebar;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
-      }
-
-      return null;
-    }
-
-    internal static AdSecRebarLayerGoo AdSecRebarLayerGoo(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      AdSecRebarLayerGoo spacing = null;
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        if (gh_typ.Value is AdSecRebarLayerGoo goo) {
-          spacing = goo;
-        } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarSpacing");
-        }
-
-        return spacing;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
-      }
-
-      return null;
-    }
-
     internal static AdSecSection AdSecSection(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       var gh_typ = new GH_ObjectWrapper();
@@ -214,14 +137,6 @@ namespace AdSecGH.Helpers {
       }
 
       return null;
-    }
-
-    internal static IBarBundle IBarBundle(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      return AdSecRebarBundleGoo(owner, DA, inputid, isOptional).Value;
-    }
-
-    internal static ILayer ILayer(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      return AdSecRebarLayerGoo(owner, DA, inputid, isOptional).Value;
     }
 
     internal static Oasys.Collections.IList<ILayer> ILayers(
@@ -464,6 +379,46 @@ namespace AdSecGH.Helpers {
         ghType.CastTo(ref pointGoo);
       } else if (GH_Convert.ToPoint3d(ghType.Value, ref ghpt, GH_Conversion.Both)) {
         pointGoo = new AdSecPointGoo(ghpt);
+      } else {
+        castSuccessful = false;
+      }
+
+      return castSuccessful;
+    }
+
+    public static bool TryCastToAdSecProfileGoo(GH_ObjectWrapper ghType, ref AdSecProfileGoo profileGoo) {
+      bool castSuccessful = true;
+      if (ghType.Value is AdSecProfileGoo adsecGoo) {
+        profileGoo = adsecGoo;
+      } else if (ghType.Value is OasysProfileGoo oasysGoo) {
+        var profile = AdSecProfiles.CreateProfile(oasysGoo.Value);
+        profileGoo = new AdSecProfileGoo(profile, Plane.WorldYZ);
+      } else {
+        castSuccessful = false;
+      }
+
+      return castSuccessful;
+    }
+
+    public static bool TryCastToAdSecRebarBundleGoo(
+      GH_ObjectWrapper ghType, ref AdSecRebarBundleGoo rebarBundleGoo, ref bool showRemark) {
+      bool castSuccessful = true;
+      if (ghType.Value is AdSecRebarBundleGoo goo) {
+        rebarBundleGoo = goo;
+      } else if (ghType.Value is AdSecRebarLayerGoo spacing) {
+        rebarBundleGoo = new AdSecRebarBundleGoo(spacing.Value.BarBundle);
+        showRemark = true;
+      } else {
+        castSuccessful = false;
+      }
+
+      return castSuccessful;
+    }
+
+    public static bool TryCastToAdSecRebarLayerGoo(GH_ObjectWrapper ghType, ref AdSecRebarLayerGoo spacing) {
+      bool castSuccessful = true;
+      if (ghType.Value is AdSecRebarLayerGoo goo) {
+        spacing = goo;
       } else {
         castSuccessful = false;
       }
