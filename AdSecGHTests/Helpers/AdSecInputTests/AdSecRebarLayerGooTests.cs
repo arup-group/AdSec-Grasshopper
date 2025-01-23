@@ -3,14 +3,11 @@ using AdSecGH.Parameters;
 
 using Grasshopper.Kernel.Types;
 
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.AdSec.StandardMaterials;
 
 using OasysUnits;
-using OasysUnits.Units;
 
 using Xunit;
 
@@ -24,7 +21,7 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void TryCastToAdSecRebarBundleGooReturnsFalseWhenCantConvert() {
+    public void TryCastToAdSecRebarLayerGooReturnsFalseWhenCantConvert() {
       var objwrap = new GH_ObjectWrapper();
       bool castSuccessful = AdSecInput.TryCastToAdSecRebarLayerGoo(objwrap, ref _layerGoo);
 
@@ -33,12 +30,12 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void TryCastToAdSecRebarBundleGooReturnsRebarBundleGooFromAdSecRebarLayerGoo() {
+    public void TryCastToAdSecRebarLayerGooReturnsRebarLayerGoo() {
       var topReinforcementLayer = ILayerByBarCount.Create(2,
         IBarBundle.Create(Reinforcement.Steel.IS456.Edition_2000.S415, Length.FromMillimeters(20)));
-      var adSecRebarBundleGoo = new AdSecRebarLayerGoo(topReinforcementLayer);
+      var adSecRebarLayerGoo = new AdSecRebarLayerGoo(topReinforcementLayer);
 
-      var objwrap = new GH_ObjectWrapper(adSecRebarBundleGoo);
+      var objwrap = new GH_ObjectWrapper(adSecRebarLayerGoo);
       bool castSuccessful = AdSecInput.TryCastToAdSecRebarLayerGoo(objwrap, ref _layerGoo);
 
       Assert.True(castSuccessful);

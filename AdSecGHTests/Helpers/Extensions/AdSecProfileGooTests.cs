@@ -30,7 +30,7 @@ namespace AdSecGHTests.Helpers.Extensions {
     public void ReturnsWarningWhenInputIsNonOptionalAndNoDataAvailable() {
       _component.Optional = false;
       object obj = null;
-      ComponentTestHelper.SetInput(_component, obj, 0);
+      ComponentTestHelper.SetInput(_component, obj);
       object result = ComponentTestHelper.GetOutput(_component);
       Assert.Null(result);
 
@@ -46,7 +46,7 @@ namespace AdSecGHTests.Helpers.Extensions {
     public void ReturnsNoMessagesWhenInputIsOptionalAndNoDataAvailable() {
       _component.Optional = true;
       object obj = null;
-      ComponentTestHelper.SetInput(_component, obj, 0);
+      ComponentTestHelper.SetInput(_component, obj);
 
       object result = ComponentTestHelper.GetOutput(_component);
 

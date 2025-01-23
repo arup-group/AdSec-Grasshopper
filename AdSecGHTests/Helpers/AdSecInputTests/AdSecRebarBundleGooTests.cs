@@ -30,7 +30,6 @@ namespace AdSecGHTests.Helpers {
       bool castSuccessful = AdSecInput.TryCastToAdSecRebarBundleGoo(objwrap, ref _bundleGoo, ref showRemark);
 
       Assert.False(castSuccessful);
-      Assert.False(castSuccessful);
       Assert.Null(_bundleGoo);
     }
 
@@ -59,9 +58,9 @@ namespace AdSecGHTests.Helpers {
     public void TryCastToAdSecRebarBundleGooReturnsRebarBundleGooFromAdSecRebarLayerGoo() {
       var topReinforcementLayer = ILayerByBarCount.Create(2,
         IBarBundle.Create(Reinforcement.Steel.IS456.Edition_2000.S415, Length.FromMillimeters(20)));
-      var adSecRebarBundleGoo = new AdSecRebarLayerGoo(topReinforcementLayer);
+      var adSecRebarLayerGoo = new AdSecRebarLayerGoo(topReinforcementLayer);
 
-      var objwrap = new GH_ObjectWrapper(adSecRebarBundleGoo);
+      var objwrap = new GH_ObjectWrapper(adSecRebarLayerGoo);
       bool castSuccessful = AdSecInput.TryCastToAdSecRebarBundleGoo(objwrap, ref _bundleGoo, ref showRemark);
 
       Assert.True(castSuccessful);

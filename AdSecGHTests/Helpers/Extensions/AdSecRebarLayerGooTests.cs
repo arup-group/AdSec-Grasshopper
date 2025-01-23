@@ -88,11 +88,11 @@ namespace AdSecGHTests.Helpers.Extensions {
     }
 
     [Fact]
-    public void ReturnsRebarBundleWhenDataCorrect() {
-      var topReinforcementLayer = ILayerByBarCount.Create(2,
-        IBarBundle.Create(Reinforcement.Steel.IS456.Edition_2000.S415, Length.FromMillimeters(20)));
-      var adSecRebarBundleGoo = new AdSecRebarLayerGoo(topReinforcementLayer);
-      ComponentTestHelper.SetInput(_component, adSecRebarBundleGoo);
+    public void ReturnsRebarLayerWhenDataCorrect() {
+      var layer = ILayerByBarCount.Create(2,
+        IBarBundle.Create(Reinforcement.Steel.IS456.Edition_2000.S415, Length.FromMillimeters(1)));
+      var adSecRebarLayerGoo = new AdSecRebarLayerGoo(layer);
+      ComponentTestHelper.SetInput(_component, adSecRebarLayerGoo);
 
       object result = ComponentTestHelper.GetOutput(_component);
       Assert.NotNull(result);
