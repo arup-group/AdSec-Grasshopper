@@ -80,6 +80,26 @@ namespace AdSecGH.Helpers {
       return profileGoo;
     }
 
+    public static AdSecRebarBundleGoo GetAdSecRebarBundleGoo(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      AdSecRebarBundleGoo rebar = null;
+      GH_ObjectWrapper inputData = null;
+      bool showRemark = false;
+
+      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecRebarBundleGoo(inputData, ref rebar, ref showRemark)) {
+        owner.Params.Input[inputId].ConvertToError("Rebar");
+      } else if (showRemark) {
+        owner.AddRuntimeRemark("Converted " + owner.Params.Input[inputId].NickName
+          + " from RebarSpacing to an AdSec Rebar. All spacing information has been lost!");
+      }
+
+      return rebar;
+    }
+
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(
       this GH_Component owner, IGH_DataAccess DA, int inputId, bool compression, bool isOptional = false) {
       AdSecStressStrainCurveGoo curveGoo = null;
