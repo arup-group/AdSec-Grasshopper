@@ -214,42 +214,38 @@ namespace AdSecGH.Components {
     }
 
     protected override void SolveInternal(IGH_DataAccess da) {
-  AdSecRebarGroupGoo group = null;
+      AdSecRebarGroupGoo group = null;
       var rebarLayerValue = this.GetAdSecRebarLayerGoo(da, 0).Value;
-  switch (_mode) {
-    case FoldMode.Line:
-      // create line group
+      switch (_mode) {
+        case FoldMode.Line:
+          // create line group
           group = new AdSecRebarGroupGoo(ILineGroup.Create(this.GetAdSecPointGoo(da, 1).AdSecPoint,
             this.GetAdSecPointGoo(da, 2).AdSecPoint, rebarLayerValue));
-      break;
-
-    case FoldMode.Circle:
-      // create circle rebar group
-      group = new AdSecRebarGroupGoo(ICircleGroup.Create(this.GetAdSecPointGoo(da, 1, true).AdSecPoint,
-        (Length)Input.UnitNumber(this, da, 2, _lengthUnit), (Angle)Input.UnitNumber(this, da, 3, _angleUnit, true),
+          break;
+        case FoldMode.Circle:
+          // create circle rebar group
+          group = new AdSecRebarGroupGoo(ICircleGroup.Create(this.GetAdSecPointGoo(da, 1, true).AdSecPoint,
+            (Length)Input.UnitNumber(this, da, 2, _lengthUnit), (Angle)Input.UnitNumber(this, da, 3, _angleUnit, true),
             rebarLayerValue));
-      break;
-
-    case FoldMode.Arc:
-      // create arc rebar grouup
-      group = new AdSecRebarGroupGoo(IArcGroup.Create(this.GetAdSecPointGoo(da, 1, true).AdSecPoint,
-        (Length)Input.UnitNumber(this, da, 2, _lengthUnit), (Angle)Input.UnitNumber(this, da, 3, _angleUnit),
+          break;
+        case FoldMode.Arc:
+          // create arc rebar grouup
+          group = new AdSecRebarGroupGoo(IArcGroup.Create(this.GetAdSecPointGoo(da, 1, true).AdSecPoint,
+            (Length)Input.UnitNumber(this, da, 2, _lengthUnit), (Angle)Input.UnitNumber(this, da, 3, _angleUnit),
             (Angle)Input.UnitNumber(this, da, 4, _angleUnit), rebarLayerValue));
-      break;
-
-    case FoldMode.SingleBars:
-      // create single rebar group
+          break;
+        case FoldMode.SingleBars:
+          // create single rebar group
           var bars = ISingleBars.Create(this.GetAdSecRebarBundleGoo(da, 0).Value);
+          bars.Positions = AdSecInput.IPoints(this, da, 1);
+          group = new AdSecRebarGroupGoo(bars);
 
-      bars.Positions = AdSecInput.IPoints(this, da, 1);
+          break;
+      }
 
-      group = new AdSecRebarGroupGoo(bars);
-      break;
-  }
-
-  // set output
-  da.SetData(0, group);
-}
+      // set output
+      da.SetData(0, group);
+    }
 
     protected override void UpdateUIFromSelectedItems() {
       _mode = (FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[0]);
