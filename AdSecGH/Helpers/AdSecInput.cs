@@ -37,13 +37,13 @@ namespace AdSecGH.Helpers {
         }
 
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          "Unable to convert " + owner.Params.Input[inputid].NickName + " to Section");
+          $"Unable to convert {owner.Params.Input[inputid].NickName} to Section");
         return null;
       }
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
       }
 
       return null;
@@ -61,7 +61,7 @@ namespace AdSecGH.Helpers {
             subs.Add(subcomp.Value);
           } else {
             owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i + ") to Section");
+              $"Unable to convert {owner.Params.Input[inputid].NickName} (item {i}) to Section");
           }
         }
 
@@ -70,7 +70,7 @@ namespace AdSecGH.Helpers {
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
       }
 
       return null;
@@ -88,7 +88,7 @@ namespace AdSecGH.Helpers {
           concreteCrack = adsecccp.Value;
         } else {
           owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + owner.Params.Input[inputid].NickName + " to ConcreteCrackCalculationParameters");
+            $"Unable to convert {owner.Params.Input[inputid].NickName} to ConcreteCrackCalculationParameters");
           return null;
         }
 
@@ -97,7 +97,7 @@ namespace AdSecGH.Helpers {
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
       }
 
       return null;
@@ -114,7 +114,6 @@ namespace AdSecGH.Helpers {
       return covers;
     }
 
-
     internal static Oasys.Collections.IList<ILayer> ILayers(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       var grps = Oasys.Collections.IList<ILayer>.Create();
@@ -127,7 +126,7 @@ namespace AdSecGH.Helpers {
             grps.Add(rebarGoo.Value);
           } else {
             owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i + ") to RebarLayer");
+              $"Unable to convert {owner.Params.Input[inputid].NickName} (item {i}) to RebarLayer");
           }
         }
 
@@ -136,7 +135,7 @@ namespace AdSecGH.Helpers {
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
       }
 
       return null;
@@ -163,8 +162,7 @@ namespace AdSecGH.Helpers {
             pts = AdSecPointGoo.PtsFromPolylineCurve(curve);
           } else {
             owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i
-              + ") to StressStrainPoint or Polyline");
+              $"Unable to convert {owner.Params.Input[inputid].NickName} (item {i}) to StressStrainPoint or Polyline");
           }
         }
 
@@ -189,7 +187,7 @@ namespace AdSecGH.Helpers {
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
       }
 
       return null;
@@ -204,13 +202,13 @@ namespace AdSecGH.Helpers {
         }
 
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          "Unable to convert " + owner.Params.Input[inputid].NickName + " to RebarLayout");
+          $"Unable to convert {owner.Params.Input[inputid].NickName} to RebarLayout");
         return null;
       }
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
       }
 
       return null;
@@ -228,7 +226,7 @@ namespace AdSecGH.Helpers {
             grps.Add(rebarGoo.Value);
           } else {
             owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i + ") to RebarGroup");
+              $"Unable to convert {owner.Params.Input[inputid].NickName} (item {i}) to RebarGroup");
           }
         }
 
@@ -237,7 +235,7 @@ namespace AdSecGH.Helpers {
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
       }
 
       return null;
@@ -252,13 +250,13 @@ namespace AdSecGH.Helpers {
         }
 
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          "Unable to convert " + owner.Params.Input[inputid].NickName + " to AdSec Results");
+          $"Unable to convert {owner.Params.Input[inputid].NickName} to AdSec Results");
         return null;
       }
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
       }
 
       return null;
@@ -280,8 +278,7 @@ namespace AdSecGH.Helpers {
             subs.Add(sub);
           } else {
             owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Unable to convert " + owner.Params.Input[inputid].NickName + " (item " + i
-              + ") to SubComponent or Section");
+              $"Unable to convert {owner.Params.Input[inputid].NickName} (item {i}) to SubComponent or Section");
           }
         }
 
@@ -290,7 +287,7 @@ namespace AdSecGH.Helpers {
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + owner.Params.Input[inputid].NickName + " failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
       }
 
       return null;

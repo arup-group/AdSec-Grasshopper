@@ -75,7 +75,7 @@ namespace AdSecGH.Components {
       switch (_selectedItems[0]) {
         case "N-M":
           string angleUnitAbbreviation = Angle.GetAbbreviation(_angleUnit);
-          Params.Input[1].Name = "Moment Angle [" + angleUnitAbbreviation + "]";
+          Params.Input[1].Name = $"Moment Angle [{angleUnitAbbreviation}]";
           Params.Input[1].NickName = "A";
           Params.Input[1].Description
             = "[Default 0] The moment angle, which must be in the range -180 degrees to +180 degrees. Angle of zero equals Nx-Myy diagram.";
@@ -86,7 +86,7 @@ namespace AdSecGH.Components {
 
         case "M-M":
           string forceUnitAbbreviation = Force.GetAbbreviation(_forceUnit);
-          Params.Input[1].Name = "Axial Force [" + forceUnitAbbreviation + "]";
+          Params.Input[1].Name = $"Axial Force [{forceUnitAbbreviation}]";
           Params.Input[1].NickName = "F";
           Params.Input[1].Description = "[Default 0] The axial force to calculate the moment-moment diagram for.";
           Params.Output[0].Name = "M-M Curve";
@@ -123,7 +123,7 @@ namespace AdSecGH.Components {
       string angleUnitAbbreviation = Angle.GetAbbreviation(_angleUnit);
       pManager.AddGenericParameter("Results", "Res", "AdSec Results to calculate interaction diagram from",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("Moment Angle [" + angleUnitAbbreviation + "]", "A",
+      pManager.AddGenericParameter($"Moment Angle [{angleUnitAbbreviation}]", "A",
         "[Default 0] The moment angle, which must be in the range -180 degrees to +180 degrees. Angle of zero equals Nx-Myy diagram.",
         GH_ParamAccess.item);
       pManager[1].Optional = true;
@@ -146,8 +146,7 @@ namespace AdSecGH.Components {
       // Get boundary input
       var rect = new Rectangle3d();
       if (!DA.GetData(2, ref rect)) {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          "Unable to convert " + Params.Input[2].NickName + " to Rectangle");
+        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Unable to convert {Params.Input[2].NickName} to Rectangle");
         return;
       }
 

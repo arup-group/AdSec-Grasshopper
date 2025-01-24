@@ -9,35 +9,35 @@
   public static class SubCategoryName {
 
     public static string Cat0() {
-      return new string(' ', 8) + "File";
+      return $"{new string(' ', 8)}File";
     }
 
     public static string Cat1() {
-      return new string(' ', 7) + "Material";
+      return $"{new string(' ', 7)}Material";
     }
 
     public static string Cat2() {
-      return new string(' ', 6) + "Profile";
+      return $"{new string(' ', 6)}Profile";
     }
 
     public static string Cat3() {
-      return new string(' ', 5) + "Rebar";
+      return $"{new string(' ', 5)}Rebar";
     }
 
     public static string Cat4() {
-      return new string(' ', 4) + "Section";
+      return $"{new string(' ', 4)}Section";
     }
 
     public static string Cat5() {
-      return new string(' ', 3) + "Loads";
+      return $"{new string(' ', 3)}Loads";
     }
 
     public static string Cat6() {
-      return new string(' ', 2) + "Solution";
+      return $"{new string(' ', 2)}Solution";
     }
 
     public static string Cat7() {
-      return new string(' ', 1) + "Results";
+      return $"{new string(' ', 1)}Results";
     }
 
     public static string Cat8() {

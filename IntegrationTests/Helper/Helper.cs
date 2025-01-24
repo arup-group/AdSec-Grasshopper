@@ -36,13 +36,13 @@ namespace IntegrationTests {
               }
             }
 
-            Assert.Fail("Unable to find component in group with Nickname " + groupIdentifier);
+            Assert.Fail($"Unable to find component in group with Nickname {groupIdentifier}");
             return null;
           }
         }
       }
 
-      Assert.Fail("Unable to find group with Nickname " + groupIdentifier);
+      Assert.Fail($"Unable to find group with Nickname {groupIdentifier}");
       return null;
     }
 
@@ -61,13 +61,13 @@ namespace IntegrationTests {
               }
             }
 
-            Assert.Fail("Unable to find parameter in group with Nickname " + groupIdentifier);
+            Assert.Fail($"Unable to find parameter in group with Nickname {groupIdentifier}");
             return null;
           }
         }
       }
 
-      Assert.Fail("Unable to find group with Nickname " + groupIdentifier);
+      Assert.Fail($"Unable to find group with Nickname {groupIdentifier}");
       return null;
     }
 

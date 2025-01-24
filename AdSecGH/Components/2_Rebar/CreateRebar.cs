@@ -52,7 +52,7 @@ namespace AdSecGH.Components {
 
     public override void VariableParameterMaintenance() {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      Params.Input[1].Name = "Diameter [" + unitAbbreviation + "]";
+      Params.Input[1].Name = $"Diameter [{unitAbbreviation}]";
       if (_mode == FoldMode.Bundle) {
         Params.Input[2].Name = "Count";
         Params.Input[2].NickName = "N";
@@ -83,7 +83,7 @@ namespace AdSecGH.Components {
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
       pManager.AddGenericParameter("Material", "Mat", "AdSec Reinforcement Material", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Diameter [" + unitAbbreviation + "]", "Ø", "Bar Diameter", GH_ParamAccess.item);
+      pManager.AddGenericParameter($"Diameter [{unitAbbreviation}]", "Ø", "Bar Diameter", GH_ParamAccess.item);
       _mode = FoldMode.Single;
     }
 

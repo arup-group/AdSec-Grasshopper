@@ -135,7 +135,7 @@ namespace AdSecGH.Components {
       for (int i = 1; i < jsonStrings.Count; i++) {
         string jsonString2 = jsonStrings[i];
         int start = jsonString2.IndexOf("components") - 2;
-        jsonString2 = "," + jsonString2.Substring(start);
+        jsonString2 = $",{jsonString2.Substring(start)}";
         jsonString += jsonString2.Remove(jsonString2.Length - 2, 2);
       }
 
@@ -184,7 +184,7 @@ namespace AdSecGH.Components {
                 jsonStrings.Add(json.SectionToJson(sections[i].Section));
               } catch (Exception e) {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                  "Error with section at index " + i + ": " + e.InnerException.Message);
+                  $"Error with section at index {i}: {e.InnerException.Message}");
               }
             } else if (loads.Branches[i][0].CastTo(out AdSecLoadGoo notusedLoad)) {
               // create new list of loads
@@ -197,8 +197,7 @@ namespace AdSecGH.Components {
                   lds.Add(load.Value);
                 } else {
                   AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                    "Unable to convert " + Params.Input[1].NickName + " path " + i + " index " + j
-                    + " to AdSec Load. Section will be saved without this load.");
+                    $"Unable to convert {Params.Input[1].NickName} path {i} index {j} to AdSec Load. Section will be saved without this load.");
                 }
               }
 
@@ -207,7 +206,7 @@ namespace AdSecGH.Components {
                 jsonStrings.Add(json.SectionToJson(sections[i].Section, lds));
               } catch (Exception e) {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                  "Error with section at index " + i + ": " + e.InnerException.Message);
+                  $"Error with section at index {i}: {e.InnerException.Message}");
               }
             } else if (loads.Branches[i][0] is AdSecDeformationGoo) {
               // create new list of deformations
@@ -219,8 +218,7 @@ namespace AdSecGH.Components {
                   defs.Add(def.Value);
                 } else {
                   AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                    "Unable to convert " + Params.Input[1].NickName + " path " + i + " index " + j
-                    + " to AdSec Load. Section will be saved without this load.");
+                    $"Unable to convert {Params.Input[1].NickName} path {i} index {j} to AdSec Load. Section will be saved without this load.");
                 }
               }
 
@@ -229,18 +227,17 @@ namespace AdSecGH.Components {
                 jsonStrings.Add(json.SectionToJson(sections[i].Section, defs));
               } catch (Exception e) {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                  "Error with section at index " + i + ": " + e.InnerException.Message);
+                  $"Error with section at index {i}: {e.InnerException.Message}");
               }
             } else {
               AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                "Error converting " + Params.Input[1].NickName
-                + " to AdSec Load/Deformation. Section will be saved without loads.");
+                $"Error converting {Params.Input[1].NickName} to AdSec Load/Deformation. Section will be saved without loads.");
               // convert to json without loads method
               try {
                 jsonStrings.Add(json.SectionToJson(sections[i].Section));
               } catch (Exception e) {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                  "Error with section at index " + i + ": " + e.InnerException.Message);
+                  $"Error with section at index {i}: {e.InnerException.Message}");
               }
             }
           }
@@ -251,7 +248,7 @@ namespace AdSecGH.Components {
               jsonStrings.Add(json.SectionToJson(sections[i].Section));
             } catch (Exception e) {
               AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                "Error with section at index " + i + ": " + e.InnerException.Message);
+                $"Error with section at index {i}: {e.InnerException.Message}");
             }
           }
         }
@@ -262,7 +259,7 @@ namespace AdSecGH.Components {
             jsonStrings.Add(json.SectionToJson(sections[i].Section));
           } catch (Exception e) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Error with section at index " + i + ": " + e.InnerException.Message);
+              $"Error with section at index {i}: {e.InnerException.Message}");
           }
         }
       }

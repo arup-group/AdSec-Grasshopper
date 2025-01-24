@@ -134,16 +134,15 @@ namespace AdSecGH.Components {
         Params.Input[1].Access = GH_ParamAccess.item;
         Params.Input[1].Optional = true;
 
-        Params.Input[2].Name = "Radius [" + lengthUnitAbbreviation + "]";
+        Params.Input[2].Name = $"Radius [{lengthUnitAbbreviation}]";
         Params.Input[2].NickName = "r";
         Params.Input[2].Description = "Distance representing the radius of the circle";
         Params.Input[2].Access = GH_ParamAccess.item;
         Params.Input[2].Optional = false;
 
-        Params.Input[3].Name = "StartAngle [" + angleUnitAbbreviation + "]";
+        Params.Input[3].Name = $"StartAngle [{angleUnitAbbreviation}]";
         Params.Input[3].NickName = "s°";
-        Params.Input[3].Description = "[Optional] The starting angle (in " + angleUnitAbbreviation
-          + ") of the circle. Positive angle is considered anti-clockwise. Default is 0";
+        Params.Input[3].Description = $"[Optional] The starting angle (in {angleUnitAbbreviation}) of the circle. Positive angle is considered anti-clockwise. Default is 0";
         Params.Input[3].Access = GH_ParamAccess.item;
         Params.Input[3].Optional = true;
       }
@@ -161,23 +160,21 @@ namespace AdSecGH.Components {
         Params.Input[1].Access = GH_ParamAccess.item;
         Params.Input[1].Optional = true;
 
-        Params.Input[2].Name = "Radius [" + lengthUnitAbbreviation + "]";
+        Params.Input[2].Name = $"Radius [{lengthUnitAbbreviation}]";
         Params.Input[2].NickName = "r";
         Params.Input[2].Description = "Distance representing the radius of the circle";
         Params.Input[2].Access = GH_ParamAccess.item;
         Params.Input[2].Optional = false;
 
-        Params.Input[3].Name = "StartAngle [" + angleUnitAbbreviation + "]";
+        Params.Input[3].Name = $"StartAngle [{angleUnitAbbreviation}]";
         Params.Input[3].NickName = "s°";
-        Params.Input[3].Description = "[Optional] The starting angle (in " + angleUnitAbbreviation
-          + ")) of the circle. Positive angle is considered anti-clockwise. Default is 0";
+        Params.Input[3].Description = $"[Optional] The starting angle (in {angleUnitAbbreviation})) of the circle. Positive angle is considered anti-clockwise. Default is 0";
         Params.Input[3].Access = GH_ParamAccess.item;
         Params.Input[3].Optional = true;
 
-        Params.Input[4].Name = "SweepAngle [" + angleUnitAbbreviation + "]";
+        Params.Input[4].Name = $"SweepAngle [{angleUnitAbbreviation}]";
         Params.Input[4].NickName = "e°";
-        Params.Input[4].Description = "The angle (in " + angleUnitAbbreviation
-          + ") sweeped by the arc from its start angle. Positive angle is considered anti-clockwise. Default is π/2";
+        Params.Input[4].Description = $"The angle (in {angleUnitAbbreviation}) sweeped by the arc from its start angle. Positive angle is considered anti-clockwise. Default is π/2";
         Params.Input[4].Access = GH_ParamAccess.item;
         Params.Input[4].Optional = true;
       }

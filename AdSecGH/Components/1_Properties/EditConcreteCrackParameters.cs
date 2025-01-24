@@ -37,11 +37,11 @@ namespace AdSecGH.Components {
       string unitAbbreviation = Pressure.GetAbbreviation(DefaultUnits.StressUnitResult);
       pManager.AddGenericParameter("CrackCalcParams", "CCP", "AdSec ConcreteCrackCalculationParameters",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("Elastic Modulus [" + unitAbbreviation + "]", "E",
+      pManager.AddGenericParameter($"Elastic Modulus [{unitAbbreviation}]", "E",
         "[Optional] Overwrite Value for Elastic Modulus", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Compression [" + unitAbbreviation + "]", "fc",
+      pManager.AddGenericParameter($"Compression [{unitAbbreviation}]", "fc",
         "[Optional] Overwrite Value for Characteristic Compressive Strength", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Tension [" + unitAbbreviation + "]", "ft",
+      pManager.AddGenericParameter($"Tension [{unitAbbreviation}]", "ft",
         "[Optional] Overwrite Value for Characteristic Tension Strength", GH_ParamAccess.item);
       // make all but first input optional
       for (int i = 1; i < pManager.ParamCount; i++) {

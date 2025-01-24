@@ -53,8 +53,8 @@ namespace AdSecGH.Components {
     public override void VariableParameterMaintenance() {
       string strainUnitAbbreviation = Strain.GetAbbreviation(_strainUnit);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(_stressUnit);
-      Params.Input[0].Name = "Strain [" + strainUnitAbbreviation + "]";
-      Params.Input[1].Name = "Stress [" + stressUnitAbbreviation + "]";
+      Params.Input[0].Name = $"Strain [{strainUnitAbbreviation}]";
+      Params.Input[1].Name = $"Stress [{stressUnitAbbreviation}]";
     }
 
     protected override void InitialiseDropdowns() {
@@ -78,9 +78,9 @@ namespace AdSecGH.Components {
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string strainUnitAbbreviation = Strain.GetAbbreviation(_strainUnit);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(_stressUnit);
-      pManager.AddGenericParameter("Strain [" + strainUnitAbbreviation + "]", "ε", "Value for strain (X-axis)",
+      pManager.AddGenericParameter($"Strain [{strainUnitAbbreviation}]", "ε", "Value for strain (X-axis)",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("Stress [" + stressUnitAbbreviation + "]", "σ", "Value for stress (Y-axis)",
+      pManager.AddGenericParameter($"Stress [{stressUnitAbbreviation}]", "σ", "Value for stress (Y-axis)",
         GH_ParamAccess.item);
     }
 

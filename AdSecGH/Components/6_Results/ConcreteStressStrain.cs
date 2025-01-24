@@ -47,13 +47,13 @@ namespace AdSecGH.Components {
       string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(DefaultUnits.StressUnitResult);
 
-      pManager.AddGenericParameter("ULS Strain [" + strainUnitAbbreviation + "]", "εd", "ULS strain at Vertex Point",
+      pManager.AddGenericParameter($"ULS Strain [{strainUnitAbbreviation}]", "εd", "ULS strain at Vertex Point",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("ULS Stress [" + stressUnitAbbreviation + "]", "σd", "ULS stress at Vertex Point",
+      pManager.AddGenericParameter($"ULS Stress [{stressUnitAbbreviation}]", "σd", "ULS stress at Vertex Point",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("SLS Strain [" + strainUnitAbbreviation + "]", "εk", "SLS strain at Vertex Point",
+      pManager.AddGenericParameter($"SLS Strain [{strainUnitAbbreviation}]", "εk", "SLS strain at Vertex Point",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("SLS Stress [" + stressUnitAbbreviation + "]", "σk", "SLS stress at Vertex Point",
+      pManager.AddGenericParameter($"SLS Stress [{stressUnitAbbreviation}]", "σk", "SLS stress at Vertex Point",
         GH_ParamAccess.item);
     }
 
@@ -75,13 +75,12 @@ namespace AdSecGH.Components {
           uls = solution.Value.Strength.Check(def.Value);
           sls = solution.Value.Serviceability.Check(def.Value);
         } else {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Unable to convert {Params.Input[1].NickName} to AdSec Load");
           return;
         }
       } else {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
+          $"Input parameter {Params.Input[1].NickName} failed to collect data!");
         return;
       }
 

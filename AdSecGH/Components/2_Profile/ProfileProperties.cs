@@ -37,47 +37,47 @@ namespace AdSecGH.Components {
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       string lengthUnitAbbreviation = Length.GetAbbreviation(DefaultUnits.LengthUnitGeometry);
-      string areahUnitAbbreviation = lengthUnitAbbreviation + "\u00B2";
-      string modulusUnitAbbreviation = lengthUnitAbbreviation + "\u00B3";
-      string inertiaUnitAbbreviation = lengthUnitAbbreviation + "\u2074";
+      string areahUnitAbbreviation = $"{lengthUnitAbbreviation}\u00b2";
+      string modulusUnitAbbreviation = $"{lengthUnitAbbreviation}\u00b3";
+      string inertiaUnitAbbreviation = $"{lengthUnitAbbreviation}\u2074";
 
-      pManager.AddGenericParameter("Area [" + areahUnitAbbreviation + "]", "A", "The profile's area.",
+      pManager.AddGenericParameter($"Area [{areahUnitAbbreviation}]", "A", "The profile's area.",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("Elastic Centroid, Z [" + lengthUnitAbbreviation + "]", "ECz",
+      pManager.AddGenericParameter($"Elastic Centroid, Z [{lengthUnitAbbreviation}]", "ECz",
         "The profile's elastic centroid, Z-position.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Elastic Centroid, Y [" + lengthUnitAbbreviation + "]", "ECy",
+      pManager.AddGenericParameter($"Elastic Centroid, Y [{lengthUnitAbbreviation}]", "ECy",
         "The profile's elastic centroid, Y-position.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Radius of Gyration, Z [" + lengthUnitAbbreviation + "]", "RGz",
+      pManager.AddGenericParameter($"Radius of Gyration, Z [{lengthUnitAbbreviation}]", "RGz",
         "The profile's radius of gyration, Z-position.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Radius of Gyration, Y [" + lengthUnitAbbreviation + "]", "RGy",
+      pManager.AddGenericParameter($"Radius of Gyration, Y [{lengthUnitAbbreviation}]", "RGy",
         "The profile's radius of gyration, Y-position.", GH_ParamAccess.item);
       pManager.AddNumberParameter("Shear Factor, YY", "Avy", "The profile's shear area factor, YY-ratio.",
         GH_ParamAccess.item);
       pManager.AddNumberParameter("Shear Factor, ZZ", "Avz", "The profile's shear area factor, ZZ-ratio.",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("Elastic Modulus, Y [" + modulusUnitAbbreviation + "]", "Wely",
+      pManager.AddGenericParameter($"Elastic Modulus, Y [{modulusUnitAbbreviation}]", "Wely",
         "The profile's elastic section modulus, Y-axis.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Elastic Modulus, Z [" + modulusUnitAbbreviation + "]", "Welz",
+      pManager.AddGenericParameter($"Elastic Modulus, Z [{modulusUnitAbbreviation}]", "Welz",
         "The profile's elastic section modulus, Z-axis.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Plastic Modulus, Y [" + modulusUnitAbbreviation + "]", "Wply",
+      pManager.AddGenericParameter($"Plastic Modulus, Y [{modulusUnitAbbreviation}]", "Wply",
         "The profile's plastic section modulus, Y-axis.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Plastic Modulus, Z [" + modulusUnitAbbreviation + "]", "Wplz",
+      pManager.AddGenericParameter($"Plastic Modulus, Z [{modulusUnitAbbreviation}]", "Wplz",
         "The profile's plastic section modulus, Z-axis.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Torsion Constant [" + inertiaUnitAbbreviation + "]", "J",
+      pManager.AddGenericParameter($"Torsion Constant [{inertiaUnitAbbreviation}]", "J",
         "The profile's torsion constant.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Local Moment of Inertia, Y [" + inertiaUnitAbbreviation + "]", "Iy",
+      pManager.AddGenericParameter($"Local Moment of Inertia, Y [{inertiaUnitAbbreviation}]", "Iy",
         "The profile's second moment of area about local Y-axis.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Local Moment of Inertia, Z [" + inertiaUnitAbbreviation + "]", "Iz",
+      pManager.AddGenericParameter($"Local Moment of Inertia, Z [{inertiaUnitAbbreviation}]", "Iz",
         "The profile's second moment of area about local Z-axis.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Local Moment of Inertia, YZ [" + inertiaUnitAbbreviation + "]", "Iyz",
+      pManager.AddGenericParameter($"Local Moment of Inertia, YZ [{inertiaUnitAbbreviation}]", "Iyz",
         "The profile's second moment of area about local YZ-axis.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Principal Moment of Inertia, U [" + inertiaUnitAbbreviation + "]", "Iu",
+      pManager.AddGenericParameter($"Principal Moment of Inertia, U [{inertiaUnitAbbreviation}]", "Iu",
         "The profile's second moment of area about the principal U-axis.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Principal Moment of Inertia, V [" + inertiaUnitAbbreviation + "]", "Iv",
+      pManager.AddGenericParameter($"Principal Moment of Inertia, V [{inertiaUnitAbbreviation}]", "Iv",
         "The profile's second moment of area about the principal V-axis.", GH_ParamAccess.item);
       pManager.AddGenericParameter("Principal axis angle [rad]", "Pa", "The angle of the principal axis.",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("Surface area [" + lengthUnitAbbreviation + "]", "S/L",
+      pManager.AddGenericParameter($"Surface area [{lengthUnitAbbreviation}]", "S/L",
         "The profile's surface area per unit length. This does not include the surface area of a void in case of hollow sections.",
         GH_ParamAccess.item);
     }

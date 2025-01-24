@@ -25,9 +25,9 @@ namespace AdSecGH.Components {
     private ForceUnit _forceUnit = DefaultUnits.ForceUnit;
     private MomentUnit _momentUnit = DefaultUnits.MomentUnit;
 
-    public CreateLoad() : base("Create" + AdSecLoadGoo.Name.Replace(" ", string.Empty),
+    public CreateLoad() : base($"Create{AdSecLoadGoo.Name.Replace(" ", string.Empty)}",
       AdSecLoadGoo.Name.Replace(" ", string.Empty),
-      "Create an" + AdSecLoadGoo.Description + " from an axial force and biaxial moments", CategoryName.Name(),
+      $"Create an{AdSecLoadGoo.Description} from an axial force and biaxial moments", CategoryName.Name(),
       SubCategoryName.Cat5()) {
       Hidden = true; // sets the initial state of the component to hidden
     }
@@ -57,9 +57,9 @@ namespace AdSecGH.Components {
     public override void VariableParameterMaintenance() {
       string forceUnitAbbreviation = Force.GetAbbreviation(_forceUnit);
       string momentUnitAbbreviation = Moment.GetAbbreviation(_momentUnit);
-      Params.Input[0].Name = "Fx [" + forceUnitAbbreviation + "]";
-      Params.Input[1].Name = "Myy [" + momentUnitAbbreviation + "]";
-      Params.Input[2].Name = "Mzz [" + momentUnitAbbreviation + "]";
+      Params.Input[0].Name = $"Fx [{forceUnitAbbreviation}]";
+      Params.Input[1].Name = $"Myy [{momentUnitAbbreviation}]";
+      Params.Input[2].Name = $"Mzz [{momentUnitAbbreviation}]";
     }
 
     protected override void InitialiseDropdowns() {
@@ -85,12 +85,12 @@ namespace AdSecGH.Components {
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string forceUnitAbbreviation = Force.GetAbbreviation(_forceUnit);
       string momentUnitAbbreviation = Moment.GetAbbreviation(_momentUnit);
-      pManager.AddGenericParameter("Fx [" + forceUnitAbbreviation + "]", "X", "The axial force. Positive x is tension.",
+      pManager.AddGenericParameter($"Fx [{forceUnitAbbreviation}]", "X", "The axial force. Positive x is tension.",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("Myy [" + momentUnitAbbreviation + "]", "YY",
+      pManager.AddGenericParameter($"Myy [{momentUnitAbbreviation}]", "YY",
         "The moment about local y-axis. Positive yy is anti - clockwise moment about local y-axis.",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("Mzz [" + momentUnitAbbreviation + "]", "ZZ",
+      pManager.AddGenericParameter($"Mzz [{momentUnitAbbreviation}]", "ZZ",
         "The moment about local z-axis. Positive zz is anti - clockwise moment about local z-axis.",
         GH_ParamAccess.item);
       // make all but last input optional
@@ -113,8 +113,7 @@ namespace AdSecGH.Components {
       // check for enough input parameters
       if (Params.Input[0].SourceCount == 0 && Params.Input[1].SourceCount == 0 && Params.Input[2].SourceCount == 0) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameters " + Params.Input[0].NickName + ", " + Params.Input[1].NickName + ", and "
-          + Params.Input[2].NickName + " failed to collect data!");
+          $"Input parameters {Params.Input[0].NickName}, {Params.Input[1].NickName}, and {Params.Input[2].NickName} failed to collect data!");
         return;
       }
 

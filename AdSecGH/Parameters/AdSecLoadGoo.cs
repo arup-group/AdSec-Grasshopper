@@ -39,7 +39,7 @@ namespace AdSecGH.Parameters {
     }
     public BoundingBox ClippingBox => Boundingbox;
     public override bool IsValid => true;
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Load";
     private Point3d m_point = Point3d.Unset;
 
@@ -170,10 +170,8 @@ namespace AdSecGH.Parameters {
       string unitMomentAbbreviation = string.Concat(quantityMoment.ToString().Where(char.IsLetter));
       IQuantity quantityForce = new Force(0, DefaultUnits.ForceUnit);
       string unitforceAbbreviation = string.Concat(quantityForce.ToString().Where(char.IsLetter));
-      return "AdSec " + TypeName + " {"
-        + Math.Round(Value.X.As(DefaultUnits.ForceUnit), 4) + unitforceAbbreviation + ", "
-        + Math.Round(Value.YY.As(DefaultUnits.MomentUnit), 4) + unitMomentAbbreviation + ", "
-        + Math.Round(Value.ZZ.As(DefaultUnits.MomentUnit), 4) + unitMomentAbbreviation + "}";
+      return
+        $"AdSec {TypeName} {{{Math.Round(Value.X.As(DefaultUnits.ForceUnit), 4)}{unitforceAbbreviation}, {Math.Round(Value.YY.As(DefaultUnits.MomentUnit), 4)}{unitMomentAbbreviation}, {Math.Round(Value.ZZ.As(DefaultUnits.MomentUnit), 4)}{unitMomentAbbreviation}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {
