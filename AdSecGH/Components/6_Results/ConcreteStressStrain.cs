@@ -85,8 +85,9 @@ namespace AdSecGH.Components {
         return;
       }
 
+      var point = this.GetAdSecPointGoo(DA, 2).AdSecPoint;
       // ULS strain
-      var strainULS = uls.Deformation.StrainAt(AdSecInput.IPoint(this, DA, 2));
+      var strainULS = uls.Deformation.StrainAt(point);
       var outStrainULS = new GH_UnitNumber(strainULS.ToUnit(DefaultUnits.StrainUnitResult));
       DA.SetData(0, outStrainULS);
 
@@ -96,7 +97,7 @@ namespace AdSecGH.Components {
       DA.SetData(1, outStressULS);
 
       // SLS strain
-      var strainSLS = sls.Deformation.StrainAt(AdSecInput.IPoint(this, DA, 2));
+      var strainSLS = sls.Deformation.StrainAt(point);
       var outStrainSLS = new GH_UnitNumber(strainSLS.ToUnit(DefaultUnits.StrainUnitResult));
       DA.SetData(2, outStrainSLS);
 
