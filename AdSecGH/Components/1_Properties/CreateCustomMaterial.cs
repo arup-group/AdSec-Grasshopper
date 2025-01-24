@@ -128,7 +128,7 @@ namespace AdSecGH.Components {
       // 5 Cracked params
       IConcreteCrackCalculationParameters concreteCrack = null;
       if (_isConcrete) {
-        concreteCrack = AdSecInput.ConcreteCrackCalculationParameters(this, DA, 5);
+        concreteCrack = this.GetIConcreteCrackCalculationParameters(DA, 5);
       }
 
       // create new empty material

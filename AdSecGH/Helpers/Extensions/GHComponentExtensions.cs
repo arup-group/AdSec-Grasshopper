@@ -5,6 +5,7 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.Profiles;
 
@@ -113,6 +114,22 @@ namespace AdSecGH.Helpers {
       }
 
       return spacing;
+    }
+
+    public static IConcreteCrackCalculationParameters GetIConcreteCrackCalculationParameters(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      IConcreteCrackCalculationParameters calculationParameters = null;
+      GH_ObjectWrapper inputData = null;
+
+      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable
+        && !AdSecInput.TryCastToConcreteCrackCalculationParameters(inputData, ref calculationParameters)) {
+        owner.Params.Input[inputId].ConvertToError("ConcreteCrackCalculationParameters");
+      }
+
+      return calculationParameters;
     }
 
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(

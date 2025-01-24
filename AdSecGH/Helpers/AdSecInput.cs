@@ -76,33 +76,6 @@ namespace AdSecGH.Helpers {
       return null;
     }
 
-    internal static IConcreteCrackCalculationParameters ConcreteCrackCalculationParameters(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      IConcreteCrackCalculationParameters concreteCrack = null;
-
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        if (gh_typ.Value is IConcreteCrackCalculationParameters parameters) {
-          concreteCrack = parameters;
-        } else if (gh_typ.Value is AdSecConcreteCrackCalculationParametersGoo adsecccp) {
-          concreteCrack = adsecccp.Value;
-        } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            $"Unable to convert {owner.Params.Input[inputid].NickName} to ConcreteCrackCalculationParameters");
-          return null;
-        }
-
-        return concreteCrack;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
     internal static List<ICover> Covers(GH_Component owner, IGH_DataAccess DA, int inputid, LengthUnit docLengthUnit) {
       var covers = new List<ICover>();
       var lengths = Input.UnitNumberList(owner, DA, inputid, docLengthUnit);
@@ -417,6 +390,20 @@ namespace AdSecGH.Helpers {
       bool castSuccessful = true;
       if (ghType.Value is AdSecRebarLayerGoo goo) {
         spacing = goo;
+      } else {
+        castSuccessful = false;
+      }
+
+      return castSuccessful;
+    }
+
+    public static bool TryCastToConcreteCrackCalculationParameters(
+      GH_ObjectWrapper ghType, ref IConcreteCrackCalculationParameters concreteCrack) {
+      bool castSuccessful = true;
+      if (ghType.Value is IConcreteCrackCalculationParameters parameters) {
+        concreteCrack = parameters;
+      } else if (ghType.Value is AdSecConcreteCrackCalculationParametersGoo adsecccp) {
+        concreteCrack = adsecccp.Value;
       } else {
         castSuccessful = false;
       }
