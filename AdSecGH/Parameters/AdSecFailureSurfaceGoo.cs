@@ -23,7 +23,7 @@ namespace AdSecGH.Parameters {
     }
     public BoundingBox ClippingBox => Boundingbox;
     public ILoadSurface FailureSurface { get; }
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "FailureSurface";
     internal Rhino.Display.Text3d negMyy;
     internal Rhino.Display.Text3d negMzz;
@@ -143,7 +143,7 @@ namespace AdSecGH.Parameters {
 
     public override string ToString() {
       var mesh = new GH_Mesh(Value);
-      return "AdSec " + TypeName + mesh.ToString();
+      return $"AdSec {TypeName}{mesh}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {

@@ -56,9 +56,9 @@ namespace AdSecGH.Components {
     public override void VariableParameterMaintenance() {
       string strainUnitAbbreviation = Strain.GetAbbreviation(_strainUnit);
       string curvatureUnitAbbreviation = Curvature.GetAbbreviation(_curvatureUnit);
-      Params.Input[0].Name = "εx [" + strainUnitAbbreviation + "]";
-      Params.Input[1].Name = "κyy [" + curvatureUnitAbbreviation + "]";
-      Params.Input[2].Name = "κzz [" + curvatureUnitAbbreviation + "]";
+      Params.Input[0].Name = $"εx [{strainUnitAbbreviation}]";
+      Params.Input[1].Name = $"κyy [{curvatureUnitAbbreviation}]";
+      Params.Input[2].Name = $"κzz [{curvatureUnitAbbreviation}]";
     }
 
     protected override void InitialiseDropdowns() {
@@ -84,12 +84,12 @@ namespace AdSecGH.Components {
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string strainUnitAbbreviation = Strain.GetAbbreviation(_strainUnit);
       string curvatureUnitAbbreviation = Curvature.GetAbbreviation(_curvatureUnit);
-      pManager.AddGenericParameter("εx [" + strainUnitAbbreviation + "]", "X",
+      pManager.AddGenericParameter($"εx [{strainUnitAbbreviation}]", "X",
         "The axial strain. Positive X indicates tension.", GH_ParamAccess.item);
-      pManager.AddGenericParameter("κyy [" + curvatureUnitAbbreviation + "]", "YY",
+      pManager.AddGenericParameter($"κyy [{curvatureUnitAbbreviation}]", "YY",
         "The curvature about local y-axis. It follows the right hand grip rule about the axis. Positive YY is anti-clockwise curvature about local y-axis.",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("κzz [" + curvatureUnitAbbreviation + "]", "ZZ",
+      pManager.AddGenericParameter($"κzz [{curvatureUnitAbbreviation}]", "ZZ",
         "The curvature about local z-axis. It follows the right hand grip rule about the axis. Positive ZZ is anti-clockwise curvature about local z-axis.",
         GH_ParamAccess.item);
     }

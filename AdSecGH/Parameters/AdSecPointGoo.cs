@@ -31,7 +31,7 @@ namespace AdSecGH.Parameters {
       }
     }
     public BoundingBox ClippingBox => Boundingbox;
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Vertex";
 
     public AdSecPointGoo(Point3d point) : base(point) {
@@ -168,9 +168,8 @@ namespace AdSecGH.Parameters {
     public override string ToString() {
       IQuantity quantity = new Length(0, DefaultUnits.LengthUnitGeometry);
       string unitAbbreviation = string.Concat(quantity.ToString().Where(char.IsLetter));
-      return "AdSec " + TypeName + " {"
-        + Math.Round(AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry), 4) + unitAbbreviation + ", "
-        + Math.Round(AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry), 4) + unitAbbreviation + "}";
+      return
+        $"AdSec {TypeName} {{{Math.Round(AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry), 4)}{unitAbbreviation}, {Math.Round(AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry), 4)}{unitAbbreviation}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {

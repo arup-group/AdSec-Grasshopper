@@ -28,7 +28,7 @@ namespace AdSecGH.Parameters {
       }
     }
     public BoundingBox ClippingBox => Boundingbox;
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "SubComponent";
     internal AdSecSection _section;
     private IPoint _offset;
@@ -175,7 +175,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return "AdSec " + TypeName + " {" + _section.ToString() + " Offset: " + _offset.ToString() + "}";
+      return $"AdSec {TypeName} {{{_section} Offset: {_offset}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {

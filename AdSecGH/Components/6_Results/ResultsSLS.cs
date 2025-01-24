@@ -57,42 +57,25 @@ namespace AdSecGH.Components {
       string momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
 
       pManager.AddGenericParameter("Load", "Ld",
-        "The section load under the applied action." + Environment.NewLine
-        + "If the applied deformation is outside the capacity range of the section, the returned load will be zero.",
+        $"The section load under the applied action.{Environment.NewLine}If the applied deformation is outside the capacity range of the section, the returned load will be zero.",
         GH_ParamAccess.item);
       pManager.AddGenericParameter("Cracks", "Cks",
-        "Crack results are calculated at bar positions or section surfaces depending on the Design Code specifications."
-        + Environment.NewLine
-        + "If the applied action is outside the capacity range of the section, the returned list will be empty. See MaximumCrack output "
-        + "for the crack result corresponding to the maximum crack width.", GH_ParamAccess.item);
+        $"Crack results are calculated at bar positions or section surfaces depending on the Design Code specifications.{Environment.NewLine}If the applied action is outside the capacity range of the section, the returned list will be empty. See MaximumCrack output for the crack result corresponding to the maximum crack width.", GH_ParamAccess.item);
 
       pManager.AddGenericParameter("MaximumCrack", "Crk",
-        "The crack result from Cracks that corresponds to the maximum crack width." + Environment.NewLine
-        + "If the applied action is outside the capacity range of the section, the returned maximum width crack result will be maximum "
-        + "double value.", GH_ParamAccess.item);
+        $"The crack result from Cracks that corresponds to the maximum crack width.{Environment.NewLine}If the applied action is outside the capacity range of the section, the returned maximum width crack result will be maximum double value.", GH_ParamAccess.item);
 
       pManager.AddNumberParameter("CrackUtil", "Uc",
-        "The ratio of the applied load (moment and axial) to the load (moment and axial) in the same direction that would "
-        + "cause the section to crack. Ratio > 1 means section is cracked." + Environment.NewLine
-        + "The section is cracked when the cracking utilisation ratio is greater than 1. If the applied load is outside the capacity range"
-        + " of the section, the cracking utilisation will be maximum double value.", GH_ParamAccess.item);
+        $"The ratio of the applied load (moment and axial) to the load (moment and axial) in the same direction that would cause the section to crack. Ratio > 1 means section is cracked.{Environment.NewLine}The section is cracked when the cracking utilisation ratio is greater than 1. If the applied load is outside the capacity range of the section, the cracking utilisation will be maximum double value.", GH_ParamAccess.item);
 
       pManager.AddVectorParameter("Deformation", "Def",
-        "The section deformation under the applied action. The output is a vector representing:" + Environment.NewLine
-        + "X: Strain [" + strainUnitAbbreviation + "]," + Environment.NewLine
-        + "Y: Curvature around zz (so in local y-direction) [" + curvatureUnitAbbreviation + "]," + Environment.NewLine
-        + "Z: Curvature around yy (so in local z-direction) [" + curvatureUnitAbbreviation + "]", GH_ParamAccess.item);
+        $"The section deformation under the applied action. The output is a vector representing:{Environment.NewLine}X: Strain [{strainUnitAbbreviation}],{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{curvatureUnitAbbreviation}],{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{curvatureUnitAbbreviation}]", GH_ParamAccess.item);
 
       pManager.AddVectorParameter("SecantStiffness", "Es",
-        "The secant stiffness under the applied action. The output is a vector representing:" + Environment.NewLine
-        + "X: Axial stiffness [" + axialUnitAbbreviation + "]," + Environment.NewLine
-        + "Y: The bending stiffness about the y-axis in the local coordinate system [" + bendingUnitAbbreviation + "],"
-        + Environment.NewLine + "Z: The bending stiffness about the z-axis in the local coordinate system ["
-        + bendingUnitAbbreviation + "]", GH_ParamAccess.item);
+        $"The secant stiffness under the applied action. The output is a vector representing:{Environment.NewLine}X: Axial stiffness [{axialUnitAbbreviation}],{Environment.NewLine}Y: The bending stiffness about the y-axis in the local coordinate system [{bendingUnitAbbreviation}],{Environment.NewLine}Z: The bending stiffness about the z-axis in the local coordinate system [{bendingUnitAbbreviation}]", GH_ParamAccess.item);
 
       pManager.AddIntervalParameter("Uncracked Moment Ranges", "MRs",
-        "The range of moments (in the direction of the applied moment, assuming constant axial force) "
-        + "over which the section remains uncracked. Moment values are in [" + momentUnitAbbreviation + "]",
+        $"The range of moments (in the direction of the applied moment, assuming constant axial force) over which the section remains uncracked. Moment values are in [{momentUnitAbbreviation}]",
         GH_ParamAccess.list);
     }
 
@@ -111,13 +94,12 @@ namespace AdSecGH.Components {
         } else if (gh_typ.Value is AdSecDeformationGoo def) {
           sls = solution.Value.Serviceability.Check(def.Value);
         } else {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Unable to convert {Params.Input[1].NickName} to AdSec Load");
           return;
         }
       } else {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
+          $"Input parameter {Params.Input[1].NickName} failed to collect data!");
         return;
       }
 

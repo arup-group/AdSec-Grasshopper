@@ -49,13 +49,10 @@ namespace AdSecGH.Components {
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       pManager.AddGenericParameter("Load", "Ld",
-        "The section load under the applied action." + Environment.NewLine
-        + "If the applied deformation is outside the capacity range of the section, the returned load will be zero.",
+        $"The section load under the applied action.{Environment.NewLine}If the applied deformation is outside the capacity range of the section, the returned load will be zero.",
         GH_ParamAccess.item);
       pManager.AddGenericParameter("MaximumCrack", "Crk",
-        "The crack result from Cracks that corresponds to the maximum crack width." + Environment.NewLine
-        + "If the applied action is outside the capacity range of the section, the returned maximum width crack result will be maximum "
-        + "double value.", GH_ParamAccess.item);
+        $"The crack result from Cracks that corresponds to the maximum crack width.{Environment.NewLine}If the applied action is outside the capacity range of the section, the returned maximum width crack result will be maximum double value.", GH_ParamAccess.item);
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {
@@ -74,13 +71,12 @@ namespace AdSecGH.Components {
         if (gh_typ.Value is AdSecLoadGoo ld) {
           load = new AdSecLoadGoo(ILoad.Create(ld.Value.X, ld.Value.YY, ld.Value.ZZ));
         } else {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Unable to convert {Params.Input[1].NickName} to AdSec Load");
           return;
         }
       } else {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
+          $"Input parameter {Params.Input[1].NickName} failed to collect data!");
         return;
       }
 

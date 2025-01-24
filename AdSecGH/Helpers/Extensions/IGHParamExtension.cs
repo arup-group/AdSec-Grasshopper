@@ -12,7 +12,7 @@ namespace AdSecGH.Helpers {
     }
 
     public static void FailedToCollectDataWarning(this IGH_Param owner) {
-      owner.AddRuntimeWarning("Input parameter " + owner.NickName + " failed to collect data!");
+      owner.AddRuntimeWarning($"Input parameter {owner.NickName} failed to collect data!");
     }
   }
 }

@@ -93,8 +93,8 @@ namespace AdSecGH.Helpers {
       } else if (isDataAvailable && !AdSecInput.TryCastToAdSecRebarBundleGoo(inputData, ref rebar, ref showRemark)) {
         owner.Params.Input[inputId].ConvertToError("Rebar");
       } else if (showRemark) {
-        owner.AddRuntimeRemark("Converted " + owner.Params.Input[inputId].NickName
-          + " from RebarSpacing to an AdSec Rebar. All spacing information has been lost!");
+        owner.AddRuntimeRemark(
+          $"Converted {owner.Params.Input[inputId].NickName} from RebarSpacing to an AdSec Rebar. All spacing information has been lost!");
       }
 
       return rebar;

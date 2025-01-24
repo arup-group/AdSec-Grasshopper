@@ -43,17 +43,15 @@ namespace AdSecGH {
       // ### Set system environment variables to allow user rights to read above dll ###
       const string name = "PATH";
       string pathvar = Environment.GetEnvironmentVariable(name);
-      string value = pathvar + ";" + PluginPath;
+      string value = $"{pathvar};{PluginPath}";
       var target = EnvironmentVariableTarget.Process;
       Environment.SetEnvironmentVariable(name, value, target);
 
       // ### Reference AdSecAPI and SQLite dlls ###
       try {
-        AdSecAPI = Assembly.LoadFile(PluginPath + "\\AdSec_API.dll");
+        AdSecAPI = Assembly.LoadFile($"{PluginPath}\\AdSec_API.dll");
       } catch (Exception ex) {
-        string message = ex.Message + Environment.NewLine + Environment.NewLine
-          + "Error loading the file AdSec_API.dll from path " + PluginPath + " - check if the file exist."
-          + Environment.NewLine + "The plugin cannot be loaded.";
+        string message = $"{ex.Message}{Environment.NewLine}{Environment.NewLine}Error loading the file AdSec_API.dll from path {PluginPath} - check if the file exist.{Environment.NewLine}The plugin cannot be loaded.";
         var exception = new Exception(message);
         var gH_LoadingException = new GH_LoadingException("AdSec: AdSec_API.dll loading", exception);
         Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
@@ -81,7 +79,7 @@ namespace AdSecGH {
 
       // initially look in %appdata% folder where package manager will store the plugin
       string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-      path = Path.Combine(path, "McNeel", "Rhinoceros", "Packages", RhinoApp.ExeVersion + ".0",
+      path = Path.Combine(path, "McNeel", "Rhinoceros", "Packages", $"{RhinoApp.ExeVersion}.0",
         AdSecGHInfo.ProductName);
 
       if (!File.Exists(Path.Combine(path, keyword))) // if no plugin file is found there continue search
@@ -106,17 +104,14 @@ namespace AdSecGH {
             }
           }
 
-          string message = "Error loading the file " + keyword
-            + " from any Grasshopper plugin folders - check if the file exist." + Environment.NewLine
-            + "The plugin cannot be loaded." + Environment.NewLine + "Folders (including subfolder) that was searched:"
-            + Environment.NewLine + sDir;
+          string message = $"Error loading the file {keyword} from any Grasshopper plugin folders - check if the file exist.{Environment.NewLine}The plugin cannot be loaded.{Environment.NewLine}Folders (including subfolder) that was searched:{Environment.NewLine}{sDir}";
           foreach (var pluginFolder in Folders.AssemblyFolders) {
             message += Environment.NewLine + pluginFolder.Folder;
           }
 
           var exception = new Exception(message);
           var gH_LoadingException
-            = new GH_LoadingException(AdSecGHInfo.ProductName + ": " + keyword + " loading failed", exception);
+            = new GH_LoadingException($"{AdSecGHInfo.ProductName}: {keyword} loading failed", exception);
           Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
           PostHog.PluginLoaded(PluginInfo.Instance, message);
           return "";

@@ -103,9 +103,7 @@ namespace AdSecGH.Components {
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Filename and path", "File",
-        "AdSec file to open and work with." + Environment.NewLine
-        + "Input either path component, a text string with path and " + Environment.NewLine
-        + "filename or an existing AdSec File created in Grasshopper.", GH_ParamAccess.item);
+        $"AdSec file to open and work with.{Environment.NewLine}Input either path component, a text string with path and {Environment.NewLine}filename or an existing AdSec File created in Grasshopper.", GH_ParamAccess.item);
       pManager.AddPlaneParameter("LocalPlane", "Pln",
         "[Optional] Plane representing local " + "coordinate system, by default a YZ-plane is used",
         GH_ParamAccess.list, Plane.WorldYZ);

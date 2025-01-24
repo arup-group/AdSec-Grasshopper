@@ -14,7 +14,7 @@ using OasysUnits;
 namespace AdSecGH.Parameters {
   public class AdSecRebarGroupGoo : GH_Goo<AdSecRebarGroup> {
     public override bool IsValid => true;
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Rebar Group";
     internal ICover Cover {
       get => Value.Cover;
@@ -180,7 +180,7 @@ namespace AdSecGH.Parameters {
             if (force.Force.Value != 0) {
               IQuantity quantityForce = new Force(0, DefaultUnits.ForceUnit);
               string unitforceAbbreviation = string.Concat(quantityForce.ToString().Where(char.IsLetter));
-              m_preLoad = ", " + Math.Round(force.Force.As(DefaultUnits.ForceUnit), 4) + unitforceAbbreviation + " prestress";
+              m_preLoad = $", {Math.Round(force.Force.As(DefaultUnits.ForceUnit), 4)}{unitforceAbbreviation} prestress";
             }
           } catch (Exception) {
             try {
@@ -188,13 +188,13 @@ namespace AdSecGH.Parameters {
               if (stress.Stress.Value != 0) {
                 IQuantity quantityStress = new Pressure(0, DefaultUnits.StressUnitResult);
                 string unitstressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
-                m_preLoad = ", " + Math.Round(stress.Stress.As(DefaultUnits.StressUnitResult), 4) + unitstressAbbreviation + " prestress";
+                m_preLoad = $", {Math.Round(stress.Stress.As(DefaultUnits.StressUnitResult), 4)}{unitstressAbbreviation} prestress";
               }
             } catch (Exception) {
               var strain = (IPreStrain)longitudinal.Preload;
               if (strain.Strain.Value != 0) {
                 string unitstrainAbbreviation = Strain.GetAbbreviation(DefaultUnits.MaterialStrainUnit);
-                m_preLoad = ", " + Math.Round(strain.Strain.As(DefaultUnits.MaterialStrainUnit), 4) + unitstrainAbbreviation + " prestress";
+                m_preLoad = $", {Math.Round(strain.Strain.As(DefaultUnits.MaterialStrainUnit), 4)}{unitstrainAbbreviation} prestress";
               }
             }
           }
@@ -202,11 +202,11 @@ namespace AdSecGH.Parameters {
 
         try {
           var temp = (ITemplateGroup)Value.Group;
-          m_ToString = "Template Group, " + Value.Cover.UniformCover.ToUnit(DefaultUnits.LengthUnitGeometry) + " cover";
+          m_ToString = $"Template Group, {Value.Cover.UniformCover.ToUnit(DefaultUnits.LengthUnitGeometry)} cover";
         } catch (Exception) {
           try {
             var perimeter = (IPerimeterGroup)Value.Group;
-            m_ToString = "Perimeter Group, " + Value.Cover.UniformCover.ToUnit(DefaultUnits.LengthUnitGeometry) + " cover";
+            m_ToString = $"Perimeter Group, {Value.Cover.UniformCover.ToUnit(DefaultUnits.LengthUnitGeometry)} cover";
           } catch (Exception) {
             try {
               var arc = (IArcGroup)Value.Group;
@@ -233,11 +233,11 @@ namespace AdSecGH.Parameters {
       } catch (Exception) {
         try {
           var link = (ILinkGroup)Value.Group;
-          m_ToString = "Link, " + Value.Cover.UniformCover.ToUnit(DefaultUnits.LengthUnitGeometry) + " cover";
+          m_ToString = $"Link, {Value.Cover.UniformCover.ToUnit(DefaultUnits.LengthUnitGeometry)} cover";
         } catch (Exception) {
         }
       }
-      return "AdSec " + TypeName + " {" + m_ToString + m_preLoad + "}";
+      return $"AdSec {TypeName} {{{m_ToString}{m_preLoad}}}";
     }
   }
 }

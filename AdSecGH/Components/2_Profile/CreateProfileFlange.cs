@@ -43,8 +43,8 @@ namespace AdSecGH.Components {
 
     public override void VariableParameterMaintenance() {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      Params.Input[0].Name = "Width [" + unitAbbreviation + "]";
-      Params.Input[1].Name = "Thickness [" + unitAbbreviation + "]";
+      Params.Input[0].Name = $"Width [{unitAbbreviation}]";
+      Params.Input[1].Name = $"Thickness [{unitAbbreviation}]";
     }
 
     protected override void InitialiseDropdowns() {
@@ -66,8 +66,8 @@ namespace AdSecGH.Components {
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Flange width", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Thickness [" + unitAbbreviation + "]", "t", "Flange thickness",
+      pManager.AddGenericParameter($"Width [{unitAbbreviation}]", "B", "Flange width", GH_ParamAccess.item);
+      pManager.AddGenericParameter($"Thickness [{unitAbbreviation}]", "t", "Flange thickness",
         GH_ParamAccess.item);
     }
 

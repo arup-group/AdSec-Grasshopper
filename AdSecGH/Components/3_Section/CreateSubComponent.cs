@@ -34,8 +34,7 @@ namespace AdSecGH.Components {
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Section", "Sec", "AdSec Section to create Subcomponent from", GH_ParamAccess.item);
       pManager.AddGenericParameter("Offset", "Off",
-        "[Optional] Section offset (Vertex Point)." + Environment.NewLine
-        + "Offset is applied between origins of containing section and sub-component. The offset of the profile is in the containing section's Profile Coordinate System. Any rotation applied to the containing section's profile will be applied to its sub-components. Sub-components can also have an additional rotation for their profiles.",
+        $"[Optional] Section offset (Vertex Point).{Environment.NewLine}Offset is applied between origins of containing section and sub-component. The offset of the profile is in the containing section's Profile Coordinate System. Any rotation applied to the containing section's profile will be applied to its sub-components. Sub-components can also have an additional rotation for their profiles.",
         GH_ParamAccess.item);
       // make all but first input optional
       for (int i = 1; i < pManager.ParamCount; i++) {

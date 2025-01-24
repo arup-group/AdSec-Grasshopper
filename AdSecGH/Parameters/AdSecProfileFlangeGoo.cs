@@ -9,7 +9,7 @@ using OasysUnits;
 namespace AdSecGH.Parameters {
   public class AdSecProfileFlangeGoo : GH_Goo<IFlange> {
     public override bool IsValid => true;
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Flange Profile";
 
     public AdSecProfileFlangeGoo(IFlange flange) : base(flange) {
@@ -23,7 +23,7 @@ namespace AdSecGH.Parameters {
       string flange = "AdSec Flange {";
       Length thk1 = Value.Width.ToUnit(DefaultUnits.LengthUnitGeometry);
       Length thk2 = Value.Thickness.ToUnit(DefaultUnits.LengthUnitGeometry);
-      flange += "Width:" + thk1.ToString() + ", Thk:" + thk2.ToString() + "}";
+      flange += $"Width:{thk1}, Thk:{thk2}}}";
       return flange;
     }
   }

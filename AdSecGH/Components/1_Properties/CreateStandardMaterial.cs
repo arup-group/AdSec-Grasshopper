@@ -177,8 +177,7 @@ namespace AdSecGH.Components {
         Params.RegisterInputParam(new Param_String());
         Params.Input[0].NickName = "S";
         Params.Input[0].Name = "Search";
-        Params.Input[0].Description = "[Optional] Search for Grade " + Environment.NewLine
-          + "Note: input 'all' to list all grades from the selected code";
+        Params.Input[0].Description = $"[Optional] Search for Grade {Environment.NewLine}Note: input 'all' to list all grades from the selected code";
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = true;
       }
@@ -258,8 +257,7 @@ namespace AdSecGH.Components {
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddTextParameter("Search", "S",
-        "[Optional] Search for Grade " + Environment.NewLine
-        + "Note: input 'all' to list all grades from the selected code", GH_ParamAccess.item);
+        $"[Optional] Search for Grade {Environment.NewLine}Note: input 'all' to list all grades from the selected code", GH_ParamAccess.item);
       pManager[0].Optional = true;
     }
 

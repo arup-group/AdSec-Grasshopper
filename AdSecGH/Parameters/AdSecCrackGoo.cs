@@ -177,10 +177,8 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return "AdSec " + TypeName + " {"
-          + "Y:" + Math.Round(Value.Position.Y.Value, 4) + Value.Position.Y.Unit + ", "
-          + "Z:" + Math.Round(Value.Position.Z.Value, 4) + Value.Position.Z.Unit + ", "
-          + "Width:" + Math.Round(Value.Width.Value, 4) + Value.Width.Unit + "}";
+      return
+        $"AdSec {TypeName} {{Y:{Math.Round(Value.Position.Y.Value, 4)}{Value.Position.Y.Unit}, Z:{Math.Round(Value.Position.Z.Value, 4)}{Value.Position.Z.Unit}, Width:{Math.Round(Value.Width.Value, 4)}{Value.Width.Unit}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {
