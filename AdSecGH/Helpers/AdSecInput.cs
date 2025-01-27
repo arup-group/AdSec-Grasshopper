@@ -24,31 +24,6 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
-    internal static AdSecSection AdSecSection(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        if (gh_typ.Value is AdSecSectionGoo a1) {
-          return a1.Value;
-        }
-
-        if (gh_typ.Value is AdSecSubComponentGoo a2) {
-          return a2._section;
-        }
-
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          $"Unable to convert {owner.Params.Input[inputid].NickName} to Section");
-        return null;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
     internal static List<AdSecSection> AdSecSections(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       var subs = new List<AdSecSection>();
@@ -390,6 +365,19 @@ namespace AdSecGH.Helpers {
       bool castSuccessful = true;
       if (ghType.Value is AdSecRebarLayerGoo goo) {
         spacing = goo;
+      } else {
+        castSuccessful = false;
+      }
+
+      return castSuccessful;
+    }
+
+    public static bool TryCastToAdSecSection(GH_ObjectWrapper ghType, ref AdSecSection section) {
+      bool castSuccessful = true;
+      if (ghType.Value is AdSecSectionGoo sectionGoo) {
+        section = sectionGoo.Value;
+      } else if (ghType.Value is AdSecSubComponentGoo subComponentGoo) {
+        section = subComponentGoo._section;
       } else {
         castSuccessful = false;
       }

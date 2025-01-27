@@ -116,6 +116,21 @@ namespace AdSecGH.Helpers {
       return spacing;
     }
 
+    public static AdSecSection GetAdSecSection(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      AdSecSection section = null;
+      GH_ObjectWrapper inputData = null;
+
+      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecSection(inputData, ref section)) {
+        owner.Params.Input[inputId].ConvertToError("Section");
+      }
+
+      return section;
+    }
+
     public static IConcreteCrackCalculationParameters GetIConcreteCrackCalculationParameters(
       this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
       IConcreteCrackCalculationParameters calculationParameters = null;
