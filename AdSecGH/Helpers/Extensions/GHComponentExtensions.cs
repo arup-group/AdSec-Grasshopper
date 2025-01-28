@@ -131,6 +131,22 @@ namespace AdSecGH.Helpers {
       return section;
     }
 
+    public static List<AdSecSection> GetAdSecSections(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      var sections = new List<AdSecSection>();
+      var inputData = new List<GH_ObjectWrapper>();
+      var invalidIds = new List<int>();
+
+      bool isDataAvailable = DA.GetDataList(inputId, inputData);
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecSections(inputData, sections, invalidIds)) {
+        invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertToError($"(item {id}) to Section"));
+      }
+
+      return sections;
+    }
+
     public static IConcreteCrackCalculationParameters GetIConcreteCrackCalculationParameters(
       this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
       IConcreteCrackCalculationParameters calculationParameters = null;

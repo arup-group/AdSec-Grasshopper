@@ -1,12 +1,9 @@
-﻿using AdSecCore.Builders;
-
-using AdSecGH.Helpers;
+﻿using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
-using Oasys.AdSec.Materials;
 using Oasys.AdSec.StandardMaterials;
 using Oasys.Profiles;
 using Oasys.Taxonomy.Profiles;
@@ -38,9 +35,13 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToAdSecSectionReturnsCorrectDataFromAdSecSectionGoo() {
-      var pressure = new Pressure(-0.5, PressureUnit.Bar);
-      var pressure2 = new Pressure(1, PressureUnit.Bar);
-      var input = IConcreteCrackCalculationParameters.Create(pressure2, pressure, pressure2);
+      var length = new Length(1, LengthUnit.Meter);
+      var thickness = new Length(0.2, LengthUnit.Meter);
+      var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(thickness, length),
+        new WebConstant(thickness)));
+      var section = ISection.Create(profile, Concrete.ACI318.Edition_2002.Metric.MPa_20);
+      var input = new AdSecSectionGoo(
+        new AdSecSection(section, new AdSecDesignCode().DesignCode, "", "", Plane.WorldXY));
 
       var objwrap = new GH_ObjectWrapper(input);
       bool castSuccessful = AdSecInput.TryCastToAdSecSection(objwrap, ref _section);

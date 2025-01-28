@@ -24,33 +24,6 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
-    internal static List<AdSecSection> AdSecSections(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var subs = new List<AdSecSection>();
-      var gh_typs = new List<GH_ObjectWrapper>();
-      if (DA.GetDataList(inputid, gh_typs)) {
-        for (int i = 0; i < gh_typs.Count; i++) {
-          if (gh_typs[i].Value is AdSecSection section) {
-            subs.Add(section);
-          } else if (gh_typs[i].Value is AdSecSectionGoo subcomp) {
-            subs.Add(subcomp.Value);
-          } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              $"Unable to convert {owner.Params.Input[inputid].NickName} (item {i}) to Section");
-          }
-        }
-
-        return subs;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
     internal static List<ICover> Covers(GH_Component owner, IGH_DataAccess DA, int inputid, LengthUnit docLengthUnit) {
       var covers = new List<ICover>();
       var lengths = Input.UnitNumberList(owner, DA, inputid, docLengthUnit);
@@ -383,6 +356,26 @@ namespace AdSecGH.Helpers {
       }
 
       return castSuccessful;
+    }
+
+    public static bool TryCastToAdSecSections(
+      List<GH_ObjectWrapper> ghTypes, List<AdSecSection> adSecSections, List<int> invalidIds) {
+      AdSecSection section = null;
+      if (ghTypes == null || ghTypes.Count == 0) {
+        return false;
+      }
+
+      for (int i = 0; i < ghTypes.Count; i++) {
+        if (ghTypes[i].Value is AdSecSection sect) {
+          adSecSections.Add(sect);
+        } else if (TryCastToAdSecSection(ghTypes[i], ref section)) {
+          adSecSections.Add(section);
+        } else {
+          invalidIds.Add(i);
+        }
+      }
+
+      return !(invalidIds?.Count > 0);
     }
 
     public static bool TryCastToConcreteCrackCalculationParameters(

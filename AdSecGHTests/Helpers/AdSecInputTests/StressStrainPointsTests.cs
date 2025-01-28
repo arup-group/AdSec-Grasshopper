@@ -33,19 +33,6 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void TryCastToStressStrainsPointReturnsNull() {
-      var objectWrapper = new GH_ObjectWrapper(null);
-      var objectWrappers = new List<GH_ObjectWrapper>() {
-        objectWrapper,
-        objectWrapper,
-      };
-      bool castSuccessful = AdSecInput.TryCastToStressStrainPoints(objectWrappers, ref _stressStrainPoints);
-
-      Assert.False(castSuccessful);
-      Assert.Empty(_stressStrainPoints);
-    }
-
-    [Fact]
     public void TryCastToStressStrainPointsReturnsFalseWhenCantConvert() {
       var objectWrappers = new List<GH_ObjectWrapper>() {
         new GH_ObjectWrapper(null),
