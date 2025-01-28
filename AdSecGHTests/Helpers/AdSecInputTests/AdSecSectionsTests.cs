@@ -28,7 +28,16 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void TryCastToAdSecSectionsReturnsFalseWhenWhenNull() {
+    public void TryCastToAdSecSectionsReturnsFalseWhenInvalidIdsListIsNullInitialised() {
+      bool castSuccessful = AdSecInput.TryCastToAdSecSections(null, _sections, null);
+
+      Assert.False(castSuccessful);
+      Assert.Empty(_sections);
+      Assert.Empty(invalidIds);
+    }
+
+    [Fact]
+    public void TryCastToAdSecSectionsReturnsFalseWhenNull() {
       bool castSuccessful = AdSecInput.TryCastToAdSecSections(null, _sections, invalidIds);
 
       Assert.False(castSuccessful);
@@ -37,13 +46,27 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void TryCastToAdSecSectionsReturnsFalseWhenWhenEmptySections() {
+    public void TryCastToAdSecSectionsReturnsFalseWhenEmptySections() {
       var objectWrappers = new List<GH_ObjectWrapper>();
       bool castSuccessful = AdSecInput.TryCastToAdSecSections(objectWrappers, _sections, invalidIds);
 
       Assert.False(castSuccessful);
       Assert.Empty(_sections);
       Assert.Empty(invalidIds);
+    }
+
+    [Fact]
+    public void TryCastToAdSecSectionsReturnsFalseWhenAdSecSectionIsNull() {
+      AdSecSection section = null;
+      var objectWrappers = new List<GH_ObjectWrapper>() {
+        new GH_ObjectWrapper(section),
+      };
+      bool castSuccessful = AdSecInput.TryCastToAdSecSections(objectWrappers, _sections, invalidIds);
+
+      Assert.False(castSuccessful);
+      Assert.Empty(_sections);
+      Assert.Single(invalidIds);
+      Assert.Equal(0, invalidIds[0]);
     }
 
     [Fact]
