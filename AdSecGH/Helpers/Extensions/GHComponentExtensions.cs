@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 using AdSecGH.Parameters;
 
@@ -6,6 +7,7 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
 
 using OasysGH.Units;
@@ -113,6 +115,24 @@ namespace AdSecGH.Helpers {
       }
 
       return spacing;
+    }
+
+    public static Oasys.Collections.IList<ILayer> GetILayers(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      var inputData = new List<GH_ObjectWrapper>();
+
+      DA.GetDataList(inputId, inputData);
+      bool isDataAvailable = inputData.TrueForAll(item => item != null);
+      var layers = Oasys.Collections.IList<ILayer>.Create();
+      var invalidIds = new List<int>();
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToILayers(inputData, layers, invalidIds)) {
+        invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "RebarLayer"));
+      }
+
+      return layers.Any() ? layers : null;
     }
 
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(
