@@ -142,10 +142,10 @@ namespace AdSecGH.Helpers {
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
       } else if (isDataAvailable && !AdSecInput.TryCastToAdSecSections(inputData, sections, invalidIds)) {
-        invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertToError($"(item {id}) to Section"));
+        invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "Section"));
       }
 
-      return sections.Count > 0 ? sections : null;
+      return sections.Any() ? sections : null;
     }
 
     public static IConcreteCrackCalculationParameters GetIConcreteCrackCalculationParameters(
