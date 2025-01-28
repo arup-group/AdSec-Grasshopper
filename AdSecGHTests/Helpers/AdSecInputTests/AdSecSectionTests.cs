@@ -34,6 +34,15 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
+    public void TryCastToAdSecSectionReturnsFalseWhenCantConvertFromNull() {
+      GH_ObjectWrapper objwrap = null;
+      bool castSuccessful = AdSecInput.TryCastToAdSecSection(objwrap, ref _section);
+
+      Assert.False(castSuccessful);
+      Assert.Null(_section);
+    }
+
+    [Fact]
     public void TryCastToAdSecSectionReturnsCorrectDataFromAdSecSectionGoo() {
       var length = new Length(1, LengthUnit.Meter);
       var thickness = new Length(0.2, LengthUnit.Meter);
