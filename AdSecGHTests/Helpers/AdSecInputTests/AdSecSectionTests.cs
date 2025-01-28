@@ -66,7 +66,7 @@ namespace AdSecGHTests.Helpers {
       var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(thickness, length),
         new WebConstant(thickness)));
       var section = ISection.Create(profile, Concrete.ACI318.Edition_2002.Metric.MPa_20);
-      var input = new AdSecSubComponentGoo(section, new Plane(), IPoint.Create(length, length),
+      var input = new AdSecSubComponentGoo(section, Plane.WorldXY, IPoint.Create(length, length),
         new AdSecDesignCode().DesignCode, "", "");
 
       var objwrap = new GH_ObjectWrapper(input);

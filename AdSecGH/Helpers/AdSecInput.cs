@@ -360,6 +360,7 @@ namespace AdSecGH.Helpers {
 
     public static bool TryCastToAdSecSections(
       List<GH_ObjectWrapper> ghTypes, List<AdSecSection> adSecSections, List<int> invalidIds) {
+      invalidIds = invalidIds ?? new List<int>();
       AdSecSection section = null;
       if (ghTypes == null || ghTypes.Count == 0) {
         return false;
@@ -375,7 +376,7 @@ namespace AdSecGH.Helpers {
         }
       }
 
-      return !(invalidIds?.Count > 0);
+      return !invalidIds.Any();
     }
 
     public static bool TryCastToConcreteCrackCalculationParameters(
