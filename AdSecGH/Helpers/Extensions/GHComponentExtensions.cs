@@ -137,14 +137,15 @@ namespace AdSecGH.Helpers {
       var inputData = new List<GH_ObjectWrapper>();
       var invalidIds = new List<int>();
 
-      bool isDataAvailable = DA.GetDataList(inputId, inputData);
+      DA.GetDataList(inputId, inputData);
+      bool isDataAvailable = inputData.TrueForAll(item => item != null);
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
       } else if (isDataAvailable && !AdSecInput.TryCastToAdSecSections(inputData, sections, invalidIds)) {
         invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertToError($"(item {id}) to Section"));
       }
 
-      return sections;
+      return sections.Count > 0 ? sections : null;
     }
 
     public static IConcreteCrackCalculationParameters GetIConcreteCrackCalculationParameters(

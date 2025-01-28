@@ -16,11 +16,11 @@ namespace TestGrasshopperObjects.Extensions {
     public override OasysPluginInfo PluginInfo => null;
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      pManager.AddGenericParameter("test Input", "i", "input", GH_ParamAccess.item);
+      pManager.AddGenericParameter("test Input", "i", "input", GH_ParamAccess.list);
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("test Output", "o", "output", GH_ParamAccess.item);
+      pManager.AddGenericParameter("test Output", "o", "output", GH_ParamAccess.list);
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {

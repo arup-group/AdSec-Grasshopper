@@ -347,9 +347,9 @@ namespace AdSecGH.Helpers {
 
     public static bool TryCastToAdSecSection(GH_ObjectWrapper ghType, ref AdSecSection section) {
       bool castSuccessful = true;
-      if (ghType.Value is AdSecSectionGoo sectionGoo) {
+      if (ghType?.Value is AdSecSectionGoo sectionGoo) {
         section = sectionGoo.Value;
-      } else if (ghType.Value is AdSecSubComponentGoo subComponentGoo) {
+      } else if (ghType?.Value is AdSecSubComponentGoo subComponentGoo) {
         section = subComponentGoo._section;
       } else {
         castSuccessful = false;
@@ -366,7 +366,7 @@ namespace AdSecGH.Helpers {
       }
 
       for (int i = 0; i < ghTypes.Count; i++) {
-        if (ghTypes[i].Value is AdSecSection sect) {
+        if (ghTypes[i]?.Value is AdSecSection sect) {
           adSecSections.Add(sect);
         } else if (TryCastToAdSecSection(ghTypes[i], ref section)) {
           adSecSections.Add(section);

@@ -20,13 +20,13 @@ using Xunit;
 namespace AdSecGHTests.Helpers.Extensions {
 
   [Collection("GrasshopperFixture collection")]
-  public class AdSecSectionTests {
-    private AdSecSectionTestComponent _component;
+  public class AdSecSectionsTests {
+    private AdSecSectionsTestComponent _component;
     private readonly string _failToRetrieveDataWarning = "failed";
     private readonly string _convertDataError = "convert";
 
-    public AdSecSectionTests() {
-      _component = new AdSecSectionTestComponent();
+    public AdSecSectionsTests() {
+      _component = new AdSecSectionsTestComponent();
     }
 
     [Fact]
@@ -87,12 +87,13 @@ namespace AdSecGHTests.Helpers.Extensions {
 
       Assert.Single(runtimeMessages);
       Assert.Contains(runtimeMessages, item => item.Contains(_convertDataError));
+      Assert.Contains(runtimeMessages, item => item.Contains("item 0"));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
 
     [Fact]
-    public void ReturnsSectionWhenDataCorrect() {
+    public void ReturnsSectionsWhenDataCorrect() {
       var length = new Length(1, LengthUnit.Meter);
       var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(length, length),
         new WebConstant(length)));
