@@ -53,7 +53,7 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void TryCastToILayersReturnsFalseWhenAdSecSectionIsNull() {
+    public void TryCastToILayersReturnsFalseWhenValueIsNull() {
       ILayer layer = null;
       var objectWrappers = new List<GH_ObjectWrapper>() {
         new GH_ObjectWrapper(layer),
