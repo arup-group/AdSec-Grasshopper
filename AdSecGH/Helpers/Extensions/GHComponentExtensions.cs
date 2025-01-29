@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.Profiles;
 
@@ -113,6 +115,54 @@ namespace AdSecGH.Helpers {
       }
 
       return spacing;
+    }
+
+    public static AdSecSection GetAdSecSection(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      AdSecSection section = null;
+      GH_ObjectWrapper inputData = null;
+
+      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecSection(inputData, ref section)) {
+        owner.Params.Input[inputId].ConvertToError("Section");
+      }
+
+      return section;
+    }
+
+    public static List<AdSecSection> GetAdSecSections(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      var sections = new List<AdSecSection>();
+      var inputData = new List<GH_ObjectWrapper>();
+      var invalidIds = new List<int>();
+
+      DA.GetDataList(inputId, inputData);
+      bool isDataAvailable = inputData.TrueForAll(item => item != null);
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecSections(inputData, sections, invalidIds)) {
+        invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "Section"));
+      }
+
+      return sections.Any() ? sections : null;
+    }
+
+    public static IConcreteCrackCalculationParameters GetIConcreteCrackCalculationParameters(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      IConcreteCrackCalculationParameters calculationParameters = null;
+      GH_ObjectWrapper inputData = null;
+
+      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable
+        && !AdSecInput.TryCastToConcreteCrackCalculationParameters(inputData, ref calculationParameters)) {
+        owner.Params.Input[inputId].ConvertToError("ConcreteCrackCalculationParameters");
+      }
+
+      return calculationParameters;
     }
 
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(
