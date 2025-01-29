@@ -161,7 +161,7 @@ namespace AdSecGH.Components {
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) { }
 
     protected override void SolveInternal(IGH_DataAccess DA) {
-      var sections = AdSecInput.AdSecSections(this, DA, 0);
+      var sections = this.GetAdSecSections(DA, 0);
       if (sections.Count == 0) {
         return;
       }

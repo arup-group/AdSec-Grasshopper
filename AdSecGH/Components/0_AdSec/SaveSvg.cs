@@ -146,7 +146,7 @@ namespace AdSecGH.Components {
     }
 
     protected override void SolveInternal(IGH_DataAccess DA) {
-      var section = AdSecInput.AdSecSection(this, DA, 0);
+      var section = this.GetAdSecSection(DA, 0);
       if (section == null) {
         return;
       }
