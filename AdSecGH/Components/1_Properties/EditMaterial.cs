@@ -134,7 +134,7 @@ namespace AdSecGH.Components {
         IConcreteCrackCalculationParameters concreteCrack = null;
         if (Params.Input[6].SourceCount > 0) {
           // use input
-          concreteCrack = AdSecInput.ConcreteCrackCalculationParameters(this, DA, 6);
+          concreteCrack = this.GetIConcreteCrackCalculationParameters(DA, 6);
           rebuildCurves = true;
         }
 

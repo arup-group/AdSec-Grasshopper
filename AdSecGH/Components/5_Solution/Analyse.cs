@@ -42,7 +42,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // get section input
-      var section = AdSecInput.AdSecSection(this, DA, 0);
+      var section = this.GetAdSecSection(DA, 0);
 
       // create new adsec instance
       var adSec = IAdSec.Create(section.DesignCode);

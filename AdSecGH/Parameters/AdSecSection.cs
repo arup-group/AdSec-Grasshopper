@@ -59,8 +59,7 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecSection(
-      IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement,
-      Oasys.Collections.IList<ISubComponent> subComponents) {
+      IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement, Oasys.Collections.IList<ISubComponent> subComponents) {
       DesignCode = material.DesignCode.Duplicate().DesignCode;
       _codeName = material.DesignCodeName;
       _materialName = material.GradeName;
@@ -412,7 +411,7 @@ namespace AdSecGH.Parameters {
 
     public static ISection GetFlattenSection(GH_Component component, IGH_DataAccess DA, int paramId) {
       // We simply unpack the section from GH_ObjectWrapper and add logging
-      var adSecSection = AdSecInput.AdSecSection(component, DA, paramId);
+      var adSecSection = component.GetAdSecSection(DA, paramId);
       return adSecSection.Section.FlattenSection();
     }
   }

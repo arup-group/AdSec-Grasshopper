@@ -24,85 +24,6 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
-    internal static AdSecSection AdSecSection(
-      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputId, ref gh_typ)) {
-        if (gh_typ.Value is AdSecSectionGoo a1) {
-          return a1.Value;
-        }
-
-        if (gh_typ.Value is AdSecSubComponentGoo a2) {
-          return a2._section;
-        }
-
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          $"Unable to convert {owner.Params.Input[inputId].NickName} to Section");
-        return null;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
-    internal static List<AdSecSection> AdSecSections(
-      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
-      var subs = new List<AdSecSection>();
-      var gh_typs = new List<GH_ObjectWrapper>();
-      if (DA.GetDataList(inputId, gh_typs)) {
-        for (int i = 0; i < gh_typs.Count; i++) {
-          if (gh_typs[i].Value is AdSecSection section) {
-            subs.Add(section);
-          } else if (gh_typs[i].Value is AdSecSectionGoo subcomp) {
-            subs.Add(subcomp.Value);
-          } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              $"Unable to convert {owner.Params.Input[inputId].NickName} (item {i}) to Section");
-          }
-        }
-
-        return subs;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
-    internal static IConcreteCrackCalculationParameters ConcreteCrackCalculationParameters(
-      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
-      IConcreteCrackCalculationParameters concreteCrack = null;
-
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputId, ref gh_typ)) {
-        if (gh_typ.Value is IConcreteCrackCalculationParameters parameters) {
-          concreteCrack = parameters;
-        } else if (gh_typ.Value is AdSecConcreteCrackCalculationParametersGoo adsecccp) {
-          concreteCrack = adsecccp.Value;
-        } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            $"Unable to convert {owner.Params.Input[inputId].NickName} to ConcreteCrackCalculationParameters");
-          return null;
-        }
-
-        return concreteCrack;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
     internal static List<ICover> Covers(GH_Component owner, IGH_DataAccess DA, int inputId, LengthUnit docLengthUnit) {
       var covers = new List<ICover>();
       var lengths = Input.UnitNumberList(owner, DA, inputId, docLengthUnit);
@@ -283,6 +204,54 @@ namespace AdSecGH.Helpers {
       bool castSuccessful = true;
       if (ghType.Value is AdSecRebarLayerGoo goo) {
         spacing = goo;
+      } else {
+        castSuccessful = false;
+      }
+
+      return castSuccessful;
+    }
+
+    public static bool TryCastToAdSecSection(GH_ObjectWrapper ghType, ref AdSecSection section) {
+      bool castSuccessful = true;
+      if (ghType?.Value is AdSecSectionGoo sectionGoo) {
+        section = sectionGoo.Value;
+      } else if (ghType?.Value is AdSecSubComponentGoo subComponentGoo) {
+        section = subComponentGoo._section;
+      } else {
+        castSuccessful = false;
+      }
+
+      return castSuccessful;
+    }
+
+    public static bool TryCastToAdSecSections(
+      List<GH_ObjectWrapper> ghTypes, List<AdSecSection> adSecSections, List<int> invalidIds) {
+      invalidIds = invalidIds ?? new List<int>();
+      AdSecSection section = null;
+      if (ghTypes == null || ghTypes.Count == 0) {
+        return false;
+      }
+
+      for (int i = 0; i < ghTypes.Count; i++) {
+        if (ghTypes[i]?.Value is AdSecSection sect) {
+          adSecSections.Add(sect);
+        } else if (TryCastToAdSecSection(ghTypes[i], ref section)) {
+          adSecSections.Add(section);
+        } else {
+          invalidIds.Add(i);
+        }
+      }
+
+      return !invalidIds.Any();
+    }
+
+    public static bool TryCastToConcreteCrackCalculationParameters(
+      GH_ObjectWrapper ghType, ref IConcreteCrackCalculationParameters concreteCrack) {
+      bool castSuccessful = true;
+      if (ghType.Value is IConcreteCrackCalculationParameters parameters) {
+        concreteCrack = parameters;
+      } else if (ghType.Value is AdSecConcreteCrackCalculationParametersGoo adsecccp) {
+        concreteCrack = adsecccp.Value;
       } else {
         castSuccessful = false;
       }

@@ -61,7 +61,7 @@ namespace AdSecGH.Components {
     protected override void SolveInstance(IGH_DataAccess DA) {
       // 0 Cracked params
       var concreteCrack
-        = new AdSecConcreteCrackCalculationParametersGoo(AdSecInput.ConcreteCrackCalculationParameters(this, DA, 0));
+        = new AdSecConcreteCrackCalculationParametersGoo(this.GetIConcreteCrackCalculationParameters(DA, 0));
 
       if (concreteCrack != null && concreteCrack.Value != null) {
         // #### get the remaining inputs ####
