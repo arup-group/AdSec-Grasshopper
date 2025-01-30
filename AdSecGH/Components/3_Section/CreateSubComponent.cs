@@ -52,7 +52,7 @@ namespace AdSecGH.Components {
         return;
       }
 
-      var offset = AdSecInput.IPoint(this, DA, 1, true) ?? IPoint.Create(Length.Zero, Length.Zero);
+      var offset = this.GetAdSecPointGoo(DA, 1, true).AdSecPoint ?? IPoint.Create(Length.Zero, Length.Zero);
       var subComponent = ISubComponent.Create(section.Section, offset);
       var subGoo = new AdSecSubComponentGoo(subComponent, section.LocalPlane, section.DesignCode, section._codeName,
         section._materialName);

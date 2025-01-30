@@ -216,31 +216,27 @@ namespace AdSecGH.Components {
       switch (_mode) {
         case FoldMode.Line:
           // create line group
-          group = new AdSecRebarGroupGoo(ILineGroup.Create(AdSecInput.IPoint(this, da, 1),
-            AdSecInput.IPoint(this, da, 2), rebarLayerValue));
+          group = new AdSecRebarGroupGoo(ILineGroup.Create(this.GetAdSecPointGoo(da, 1).AdSecPoint,
+            this.GetAdSecPointGoo(da, 2).AdSecPoint, rebarLayerValue));
           break;
-
         case FoldMode.Circle:
           // create circle rebar group
-          group = new AdSecRebarGroupGoo(ICircleGroup.Create(AdSecInput.IPoint(this, da, 1, true),
+          group = new AdSecRebarGroupGoo(ICircleGroup.Create(this.GetAdSecPointGoo(da, 1, true).AdSecPoint,
             (Length)Input.UnitNumber(this, da, 2, _lengthUnit), (Angle)Input.UnitNumber(this, da, 3, _angleUnit, true),
             rebarLayerValue));
           break;
-
         case FoldMode.Arc:
           // create arc rebar grouup
-          group = new AdSecRebarGroupGoo(IArcGroup.Create(AdSecInput.IPoint(this, da, 1, true),
+          group = new AdSecRebarGroupGoo(IArcGroup.Create(this.GetAdSecPointGoo(da, 1, true).AdSecPoint,
             (Length)Input.UnitNumber(this, da, 2, _lengthUnit), (Angle)Input.UnitNumber(this, da, 3, _angleUnit),
             (Angle)Input.UnitNumber(this, da, 4, _angleUnit), rebarLayerValue));
           break;
-
         case FoldMode.SingleBars:
           // create single rebar group
           var bars = ISingleBars.Create(this.GetAdSecRebarBundleGoo(da, 0).Value);
-
           bars.Positions = AdSecInput.IPoints(this, da, 1);
-
           group = new AdSecRebarGroupGoo(bars);
+
           break;
       }
 

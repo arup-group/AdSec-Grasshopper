@@ -35,31 +35,6 @@ namespace AdSecGH.Helpers {
       return covers;
     }
 
-    internal static IFlange Flange(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      AdSecProfileFlangeGoo flange = null;
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        if (gh_typ.Value is AdSecProfileFlangeGoo goo) {
-          flange = goo;
-          return flange.Value;
-        }
-
-        if (gh_typ.Value is AdSecProfileWebGoo) {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            $"Unable to convert {owner.Params.Input[inputid].NickName} from Web to Flange");
-        } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            $"Unable to convert {owner.Params.Input[inputid].NickName} to Flange");
-          return null;
-        }
-      } else if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
     internal static Oasys.Collections.IList<ILayer> ILayers(
       GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
       var grps = Oasys.Collections.IList<ILayer>.Create();
@@ -85,11 +60,6 @@ namespace AdSecGH.Helpers {
       }
 
       return null;
-    }
-
-    internal static IPoint IPoint(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var pt = owner.GetAdSecPointGoo(DA, inputid, isOptional);
-      return pt.AdSecPoint;
     }
 
     internal static Oasys.Collections.IList<IPoint> IPoints(
@@ -224,7 +194,7 @@ namespace AdSecGH.Helpers {
           } else if (gh_typs[i].Value is AdSecSubComponentGoo subcomp) {
             subs.Add(subcomp.Value);
           } else if (gh_typs[i].Value is AdSecSectionGoo section) {
-            var offset = Oasys.Profiles.IPoint.Create(Length.Zero, Length.Zero);
+            var offset = IPoint.Create(Length.Zero, Length.Zero);
             var sub = ISubComponent.Create(section.Value.Section, offset);
             subs.Add(sub);
           } else {
@@ -237,31 +207,6 @@ namespace AdSecGH.Helpers {
       }
 
       if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
-    internal static IWeb Web(GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      AdSecProfileWebGoo web = null;
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
-        if (gh_typ.Value is AdSecProfileWebGoo goo) {
-          web = goo;
-          return web.Value;
-        }
-
-        if (gh_typ.Value is AdSecProfileFlangeGoo) {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            $"Unable to convert {owner.Params.Input[inputid].NickName} from Flange to Web");
-        } else {
-          owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            $"Unable to convert {owner.Params.Input[inputid].NickName} to Web");
-          return null;
-        }
-      } else if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
           $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
       }
