@@ -3,7 +3,6 @@
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
 
 using Rhino.Geometry;
 
@@ -98,7 +97,7 @@ namespace AdSecGHTests.Helpers.Extensions {
     }
 
     [Fact]
-    public void ReturnsIPointWhenDataCorrectButConvertedSinglePoint() {
+    public void ReturnsIPointWhenDataCorrectButShowRemarkForSinglePoint() {
       ComponentTestHelper.SetInput(_component, new Point3d());
 
       object result = ComponentTestHelper.GetOutput(_component);
@@ -113,9 +112,11 @@ namespace AdSecGHTests.Helpers.Extensions {
     }
 
     [Fact]
-    public void ReturnsIPointWhenDataCorrectButConvertedManyPoints() {
-      var wrapper = new GH_ObjectWrapper(new List<Point3d>() { new Point3d(), new Point3d() });
-      ComponentTestHelper.SetInput(_component, wrapper);
+    public void ReturnsIPointWhenDataCorrectButShowRemarkForManyPoints() {
+      ComponentTestHelper.SetInput(_component, new List<object>() {
+        new Point3d(1, 1, 1),
+        new Point3d(2, 2, 2),
+      });
 
       object result = ComponentTestHelper.GetOutput(_component);
       Assert.NotNull(result);
