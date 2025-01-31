@@ -284,16 +284,15 @@ namespace AdSecGH.Helpers {
         }
       }
 
-      ProcessTemporaryPoints(iPoints, temporaryPoints);
+      ProcessTemporaryPoints(ref iPoints, ref temporaryPoints);
 
       pointsConverted = temporaryPoints.Count;
       return !invalidIds.Any();
     }
 
-    public static void ProcessTemporaryPoints(IList<IPoint> iPoints, List<Point3d> temporaryPoints) {
-      if (!temporaryPoints.Any()) {
-        return;
-      }
+    public static void ProcessTemporaryPoints(ref IList<IPoint> iPoints, ref List<Point3d> temporaryPoints) {
+      iPoints = iPoints ?? new List<IPoint>();
+      temporaryPoints = temporaryPoints ?? new List<Point3d>();
 
       if (temporaryPoints.Count == 1) {
         iPoints.Add(AdSecPointGoo.CreateFromPoint3d(temporaryPoints[0], Plane.WorldYZ));

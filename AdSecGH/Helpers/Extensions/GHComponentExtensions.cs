@@ -203,7 +203,7 @@ namespace AdSecGH.Helpers {
 
       if (pointsConverted == 1) {
         owner.AddRuntimeRemark(
-          "Single Point converted to local point. Assumed that local coordinate systemisinaYZ-Plane");
+          "Single Point converted to local point. Assumed that local coordinate system is in a YZ-Plane");
       } else if (pointsConverted > 1) {
         owner.AddRuntimeRemark(
           "List of Points have been converted to local points. Assumed that local coordinate system is matching best fit plane through points");
