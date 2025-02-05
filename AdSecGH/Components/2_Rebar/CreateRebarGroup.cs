@@ -165,28 +165,28 @@ namespace AdSecGH.Components {
           // top
           if (Params.Input[0].SourceCount != 0) {
             var grp = ITemplateGroup.Create(ITemplateGroup.Face.Top);
-            grp.Layers = AdSecInput.ILayers(this, da, 0);
+            grp.Layers = this.GetILayers(da, 0);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
 
           // left
           if (Params.Input[1].SourceCount != 0) {
             var grp = ITemplateGroup.Create(ITemplateGroup.Face.LeftSide);
-            grp.Layers = AdSecInput.ILayers(this, da, 1);
+            grp.Layers = this.GetILayers(da, 1);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
 
           // right
           if (Params.Input[2].SourceCount != 0) {
             var grp = ITemplateGroup.Create(ITemplateGroup.Face.RightSide);
-            grp.Layers = AdSecInput.ILayers(this, da, 2);
+            grp.Layers = this.GetILayers(da, 2);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
 
           // bottom
           if (Params.Input[3].SourceCount != 0) {
             var grp = ITemplateGroup.Create(ITemplateGroup.Face.Bottom);
-            grp.Layers = AdSecInput.ILayers(this, da, 3);
+            grp.Layers = this.GetILayers(da, 3);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
 
@@ -203,7 +203,7 @@ namespace AdSecGH.Components {
           // top
           if (Params.Input[0].SourceCount != 0) {
             var grp = IPerimeterGroup.Create();
-            grp.Layers = AdSecInput.ILayers(this, da, 0);
+            grp.Layers = this.GetILayers(da, 0);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
 

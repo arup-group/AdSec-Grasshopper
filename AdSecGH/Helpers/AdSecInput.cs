@@ -24,9 +24,9 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
-    internal static List<ICover> Covers(GH_Component owner, IGH_DataAccess DA, int inputid, LengthUnit docLengthUnit) {
+    internal static List<ICover> Covers(GH_Component owner, IGH_DataAccess DA, int inputId, LengthUnit docLengthUnit) {
       var covers = new List<ICover>();
-      var lengths = Input.UnitNumberList(owner, DA, inputid, docLengthUnit);
+      var lengths = Input.UnitNumberList(owner, DA, inputId, docLengthUnit);
 
       foreach (var length in lengths.Select(v => (Length)v)) {
         covers.Add(ICover.Create(length));
@@ -35,111 +35,32 @@ namespace AdSecGH.Helpers {
       return covers;
     }
 
-    internal static Oasys.Collections.IList<ILayer> ILayers(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var grps = Oasys.Collections.IList<ILayer>.Create();
-      var gh_typs = new List<GH_ObjectWrapper>();
-      if (DA.GetDataList(inputid, gh_typs)) {
-        for (int i = 0; i < gh_typs.Count; i++) {
-          if (gh_typs[i].Value is ILayer layer) {
-            grps.Add(layer);
-          } else if (gh_typs[i].Value is AdSecRebarLayerGoo rebarGoo) {
-            grps.Add(rebarGoo.Value);
-          } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              $"Unable to convert {owner.Params.Input[inputid].NickName} (item {i}) to RebarLayer");
-          }
-        }
-
-        return grps;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
-    internal static Oasys.Collections.IList<IPoint> IPoints(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
-      var pts = Oasys.Collections.IList<IPoint>.Create();
-      var gh_typs = new List<GH_ObjectWrapper>();
-      if (DA.GetDataList(inputid, gh_typs)) {
-        var tempPts = new List<Point3d>();
-        for (int i = 0; i < gh_typs.Count; i++) {
-          Curve polycurve = null;
-          var ghpt = new Point3d();
-
-          if (gh_typs[i].Value is IPoint point) {
-            pts.Add(point);
-          } else if (gh_typs[i].Value is AdSecPointGoo sspt) {
-            pts.Add(sspt.AdSecPoint);
-          } else if (GH_Convert.ToPoint3d(gh_typs[i].Value, ref ghpt, GH_Conversion.Both)) {
-            tempPts.Add(ghpt);
-          } else if (GH_Convert.ToCurve(gh_typs[i].Value, ref polycurve, GH_Conversion.Both)) {
-            var curve = (PolylineCurve)polycurve;
-            pts = AdSecPointGoo.PtsFromPolylineCurve(curve);
-          } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              $"Unable to convert {owner.Params.Input[inputid].NickName} (item {i}) to StressStrainPoint or Polyline");
-          }
-        }
-
-        if (tempPts.Count > 0) {
-          if (tempPts.Count == 1) {
-            pts.Add(AdSecPointGoo.CreateFromPoint3d(tempPts[0], Plane.WorldYZ));
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
-              "Single Point converted to local point. Assumed that local coordinate system is in a YZ-Plane");
-          } else {
-            Plane.FitPlaneToPoints(tempPts, out var plane);
-            foreach (var pt in tempPts) {
-              pts.Add(AdSecPointGoo.CreateFromPoint3d(pt, plane));
-            }
-
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
-              "List of Points have been converted to local points. Assumed that local coordinate system is matching best-fit plane through points");
-          }
-        }
-
-        return pts;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
     internal static AdSecRebarGroupGoo ReinforcementGroup(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
+      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
       var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
+      if (DA.GetData(inputId, ref gh_typ)) {
         if (gh_typ.Value is AdSecRebarGroupGoo goo) {
           return goo;
         }
 
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          $"Unable to convert {owner.Params.Input[inputid].NickName} to RebarLayout");
+          $"Unable to convert {owner.Params.Input[inputId].NickName} to RebarLayout");
         return null;
       }
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
       }
 
       return null;
     }
 
     internal static List<AdSecRebarGroup> ReinforcementGroups(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
+      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
       var grps = new List<AdSecRebarGroup>();
       var gh_typs = new List<GH_ObjectWrapper>();
-      if (DA.GetDataList(inputid, gh_typs)) {
+      if (DA.GetDataList(inputId, gh_typs)) {
         for (int i = 0; i < gh_typs.Count; i++) {
           if (gh_typs[i].Value is IGroup group) {
             grps.Add(new AdSecRebarGroup(group));
@@ -147,7 +68,7 @@ namespace AdSecGH.Helpers {
             grps.Add(rebarGoo.Value);
           } else {
             owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              $"Unable to convert {owner.Params.Input[inputid].NickName} (item {i}) to RebarGroup");
+              $"Unable to convert {owner.Params.Input[inputId].NickName} (item {i}) to RebarGroup");
           }
         }
 
@@ -156,38 +77,38 @@ namespace AdSecGH.Helpers {
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
       }
 
       return null;
     }
 
     internal static AdSecSolutionGoo Solution(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
+      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
       var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputid, ref gh_typ)) {
+      if (DA.GetData(inputId, ref gh_typ)) {
         if (gh_typ.Value is AdSecSolutionGoo goo) {
           return goo;
         }
 
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          $"Unable to convert {owner.Params.Input[inputid].NickName} to AdSec Results");
+          $"Unable to convert {owner.Params.Input[inputId].NickName} to AdSec Results");
         return null;
       }
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
       }
 
       return null;
     }
 
     internal static Oasys.Collections.IList<ISubComponent> SubComponents(
-      GH_Component owner, IGH_DataAccess DA, int inputid, bool isOptional = false) {
+      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
       var subs = Oasys.Collections.IList<ISubComponent>.Create();
       var gh_typs = new List<GH_ObjectWrapper>();
-      if (DA.GetDataList(inputid, gh_typs)) {
+      if (DA.GetDataList(inputId, gh_typs)) {
         for (int i = 0; i < gh_typs.Count; i++) {
           if (gh_typs[i].Value is ISubComponent component) {
             subs.Add(component);
@@ -199,7 +120,7 @@ namespace AdSecGH.Helpers {
             subs.Add(sub);
           } else {
             owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              $"Unable to convert {owner.Params.Input[inputid].NickName} (item {i}) to SubComponent or Section");
+              $"Unable to convert {owner.Params.Input[inputId].NickName} (item {i}) to SubComponent or Section");
           }
         }
 
@@ -208,7 +129,7 @@ namespace AdSecGH.Helpers {
 
       if (!isOptional) {
         owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputid].NickName} failed to collect data!");
+          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
       }
 
       return null;
@@ -336,6 +257,105 @@ namespace AdSecGH.Helpers {
       }
 
       return castSuccessful;
+    }
+
+    public static bool TryCastToIPoints(
+      List<GH_ObjectWrapper> ghTypes, IList<IPoint> iPoints, List<int> invalidIds, ref int pointsConverted) {
+      invalidIds = invalidIds ?? new List<int>();
+      IPoint point = null;
+      if (ghTypes == null || ghTypes.Count == 0) {
+        return false;
+      }
+
+      var temporaryPoints = new List<Point3d>();
+
+      for (int i = 0; i < ghTypes.Count; i++) {
+        Curve curve = null;
+        var ghpt = new Point3d();
+
+        if (TryCastToIPoint(ghTypes[i], ref point)) {
+          iPoints.Add(point);
+        } else if (TryCastToPoint3d(ghTypes[i], ref ghpt)) {
+          temporaryPoints.Add(ghpt);
+        } else if (TryCastToCurve(ghTypes[i], ref curve)) {
+          iPoints = AdSecPointGoo.PtsFromPolylineCurve((PolylineCurve)curve);
+        } else {
+          invalidIds.Add(i);
+        }
+      }
+
+      ProcessTemporaryPoints(ref iPoints, ref temporaryPoints);
+
+      pointsConverted = temporaryPoints.Count;
+      return !invalidIds.Any();
+    }
+
+    public static void ProcessTemporaryPoints(ref IList<IPoint> iPoints, ref List<Point3d> temporaryPoints) {
+      iPoints = iPoints ?? new List<IPoint>();
+      temporaryPoints = temporaryPoints ?? new List<Point3d>();
+
+      if (temporaryPoints.Count == 1) {
+        iPoints.Add(AdSecPointGoo.CreateFromPoint3d(temporaryPoints[0], Plane.WorldYZ));
+      } else if (temporaryPoints.Count > 1) {
+        Plane.FitPlaneToPoints(temporaryPoints, out var plane);
+        foreach (var point in temporaryPoints) {
+          iPoints.Add(AdSecPointGoo.CreateFromPoint3d(point, plane));
+        }
+      }
+    }
+
+    public static bool TryCastToPoint3d(GH_ObjectWrapper ghType, ref Point3d point) {
+      return GH_Convert.ToPoint3d(ghType.Value, ref point, GH_Conversion.Both);
+    }
+
+    public static bool TryCastToCurve(GH_ObjectWrapper ghType, ref Curve curve) {
+      return GH_Convert.ToCurve(ghType.Value, ref curve, GH_Conversion.Both);
+    }
+
+    public static bool TryCastToIPoint(GH_ObjectWrapper objectWrapper, ref IPoint iPoint) {
+      switch (objectWrapper.Value) {
+        case IPoint point:
+          iPoint = point;
+          break;
+        case AdSecPointGoo adSecPointGoo:
+          iPoint = adSecPointGoo.AdSecPoint;
+          break;
+        default: return false;
+      }
+
+      return true;
+    }
+
+    public static bool TryCastToILayers(List<GH_ObjectWrapper> ghTypes, IList<ILayer> iLayers, List<int> invalidIds) {
+      invalidIds = invalidIds ?? new List<int>();
+      ILayer layer = null;
+      if (ghTypes == null || ghTypes.Count == 0) {
+        return false;
+      }
+
+      for (int i = 0; i < ghTypes.Count; i++) {
+        if (TryCastToILayer(ghTypes[i], ref layer)) {
+          iLayers.Add(layer);
+        } else {
+          invalidIds.Add(i);
+        }
+      }
+
+      return !invalidIds.Any();
+    }
+
+    public static bool TryCastToILayer(GH_ObjectWrapper objectWrapper, ref ILayer iLayer) {
+      switch (objectWrapper.Value) {
+        case ILayer layer:
+          iLayer = layer;
+          break;
+        case AdSecRebarLayerGoo rebarGoo:
+          iLayer = rebarGoo.Value;
+          break;
+        default: return false;
+      }
+
+      return true;
     }
 
     public static bool TryCastToStressStrainCurve(

@@ -234,7 +234,7 @@ namespace AdSecGH.Components {
         case FoldMode.SingleBars:
           // create single rebar group
           var bars = ISingleBars.Create(this.GetAdSecRebarBundleGoo(da, 0).Value);
-          bars.Positions = AdSecInput.IPoints(this, da, 1);
+          bars.Positions = this.GetIPoints(da, 1);
           group = new AdSecRebarGroupGoo(bars);
 
           break;
