@@ -35,27 +35,6 @@ namespace AdSecGH.Helpers {
       return covers;
     }
 
-    internal static AdSecSolutionGoo Solution(
-      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputId, ref gh_typ)) {
-        if (gh_typ.Value is AdSecSolutionGoo goo) {
-          return goo;
-        }
-
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          $"Unable to convert {owner.Params.Input[inputId].NickName} to AdSec Results");
-        return null;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
     internal static Oasys.Collections.IList<ISubComponent> SubComponents(
       GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
       var subs = Oasys.Collections.IList<ISubComponent>.Create();
@@ -338,6 +317,15 @@ namespace AdSecGH.Helpers {
       }
 
       return !invalidIds.Any();
+    }
+
+    public static bool TryCastToAdSecSolutionGoo(GH_ObjectWrapper ghType, ref AdSecSolutionGoo solutionGoo) {
+      if (ghType?.Value is AdSecSolutionGoo goo) {
+        solutionGoo = goo;
+        return true;
+      }
+
+      return false;
     }
 
     public static bool TryCastToStressStrainCurve(

@@ -247,6 +247,22 @@ namespace AdSecGH.Helpers {
       return adSecRebarGroups.Any() ? adSecRebarGroups : null;
     }
 
+    public static AdSecSolutionGoo GetSolutionGoo(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      AdSecSolutionGoo solutionGoo = null;
+      GH_ObjectWrapper inputData = null;
+
+      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecSolutionGoo(inputData, ref solutionGoo)) {
+        owner.Params.Input[inputId].ConvertToError("AdSec Results");
+      }
+
+      return solutionGoo;
+    }
+
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(
       this GH_Component owner, IGH_DataAccess DA, int inputId, bool compression, bool isOptional = false) {
       AdSecStressStrainCurveGoo curveGoo = null;
