@@ -35,27 +35,6 @@ namespace AdSecGH.Helpers {
       return covers;
     }
 
-    internal static AdSecRebarGroupGoo ReinforcementGroup(
-      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputId, ref gh_typ)) {
-        if (gh_typ.Value is AdSecRebarGroupGoo goo) {
-          return goo;
-        }
-
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          $"Unable to convert {owner.Params.Input[inputId].NickName} to RebarLayout");
-        return null;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
     internal static List<AdSecRebarGroup> ReinforcementGroups(
       GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
       var grps = new List<AdSecRebarGroup>();
@@ -356,6 +335,15 @@ namespace AdSecGH.Helpers {
       }
 
       return true;
+    }
+
+    public static bool TryCastToAdSecRebarGroupGoo(GH_ObjectWrapper ghType, ref AdSecRebarGroupGoo rebarGoo) {
+      if (ghType?.Value is AdSecRebarGroupGoo goo) {
+        rebarGoo = goo;
+        return true;
+      }
+
+      return false;
     }
 
     public static bool TryCastToStressStrainCurve(

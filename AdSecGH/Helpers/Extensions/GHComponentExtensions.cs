@@ -212,6 +212,22 @@ namespace AdSecGH.Helpers {
       return points.Any() ? points : null;
     }
 
+    public static AdSecRebarGroupGoo GetReinforcementGroup(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      AdSecRebarGroupGoo rebarGroupGoo = null;
+      GH_ObjectWrapper inputData = null;
+
+      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecRebarGroupGoo(inputData, ref rebarGroupGoo)) {
+        owner.Params.Input[inputId].ConvertToError("RebarLayout");
+      }
+
+      return rebarGroupGoo;
+    }
+
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(
       this GH_Component owner, IGH_DataAccess DA, int inputId, bool compression, bool isOptional = false) {
       AdSecStressStrainCurveGoo curveGoo = null;
