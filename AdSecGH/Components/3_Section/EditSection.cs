@@ -127,7 +127,7 @@ namespace AdSecGH.Components {
       // 5 Subcomponents
       var subComponents = Oasys.Collections.IList<ISubComponent>.Create();
       if (Params.Input[5].SourceCount > 0) {
-        subComponents = AdSecInput.SubComponents(this, DA, 5, true);
+        subComponents = this.GetSubComponents(DA, 5, true);
       } else {
         subComponents = in_section.Section.SubComponents;
       }

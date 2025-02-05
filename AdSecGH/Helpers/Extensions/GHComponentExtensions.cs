@@ -6,6 +6,7 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
+using Oasys.AdSec;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.AdSec.Reinforcement.Layers;
@@ -261,6 +262,26 @@ namespace AdSecGH.Helpers {
       }
 
       return solutionGoo;
+    }
+
+    public static Oasys.Collections.IList<ISubComponent> GetSubComponents(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      var inputData = new List<GH_ObjectWrapper>();
+
+      DA.GetDataList(inputId, inputData);
+      bool isDataAvailable = inputData.TrueForAll(item => item != null);
+
+      var subComponents = Oasys.Collections.IList<ISubComponent>.Create();
+      var invalidIds = new List<int>();
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecSubComponents(inputData, subComponents, invalidIds)) {
+        invalidIds.ForEach(id
+          => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "SubComponent or Section"));
+      }
+
+      return subComponents.Any() ? subComponents : null;
     }
 
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(

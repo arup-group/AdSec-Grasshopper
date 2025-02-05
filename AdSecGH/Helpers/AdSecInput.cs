@@ -35,37 +35,6 @@ namespace AdSecGH.Helpers {
       return covers;
     }
 
-    internal static Oasys.Collections.IList<ISubComponent> SubComponents(
-      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
-      var subs = Oasys.Collections.IList<ISubComponent>.Create();
-      var gh_typs = new List<GH_ObjectWrapper>();
-      if (DA.GetDataList(inputId, gh_typs)) {
-        for (int i = 0; i < gh_typs.Count; i++) {
-          if (gh_typs[i].Value is ISubComponent component) {
-            subs.Add(component);
-          } else if (gh_typs[i].Value is AdSecSubComponentGoo subcomp) {
-            subs.Add(subcomp.Value);
-          } else if (gh_typs[i].Value is AdSecSectionGoo section) {
-            var offset = IPoint.Create(Length.Zero, Length.Zero);
-            var sub = ISubComponent.Create(section.Value.Section, offset);
-            subs.Add(sub);
-          } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              $"Unable to convert {owner.Params.Input[inputId].NickName} (item {i}) to SubComponent or Section");
-          }
-        }
-
-        return subs;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
     public static bool TryCastToDesignCode(GH_ObjectWrapper ghType, ref AdSecDesignCode designCode) {
       bool castSuccessful = true;
       if (ghType.Value is AdSecDesignCodeGoo) {
@@ -313,6 +282,37 @@ namespace AdSecGH.Helpers {
           rebarGroups.Add(rebarGroup.Value);
         } else {
           invalidIds.Add(i);
+        }
+      }
+
+      return !invalidIds.Any();
+    }
+
+    public static bool TryCastToAdSecSubComponents(
+      List<GH_ObjectWrapper> ghTypes, Oasys.Collections.IList<ISubComponent> subComponents, List<int> invalidIds) {
+      invalidIds = invalidIds ?? new List<int>();
+      if (ghTypes == null || ghTypes.Count == 0) {
+        return false;
+      }
+
+      for (int i = 0; i < ghTypes.Count; i++) {
+        switch (ghTypes[i].Value) {
+          case ISubComponent subComponent:
+            subComponents.Add(subComponent);
+            break;
+          case AdSecSubComponentGoo subcomp:
+            subComponents.Add(subcomp.Value);
+            break;
+          case AdSecSectionGoo section: {
+              var offset = IPoint.Create(Length.Zero, Length.Zero);
+              var sub = ISubComponent.Create(section.Value.Section, offset);
+              subComponents.Add(sub);
+              break;
+            }
+
+          default:
+            invalidIds.Add(i);
+            break;
         }
       }
 
