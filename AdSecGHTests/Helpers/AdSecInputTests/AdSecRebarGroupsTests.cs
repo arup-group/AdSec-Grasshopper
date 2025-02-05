@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
 
+using AdSecCore.Builders;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel.Types;
+
+using Oasys.AdSec.Reinforcement.Groups;
 
 using Xunit;
 
@@ -104,11 +108,11 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void TryCastToAdSecRebarGroupsReturnsCorrectDataFromILayer() {
-      var rebarGroup = new AdSecRebarGroupGoo();
+    public void TryCastToAdSecRebarGroupsReturnsCorrectDataFromIGroup() {
+      var rebarGroup = new BuilderReinforcementGroup().Build();
 
       var objwrap = new List<GH_ObjectWrapper>() {
-        new GH_ObjectWrapper(rebarGroup),
+        new GH_ObjectWrapper((IGroup)rebarGroup),
       };
       bool castSuccessful = AdSecInput.TryCastToAdSecRebarGroups(objwrap, _groups, invalidIds);
 
