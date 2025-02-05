@@ -8,6 +8,7 @@ using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
 
 using OasysGH.Units;
@@ -163,6 +164,52 @@ namespace AdSecGH.Helpers {
       }
 
       return calculationParameters;
+    }
+
+    public static Oasys.Collections.IList<ILayer> GetILayers(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      var inputData = new List<GH_ObjectWrapper>();
+
+      DA.GetDataList(inputId, inputData);
+      bool isDataAvailable = inputData.TrueForAll(item => item != null);
+      var layers = Oasys.Collections.IList<ILayer>.Create();
+      var invalidIds = new List<int>();
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToILayers(inputData, layers, invalidIds)) {
+        invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "RebarLayer"));
+      }
+
+      return layers.Any() ? layers : null;
+    }
+
+    public static Oasys.Collections.IList<IPoint> GetIPoints(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      var inputData = new List<GH_ObjectWrapper>();
+      var points = Oasys.Collections.IList<IPoint>.Create();
+      var invalidIds = new List<int>();
+      int pointsConverted = 0;
+
+      DA.GetDataList(inputId, inputData);
+      bool isDataAvailable = inputData.TrueForAll(item => item != null);
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToIPoints(inputData, points, invalidIds, ref pointsConverted)) {
+        invalidIds.ForEach(id
+          => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "StressStrainPoint or Polyline"));
+      }
+
+      if (pointsConverted == 1) {
+        owner.AddRuntimeRemark(
+          "Single Point converted to local point. Assumed that local coordinate system is in a YZ-Plane");
+      } else if (pointsConverted > 1) {
+        owner.AddRuntimeRemark(
+          "List of Points have been converted to local points. Assumed that local coordinate system is matching best fit plane through points");
+      }
+
+      return points.Any() ? points : null;
     }
 
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(
