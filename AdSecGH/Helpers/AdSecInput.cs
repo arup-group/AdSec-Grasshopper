@@ -9,32 +9,18 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
 
-using OasysGH.Helpers;
 using OasysGH.Parameters;
 
 using OasysUnits;
-using OasysUnits.Units;
 
 using Rhino.Geometry;
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
-    internal static List<ICover> Covers(GH_Component owner, IGH_DataAccess DA, int inputId, LengthUnit docLengthUnit) {
-      var covers = new List<ICover>();
-      var lengths = Input.UnitNumberList(owner, DA, inputId, docLengthUnit);
-
-      foreach (var length in lengths.Select(v => (Length)v)) {
-        covers.Add(ICover.Create(length));
-      }
-
-      return covers;
-    }
-
     public static bool TryCastToDesignCode(GH_ObjectWrapper ghType, ref AdSecDesignCode designCode) {
       bool castSuccessful = true;
       if (ghType.Value is AdSecDesignCodeGoo) {

@@ -9,12 +9,15 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
 
+using OasysGH.Helpers;
 using OasysGH.Units;
 
 using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Helpers {
   public static class GHComponentExtensions {
@@ -337,6 +340,21 @@ namespace AdSecGH.Helpers {
       owner.AddRuntimeWarning("Input must contain at least 2 points to create an Explicit Stress Strain Curve");
 
       return null;
+    }
+
+    public static List<ICover> GetCovers(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, LengthUnit docLengthUnit) {
+      var covers = new List<ICover>();
+
+      var lengths = Input.UnitNumberList(owner, DA, inputId, docLengthUnit);
+      covers.AddRange(lengths.Select(v => (Length)v).Where(v => v.Value != 0.0)
+       .Select(length => ICover.Create(length)));
+
+      if (covers.Count == 0) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      }
+
+      return covers;
     }
   }
 }

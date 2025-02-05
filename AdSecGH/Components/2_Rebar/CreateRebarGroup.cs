@@ -150,7 +150,7 @@ namespace AdSecGH.Components {
       var groups = new List<AdSecRebarGroupGoo>();
 
       // cover
-      var covers = AdSecInput.Covers(this, da, Params.Input.Count - 1, _lengthUnit);
+      var covers = this.GetCovers(da, Params.Input.Count - 1, _lengthUnit);
 
       switch (_mode) {
         case FoldMode.Template:
