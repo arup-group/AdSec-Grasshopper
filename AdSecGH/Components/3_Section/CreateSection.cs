@@ -67,7 +67,7 @@ namespace AdSecGH.Components {
       // 2 Rebars
       var reinforcements = new List<AdSecRebarGroup>();
       if (Params.Input[2].SourceCount > 0) {
-        reinforcements = AdSecInput.ReinforcementGroups(this, DA, 2, true);
+        reinforcements = this.GetReinforcementGroups(DA, 2, true);
       }
 
       // 3 Subcomponents

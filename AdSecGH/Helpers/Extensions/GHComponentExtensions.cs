@@ -228,6 +228,25 @@ namespace AdSecGH.Helpers {
       return rebarGroupGoo;
     }
 
+    public static List<AdSecRebarGroup> GetReinforcementGroups(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      var inputData = new List<GH_ObjectWrapper>();
+
+      DA.GetDataList(inputId, inputData);
+      bool isDataAvailable = inputData.TrueForAll(item => item != null);
+
+      var adSecRebarGroups = new List<AdSecRebarGroup>();
+      var invalidIds = new List<int>();
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecRebarGroups(inputData, adSecRebarGroups, invalidIds)) {
+        invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "RebarGroup"));
+      }
+
+      return adSecRebarGroups.Any() ? adSecRebarGroups : null;
+    }
+
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(
       this GH_Component owner, IGH_DataAccess DA, int inputId, bool compression, bool isOptional = false) {
       AdSecStressStrainCurveGoo curveGoo = null;

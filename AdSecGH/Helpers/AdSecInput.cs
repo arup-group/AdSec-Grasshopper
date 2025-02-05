@@ -35,33 +35,6 @@ namespace AdSecGH.Helpers {
       return covers;
     }
 
-    internal static List<AdSecRebarGroup> ReinforcementGroups(
-      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
-      var grps = new List<AdSecRebarGroup>();
-      var gh_typs = new List<GH_ObjectWrapper>();
-      if (DA.GetDataList(inputId, gh_typs)) {
-        for (int i = 0; i < gh_typs.Count; i++) {
-          if (gh_typs[i].Value is IGroup group) {
-            grps.Add(new AdSecRebarGroup(group));
-          } else if (gh_typs[i].Value is AdSecRebarGroupGoo rebarGoo) {
-            grps.Add(rebarGoo.Value);
-          } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              $"Unable to convert {owner.Params.Input[inputId].NickName} (item {i}) to RebarGroup");
-          }
-        }
-
-        return grps;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
     internal static AdSecSolutionGoo Solution(
       GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
       var gh_typ = new GH_ObjectWrapper();
@@ -344,6 +317,27 @@ namespace AdSecGH.Helpers {
       }
 
       return false;
+    }
+
+    public static bool TryCastToAdSecRebarGroups(
+      List<GH_ObjectWrapper> ghTypes, List<AdSecRebarGroup> rebarGroups, List<int> invalidIds) {
+      invalidIds = invalidIds ?? new List<int>();
+      AdSecRebarGroupGoo rebarGroup = null;
+      if (ghTypes == null || ghTypes.Count == 0) {
+        return false;
+      }
+
+      for (int i = 0; i < ghTypes.Count; i++) {
+        if (ghTypes[i].Value is IGroup group) {
+          rebarGroups.Add(new AdSecRebarGroup(group));
+        } else if (TryCastToAdSecRebarGroupGoo(ghTypes[i], ref rebarGroup)) {
+          rebarGroups.Add(rebarGroup.Value);
+        } else {
+          invalidIds.Add(i);
+        }
+      }
+
+      return !invalidIds.Any();
     }
 
     public static bool TryCastToStressStrainCurve(
