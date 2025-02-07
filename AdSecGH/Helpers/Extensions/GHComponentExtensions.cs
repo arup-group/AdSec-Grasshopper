@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using AdSecCore;
+
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -347,7 +349,8 @@ namespace AdSecGH.Helpers {
       var covers = new List<ICover>();
 
       var lengths = Input.UnitNumberList(owner, DA, inputId, docLengthUnit);
-      covers.AddRange(lengths.Select(v => (Length)v).Where(v => v.Value != 0.0)
+      var doubleComparer = new DoubleComparer(10e-12f);
+      covers.AddRange(lengths.Select(v => (Length)v).Where(v => !doubleComparer.Equals(v.Value, 0.0))
        .Select(length => ICover.Create(length)));
 
       if (covers.Count == 0) {
