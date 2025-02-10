@@ -307,7 +307,8 @@ namespace AdSecGH.Components {
     protected override void SolveInternal(IGH_DataAccess DA) {
       IStressStrainCurve crv = null;
       try {
-        var stressStrainPoint = this.GetStressStrainPoint(DA, 0);
+        var stressStrainPoint = _mode != AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit ?
+          this.GetStressStrainPoint(DA, 0) : null;
         switch (_mode) {
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear:
             crv = IBilinearStressStrainCurve.Create(stressStrainPoint, stressStrainPoint);
