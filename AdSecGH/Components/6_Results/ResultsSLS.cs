@@ -81,7 +81,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // get solution input
-      var solution = AdSecInput.Solution(this, DA, 0);
+      var solution = this.Solution(DA, 0);
 
       IServiceabilityResult sls = null;
 

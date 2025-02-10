@@ -93,28 +93,5 @@ namespace AdSecGH.Helpers {
         max_value = i_2 * major_step;
       }
     }
-
-    internal static float CalcStepSize(float range, float targetSteps) {
-      // calculate an initial guess at step size
-      float tempStep = range / targetSteps;
-
-      // get the magnitude of the step size
-      float mag = (float)Math.Floor(Math.Log10(tempStep));
-      float magPow = (float)Math.Pow(10, mag);
-
-      // calculate most significant digit of the new step size
-      float magMsd = (int)((tempStep / magPow) + 0.5);
-
-      // promote the MSD to either 1, 2, or 5
-      if (magMsd > 5) {
-        magMsd = 10;
-      } else if (magMsd > 2) {
-        magMsd = 5;
-      } else if (magMsd > 1) {
-        magMsd = 2;
-      }
-
-      return magMsd * magPow;
-    }
   }
 }

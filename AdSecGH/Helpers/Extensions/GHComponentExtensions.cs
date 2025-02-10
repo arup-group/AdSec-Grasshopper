@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using AdSecGH.Parameters;
@@ -11,9 +12,11 @@ using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
 
+using OasysGH.Helpers;
 using OasysGH.Units;
 
 using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecGH.Helpers {
   public static class GHComponentExtensions {
@@ -266,5 +269,26 @@ namespace AdSecGH.Helpers {
 
       return null;
     }
+
+    public static AdSecSolutionGoo Solution(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      var gh_typ = new GH_ObjectWrapper();
+      if (DA.GetData(inputId, ref gh_typ)) {
+        if (gh_typ.Value is AdSecSolutionGoo goo) {
+          return goo;
+        }
+
+        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
+          $"Unable to convert {owner.Params.Input[inputId].NickName} to AdSec Results");
+        return null;
+      }
+
+      if (!isOptional) {
+        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
+          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
+      }
+      return null;
+    }
+
   }
 }
