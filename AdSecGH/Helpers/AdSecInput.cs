@@ -9,111 +9,18 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
 
-using OasysGH.Helpers;
 using OasysGH.Parameters;
 
 using OasysUnits;
-using OasysUnits.Units;
 
 using Rhino.Geometry;
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
-    internal static List<ICover> Covers(GH_Component owner, IGH_DataAccess DA, int inputId, LengthUnit docLengthUnit) {
-      var covers = new List<ICover>();
-      var lengths = Input.UnitNumberList(owner, DA, inputId, docLengthUnit);
-
-      foreach (var length in lengths.Select(v => (Length)v)) {
-        covers.Add(ICover.Create(length));
-      }
-
-      return covers;
-    }
-
-    internal static AdSecRebarGroupGoo ReinforcementGroup(
-      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputId, ref gh_typ)) {
-        if (gh_typ.Value is AdSecRebarGroupGoo goo) {
-          return goo;
-        }
-
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          $"Unable to convert {owner.Params.Input[inputId].NickName} to RebarLayout");
-        return null;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
-    internal static List<AdSecRebarGroup> ReinforcementGroups(
-      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
-      var grps = new List<AdSecRebarGroup>();
-      var gh_typs = new List<GH_ObjectWrapper>();
-      if (DA.GetDataList(inputId, gh_typs)) {
-        for (int i = 0; i < gh_typs.Count; i++) {
-          if (gh_typs[i].Value is IGroup group) {
-            grps.Add(new AdSecRebarGroup(group));
-          } else if (gh_typs[i].Value is AdSecRebarGroupGoo rebarGoo) {
-            grps.Add(rebarGoo.Value);
-          } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              $"Unable to convert {owner.Params.Input[inputId].NickName} (item {i}) to RebarGroup");
-          }
-        }
-
-        return grps;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
-    internal static Oasys.Collections.IList<ISubComponent> SubComponents(
-      GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
-      var subs = Oasys.Collections.IList<ISubComponent>.Create();
-      var gh_typs = new List<GH_ObjectWrapper>();
-      if (DA.GetDataList(inputId, gh_typs)) {
-        for (int i = 0; i < gh_typs.Count; i++) {
-          if (gh_typs[i].Value is ISubComponent component) {
-            subs.Add(component);
-          } else if (gh_typs[i].Value is AdSecSubComponentGoo subcomp) {
-            subs.Add(subcomp.Value);
-          } else if (gh_typs[i].Value is AdSecSectionGoo section) {
-            var offset = IPoint.Create(Length.Zero, Length.Zero);
-            var sub = ISubComponent.Create(section.Value.Section, offset);
-            subs.Add(sub);
-          } else {
-            owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              $"Unable to convert {owner.Params.Input[inputId].NickName} (item {i}) to SubComponent or Section");
-          }
-        }
-
-        return subs;
-      }
-
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
-      }
-
-      return null;
-    }
-
     public static bool TryCastToDesignCode(GH_ObjectWrapper ghType, ref AdSecDesignCode designCode) {
       bool castSuccessful = true;
       if (ghType.Value is AdSecDesignCodeGoo) {
@@ -335,6 +242,76 @@ namespace AdSecGH.Helpers {
       }
 
       return true;
+    }
+
+    public static bool TryCastToAdSecRebarGroupGoo(GH_ObjectWrapper ghType, ref AdSecRebarGroupGoo rebarGoo) {
+      if (ghType?.Value is AdSecRebarGroupGoo goo) {
+        rebarGoo = goo;
+        return true;
+      }
+
+      return false;
+    }
+
+    public static bool TryCastToAdSecRebarGroups(
+      List<GH_ObjectWrapper> ghTypes, List<AdSecRebarGroup> rebarGroups, List<int> invalidIds) {
+      invalidIds = invalidIds ?? new List<int>();
+      AdSecRebarGroupGoo rebarGroup = null;
+      if (ghTypes == null || ghTypes.Count == 0) {
+        return false;
+      }
+
+      for (int i = 0; i < ghTypes.Count; i++) {
+        if (ghTypes[i].Value is IGroup group) {
+          rebarGroups.Add(new AdSecRebarGroup(group));
+        } else if (TryCastToAdSecRebarGroupGoo(ghTypes[i], ref rebarGroup)) {
+          rebarGroups.Add(rebarGroup.Value);
+        } else {
+          invalidIds.Add(i);
+        }
+      }
+
+      return !invalidIds.Any();
+    }
+
+    public static bool TryCastToAdSecSubComponents(
+      List<GH_ObjectWrapper> ghTypes, Oasys.Collections.IList<ISubComponent> subComponents, List<int> invalidIds) {
+      invalidIds = invalidIds ?? new List<int>();
+      if (ghTypes == null || ghTypes.Count == 0) {
+        return false;
+      }
+
+      for (int i = 0; i < ghTypes.Count; i++) {
+        switch (ghTypes[i].Value) {
+          case ISubComponent subComponent:
+            subComponents.Add(subComponent);
+            break;
+          case AdSecSubComponentGoo subcomp:
+            subComponents.Add(subcomp.Value);
+            break;
+          case AdSecSectionGoo section: {
+              var offset = IPoint.Create(Length.Zero, Length.Zero);
+              var sub = ISubComponent.Create(section.Value.Section, offset);
+              subComponents.Add(sub);
+              break;
+            }
+
+          default:
+            invalidIds.Add(i);
+            break;
+        }
+      }
+
+      return !invalidIds.Any();
+    }
+
+    public static bool TryCastToAdSecSolutionGoo(GH_ObjectWrapper ghType, ref AdSecSolutionGoo solutionGoo) {
+      if (ghType?.Value is AdSecSolutionGoo goo) {
+        solutionGoo = goo;
+        return true;
+      }
+
+      return false;
     }
 
     public static bool TryCastToStressStrainCurve(

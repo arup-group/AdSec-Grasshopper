@@ -62,7 +62,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // get solution input
-      AdSecSolutionGoo solution = this.Solution(DA, 0);
+      var solution = this.GetSolutionGoo(DA, 0);
 
       IStrengthResult uls;
       IServiceabilityResult sls;

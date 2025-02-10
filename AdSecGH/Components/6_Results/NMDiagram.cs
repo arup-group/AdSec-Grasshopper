@@ -141,7 +141,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // get solution input
-      var solution = this.Solution(DA, 0);
+      var solution = this.GetSolutionGoo(DA, 0);
 
       // Get boundary input
       var rect = new Rectangle3d();

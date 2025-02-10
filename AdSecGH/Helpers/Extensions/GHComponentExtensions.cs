@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+
+using AdSecCore;
 
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
+using Oasys.AdSec;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
 
@@ -215,6 +218,77 @@ namespace AdSecGH.Helpers {
       return points.Any() ? points : null;
     }
 
+    public static AdSecRebarGroupGoo GetReinforcementGroup(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      AdSecRebarGroupGoo rebarGroupGoo = null;
+      GH_ObjectWrapper inputData = null;
+
+      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecRebarGroupGoo(inputData, ref rebarGroupGoo)) {
+        owner.Params.Input[inputId].ConvertToError("RebarLayout");
+      }
+
+      return rebarGroupGoo;
+    }
+
+    public static List<AdSecRebarGroup> GetReinforcementGroups(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      var inputData = new List<GH_ObjectWrapper>();
+
+      DA.GetDataList(inputId, inputData);
+      bool isDataAvailable = inputData.TrueForAll(item => item != null);
+
+      var adSecRebarGroups = new List<AdSecRebarGroup>();
+      var invalidIds = new List<int>();
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecRebarGroups(inputData, adSecRebarGroups, invalidIds)) {
+        invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "RebarGroup"));
+      }
+
+      return adSecRebarGroups.Any() ? adSecRebarGroups : null;
+    }
+
+    public static AdSecSolutionGoo GetSolutionGoo(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      AdSecSolutionGoo solutionGoo = null;
+      GH_ObjectWrapper inputData = null;
+
+      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecSolutionGoo(inputData, ref solutionGoo)) {
+        owner.Params.Input[inputId].ConvertToError("AdSec Results");
+      }
+
+      return solutionGoo;
+    }
+
+    public static Oasys.Collections.IList<ISubComponent> GetSubComponents(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      var inputData = new List<GH_ObjectWrapper>();
+
+      DA.GetDataList(inputId, inputData);
+      bool isDataAvailable = inputData.TrueForAll(item => item != null);
+
+      var subComponents = Oasys.Collections.IList<ISubComponent>.Create();
+      var invalidIds = new List<int>();
+
+      if (!isDataAvailable && !isOptional) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
+      } else if (isDataAvailable && !AdSecInput.TryCastToAdSecSubComponents(inputData, subComponents, invalidIds)) {
+        invalidIds.ForEach(id
+          => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "SubComponent or Section"));
+      }
+
+      return subComponents.Any() ? subComponents : null;
+    }
+
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(
       this GH_Component owner, IGH_DataAccess DA, int inputId, bool compression, bool isOptional = false) {
       AdSecStressStrainCurveGoo curveGoo = null;
@@ -270,25 +344,20 @@ namespace AdSecGH.Helpers {
       return null;
     }
 
-    public static AdSecSolutionGoo Solution(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
-      var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(inputId, ref gh_typ)) {
-        if (gh_typ.Value is AdSecSolutionGoo goo) {
-          return goo;
-        }
+    public static List<ICover> GetCovers(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, LengthUnit docLengthUnit) {
+      var covers = new List<ICover>();
 
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          $"Unable to convert {owner.Params.Input[inputId].NickName} to AdSec Results");
-        return null;
+      var lengths = Input.UnitNumberList(owner, DA, inputId, docLengthUnit);
+      var doubleComparer = new DoubleComparer(10e-12f);
+      covers.AddRange(lengths.Select(v => (Length)v).Where(v => !doubleComparer.Equals(v.Value, 0.0))
+       .Select(length => ICover.Create(length)));
+
+      if (covers.Count == 0) {
+        owner.Params.Input[inputId].FailedToCollectDataWarning();
       }
 
-      if (!isOptional) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {owner.Params.Input[inputId].NickName} failed to collect data!");
-      }
-      return null;
+      return covers;
     }
-
   }
 }
