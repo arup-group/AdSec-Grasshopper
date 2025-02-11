@@ -1,7 +1,11 @@
-﻿using AdSecGH.Components;
+﻿using System.Collections.Generic;
+
+using AdSecGH.Components;
 using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
+
+using OasysUnits;
 
 using Rhino.Geometry;
 
@@ -11,8 +15,12 @@ namespace AdSecGHTests.Properties {
   [Collection("GrasshopperFixture collection")]
   public class NMDiagramTest {
     private static NMDiagram _components;
+    private static Angle _angle;
+    private static bool _isMMCurve;
     public NMDiagramTest() {
       _components = ComponentMother();
+      _isMMCurve = false;
+      _angle = Angle.FromRadians(0);
     }
 
     public static AdSecNMMCurveGoo NMCurve() {
@@ -32,18 +40,25 @@ namespace AdSecGHTests.Properties {
       ComponentTestHelper.SetInput(_components, rectangle, 2);
     }
 
+    private static BoundingBox LoadBoundingBox() {
+      var curve = NMCurve().LoadCurve;
+      return AdSecNMMCurveGoo.CurveToPolyline(curve, _angle, _isMMCurve).BoundingBox;
+    }
+
     private static void SetMMCurve() {
+      _isMMCurve = true;
       _components.SetSelected(0, 1);
     }
 
     private static void SetAngle(bool radian = true) {
       if (radian) {
         _components.SetSelected(1, 0);
-        ComponentTestHelper.SetInput(_components, 0.785398, 1);
+        _angle = Angle.FromRadians(0.785398);
       } else {
         _components.SetSelected(1, 1);
-        ComponentTestHelper.SetInput(_components, 45, 1);
+        _angle = Angle.FromDegrees(45.0);
       }
+      ComponentTestHelper.SetInput(_components, _angle.Value, 1);
     }
 
     private static void SetAxialForce(double force) {
@@ -51,41 +66,39 @@ namespace AdSecGHTests.Properties {
     }
 
     [Fact]
-    public void NMCurveIsReportingCorrectPeakValue() {
-      //give
+    public void NMCurveIsReportingCorrectPeakValueAtBoundary() {
       SetPlotBoundary(new Rectangle3d(Plane.WorldXY, new Point3d(200, 1400, 0), new Point3d(-200, -600, 0)));
       Assert.True(AdSecUtility.IsBoundingBoxEqual(NMCurve().Value.BoundingBox, new BoundingBox(new Point3d(-184.84, -453.48, 0), new Point3d(184.84, 1251.86, 0))));
     }
 
     [Fact]
+    public void NMCurveIsReportingCorrectPeakValue() {
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(LoadBoundingBox(), new BoundingBox(new Point3d(-184.84, -453.48, 0), new Point3d(184.84, 1251.86, 0))));
+    }
+
+    [Fact]
     public void NMCurveIsReportingCorrectPeakValueAtAngleInRadian() {
       SetAngle();
-      SetPlotBoundary(new Rectangle3d(Plane.WorldXY, new Point3d(100, 1400, 0), new Point3d(-100, -600, 0)));
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(NMCurve().Value.BoundingBox, new BoundingBox(new Point3d(-90.73, -453.48, 0), new Point3d(90.73, 1251.86, 0))));
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(LoadBoundingBox(), new BoundingBox(new Point3d(-90.73, -453.48, 0), new Point3d(90.73, 1251.86, 0))));
     }
 
     [Fact]
     public void NMCurveIsReportingCorrectPeakValueAtAngleInDegree() {
       SetAngle(false);
-      SetPlotBoundary(new Rectangle3d(Plane.WorldXY, new Point3d(100, 1400, 0), new Point3d(-100, -600, 0)));
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(NMCurve().Value.BoundingBox, new BoundingBox(new Point3d(-90.73, -453.48, 0), new Point3d(90.73, 1251.86, 0))));
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(LoadBoundingBox(), new BoundingBox(new Point3d(-90.73, -453.48, 0), new Point3d(90.73, 1251.86, 0))));
     }
 
     [Fact]
     public void MMCurveIsReportingCorrectPeakValue() {
       SetMMCurve();
-      SetPlotBoundary(new Rectangle3d(Plane.WorldXY, new Point3d(150, 60, 0), new Point3d(-150, -60, 0)));
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(NMCurve().Value.BoundingBox, new BoundingBox(new Point3d(-127.03, -59.28, 0), new Point3d(127.03, 59.28, 0))));
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(LoadBoundingBox(), new BoundingBox(new Point3d(-127.03, -59.28, 0), new Point3d(127.03, 59.28, 0))));
     }
 
     [Fact]
     public void MMCurveIsReportingCorrectPeakValueAtGivenAxialForce() {
       SetAxialForce(200);
       SetMMCurve();
-      SetPlotBoundary(new Rectangle3d(Plane.WorldXY, new Point3d(80, 40, 0), new Point3d(-80, -40, 0)));
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(NMCurve().Value.BoundingBox, new BoundingBox(new Point3d(-71.17, -33.19, 0), new Point3d(71.17, 33.19, 0))));
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(LoadBoundingBox(), new BoundingBox(new Point3d(-71.17, -33.19, 0), new Point3d(71.17, 33.19, 0))));
     }
-
-
   }
 }

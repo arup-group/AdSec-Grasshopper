@@ -64,22 +64,9 @@ namespace AdSecGH.Parameters {
       if (loadCurve == null) {
         return;
       }
-
       m_type = InteractionCurveType.MM;
       LoadCurve = loadCurve;
-
-      var pts = new List<Point3d>();
-      foreach (ILoad load in loadCurve.Points) {
-        var pt = new Point3d(
-          load.YY.As(DefaultUnits.MomentUnit), // plot yy on x-axis
-          load.ZZ.As(DefaultUnits.MomentUnit), // plot zz on y-axis
-          0);
-        pts.Add(pt);
-      }
-      // add first point to the end to make a closed curve
-      pts.Add(pts[0]);
-
-      m_value = new Polyline(pts);
+      m_value = CurveToPolyline(loadCurve, Angle.FromRadians(0), true);
       m_plotBounds = plotBoundary;
       UpdatePreview(m_plotBounds);
     }
@@ -93,33 +80,45 @@ namespace AdSecGH.Parameters {
       if (loadCurve == null) {
         return;
       }
-
       LoadCurve = loadCurve;
       m_type = InteractionCurveType.NM;
+      m_value = CurveToPolyline(loadCurve, angle);
+      m_plotBounds = plotBoundary;
+      UpdatePreview(m_plotBounds);
+    }
 
+    public static Polyline CurveToPolyline(ILoadCurve loadCurve, Angle angle, bool isMM = false) {
       var pts = new List<Point3d>();
       foreach (ILoad load in loadCurve.Points) {
-        var pt = new Point3d(
+        if (isMM) {
+          var pt = new Point3d(
+          load.YY.As(DefaultUnits.MomentUnit), // plot yy on x-axis
+          load.ZZ.As(DefaultUnits.MomentUnit), // plot zz on y-axis
+          0);
+          pts.Add(pt);
+        } else {
+          var pt = new Point3d(
             load.ZZ.As(DefaultUnits.MomentUnit),
             load.YY.As(DefaultUnits.MomentUnit),
             load.X.As(DefaultUnits.ForceUnit) * -1); // flip y-axis for NM-diagram
-        pts.Add(pt);
+          pts.Add(pt);
+        }
       }
       // add first point to the end to make a closed curve
       pts.Add(pts[0]);
-
-      Plane local = Plane.WorldYZ;
-      if (angle.Radians != 0) {
-        local.Rotate(angle.Radians * -1, Vector3d.ZAxis);
+      if (isMM) {
+        return new Polyline(pts);
       }
 
+      Plane local = Plane.WorldYZ;
+      if (!angle.Radians.Equals(0)) {
+        local.Rotate(angle.Radians * -1, Vector3d.ZAxis);
+      }
       // transform to local plane
       var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(local, Plane.WorldXY);
-
-      m_value = new Polyline(pts);
-      m_value.Transform(mapFromLocal);
-      m_plotBounds = plotBoundary;
-      UpdatePreview(m_plotBounds);
+      var polyline = new Polyline(pts);
+      polyline.Transform(mapFromLocal);
+      return polyline;
     }
 
     public override bool CastFrom(object source) {
@@ -245,7 +244,6 @@ namespace AdSecGH.Parameters {
       m_txts = new List<Text3d>();
       Plane txtPln = Plane.WorldXY;
       // loop through all values in y axis to create x-dir grids
-      int item = (m_type == InteractionCurveType.NM) ? yAxis.MajorRange.Length - 1 : 0;
       foreach (float step in yAxis.MajorRange) {
         // create gridline in original unit
         var grid = new Line(
@@ -258,7 +256,7 @@ namespace AdSecGH.Parameters {
           pln, sclX, sclY, 1));
         // if step value is 0 we want to add it to the major axis
         // that we will give a different colour
-        if (step == 0) {
+        if (step.Equals(0)) {
           m_axes.Add(grid);
         } else {
           m_grids.Add(grid);
@@ -279,6 +277,7 @@ namespace AdSecGH.Parameters {
           VerticalAlignment = TextVerticalAlignment.Middle
         };
         m_txts.Add(txt);
+
       }
 
       // do the same as above but for the other axis
@@ -289,7 +288,7 @@ namespace AdSecGH.Parameters {
         grid.Transform(Rhino.Geometry.Transform.Translation(translate));
         grid.Transform(Rhino.Geometry.Transform.Scale(
           pln, sclX, sclY, 1));
-        if (step == 0) {
+        if (step.Equals(0)) {
           m_axes.Add(grid);
         } else {
           m_grids.Add(grid);
