@@ -35,6 +35,4 @@ namespace AdSecCore {
       return obj.GetHashCode();
     }
   }
-
-
 }
