@@ -34,7 +34,6 @@ namespace AdSecGHTests.Helpers {
     public static GH_Component AnalyzeComponent() {
       var component = new Analyse();
       var section = new AdSecSection(CreateSTDRectangularSection(), designCode, "", "", Plane.WorldXY);
-      SaveAdSecModel(section, "C:\\AdSecCatch.ads");
       component.SetInputParamAt(0, new AdSecSectionGoo(section));
       return component;
     }
