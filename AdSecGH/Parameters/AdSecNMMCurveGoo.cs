@@ -88,26 +88,26 @@ namespace AdSecGH.Parameters {
     }
 
     public static Polyline CurveToPolyline(ILoadCurve loadCurve, Angle angle, bool isMM = false) {
-      var pts = new List<Point3d>();
+      var points = new List<Point3d>();
       foreach (ILoad load in loadCurve.Points) {
         if (isMM) {
           var pt = new Point3d(
           load.YY.As(DefaultUnits.MomentUnit), // plot yy on x-axis
           load.ZZ.As(DefaultUnits.MomentUnit), // plot zz on y-axis
           0);
-          pts.Add(pt);
+          points.Add(pt);
         } else {
           var pt = new Point3d(
             load.ZZ.As(DefaultUnits.MomentUnit),
             load.YY.As(DefaultUnits.MomentUnit),
             load.X.As(DefaultUnits.ForceUnit) * -1); // flip y-axis for NM-diagram
-          pts.Add(pt);
+          points.Add(pt);
         }
       }
       // add first point to the end to make a closed curve
-      pts.Add(pts[0]);
+      points.Add(points[0]);
       if (isMM) {
-        return new Polyline(pts);
+        return new Polyline(points);
       }
 
       Plane local = Plane.WorldYZ;
@@ -116,7 +116,7 @@ namespace AdSecGH.Parameters {
       }
       // transform to local plane
       var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(local, Plane.WorldXY);
-      var polyline = new Polyline(pts);
+      var polyline = new Polyline(points);
       polyline.Transform(mapFromLocal);
       return polyline;
     }
@@ -141,8 +141,8 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Curve))) {
-        var pln = m_value.ToPolylineCurve();
-        target = (Q)(object)new GH_Curve(pln);
+        var polylineCurve = m_value.ToPolylineCurve();
+        target = (Q)(object)new GH_Curve(polylineCurve);
         return true;
       }
 
@@ -177,9 +177,9 @@ namespace AdSecGH.Parameters {
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      Polyline dup = m_value.Duplicate();
-      dup.Transform(xform);
-      return dup.BoundingBox;
+      Polyline duplicatePolyline = m_value.Duplicate();
+      duplicatePolyline.Transform(xform);
+      return duplicatePolyline.BoundingBox;
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
