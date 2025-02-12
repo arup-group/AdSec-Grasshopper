@@ -6,6 +6,7 @@ using AdSecCore;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
@@ -20,6 +21,8 @@ using OasysGH.Units;
 
 using OasysUnits;
 using OasysUnits.Units;
+
+using static System.Collections.Specialized.BitVector32;
 
 namespace AdSecGH.Helpers {
   public static class GHComponentExtensions {
@@ -358,6 +361,32 @@ namespace AdSecGH.Helpers {
       }
 
       return covers;
+    }
+
+    public static string GetModelJson(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, List<AdSecSection> sections) {
+      var adSecloads = new Dictionary<int, List<object>>();
+      if (DA.GetDataTree(1, out GH_Structure<IGH_Goo> loads) && loads.Branches.Count > 0) {
+        for (int i = 0; i < sections.Count; i++) {
+          var adSecload = new List<object>();
+          if (loads.Branches[i] != null && loads.Branches[i].Count != 0) {
+            // loop through input list
+            for (int j = 0; j < loads.Branches[i].Count; j++) {
+              // check if item is load type
+              if (loads[i][j].CastTo(out AdSecLoadGoo loadGoo)) {
+                adSecload.Add(loadGoo);
+              } else if (loads[i][j].CastTo(out AdSecDeformationGoo loadDeformationGoo)) {
+                adSecload.Add(loadDeformationGoo);
+              } else {
+                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
+                  $"Unable to convert {owner.Params.Input[1].NickName} path {i} index {j} to AdSec Load. Section will be saved without this load.");
+              }
+              adSecloads.Add(i, adSecload);
+            }
+          }
+        }
+      }
+      return AdSecFile.ModelJson(sections, adSecloads);
     }
   }
 }

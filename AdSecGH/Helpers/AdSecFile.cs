@@ -1,11 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 
 using AdSecGH.Parameters;
 
+using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.IO.Serialization;
+using Oasys.AdSec.Reinforcement.Layers;
 
+using Rhino.UI;
 namespace AdSecGH.Helpers {
   internal class AdSecFile {
     internal static Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>() {
@@ -150,6 +157,66 @@ namespace AdSecGH.Helpers {
       var designCodeLevelsSplit = codeString.Split('+').ToList();
 
       return new AdSecDesignCode(designCodeLevelsSplit);
+    }
+
+
+    internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
+      if (sections == null || !sections.Any()) { return ""; }
+      var jsonStrings = new List<string>();
+      var json = new JsonConverter(sections[0].DesignCode);
+      for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
+        var adSecDeformations = Oasys.Collections.IList<IDeformation>.Create();
+        var adSecLoads = Oasys.Collections.IList<ILoad>.Create();
+        if (loads.ContainsKey(sectionId)) {
+          foreach (var load in loads[sectionId]) {
+            switch (load) {
+              case AdSecDeformationGoo deformationGoo:
+                adSecDeformations.Add(deformationGoo.Value);
+                break;
+              case AdSecLoadGoo loadGoo:
+                adSecLoads.Add(loadGoo.Value);
+                break;
+              default:
+                throw new ArgumentException("Not a valid AdSec load");
+            }
+          }
+        }
+        if (adSecDeformations.Count > 0 && adSecLoads.Count > 0) {
+          throw new ArgumentException("Only either deformation or load can be specified to a section.");
+        }
+        jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecLoads));
+      }
+      return CombineJSonStrings(jsonStrings);
+    }
+
+    internal static string SaveAsFile(string jsonString) {
+      var saveDialog = new SaveFileDialog {
+        Filter = "AdSec File (*.ads)|*.ads|All files (*.*)|*.*",
+      };
+      bool result = saveDialog.ShowSaveDialog();
+      if (result) {
+        // write to file
+        File.WriteAllText(saveDialog.FileName, jsonString);
+        return saveDialog.FileName;
+      }
+      return saveDialog.FileName;
+    }
+
+    internal static string CombineJSonStrings(List<string> jsonStrings) {
+      if (jsonStrings == null || jsonStrings.Count == 0) {
+        return null;
+      }
+      var stringBuilder = new StringBuilder();
+      string jsonString = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
+      stringBuilder.Append(jsonString);
+      for (int i = 1; i < jsonStrings.Count; i++) {
+        string jsonString2 = jsonStrings[i];
+        int start = jsonString2.IndexOf("components") - 2;
+        jsonString2 = $",{jsonString2.Substring(start)}";
+        stringBuilder.Append(jsonString2.Remove(jsonString2.Length - 2, 2));
+      }
+      stringBuilder.Append(jsonStrings[0].Substring(jsonStrings[0].Length - 2));
+      return stringBuilder.ToString();
     }
   }
 }
