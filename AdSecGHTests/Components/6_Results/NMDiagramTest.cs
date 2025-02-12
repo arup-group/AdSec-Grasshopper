@@ -68,37 +68,47 @@ namespace AdSecGHTests.Properties {
     [Fact]
     public void NMCurveIsReportingCorrectPeakValueAtBoundary() {
       SetPlotBoundary(new Rectangle3d(Plane.WorldXY, new Point3d(200, 1400, 0), new Point3d(-200, -600, 0)));
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(NMCurve().Value.BoundingBox, new BoundingBox(new Point3d(-184.84, -453.48, 0), new Point3d(184.84, 1251.86, 0))));
+      var expectedValue = new BoundingBox(new Point3d(-184.84, -453.48, 0), new Point3d(184.84, 1251.86, 0));
+      var actualValue = NMCurve().Value.BoundingBox;
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, actualValue));
     }
 
     [Fact]
     public void NMCurveIsReportingCorrectPeakValue() {
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(LoadBoundingBox(), new BoundingBox(new Point3d(-184.84, -453.48, 0), new Point3d(184.84, 1251.86, 0))));
+      var expectedValue = new BoundingBox(new Point3d(-184.84, -453.48, 0), new Point3d(184.84, 1251.86, 0));
+      var actualValue = NMCurve().Value.BoundingBox;
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, actualValue));
     }
 
     [Fact]
     public void NMCurveIsReportingCorrectPeakValueAtAngleInRadian() {
       SetAngle();
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(LoadBoundingBox(), new BoundingBox(new Point3d(-90.73, -453.48, 0), new Point3d(90.73, 1251.86, 0))));
+      var expectedValue = new BoundingBox(new Point3d(-90.73, -453.48, 0), new Point3d(90.73, 1251.86, 0));
+      var actualValue = NMCurve().Value.BoundingBox;
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, actualValue));
     }
 
     [Fact]
     public void NMCurveIsReportingCorrectPeakValueAtAngleInDegree() {
       SetAngle(false);
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(LoadBoundingBox(), new BoundingBox(new Point3d(-90.73, -453.48, 0), new Point3d(90.73, 1251.86, 0))));
+      var expectedValue = new BoundingBox(new Point3d(-90.73, -453.48, 0), new Point3d(90.73, 1251.86, 0));
+      var actualValue = NMCurve().Value.BoundingBox;
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, actualValue));
     }
 
     [Fact]
     public void MMCurveIsReportingCorrectPeakValue() {
       SetMMCurve();
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(LoadBoundingBox(), new BoundingBox(new Point3d(-127.03, -59.28, 0), new Point3d(127.03, 59.28, 0))));
+      var expectedValue = new BoundingBox(new Point3d(-127.03, -59.28, 0), new Point3d(127.03, 59.28, 0));
+      var actualValue = NMCurve().Value.BoundingBox;
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, actualValue));
     }
 
     [Fact]
-    public void MMCurveIsReportingCorrectPeakValueAtGivenAxialForce() {
-      SetAxialForce(200);
+    public void MMCurveIsReportingNullWhenAxialForceisOutOfBound() {
+      SetAxialForce(1000);
       SetMMCurve();
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(LoadBoundingBox(), new BoundingBox(new Point3d(-71.17, -33.19, 0), new Point3d(71.17, 33.19, 0))));
+      Assert.Null(NMCurve());
     }
   }
 }

@@ -36,24 +36,24 @@ namespace AdSecGH.Parameters {
     }
     public BoundingBox ClippingBox => Boundingbox;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
-    public override string TypeName => (m_type == InteractionCurveType.NM) ? "N-M" : "M-M";
+    public override string TypeName => (_curveType == InteractionCurveType.NM) ? "N-M" : "M-M";
     internal ILoadCurve LoadCurve;
-    private List<Line> m_axes = new List<Line>();
-    private List<Line> m_grids = new List<Line>();
-    private Rectangle3d m_plotBounds;
-    private List<Text3d> m_txts;
-    private InteractionCurveType m_type;
+    private List<Line> _lineAxes = new List<Line>();
+    private List<Line> _grid = new List<Line>();
+    private Rectangle3d _plotBoundary;
+    private List<Text3d> _graphicTxts;
+    private readonly InteractionCurveType _curveType;
 
     public AdSecNMMCurveGoo(Polyline curve, ILoadCurve loadCurve, InteractionCurveType interactionType, Rectangle3d plotBoundary) : base(curve) {
       if (loadCurve == null) {
         return;
       }
 
-      m_type = interactionType;
+      _curveType = interactionType;
       LoadCurve = loadCurve;
       m_value = curve;
-      m_plotBounds = plotBoundary;
-      UpdatePreview(m_plotBounds);
+      _plotBoundary = plotBoundary;
+      UpdatePreview(_plotBoundary);
     }
 
     /// <summary>
@@ -64,11 +64,11 @@ namespace AdSecGH.Parameters {
       if (loadCurve == null) {
         return;
       }
-      m_type = InteractionCurveType.MM;
+      _curveType = InteractionCurveType.MM;
       LoadCurve = loadCurve;
       m_value = CurveToPolyline(loadCurve, Angle.FromRadians(0), true);
-      m_plotBounds = plotBoundary;
-      UpdatePreview(m_plotBounds);
+      _plotBoundary = plotBoundary;
+      UpdatePreview(_plotBoundary);
     }
 
     /// <summary>
@@ -81,10 +81,10 @@ namespace AdSecGH.Parameters {
         return;
       }
       LoadCurve = loadCurve;
-      m_type = InteractionCurveType.NM;
+      _curveType = InteractionCurveType.NM;
       m_value = CurveToPolyline(loadCurve, angle);
-      m_plotBounds = plotBoundary;
-      UpdatePreview(m_plotBounds);
+      _plotBoundary = plotBoundary;
+      UpdatePreview(_plotBoundary);
     }
 
     public static Polyline CurveToPolyline(ILoadCurve loadCurve, Angle angle, bool isMM = false) {
@@ -131,7 +131,7 @@ namespace AdSecGH.Parameters {
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecNMMCurveGoo))) {
-        target = (Q)(object)new AdSecNMMCurveGoo(m_value.Duplicate(), LoadCurve, m_type, m_plotBounds);
+        target = (Q)(object)new AdSecNMMCurveGoo(m_value.Duplicate(), LoadCurve, _curveType, _plotBoundary);
         return true;
       }
 
@@ -164,16 +164,16 @@ namespace AdSecGH.Parameters {
         }
 
         // draw plot diagram
-        args.Pipeline.DrawLines(m_grids, UI.Colour.OasysDarkGrey, 1);
-        args.Pipeline.DrawLines(m_axes, UI.Colour.OasysDarkGrey, 2);
-        foreach (Text3d txt in m_txts) {
+        args.Pipeline.DrawLines(_grid, UI.Colour.OasysDarkGrey, 1);
+        args.Pipeline.DrawLines(_lineAxes, UI.Colour.OasysDarkGrey, 2);
+        foreach (Text3d txt in _graphicTxts) {
           args.Pipeline.Draw3dText(txt, UI.Colour.OasysDarkGrey);
         }
       }
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecNMMCurveGoo(m_value.Duplicate(), LoadCurve, m_type, m_plotBounds);
+      return new AdSecNMMCurveGoo(m_value.Duplicate(), LoadCurve, _curveType, _plotBoundary);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
@@ -188,7 +188,7 @@ namespace AdSecGH.Parameters {
 
     public override string ToString() {
       string interactionType = "";
-      if (m_type == InteractionCurveType.NM) {
+      if (_curveType == InteractionCurveType.NM) {
         interactionType = "N-M (Force-Moment Interaction)";
       } else {
         interactionType = "M-M (Moment-Moment Interaction)";
@@ -239,9 +239,9 @@ namespace AdSecGH.Parameters {
           Math.Abs(plotbbox.PointAt(0, 1, 0).Y - plotbbox.PointAt(0, 0, 0).Y)) / 50;
 
       // create grid lines
-      m_grids = new List<Line>();
-      m_axes = new List<Line>();
-      m_txts = new List<Text3d>();
+      _grid = new List<Line>();
+      _lineAxes = new List<Line>();
+      _graphicTxts = new List<Text3d>();
       Plane txtPln = Plane.WorldXY;
       // loop through all values in y axis to create x-dir grids
       foreach (float step in yAxis.MajorRange) {
@@ -257,9 +257,9 @@ namespace AdSecGH.Parameters {
         // if step value is 0 we want to add it to the major axis
         // that we will give a different colour
         if (step.Equals(0)) {
-          m_axes.Add(grid);
+          _lineAxes.Add(grid);
         } else {
-          m_grids.Add(grid);
+          _grid.Add(grid);
         }
 
         // add step annotation
@@ -271,12 +271,12 @@ namespace AdSecGH.Parameters {
         txtPln.Origin = new Point3d(
           grid.PointAt(0).X - size,
           grid.PointAt(0).Y, 0);
-        string displayval = (m_type == InteractionCurveType.NM) ? (step * -1).ToString() : step.ToString();
+        string displayval = (_curveType == InteractionCurveType.NM) ? (step * -1).ToString() : step.ToString();
         var txt = new Text3d(displayval, txtPln, size) {
           HorizontalAlignment = TextHorizontalAlignment.Right,
           VerticalAlignment = TextVerticalAlignment.Middle
         };
-        m_txts.Add(txt);
+        _graphicTxts.Add(txt);
 
       }
 
@@ -289,9 +289,9 @@ namespace AdSecGH.Parameters {
         grid.Transform(Rhino.Geometry.Transform.Scale(
           pln, sclX, sclY, 1));
         if (step.Equals(0)) {
-          m_axes.Add(grid);
+          _lineAxes.Add(grid);
         } else {
-          m_grids.Add(grid);
+          _grid.Add(grid);
         }
 
         txtPln.Origin = new Point3d(
@@ -301,10 +301,10 @@ namespace AdSecGH.Parameters {
           HorizontalAlignment = TextHorizontalAlignment.Center,
           VerticalAlignment = TextVerticalAlignment.Top
         };
-        m_txts.Add(txt);
+        _graphicTxts.Add(txt);
       }
       // add the boundary lines
-      m_axes.AddRange(plotBoundary.ToPolyline().GetSegments());
+      _lineAxes.AddRange(plotBoundary.ToPolyline().GetSegments());
 
       // Create axis labels
       string momentAxis = $"Moment [{Moment.GetAbbreviation(DefaultUnits.MomentUnit)}]";
@@ -314,8 +314,8 @@ namespace AdSecGH.Parameters {
       string forceUnitAbbreviation = string.Concat(force.ToString().Where(char.IsLetter));
       string forceAxis = $"Axial force [{forceUnitAbbreviation}]";
 
-      string annoXaxis = (m_type == InteractionCurveType.NM) ? momentAxis : myyAxis;
-      string annoYaxis = (m_type == InteractionCurveType.NM) ? forceAxis : mzzAxis;
+      string annoXaxis = (_curveType == InteractionCurveType.NM) ? momentAxis : myyAxis;
+      string annoYaxis = (_curveType == InteractionCurveType.NM) ? forceAxis : mzzAxis;
 
       // find largest annotation value string length
       double offset = Math.Max(
@@ -329,7 +329,7 @@ namespace AdSecGH.Parameters {
         HorizontalAlignment = TextHorizontalAlignment.Center,
         VerticalAlignment = TextVerticalAlignment.Top
       };
-      m_txts.Add(txtX);
+      _graphicTxts.Add(txtX);
       txtPln.Origin = new Point3d(
         plotbbox.PointAt(0, 0, 0).X - (size * offset * 1.1),
         plotbbox.PointAt(0, 0.5, 0).Y, 0);
@@ -338,7 +338,7 @@ namespace AdSecGH.Parameters {
         HorizontalAlignment = TextHorizontalAlignment.Center,
         VerticalAlignment = TextVerticalAlignment.Bottom
       };
-      m_txts.Add(txtY);
+      _graphicTxts.Add(txtY);
     }
   }
 }
