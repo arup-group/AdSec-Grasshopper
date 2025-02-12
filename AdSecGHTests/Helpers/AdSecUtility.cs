@@ -42,31 +42,6 @@ namespace AdSecGHTests.Helpers {
       return (AdSecSolutionGoo)ComponentTestHelper.GetOutput(AnalyzeComponent());
     }
 
-    public static void SaveAdSecModel(AdSecSection section, string path) {
-      var jsonStrings = new List<string>();
-      var json = new JsonConverter(designCode);
-      jsonStrings.Add(json.SectionToJson(section.Section));
-      File.WriteAllText(path, CombineJSonStrings(jsonStrings));
-    }
-
-    private static string CombineJSonStrings(List<string> jsonStrings) {
-      if (jsonStrings == null || jsonStrings.Count == 0) {
-        return null;
-      }
-
-      string jsonString = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
-      for (int i = 1; i < jsonStrings.Count; i++) {
-        string jsonString2 = jsonStrings[i];
-        int start = jsonString2.IndexOf("components") - 2;
-        jsonString2 = $",{jsonString2.Substring(start)}";
-        jsonString += jsonString2.Remove(jsonString2.Length - 2, 2);
-      }
-
-      jsonString += jsonStrings[0].Substring(jsonStrings[0].Length - 2);
-
-      return jsonString;
-    }
-
     public static bool IsBoundingBoxEqual(BoundingBox actual, BoundingBox expected) {
       var comparer = new DoubleComparer(0.001);
       return comparer.Equals(expected.Min.X, actual.Min.X) && comparer.Equals(expected.Min.Y, actual.Min.Y) &&
