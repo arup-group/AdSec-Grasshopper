@@ -114,23 +114,6 @@ namespace AdSecGH.Components {
       return base.Write(writer);
     }
 
-    internal static string CombineJSonStrings(List<string> jsonStrings) {
-      if (jsonStrings == null || jsonStrings.Count == 0) {
-        return null;
-      }
-      var stringBuilder = new StringBuilder();
-      string jsonString = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
-      stringBuilder.Append(jsonString);
-      for (int i = 1; i < jsonStrings.Count; i++) {
-        string jsonString2 = jsonStrings[i];
-        int start = jsonString2.IndexOf("components") - 2;
-        jsonString2 = $",{jsonString2.Substring(start)}";
-        stringBuilder.Append(jsonString2.Remove(jsonString2.Length - 2, 2));
-      }
-      stringBuilder.Append(jsonStrings[0].Substring(jsonStrings[0].Length - 2));
-      return stringBuilder.ToString();
-    }
-
     protected override void InitialiseDropdowns() { }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
