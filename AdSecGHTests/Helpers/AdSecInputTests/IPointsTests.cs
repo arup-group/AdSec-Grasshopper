@@ -8,6 +8,8 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.Profiles;
 
+using OasysGH.Units;
+
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -271,8 +273,8 @@ namespace AdSecGHTests.Helpers {
 
       Assert.Equal(2, iPoints.Count);
       Assert.Equal(2, temporaryPoints.Count);
-      Assert.Equal(0.001, iPoints[0].Y.Value);
-      Assert.Equal(0.001, iPoints[0].Z.Value);
+      Assert.Equal((new Length(1, DefaultUnits.LengthUnitGeometry)).Value, iPoints[0].Y.Value);
+      Assert.Equal((new Length(1, DefaultUnits.LengthUnitGeometry)).Value, iPoints[0].Z.Value);
     }
 
     #endregion

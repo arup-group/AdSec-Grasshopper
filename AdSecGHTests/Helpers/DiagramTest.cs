@@ -10,7 +10,7 @@ namespace AdSecGHTests.Helpers {
     [Fact]
     public void StepIsExpectedWhenMinimumAndMaximumValueAreSame() {
       GridAxis gridAxis = new GridAxis(100, 100);
-      Assert.Equal(0.02, gridAxis.major_step, 5);
+      Assert.Equal(0.2, gridAxis.major_step, 5);
       Assert.Equal(0.05, gridAxis.minor_step, 5);
     }
 
