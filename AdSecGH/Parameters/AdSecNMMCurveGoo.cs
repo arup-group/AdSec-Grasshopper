@@ -77,17 +77,17 @@ namespace AdSecGH.Parameters {
       bool isMM = _curveType == InteractionCurveType.MM;
       foreach (ILoad load in _loadCurve.Points) {
         if (isMM) {
-          var pt = new Point3d(
+          var point = new Point3d(
           load.YY.As(DefaultUnits.MomentUnit), // plot yy on x-axis
           load.ZZ.As(DefaultUnits.MomentUnit), // plot zz on y-axis
           0);
-          points.Add(pt);
+          points.Add(point);
         } else {
-          var pt = new Point3d(
+          var point = new Point3d(
             load.ZZ.As(DefaultUnits.MomentUnit),
             load.YY.As(DefaultUnits.MomentUnit),
             load.X.As(DefaultUnits.ForceUnit) * -1); // flip y-axis for NM-diagram
-          points.Add(pt);
+          points.Add(point);
         }
       }
       // add first point to the end to make a closed curve

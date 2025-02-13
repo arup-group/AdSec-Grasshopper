@@ -59,7 +59,7 @@ namespace AdSecGH.Helpers {
         x_min = x_mid - (1.01f * delta);
 
         //What if they are both 0?
-        if (x_max == 0 && x_min == 0) {
+        if (x_max.Equals(0) && x_min.Equals(0)) {
           x_max = 1;
         }
 

@@ -8,6 +8,13 @@ namespace AdSecGHTests.Helpers {
   public class DiagramTest {
 
     [Fact]
+    public void StepIsExpectedWhenMinimumAndMaximumValueAreZero() {
+      GridAxis gridAxis = new GridAxis(0, 0);
+      Assert.Equal(0.2, gridAxis.major_step, 5);
+      Assert.Equal(0.05, gridAxis.minor_step, 5);
+    }
+
+    [Fact]
     public void StepIsExpectedWhenMinimumAndMaximumValueAreSame() {
       GridAxis gridAxis = new GridAxis(100, 100);
       Assert.Equal(0.2, gridAxis.major_step, 5);
