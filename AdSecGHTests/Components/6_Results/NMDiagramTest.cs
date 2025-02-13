@@ -14,7 +14,7 @@ using Rhino.Geometry;
 
 using Xunit;
 
-namespace AdSecGHTests.Properties {
+namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
   public class NMDiagramTest {
     private static NMDiagram _components;
@@ -34,6 +34,10 @@ namespace AdSecGHTests.Properties {
       component.SetSelected(0, 0);
       ComponentTestHelper.SetInput(component, AdSecUtility.GetResult(), 0);
       return component;
+    }
+
+    private static BoundingBox LoadBoundingBox() {
+      return NMCurve().CurveToPolyline(_angle).BoundingBox;
     }
 
     private static void SetPlotBoundary() {
@@ -65,39 +69,34 @@ namespace AdSecGHTests.Properties {
     public void NMCurveIsReportingCorrectPeakValueAtBoundary() {
       SetPlotBoundary();
       var expectedValue = new BoundingBox(new Point3d(-184.84, -453.48, 0), new Point3d(184.84, 1251.86, 0));
-      var actualValue = NMCurve().Value.BoundingBox;
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, actualValue));
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, NMCurve().Value.BoundingBox));
     }
 
     [Fact]
     public void NMCurveIsReportingCorrectPeakValue() {
       var expectedValue = new BoundingBox(new Point3d(-184.84, -453.48, 0), new Point3d(184.84, 1251.86, 0));
-      var actualValue = NMCurve().Value.BoundingBox;
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, actualValue));
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, LoadBoundingBox()));
     }
 
     [Fact]
     public void NMCurveIsReportingCorrectPeakValueAtAngleInRadian() {
       SetAngle();
       var expectedValue = new BoundingBox(new Point3d(-90.73, -453.48, 0), new Point3d(90.73, 1251.86, 0));
-      var actualValue = NMCurve().Value.BoundingBox;
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, actualValue));
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, LoadBoundingBox()));
     }
 
     [Fact]
     public void NMCurveIsReportingCorrectPeakValueAtAngleInDegree() {
       SetAngle(false);
       var expectedValue = new BoundingBox(new Point3d(-90.73, -453.48, 0), new Point3d(90.73, 1251.86, 0));
-      var actualValue = NMCurve().Value.BoundingBox;
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, actualValue));
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, LoadBoundingBox()));
     }
 
     [Fact]
     public void MMCurveIsReportingCorrectPeakValue() {
       SetMMCurve();
       var expectedValue = new BoundingBox(new Point3d(-127.03, -59.28, 0), new Point3d(127.03, 59.28, 0));
-      var actualValue = NMCurve().Value.BoundingBox;
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, actualValue));
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, LoadBoundingBox()));
     }
 
     [Fact]
@@ -146,7 +145,7 @@ namespace AdSecGHTests.Properties {
     public void NegativeCastIsNull() {
       var curveGoo = NMCurve();
       GH_Point point = null;
-      Assert.True(curveGoo.CastTo(ref point));
+      Assert.False(curveGoo.CastTo(ref point));
       Assert.Null(point);
     }
 

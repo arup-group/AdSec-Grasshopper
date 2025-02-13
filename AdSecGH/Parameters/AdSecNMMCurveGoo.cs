@@ -39,7 +39,7 @@ namespace AdSecGH.Parameters {
     public BoundingBox ClippingBox => Boundingbox;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => (_curveType == InteractionCurveType.NM) ? "N-M" : "M-M";
-    private readonly ILoadCurve LoadCurve;
+    private readonly ILoadCurve _loadCurve;
     private readonly InteractionCurveType _curveType;
     private List<Line> _lineAxes = new List<Line>();
     private List<Line> _grid = new List<Line>();
@@ -49,9 +49,8 @@ namespace AdSecGH.Parameters {
       if (loadCurve == null) {
         return;
       }
-
       _curveType = interactionType;
-      LoadCurve = loadCurve;
+      _loadCurve = loadCurve;
       m_value = curve;
       _plotBoundary = plotBoundary;
       UpdatePreview(_plotBoundary);
@@ -66,17 +65,17 @@ namespace AdSecGH.Parameters {
       if (loadCurve == null) {
         return;
       }
-      LoadCurve = loadCurve;
+      _loadCurve = loadCurve;
       _curveType = curveType;
-      m_value = CurveToPolyline(loadCurve, angle, curveType);
+      m_value = CurveToPolyline(angle);
       _plotBoundary = plotBoundary;
       UpdatePreview(_plotBoundary);
     }
 
-    public static Polyline CurveToPolyline(ILoadCurve loadCurve, Angle angle, InteractionCurveType curveType) {
+    public Polyline CurveToPolyline(Angle angle) {
       var points = new List<Point3d>();
-      bool isMM = curveType == InteractionCurveType.MM;
-      foreach (ILoad load in loadCurve.Points) {
+      bool isMM = _curveType == InteractionCurveType.MM;
+      foreach (ILoad load in _loadCurve.Points) {
         if (isMM) {
           var pt = new Point3d(
           load.YY.As(DefaultUnits.MomentUnit), // plot yy on x-axis
@@ -110,7 +109,7 @@ namespace AdSecGH.Parameters {
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecNMMCurveGoo))) {
-        target = (Q)(object)new AdSecNMMCurveGoo(m_value.Duplicate(), LoadCurve, _curveType, _plotBoundary);
+        target = (Q)(object)new AdSecNMMCurveGoo(m_value.Duplicate(), _loadCurve, _curveType, _plotBoundary);
         return true;
       }
 
@@ -147,7 +146,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecNMMCurveGoo(m_value.Duplicate(), LoadCurve, _curveType, _plotBoundary);
+      return new AdSecNMMCurveGoo(m_value.Duplicate(), _loadCurve, _curveType, _plotBoundary);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
