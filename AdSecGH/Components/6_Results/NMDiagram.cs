@@ -174,7 +174,7 @@ namespace AdSecGH.Components {
         }
 
         // create output
-        DA.SetData(0, new AdSecNMMCurveGoo(loadCurve[0], rect));
+        DA.SetData(0, new AdSecNMMCurveGoo(loadCurve[0], Angle.FromRadians(0), rect, AdSecNMMCurveGoo.InteractionCurveType.MM));
       }
     }
 

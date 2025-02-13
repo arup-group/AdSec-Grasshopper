@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using AdSecGH.Components;
 using AdSecGH.Parameters;
@@ -107,6 +108,18 @@ namespace AdSecGHTests.Properties {
     }
 
     [Fact]
+    public void VolumeIsZeroWhenLoadCurveIsNull() {
+      var curveGoo = new AdSecNMMCurveGoo(null, Angle.FromRadians(0), new Rectangle3d());
+      Assert.Equal(0, curveGoo.Boundingbox.Volume, 5);
+    }
+
+    [Fact]
+    public void VolumeIsZeroWhenLoadCurveIsNullInOverLoadMethod() {
+      var curveGoo = new AdSecNMMCurveGoo(null, null, AdSecNMMCurveGoo.InteractionCurveType.NM, new Rectangle3d());
+      Assert.Equal(0, curveGoo.Boundingbox.Volume, 5);
+    }
+
+    [Fact]
     public void CastToPolyLine() {
       var curveGoo = NMCurve();
       GH_Curve curve = null;
@@ -120,6 +133,13 @@ namespace AdSecGHTests.Properties {
       AdSecNMMCurveGoo castedCurve = null;
       Assert.True(curveGoo.CastTo(ref castedCurve));
       Assert.NotNull(castedCurve);
+    }
+
+    [Fact]
+    public void CastToAdSecNMMCurveGooThrowExceptionWhenCurveIsNull() {
+      var curveGoo = new AdSecNMMCurveGoo(null, Angle.FromRadians(0), new Rectangle3d());
+      AdSecNMMCurveGoo castedCurve = null;
+      Assert.Throws<NullReferenceException>(() => curveGoo.CastTo(ref castedCurve));
     }
 
     [Fact]

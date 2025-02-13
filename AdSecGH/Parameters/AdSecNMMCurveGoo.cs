@@ -19,6 +19,8 @@ using Rhino.Display;
 using Rhino.DocObjects;
 using Rhino.Geometry;
 
+using static Rhino.FileIO.FileObjWriteOptions;
+
 namespace AdSecGH.Parameters {
   public class AdSecNMMCurveGoo : GH_GeometricGoo<Polyline>, IGH_PreviewData {
     public enum InteractionCurveType {
@@ -56,38 +58,24 @@ namespace AdSecGH.Parameters {
     }
 
     /// <summary>
-    /// this constuctor will create an M-M type interaction diagram
-    /// </summary>
-    /// <param name="loadCurve"></param>
-    internal AdSecNMMCurveGoo(ILoadCurve loadCurve, Rectangle3d plotBoundary) {
-      if (loadCurve == null) {
-        return;
-      }
-      _curveType = InteractionCurveType.MM;
-      LoadCurve = loadCurve;
-      m_value = CurveToPolyline(loadCurve, Angle.FromRadians(0), true);
-      _plotBoundary = plotBoundary;
-      UpdatePreview(_plotBoundary);
-    }
-
-    /// <summary>
     /// This constuctor will create an N-M type interaction diagram
     /// </summary>
     /// <param name="loadCurve"></param>
     /// <param name="angle"></param>
-    internal AdSecNMMCurveGoo(ILoadCurve loadCurve, Angle angle, Rectangle3d plotBoundary) {
+    internal AdSecNMMCurveGoo(ILoadCurve loadCurve, Angle angle, Rectangle3d plotBoundary, InteractionCurveType curveType = InteractionCurveType.NM) {
       if (loadCurve == null) {
         return;
       }
       LoadCurve = loadCurve;
-      _curveType = InteractionCurveType.NM;
-      m_value = CurveToPolyline(loadCurve, angle);
+      _curveType = curveType;
+      m_value = CurveToPolyline(loadCurve, angle, curveType);
       _plotBoundary = plotBoundary;
       UpdatePreview(_plotBoundary);
     }
 
-    public static Polyline CurveToPolyline(ILoadCurve loadCurve, Angle angle, bool isMM = false) {
+    public static Polyline CurveToPolyline(ILoadCurve loadCurve, Angle angle, InteractionCurveType curveType) {
       var points = new List<Point3d>();
+      bool isMM = curveType == InteractionCurveType.MM;
       foreach (ILoad load in loadCurve.Points) {
         if (isMM) {
           var pt = new Point3d(
