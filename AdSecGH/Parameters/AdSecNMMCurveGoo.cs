@@ -37,13 +37,12 @@ namespace AdSecGH.Parameters {
     public BoundingBox ClippingBox => Boundingbox;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => (_curveType == InteractionCurveType.NM) ? "N-M" : "M-M";
-    internal ILoadCurve LoadCurve;
+    private readonly ILoadCurve LoadCurve;
+    private readonly InteractionCurveType _curveType;
     private List<Line> _lineAxes = new List<Line>();
     private List<Line> _grid = new List<Line>();
     private Rectangle3d _plotBoundary;
     private List<Text3d> _graphicTxts;
-    private readonly InteractionCurveType _curveType;
-
     public AdSecNMMCurveGoo(Polyline curve, ILoadCurve loadCurve, InteractionCurveType interactionType, Rectangle3d plotBoundary) : base(curve) {
       if (loadCurve == null) {
         return;
@@ -121,22 +120,9 @@ namespace AdSecGH.Parameters {
       return polyline;
     }
 
-    public override bool CastFrom(object source) {
-      if (source == null) {
-        return false;
-      }
-
-      return false;
-    }
-
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecNMMCurveGoo))) {
         target = (Q)(object)new AdSecNMMCurveGoo(m_value.Duplicate(), LoadCurve, _curveType, _plotBoundary);
-        return true;
-      }
-
-      if (typeof(Q).IsAssignableFrom(typeof(Line))) {
-        target = (Q)(object)Value;
         return true;
       }
 

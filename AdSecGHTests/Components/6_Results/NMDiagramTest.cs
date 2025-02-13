@@ -5,6 +5,8 @@ using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
 
+using Grasshopper.Kernel.Types;
+
 using OasysUnits;
 
 using Rhino.Geometry;
@@ -16,10 +18,8 @@ namespace AdSecGHTests.Properties {
   public class NMDiagramTest {
     private static NMDiagram _components;
     private static Angle _angle;
-    private static bool _isMMCurve;
     public NMDiagramTest() {
       _components = ComponentMother();
-      _isMMCurve = false;
       _angle = Angle.FromRadians(0);
     }
 
@@ -35,18 +35,13 @@ namespace AdSecGHTests.Properties {
       return component;
     }
 
-    private static void SetPlotBoundary(Rectangle3d rectangle) {
+    private static void SetPlotBoundary() {
       //set boundary in such a way that neutralize translation
+      Rectangle3d rectangle = new Rectangle3d(Plane.WorldXY, new Point3d(200, 1400, 0), new Point3d(-200, -600, 0));
       ComponentTestHelper.SetInput(_components, rectangle, 2);
     }
 
-    private static BoundingBox LoadBoundingBox() {
-      var curve = NMCurve().LoadCurve;
-      return AdSecNMMCurveGoo.CurveToPolyline(curve, _angle, _isMMCurve).BoundingBox;
-    }
-
     private static void SetMMCurve() {
-      _isMMCurve = true;
       _components.SetSelected(0, 1);
     }
 
@@ -67,7 +62,7 @@ namespace AdSecGHTests.Properties {
 
     [Fact]
     public void NMCurveIsReportingCorrectPeakValueAtBoundary() {
-      SetPlotBoundary(new Rectangle3d(Plane.WorldXY, new Point3d(200, 1400, 0), new Point3d(-200, -600, 0)));
+      SetPlotBoundary();
       var expectedValue = new BoundingBox(new Point3d(-184.84, -453.48, 0), new Point3d(184.84, 1251.86, 0));
       var actualValue = NMCurve().Value.BoundingBox;
       Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, actualValue));
@@ -109,6 +104,49 @@ namespace AdSecGHTests.Properties {
       SetAxialForce(1000);
       SetMMCurve();
       Assert.Null(NMCurve());
+    }
+
+    [Fact]
+    public void CastToPolyLine() {
+      var curveGoo = NMCurve();
+      GH_Curve curve = null;
+      Assert.True(curveGoo.CastTo(ref curve));
+      Assert.NotNull(curve);
+    }
+
+    [Fact]
+    public void CastToAdSecNMMCurveGoo() {
+      var curveGoo = NMCurve();
+      AdSecNMMCurveGoo castedCurve = null;
+      Assert.True(curveGoo.CastTo(ref castedCurve));
+      Assert.NotNull(castedCurve);
+    }
+
+    [Fact]
+    public void NegativeCastIsNull() {
+      var curveGoo = NMCurve();
+      GH_Point point = null;
+      Assert.True(curveGoo.CastTo(ref point));
+      Assert.Null(point);
+    }
+
+    [Fact]
+    public void DupliCateGeometryIsCorrect() {
+      var curveGoo = NMCurve();
+      var duplicateGeometry = curveGoo.DuplicateGeometry();
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(curveGoo.Boundingbox, duplicateGeometry.Boundingbox));
+      Assert.Equal("AdSec N-M Parameter", duplicateGeometry.TypeDescription);
+      Assert.Equal("N-M", duplicateGeometry.TypeName);
+    }
+
+    [Fact]
+    public void TransformedBoundingBoxIsCorrect() {
+      var curveGoo = NMCurve();
+      var actualBoundingBox = curveGoo.Boundingbox;
+      var expectedBoundingBox = curveGoo.GetBoundingBox(Transform.Translation(new Vector3d(1, 1, 1)));
+      Assert.Equal(actualBoundingBox.Center.X + 1, expectedBoundingBox.Center.X, 5);
+      Assert.Equal(actualBoundingBox.Center.Y + 1, expectedBoundingBox.Center.Y, 5);
+      Assert.Equal(actualBoundingBox.Center.Z + 1, expectedBoundingBox.Center.Z, 5);
     }
   }
 }
