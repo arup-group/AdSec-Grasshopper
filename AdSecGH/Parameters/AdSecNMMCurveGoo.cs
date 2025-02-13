@@ -42,9 +42,9 @@ namespace AdSecGH.Parameters {
     private readonly ILoadCurve _loadCurve;
     private readonly InteractionCurveType _curveType;
     private List<Line> _lineAxes = new List<Line>();
-    private List<Line> _grid = new List<Line>();
+    private List<Line> _gridLines = new List<Line>();
     private Rectangle3d _plotBoundary;
-    private List<Text3d> _graphicTxts;
+    private List<Text3d> _3dTexts;
     public AdSecNMMCurveGoo(Polyline curve, ILoadCurve loadCurve, InteractionCurveType interactionType, Rectangle3d plotBoundary) : base(curve) {
       if (loadCurve == null) {
         return;
@@ -137,9 +137,9 @@ namespace AdSecGH.Parameters {
         }
 
         // draw plot diagram
-        args.Pipeline.DrawLines(_grid, UI.Colour.OasysDarkGrey, 1);
+        args.Pipeline.DrawLines(_gridLines, UI.Colour.OasysDarkGrey, 1);
         args.Pipeline.DrawLines(_lineAxes, UI.Colour.OasysDarkGrey, 2);
-        foreach (Text3d txt in _graphicTxts) {
+        foreach (Text3d txt in _3dTexts) {
           args.Pipeline.Draw3dText(txt, UI.Colour.OasysDarkGrey);
         }
       }
@@ -211,70 +211,70 @@ namespace AdSecGH.Parameters {
           Math.Abs(plotbbox.PointAt(1, 0, 0).X - plotbbox.PointAt(0, 0, 0).X),
           Math.Abs(plotbbox.PointAt(0, 1, 0).Y - plotbbox.PointAt(0, 0, 0).Y)) / 50;
 
-      // create grid lines
-      _grid = new List<Line>();
+      // create gridLine lines
+      _gridLines = new List<Line>();
       _lineAxes = new List<Line>();
-      _graphicTxts = new List<Text3d>();
+      _3dTexts = new List<Text3d>();
       Plane txtPln = Plane.WorldXY;
       // loop through all values in y axis to create x-dir grids
       foreach (float step in yAxis.MajorRange) {
         // create gridline in original unit
-        var grid = new Line(
+        var gridLine = new Line(
           new Point3d(xAxis.min_value, step, 0),
           new Point3d(xAxis.max_value, step, 0));
         // move to plot boundary
-        grid.Transform(Rhino.Geometry.Transform.Translation(translate));
+        gridLine.Transform(Rhino.Geometry.Transform.Translation(translate));
         // scale to plot boundary
-        grid.Transform(Rhino.Geometry.Transform.Scale(
+        gridLine.Transform(Rhino.Geometry.Transform.Scale(
           pln, sclX, sclY, 1));
         // if step value is 0 we want to add it to the major axis
         // that we will give a different colour
         if (step.Equals(0)) {
-          _lineAxes.Add(grid);
+          _lineAxes.Add(gridLine);
         } else {
-          _grid.Add(grid);
+          _gridLines.Add(gridLine);
         }
 
         // add step annotation
         txtPln.Origin = new Point3d(
-            grid.PointAt(0).X - (xAxis.major_step / 2 * sclX),
-            grid.PointAt(0).Y, 0);
+            gridLine.PointAt(0).X - (xAxis.major_step / 2 * sclX),
+            gridLine.PointAt(0).Y, 0);
 
         // add step annotation
         txtPln.Origin = new Point3d(
-          grid.PointAt(0).X - size,
-          grid.PointAt(0).Y, 0);
+          gridLine.PointAt(0).X - size,
+          gridLine.PointAt(0).Y, 0);
         string displayval = (_curveType == InteractionCurveType.NM) ? (step * -1).ToString() : step.ToString();
         var txt = new Text3d(displayval, txtPln, size) {
           HorizontalAlignment = TextHorizontalAlignment.Right,
           VerticalAlignment = TextVerticalAlignment.Middle
         };
-        _graphicTxts.Add(txt);
+        _3dTexts.Add(txt);
 
       }
 
       // do the same as above but for the other axis
       foreach (float step in xAxis.MajorRange) {
-        var grid = new Line(
+        var gridLine = new Line(
           new Point3d(step, yAxis.min_value, 0),
           new Point3d(step, yAxis.max_value, 0));
-        grid.Transform(Rhino.Geometry.Transform.Translation(translate));
-        grid.Transform(Rhino.Geometry.Transform.Scale(
+        gridLine.Transform(Rhino.Geometry.Transform.Translation(translate));
+        gridLine.Transform(Rhino.Geometry.Transform.Scale(
           pln, sclX, sclY, 1));
         if (step.Equals(0)) {
-          _lineAxes.Add(grid);
+          _lineAxes.Add(gridLine);
         } else {
-          _grid.Add(grid);
+          _gridLines.Add(gridLine);
         }
 
         txtPln.Origin = new Point3d(
-          grid.PointAt(0).X,
-          grid.PointAt(0).Y - size, 0);
+          gridLine.PointAt(0).X,
+          gridLine.PointAt(0).Y - size, 0);
         var txt = new Text3d(step.ToString(), txtPln, size) {
           HorizontalAlignment = TextHorizontalAlignment.Center,
           VerticalAlignment = TextVerticalAlignment.Top
         };
-        _graphicTxts.Add(txt);
+        _3dTexts.Add(txt);
       }
       // add the boundary lines
       _lineAxes.AddRange(plotBoundary.ToPolyline().GetSegments());
@@ -302,7 +302,7 @@ namespace AdSecGH.Parameters {
         HorizontalAlignment = TextHorizontalAlignment.Center,
         VerticalAlignment = TextVerticalAlignment.Top
       };
-      _graphicTxts.Add(txtX);
+      _3dTexts.Add(txtX);
       txtPln.Origin = new Point3d(
         plotbbox.PointAt(0, 0, 0).X - (size * offset * 1.1),
         plotbbox.PointAt(0, 0.5, 0).Y, 0);
@@ -311,7 +311,7 @@ namespace AdSecGH.Parameters {
         HorizontalAlignment = TextHorizontalAlignment.Center,
         VerticalAlignment = TextVerticalAlignment.Bottom
       };
-      _graphicTxts.Add(txtY);
+      _3dTexts.Add(txtY);
     }
   }
 }

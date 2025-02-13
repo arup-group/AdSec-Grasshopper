@@ -8,6 +8,20 @@ namespace AdSecGHTests.Helpers {
   public class DiagramTest {
 
     [Fact]
+    public void StepIsInfinityWhenMaximumAndMinimumValueAreUsed() {
+      GridAxis gridAxis = new GridAxis(float.MaxValue, float.MinValue);
+      Assert.True(float.IsInfinity(gridAxis.major_step));
+      Assert.True(float.IsInfinity(gridAxis.minor_step));
+    }
+
+    [Fact]
+    public void StepIsInfinityWhenWhenMinimumAndMaximumValueAreUsed() {
+      GridAxis gridAxis = new GridAxis(float.MinValue, float.MaxValue);
+      Assert.True(float.IsInfinity(gridAxis.major_step));
+      Assert.True(float.IsInfinity(gridAxis.minor_step));
+    }
+
+    [Fact]
     public void StepIsExpectedWhenMinimumAndMaximumValueAreZero() {
       GridAxis gridAxis = new GridAxis(0, 0);
       Assert.Equal(0.2, gridAxis.major_step, 5);

@@ -67,36 +67,61 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void NMCurveIsReportingCorrectPeakValueAtBoundary() {
+      //expected output is from post processing of input data
       SetPlotBoundary();
-      var expectedValue = new BoundingBox(new Point3d(-184.84, -453.48, 0), new Point3d(184.84, 1251.86, 0));
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, NMCurve().Value.BoundingBox));
+      var expectedMinPoint = new Point3d(-184.84, -453.48, 0);
+      var expectedMaxPoint = new Point3d(184.84, 1251.86, 0);
+      var expectedBoundingBox = new BoundingBox(expectedMinPoint, expectedMaxPoint);
+      var actualBoundingBox = LoadBoundingBox();
+      bool areEqual = AdSecUtility.IsBoundingBoxEqual(expectedBoundingBox, actualBoundingBox);
+      Assert.True(areEqual);
     }
 
     [Fact]
     public void NMCurveIsReportingCorrectPeakValue() {
-      var expectedValue = new BoundingBox(new Point3d(-184.84, -453.48, 0), new Point3d(184.84, 1251.86, 0));
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, LoadBoundingBox()));
+      //expected output is from post processing of input data
+      var expectedMinPoint = new Point3d(-184.84, -453.48, 0);
+      var expectedMaxPoint = new Point3d(184.84, 1251.86, 0);
+      var expectedBoundingBox = new BoundingBox(expectedMinPoint, expectedMaxPoint);
+      var actualBoundingBox = LoadBoundingBox();
+      bool areEqual = AdSecUtility.IsBoundingBoxEqual(expectedBoundingBox, actualBoundingBox);
+      Assert.True(areEqual);
     }
 
     [Fact]
     public void NMCurveIsReportingCorrectPeakValueAtAngleInRadian() {
+      //expected output is from post processing of input data
       SetAngle();
-      var expectedValue = new BoundingBox(new Point3d(-90.73, -453.48, 0), new Point3d(90.73, 1251.86, 0));
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, LoadBoundingBox()));
+      var expectedMinPoint = new Point3d(-90.73, -453.48, 0);
+      var expectedMaxPoint = new Point3d(90.73, 1251.86, 0);
+      var expectedBoundingBox = new BoundingBox(expectedMinPoint, expectedMaxPoint);
+      var actualBoundingBox = LoadBoundingBox();
+      bool areEqual = AdSecUtility.IsBoundingBoxEqual(expectedBoundingBox, actualBoundingBox);
+      Assert.True(areEqual);
     }
 
     [Fact]
     public void NMCurveIsReportingCorrectPeakValueAtAngleInDegree() {
+      //expected output is from post processing of input data
       SetAngle(false);
-      var expectedValue = new BoundingBox(new Point3d(-90.73, -453.48, 0), new Point3d(90.73, 1251.86, 0));
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, LoadBoundingBox()));
+      var expectedMinPoint = new Point3d(-90.73, -453.48, 0);
+      var expectedMaxPoint = new Point3d(90.73, 1251.86, 0);
+      var expectedBoundingBox = new BoundingBox(expectedMinPoint, expectedMaxPoint);
+      var actualBoundingBox = LoadBoundingBox();
+      bool areEqual = AdSecUtility.IsBoundingBoxEqual(expectedBoundingBox, actualBoundingBox);
+      Assert.True(areEqual);
     }
 
     [Fact]
     public void MMCurveIsReportingCorrectPeakValue() {
+      //expected output is from post processing of input data
       SetMMCurve();
-      var expectedValue = new BoundingBox(new Point3d(-127.03, -59.28, 0), new Point3d(127.03, 59.28, 0));
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(expectedValue, LoadBoundingBox()));
+      var expectedMinPoint = new Point3d(-127.03, -59.28, 0);
+      var expectedMaxPoint = new Point3d(127.03, 59.28, 0);
+      var expectedBoundingBox = new BoundingBox(expectedMinPoint, expectedMaxPoint);
+      var actualBoundingBox = LoadBoundingBox();
+      bool areEqual = AdSecUtility.IsBoundingBoxEqual(expectedBoundingBox, actualBoundingBox);
+      Assert.True(areEqual);
     }
 
     [Fact]
