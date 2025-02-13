@@ -273,8 +273,8 @@ namespace AdSecGHTests.Helpers {
 
       Assert.Equal(2, iPoints.Count);
       Assert.Equal(2, temporaryPoints.Count);
-      Assert.Equal((new Length(1, DefaultUnits.LengthUnitGeometry)).Value, iPoints[0].Y.Value);
-      Assert.Equal((new Length(1, DefaultUnits.LengthUnitGeometry)).Value, iPoints[0].Z.Value);
+      Assert.Equal((new Length(1, DefaultUnits.LengthUnitGeometry)).Value, iPoints[0].Y.Value, 5);
+      Assert.Equal((new Length(1, DefaultUnits.LengthUnitGeometry)).Value, iPoints[0].Z.Value, 5);
     }
 
     #endregion

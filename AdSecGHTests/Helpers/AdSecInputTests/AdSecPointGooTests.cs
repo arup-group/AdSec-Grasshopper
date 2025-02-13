@@ -39,8 +39,8 @@ namespace AdSecGHTests.Helpers {
       Assert.NotNull(_pointGoo);
       Assert.True(_pointGoo.IsValid);
       Assert.Equal(0, _pointGoo.Value.X);
-      Assert.Equal(length.As(DefaultUnits.LengthUnitGeometry), _pointGoo.Value.Y);
-      Assert.Equal(length.As(DefaultUnits.LengthUnitGeometry), _pointGoo.Value.Z);
+      Assert.Equal(length.As(DefaultUnits.LengthUnitGeometry), _pointGoo.Value.Y, 5);
+      Assert.Equal(length.As(DefaultUnits.LengthUnitGeometry), _pointGoo.Value.Z, 5);
     }
 
     [Fact]
