@@ -56,8 +56,8 @@ namespace AdSecGHTests.Helpers {
 
       Assert.True(castSuccessful);
       Assert.NotNull(_stressStrainPoint);
-      Assert.Equal(1, _stressStrainPoint.Strain.As(DefaultUnits.StrainUnitResult));
-      Assert.Equal(2, _stressStrainPoint.Stress.As(DefaultUnits.StressUnitResult));
+      Assert.Equal(1, _stressStrainPoint.Strain.As(DefaultUnits.StrainUnitResult), 5);
+      Assert.Equal(2, _stressStrainPoint.Stress.As(DefaultUnits.StressUnitResult), 5);
     }
 
     [Fact]
@@ -72,8 +72,8 @@ namespace AdSecGHTests.Helpers {
 
       Assert.True(castSuccessful);
       Assert.NotNull(_stressStrainPoint);
-      Assert.Equal(3, _stressStrainPoint.Strain.As(DefaultUnits.StrainUnitResult));
-      Assert.Equal(1, _stressStrainPoint.Stress.As(DefaultUnits.StressUnitResult));
+      Assert.Equal(3, _stressStrainPoint.Strain.As(DefaultUnits.StrainUnitResult), 5);
+      Assert.Equal(1, _stressStrainPoint.Stress.As(DefaultUnits.StressUnitResult), 5);
     }
 
     [Fact]

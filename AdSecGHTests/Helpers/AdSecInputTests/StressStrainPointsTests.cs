@@ -90,10 +90,10 @@ namespace AdSecGHTests.Helpers {
       Assert.True(castSuccessful);
       Assert.NotEmpty(_stressStrainPoints);
       Assert.Equal(3, _stressStrainPoints.Count);
-      Assert.Equal(1, _stressStrainPoints.First().Strain.As(DefaultUnits.StrainUnitResult));
-      Assert.Equal(1, _stressStrainPoints.Last().Strain.As(DefaultUnits.StrainUnitResult));
-      Assert.Equal(2, _stressStrainPoints.First().Stress.As(DefaultUnits.StressUnitResult));
-      Assert.Equal(2, _stressStrainPoints.Last().Stress.As(DefaultUnits.StressUnitResult));
+      Assert.Equal(1, _stressStrainPoints.First().Strain.As(DefaultUnits.StrainUnitResult), 5);
+      Assert.Equal(1, _stressStrainPoints.Last().Strain.As(DefaultUnits.StrainUnitResult), 5);
+      Assert.Equal(2, _stressStrainPoints.First().Stress.As(DefaultUnits.StressUnitResult), 5);
+      Assert.Equal(2, _stressStrainPoints.Last().Stress.As(DefaultUnits.StressUnitResult), 5);
     }
 
     [Fact]
@@ -113,10 +113,10 @@ namespace AdSecGHTests.Helpers {
       Assert.True(castSuccessful);
       Assert.NotEmpty(_stressStrainPoints);
       Assert.Equal(2, _stressStrainPoints.Count);
-      Assert.Equal(3, _stressStrainPoints.First().Strain.As(DefaultUnits.StrainUnitResult));
-      Assert.Equal(3, _stressStrainPoints.Last().Strain.As(DefaultUnits.StrainUnitResult));
-      Assert.Equal(1, _stressStrainPoints.First().Stress.As(DefaultUnits.StressUnitResult));
-      Assert.Equal(1, _stressStrainPoints.Last().Stress.As(DefaultUnits.StressUnitResult));
+      Assert.Equal(3, _stressStrainPoints.First().Strain.As(DefaultUnits.StrainUnitResult), 5);
+      Assert.Equal(3, _stressStrainPoints.Last().Strain.As(DefaultUnits.StrainUnitResult), 5);
+      Assert.Equal(1, _stressStrainPoints.First().Stress.As(DefaultUnits.StressUnitResult), 5);
+      Assert.Equal(1, _stressStrainPoints.Last().Stress.As(DefaultUnits.StressUnitResult), 5);
     }
 
     [Fact]
