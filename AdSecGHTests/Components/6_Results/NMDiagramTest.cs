@@ -175,12 +175,18 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
-    public void DupliCateGeometryIsCorrect() {
+    public void ToStringIsExpectedForNMChart() {
       var curveGoo = NMCurve();
-      var duplicateGeometry = curveGoo.DuplicateGeometry();
-      Assert.True(AdSecUtility.IsBoundingBoxEqual(curveGoo.Boundingbox, duplicateGeometry.Boundingbox));
-      Assert.Equal("AdSec N-M Parameter", duplicateGeometry.TypeDescription);
-      Assert.Equal("N-M", duplicateGeometry.TypeName);
+      var output = curveGoo.ToString();
+      Assert.Equal("AdSec N-M {N-M (Force-Moment Interaction)}", output);
+    }
+
+    [Fact]
+    public void ToStringIsExpectedForMMChart() {
+      SetMMCurve();
+      var curveGoo = NMCurve();
+      var output = curveGoo.ToString();
+      Assert.Equal("AdSec M-M {M-M (Moment-Moment Interaction)}", output);
     }
 
     [Fact]
@@ -191,6 +197,15 @@ namespace AdSecGHTests.Components {
       Assert.Equal(actualBoundingBox.Center.X + 1, expectedBoundingBox.Center.X, 5);
       Assert.Equal(actualBoundingBox.Center.Y + 1, expectedBoundingBox.Center.Y, 5);
       Assert.Equal(actualBoundingBox.Center.Z + 1, expectedBoundingBox.Center.Z, 5);
+    }
+
+    [Fact]
+    public void DupliCateGeometryIsCorrect() {
+      var curveGoo = NMCurve();
+      var duplicateGeometry = curveGoo.DuplicateGeometry();
+      Assert.True(AdSecUtility.IsBoundingBoxEqual(curveGoo.Boundingbox, duplicateGeometry.Boundingbox));
+      Assert.Equal("AdSec N-M Parameter", duplicateGeometry.TypeDescription);
+      Assert.Equal("N-M", duplicateGeometry.TypeName);
     }
   }
 }
