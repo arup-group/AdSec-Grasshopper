@@ -5,6 +5,8 @@ using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec.Materials.StressStrainCurves;
 
+using OasysGH.Units;
+
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -54,8 +56,8 @@ namespace AdSecGHTests.Helpers {
 
       Assert.True(castSuccessful);
       Assert.NotNull(_stressStrainPoint);
-      Assert.Equal(1, _stressStrainPoint.Strain.Value);
-      Assert.Equal(2000000, _stressStrainPoint.Stress.Value);
+      Assert.Equal(1, _stressStrainPoint.Strain.As(DefaultUnits.StrainUnitResult));
+      Assert.Equal(2, _stressStrainPoint.Stress.As(DefaultUnits.StressUnitResult));
     }
 
     [Fact]
@@ -70,8 +72,8 @@ namespace AdSecGHTests.Helpers {
 
       Assert.True(castSuccessful);
       Assert.NotNull(_stressStrainPoint);
-      Assert.Equal(3, _stressStrainPoint.Strain.Value);
-      Assert.Equal(1000000, _stressStrainPoint.Stress.Value);
+      Assert.Equal(3, _stressStrainPoint.Strain.As(DefaultUnits.StrainUnitResult));
+      Assert.Equal(1, _stressStrainPoint.Stress.As(DefaultUnits.StressUnitResult));
     }
 
     [Fact]
