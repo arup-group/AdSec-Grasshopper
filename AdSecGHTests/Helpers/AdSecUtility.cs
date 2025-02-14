@@ -1,6 +1,5 @@
 ﻿
 using System.Collections.Generic;
-using System.IO;
 
 using AdSecCore;
 using AdSecCore.Builders;
@@ -12,11 +11,15 @@ using Grasshopper.Kernel;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.IO.Serialization;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.GH.Helpers;
 
 using Rhino.Geometry;
+
+using Xunit;
+
+using static AdSecGH.Helpers.Diagram;
+
 namespace AdSecGHTests.Helpers {
   public class AdSecUtility {
     private static readonly IDesignCode designCode = IS456.Edition_2000;
@@ -47,6 +50,16 @@ namespace AdSecGHTests.Helpers {
       return comparer.Equals(expected.Min.X, actual.Min.X) && comparer.Equals(expected.Min.Y, actual.Min.Y) &&
          comparer.Equals(expected.Max.X, actual.Max.X) && comparer.Equals(expected.Max.X, actual.Max.X);
     }
+  }
 
+  [Collection("GrasshopperFixture collection")]
+  public class AdSecUtilityTest {
+    [Fact]
+    public void RectangularSectionTest() {
+      var section = AdSecUtility.CreateSTDRectangularSection();
+      string expectedProfileDescription = "STD R(m) 0.6 0.3";
+      string actualProfileDescription = section.Profile.Description();
+      Assert.Equal(expectedProfileDescription, actualProfileDescription);
+    }
   }
 }

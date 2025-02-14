@@ -4,7 +4,7 @@ using Xunit;
 using static AdSecGH.Helpers.Diagram;
 
 namespace AdSecGHTests.Helpers {
-
+  [Collection("GrasshopperFixture collection")]
   public class DiagramTest {
 
     [Fact]
