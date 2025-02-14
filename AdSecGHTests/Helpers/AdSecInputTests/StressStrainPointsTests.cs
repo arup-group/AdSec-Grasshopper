@@ -8,6 +8,8 @@ using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec.Materials.StressStrainCurves;
 
+using OasysGH.Units;
+
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -88,10 +90,10 @@ namespace AdSecGHTests.Helpers {
       Assert.True(castSuccessful);
       Assert.NotEmpty(_stressStrainPoints);
       Assert.Equal(3, _stressStrainPoints.Count);
-      Assert.Equal(1, _stressStrainPoints.First().Strain.Value);
-      Assert.Equal(1, _stressStrainPoints.Last().Strain.Value);
-      Assert.Equal(2000000, _stressStrainPoints.First().Stress.Value);
-      Assert.Equal(2000000, _stressStrainPoints.Last().Stress.Value);
+      Assert.Equal(1, _stressStrainPoints.First().Strain.As(DefaultUnits.StrainUnitResult), 5);
+      Assert.Equal(1, _stressStrainPoints.Last().Strain.As(DefaultUnits.StrainUnitResult), 5);
+      Assert.Equal(2, _stressStrainPoints.First().Stress.As(DefaultUnits.StressUnitResult), 5);
+      Assert.Equal(2, _stressStrainPoints.Last().Stress.As(DefaultUnits.StressUnitResult), 5);
     }
 
     [Fact]
@@ -111,10 +113,10 @@ namespace AdSecGHTests.Helpers {
       Assert.True(castSuccessful);
       Assert.NotEmpty(_stressStrainPoints);
       Assert.Equal(2, _stressStrainPoints.Count);
-      Assert.Equal(3, _stressStrainPoints.First().Strain.Value);
-      Assert.Equal(3, _stressStrainPoints.Last().Strain.Value);
-      Assert.Equal(1000000, _stressStrainPoints.First().Stress.Value);
-      Assert.Equal(1000000, _stressStrainPoints.Last().Stress.Value);
+      Assert.Equal(3, _stressStrainPoints.First().Strain.As(DefaultUnits.StrainUnitResult), 5);
+      Assert.Equal(3, _stressStrainPoints.Last().Strain.As(DefaultUnits.StrainUnitResult), 5);
+      Assert.Equal(1, _stressStrainPoints.First().Stress.As(DefaultUnits.StressUnitResult), 5);
+      Assert.Equal(1, _stressStrainPoints.Last().Stress.As(DefaultUnits.StressUnitResult), 5);
     }
 
     [Fact]
