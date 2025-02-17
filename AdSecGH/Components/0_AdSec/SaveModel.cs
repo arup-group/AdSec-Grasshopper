@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using AdSecGH.Helpers;
@@ -20,8 +21,6 @@ using Grasshopper.Kernel.Special;
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.UI;
-
-using Rhino.UI;
 
 namespace AdSecGH.Components {
   public class SaveModel : GH_OasysDropDownComponent {
@@ -132,7 +131,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       var sections = this.GetAdSecSections(DA, 0);
-      if (sections.Count == 0) {
+      if (!sections.Any()) {
         return;
       }
 

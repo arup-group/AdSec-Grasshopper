@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,10 +6,11 @@ using System.Text;
 
 using AdSecGH.Parameters;
 
+using Grasshopper.Kernel;
+
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
-using Oasys.AdSec.Reinforcement.Layers;
 
 using Rhino.UI;
 namespace AdSecGH.Helpers {
@@ -159,7 +159,16 @@ namespace AdSecGH.Helpers {
       return new AdSecDesignCode(designCodeLevelsSplit);
     }
 
-
+    public static List<ISection> ReadSection(string fileName) {
+      string json = File.ReadAllText(fileName);
+      var jsonParser = JsonParser.Deserialize(json);
+      var sections = new List<ISection>();
+      for (int i = 0; i < jsonParser.Sections.Count; i++) {
+        var section = jsonParser.Sections[i];
+        sections.Add(section);
+      }
+      return sections;
+    }
     internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
       if (sections == null || !sections.Any()) { return ""; }
       var jsonStrings = new List<string>();
@@ -176,8 +185,6 @@ namespace AdSecGH.Helpers {
               case AdSecLoadGoo loadGoo:
                 adSecLoads.Add(loadGoo.Value);
                 break;
-              default:
-                throw new ArgumentException("Not a valid AdSec load");
             }
           }
         }

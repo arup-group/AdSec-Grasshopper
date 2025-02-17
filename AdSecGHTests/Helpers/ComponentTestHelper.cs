@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
@@ -49,6 +50,13 @@ namespace AdSecGHTests.Helpers {
       var input = new Param_GenericObject();
       input.CreateAttributes();
       input.PersistentData.Append(new GH_ObjectWrapper(generic_input));
+      component.Params.Input[index].AddSource(input);
+    }
+
+    public static void SetInput(GH_Component component, GH_Structure<IGH_Goo> tree, int index = 0) {
+      var input = new Param_GenericObject();
+      input.CreateAttributes();
+      input.SetPersistentData(tree);
       component.Params.Input[index].AddSource(input);
     }
 

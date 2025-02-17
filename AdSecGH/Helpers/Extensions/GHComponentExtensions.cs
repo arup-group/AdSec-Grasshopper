@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using AdSecCore;
@@ -156,7 +157,7 @@ namespace AdSecGH.Helpers {
         invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "Section"));
       }
 
-      return sections.Any() ? sections : null;
+      return sections;
     }
 
     public static IConcreteCrackCalculationParameters GetIConcreteCrackCalculationParameters(
@@ -373,20 +374,30 @@ namespace AdSecGH.Helpers {
             // loop through input list
             for (int j = 0; j < loads.Branches[i].Count; j++) {
               // check if item is load type
-              if (loads[i][j].CastTo(out AdSecLoadGoo loadGoo)) {
-                adSecload.Add(loadGoo);
-              } else if (loads[i][j].CastTo(out AdSecDeformationGoo loadDeformationGoo)) {
-                adSecload.Add(loadDeformationGoo);
-              } else {
-                owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                  $"Unable to convert {owner.Params.Input[1].NickName} path {i} index {j} to AdSec Load. Section will be saved without this load.");
+              var load = loads[i][j];
+              switch (load) {
+                case AdSecDeformationGoo deformationGoo:
+                  adSecload.Add(deformationGoo);
+                  break;
+                case AdSecLoadGoo loadGoo:
+                  adSecload.Add(loadGoo);
+                  break;
+                default:
+                  owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"Unable to convert {owner.Params.Input[1].NickName} path {i} index {j} to AdSec Load. Section will be saved without this load.");
+                  break;
               }
-              adSecloads.Add(i, adSecload);
             }
+            adSecloads.Add(i, adSecload);
           }
         }
       }
-      return AdSecFile.ModelJson(sections, adSecloads);
+      string jsonString = "";
+      try {
+        jsonString = AdSecFile.ModelJson(sections, adSecloads);
+      } catch (Exception e) {
+        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
+      }
+      return jsonString;
     }
   }
 }
