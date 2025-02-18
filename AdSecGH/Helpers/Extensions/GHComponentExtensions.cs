@@ -364,31 +364,35 @@ namespace AdSecGH.Helpers {
       return covers;
     }
 
+    private static List<object> AdSecLoads(GH_Component owner, int sectionId, GH_Structure<IGH_Goo> loads) {
+      var adSecload = new List<object>();
+      if (loads.Branches[sectionId] != null && loads.Branches[sectionId].Count != 0) {
+        // loop through input list
+        for (int j = 0; j < loads.Branches[sectionId].Count; j++) {
+          // check if item is load type
+          var load = loads[sectionId][j];
+          switch (load) {
+            case AdSecDeformationGoo deformationGoo:
+              adSecload.Add(deformationGoo);
+              break;
+            case AdSecLoadGoo loadGoo:
+              adSecload.Add(loadGoo);
+              break;
+            default:
+              owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"Unable to convert {owner.Params.Input[1].NickName} path {sectionId} index {j} to AdSec Load. Section will be saved without this load.");
+              break;
+          }
+        }
+      }
+      return adSecload;
+    }
+
     public static string GetModelJson(
       this GH_Component owner, IGH_DataAccess DA, int inputId, List<AdSecSection> sections) {
       var adSecloads = new Dictionary<int, List<object>>();
       if (DA.GetDataTree(1, out GH_Structure<IGH_Goo> loads) && loads.Branches.Count > 0) {
         for (int i = 0; i < sections.Count; i++) {
-          var adSecload = new List<object>();
-          if (loads.Branches[i] != null && loads.Branches[i].Count != 0) {
-            // loop through input list
-            for (int j = 0; j < loads.Branches[i].Count; j++) {
-              // check if item is load type
-              var load = loads[i][j];
-              switch (load) {
-                case AdSecDeformationGoo deformationGoo:
-                  adSecload.Add(deformationGoo);
-                  break;
-                case AdSecLoadGoo loadGoo:
-                  adSecload.Add(loadGoo);
-                  break;
-                default:
-                  owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"Unable to convert {owner.Params.Input[1].NickName} path {i} index {j} to AdSec Load. Section will be saved without this load.");
-                  break;
-              }
-            }
-            adSecloads.Add(i, adSecload);
-          }
+          adSecloads.Add(i, AdSecLoads(owner, i, loads));
         }
       }
       string jsonString = "";
