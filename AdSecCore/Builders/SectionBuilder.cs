@@ -24,6 +24,10 @@ namespace AdSecCore.Builders {
           section = ISection.Create(
             IRectangleProfile.Create(Length.FromCentimeters(_width), Length.FromCentimeters(_width)), material);
           break;
+        case SectionType.Rectangular:
+          section = ISection.Create(
+            IRectangleProfile.Create(Length.FromCentimeters(_height), Length.FromCentimeters(_width)), material);
+          break;
       }
 
       if (ReinforcementGroups.Count > 0) {
@@ -37,6 +41,11 @@ namespace AdSecCore.Builders {
 
     public SectionBuilder WithMaterial(IConcrete material) {
       this.material = material;
+      return this;
+    }
+
+    public SectionBuilder CreateRectangularSection() {
+      sectionType = SectionType.Rectangular;
       return this;
     }
 
@@ -60,8 +69,16 @@ namespace AdSecCore.Builders {
       return this;
     }
 
+    public SectionBuilder WithReinforcementGroups(List<IGroup> groups) {
+      foreach (var group in groups) {
+        ReinforcementGroups.Add(group);
+      }
+      return this;
+    }
+
     internal enum SectionType {
       Square,
+      Rectangular,
     }
   }
 }
