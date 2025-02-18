@@ -51,7 +51,7 @@ namespace AdSecGHTests.Helpers {
 
       return new CatalogueProfile() {
         Rotation = rotationInDegrees,
-        Description = "STD R 1 2",
+        Description = "CAT BSI-IPE IPEAA80",
       };
     }
 
