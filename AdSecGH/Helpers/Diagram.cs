@@ -59,7 +59,7 @@ namespace AdSecGH.Helpers {
         x_min = x_mid - (1.01f * delta);
 
         //What if they are both 0?
-        if (x_max == 0 && x_min == 0) {
+        if (x_max.Equals(0) && x_min.Equals(0)) {
           x_max = 1;
         }
 
@@ -92,29 +92,6 @@ namespace AdSecGH.Helpers {
         min_value = i_1 * major_step;
         max_value = i_2 * major_step;
       }
-    }
-
-    internal static float CalcStepSize(float range, float targetSteps) {
-      // calculate an initial guess at step size
-      float tempStep = range / targetSteps;
-
-      // get the magnitude of the step size
-      float mag = (float)Math.Floor(Math.Log10(tempStep));
-      float magPow = (float)Math.Pow(10, mag);
-
-      // calculate most significant digit of the new step size
-      float magMsd = (int)((tempStep / magPow) + 0.5);
-
-      // promote the MSD to either 1, 2, or 5
-      if (magMsd > 5) {
-        magMsd = 10;
-      } else if (magMsd > 2) {
-        magMsd = 5;
-      } else if (magMsd > 1) {
-        magMsd = 2;
-      }
-
-      return magMsd * magPow;
     }
   }
 }

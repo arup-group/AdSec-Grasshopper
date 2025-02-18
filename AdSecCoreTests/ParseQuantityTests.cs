@@ -1,4 +1,6 @@
-﻿using AdSecCore;
+﻿using System.Drawing;
+
+using AdSecCore;
 
 using OasysUnits;
 using OasysUnits.Units;
@@ -6,6 +8,11 @@ using OasysUnits.Units;
 namespace AdSecCoreTests {
   public class ParseQuantityTests {
     private readonly LengthUnit units = LengthUnit.Meter;
+
+    [Fact]
+    public void ShouldThrowExceptionForInvalidCast() {
+      Assert.Throws<InvalidCastException>(() => UnitHelpers.ParseToQuantity<Length>(new Point(), units));
+    }
 
     [Fact]
     public void ShouldParseDouble() {

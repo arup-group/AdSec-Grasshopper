@@ -60,7 +60,7 @@ namespace AdSecGH.Parameters {
       }
     }
     public IStressStrainCurve StressStrainCurve { get; }
-    public override string TypeDescription => "AdSec " + TypeName + " Parameter";
+    public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "StressStrainCurve";
 
     private StressStrainCurveType m_type;
@@ -137,7 +137,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return "AdSec " + TypeName + " {" + m_type.ToString() + "}";
+      return $"AdSec {TypeName} {{{m_type}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {

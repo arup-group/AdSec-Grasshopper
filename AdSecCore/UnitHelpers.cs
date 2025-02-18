@@ -15,16 +15,16 @@ namespace AdSecCore {
           return (T)quantity;
         }
       } else if (goo is string txt) {
-        if (double.TryParse(goo.ToString(), out double result)) {
-          if (Quantity.TryFrom(result, units, out var quantity)) {
+        if (double.TryParse(goo.ToString(), out double numberFromText)) {
+          if (Quantity.TryFrom(numberFromText, units, out var quantity)) {
             return (T)quantity;
           }
-        } else if (Quantity.TryParse(typeof(T), txt, out var length)) {
-          return (T)length;
+        } else if (Quantity.TryParse(typeof(T), txt, out var quantity)) {
+          return (T)quantity;
         }
       }
 
-      throw new NotImplementedException();
+      throw new InvalidCastException($"Could not parse the input {goo} to the desired quantity {units}.");
     }
   }
 }

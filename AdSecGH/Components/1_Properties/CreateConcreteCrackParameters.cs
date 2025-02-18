@@ -55,9 +55,9 @@ namespace AdSecGH.Components {
     public override void VariableParameterMaintenance() {
       string unitEAbbreviation = Pressure.GetAbbreviation(_stressUnit);
       string unitSAbbreviation = Pressure.GetAbbreviation(_strengthUnit);
-      Params.Input[0].Name = "Elastic Modulus [" + unitEAbbreviation + "]";
-      Params.Input[1].Name = "Compression [" + unitSAbbreviation + "]";
-      Params.Input[2].Name = "Tension [" + unitSAbbreviation + "]";
+      Params.Input[0].Name = $"Elastic Modulus [{unitEAbbreviation}]";
+      Params.Input[1].Name = $"Compression [{unitSAbbreviation}]";
+      Params.Input[2].Name = $"Tension [{unitSAbbreviation}]";
     }
 
     protected override void InitialiseDropdowns() {
@@ -83,11 +83,11 @@ namespace AdSecGH.Components {
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string unitEAbbreviation = Pressure.GetAbbreviation(_stressUnit);
       string unitSAbbreviation = Pressure.GetAbbreviation(_strengthUnit);
-      pManager.AddGenericParameter("Elastic Modulus [" + unitEAbbreviation + "]", "E", "Value for Elastic Modulus",
+      pManager.AddGenericParameter($"Elastic Modulus [{unitEAbbreviation}]", "E", "Value for Elastic Modulus",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("Compression [" + unitSAbbreviation + "]", "fc",
+      pManager.AddGenericParameter($"Compression [{unitSAbbreviation}]", "fc",
         "Value for Characteristic Compressive Strength", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Tension [" + unitSAbbreviation + "]", "ft",
+      pManager.AddGenericParameter($"Tension [{unitSAbbreviation}]", "ft",
         "Value for Characteristic Tension Strength", GH_ParamAccess.item);
     }
 

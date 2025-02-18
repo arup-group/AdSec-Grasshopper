@@ -59,21 +59,21 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // 0 profile
-      var profile = AdSecInput.AdSecProfileGoo(this, DA, 0);
+      var profile = this.GetAdSecProfileGoo(DA, 0);
 
       // 1 material
-      var material = AdSecInput.AdSecMaterial(this, DA, 1);
+      var material = this.GetAdSecMaterial(DA, 1);
 
       // 2 Rebars
       var reinforcements = new List<AdSecRebarGroup>();
       if (Params.Input[2].SourceCount > 0) {
-        reinforcements = AdSecInput.ReinforcementGroups(this, DA, 2, true);
+        reinforcements = this.GetReinforcementGroups(DA, 2, true);
       }
 
       // 3 Subcomponents
       var subComponents = Oasys.Collections.IList<ISubComponent>.Create();
       if (Params.Input[3].SourceCount > 0) {
-        subComponents = AdSecInput.SubComponents(this, DA, 3, true);
+        subComponents = this.GetSubComponents(DA, 3, true);
       }
 
       // create section

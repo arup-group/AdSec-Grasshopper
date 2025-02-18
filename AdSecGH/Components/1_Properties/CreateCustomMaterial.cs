@@ -111,24 +111,24 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // 0 DesignCode
-      var designCode = AdSecInput.AdSecDesignCode(this, DA, 0);
+      var designCode = this.GetAdSecDesignCode(DA, 0);
 
       // 1 StressStrain ULS Compression
-      var ulsCompCrv = AdSecInput.StressStrainCurveGoo(this, DA, 1, true);
+      var ulsCompCrv = this.GetStressStrainCurveGoo(DA, 1, true);
 
       // 2 StressStrain ULS Tension
-      var ulsTensCrv = AdSecInput.StressStrainCurveGoo(this, DA, 2, false);
+      var ulsTensCrv = this.GetStressStrainCurveGoo(DA, 2, false);
 
       // 3 StressStrain SLS Compression
-      var slsCompCrv = AdSecInput.StressStrainCurveGoo(this, DA, 3, true);
+      var slsCompCrv = this.GetStressStrainCurveGoo(DA, 3, true);
 
       // 4 StressStrain SLS Tension
-      var slsTensCrv = AdSecInput.StressStrainCurveGoo(this, DA, 4, false);
+      var slsTensCrv = this.GetStressStrainCurveGoo(DA, 4, false);
 
       // 5 Cracked params
       IConcreteCrackCalculationParameters concreteCrack = null;
       if (_isConcrete) {
-        concreteCrack = AdSecInput.ConcreteCrackCalculationParameters(this, DA, 5);
+        concreteCrack = this.GetIConcreteCrackCalculationParameters(DA, 5);
       }
 
       // create new empty material
@@ -143,8 +143,7 @@ namespace AdSecGH.Components {
       // create tension-compression curves from input
       if (ulsTensCrv.StressStrainCurve.FailureStrain.Value == 0) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
-          "ULS Stress Strain Curve for Tension has zero failure strain." + Environment.NewLine
-          + "The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
+          $"ULS Stress Strain Curve for Tension has zero failure strain.{Environment.NewLine}The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
         IStressStrainCurve crv = ILinearStressStrainCurve.Create(
           IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
         var tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear,

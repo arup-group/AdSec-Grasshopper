@@ -66,14 +66,14 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // #### get material input and duplicate it ####
-      var editMat = AdSecInput.AdSecMaterial(this, DA, 0);
+      var editMat = this.GetAdSecMaterial(DA, 0);
 
       if (editMat != null) {
         // #### get the remaining inputs ####
 
         // 1 DesignCode
         if (Params.Input[1].SourceCount > 0) {
-          editMat.DesignCode = AdSecInput.AdSecDesignCode(this, DA, 1);
+          editMat.DesignCode = this.GetAdSecDesignCode(DA, 1);
         }
 
         bool rebuildCurves = false;
@@ -82,7 +82,7 @@ namespace AdSecGH.Components {
         AdSecStressStrainCurveGoo ulsCompCrv;
         if (Params.Input[2].SourceCount > 0) {
           // use input
-          ulsCompCrv = AdSecInput.StressStrainCurveGoo(this, DA, 2, true);
+          ulsCompCrv = this.GetStressStrainCurveGoo(DA, 2, true);
           rebuildCurves = true;
         } else {
           // rebuild from existing material
@@ -95,7 +95,7 @@ namespace AdSecGH.Components {
         AdSecStressStrainCurveGoo ulsTensCrv;
         if (Params.Input[3].SourceCount > 0) {
           // use input
-          ulsTensCrv = AdSecInput.StressStrainCurveGoo(this, DA, 3, false);
+          ulsTensCrv = this.GetStressStrainCurveGoo(DA, 3, false);
           rebuildCurves = true;
         } else {
           // rebuild from existing material
@@ -108,7 +108,7 @@ namespace AdSecGH.Components {
         AdSecStressStrainCurveGoo slsCompCrv;
         if (Params.Input[4].SourceCount > 0) {
           // use input
-          slsCompCrv = AdSecInput.StressStrainCurveGoo(this, DA, 4, true);
+          slsCompCrv = this.GetStressStrainCurveGoo(DA, 4, true);
           rebuildCurves = true;
         } else {
           // rebuild from existing material
@@ -121,7 +121,7 @@ namespace AdSecGH.Components {
         AdSecStressStrainCurveGoo slsTensCrv;
         if (Params.Input[5].SourceCount > 0) {
           // use input
-          slsTensCrv = AdSecInput.StressStrainCurveGoo(this, DA, 5, false);
+          slsTensCrv = this.GetStressStrainCurveGoo(DA, 5, false);
           rebuildCurves = true;
         } else {
           // rebuild from existing material
@@ -134,15 +134,14 @@ namespace AdSecGH.Components {
         IConcreteCrackCalculationParameters concreteCrack = null;
         if (Params.Input[6].SourceCount > 0) {
           // use input
-          concreteCrack = AdSecInput.ConcreteCrackCalculationParameters(this, DA, 6);
+          concreteCrack = this.GetIConcreteCrackCalculationParameters(DA, 6);
           rebuildCurves = true;
         }
 
         if (rebuildCurves) {
           if (ulsTensCrv.StressStrainCurve.FailureStrain.Value == 0) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
-              "ULS Stress Strain Curve for Tension has zero failure strain." + Environment.NewLine
-              + "The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
+              $"ULS Stress Strain Curve for Tension has zero failure strain.{Environment.NewLine}The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
             IStressStrainCurve crv = ILinearStressStrainCurve.Create(
               IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
             var tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear,

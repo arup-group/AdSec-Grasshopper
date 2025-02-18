@@ -134,16 +134,15 @@ namespace AdSecGH.Components {
         Params.Input[1].Access = GH_ParamAccess.item;
         Params.Input[1].Optional = true;
 
-        Params.Input[2].Name = "Radius [" + lengthUnitAbbreviation + "]";
+        Params.Input[2].Name = $"Radius [{lengthUnitAbbreviation}]";
         Params.Input[2].NickName = "r";
         Params.Input[2].Description = "Distance representing the radius of the circle";
         Params.Input[2].Access = GH_ParamAccess.item;
         Params.Input[2].Optional = false;
 
-        Params.Input[3].Name = "StartAngle [" + angleUnitAbbreviation + "]";
+        Params.Input[3].Name = $"StartAngle [{angleUnitAbbreviation}]";
         Params.Input[3].NickName = "s°";
-        Params.Input[3].Description = "[Optional] The starting angle (in " + angleUnitAbbreviation
-          + ") of the circle. Positive angle is considered anti-clockwise. Default is 0";
+        Params.Input[3].Description = $"[Optional] The starting angle (in {angleUnitAbbreviation}) of the circle. Positive angle is considered anti-clockwise. Default is 0";
         Params.Input[3].Access = GH_ParamAccess.item;
         Params.Input[3].Optional = true;
       }
@@ -161,23 +160,21 @@ namespace AdSecGH.Components {
         Params.Input[1].Access = GH_ParamAccess.item;
         Params.Input[1].Optional = true;
 
-        Params.Input[2].Name = "Radius [" + lengthUnitAbbreviation + "]";
+        Params.Input[2].Name = $"Radius [{lengthUnitAbbreviation}]";
         Params.Input[2].NickName = "r";
         Params.Input[2].Description = "Distance representing the radius of the circle";
         Params.Input[2].Access = GH_ParamAccess.item;
         Params.Input[2].Optional = false;
 
-        Params.Input[3].Name = "StartAngle [" + angleUnitAbbreviation + "]";
+        Params.Input[3].Name = $"StartAngle [{angleUnitAbbreviation}]";
         Params.Input[3].NickName = "s°";
-        Params.Input[3].Description = "[Optional] The starting angle (in " + angleUnitAbbreviation
-          + ")) of the circle. Positive angle is considered anti-clockwise. Default is 0";
+        Params.Input[3].Description = $"[Optional] The starting angle (in {angleUnitAbbreviation})) of the circle. Positive angle is considered anti-clockwise. Default is 0";
         Params.Input[3].Access = GH_ParamAccess.item;
         Params.Input[3].Optional = true;
 
-        Params.Input[4].Name = "SweepAngle [" + angleUnitAbbreviation + "]";
+        Params.Input[4].Name = $"SweepAngle [{angleUnitAbbreviation}]";
         Params.Input[4].NickName = "e°";
-        Params.Input[4].Description = "The angle (in " + angleUnitAbbreviation
-          + ") sweeped by the arc from its start angle. Positive angle is considered anti-clockwise. Default is π/2";
+        Params.Input[4].Description = $"The angle (in {angleUnitAbbreviation}) sweeped by the arc from its start angle. Positive angle is considered anti-clockwise. Default is π/2";
         Params.Input[4].Access = GH_ParamAccess.item;
         Params.Input[4].Optional = true;
       }
@@ -215,34 +212,31 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess da) {
       AdSecRebarGroupGoo group = null;
+      var rebarLayerValue = this.GetAdSecRebarLayerGoo(da, 0).Value;
       switch (_mode) {
         case FoldMode.Line:
           // create line group
-          group = new AdSecRebarGroupGoo(ILineGroup.Create(AdSecInput.IPoint(this, da, 1),
-            AdSecInput.IPoint(this, da, 2), AdSecInput.ILayer(this, da, 0)));
+          group = new AdSecRebarGroupGoo(ILineGroup.Create(this.GetAdSecPointGoo(da, 1).AdSecPoint,
+            this.GetAdSecPointGoo(da, 2).AdSecPoint, rebarLayerValue));
           break;
-
         case FoldMode.Circle:
           // create circle rebar group
-          group = new AdSecRebarGroupGoo(ICircleGroup.Create(AdSecInput.IPoint(this, da, 1, true),
+          group = new AdSecRebarGroupGoo(ICircleGroup.Create(this.GetAdSecPointGoo(da, 1, true).AdSecPoint,
             (Length)Input.UnitNumber(this, da, 2, _lengthUnit), (Angle)Input.UnitNumber(this, da, 3, _angleUnit, true),
-            AdSecInput.ILayer(this, da, 0)));
+            rebarLayerValue));
           break;
-
         case FoldMode.Arc:
           // create arc rebar grouup
-          group = new AdSecRebarGroupGoo(IArcGroup.Create(AdSecInput.IPoint(this, da, 1, true),
+          group = new AdSecRebarGroupGoo(IArcGroup.Create(this.GetAdSecPointGoo(da, 1, true).AdSecPoint,
             (Length)Input.UnitNumber(this, da, 2, _lengthUnit), (Angle)Input.UnitNumber(this, da, 3, _angleUnit),
-            (Angle)Input.UnitNumber(this, da, 4, _angleUnit), AdSecInput.ILayer(this, da, 0)));
+            (Angle)Input.UnitNumber(this, da, 4, _angleUnit), rebarLayerValue));
           break;
-
         case FoldMode.SingleBars:
           // create single rebar group
-          var bars = ISingleBars.Create(AdSecInput.IBarBundle(this, da, 0));
-
-          bars.Positions = AdSecInput.IPoints(this, da, 1);
-
+          var bars = ISingleBars.Create(this.GetAdSecRebarBundleGoo(da, 0).Value);
+          bars.Positions = this.GetIPoints(da, 1);
           group = new AdSecRebarGroupGoo(bars);
+
           break;
       }
 

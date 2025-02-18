@@ -66,17 +66,17 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // 0 section
-      var in_section = AdSecInput.AdSecSection(this, DA, 0);
+      var in_section = this.GetAdSecSection(DA, 0);
       if (in_section == null) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
+          $"Input parameter {Params.Input[0].NickName} failed to collect data!");
         return;
       }
 
       // 1 profile
       AdSecProfileGoo profile = null;
       if (Params.Input[1].SourceCount > 0) {
-        profile = AdSecInput.AdSecProfileGoo(this, DA, 1, true);
+        profile = this.GetAdSecProfileGoo(DA, 1, true);
       } else {
         profile = new AdSecProfileGoo(in_section.Section.Profile, in_section.LocalPlane);
       }
@@ -86,7 +86,7 @@ namespace AdSecGH.Components {
       // 2 material
       var material = new AdSecMaterial();
       if (Params.Input[2].SourceCount > 0) {
-        material = AdSecInput.AdSecMaterial(this, DA, 2, true);
+        material = this.GetAdSecMaterial(DA, 2, true);
       } else {
         material = new AdSecMaterial(in_section.Section.Material, in_section._materialName);
       }
@@ -94,7 +94,7 @@ namespace AdSecGH.Components {
 
       // 3 DesignCode
       if (Params.Input[3].SourceCount > 0) {
-        material.DesignCode = AdSecInput.AdSecDesignCode(this, DA, 3);
+        material.DesignCode = this.GetAdSecDesignCode(DA, 3);
       } else {
         material.DesignCode = new AdSecDesignCode(in_section.DesignCode, in_section._codeName);
       }
@@ -107,7 +107,7 @@ namespace AdSecGH.Components {
       // 4 Rebars
       var reinforcements = new List<AdSecRebarGroup>();
       if (Params.Input[4].SourceCount > 0) {
-        reinforcements = AdSecInput.ReinforcementGroups(this, DA, 4, true);
+        reinforcements = this.GetReinforcementGroups(DA, 4, true);
       } else {
         foreach (var rebarGrp in in_section.Section.ReinforcementGroups) {
           var rebar = new AdSecRebarGroup(rebarGrp) {
@@ -127,7 +127,7 @@ namespace AdSecGH.Components {
       // 5 Subcomponents
       var subComponents = Oasys.Collections.IList<ISubComponent>.Create();
       if (Params.Input[5].SourceCount > 0) {
-        subComponents = AdSecInput.SubComponents(this, DA, 5, true);
+        subComponents = this.GetSubComponents(DA, 5, true);
       } else {
         subComponents = in_section.Section.SubComponents;
       }

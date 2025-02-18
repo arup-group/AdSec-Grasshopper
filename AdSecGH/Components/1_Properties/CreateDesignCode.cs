@@ -19,8 +19,8 @@ namespace AdSecGH.Components {
   public class CreateDesignCode : GH_OasysDropDownComponent {
     private Dictionary<string, FieldInfo> _designCodes;
 
-    public CreateDesignCode() : base("Create" + AdSecDesignCodeGoo.Name.Replace(" ", string.Empty),
-      AdSecDesignCodeGoo.Name.Replace(" ", string.Empty), "Create a " + AdSecDesignCodeGoo.Description,
+    public CreateDesignCode() : base($"Create{AdSecDesignCodeGoo.Name.Replace(" ", string.Empty)}",
+      AdSecDesignCodeGoo.Name.Replace(" ", string.Empty), $"Create a {AdSecDesignCodeGoo.Description}",
       CategoryName.Name(), SubCategoryName.Cat1()) {
       Hidden = true; // sets the initial state of the component to hidden
     }

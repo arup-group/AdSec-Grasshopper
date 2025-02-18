@@ -93,7 +93,7 @@ namespace AdSecGH.Components {
       }
 
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      Params.Input[Params.Input.Count - 1].Name = "Cover [" + unitAbbreviation + "]";
+      Params.Input[Params.Input.Count - 1].Name = $"Cover [{unitAbbreviation}]";
       Params.Input[Params.Input.Count - 1].NickName = "Cov";
       Params.Input[Params.Input.Count - 1].Description = "AdSec Rebars Spaced in a Layer";
       Params.Input[Params.Input.Count - 1].Access = GH_ParamAccess.list;
@@ -133,7 +133,7 @@ namespace AdSecGH.Components {
         GH_ParamAccess.list);
       pManager.AddGenericParameter("Bottom Rebars", "BRs", "Bottom Face AdSec Rebars Spaced in a Layer",
         GH_ParamAccess.list);
-      pManager.AddGenericParameter("Cover [" + unitAbbreviation + "]", "Cov",
+      pManager.AddGenericParameter($"Cover [{unitAbbreviation}]", "Cov",
         "The reinforcement-free zone around the faces of a profile.", GH_ParamAccess.list);
       _mode = FoldMode.Template;
       // make all but last input optional
@@ -150,7 +150,7 @@ namespace AdSecGH.Components {
       var groups = new List<AdSecRebarGroupGoo>();
 
       // cover
-      var covers = AdSecInput.Covers(this, da, Params.Input.Count - 1, _lengthUnit);
+      var covers = this.GetCovers(da, Params.Input.Count - 1, _lengthUnit);
 
       switch (_mode) {
         case FoldMode.Template:
@@ -158,36 +158,35 @@ namespace AdSecGH.Components {
           if (Params.Input[0].SourceCount == 0 && Params.Input[1].SourceCount == 0 && Params.Input[2].SourceCount == 0
             && Params.Input[3].SourceCount == 0) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Input parameters " + Params.Input[0].NickName + ", " + Params.Input[1].NickName + ", "
-              + Params.Input[2].NickName + ", and " + Params.Input[3].NickName + " failed to collect data!");
+              $"Input parameters {Params.Input[0].NickName}, {Params.Input[1].NickName}, {Params.Input[2].NickName}, and {Params.Input[3].NickName} failed to collect data!");
             return;
           }
 
           // top
           if (Params.Input[0].SourceCount != 0) {
             var grp = ITemplateGroup.Create(ITemplateGroup.Face.Top);
-            grp.Layers = AdSecInput.ILayers(this, da, 0);
+            grp.Layers = this.GetILayers(da, 0);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
 
           // left
           if (Params.Input[1].SourceCount != 0) {
             var grp = ITemplateGroup.Create(ITemplateGroup.Face.LeftSide);
-            grp.Layers = AdSecInput.ILayers(this, da, 1);
+            grp.Layers = this.GetILayers(da, 1);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
 
           // right
           if (Params.Input[2].SourceCount != 0) {
             var grp = ITemplateGroup.Create(ITemplateGroup.Face.RightSide);
-            grp.Layers = AdSecInput.ILayers(this, da, 2);
+            grp.Layers = this.GetILayers(da, 2);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
 
           // bottom
           if (Params.Input[3].SourceCount != 0) {
             var grp = ITemplateGroup.Create(ITemplateGroup.Face.Bottom);
-            grp.Layers = AdSecInput.ILayers(this, da, 3);
+            grp.Layers = this.GetILayers(da, 3);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
 
@@ -197,14 +196,14 @@ namespace AdSecGH.Components {
           // check for enough input parameters
           if (Params.Input[0].SourceCount == 0) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
+              $"Input parameter {Params.Input[0].NickName} failed to collect data!");
             return;
           }
 
           // top
           if (Params.Input[0].SourceCount != 0) {
             var grp = IPerimeterGroup.Create();
-            grp.Layers = AdSecInput.ILayers(this, da, 0);
+            grp.Layers = this.GetILayers(da, 0);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
 
@@ -214,13 +213,13 @@ namespace AdSecGH.Components {
           // check for enough input parameters
           if (Params.Input[0].SourceCount == 0) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              "Input parameter " + Params.Input[0].NickName + " failed to collect data!");
+              $"Input parameter {Params.Input[0].NickName} failed to collect data!");
             return;
           }
 
           // top
           if (Params.Input[0].SourceCount != 0) {
-            var grp = ILinkGroup.Create(AdSecInput.IBarBundle(this, da, 0));
+            var grp = ILinkGroup.Create(this.GetAdSecRebarBundleGoo(da, 0).Value);
             groups.Add(new AdSecRebarGroupGoo(grp));
           }
 

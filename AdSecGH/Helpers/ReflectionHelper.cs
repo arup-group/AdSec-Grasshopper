@@ -14,7 +14,7 @@ namespace AdSecGH.Helpers {
       var q = from t in adsecAPI.GetTypes() where t.IsInterface && t.Namespace == @namespace select t;
       var dict = new Dictionary<string, Type>();
       foreach (var typ in q) {
-        if (@namespace + "." + typ.Name == typ.FullName) {
+        if ($"{@namespace}.{typ.Name}" == typ.FullName) {
           dict.Add(typ.Name, typ);
         }
       }

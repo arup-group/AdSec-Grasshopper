@@ -26,43 +26,43 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Components\OBSOLETE\**"/>
-    <Compile Remove="Properties\Icons\Icons\**"/>
-    <EmbeddedResource Remove="Components\OBSOLETE\**"/>
-    <EmbeddedResource Remove="Properties\Icons\Icons\**"/>
-    <None Remove="Components\OBSOLETE\**"/>
-    <None Remove="Properties\Icons\Icons\**"/>
+    <Compile Remove="Components\OBSOLETE\**" />
+    <Compile Remove="Properties\Icons\Icons\**" />
+    <EmbeddedResource Remove="Components\OBSOLETE\**" />
+    <EmbeddedResource Remove="Properties\Icons\Icons\**" />
+    <None Remove="Components\OBSOLETE\**" />
+    <None Remove="Properties\Icons\Icons\**" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System"/>
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Data"/>
-    <Reference Include="System.DirectoryServices.AccountManagement"/>
-    <Reference Include="System.Net.Http"/>
-    <Reference Include="System.Xml"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Drawing"/>
-    <Reference Include="System.Windows.Forms"/>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="licenses\AdSec.pdf"/>
-    <None Include="licenses\EntityFramework"/>
-    <None Include="licenses\Newtonsoft"/>
-    <None Include="licenses\UnitsNet"/>
+    <None Include="licenses\AdSec.pdf" />
+    <None Include="licenses\EntityFramework" />
+    <None Include="licenses\Newtonsoft" />
+    <None Include="licenses\UnitsNet" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AdSec" Version="2.0.3.300"/>
+    <PackageReference Include="AdSec" Version="2.0.3.300" />
     <PackageReference Include="Grasshopper" Version="6.27.20176.5001" IncludeAssets="compile;build">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
-    <PackageReference Include="OasysGH" Version="1.2.4"/>
+    <PackageReference Include="OasysGH" Version="1.2.4" />
     <PackageReference Include="OasysUnits">
       <Version>1.2.1</Version>
     </PackageReference>
@@ -73,7 +73,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Icons\AdSecLogo128.png" Pack="true" PackagePath=""/>
+    <None Include="Properties\Icons\AdSecLogo128.png" Pack="true" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Properties\Icons\AdSecLogo64.png">
@@ -86,10 +86,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="AdSecGHTests"/>
+    <InternalsVisibleTo Include="AdSecGHTests" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AdSecCore\AdSecCore.csproj"/>
+    <ProjectReference Include="..\AdSecCore\AdSecCore.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">
@@ -99,7 +99,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Helpers\GH\"/>
+    <Folder Include="Helpers\GH\" />
   </ItemGroup>
   <PropertyGroup Condition="$(Configuration) == 'Debug' AND $([MSBuild]::IsOSPlatform(Windows))">
     <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
@@ -107,6 +107,6 @@
     <StartAction>Program</StartAction>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(TargetDir)AdSec.gha&quot;&#xD;&#xA;Copy &quot;$(ProjectDir)obj\OasysUnits.dll&quot; &quot;$(TargetDir)OasysUnits.dll&quot;&#xD;&#xA;Copy &quot;Properties\Icons\AdSecLogo64.png&quot; &quot;$(TargetDir)AdSecIcon.png&quot;"/>
+    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(TargetDir)AdSec.gha&quot;&#xD;&#xA;Copy &quot;$(ProjectDir)obj\OasysUnits.dll&quot; &quot;$(TargetDir)OasysUnits.dll&quot;&#xD;&#xA;Copy &quot;Properties\Icons\AdSecLogo64.png&quot; &quot;$(TargetDir)AdSecIcon.png&quot;" />
   </Target>
 </Project>

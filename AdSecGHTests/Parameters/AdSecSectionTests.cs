@@ -37,7 +37,7 @@ namespace AdSecGHTests.Parameters {
 
       var flattened = adSec.Flatten(section);
 
-      string fileName = Path.GetTempPath() + "AdSecSectionTest.ads";
+      string fileName = $"{Path.GetTempPath()}AdSecSectionTest.ads";
       File.WriteAllText(fileName, CreateJson(designCode, section));
 
       string json = File.ReadAllText(fileName);
@@ -58,7 +58,7 @@ namespace AdSecGHTests.Parameters {
       var adSec = IAdSec.Create(designCode);
       var flattened = adSec.Flatten(section);
 
-      string fileName = Path.GetTempPath() + "AdSecSectionTest.ads";
+      string fileName = $"{Path.GetTempPath()}AdSecSectionTest.ads";
       File.WriteAllText(fileName, CreateJson(designCode, flattened));
 
       string json = File.ReadAllText(fileName);

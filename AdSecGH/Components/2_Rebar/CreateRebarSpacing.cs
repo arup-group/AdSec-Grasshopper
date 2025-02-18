@@ -70,7 +70,7 @@ namespace AdSecGH.Components {
     public override void VariableParameterMaintenance() {
       if (_mode == FoldMode.Distance) {
         string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-        Params.Input[1].Name = "Spacing [" + unitAbbreviation + "]";
+        Params.Input[1].Name = $"Spacing [{unitAbbreviation}]";
         Params.Input[1].NickName = "S";
         Params.Input[1].Description
           = "Number of bars is calculated based on the available length and the given bar pitch. The bar pitch is re-calculated to place the bars at equal spacing, with a maximum final pitch of the given value. Example: If the available length for the bars is 1000mm and the given bar pitch is 300mm, then the number of spacings that can fit in the available length is calculated as 1000 / 300 i.e. 3.333. The number of spacings is rounded up (3.333 rounds up to 4) and the bar pitch re-calculated (1000mm / 4), resulting in a final pitch of 250mm.";
@@ -110,7 +110,7 @@ namespace AdSecGH.Components {
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
       pManager.AddGenericParameter("Rebar", "Rb", "AdSec Rebar (single or bundle)", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Spacing [" + unitAbbreviation + "]", "S",
+      pManager.AddGenericParameter($"Spacing [{unitAbbreviation}]", "S",
         "Number of bars is calculated based on the available length and the given bar pitch. The bar pitch is re-calculated to place the bars at equal spacing, with a maximum final pitch of the given value. Example: If the available length for the bars is 1000mm and the given bar pitch is 300mm, then the number of spacings that can fit in the available length is calculated as 1000 / 300 i.e. 3.333. The number of spacings is rounded up (3.333 rounds up to 4) and the bar pitch re-calculated (1000mm / 4), resulting in a final pitch of 250mm.",
         GH_ParamAccess.item);
       _mode = FoldMode.Distance;
@@ -123,7 +123,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess da) {
       // 0 rebar input
-      var rebar = AdSecInput.AdSecRebarBundleGoo(this, da, 0);
+      var rebar = this.GetAdSecRebarBundleGoo(da, 0);
 
       switch (_mode) {
         case FoldMode.Distance:

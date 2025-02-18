@@ -167,13 +167,13 @@ namespace AdSecGH.Components {
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        Params.Input[1].Name = "Initial Modus [" + unitStressAbbreviation + "]";
+        Params.Input[1].Name = $"Initial Modus [{unitStressAbbreviation}]";
         Params.Input[1].NickName = "Ei";
         Params.Input[1].Description = "Initial Moduls from FIB model code";
         Params.Input[1].Access = GH_ParamAccess.item;
         Params.Input[1].Optional = false;
 
-        Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
+        Params.Input[2].Name = $"Failure Strain [{unitStrainAbbreviation}]";
         Params.Input[2].NickName = "εu";
         Params.Input[2].Description = "Failure strain from FIB model code";
         Params.Input[2].Access = GH_ParamAccess.item;
@@ -185,25 +185,25 @@ namespace AdSecGH.Components {
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
       } else if (_mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined) {
-        Params.Input[0].Name = "Unconfined Strength [" + unitStressAbbreviation + "]";
+        Params.Input[0].Name = $"Unconfined Strength [{unitStressAbbreviation}]";
         Params.Input[0].NickName = "σU";
         Params.Input[0].Description = "Unconfined strength for Mander Confined Model";
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        Params.Input[1].Name = "Confined Strength [" + unitStressAbbreviation + "]";
+        Params.Input[1].Name = $"Confined Strength [{unitStressAbbreviation}]";
         Params.Input[1].NickName = "σC";
         Params.Input[1].Description = "Confined strength for Mander Confined Model";
         Params.Input[1].Access = GH_ParamAccess.item;
         Params.Input[1].Optional = false;
 
-        Params.Input[2].Name = "Initial Modus [" + unitStressAbbreviation + "]";
+        Params.Input[2].Name = $"Initial Modus [{unitStressAbbreviation}]";
         Params.Input[2].NickName = "Ei";
         Params.Input[2].Description = "Initial Moduls for Mander Confined Model";
         Params.Input[2].Access = GH_ParamAccess.item;
         Params.Input[2].Optional = false;
 
-        Params.Input[3].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
+        Params.Input[3].Name = $"Failure Strain [{unitStrainAbbreviation}]";
         Params.Input[3].NickName = "εu";
         Params.Input[3].Description = "Failure strain for Mander Confined Model";
         Params.Input[3].Access = GH_ParamAccess.item;
@@ -215,13 +215,13 @@ namespace AdSecGH.Components {
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        Params.Input[1].Name = "Initial Modus [" + unitStressAbbreviation + "]";
+        Params.Input[1].Name = $"Initial Modus [{unitStressAbbreviation}]";
         Params.Input[1].NickName = "Ei";
         Params.Input[1].Description = "Initial Moduls for Mander model";
         Params.Input[1].Access = GH_ParamAccess.item;
         Params.Input[1].Optional = false;
 
-        Params.Input[2].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
+        Params.Input[2].Name = $"Failure Strain [{unitStrainAbbreviation}]";
         Params.Input[2].NickName = "εu";
         Params.Input[2].Description = "Failure strain for Mander model";
         Params.Input[2].Access = GH_ParamAccess.item;
@@ -233,7 +233,7 @@ namespace AdSecGH.Components {
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
+        Params.Input[1].Name = $"Failure Strain [{unitStrainAbbreviation}]";
         Params.Input[1].NickName = "εu";
         Params.Input[1].Description = "Failure strain from FIB model code";
         Params.Input[1].Access = GH_ParamAccess.item;
@@ -251,7 +251,7 @@ namespace AdSecGH.Components {
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
+        Params.Input[1].Name = $"Failure Strain [{unitStrainAbbreviation}]";
         Params.Input[1].NickName = "εu";
         Params.Input[1].Description = "Failure strain from Popovic model";
         Params.Input[1].Access = GH_ParamAccess.item;
@@ -263,7 +263,7 @@ namespace AdSecGH.Components {
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = false;
 
-        Params.Input[1].Name = "Failure Strain [" + unitStrainAbbreviation + "]";
+        Params.Input[1].Name = $"Failure Strain [{unitStrainAbbreviation}]";
         Params.Input[1].NickName = "εu";
         Params.Input[1].Description = "Failure strain";
         Params.Input[1].Access = GH_ParamAccess.item;
@@ -307,30 +307,31 @@ namespace AdSecGH.Components {
     protected override void SolveInternal(IGH_DataAccess DA) {
       IStressStrainCurve crv = null;
       try {
+        var stressStrainPoint = _mode != AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit ?
+          this.GetStressStrainPoint(DA, 0) : null;
         switch (_mode) {
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear:
-            crv = IBilinearStressStrainCurve.Create(AdSecInput.StressStrainPoint(this, DA, 0),
-              AdSecInput.StressStrainPoint(this, DA, 1));
+            crv = IBilinearStressStrainCurve.Create(stressStrainPoint, stressStrainPoint);
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit:
             var exCrv = IExplicitStressStrainCurve.Create();
-            exCrv.Points = AdSecInput.StressStrainPoints(this, DA, 0);
+            exCrv.Points = this.GetStressStrainPoints(DA, 0);
             crv = exCrv;
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
             crv = IFibModelCodeStressStrainCurve.Create((Pressure)Input.UnitNumber(this, DA, 1, _stressUnit),
-              AdSecInput.StressStrainPoint(this, DA, 0), (Strain)Input.UnitNumber(this, DA, 2, _strainUnit));
+              stressStrainPoint, (Strain)Input.UnitNumber(this, DA, 2, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
             crv = IManderStressStrainCurve.Create((Pressure)Input.UnitNumber(this, DA, 1, _stressUnit),
-              AdSecInput.StressStrainPoint(this, DA, 0), (Strain)Input.UnitNumber(this, DA, 2, _strainUnit));
+              stressStrainPoint, (Strain)Input.UnitNumber(this, DA, 2, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
-            crv = ILinearStressStrainCurve.Create(AdSecInput.StressStrainPoint(this, DA, 0));
+            crv = ILinearStressStrainCurve.Create(stressStrainPoint);
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
@@ -340,21 +341,21 @@ namespace AdSecGH.Components {
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
-            crv = IParabolaRectangleStressStrainCurve.Create(AdSecInput.StressStrainPoint(this, DA, 0),
+            crv = IParabolaRectangleStressStrainCurve.Create(stressStrainPoint,
               (Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
-            crv = IParkStressStrainCurve.Create(AdSecInput.StressStrainPoint(this, DA, 0));
+            crv = IParkStressStrainCurve.Create(stressStrainPoint);
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics:
-            crv = IPopovicsStressStrainCurve.Create(AdSecInput.StressStrainPoint(this, DA, 0),
+            crv = IPopovicsStressStrainCurve.Create(stressStrainPoint,
               (Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
-            crv = IRectangularStressStrainCurve.Create(AdSecInput.StressStrainPoint(this, DA, 0),
+            crv = IRectangularStressStrainCurve.Create(stressStrainPoint,
               (Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
             break;
         }

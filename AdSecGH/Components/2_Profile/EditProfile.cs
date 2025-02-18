@@ -44,7 +44,7 @@ namespace AdSecGH.Components {
       string angleAbbreviation = Angle.GetAbbreviation(_angleUnit);
       IQuantity quantityAngle = new Angle(0, _angleUnit);
       angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
-      Params.Input[1].Name = "Rotation [" + angleAbbreviation + "]";
+      Params.Input[1].Name = $"Rotation [{angleAbbreviation}]";
     }
 
     protected override void InitialiseDropdowns() {
@@ -66,7 +66,7 @@ namespace AdSecGH.Components {
 
       pManager.AddGenericParameter("Profile", "Pf", "AdSet Profile to Edit or get information from",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("Rotation [" + angleAbbreviation + "]", "R",
+      pManager.AddGenericParameter($"Rotation [{angleAbbreviation}]", "R",
         "[Optional] The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.",
         GH_ParamAccess.item);
       pManager.AddBooleanParameter("isReflectedY", "rY",
@@ -86,7 +86,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // #### get material input and duplicate it ####
-      var editPrf = AdSecInput.AdSecProfileGoo(this, DA, 0);
+      var editPrf = this.GetAdSecProfileGoo(DA, 0);
 
       if (editPrf != null) {
         // #### get the remaining inputs ####

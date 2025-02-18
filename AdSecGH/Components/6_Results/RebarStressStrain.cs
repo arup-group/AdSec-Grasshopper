@@ -48,21 +48,21 @@ namespace AdSecGH.Components {
       string lengthUnitAbbreviation = Length.GetAbbreviation(DefaultUnits.LengthUnitResult);
       string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(DefaultUnits.StressUnitResult);
-      pManager.AddGenericParameter("Position [" + lengthUnitAbbreviation + "]", "Vx",
+      pManager.AddGenericParameter($"Position [{lengthUnitAbbreviation}]", "Vx",
         "Rebar position as 2D vertex in the section's local yz-plane ", GH_ParamAccess.list);
-      pManager.AddGenericParameter("ULS Strain [" + strainUnitAbbreviation + "]", "εd",
+      pManager.AddGenericParameter($"ULS Strain [{strainUnitAbbreviation}]", "εd",
         "ULS strain for each rebar position", GH_ParamAccess.list);
-      pManager.AddGenericParameter("ULS Stress [" + stressUnitAbbreviation + "]", "σd",
+      pManager.AddGenericParameter($"ULS Stress [{stressUnitAbbreviation}]", "σd",
         "ULS stress for each rebar position", GH_ParamAccess.list);
-      pManager.AddGenericParameter("SLS Strain [" + strainUnitAbbreviation + "]", "εk",
+      pManager.AddGenericParameter($"SLS Strain [{strainUnitAbbreviation}]", "εk",
         "SLS strain for each rebar position", GH_ParamAccess.list);
-      pManager.AddGenericParameter("SLS Stress [" + stressUnitAbbreviation + "]", "σk",
+      pManager.AddGenericParameter($"SLS Stress [{stressUnitAbbreviation}]", "σk",
         "SLS stress for each rebar position", GH_ParamAccess.list);
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // get solution input
-      AdSecSolutionGoo solution = AdSecInput.Solution(this, DA, 0);
+      var solution = this.GetSolutionGoo(DA, 0);
 
       IStrengthResult uls;
       IServiceabilityResult sls;
@@ -78,13 +78,12 @@ namespace AdSecGH.Components {
           uls = solution.Value.Strength.Check(def.Value);
           sls = solution.Value.Serviceability.Check(def.Value);
         } else {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Unable to convert {Params.Input[1].NickName} to AdSec Load");
           return;
         }
       } else {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
+          $"Input parameter {Params.Input[1].NickName} failed to collect data!");
         return;
       }
 

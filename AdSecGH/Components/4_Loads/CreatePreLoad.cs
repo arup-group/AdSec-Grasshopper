@@ -99,17 +99,17 @@ namespace AdSecGH.Components {
 
       switch (_selectedItems[0]) {
         case "Force":
-          Params.Input[1].Name = "Force [" + forceUnitAbbreviation + "]";
+          Params.Input[1].Name = $"Force [{forceUnitAbbreviation}]";
           Params.Input[1].NickName = "P";
           break;
 
         case "Strain":
-          Params.Input[1].Name = "Strain [" + strainUnitAbbreviation + "]";
+          Params.Input[1].Name = $"Strain [{strainUnitAbbreviation}]";
           Params.Input[1].NickName = "ε";
           break;
 
         case "Stress":
-          Params.Input[1].Name = "Stress [" + stressUnitAbbreviation + "]";
+          Params.Input[1].Name = $"Stress [{stressUnitAbbreviation}]";
           Params.Input[1].NickName = "σ";
           break;
       }
@@ -152,7 +152,7 @@ namespace AdSecGH.Components {
       string forceUnitAbbreviation = Force.GetAbbreviation(_forceUnit);
       pManager.AddGenericParameter("RebarGroup", "RbG", "AdSec Reinforcement Group to apply Preload to",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("Force [" + forceUnitAbbreviation + "]", "P",
+      pManager.AddGenericParameter($"Force [{forceUnitAbbreviation}]", "P",
         "The pre-load per reinforcement bar. Positive value is tension.", GH_ParamAccess.item);
     }
 
@@ -163,7 +163,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // get rebargroup
-      var rebar = AdSecInput.ReinforcementGroup(this, DA, 0);
+      var rebar = this.GetReinforcementGroup(DA, 0);
 
       IPreload load = null;
       // Create new load

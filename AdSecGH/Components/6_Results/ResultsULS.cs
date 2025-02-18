@@ -61,33 +61,20 @@ namespace AdSecGH.Components {
       string momentUnitAbbreviation = string.Concat(moment.ToString().Where(char.IsLetter));
 
       pManager.AddGenericParameter("Load", "Ld",
-        "The section load under the applied action." + Environment.NewLine
-        + "If the applied deformation is outside the capacity range of the section, the returned load will be zero.",
+        $"The section load under the applied action.{Environment.NewLine}If the applied deformation is outside the capacity range of the section, the returned load will be zero.",
         GH_ParamAccess.item);
 
       pManager.AddNumberParameter("LoadUtil", "Ul",
-        "The strength load utilisation is the ratio of the applied load to the load in the same direction that would cause the "
-        + "section to reach its capacity. Utilisation > 1 means the applied load exceeds the section capacity."
-        + Environment.NewLine
-        + "If the applied load is outside the capacity range of the section, the utilisation will be greater than 1. Whereas, if the applied "
-        + "deformation exceeds the capacity, the load utilisation will be zero.", GH_ParamAccess.item);
+        $"The strength load utilisation is the ratio of the applied load to the load in the same direction that would cause the section to reach its capacity. Utilisation > 1 means the applied load exceeds the section capacity.{Environment.NewLine}If the applied load is outside the capacity range of the section, the utilisation will be greater than 1. Whereas, if the applied deformation exceeds the capacity, the load utilisation will be zero.", GH_ParamAccess.item);
 
       pManager.AddVectorParameter("Deformation", "Def",
-        "The section deformation under the applied action. The output is a vector representing:" + Environment.NewLine
-        + "X: Strain [" + strainUnitAbbreviation + "]," + Environment.NewLine
-        + "Y: Curvature around zz (so in local y-direction) [" + curvatureUnitAbbreviation + "]," + Environment.NewLine
-        + "Z: Curvature around yy (so in local z-direction) [" + curvatureUnitAbbreviation + "]", GH_ParamAccess.item);
+        $"The section deformation under the applied action. The output is a vector representing:{Environment.NewLine}X: Strain [{strainUnitAbbreviation}],{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{curvatureUnitAbbreviation}],{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{curvatureUnitAbbreviation}]", GH_ParamAccess.item);
 
       pManager.AddNumberParameter("DeformationUtil", "Ud",
-        "The strength deformation utilisation is the ratio of the applied deformation to the deformation in the same direction"
-        + " that would cause the section to reach its capacity. Utilisation > 1 means capacity has been exceeded."
-        + Environment.NewLine
-        + "Capacity has been exceeded when the utilisation is greater than 1. If the applied load is outside the capacity range of the section, the "
-        + "deformation utilisation will be the maximum double value.", GH_ParamAccess.item);
+        $"The strength deformation utilisation is the ratio of the applied deformation to the deformation in the same direction that would cause the section to reach its capacity. Utilisation > 1 means capacity has been exceeded.{Environment.NewLine}Capacity has been exceeded when the utilisation is greater than 1. If the applied load is outside the capacity range of the section, the deformation utilisation will be the maximum double value.", GH_ParamAccess.item);
 
       pManager.AddIntervalParameter("Moment Ranges", "MRs",
-        "The range of moments (in the direction of the applied moment, assuming constant axial force) that are within the "
-        + "section's capacity. Moment values are in [" + momentUnitAbbreviation + "]", GH_ParamAccess.list);
+        $"The range of moments (in the direction of the applied moment, assuming constant axial force) that are within the section's capacity. Moment values are in [{momentUnitAbbreviation}]", GH_ParamAccess.list);
 
       pManager.AddLineParameter("Neutral Axis", "NaL", "Line of Neutral Axis", GH_ParamAccess.item);
 
@@ -97,10 +84,7 @@ namespace AdSecGH.Components {
         "The Angle [rad] of the Neutral Axis from the Sections centroid", GH_ParamAccess.item);
 
       pManager.AddVectorParameter("Failure Deformation", "DU",
-        "The section deformation at failure. The output is a vector representing:" + Environment.NewLine + "X: Strain ["
-        + strainUnitAbbreviation + "]," + Environment.NewLine + "Y: Curvature around zz (so in local y-direction) ["
-        + curvatureUnitAbbreviation + "]," + Environment.NewLine + "Z: Curvature around yy (so in local z-direction) ["
-        + curvatureUnitAbbreviation + "]", GH_ParamAccess.item);
+        $"The section deformation at failure. The output is a vector representing:{Environment.NewLine}X: Strain [{strainUnitAbbreviation}],{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{curvatureUnitAbbreviation}],{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{curvatureUnitAbbreviation}]", GH_ParamAccess.item);
 
       pManager.AddLineParameter("Failure Neutral Axis", "FaL", "Line of Neutral Axis at failure", GH_ParamAccess.item);
       pManager.HideParameter(9);
@@ -113,7 +97,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // get solution input
-      var solution = AdSecInput.Solution(this, DA, 0);
+      var solution = this.GetSolutionGoo(DA, 0);
 
       IStrengthResult uls = null;
       IStrengthResult failure = null;
@@ -135,13 +119,12 @@ namespace AdSecGH.Components {
             def.Value.ZZ / uls.LoadUtilisation.DecimalFractions * 0.999);
           failure = solution.Value.Strength.Check(failureLoad);
         } else {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Unable to convert {Params.Input[1].NickName} to AdSec Load");
           return;
         }
       } else {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
+          $"Input parameter {Params.Input[1].NickName} failed to collect data!");
         return;
       }
 

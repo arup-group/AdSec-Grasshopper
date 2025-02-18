@@ -91,8 +91,8 @@ namespace AdSecGH.Components {
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      pManager.AddGenericParameter("Width [" + unitAbbreviation + "]", "B", "Profile width", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Depth [" + unitAbbreviation + "]", "H", "Profile depth", GH_ParamAccess.item);
+      pManager.AddGenericParameter($"Width [{unitAbbreviation}]", "B", "Profile width", GH_ParamAccess.item);
+      pManager.AddGenericParameter($"Depth [{unitAbbreviation}]", "H", "Profile depth", GH_ParamAccess.item);
       pManager.AddPlaneParameter("LocalPlane", "P",
         "[Optional] Plane representing local coordinate system, by default a YZ-plane is used", GH_ParamAccess.item,
         Plane.WorldYZ);

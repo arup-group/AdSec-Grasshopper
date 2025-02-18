@@ -47,19 +47,19 @@ namespace AdSecGH.Components {
       string strainUnitAbbreviation = Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(DefaultUnits.StressUnitResult);
 
-      pManager.AddGenericParameter("ULS Strain [" + strainUnitAbbreviation + "]", "εd", "ULS strain at Vertex Point",
+      pManager.AddGenericParameter($"ULS Strain [{strainUnitAbbreviation}]", "εd", "ULS strain at Vertex Point",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("ULS Stress [" + stressUnitAbbreviation + "]", "σd", "ULS stress at Vertex Point",
+      pManager.AddGenericParameter($"ULS Stress [{stressUnitAbbreviation}]", "σd", "ULS stress at Vertex Point",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("SLS Strain [" + strainUnitAbbreviation + "]", "εk", "SLS strain at Vertex Point",
+      pManager.AddGenericParameter($"SLS Strain [{strainUnitAbbreviation}]", "εk", "SLS strain at Vertex Point",
         GH_ParamAccess.item);
-      pManager.AddGenericParameter("SLS Stress [" + stressUnitAbbreviation + "]", "σk", "SLS stress at Vertex Point",
+      pManager.AddGenericParameter($"SLS Stress [{stressUnitAbbreviation}]", "σk", "SLS stress at Vertex Point",
         GH_ParamAccess.item);
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       // get solution input
-      var solution = AdSecInput.Solution(this, DA, 0);
+      var solution = this.GetSolutionGoo(DA, 0);
 
       IStrengthResult uls = null;
       IServiceabilityResult sls = null;
@@ -75,18 +75,18 @@ namespace AdSecGH.Components {
           uls = solution.Value.Strength.Check(def.Value);
           sls = solution.Value.Serviceability.Check(def.Value);
         } else {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-            "Unable to convert " + Params.Input[1].NickName + " to AdSec Load");
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Unable to convert {Params.Input[1].NickName} to AdSec Load");
           return;
         }
       } else {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          "Input parameter " + Params.Input[1].NickName + " failed to collect data!");
+          $"Input parameter {Params.Input[1].NickName} failed to collect data!");
         return;
       }
 
+      var point = this.GetAdSecPointGoo(DA, 2).AdSecPoint;
       // ULS strain
-      var strainULS = uls.Deformation.StrainAt(AdSecInput.IPoint(this, DA, 2));
+      var strainULS = uls.Deformation.StrainAt(point);
       var outStrainULS = new GH_UnitNumber(strainULS.ToUnit(DefaultUnits.StrainUnitResult));
       DA.SetData(0, outStrainULS);
 
@@ -96,7 +96,7 @@ namespace AdSecGH.Components {
       DA.SetData(1, outStressULS);
 
       // SLS strain
-      var strainSLS = sls.Deformation.StrainAt(AdSecInput.IPoint(this, DA, 2));
+      var strainSLS = sls.Deformation.StrainAt(point);
       var outStrainSLS = new GH_UnitNumber(strainSLS.ToUnit(DefaultUnits.StrainUnitResult));
       DA.SetData(2, outStrainSLS);
 

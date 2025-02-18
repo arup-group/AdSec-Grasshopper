@@ -1,4 +1,7 @@
-﻿using Grasshopper.Kernel;
+﻿using System;
+using System.Drawing;
+
+using Grasshopper.Kernel;
 
 using Oasys.GH.Helpers;
 
@@ -16,6 +19,17 @@ namespace AdSecGHTests.Helpers {
       component = new FakeComponent();
       component.SetDefaultValues();
       ComponentTesting.ComputeOutputs(component);
+    }
+
+    [Fact]
+    public void ShouldNotReturnResultForInvalidInput() {
+      component.ClearInputs();
+      var invalidInput = new Point();
+      bool result1 = component.SetInputParamAt(0, invalidInput);
+      bool result2 = component.SetInputParamAt(1, invalidInput);
+      Assert.False(result1 && result2);
+      ComponentTesting.ComputeOutputs(component);
+      Assert.Throws<ArgumentOutOfRangeException>(() => GetFirstOutput(component));
     }
 
     [Fact]
