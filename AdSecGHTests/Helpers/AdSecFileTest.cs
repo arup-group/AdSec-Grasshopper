@@ -21,7 +21,7 @@ namespace AdSecGHTests.Helpers {
     public void GetDesignCode_ForExistingCodesInAdSecFile_Test() {
       //workaround for loading API dll
       AddReferencePriority.AdSecAPI
-        = Assembly.Load(Path.GetFullPath($"{Environment.CurrentDirectory}//AdSec_API.dll"));
+        = Assembly.LoadFile(Path.GetFullPath($"{Environment.CurrentDirectory}//AdSec_API.dll"));
 
       foreach (string key in AdSecFile.Codes.Keys) {
         string json = CreateSampleJson(key);
@@ -36,7 +36,7 @@ namespace AdSecGHTests.Helpers {
     public void GetDesignCode_ForInvalidCode_Test() {
       //workaround for loading API dll
       AddReferencePriority.AdSecAPI
-        = Assembly.Load(Path.GetFullPath($"{Environment.CurrentDirectory}//AdSec_API.dll"));
+        = Assembly.LoadFile(Path.GetFullPath($"{Environment.CurrentDirectory}//AdSec_API.dll"));
 
       string json = CreateSampleJson("I'm invalid design code!");
 
@@ -49,7 +49,7 @@ namespace AdSecGHTests.Helpers {
     public void GetDesignCode_ForInvalidJson_Test() {
       //workaround for loading API dll
       AddReferencePriority.AdSecAPI
-        = Assembly.Load(Path.GetFullPath($"{Environment.CurrentDirectory}//AdSec_API.dll"));
+        = Assembly.LoadFile(Path.GetFullPath($"{Environment.CurrentDirectory}//AdSec_API.dll"));
 
       string json = CreateSampleJson(AdSecFile.Codes.Keys.FirstOrDefault(), false);
 
