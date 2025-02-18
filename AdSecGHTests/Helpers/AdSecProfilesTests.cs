@@ -11,10 +11,6 @@ using OasysUnits.Units;
 
 using Xunit;
 
-using ICatalogueProfile = Oasys.Profiles.ICatalogueProfile;
-using IChannelProfile = Oasys.Profiles.IChannelProfile;
-using ICircleProfile = Oasys.Profiles.ICircleProfile;
-
 namespace AdSecGHTests.Helpers {
   [Collection("GrasshopperFixture collection")]
   public class AdSecProfilesTests {
@@ -25,7 +21,7 @@ namespace AdSecGHTests.Helpers {
       public Angle Rotation => new Angle(-1, AngleUnit.Gradian);
     }
 
-    private IAngleProfile angleProfile = null;
+    private static IAngleProfile angleProfile = null;
 
     public AdSecProfilesTests() {
       angleProfile = SampleProfiles.GetAnAngleProfile(new WebConstant(new Length(1, LengthUnit.Inch)));
@@ -124,84 +120,43 @@ namespace AdSecGHTests.Helpers {
       Assert.Throws<NotImplementedException>(() => AdSecProfiles.CreateProfile(new ProfileUnknownDummy()));
     }
 
-    [Fact]
-    public void CreateProfile_WhenAngleProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(angleProfile);
+    private IProfile[] profiles = {
+      SampleProfiles.GetAnAngleProfile(new WebConstant(new Length(1, LengthUnit.Inch))),
+      SampleProfiles.GetACatalogueProfile(),
+      SampleProfiles.GetAChannelProfile(),
+      SampleProfiles.GetACircleProfile(),
+      SampleProfiles.GetACircleHollowProfile(),
+      SampleProfiles.GetACruciformSymmetricalProfile(),
+      SampleProfiles.GetAnEllipseProfile(),
+      SampleProfiles.GetAnEllipseHollowProfile(),
+      SampleProfiles.GetAGeneralCProfile(),
+      SampleProfiles.GetAGeneralZProfile(),
+      SampleProfiles.GetAnIBeamAssymetricalProfile(),
+      SampleProfiles.GetAnIBeamCellularProfile(),
+      SampleProfiles.GetAPerimeterProfile(),
+      SampleProfiles.GetARectangleProfile(),
+      SampleProfiles.GetARectangleHollowProfile(),
+      SampleProfiles.GetARectoEllipseProfile(),
+      SampleProfiles.GetASecantPileProfile(),
+      SampleProfiles.GetASheetPileProfile(),
+      SampleProfiles.GetATrapezoidProfile(),
+      SampleProfiles.GetATSectionProfile(),
+    };
 
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(Oasys.Profiles.IAngleProfile)}_Implementation", result.GetType().Name);
+    [Fact]
+    public void CheckProfiles_NotNull() {
+      foreach (var profile in profiles) {
+        var result = AdSecProfiles.CreateProfile(profile);
+        Assert.NotNull(result);
+      }
     }
 
     [Fact]
-    public void CreateProfile_WhenCatalogueProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetACatalogueProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(ICatalogueProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenChannelProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetAChannelProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(IChannelProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenCircleProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetACircleProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(ICircleProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenCircleHollowProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetACircleHollowProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(ICircleHollowProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenCruciformSymmetricalProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetACruciformSymmetricalProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(ICruciformSymmetricalProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenEllipseProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetAnEllipseProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(IEllipseProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenEllipseHollowProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetAnEllipseHollowProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(IEllipseHollowProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenGeneralCProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetAGeneralCProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(IGeneralCProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenGeneralZProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetAGeneralZProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(IGeneralZProfile)}_Implementation", result.GetType().Name);
+    public void CheckProfiles_HaveTheRightType() {
+      foreach (var profile in profiles) {
+        var result = AdSecProfiles.CreateProfile(profile);
+        Assert.Equal($"I{profile.GetType().Name}_Implementation", result.GetType().Name);
+      }
     }
 
     [Fact]
@@ -213,91 +168,11 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void CreateProfile_WhenIBeamAssymetricalProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetAnIBeamAssymetricalProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal("IIBeamAsymmetricalProfile_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenIBeamCellularProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetABeamCellularProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal("IIBeamCellularProfile_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenPerimeterProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetAPerimeterProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(IPerimeterProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenRectangleProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetARectangleProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(IRectangleProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenRectangleHollowProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetARectangleHollowProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(IRectangleHollowProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
     public void CreateProfile_WhenRectoCircleProfileType_ReturnValidProfile() {
       var result = AdSecProfiles.CreateProfile(SampleProfiles.GetARectoCircleProfile());
 
       Assert.NotNull(result);
       Assert.Equal("IStadiumProfile_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenRectoEllipseProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetARectoEllipseProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(IRectoEllipseProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenSecantPileProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetASecantPileProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(ISecantPileProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenSheetPileProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetASheetPileProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(ISheetPileProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenTrapezoidProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetATrapezoidProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(ITrapezoidProfile)}_Implementation", result.GetType().Name);
-    }
-
-    [Fact]
-    public void CreateProfile_WhenTSectionProfileType_ReturnValidProfile() {
-      var result = AdSecProfiles.CreateProfile(SampleProfiles.GetATSectionProfile());
-
-      Assert.NotNull(result);
-      Assert.Equal($"{nameof(ITSectionProfile)}_Implementation", result.GetType().Name);
     }
 
   }

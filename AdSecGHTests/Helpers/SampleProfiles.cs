@@ -133,7 +133,7 @@ namespace AdSecGHTests.Helpers {
       };
     }
 
-    public static IBeamCellularProfile GetABeamCellularProfile() {
+    public static IBeamCellularProfile GetAnIBeamCellularProfile() {
       return new IBeamCellularProfile() {
         Rotation = Angle.Zero,
         Depth = LengthOne(),
