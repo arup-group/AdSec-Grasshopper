@@ -158,12 +158,14 @@ namespace AdSecGH.Helpers {
     }
 
     public static List<ISection> ReadSection(string fileName) {
-      string json = File.ReadAllText(fileName);
-      var jsonParser = JsonParser.Deserialize(json);
       var sections = new List<ISection>();
-      for (int i = 0; i < jsonParser.Sections.Count; i++) {
-        var section = jsonParser.Sections[i];
-        sections.Add(section);
+      if (File.Exists(fileName)) {
+        string json = File.ReadAllText(fileName);
+        var jsonParser = JsonParser.Deserialize(json);
+        for (int i = 0; i < jsonParser.Sections.Count; i++) {
+          var section = jsonParser.Sections[i];
+          sections.Add(section);
+        }
       }
       return sections;
     }

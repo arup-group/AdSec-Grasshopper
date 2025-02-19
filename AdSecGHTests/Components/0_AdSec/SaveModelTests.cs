@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 
 using AdSecGH.Components;
@@ -19,20 +20,22 @@ using OasysUnits;
 
 using Xunit;
 
+using static System.Collections.Specialized.BitVector32;
+
 namespace AdSecGHTests.Components._1_Properties {
   [Collection("GrasshopperFixture collection")]
   public class SaveModelTests {
-    private static string tempPath = Path.GetTempPath() + Guid.NewGuid().ToString() + ".ads";
+    private static string tempPath = string.Empty;
     private static SaveModel _component;
     public SaveModelTests() {
       _component = ComponentMother();
+      SetSections(new List<object> { AdSecUtility.SectionObject(), AdSecUtility.SectionObject() });
     }
 
     public static SaveModel ComponentMother() {
       var component = new SaveModel();
       component.CreateAttributes();
-      var sections = new List<object> { AdSecUtility.SectionObject(), AdSecUtility.SectionObject() };
-      ComponentTestHelper.SetListInput(component, sections, 0);
+      tempPath = Path.GetTempPath() + Guid.NewGuid().ToString() + ".ads";
       return component;
     }
 
@@ -40,6 +43,11 @@ namespace AdSecGHTests.Components._1_Properties {
       _component.ExpireSolution(true);
       _component.CollectData();
       _component.ComputeData();
+    }
+
+    private static void SetSections(List<object> sections) {
+      ComponentTestHelper.SetListInput(_component, sections, 0);
+      ComputeData();
     }
 
     private static void SetFilePath(string path) {
@@ -77,6 +85,15 @@ namespace AdSecGHTests.Components._1_Properties {
     }
 
     [Fact]
+    public void SectionWillBeEmptyWhenWrongSectionHasBeenSet() {
+      _component = ComponentMother();
+      SetSections(new List<object> { 1 });
+      SetFilePath(tempPath);
+      var sections = AdSecFile.ReadSection(tempPath);
+      Assert.Empty(sections);
+    }
+
+    [Fact]
     public void OpeningModelIsGivingCorrectSectionProfile() {
       SetLoad();
       var sections = AdSecFile.ReadSection(tempPath);
@@ -97,7 +114,6 @@ namespace AdSecGHTests.Components._1_Properties {
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
       Assert.Single(runtimeMessages);
     }
-
 
     [Fact]
     public void AdSecProcesscanBeLaunched() {
