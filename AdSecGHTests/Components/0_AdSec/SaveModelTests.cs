@@ -18,6 +18,8 @@ using Oasys.AdSec;
 
 using OasysUnits;
 
+using Rhino.NodeInCode;
+
 using Xunit;
 
 using static System.Collections.Specialized.BitVector32;
@@ -50,16 +52,18 @@ namespace AdSecGHTests.Components._1_Properties {
       ComputeData();
     }
 
-    private static void SetFilePath(string path) {
-      ComponentTestHelper.SetInput(_component, path, 3);
-      ComponentTestHelper.SetInput(_component, true, 2);
+    private static void SetFilePath(bool isSave = true) {
+      ComponentTestHelper.SetInput(_component, tempPath, 3);
+      if (isSave) {
+        ComponentTestHelper.SetInput(_component, true, 2);
+      }
     }
 
     private static void SetLoad() {
       var tree = new DataTree<object>();
       tree.Add(new AdSecLoadGoo(ILoad.Create(Force.FromKilonewtons(-100), Moment.Zero, Moment.Zero)));
       ComponentTestHelper.SetInput(_component, tree, 1);
-      SetFilePath(tempPath);
+      SetFilePath();
       ComputeData();
     }
 
@@ -67,12 +71,13 @@ namespace AdSecGHTests.Components._1_Properties {
       var tree = new DataTree<object>();
       tree.Add(5);
       ComponentTestHelper.SetInput(_component, tree, 1);
-      SetFilePath(tempPath);
+      SetFilePath();
       ComputeData();
     }
 
     private static void SetWrongFilePath() {
-      SetFilePath("C:\\abcd\\");
+      tempPath = "C:\\abcd\\";
+      SetFilePath();
       ComputeData();
     }
 
@@ -88,7 +93,6 @@ namespace AdSecGHTests.Components._1_Properties {
     public void SectionWillBeEmptyWhenWrongSectionHasBeenSet() {
       _component = ComponentMother();
       SetSections(new List<object> { 1 });
-      SetFilePath(tempPath);
       var sections = AdSecFile.ReadSection(tempPath);
       Assert.Empty(sections);
     }
@@ -96,6 +100,16 @@ namespace AdSecGHTests.Components._1_Properties {
     [Fact]
     public void OpeningModelIsGivingCorrectSectionProfile() {
       SetLoad();
+      var sections = AdSecFile.ReadSection(tempPath);
+      Assert.Equal(2, sections.Count);
+      Assert.Equal("STD R(m) 0.6 0.3", sections[0].Profile.Description());
+    }
+
+    [Fact]
+    public void SaveFileIsOptionIsWorking() {
+      SetFilePath(false);
+      ComputeData();
+      _component.SaveFile();
       var sections = AdSecFile.ReadSection(tempPath);
       Assert.Equal(2, sections.Count);
       Assert.Equal("STD R(m) 0.6 0.3", sections[0].Profile.Description());
