@@ -14,7 +14,7 @@ namespace AdSecCore.Builders {
     private readonly List<IPoint> positions = new List<IPoint>();
     private ISingleBars group;
     private GroupType groupType;
-    private IReinforcement material = Reinforcement.Steel.IS456.Edition_2000.S415;
+    private readonly IReinforcement material = Reinforcement.Steel.IS456.Edition_2000.S415;
     private double rebarDiameter = 2;
 
     public ISingleBars Build() {
