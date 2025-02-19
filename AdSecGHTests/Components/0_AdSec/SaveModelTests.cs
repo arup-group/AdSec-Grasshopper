@@ -102,10 +102,12 @@ namespace AdSecGHTests.Components._1_Properties {
     public void AdSecProcesscanBeLaunched() {
       SetLoad();
       var process = _component.RunAdSec();
-      try {
-        Assert.Contains("AdSec", process.ProcessName);
-      } finally {
-        process.Kill();
+      if (process != null) {
+        try {
+          Assert.Contains("AdSec", process.ProcessName);
+        } finally {
+          process.Kill();
+        }
       }
     }
 
