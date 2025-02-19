@@ -32,7 +32,11 @@ namespace AdSecCore {
     }
 
     public int GetHashCode(double obj) {
-      return obj.GetHashCode();
+      // Group values into buckets of size `_epsilon`
+      double normalized = Math.Round(obj / _epsilon) * _epsilon;
+
+      // Convert to an integer hash
+      return normalized.GetHashCode();
     }
   }
 }
