@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
 
 using AdSecGH.Components;
 using AdSecGH.Helpers;
@@ -31,7 +31,8 @@ namespace AdSecGHTests.Components._1_Properties {
     public static SaveModel ComponentMother() {
       var component = new SaveModel();
       component.CreateAttributes();
-      ComponentTestHelper.SetInput(component, AdSecUtility.SectionObject(), 0);
+      var sections = new List<object> { AdSecUtility.SectionObject(), AdSecUtility.SectionObject() };
+      ComponentTestHelper.SetListInput(component, sections, 0);
       return component;
     }
 
@@ -79,7 +80,7 @@ namespace AdSecGHTests.Components._1_Properties {
     public void OpeningModelIsGivingCorrectSectionProfile() {
       SetLoad();
       var sections = AdSecFile.ReadSection(tempPath);
-      Assert.Single(sections);
+      Assert.Equal(2, sections.Count);
       Assert.Equal("STD R(m) 0.6 0.3", sections[0].Profile.Description());
     }
 

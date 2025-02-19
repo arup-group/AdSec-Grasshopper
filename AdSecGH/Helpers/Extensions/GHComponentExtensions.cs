@@ -367,7 +367,7 @@ namespace AdSecGH.Helpers {
 
     private static List<object> AdSecLoads(GH_Component owner, int sectionId, GH_Structure<IGH_Goo> loads) {
       var adSecload = new List<object>();
-      if (loads.Branches[sectionId] != null && loads.Branches[sectionId].Count != 0) {
+      if (loads.Branches.Count > sectionId && loads.Branches[sectionId] != null && loads.Branches[sectionId].Count != 0) {
         // loop through input list
         for (int j = 0; j < loads.Branches[sectionId].Count; j++) {
           // check if item is load type

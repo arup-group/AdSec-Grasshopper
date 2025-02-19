@@ -97,5 +97,15 @@ namespace AdSecGHTests.Helpers {
       input.PersistentData.Append(new GH_Mesh(mesh_input));
       component.Params.Input[index].AddSource(input);
     }
+
+    public static void SetListInput(GH_Component component, List<object> objs, int index = 0) {
+      var input = new Param_GenericObject();
+      input.CreateAttributes();
+      input.Access = GH_ParamAccess.list;
+      foreach (object obj in objs) {
+        input.PersistentData.Append(new GH_ObjectWrapper(obj));
+      }
+      component.Params.Input[index].AddSource(input);
+    }
   }
 }
