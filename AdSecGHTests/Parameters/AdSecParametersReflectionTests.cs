@@ -2,7 +2,14 @@
 using System.Collections.Generic;
 using System.Reflection;
 
+using AdSecGH.Components;
 using AdSecGH.Parameters;
+
+using Grasshopper.Kernel.Types;
+
+using Oasys.AdSec;
+
+using OasysUnits;
 
 using Xunit;
 
@@ -10,59 +17,24 @@ namespace AdSecGHTests.Parameters {
   [Collection("GrasshopperFixture collection")]
   public class AdSecParametersReflectionTests {
 
-    // private IGH_Goo[] goos;
-
-    // AdSecParametersReflectionTests() {
-    //   goos = new[] {
-    //     new AdSecRebarGroupGoo(),
-    //     // new AdSecConcreteCrackCalculationParametersGoo(),
-    //     // new AdSecCrackGoo(),
-    //   };
-    // }
-
-    // [Fact]
-    // public void CheckNotNull() {
-    //   var derivedTypes = GetTypesOf(typeof(IGH_Goo));
-    //
-    //   foreach (var type in derivedTypes) {
-    //     var instance = Activator.CreateInstance(type);
-    //     Assert.NotNull(instance);
-    //   }
-    // }
-
-    // public static List<object[]> AllGoos = new List<object[]> {
-    //   new object[] { typeof(AdSecLoadGoo) },
-    //   new object[] { typeof(AdSecDesignCodeGoo) },
-    //   new object[] { typeof(AdSecConcreteCrackCalculationParametersGoo) }
-    // };
-    //
-    // [Theory]
-    // [MemberData(nameof(AllGoos))]
-    // public void CheckNickName(Type type) {
-    //   var property = type.GetProperty("NickName", BindingFlags.Static | BindingFlags.Public);
-    //   string value = property?.GetValue(null) as string;
-    //
-    //   Assert.NotNull(value);
-    //   Assert.True(value.Split(' ').Length == 1);
-    // }
-    //
-    // [Theory]
-    // [InlineData(typeof(AdSecLoadGoo))]
-    // [InlineData(typeof(AdSecDesignCodeGoo))]
-    // [InlineData(typeof(AdSecConcreteCrackCalculationParametersGoo))]
-    // public void CheckNickName2(Type type) {
-    //   var property = type.GetProperty("NickName", BindingFlags.Static | BindingFlags.Public);
-    //   string value = property?.GetValue(null) as string;
-    //
-    //   Assert.NotNull(value);
-    //   Assert.True(value.Split(' ').Length == 1);
-    // }
-
     public Type[] AllGoos = {
       typeof(AdSecLoadGoo),
       typeof(AdSecDesignCodeGoo),
       typeof(AdSecConcreteCrackCalculationParametersGoo)
     };
+
+    public IGH_Goo[] InstanceOfGoos = {
+      new AdSecLoadGoo(ILoad.Create(new Force(), new Moment(), new Moment()))
+    };
+
+    [Fact]
+    public void CheckInstancesDuplicate() {
+      foreach (var goo in InstanceOfGoos) {
+        var gooDuplicate = goo.Duplicate();
+        Assert.NotNull(gooDuplicate);
+        Assert.Equal(goo.ToString(), gooDuplicate.ToString());
+      }
+    }
 
     [Fact]
     public void CheckNickname() {
@@ -74,8 +46,7 @@ namespace AdSecGHTests.Parameters {
       }
     }
 
-    private static bool IsNullOrEmptyOrWhitespace(string value)
-    {
+    private static bool IsNullOrEmptyOrWhitespace(string value) {
       return string.IsNullOrWhiteSpace(value) || value == string.Empty;
     }
 
