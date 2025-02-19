@@ -46,70 +46,57 @@ namespace AdSecGHTests.Parameters {
     //   Assert.True(value.Split(' ').Length == 1);
     // }
     //
-    [Theory]
-    [InlineData(typeof(AdSecLoadGoo))]
-    [InlineData(typeof(AdSecDesignCodeGoo))]
-    [InlineData(typeof(AdSecConcreteCrackCalculationParametersGoo))]
-    public void CheckNickName2(Type type) {
-      var property = type.GetProperty("NickName", BindingFlags.Static | BindingFlags.Public);
-      string value = property?.GetValue(null) as string;
+    // [Theory]
+    // [InlineData(typeof(AdSecLoadGoo))]
+    // [InlineData(typeof(AdSecDesignCodeGoo))]
+    // [InlineData(typeof(AdSecConcreteCrackCalculationParametersGoo))]
+    // public void CheckNickName2(Type type) {
+    //   var property = type.GetProperty("NickName", BindingFlags.Static | BindingFlags.Public);
+    //   string value = property?.GetValue(null) as string;
+    //
+    //   Assert.NotNull(value);
+    //   Assert.True(value.Split(' ').Length == 1);
+    // }
 
-      Assert.NotNull(value);
-      Assert.True(value.Split(' ').Length == 1);
+    public Type[] AllGoos = {
+      typeof(AdSecLoadGoo),
+      typeof(AdSecDesignCodeGoo),
+      typeof(AdSecConcreteCrackCalculationParametersGoo)
+    };
+
+    [Fact]
+    public void CheckNickname() {
+      foreach (var type in AllGoos) {
+        var property = type.GetProperty("NickName", BindingFlags.Static | BindingFlags.Public);
+        string value = property?.GetValue(null) as string;
+
+        Assert.True(!IsNullOrEmptyOrWhitespace(value), $"Failed for {type}");
+      }
     }
 
-    // [Fact]
-    // public void CheckNotNull2() {
-    //   var derivedTypes = GetTypesOf(typeof(IGH_GeometricGoo));
-    //
-    //   foreach (var type in derivedTypes) {
-    //     var instance = Activator.CreateInstance(type);
-    //     Assert.NotNull(instance);
-    //   }
-    // }
-    //
-    // [Theory]
-    // [InlineData(typeof(AdSecRebarGroupGoo))]
-    // public void TestTypeNotNull(Type type) {
-    //   var instance = Activator.CreateInstance(type);
-    //   Assert.NotNull(instance);
-    //   // var duplicate = instance.DuplicateGeometry();
-    //   // Assert.Equal(instance, duplicate);
-    // }
-    //
-    // [Theory]
-    // [InlineData(typeof(AdSecRebarGroupGoo))]
-    // public void TestTDuplivateGeometry(Type type) {
-    //   var instance = Activator.CreateInstance(type);
-    //   Assert.NotNull(instance);
-    //   // var duplicate = instance.DuplicateGeometry();
-    //   // Assert.Equal(instance, duplicate);
-    // }
-    //
-    // private static List<Type> GetTypesOf(Type type) {
-    //   // Get only the "AdSecGh" assembly
-    //   var assembly = Assembly.GetAssembly(typeof(AdSecRebarGroupGoo)); // AdSecGHInfo
-    //
-    //   List<Type> derivedTypes = new List<Type>();
-    //
-    //   try {
-    //     var types1 = assembly.GetTypes();
-    //     var types = types1.Where(t => type.IsAssignableFrom(t) && // Ensure it inherits or implements 'type'
-    //         t != type && // Exclude the base type itself
-    //         !t.IsAbstract //&&             // Exclude abstract types
-    //       //t.GetConstructor(Type.EmptyTypes) != null // Ensure it has a public parameterless constructor
-    //     ).ToList();
-    //
-    //     derivedTypes.AddRange(types);
-    //   } catch (ReflectionTypeLoadException ex) {
-    //     Console.WriteLine($"Error loading types from assembly: {assembly.FullName}");
-    //     foreach (var loaderException in ex.LoaderExceptions) {
-    //       Console.WriteLine(loaderException.Message);
-    //     }
-    //   }
-    //
-    //   return derivedTypes;
-    // }
+    private static bool IsNullOrEmptyOrWhitespace(string value)
+    {
+      return string.IsNullOrWhiteSpace(value) || value == string.Empty;
+    }
 
+    [Fact]
+    void CheckName() {
+      foreach (var type in AllGoos) {
+        var property = type.GetProperty("Name", BindingFlags.Static | BindingFlags.Public);
+        string value = property?.GetValue(null) as string;
+
+        Assert.True(!string.IsNullOrEmpty(value), $"Failed for {type}");
+      }
+    }
+
+    [Fact]
+    void CheckDescription() {
+      foreach (var type in AllGoos) {
+        var property = type.GetProperty("Description", BindingFlags.Static | BindingFlags.Public);
+        string value = property?.GetValue(null) as string;
+
+        Assert.True(!string.IsNullOrEmpty(value), $"Failed for {type}");
+      }
+    }
   }
 }
