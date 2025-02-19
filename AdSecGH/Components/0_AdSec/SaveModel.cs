@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 using AdSecGH.Helpers;
 using AdSecGH.Properties;
@@ -15,7 +14,6 @@ using GH_IO.Serialization;
 
 using Grasshopper;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Special;
 
 using OasysGH;
@@ -41,6 +39,9 @@ namespace AdSecGH.Components {
     protected override Bitmap Icon => Resources.SaveAdSec;
 
     public override void CreateAttributes() {
+      if (!_isInitialised) {
+        InitialiseDropdowns();
+      }
       m_attributes = new ThreeButtonComponentAttributes(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile,
         OpenAdSecexe, true, "Save AdSec file");
     }
@@ -111,7 +112,7 @@ namespace AdSecGH.Components {
       return base.Write(writer);
     }
 
-    protected override void InitialiseDropdowns() { }
+    protected override void InitialiseDropdowns() { _isInitialised = true; }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Section", "Sec", "AdSec Section to save", GH_ParamAccess.list);
