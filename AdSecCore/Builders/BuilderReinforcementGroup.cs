@@ -32,11 +32,6 @@ namespace AdSecCore.Builders {
       return group;
     }
 
-    public BuilderReinforcementGroup WithMaterial(IReinforcement material) {
-      this.material = material;
-      return this;
-    }
-
     public BuilderReinforcementGroup AtPosition(IPoint position) {
       positions.Add(position);
       return this;
