@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 
 using AdSecGH.Components;
 using AdSecGH.Helpers;
@@ -78,7 +79,6 @@ namespace AdSecGHTests.Components._1_Properties {
     public void OpeningModelIsGivingCorrectSectionProfile() {
       SetLoad();
       var sections = AdSecFile.ReadSection(tempPath);
-      _component.OpenAdSecexe();
       Assert.Single(sections);
       Assert.Equal("STD R(m) 0.6 0.3", sections[0].Profile.Description());
     }
