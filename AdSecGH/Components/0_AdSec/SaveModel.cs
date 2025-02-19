@@ -45,17 +45,16 @@ namespace AdSecGH.Components {
         OpenAdSecexe, true, "Save AdSec file");
     }
 
-    public void OpenAdSecexe() {
-      if (_fileName != null) {
-        if (_fileName != "") {
-          if (canOpen) {
-            Process.Start(_fileName);
-          } else {
-            File.WriteAllText(_fileName, _jsonString);
-            canOpen = true;
-          }
-        }
+    public Process RunAdSec() {
+      if (canOpen) {
+        return Process.Start(_fileName);
+      } else {
+        return null;
       }
+    }
+
+    public void OpenAdSecexe() {
+      RunAdSec();
     }
 
     public override bool Read(GH_IReader reader) {
@@ -64,8 +63,8 @@ namespace AdSecGH.Components {
     }
 
     public void SaveAsFile() {
-      _fileName = AdSecFile.SaveAsFile(_jsonString);
-      canOpen = !string.IsNullOrEmpty(_fileName);
+      _fileName = AdSecFile.SaveFilePath();
+      canOpen = this.SaveAsFile(_fileName, _jsonString);
       if (canOpen) // == DialogResult.OK)
       {
         //add panel input with string
@@ -101,8 +100,7 @@ namespace AdSecGH.Components {
         SaveAsFile();
       } else {
         // write to file
-        File.WriteAllText(_fileName, _jsonString);
-        canOpen = true;
+        canOpen = this.SaveAsFile(_fileName, _jsonString);
       }
     }
 
@@ -144,7 +142,7 @@ namespace AdSecGH.Components {
 
       // filepath
       string pathString = "";
-      if (DA.GetData(3, ref pathString) && _fileName != pathString) {
+      if (DA.GetData(3, ref pathString)) {
         _fileName = pathString;
         canOpen = false;
       }
@@ -153,8 +151,7 @@ namespace AdSecGH.Components {
       bool save = false;
       if (DA.GetData(2, ref save) && save) {
         // write to file
-        File.WriteAllText(_fileName, _jsonString);
-        canOpen = true;
+        canOpen = this.SaveAsFile(_fileName, _jsonString);
       }
     }
   }

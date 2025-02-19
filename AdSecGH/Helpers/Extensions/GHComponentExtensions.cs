@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using AdSecCore;
@@ -385,6 +386,16 @@ namespace AdSecGH.Helpers {
         }
       }
       return adSecload;
+    }
+
+    internal static bool SaveAsFile(this GH_Component owner, string filePath, string jsonString) {
+      try {
+        File.WriteAllText(filePath, jsonString);
+        return true;
+      } catch (Exception e) {
+        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
+      }
+      return false;
     }
 
     public static string GetModelJson(

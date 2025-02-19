@@ -6,8 +6,6 @@ using System.Text;
 
 using AdSecGH.Parameters;
 
-using Grasshopper.Kernel;
-
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
@@ -196,17 +194,15 @@ namespace AdSecGH.Helpers {
       return CombineJSonStrings(jsonStrings);
     }
 
-    internal static string SaveAsFile(string jsonString) {
+    internal static string SaveFilePath() {
       var saveDialog = new SaveFileDialog {
         Filter = "AdSec File (*.ads)|*.ads|All files (*.*)|*.*",
       };
-      bool result = saveDialog.ShowSaveDialog();
-      if (result) {
-        // write to file
-        File.WriteAllText(saveDialog.FileName, jsonString);
+      if (saveDialog.ShowSaveDialog()) {
         return saveDialog.FileName;
+      } else {
+        return string.Empty;
       }
-      return saveDialog.FileName;
     }
 
     internal static string CombineJSonStrings(List<string> jsonStrings) {
