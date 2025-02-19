@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 using AdSecGH.Parameters;
-
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
-
-using OasysGH.Parameters;
 
 using Xunit;
 
@@ -36,32 +30,33 @@ namespace AdSecGHTests.Parameters {
     //   }
     // }
 
-    public static List<object[]> AllGoos = new List<object[]> {
-      new object[] { typeof(AdSecLoadGoo) },
-      new object[] { typeof(AdSecDesignCodeGoo) },
-      new object[] { typeof(AdSecConcreteCrackCalculationParametersGoo) }
-    };
-
+    // public static List<object[]> AllGoos = new List<object[]> {
+    //   new object[] { typeof(AdSecLoadGoo) },
+    //   new object[] { typeof(AdSecDesignCodeGoo) },
+    //   new object[] { typeof(AdSecConcreteCrackCalculationParametersGoo) }
+    // };
+    //
+    // [Theory]
+    // [MemberData(nameof(AllGoos))]
+    // public void CheckNickName(Type type) {
+    //   var property = type.GetProperty("NickName", BindingFlags.Static | BindingFlags.Public);
+    //   string value = property?.GetValue(null) as string;
+    //
+    //   Assert.NotNull(value);
+    //   Assert.True(value.Split(' ').Length == 1);
+    // }
+    //
     [Theory]
-    [MemberData(nameof(AllGoos))]
-    public void CheckNickName(Type type) {
+    [InlineData(typeof(AdSecLoadGoo))]
+    [InlineData(typeof(AdSecDesignCodeGoo))]
+    [InlineData(typeof(AdSecConcreteCrackCalculationParametersGoo))]
+    public void CheckNickName2(Type type) {
       var property = type.GetProperty("NickName", BindingFlags.Static | BindingFlags.Public);
       string value = property?.GetValue(null) as string;
 
       Assert.NotNull(value);
       Assert.True(value.Split(' ').Length == 1);
     }
-
-    // [Theory]
-    // [InlineData(typeof(AdSecLoadGoo))]
-    // [InlineData(typeof(AdSecDesignCodeGoo))]
-    // [InlineData(typeof(AdSecConcreteCrackCalculationParametersGoo))]
-    // public void CheckNickName(Type type) {
-    //   var property = type.GetProperty("NickName", BindingFlags.Static | BindingFlags.Public);
-    //   string value = property.GetValue(null) as string;
-    //   Assert.NotNull(value);
-    //   Assert.True(value.Split(' ').Length == 1);
-    // }
 
     // [Fact]
     // public void CheckNotNull2() {
