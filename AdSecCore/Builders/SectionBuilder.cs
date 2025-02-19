@@ -39,11 +39,6 @@ namespace AdSecCore.Builders {
       return section;
     }
 
-    public SectionBuilder WithMaterial(IConcrete material) {
-      this.material = material;
-      return this;
-    }
-
     public SectionBuilder CreateRectangularSection() {
       sectionType = SectionType.Rectangular;
       return this;
