@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 
-using AdSecGH.Components;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel.Types;
@@ -17,15 +15,39 @@ namespace AdSecGHTests.Parameters {
   [Collection("GrasshopperFixture collection")]
   public class AdSecParametersReflectionTests {
 
-    public Type[] AllGoos = {
-      typeof(AdSecLoadGoo),
+    public Type[] GoosWithNickname = {
+      typeof(AdSecConcreteCrackCalculationParametersGoo),
+      typeof(AdSecCrackGoo),
       typeof(AdSecDesignCodeGoo),
-      typeof(AdSecConcreteCrackCalculationParametersGoo)
+      typeof(AdSecLoadGoo),
+      typeof(AdSecMaterialGoo),
+    };
+
+    public Type[] GoosWithoutNickname = {
+      typeof(AdSecDeformationGoo),
+      typeof(AdSecFailureSurfaceGoo),
+      typeof(AdSecNMMCurveGoo),
+      typeof(AdSecPointGoo),
+      typeof(AdSecProfileFlangeGoo),
+      typeof(AdSecProfileGoo),
+      typeof(AdSecProfileWebGoo),
+      typeof(AdSecRebarBundleGoo),
+      typeof(AdSecRebarGroupGoo),
+      typeof(AdSecRebarLayerGoo),
+      typeof(AdSecSectionGoo),
+      typeof(AdSecSolutionGoo),
+      typeof(AdSecStressStrainCurveGoo),
+      typeof(AdSecStressStrainPointGoo),
+      typeof(AdSecSubComponentGoo),
     };
 
     public IGH_Goo[] InstanceOfGoos = {
       new AdSecLoadGoo(ILoad.Create(new Force(), new Moment(), new Moment()))
     };
+
+    private static bool IsNullOrEmptyOrWhitespace(string value) {
+      return string.IsNullOrWhiteSpace(value) || value == string.Empty;
+    }
 
     [Fact]
     public void CheckInstancesDuplicate() {
@@ -37,36 +59,32 @@ namespace AdSecGHTests.Parameters {
     }
 
     [Fact]
-    public void CheckNickname() {
-      foreach (var type in AllGoos) {
+    public void NicknameProperty_ReturnsValidString() {
+      foreach (var type in GoosWithNickname) {
         var property = type.GetProperty("NickName", BindingFlags.Static | BindingFlags.Public);
         string value = property?.GetValue(null) as string;
 
-        Assert.True(!IsNullOrEmptyOrWhitespace(value), $"Failed for {type}");
+        Assert.False(IsNullOrEmptyOrWhitespace(value), $"Failed for {type}");
       }
     }
 
-    private static bool IsNullOrEmptyOrWhitespace(string value) {
-      return string.IsNullOrWhiteSpace(value) || value == string.Empty;
-    }
-
     [Fact]
-    void CheckName() {
-      foreach (var type in AllGoos) {
+    public void NameProperty_ReturnsValidString() {
+      foreach (var type in GoosWithNickname) {
         var property = type.GetProperty("Name", BindingFlags.Static | BindingFlags.Public);
         string value = property?.GetValue(null) as string;
 
-        Assert.True(!string.IsNullOrEmpty(value), $"Failed for {type}");
+        Assert.False(string.IsNullOrEmpty(value), $"Failed for {type}");
       }
     }
 
     [Fact]
-    void CheckDescription() {
-      foreach (var type in AllGoos) {
+    public void DescriptionProperty_ReturnsValidString() {
+      foreach (var type in GoosWithNickname) {
         var property = type.GetProperty("Description", BindingFlags.Static | BindingFlags.Public);
         string value = property?.GetValue(null) as string;
 
-        Assert.True(!string.IsNullOrEmpty(value), $"Failed for {type}");
+        Assert.False(string.IsNullOrEmpty(value), $"Failed for {type}");
       }
     }
   }
