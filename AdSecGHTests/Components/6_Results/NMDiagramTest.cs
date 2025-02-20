@@ -197,5 +197,13 @@ namespace AdSecGHTests.Components {
       Assert.Equal("AdSec N-M Parameter", duplicateGeometry.TypeDescription);
       Assert.Equal("N-M", duplicateGeometry.TypeName);
     }
+
+    [Fact]
+    public void CastToNullCurveReturnEmptyBoundingBox() {
+      var curveGoo = new AdSecInteractionDiagramGoo(null, Angle.FromRadians(0), new Rectangle3d());
+      AdSecInteractionDiagramGoo castedCurve = null;
+      curveGoo.CastTo(ref castedCurve);
+      Assert.Equal(0, castedCurve.Boundingbox.Area);
+    }
   }
 }
