@@ -18,8 +18,10 @@ namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
   public class NMDiagramTest {
     private static NMDiagram _components;
+    private static Angle _angle;
     public NMDiagramTest() {
       _components = ComponentMother();
+      _angle = Angle.FromRadians(0);
     }
 
     public static AdSecNMMCurveGoo NMCurve() {
@@ -35,7 +37,7 @@ namespace AdSecGHTests.Components {
     }
 
     private static BoundingBox LoadBoundingBox() {
-      return NMCurve().CurveToPolyline().BoundingBox;
+      return NMCurve().CurveToPolyline(_angle).BoundingBox;
     }
 
     private static void SetPlotBoundary() {
@@ -51,11 +53,12 @@ namespace AdSecGHTests.Components {
     private static void SetAngle(bool radian = true) {
       if (radian) {
         _components.SetSelected(1, 0);
-        ComponentTestHelper.SetInput(_components, Angle.FromRadians(0.785398).Value, 1);
+        _angle = Angle.FromRadians(0.785398);
       } else {
         _components.SetSelected(1, 1);
-        ComponentTestHelper.SetInput(_components, Angle.FromDegrees(45.0).Value, 1);
+        _angle = Angle.FromDegrees(45.0);
       }
+      ComponentTestHelper.SetInput(_components, _angle.Value, 1);
     }
 
     private static void SetAxialForce(double force) {
@@ -136,7 +139,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void VolumeIsZeroWhenLoadCurveIsNullInOverLoadMethod() {
-      var curveGoo = new AdSecNMMCurveGoo(null, new Angle(), new Rectangle3d(), AdSecNMMCurveGoo.InteractionCurveType.NM);
+      var curveGoo = new AdSecNMMCurveGoo(null, null, AdSecNMMCurveGoo.InteractionCurveType.NM, new Rectangle3d());
       Assert.Equal(0, curveGoo.Boundingbox.Volume, 5);
     }
 
@@ -154,6 +157,13 @@ namespace AdSecGHTests.Components {
       AdSecNMMCurveGoo castedCurve = null;
       Assert.True(curveGoo.CastTo(ref castedCurve));
       Assert.NotNull(castedCurve);
+    }
+
+    [Fact]
+    public void CastToAdSecNMMCurveGooThrowExceptionWhenCurveIsNull() {
+      var curveGoo = new AdSecNMMCurveGoo(null, Angle.FromRadians(0), new Rectangle3d());
+      AdSecNMMCurveGoo castedCurve = null;
+      Assert.Throws<NullReferenceException>(() => curveGoo.CastTo(ref castedCurve));
     }
 
     [Fact]

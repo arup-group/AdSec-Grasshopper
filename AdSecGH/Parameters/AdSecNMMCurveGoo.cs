@@ -19,6 +19,8 @@ using Rhino.Display;
 using Rhino.DocObjects;
 using Rhino.Geometry;
 
+using static Rhino.FileIO.FileObjWriteOptions;
+
 namespace AdSecGH.Parameters {
   public class AdSecNMMCurveGoo : GH_GeometricGoo<Polyline>, IGH_PreviewData {
     public enum InteractionCurveType {
@@ -38,12 +40,22 @@ namespace AdSecGH.Parameters {
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => (_curveType == InteractionCurveType.NM) ? "N-M" : "M-M";
     private readonly ILoadCurve _loadCurve;
-    private readonly Angle _angle;
     private readonly InteractionCurveType _curveType;
     private List<Line> _lineAxes = new List<Line>();
     private List<Line> _gridLines = new List<Line>();
     private Rectangle3d _plotBoundary;
     private List<Text3d> _3dTexts;
+    public AdSecNMMCurveGoo(Polyline curve, ILoadCurve loadCurve, InteractionCurveType interactionType, Rectangle3d plotBoundary) : base(curve) {
+      if (loadCurve == null) {
+        return;
+      }
+      _curveType = interactionType;
+      _loadCurve = loadCurve;
+      m_value = curve;
+      _plotBoundary = plotBoundary;
+      UpdatePreview(_plotBoundary);
+    }
+
     /// <summary>
     /// This constuctor will create an N-M type interaction diagram
     /// </summary>
@@ -53,15 +65,14 @@ namespace AdSecGH.Parameters {
       if (loadCurve == null) {
         return;
       }
-      _angle = angle;
       _loadCurve = loadCurve;
       _curveType = curveType;
-      m_value = CurveToPolyline();
+      m_value = CurveToPolyline(angle);
       _plotBoundary = plotBoundary;
       UpdatePreview(_plotBoundary);
     }
 
-    public Polyline CurveToPolyline() {
+    public Polyline CurveToPolyline(Angle angle) {
       var points = new List<Point3d>();
       bool isMM = _curveType == InteractionCurveType.MM;
       foreach (ILoad load in _loadCurve.Points) {
@@ -86,8 +97,8 @@ namespace AdSecGH.Parameters {
       }
 
       Plane local = Plane.WorldYZ;
-      if (!_angle.Radians.Equals(0)) {
-        local.Rotate(_angle.Radians * -1, Vector3d.ZAxis);
+      if (!angle.Radians.Equals(0)) {
+        local.Rotate(angle.Radians * -1, Vector3d.ZAxis);
       }
       // transform to local plane
       var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(local, Plane.WorldXY);
@@ -98,7 +109,7 @@ namespace AdSecGH.Parameters {
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecNMMCurveGoo))) {
-        target = (Q)(object)new AdSecNMMCurveGoo(_loadCurve, _angle, _plotBoundary, _curveType);
+        target = (Q)(object)new AdSecNMMCurveGoo(m_value.Duplicate(), _loadCurve, _curveType, _plotBoundary);
         return true;
       }
 
@@ -135,7 +146,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecNMMCurveGoo(_loadCurve, _angle, _plotBoundary, _curveType);
+      return new AdSecNMMCurveGoo(m_value.Duplicate(), _loadCurve, _curveType, _plotBoundary);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
