@@ -6,6 +6,7 @@ using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
 
+using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
 using OasysUnits;
@@ -17,13 +18,13 @@ using Xunit;
 namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
   public class NMDiagramTest {
-    private static NMDiagram _components;
+    private static NMDiagram _component;
     public NMDiagramTest() {
-      _components = ComponentMother();
+      _component = ComponentMother();
     }
 
     public static AdSecInteractionDiagramGoo NMCurve() {
-      return (AdSecInteractionDiagramGoo)ComponentTestHelper.GetOutput(_components);
+      return (AdSecInteractionDiagramGoo)ComponentTestHelper.GetOutput(_component);
     }
 
     public static NMDiagram ComponentMother() {
@@ -41,25 +42,26 @@ namespace AdSecGHTests.Components {
     private static void SetPlotBoundary() {
       //set boundary in such a way that neutralize translation
       Rectangle3d rectangle = new Rectangle3d(Plane.WorldXY, new Point3d(200, 1400, 0), new Point3d(-200, -600, 0));
-      ComponentTestHelper.SetInput(_components, rectangle, 2);
+      ComponentTestHelper.SetInput(_component, rectangle, 2);
     }
 
     private static void SetMMCurve() {
-      _components.SetSelected(0, 1);
+      _component.SetSelected(0, 1);
     }
 
     private static void SetAngle(bool radian = true) {
       if (radian) {
-        _components.SetSelected(1, 0);
-        ComponentTestHelper.SetInput(_components, Angle.FromRadians(0.785398).Value, 1);
+        _component.SetSelected(1, 0);
+        ComponentTestHelper.SetInput(_component, Angle.FromRadians(0.785398).Value, 1);
       } else {
-        _components.SetSelected(1, 1);
-        ComponentTestHelper.SetInput(_components, Angle.FromDegrees(45.0).Value, 1);
+        _component.SetSelected(1, 1);
+        ComponentTestHelper.SetInput(_component, Angle.FromDegrees(45.0).Value, 1);
       }
     }
 
     private static void SetAxialForce(double force) {
-      ComponentTestHelper.SetInput(_components, force, 1);
+      _component.SetSelected(1, 0);
+      ComponentTestHelper.SetInput(_component, force, 1);
     }
 
     [Fact]
@@ -115,6 +117,19 @@ namespace AdSecGHTests.Components {
       SetMMCurve();
       var expectedMinPoint = new Point3d(-127.03, -59.28, 0);
       var expectedMaxPoint = new Point3d(127.03, 59.28, 0);
+      var expectedBoundingBox = new BoundingBox(expectedMinPoint, expectedMaxPoint);
+      var actualBoundingBox = LoadBoundingBox();
+      bool areEqual = AdSecUtility.IsBoundingBoxEqual(expectedBoundingBox, actualBoundingBox);
+      Assert.True(areEqual);
+    }
+
+    [Fact]
+    public void MMCurveIsReportingCorrectPeakValueAtAxialLoad() {
+      //expected output is from post processing of input data
+      SetMMCurve();
+      SetAxialForce(-100);
+      var expectedMinPoint = new Point3d(-127.06, -59.3, 0);
+      var expectedMaxPoint = new Point3d(127.06, 59.3, 0);
       var expectedBoundingBox = new BoundingBox(expectedMinPoint, expectedMaxPoint);
       var actualBoundingBox = LoadBoundingBox();
       bool areEqual = AdSecUtility.IsBoundingBoxEqual(expectedBoundingBox, actualBoundingBox);
@@ -204,6 +219,14 @@ namespace AdSecGHTests.Components {
       AdSecInteractionDiagramGoo castedCurve = null;
       curveGoo.CastTo(ref castedCurve);
       Assert.Equal(0, castedCurve.Boundingbox.Area);
+    }
+
+    [Fact]
+    public void WrongPlotBoundaryWillBeAnError() {
+      ComponentTestHelper.SetInput(_component, 1, 2);
+      ComponentTestHelper.GetOutput(_component);
+      var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      Assert.Equal(2, runtimeMessages.Count);
     }
   }
 }
