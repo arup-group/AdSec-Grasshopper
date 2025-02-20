@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 
 using AdSecGH.Parameters;
@@ -172,7 +173,7 @@ namespace AdSecGH.Helpers {
       return sections;
     }
 
-    private static Oasys.Collections.IList<ILoad> LoadsAssociatedWithSecion(int sectionId, Dictionary<int, List<object>> loads) {
+    private static Tuple<Oasys.Collections.IList<ILoad>, Oasys.Collections.IList<IDeformation>> LoadsAssociatedWithSecion(int sectionId, Dictionary<int, List<object>> loads) {
       var adSecDeformations = Oasys.Collections.IList<IDeformation>.Create();
       var adSecLoads = Oasys.Collections.IList<ILoad>.Create();
       if (loads.ContainsKey(sectionId)) {
@@ -190,7 +191,7 @@ namespace AdSecGH.Helpers {
       if (adSecDeformations.Count > 0 && adSecLoads.Count > 0) {
         throw new ArgumentException("Only either deformation or load can be specified to a section.");
       }
-      return adSecLoads;
+      return new Tuple<Oasys.Collections.IList<ILoad>, Oasys.Collections.IList<IDeformation>>(adSecLoads, adSecDeformations);
     }
 
     internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
@@ -198,7 +199,12 @@ namespace AdSecGH.Helpers {
       var jsonStrings = new List<string>();
       var json = new JsonConverter(sections[0].DesignCode);
       for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
-        jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, LoadsAssociatedWithSecion(sectionId, loads)));
+        var loadAttachedToSection = LoadsAssociatedWithSecion(sectionId, loads);
+        if (loadAttachedToSection.Item1.Count > 0) {
+          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, loadAttachedToSection.Item1));
+        } else {
+          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, loadAttachedToSection.Item1));
+        }
       }
       return CombineJSonStrings(jsonStrings);
     }

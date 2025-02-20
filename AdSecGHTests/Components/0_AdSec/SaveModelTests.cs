@@ -83,7 +83,7 @@ namespace AdSecGHTests.Components._1_Properties {
     }
 
     private static void SetEmptyFilePath() {
-      tempPath = "";
+      tempPath = string.Empty;
       SetFilePath();
       ComponentTestHelper.ComputeData(_component);
     }
@@ -140,12 +140,13 @@ namespace AdSecGHTests.Components._1_Properties {
     public void AdSecProcesscanBeLaunched() {
       SetLoad();
       var process = _component.OpenAdSecexe();
-      if (process != null) {
-        try {
-          Assert.Contains("AdSec", process.ProcessName);
-        } finally {
-          process.Kill();
-        }
+      if (process == null) {
+        return;
+      }
+      try {
+        Assert.Contains("AdSec", process.ProcessName);
+      } finally {
+        process.Kill();
       }
     }
 

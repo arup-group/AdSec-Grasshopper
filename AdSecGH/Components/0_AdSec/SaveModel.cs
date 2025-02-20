@@ -74,27 +74,30 @@ namespace AdSecGH.Components {
         while (Params.Input[3].Sources.Count > 0) {
           Instances.ActiveCanvas.Document.RemoveObject(Params.Input[3].Sources[0], false);
         }
-
-        //instantiate  new panel
-        var panel = new GH_Panel();
-        panel.CreateAttributes();
-
-        panel.Attributes.Pivot
-          = new PointF(Attributes.DocObject.Attributes.Bounds.Left - panel.Attributes.Bounds.Width - 40,
-            Attributes.DocObject.Attributes.Bounds.Bottom - panel.Attributes.Bounds.Height);
-
-        //populate value list with our own data
-        panel.UserText = _fileName;
-
-        //Until now, the panel is a hypothetical object.
-        // This command makes it 'real' and adds it to the canvas.
-        Instances.ActiveCanvas.Document.AddObject(panel, false);
-
-        //Connect the new slider to this component
-        Params.Input[3].AddSource(panel);
-        Params.OnParametersChanged();
-        ExpireSolution(true);
+        WriteFilePathToPanel();
       }
+    }
+
+    private void WriteFilePathToPanel() {
+      //instantiate  new panel
+      var panel = new GH_Panel();
+      panel.CreateAttributes();
+
+      panel.Attributes.Pivot
+        = new PointF(Attributes.DocObject.Attributes.Bounds.Left - panel.Attributes.Bounds.Width - 40,
+          Attributes.DocObject.Attributes.Bounds.Bottom - panel.Attributes.Bounds.Height);
+
+      //populate value list with our own data
+      panel.UserText = _fileName;
+
+      //Until now, the panel is a hypothetical object.
+      // This command makes it 'real' and adds it to the canvas.
+      Instances.ActiveCanvas.Document.AddObject(panel, false);
+
+      //Connect the new slider to this component
+      Params.Input[3].AddSource(panel);
+      Params.OnParametersChanged();
+      ExpireSolution(true);
     }
 
     public void SaveFile() {

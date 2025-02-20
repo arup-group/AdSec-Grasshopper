@@ -159,7 +159,7 @@ namespace AdSecGH.Helpers {
       }
 
       if (sections.Count > 1) {
-        owner.AddRuntimeRemark("Note that the first Section's designcode will be used for all sections in list");
+        owner.AddRuntimeRemark("Note that the first Section's designcode will be used for all sections in the list");
       }
       return sections;
     }

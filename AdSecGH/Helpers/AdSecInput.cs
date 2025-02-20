@@ -374,12 +374,14 @@ namespace AdSecGH.Helpers {
           return false;
         }
       }
-
       return points?.Count > 0;
     }
 
     public static bool TryCastToLoads(
      GH_Structure<IGH_Goo> inputData, ref Dictionary<int, List<object>> loads, ref int path, ref int index) {
+      if (loads == null) {
+        return false;
+      }
       for (path = 0; path < inputData.Branches.Count; path++) {
         var sectionLoads = new List<object>();
         for (index = 0; index < inputData.Branches[path].Count; index++) {
@@ -400,6 +402,5 @@ namespace AdSecGH.Helpers {
       }
       return true;
     }
-
   }
 }
