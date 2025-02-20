@@ -158,6 +158,9 @@ namespace AdSecGH.Helpers {
         invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "Section"));
       }
 
+      if (sections.Count > 1) {
+        owner.AddRuntimeRemark("Note that the first Section's designcode will be used for all sections in list");
+      }
       return sections;
     }
 
@@ -365,54 +368,16 @@ namespace AdSecGH.Helpers {
       return covers;
     }
 
-    private static List<object> AdSecLoads(GH_Component owner, int sectionId, GH_Structure<IGH_Goo> loads) {
-      var adSecload = new List<object>();
-      if (loads.Branches.Count > sectionId && loads.Branches[sectionId] != null && loads.Branches[sectionId].Count != 0) {
-        // loop through input list
-        for (int j = 0; j < loads.Branches[sectionId].Count; j++) {
-          // check if item is load type
-          var load = loads[sectionId][j];
-          switch (load) {
-            case AdSecDeformationGoo deformationGoo:
-              adSecload.Add(deformationGoo);
-              break;
-            case AdSecLoadGoo loadGoo:
-              adSecload.Add(loadGoo);
-              break;
-            default:
-              owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"Unable to convert {owner.Params.Input[1].NickName} path {sectionId} index {j} to AdSec Load. Section will be saved without this load.");
-              break;
-          }
-        }
-      }
-      return adSecload;
-    }
-
-    internal static bool SaveAsFile(this GH_Component owner, string filePath, string jsonString) {
-      try {
-        File.WriteAllText(filePath, jsonString);
-        return true;
-      } catch (Exception e) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
-      }
-      return false;
-    }
-
-    public static string GetModelJson(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, List<AdSecSection> sections) {
+    public static Dictionary<int, List<object>> GetLoads(
+      this GH_Component owner, IGH_DataAccess DA, int inputId) {
+      int path = 0;
+      int index = 0;
       var adSecloads = new Dictionary<int, List<object>>();
-      if (DA.GetDataTree(1, out GH_Structure<IGH_Goo> loads) && loads.Branches.Count > 0) {
-        for (int i = 0; i < sections.Count; i++) {
-          adSecloads.Add(i, AdSecLoads(owner, i, loads));
-        }
+      if (DA.GetDataTree(1, out GH_Structure<IGH_Goo> inputData) && !AdSecInput.TryCastToLoads(inputData, ref adSecloads, ref path, ref index)) {
+        owner.AddRuntimeWarning($"Unable to convert {owner.Params.Input[1].NickName} path {path} index {index} to AdSec Load. Section will be saved without this load.");
       }
-      string jsonString = "";
-      try {
-        jsonString = AdSecFile.ModelJson(sections, adSecloads);
-      } catch (Exception e) {
-        owner.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
-      }
-      return jsonString;
+      return adSecloads;
     }
+
   }
 }

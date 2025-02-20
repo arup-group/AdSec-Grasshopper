@@ -6,6 +6,10 @@ using System.Text;
 
 using AdSecGH.Parameters;
 
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Data;
+using Grasshopper.Kernel.Types;
+
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
@@ -159,39 +163,42 @@ namespace AdSecGH.Helpers {
 
     public static List<ISection> ReadSection(string fileName) {
       var sections = new List<ISection>();
-      if (File.Exists(fileName)) {
-        string json = File.ReadAllText(fileName);
-        var jsonParser = JsonParser.Deserialize(json);
-        for (int i = 0; i < jsonParser.Sections.Count; i++) {
-          var section = jsonParser.Sections[i];
-          sections.Add(section);
-        }
+      if (!File.Exists(fileName)) {
+        return sections;
       }
+      string json = File.ReadAllText(fileName);
+      var jsonParser = JsonParser.Deserialize(json);
+      sections.AddRange(from section in jsonParser.Sections select section);
       return sections;
     }
+
+    private static Oasys.Collections.IList<ILoad> LoadsAssociatedWithSecion(int sectionId, Dictionary<int, List<object>> loads) {
+      var adSecDeformations = Oasys.Collections.IList<IDeformation>.Create();
+      var adSecLoads = Oasys.Collections.IList<ILoad>.Create();
+      if (loads.ContainsKey(sectionId)) {
+        foreach (var load in loads[sectionId]) {
+          switch (load) {
+            case AdSecDeformationGoo deformationGoo:
+              adSecDeformations.Add(deformationGoo.Value);
+              break;
+            case AdSecLoadGoo loadGoo:
+              adSecLoads.Add(loadGoo.Value);
+              break;
+          }
+        }
+      }
+      if (adSecDeformations.Count > 0 && adSecLoads.Count > 0) {
+        throw new ArgumentException("Only either deformation or load can be specified to a section.");
+      }
+      return adSecLoads;
+    }
+
     internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
       if (sections == null || !sections.Any()) { return ""; }
       var jsonStrings = new List<string>();
       var json = new JsonConverter(sections[0].DesignCode);
       for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
-        var adSecDeformations = Oasys.Collections.IList<IDeformation>.Create();
-        var adSecLoads = Oasys.Collections.IList<ILoad>.Create();
-        if (loads.ContainsKey(sectionId)) {
-          foreach (var load in loads[sectionId]) {
-            switch (load) {
-              case AdSecDeformationGoo deformationGoo:
-                adSecDeformations.Add(deformationGoo.Value);
-                break;
-              case AdSecLoadGoo loadGoo:
-                adSecLoads.Add(loadGoo.Value);
-                break;
-            }
-          }
-        }
-        if (adSecDeformations.Count > 0 && adSecLoads.Count > 0) {
-          throw new ArgumentException("Only either deformation or load can be specified to a section.");
-        }
-        jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecLoads));
+        jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, LoadsAssociatedWithSecion(sectionId, loads)));
       }
       return CombineJSonStrings(jsonStrings);
     }
@@ -200,11 +207,7 @@ namespace AdSecGH.Helpers {
       var saveDialog = new SaveFileDialog {
         Filter = "AdSec File (*.ads)|*.ads|All files (*.*)|*.*",
       };
-      if (saveDialog.ShowSaveDialog()) {
-        return saveDialog.FileName;
-      } else {
-        return string.Empty;
-      }
+      return saveDialog.ShowSaveDialog() ? saveDialog.FileName : string.Empty;
     }
 
     internal static string CombineJSonStrings(List<string> jsonStrings) {
@@ -212,13 +215,13 @@ namespace AdSecGH.Helpers {
         return null;
       }
       var stringBuilder = new StringBuilder();
-      string jsonString = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
-      stringBuilder.Append(jsonString);
+      string firstJson = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
+      stringBuilder.Append(firstJson);
       for (int i = 1; i < jsonStrings.Count; i++) {
-        string jsonString2 = jsonStrings[i];
-        int start = jsonString2.IndexOf("components") - 2;
-        jsonString2 = $",{jsonString2.Substring(start)}";
-        stringBuilder.Append(jsonString2.Remove(jsonString2.Length - 2, 2));
+        string nextJson = jsonStrings[i];
+        int start = nextJson.IndexOf("components") - 2;
+        nextJson = $",{nextJson.Substring(start)}";
+        stringBuilder.Append(nextJson.Remove(nextJson.Length - 2, 2));
       }
       stringBuilder.Append(jsonStrings[0].Substring(jsonStrings[0].Length - 2));
       return stringBuilder.ToString();

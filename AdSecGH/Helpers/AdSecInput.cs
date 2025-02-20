@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
@@ -18,6 +20,8 @@ using OasysGH.Parameters;
 using OasysUnits;
 
 using Rhino.Geometry;
+
+using static System.Collections.Specialized.BitVector32;
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
@@ -373,5 +377,29 @@ namespace AdSecGH.Helpers {
 
       return points?.Count > 0;
     }
+
+    public static bool TryCastToLoads(
+     GH_Structure<IGH_Goo> inputData, ref Dictionary<int, List<object>> loads, ref int path, ref int index) {
+      for (path = 0; path < inputData.Branches.Count; path++) {
+        var sectionLoads = new List<object>();
+        for (index = 0; index < inputData.Branches[path].Count; index++) {
+          // check if item is load type
+          var load = inputData[path][index];
+          switch (load) {
+            case AdSecDeformationGoo deformationGoo:
+              sectionLoads.Add(deformationGoo);
+              break;
+            case AdSecLoadGoo loadGoo:
+              sectionLoads.Add(loadGoo);
+              break;
+            default:
+              return false;
+          }
+        }
+        loads.Add(path, sectionLoads);
+      }
+      return true;
+    }
+
   }
 }

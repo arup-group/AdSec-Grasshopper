@@ -15,6 +15,7 @@ using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
+using Oasys.GH.Helpers;
 
 using OasysUnits;
 
@@ -81,6 +82,18 @@ namespace AdSecGHTests.Components._1_Properties {
       ComputeData();
     }
 
+    private static void SetNullFilePath() {
+      tempPath = null;
+      SetFilePath();
+      ComputeData();
+    }
+
+    private static void SetEmptyFilePath() {
+      tempPath = "";
+      SetFilePath();
+      ComputeData();
+    }
+
     private static void SetDifferentTypesOfLoad() {
       var tree = new GH_Structure<IGH_Goo>();
       tree.Append(new AdSecLoadGoo(ILoad.Create(Force.FromKilonewtons(-100), Moment.Zero, Moment.Zero)), new GH_Path(0));
@@ -132,7 +145,7 @@ namespace AdSecGHTests.Components._1_Properties {
     [Fact]
     public void AdSecProcesscanBeLaunched() {
       SetLoad();
-      var process = _component.RunAdSec();
+      var process = _component.OpenAdSecexe();
       if (process != null) {
         try {
           Assert.Contains("AdSec", process.ProcessName);
@@ -143,9 +156,23 @@ namespace AdSecGHTests.Components._1_Properties {
     }
 
     [Fact]
-    public void WrongFilePathWillNotLaunchAdSecProcesscan() {
+    public void WrongFilePathWillNotLaunchAdSecProcess() {
       SetWrongFilePath();
-      var process = _component.RunAdSec();
+      var process = _component.OpenAdSecexe();
+      Assert.Null(process);
+    }
+
+    [Fact]
+    public void NullFilePathWillNotLaunchAdSecProcess() {
+      SetNullFilePath();
+      var process = _component.OpenAdSecexe();
+      Assert.Null(process);
+    }
+
+    [Fact]
+    public void EmptyFilePathWillNotLaunchAdSecProcess() {
+      SetEmptyFilePath();
+      var process = _component.OpenAdSecexe();
       Assert.Null(process);
     }
   }

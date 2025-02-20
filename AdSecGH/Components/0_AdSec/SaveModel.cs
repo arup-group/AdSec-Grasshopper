@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -18,6 +17,8 @@ using Grasshopper.Kernel.Special;
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.UI;
+
+using OasysUnits;
 
 namespace AdSecGH.Components {
   public class SaveModel : GH_OasysDropDownComponent {
@@ -42,19 +43,11 @@ namespace AdSecGH.Components {
         InitialiseDropdowns();
       }
       m_attributes = new ThreeButtonComponentAttributes(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile,
-        OpenAdSecexe, true, "Save AdSec file");
+        () => OpenAdSecexe(), true, "Save AdSec file");
     }
 
-    public Process RunAdSec() {
-      if (canOpen) {
-        return Process.Start(_fileName);
-      } else {
-        return null;
-      }
-    }
-
-    public void OpenAdSecexe() {
-      RunAdSec();
+    public Process OpenAdSecexe() {
+      return canOpen ? Process.Start(_fileName) : null;
     }
 
     public override bool Read(GH_IReader reader) {
@@ -62,11 +55,20 @@ namespace AdSecGH.Components {
       return base.Read(reader);
     }
 
+    private void SaveJson() {
+      try {
+        System.IO.File.WriteAllText(_fileName, _jsonString);
+        canOpen = true;
+      } catch (Exception e) {
+        this.AddRuntimeError(e.Message);
+        canOpen = false;
+      }
+    }
+
     public void SaveAsFile() {
       _fileName = AdSecFile.SaveFilePath();
-      canOpen = this.SaveAsFile(_fileName, _jsonString);
-      if (canOpen) // == DialogResult.OK)
-      {
+      SaveJson();
+      if (canOpen) {
         //add panel input with string
         //delete existing inputs if any
         while (Params.Input[3].Sources.Count > 0) {
@@ -100,7 +102,7 @@ namespace AdSecGH.Components {
         SaveAsFile();
       } else {
         // write to file
-        canOpen = this.SaveAsFile(_fileName, _jsonString);
+        SaveJson();
       }
     }
 
@@ -133,12 +135,9 @@ namespace AdSecGH.Components {
         return;
       }
 
-      if (sections.Count > 1) {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
-          "Note that the first Section's designcode will be used for all sections in list");
-      }
+      var loads = this.GetLoads(DA, 0);
 
-      _jsonString = this.GetModelJson(DA, 1, sections);
+      _jsonString = AdSecFile.ModelJson(sections, loads);
 
       // filepath
       string pathString = "";
@@ -151,7 +150,7 @@ namespace AdSecGH.Components {
       bool save = false;
       if (DA.GetData(2, ref save) && save) {
         // write to file
-        canOpen = this.SaveAsFile(_fileName, _jsonString);
+        SaveJson();
       }
     }
   }
