@@ -3,6 +3,11 @@ using AdSecCore;
 namespace AdSecCoreTests {
   public class DoubleComparerTests {
     [Fact]
+    public void ValuesDifferByVeryLittleAndEpsilonIsZero() {
+      Assert.NotEqual(10.0, 10.000001, new DoubleComparer(0, true));
+    }
+
+    [Fact]
     public void ValuesDifferLessThanEpsilonShouldBeConsideredEqualNoMargin() {
       Assert.Equal(10.0, 10.01, new DoubleComparer());
     }
