@@ -20,7 +20,7 @@ using Rhino.DocObjects;
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
-  public class AdSecChartGoo : GH_GeometricGoo<Polyline>, IGH_PreviewData {
+  public class AdSecInteractionDiagramGoo : GH_GeometricGoo<Polyline>, IGH_PreviewData {
     public enum InteractionCurveType {
       NM,
       MM
@@ -49,7 +49,7 @@ namespace AdSecGH.Parameters {
     /// </summary>
     /// <param name="loadCurve"></param>
     /// <param name="angle"></param>
-    internal AdSecChartGoo(ILoadCurve loadCurve, Angle angle, Rectangle3d plotBoundary, InteractionCurveType curveType = InteractionCurveType.NM) {
+    internal AdSecInteractionDiagramGoo(ILoadCurve loadCurve, Angle angle, Rectangle3d plotBoundary, InteractionCurveType curveType = InteractionCurveType.NM) {
       if (loadCurve == null) {
         return;
       }
@@ -97,8 +97,8 @@ namespace AdSecGH.Parameters {
     }
 
     public override bool CastTo<Q>(out Q target) {
-      if (typeof(Q).IsAssignableFrom(typeof(AdSecChartGoo))) {
-        target = (Q)(object)new AdSecChartGoo(_loadCurve, _angle, _plotBoundary, _curveType);
+      if (typeof(Q).IsAssignableFrom(typeof(AdSecInteractionDiagramGoo))) {
+        target = (Q)(object)new AdSecInteractionDiagramGoo(_loadCurve, _angle, _plotBoundary, _curveType);
         return true;
       }
 
@@ -135,7 +135,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecChartGoo(_loadCurve, _angle, _plotBoundary, _curveType);
+      return new AdSecInteractionDiagramGoo(_loadCurve, _angle, _plotBoundary, _curveType);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {

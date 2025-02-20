@@ -22,8 +22,8 @@ namespace AdSecGHTests.Components {
       _components = ComponentMother();
     }
 
-    public static AdSecChartGoo NMCurve() {
-      return (AdSecChartGoo)ComponentTestHelper.GetOutput(_components);
+    public static AdSecInteractionDiagramGoo NMCurve() {
+      return (AdSecInteractionDiagramGoo)ComponentTestHelper.GetOutput(_components);
     }
 
     public static NMDiagram ComponentMother() {
@@ -130,13 +130,13 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void VolumeIsZeroWhenLoadCurveIsNull() {
-      var curveGoo = new AdSecChartGoo(null, Angle.FromRadians(0), new Rectangle3d());
+      var curveGoo = new AdSecInteractionDiagramGoo(null, Angle.FromRadians(0), new Rectangle3d());
       Assert.Equal(0, curveGoo.Boundingbox.Volume, 5);
     }
 
     [Fact]
     public void VolumeIsZeroWhenLoadCurveIsNullInOverLoadMethod() {
-      var curveGoo = new AdSecChartGoo(null, new Angle(), new Rectangle3d(), AdSecChartGoo.InteractionCurveType.NM);
+      var curveGoo = new AdSecInteractionDiagramGoo(null, new Angle(), new Rectangle3d(), AdSecInteractionDiagramGoo.InteractionCurveType.NM);
       Assert.Equal(0, curveGoo.Boundingbox.Volume, 5);
     }
 
@@ -151,7 +151,7 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void CastToAdSecNMMCurveGoo() {
       var curveGoo = NMCurve();
-      AdSecChartGoo castedCurve = null;
+      AdSecInteractionDiagramGoo castedCurve = null;
       Assert.True(curveGoo.CastTo(ref castedCurve));
       Assert.NotNull(castedCurve);
     }

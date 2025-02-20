@@ -158,7 +158,7 @@ namespace AdSecGH.Components {
         var loadCurve = solution.Value.Strength.GetForceMomentInteractionCurve(angle);
 
         // create output
-        DA.SetData(0, new AdSecChartGoo(loadCurve[0], angle, rect));
+        DA.SetData(0, new AdSecInteractionDiagramGoo(loadCurve[0], angle, rect));
       } else {
         // get force input
         var force = (Force)Input.UnitNumber(this, DA, 1, _forceUnit, true);
@@ -174,7 +174,7 @@ namespace AdSecGH.Components {
         }
 
         // create output
-        DA.SetData(0, new AdSecChartGoo(loadCurve[0], Angle.FromRadians(0), rect, AdSecChartGoo.InteractionCurveType.MM));
+        DA.SetData(0, new AdSecInteractionDiagramGoo(loadCurve[0], Angle.FromRadians(0), rect, AdSecInteractionDiagramGoo.InteractionCurveType.MM));
       }
     }
 
