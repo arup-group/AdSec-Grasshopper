@@ -128,9 +128,9 @@ namespace AdSecGH.Components {
         GH_ParamAccess.item);
       pManager[1].Optional = true;
       // create default rectangle as 1/2 meter square
-      var sz = Length.FromMeters(0.5);
-      var rect = new Rectangle3d(Plane.WorldXY, sz.As(DefaultUnits.LengthUnitGeometry),
-        sz.As(DefaultUnits.LengthUnitGeometry));
+      var length = Length.FromMeters(0.5);
+      var rect = new Rectangle3d(Plane.WorldXY, length.As(DefaultUnits.LengthUnitGeometry),
+        length.As(DefaultUnits.LengthUnitGeometry));
       pManager.AddRectangleParameter("Plot", "R", "Rectangle for plot boundary", GH_ParamAccess.item, rect);
     }
 
@@ -158,7 +158,7 @@ namespace AdSecGH.Components {
         var loadCurve = solution.Value.Strength.GetForceMomentInteractionCurve(angle);
 
         // create output
-        DA.SetData(0, new AdSecNMMCurveGoo(loadCurve[0], angle, rect));
+        DA.SetData(0, new AdSecChartGoo(loadCurve[0], angle, rect));
       } else {
         // get force input
         var force = (Force)Input.UnitNumber(this, DA, 1, _forceUnit, true);
@@ -174,7 +174,7 @@ namespace AdSecGH.Components {
         }
 
         // create output
-        DA.SetData(0, new AdSecNMMCurveGoo(loadCurve[0], Angle.FromRadians(0), rect, AdSecNMMCurveGoo.InteractionCurveType.MM));
+        DA.SetData(0, new AdSecChartGoo(loadCurve[0], Angle.FromRadians(0), rect, AdSecChartGoo.InteractionCurveType.MM));
       }
     }
 
