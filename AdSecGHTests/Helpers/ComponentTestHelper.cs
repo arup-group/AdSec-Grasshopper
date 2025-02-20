@@ -107,5 +107,11 @@ namespace AdSecGHTests.Helpers {
       }
       component.Params.Input[index].AddSource(input);
     }
+
+    public static void ComputeData(GH_Component component) {
+      component.ExpireSolution(true);
+      component.CollectData();
+      component.ComputeData();
+    }
   }
 }

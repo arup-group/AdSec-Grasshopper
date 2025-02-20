@@ -42,15 +42,9 @@ namespace AdSecGHTests.Components._1_Properties {
       return component;
     }
 
-    private static void ComputeData() {
-      _component.ExpireSolution(true);
-      _component.CollectData();
-      _component.ComputeData();
-    }
-
     private static void SetSections(List<object> sections) {
       ComponentTestHelper.SetListInput(_component, sections, 0);
-      ComputeData();
+      ComponentTestHelper.ComputeData(_component);
     }
 
     private static void SetFilePath(bool isSave = true) {
@@ -65,7 +59,7 @@ namespace AdSecGHTests.Components._1_Properties {
       tree.Add(new AdSecLoadGoo(ILoad.Create(Force.FromKilonewtons(-100), Moment.Zero, Moment.Zero)));
       ComponentTestHelper.SetInput(_component, tree, 1);
       SetFilePath();
-      ComputeData();
+      ComponentTestHelper.ComputeData(_component);
     }
 
     private static void SetWrongLoad() {
@@ -73,25 +67,25 @@ namespace AdSecGHTests.Components._1_Properties {
       tree.Add(5);
       ComponentTestHelper.SetInput(_component, tree, 1);
       SetFilePath();
-      ComputeData();
+      ComponentTestHelper.ComputeData(_component);
     }
 
     private static void SetWrongFilePath() {
       tempPath = "C:\\abcd\\";
       SetFilePath();
-      ComputeData();
+      ComponentTestHelper.ComputeData(_component);
     }
 
     private static void SetNullFilePath() {
       tempPath = null;
       SetFilePath();
-      ComputeData();
+      ComponentTestHelper.ComputeData(_component);
     }
 
     private static void SetEmptyFilePath() {
       tempPath = "";
       SetFilePath();
-      ComputeData();
+      ComponentTestHelper.ComputeData(_component);
     }
 
     private static void SetDifferentTypesOfLoad() {
@@ -99,7 +93,7 @@ namespace AdSecGHTests.Components._1_Properties {
       tree.Append(new AdSecLoadGoo(ILoad.Create(Force.FromKilonewtons(-100), Moment.Zero, Moment.Zero)), new GH_Path(0));
       tree.Append(new AdSecDeformationGoo(IDeformation.Create(Strain.FromMilliStrain(-1), Curvature.Zero, Curvature.Zero)), new GH_Path(0));
       ComponentTestHelper.SetInput(_component, tree, 1);
-      ComputeData();
+      ComponentTestHelper.ComputeData(_component);
     }
 
     [Fact]
@@ -121,7 +115,7 @@ namespace AdSecGHTests.Components._1_Properties {
     [Fact]
     public void SaveFileIsOptionIsWorking() {
       SetFilePath(false);
-      ComputeData();
+      ComponentTestHelper.ComputeData(_component);
       _component.SaveFile();
       var sections = AdSecFile.ReadSection(tempPath);
       Assert.Equal(2, sections.Count);
