@@ -203,7 +203,7 @@ namespace AdSecGH.Helpers {
         if (loadAttachedToSection.Item1.Count > 0) {
           jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, loadAttachedToSection.Item1));
         } else {
-          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, loadAttachedToSection.Item1));
+          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, loadAttachedToSection.Item2));
         }
       }
       return CombineJSonStrings(jsonStrings);
