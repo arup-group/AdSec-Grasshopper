@@ -63,6 +63,8 @@ namespace AdSecGH.Components {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
       Params.Input[0].Name = "Y [" + unitAbbreviation + "]";
       Params.Input[1].Name = "Z [" + unitAbbreviation + "]";
+      BusinessComponent.Y.Name = Params.Input[0].Name;
+      BusinessComponent.Z.Name = Params.Input[1].Name;
     }
 
     protected override void InitialiseDropdowns() {
