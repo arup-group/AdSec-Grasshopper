@@ -33,11 +33,12 @@ namespace AdSecGHTests.Helpers {
       var BottomLeft = new BuilderReinforcementGroup().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(-13, -28)).Build();
       return new SectionBuilder().WithWidth(30).WithHeight(60).CreateRectangularSection().WithReinforcementGroups(new List<IGroup>() { topRight, BottomRight, topLeft, BottomLeft }).Build();
     }
-
+    public static AdSecSection SectionObject() {
+      return new AdSecSection(CreateSTDRectangularSection(), designCode, "", "", Plane.WorldXY);
+    }
     public static GH_Component AnalyzeComponent() {
       var component = new Analyse();
-      var section = new AdSecSection(CreateSTDRectangularSection(), designCode, "", "", Plane.WorldXY);
-      component.SetInputParamAt(0, new AdSecSectionGoo(section));
+      component.SetInputParamAt(0, new AdSecSectionGoo(SectionObject()));
       return component;
     }
 

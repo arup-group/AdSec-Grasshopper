@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
+using System.Linq;
 
 using AdSecGH.Helpers;
-using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using AdSecGHCore.Constants;
@@ -14,22 +12,17 @@ using GH_IO.Serialization;
 
 using Grasshopper;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Special;
-using Grasshopper.Kernel.Types;
-
-using Oasys.AdSec;
-using Oasys.AdSec.IO.Serialization;
 
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.UI;
 
-using Rhino.UI;
+using OasysUnits;
 
 namespace AdSecGH.Components {
   public class SaveModel : GH_OasysDropDownComponent {
-    private static string _jsonString;
+    private string _jsonString;
     private string _fileName;
     private bool canOpen;
 
@@ -46,21 +39,15 @@ namespace AdSecGH.Components {
     protected override Bitmap Icon => Resources.SaveAdSec;
 
     public override void CreateAttributes() {
+      if (!_isInitialised) {
+        InitialiseDropdowns();
+      }
       m_attributes = new ThreeButtonComponentAttributes(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile,
-        OpenAdSecexe, true, "Save AdSec file");
+        () => OpenAdSecExe(), true, "Save AdSec file");
     }
 
-    public void OpenAdSecexe() {
-      if (_fileName != null) {
-        if (_fileName != "") {
-          if (canOpen) {
-            Process.Start(_fileName);
-          } else {
-            File.WriteAllText(_fileName, _jsonString);
-            canOpen = true;
-          }
-        }
-      }
+    public Process OpenAdSecExe() {
+      return canOpen ? Process.Start(_fileName) : null;
     }
 
     public override bool Read(GH_IReader reader) {
@@ -68,45 +55,50 @@ namespace AdSecGH.Components {
       return base.Read(reader);
     }
 
-    public void SaveAsFile() {
-      var fdi = new SaveFileDialog {
-        Filter = "AdSec File (*.ads)|*.ads|All files (*.*)|*.*",
-      };
-      bool res = fdi.ShowSaveDialog();
-      if (res) // == DialogResult.OK)
-      {
-        _fileName = fdi.FileName;
-
-        // write to file
-        File.WriteAllText(_fileName, _jsonString);
+    private void SaveJson() {
+      try {
+        System.IO.File.WriteAllText(_fileName, _jsonString);
         canOpen = true;
-
-        //add panel input with string
-        //delete existing inputs if any
-        while (Params.Input[3].Sources.Count > 0) {
-          Instances.ActiveCanvas.Document.RemoveObject(Params.Input[3].Sources[0], false);
-        }
-
-        //instantiate  new panel
-        var panel = new GH_Panel();
-        panel.CreateAttributes();
-
-        panel.Attributes.Pivot
-          = new PointF(Attributes.DocObject.Attributes.Bounds.Left - panel.Attributes.Bounds.Width - 40,
-            Attributes.DocObject.Attributes.Bounds.Bottom - panel.Attributes.Bounds.Height);
-
-        //populate value list with our own data
-        panel.UserText = _fileName;
-
-        //Until now, the panel is a hypothetical object.
-        // This command makes it 'real' and adds it to the canvas.
-        Instances.ActiveCanvas.Document.AddObject(panel, false);
-
-        //Connect the new slider to this component
-        Params.Input[3].AddSource(panel);
-        Params.OnParametersChanged();
-        ExpireSolution(true);
+      } catch (Exception e) {
+        this.AddRuntimeError(e.Message);
+        canOpen = false;
       }
+    }
+
+    public void SaveAsFile() {
+      _fileName = AdSecFile.SaveFilePath();
+      SaveJson();
+      if (canOpen) {
+        WriteFilePathToPanel();
+      }
+    }
+
+    private void WriteFilePathToPanel() {
+      //add panel input with string
+      //delete existing inputs if any
+      while (Params.Input[3].Sources.Count > 0) {
+        Instances.ActiveCanvas.Document.RemoveObject(Params.Input[3].Sources[0], false);
+      }
+
+      //instantiate  new panel
+      var panel = new GH_Panel();
+      panel.CreateAttributes();
+
+      panel.Attributes.Pivot
+        = new PointF(Attributes.DocObject.Attributes.Bounds.Left - panel.Attributes.Bounds.Width - 40,
+          Attributes.DocObject.Attributes.Bounds.Bottom - panel.Attributes.Bounds.Height);
+
+      //populate value list with our own data
+      panel.UserText = _fileName;
+
+      //Until now, the panel is a hypothetical object.
+      // This command makes it 'real' and adds it to the canvas.
+      Instances.ActiveCanvas.Document.AddObject(panel, false);
+
+      //Connect the new slider to this component
+      Params.Input[3].AddSource(panel);
+      Params.OnParametersChanged();
+      ExpireSolution(true);
     }
 
     public void SaveFile() {
@@ -114,8 +106,7 @@ namespace AdSecGH.Components {
         SaveAsFile();
       } else {
         // write to file
-        File.WriteAllText(_fileName, _jsonString);
-        canOpen = true;
+        SaveJson();
       }
     }
 
@@ -126,25 +117,7 @@ namespace AdSecGH.Components {
       return base.Write(writer);
     }
 
-    internal static string CombineJSonStrings(List<string> jsonStrings) {
-      if (jsonStrings == null || jsonStrings.Count == 0) {
-        return null;
-      }
-
-      string jsonString = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
-      for (int i = 1; i < jsonStrings.Count; i++) {
-        string jsonString2 = jsonStrings[i];
-        int start = jsonString2.IndexOf("components") - 2;
-        jsonString2 = $",{jsonString2.Substring(start)}";
-        jsonString += jsonString2.Remove(jsonString2.Length - 2, 2);
-      }
-
-      jsonString += jsonStrings[0].Substring(jsonStrings[0].Length - 2);
-
-      return jsonString;
-    }
-
-    protected override void InitialiseDropdowns() { }
+    protected override void InitialiseDropdowns() { _isInitialised = true; }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Section", "Sec", "AdSec Section to save", GH_ParamAccess.list);
@@ -162,128 +135,28 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       var sections = this.GetAdSecSections(DA, 0);
-      if (sections.Count == 0) {
+      if (!sections.Any()) {
         return;
       }
 
-      if (sections.Count > 1) {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
-          "Note that the first Section's designcode will be used for all sections in list");
-      }
+      var loads = this.GetLoads(DA, 1);
 
-      var jsonStrings = new List<string>();
-
-      var json = new JsonConverter(sections[0].DesignCode);
-
-      if (DA.GetDataTree(1, out GH_Structure<IGH_Goo> loads)) {
-        if (loads.Branches.Count > 0) {
-          for (int i = 0; i < sections.Count; i++) {
-            if (loads.Branches[i] == null || loads.Branches[i].Count == 0) {
-              // convert to json without loads method
-              try {
-                jsonStrings.Add(json.SectionToJson(sections[i].Section));
-              } catch (Exception e) {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                  $"Error with section at index {i}: {e.InnerException.Message}");
-              }
-            } else if (loads.Branches[i][0].CastTo(out AdSecLoadGoo notusedLoad)) {
-              // create new list of loads
-              var lds = Oasys.Collections.IList<ILoad>.Create();
-              // loop through input list
-              for (int j = 0; j < loads.Branches[i].Count; j++) {
-                // check if item is load type
-                if (loads[i][j].CastTo(out AdSecLoadGoo loadGoo)) {
-                  var load = loadGoo;
-                  lds.Add(load.Value);
-                } else {
-                  AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                    $"Unable to convert {Params.Input[1].NickName} path {i} index {j} to AdSec Load. Section will be saved without this load.");
-                }
-              }
-
-              // convert to json with load method
-              try {
-                jsonStrings.Add(json.SectionToJson(sections[i].Section, lds));
-              } catch (Exception e) {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                  $"Error with section at index {i}: {e.InnerException.Message}");
-              }
-            } else if (loads.Branches[i][0] is AdSecDeformationGoo) {
-              // create new list of deformations
-              var defs = Oasys.Collections.IList<IDeformation>.Create();
-              // loop through input list
-              for (int j = 0; j < loads.Branches[i].Count; j++) {
-                // check if item is load type
-                if (loads[i][j] is AdSecDeformationGoo def) {
-                  defs.Add(def.Value);
-                } else {
-                  AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                    $"Unable to convert {Params.Input[1].NickName} path {i} index {j} to AdSec Load. Section will be saved without this load.");
-                }
-              }
-
-              // convert to json with deformation method
-              try {
-                jsonStrings.Add(json.SectionToJson(sections[i].Section, defs));
-              } catch (Exception e) {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                  $"Error with section at index {i}: {e.InnerException.Message}");
-              }
-            } else {
-              AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                $"Error converting {Params.Input[1].NickName} to AdSec Load/Deformation. Section will be saved without loads.");
-              // convert to json without loads method
-              try {
-                jsonStrings.Add(json.SectionToJson(sections[i].Section));
-              } catch (Exception e) {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                  $"Error with section at index {i}: {e.InnerException.Message}");
-              }
-            }
-          }
-        } else {
-          for (int i = 0; i < sections.Count; i++) {
-            // if no loads are inputted then just convert section
-            try {
-              jsonStrings.Add(json.SectionToJson(sections[i].Section));
-            } catch (Exception e) {
-              AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-                $"Error with section at index {i}: {e.InnerException.Message}");
-            }
-          }
-        }
-      } else {
-        for (int i = 0; i < sections.Count; i++) {
-          // if no loads are inputted then just convert section
-          try {
-            jsonStrings.Add(json.SectionToJson(sections[i].Section));
-          } catch (Exception e) {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-              $"Error with section at index {i}: {e.InnerException.Message}");
-          }
-        }
-      }
-
-      _jsonString = CombineJSonStrings(jsonStrings);
+      _jsonString = AdSecFile.ModelJson(sections, loads);
 
       // filepath
       string pathString = "";
       if (DA.GetData(3, ref pathString)) {
-        if (_fileName != pathString) {
-          _fileName = pathString;
-          canOpen = false;
-        }
+        _fileName = pathString;
+        canOpen = false;
       }
 
       // input save bool
       bool save = false;
-      if (DA.GetData(2, ref save)) {
-        if (save) {
-          // write to file
-          File.WriteAllText(_fileName, _jsonString);
-          canOpen = true;
-        }
+      if (DA.GetData(2, ref save) && save) {
+        // write to file
+        SaveJson();
       }
     }
+
   }
 }
