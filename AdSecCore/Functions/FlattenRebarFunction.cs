@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using AdSecGHCore.Constants;
 
@@ -105,7 +106,7 @@ namespace AdSecCore.Functions {
       Material.Value = materials.ToArray();
     }
 
-    private static double GetPreLoad(IPreload preLoad) {
+    internal static double GetPreLoad(IPreload preLoad) {
       if (preLoad is IPreForce singleBarsPreload) {
         return singleBarsPreload.Force.ToUnit(ContextUnits.Instance.ForceUnit).Value;
       }
@@ -118,7 +119,7 @@ namespace AdSecCore.Functions {
         return singleBarsPreload3.Stress.ToUnit(ContextUnits.Instance.PressureUnit).Value;
       }
 
-      return 0;
+      throw new NotSupportedException($"Type {preLoad.GetType()} is not supported.");
     }
 
     private static string MaterialCleanUp(string rebarMat) {
