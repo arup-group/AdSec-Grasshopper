@@ -215,7 +215,8 @@ namespace AdSecGH.Helpers {
       if (sections == null || !sections.Any()) {
         return string.Empty;
       }
-      return CombineJSonStrings(SectionJson(sections, loads));
+      var json = SectionJson(sections, loads);
+      return CombineJSonStrings(json);
     }
 
     internal static string SaveFilePath() {
