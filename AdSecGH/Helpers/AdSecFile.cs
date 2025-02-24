@@ -180,11 +180,7 @@ namespace AdSecGH.Helpers {
       return sections;
     }
 
-    internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
-      if (sections == null || !sections.Any()) {
-        return string.Empty;
-      }
-
+    internal static List<string> SectionJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
       var jsonStrings = new List<string>();
       var json = new JsonConverter(sections[0].DesignCode);
       for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
@@ -212,7 +208,14 @@ namespace AdSecGH.Helpers {
           jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecDeformation));
         }
       }
-      return CombineJSonStrings(jsonStrings);
+      return jsonStrings;
+    }
+
+    internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
+      if (sections == null || !sections.Any()) {
+        return string.Empty;
+      }
+      return CombineJSonStrings(SectionJson(sections, loads));
     }
 
     internal static string SaveFilePath() {
