@@ -1,8 +1,11 @@
 ﻿
+using System.Collections;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
 using Oasys.AdSec.StandardMaterials;
@@ -34,8 +37,8 @@ namespace AdSecGHTests.Helpers.Extensions {
       _component.Optional = false;
       object obj = null;
       ComponentTestHelper.SetInput(_component, obj);
-      object result = ComponentTestHelper.GetOutput(_component);
-      Assert.Null(result);
+      var result = (IEnumerable)((GH_ObjectWrapper)ComponentTestHelper.GetOutput(_component)).Value;
+      Assert.Empty(result);
 
       var runtimeWarnings = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
 
@@ -51,9 +54,9 @@ namespace AdSecGHTests.Helpers.Extensions {
       object obj = null;
       ComponentTestHelper.SetInput(_component, obj);
 
-      object result = ComponentTestHelper.GetOutput(_component);
+      var result = (IEnumerable)((GH_ObjectWrapper)ComponentTestHelper.GetOutput(_component)).Value;
 
-      Assert.Null(result);
+      Assert.Empty(result);
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
@@ -64,8 +67,8 @@ namespace AdSecGHTests.Helpers.Extensions {
       _component.Optional = true;
       ComponentTestHelper.SetInput(_component, string.Empty);
 
-      object result = ComponentTestHelper.GetOutput(_component);
-      Assert.Null(result);
+      var result = (IEnumerable)((GH_ObjectWrapper)ComponentTestHelper.GetOutput(_component)).Value;
+      Assert.Empty(result);
 
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
 
@@ -80,8 +83,9 @@ namespace AdSecGHTests.Helpers.Extensions {
       _component.Optional = false;
       ComponentTestHelper.SetInput(_component, string.Empty);
 
-      object result = ComponentTestHelper.GetOutput(_component);
-      Assert.Null(result);
+      var result = (IEnumerable)((GH_ObjectWrapper)ComponentTestHelper.GetOutput(_component)).Value;
+
+      Assert.Empty(result);
 
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
 

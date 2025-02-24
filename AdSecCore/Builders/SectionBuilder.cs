@@ -12,7 +12,7 @@ namespace AdSecCore.Builders {
   public class SectionBuilder : IBuilder<ISection> {
 
     private readonly List<IGroup> ReinforcementGroups = new List<IGroup>();
-    private IConcrete material = Concrete.IS456.Edition_2000.M10;
+    private readonly IConcrete material = Concrete.IS456.Edition_2000.M10;
     private ISection section;
     private SectionType sectionType;
     private double _width { get; set; }
@@ -37,11 +37,6 @@ namespace AdSecCore.Builders {
       }
 
       return section;
-    }
-
-    public SectionBuilder WithMaterial(IConcrete material) {
-      this.material = material;
-      return this;
     }
 
     public SectionBuilder CreateRectangularSection() {
