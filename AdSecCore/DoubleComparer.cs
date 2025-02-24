@@ -15,7 +15,7 @@ namespace AdSecCore {
       x = Math.Round(x, 6);
       y = Math.Round(y, 6);
 
-      if (x == y) {
+      if (x.Equals(y)) {
         return true;
       }
 
@@ -31,9 +31,9 @@ namespace AdSecCore {
       return false;
     }
 
-    public int GetHashCode(double obj) {
+    public int GetHashCode(double value) {
       // Group values into buckets of size `_epsilon`
-      double normalized = Math.Round(obj / _epsilon) * _epsilon;
+      double normalized = Math.Round(value / _epsilon) * _epsilon;
 
       // Convert to an integer hash
       return normalized.GetHashCode();
