@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 
 using AdSecGH.Components;
@@ -15,17 +14,12 @@ using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
-using Oasys.GH.Helpers;
 
 using OasysUnits;
 
-using Rhino.NodeInCode;
-
 using Xunit;
 
-using static System.Collections.Specialized.BitVector32;
-
-namespace AdSecGHTests.Components._1_Properties {
+namespace AdSecGHTests.Components.AdSec {
   [Collection("GrasshopperFixture collection")]
   public class SaveModelTests {
     private static string tempPath = string.Empty;
@@ -54,19 +48,36 @@ namespace AdSecGHTests.Components._1_Properties {
       }
     }
 
-    private static void SetLoad() {
+    private static GH_Structure<IGH_Goo> CreateLoad(bool mix = false) {
+      var tree = new GH_Structure<IGH_Goo>();
+      tree.Append(new AdSecLoadGoo(ILoad.Create(Force.FromKilonewtons(-100), Moment.Zero, Moment.Zero)), new GH_Path(0));
+      if (mix) {
+        tree.Append(new AdSecDeformationGoo(IDeformation.Create(Strain.FromMilliStrain(-1), Curvature.Zero, Curvature.Zero)), new GH_Path(0));
+      }
+      return tree;
+    }
+
+    private static GH_Structure<IGH_Goo> CreateNullLoad() {
+      var tree = new GH_Structure<IGH_Goo>();
+      tree.Append(null, new GH_Path(0));
+      return tree;
+    }
+
+    private static DataTree<object> CreateWrongLoad() {
       var tree = new DataTree<object>();
-      tree.Add(new AdSecLoadGoo(ILoad.Create(Force.FromKilonewtons(-100), Moment.Zero, Moment.Zero)));
-      ComponentTestHelper.SetInput(_component, tree, 1);
+      tree.Add(5);
+      return tree;
+    }
+
+    private static void SetLoad(bool mix = false) {
       SetFilePath();
+      ComponentTestHelper.SetInput(_component, CreateLoad(mix), 1);
       ComponentTestHelper.ComputeData(_component);
     }
 
     private static void SetWrongLoad() {
-      var tree = new DataTree<object>();
-      tree.Add(5);
-      ComponentTestHelper.SetInput(_component, tree, 1);
       SetFilePath();
+      ComponentTestHelper.SetInput(_component, CreateWrongLoad(), 1);
       ComponentTestHelper.ComputeData(_component);
     }
 
@@ -88,28 +99,12 @@ namespace AdSecGHTests.Components._1_Properties {
       ComponentTestHelper.ComputeData(_component);
     }
 
-    private static void SetDifferentTypesOfLoad() {
-      var tree = new GH_Structure<IGH_Goo>();
-      tree.Append(new AdSecLoadGoo(ILoad.Create(Force.FromKilonewtons(-100), Moment.Zero, Moment.Zero)), new GH_Path(0));
-      tree.Append(new AdSecDeformationGoo(IDeformation.Create(Strain.FromMilliStrain(-1), Curvature.Zero, Curvature.Zero)), new GH_Path(0));
-      ComponentTestHelper.SetInput(_component, tree, 1);
-      ComponentTestHelper.ComputeData(_component);
-    }
-
     [Fact]
     public void SectionWillBeEmptyWhenWrongSectionHasBeenSet() {
       _component = ComponentMother();
       SetSections(new List<object> { 1 });
       var sections = AdSecFile.ReadSection(tempPath);
       Assert.Empty(sections);
-    }
-
-    [Fact]
-    public void OpeningModelIsGivingCorrectSectionProfile() {
-      SetLoad();
-      var sections = AdSecFile.ReadSection(tempPath);
-      Assert.Equal(2, sections.Count);
-      Assert.Equal("STD R(m) 0.6 0.3", sections[0].Profile.Description());
     }
 
     [Fact]
@@ -124,7 +119,7 @@ namespace AdSecGHTests.Components._1_Properties {
 
     [Fact]
     public void SettingTwoDifferentTypeOfLoadForSectionWillBeAnError() {
-      SetDifferentTypesOfLoad();
+      SetLoad(true);
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
       Assert.Single(runtimeMessages);
     }
@@ -170,5 +165,47 @@ namespace AdSecGHTests.Components._1_Properties {
       var process = _component.OpenAdSecexe();
       Assert.Null(process);
     }
+
+    [Fact]
+    public void TryCastToLoadsReturnsTrueWhenInputLoadsAreCorrect() {
+      var objectWrappers = CreateLoad();
+      var adSecloads = new Dictionary<int, List<object>>();
+      bool castSuccessful = AdSecInput.TryCastToLoads(objectWrappers, ref adSecloads, out int path, out int index);
+      Assert.True(castSuccessful);
+      Assert.Equal(1, path);
+      Assert.Equal(1, index);
+
+    }
+
+    [Fact]
+    public void TryCastToLoadsReturnsNullWhenInputLoadsAreNull() {
+      var objectWrappers = CreateNullLoad();
+      var adSecloads = new Dictionary<int, List<object>>();
+      bool castSuccessful = AdSecInput.TryCastToLoads(objectWrappers, ref adSecloads, out int path, out int index);
+      Assert.False(castSuccessful);
+      Assert.Equal(0, path);
+      Assert.Equal(0, index);
+    }
+
+    [Fact]
+    public void OpeningValidModelWillParseJsonStringCorrectly() {
+      SetLoad();
+      var sections = AdSecFile.ReadSection(tempPath);
+      Assert.Equal(2, sections.Count);
+      Assert.Equal("STD R(m) 0.6 0.3", sections[0].Profile.Description());
+    }
+
+    [Fact]
+    public void JsonStringWillBeEmptyWhenSectionIsNull() {
+      string jsonString = AdSecFile.ModelJson(null, new Dictionary<int, List<object>>());
+      Assert.Empty(jsonString);
+    }
+
+    [Fact]
+    public void JsonStringWillBeEmptyWhenSectionIsEmpty() {
+      string jsonString = AdSecFile.ModelJson(new List<AdSecSection>(), null);
+      Assert.Empty(jsonString);
+    }
+
   }
 }

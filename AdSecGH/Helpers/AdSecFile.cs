@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
@@ -14,11 +15,17 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
+using Oasys.Collections;
+
+using OasysUnits;
 
 using Rhino.UI;
+
+using static System.Collections.Specialized.BitVector32;
 namespace AdSecGH.Helpers {
   internal class AdSecFile {
-    internal static Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>() {
+    private AdSecFile() { }
+    internal static readonly Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>() {
       { "ACI318M_02",  ACI318.Edition_2002.Metric },
       { "ACI318M_05",  ACI318.Edition_2005.Metric },
       { "ACI318M_08",  ACI318.Edition_2008.Metric },
@@ -79,7 +86,7 @@ namespace AdSecGH.Helpers {
       { "IRC112_2011",  IRC112.Edition_2011 }
     };
 
-    internal static Dictionary<string, string> CodesStrings = new Dictionary<string, string>()
+    internal static readonly Dictionary<string, string> CodesStrings = new Dictionary<string, string>()
 {
       { "ACI318M_02", "ACI318+Edition_2002+Metric" },
       { "ACI318M_05", "ACI318+Edition_2005+Metric" },
@@ -173,37 +180,36 @@ namespace AdSecGH.Helpers {
       return sections;
     }
 
-    private static Tuple<Oasys.Collections.IList<ILoad>, Oasys.Collections.IList<IDeformation>> LoadsAssociatedWithSecion(int sectionId, Dictionary<int, List<object>> loads) {
-      var adSecDeformations = Oasys.Collections.IList<IDeformation>.Create();
-      var adSecLoads = Oasys.Collections.IList<ILoad>.Create();
-      if (loads.ContainsKey(sectionId)) {
-        foreach (var load in loads[sectionId]) {
-          switch (load) {
-            case AdSecDeformationGoo deformationGoo:
-              adSecDeformations.Add(deformationGoo.Value);
-              break;
-            case AdSecLoadGoo loadGoo:
-              adSecLoads.Add(loadGoo.Value);
-              break;
-          }
-        }
-      }
-      if (adSecDeformations.Count > 0 && adSecLoads.Count > 0) {
-        throw new ArgumentException("Only either deformation or load can be specified to a section.");
-      }
-      return new Tuple<Oasys.Collections.IList<ILoad>, Oasys.Collections.IList<IDeformation>>(adSecLoads, adSecDeformations);
-    }
-
     internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
-      if (sections == null || !sections.Any()) { return ""; }
+      if (sections == null || !sections.Any()) {
+        return string.Empty;
+      }
+
       var jsonStrings = new List<string>();
       var json = new JsonConverter(sections[0].DesignCode);
       for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
-        var loadAttachedToSection = LoadsAssociatedWithSecion(sectionId, loads);
-        if (loadAttachedToSection.Item1.Count > 0) {
-          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, loadAttachedToSection.Item1));
+
+        var adSecload = Oasys.Collections.IList<ILoad>.Create();
+        var adSecDeformation = Oasys.Collections.IList<IDeformation>.Create();
+        if (loads.ContainsKey(sectionId)) {
+
+          foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecLoadGoo))) {
+            adSecload.Add(((AdSecLoadGoo)item).Value);
+          }
+
+          foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecDeformationGoo))) {
+            adSecDeformation.Add(((AdSecDeformationGoo)item).Value);
+          }
+        }
+
+        if (adSecload.Any() && adSecDeformation.Any()) {
+          throw new ArgumentException("Only either deformation or load can be specified to a section.");
+        }
+
+        if (adSecload.Any()) {
+          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecload));
         } else {
-          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, loadAttachedToSection.Item2));
+          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecDeformation));
         }
       }
       return CombineJSonStrings(jsonStrings);

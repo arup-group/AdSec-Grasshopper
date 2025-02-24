@@ -12,10 +12,10 @@ using OasysUnits.Units;
 
 using Xunit;
 
-namespace AdSecGHTests.Components._1_Properties {
+namespace AdSecGHTests.Components.Properties {
   [Collection("GrasshopperFixture collection")]
   public class CreateStressStrainCurveTests {
-    private CreateStressStrainCurve _component;
+    private readonly CreateStressStrainCurve _component;
 
     public CreateStressStrainCurveTests() {
       _component = new CreateStressStrainCurve();

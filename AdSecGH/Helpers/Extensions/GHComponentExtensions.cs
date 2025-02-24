@@ -369,11 +369,9 @@ namespace AdSecGH.Helpers {
     }
 
     public static Dictionary<int, List<object>> GetLoads(
-      this GH_Component owner, IGH_DataAccess DA, int inputId) {
-      int path = 0;
-      int index = 0;
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
       var adSecloads = new Dictionary<int, List<object>>();
-      if (DA.GetDataTree(1, out GH_Structure<IGH_Goo> inputData) && !AdSecInput.TryCastToLoads(inputData, ref adSecloads, ref path, ref index)) {
+      if (DA.GetDataTree(inputId, out GH_Structure<IGH_Goo> inputData) && !AdSecInput.TryCastToLoads(inputData, ref adSecloads, out int path, out int index)) {
         owner.AddRuntimeWarning($"Unable to convert {owner.Params.Input[1].NickName} path {path} index {index} to AdSec Load. Section will be saved without this load.");
       }
       return adSecloads;

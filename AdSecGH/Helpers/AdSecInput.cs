@@ -4,6 +4,8 @@ using System.Runtime.Remoting.Messaging;
 
 using AdSecGH.Parameters;
 
+using GH_IO.Types;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
@@ -378,27 +380,35 @@ namespace AdSecGH.Helpers {
     }
 
     public static bool TryCastToLoads(
-     GH_Structure<IGH_Goo> inputData, ref Dictionary<int, List<object>> loads, ref int path, ref int index) {
-      if (loads == null) {
-        return false;
-      }
-      for (path = 0; path < inputData.Branches.Count; path++) {
+     GH_Structure<IGH_Goo> ghTypes, ref Dictionary<int, List<object>> loads, out int path, out int index) {
+      index = 0;
+      for (path = 0; path < ghTypes.Branches.Count; path++) {
         var sectionLoads = new List<object>();
-        for (index = 0; index < inputData.Branches[path].Count; index++) {
-          // check if item is load type
-          var load = inputData[path][index];
-          switch (load) {
-            case AdSecDeformationGoo deformationGoo:
-              sectionLoads.Add(deformationGoo);
-              break;
-            case AdSecLoadGoo loadGoo:
-              sectionLoads.Add(loadGoo);
-              break;
-            default:
-              return false;
+        for (index = 0; index < ghTypes.Branches[path].Count; index++) {
+          if (TryCastToLoad(ghTypes[path][index], out object sectionLoad)) {
+            sectionLoads.Add(sectionLoad);
+          } else {
+            return false;
           }
         }
         loads.Add(path, sectionLoads);
+      }
+      return true;
+    }
+
+    private static bool TryCastToLoad(IGH_Goo load, out object sectionLoad) {
+      sectionLoad = null;
+      if (load == null) {
+        return false;
+      }
+      switch (load) {
+        case AdSecDeformationGoo deformationGoo:
+          sectionLoad = deformationGoo;
+          break;
+        case AdSecLoadGoo loadGoo:
+          sectionLoad = loadGoo;
+          break;
+        default: return false;
       }
       return true;
     }

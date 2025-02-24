@@ -69,16 +69,17 @@ namespace AdSecGH.Components {
       _fileName = AdSecFile.SaveFilePath();
       SaveJson();
       if (canOpen) {
-        //add panel input with string
-        //delete existing inputs if any
-        while (Params.Input[3].Sources.Count > 0) {
-          Instances.ActiveCanvas.Document.RemoveObject(Params.Input[3].Sources[0], false);
-        }
         WriteFilePathToPanel();
       }
     }
 
     private void WriteFilePathToPanel() {
+      //add panel input with string
+      //delete existing inputs if any
+      while (Params.Input[3].Sources.Count > 0) {
+        Instances.ActiveCanvas.Document.RemoveObject(Params.Input[3].Sources[0], false);
+      }
+
       //instantiate  new panel
       var panel = new GH_Panel();
       panel.CreateAttributes();
@@ -138,7 +139,7 @@ namespace AdSecGH.Components {
         return;
       }
 
-      var loads = this.GetLoads(DA, 0);
+      var loads = this.GetLoads(DA, 1);
 
       _jsonString = AdSecFile.ModelJson(sections, loads);
 
@@ -156,5 +157,6 @@ namespace AdSecGH.Components {
         SaveJson();
       }
     }
+
   }
 }
