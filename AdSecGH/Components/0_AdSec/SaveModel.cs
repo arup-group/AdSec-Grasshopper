@@ -43,10 +43,10 @@ namespace AdSecGH.Components {
         InitialiseDropdowns();
       }
       m_attributes = new ThreeButtonComponentAttributes(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile,
-        () => OpenAdSecexe(), true, "Save AdSec file");
+        () => OpenAdSecExe(), true, "Save AdSec file");
     }
 
-    public Process OpenAdSecexe() {
+    public Process OpenAdSecExe() {
       return canOpen ? Process.Start(_fileName) : null;
     }
 

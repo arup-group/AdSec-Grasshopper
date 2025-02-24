@@ -134,7 +134,7 @@ namespace AdSecGHTests.Components.AdSec {
     [Fact]
     public void AdSecProcesscanBeLaunched() {
       SetLoad();
-      var process = _component.OpenAdSecexe();
+      var process = _component.OpenAdSecExe();
       if (process == null) {
         return;
       }
@@ -148,21 +148,21 @@ namespace AdSecGHTests.Components.AdSec {
     [Fact]
     public void WrongFilePathWillNotLaunchAdSecProcess() {
       SetWrongFilePath();
-      var process = _component.OpenAdSecexe();
+      var process = _component.OpenAdSecExe();
       Assert.Null(process);
     }
 
     [Fact]
     public void NullFilePathWillNotLaunchAdSecProcess() {
       SetNullFilePath();
-      var process = _component.OpenAdSecexe();
+      var process = _component.OpenAdSecExe();
       Assert.Null(process);
     }
 
     [Fact]
     public void EmptyFilePathWillNotLaunchAdSecProcess() {
       SetEmptyFilePath();
-      var process = _component.OpenAdSecexe();
+      var process = _component.OpenAdSecExe();
       Assert.Null(process);
     }
 

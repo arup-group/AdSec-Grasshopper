@@ -230,6 +230,7 @@ namespace AdSecGH.Helpers {
       if (jsonStrings == null || jsonStrings.Count == 0) {
         return null;
       }
+
       var stringBuilder = new StringBuilder();
       string firstJson = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
       stringBuilder.Append(firstJson);
