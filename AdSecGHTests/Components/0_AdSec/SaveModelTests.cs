@@ -207,5 +207,16 @@ namespace AdSecGHTests.Components.AdSec {
       Assert.Empty(jsonString);
     }
 
+    [Fact]
+    public void CombineJSonStringsWillBeNullIfListIsEmpty() {
+      string jsonString = AdSecFile.CombineJSonStrings(new List<string>());
+      Assert.Empty(jsonString);
+    }
+
+    [Fact]
+    public void CombineJSonStringsWillBeNullIfListIsNull() {
+      string jsonString = AdSecFile.CombineJSonStrings(null);
+      Assert.Null(jsonString);
+    }
   }
 }
