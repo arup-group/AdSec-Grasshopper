@@ -3,6 +3,16 @@
   &lt;Assembly Path="C:\Users\stamatios.psarras\.nuget\packages\adsec\2.0.3.300\lib\netstandard2.0\AdSec_API.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
 	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">C:\Users\stamatios.psarras\AppData\Local\JetBrains\Rider2024.1\resharper-host\temp\Rider\vAny\CoverageData\_AdSecGH.399711016\Snapshot\snapshot.utdcvr</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=7b12e290_002D6a5a_002D46f4_002Db0c6_002D4328a9afc097/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="DoubleComparer_GetHashCode_IsUsedInHashSet #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::DF259C79-A298-44B9-B702-573D4206A3C2::net7.0::AdSecCoreTests.DoubleComparerTests.DoubleComparer_GetHashCode_IsUsedInHashSet&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=cc53e4f0_002D5312_002D40a2_002D946d_002D9f50b9af7bde/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="DoubleComparer_GetHashCode_IsUsedInHashSet" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::DF259C79-A298-44B9-B702-573D4206A3C2::net7.0::AdSecCoreTests.DoubleComparerTests.DoubleComparer_GetHashCode_IsUsedInHashSet&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 
 
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=dcccd273_002Dab94_002D4b0c_002D8563_002D940157ce25e3/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;

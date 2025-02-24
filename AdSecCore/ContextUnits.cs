@@ -13,7 +13,6 @@ namespace AdSecGHCore.Constants {
 
         return instance;
       }
-      set => instance = value;
     }
 
     private IUnitSet CurrentUnits { get; set; } = new DefaultUnitSet();
@@ -22,18 +21,9 @@ namespace AdSecGHCore.Constants {
       get => CurrentUnits.LengthUnitGeometry;
       set => CurrentUnits.LengthUnitGeometry = value;
     }
-    public ForceUnit ForceUnit {
-      get => CurrentUnits.ForceUnit;
-      set => CurrentUnits.ForceUnit = value;
-    }
-    public StrainUnit StrainUnit {
-      get => CurrentUnits.StrainUnit;
-      set => CurrentUnits.StrainUnit = value;
-    }
-    public PressureUnit PressureUnit {
-      get => CurrentUnits.PressureUnit;
-      set => CurrentUnits.PressureUnit = value;
-    }
+    public ForceUnit ForceUnit => CurrentUnits.ForceUnit;
+    public StrainUnit StrainUnit => CurrentUnits.StrainUnit;
+    public PressureUnit PressureUnit => CurrentUnits.PressureUnit;
 
     public void SetDefaultUnits() {
       CurrentUnits = new DefaultUnitSet();
