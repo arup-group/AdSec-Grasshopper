@@ -11,15 +11,6 @@ using OasysGH.Units.Helpers;
 using Xunit;
 
 namespace AdSecGHTests.Components {
-  [Collection("GrasshopperFixture collection")]
-  public class CreatePointTests {
-
-    private readonly CreatePointGh func;
-
-    public CreatePointTests() {
-      func = new CreatePointGh();
-    }
-  }
 
   [Collection("GrasshopperFixture collection")]
   public class CreatePointGhTests {
