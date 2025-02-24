@@ -46,6 +46,16 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
+    public void ShouldBeConsistentIfMultipleTimesDropdownIsChanged() {
+      component.SetSelected(0, 0);
+      component.SetSelected(0, 1);
+      component.SetSelected(0, 0);
+      var componentBusinessComponent = component.BusinessComponent;
+      Assert.Equal("Y [mm]", componentBusinessComponent.Y.Name);
+      Assert.Equal("Z [mm]", componentBusinessComponent.Z.Name);
+    }
+
+    [Fact]
     public void ShouldWorkWithNonDefaultUnits() {
       string unit = FilteredUnits.FilteredLengthUnits[1]; // mm
       component.SetSelected(0, 0); // mm

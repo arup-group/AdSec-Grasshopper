@@ -31,11 +31,15 @@ namespace AdSecGH.Components {
         AdSecPoint.Value = new AdSecPointGoo(Point.Value);
       };
 
-      Y.Name = Y.NameWithUnits(DefaultUnits.LengthUnitGeometry);
-      Z.Name = Z.NameWithUnits(DefaultUnits.LengthUnitGeometry);
+      RefreshNames(DefaultUnits.LengthUnitGeometry);
     }
 
     public AdSecPointParameter AdSecPoint { get; set; } = new AdSecPointParameter();
+
+    public void RefreshNames(LengthUnit unit) {
+      Y.Name = UnitExtensions.NameWithUnits("Y", unit);
+      Z.Name = UnitExtensions.NameWithUnits("Z", unit);
+    }
 
     public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
@@ -60,11 +64,9 @@ namespace AdSecGH.Components {
     }
 
     public override void VariableParameterMaintenance() {
-      string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      Params.Input[0].Name = "Y [" + unitAbbreviation + "]";
-      Params.Input[1].Name = "Z [" + unitAbbreviation + "]";
-      BusinessComponent.Y.Name = Params.Input[0].Name;
-      BusinessComponent.Z.Name = Params.Input[1].Name;
+      BusinessComponent.RefreshNames(_lengthUnit);
+      Params.Input[0].Name = BusinessComponent.Y.Name;
+      Params.Input[1].Name = BusinessComponent.Z.Name;
     }
 
     protected override void InitialiseDropdowns() {
