@@ -6,8 +6,6 @@ using Grasshopper.Kernel;
 
 using Oasys.GH.Helpers;
 
-using OasysGH.Units.Helpers;
-
 using Xunit;
 
 namespace AdSecGHTests.Components {
@@ -57,7 +55,6 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldWorkWithNonDefaultUnits() {
-      string unit = FilteredUnits.FilteredLengthUnits[1]; // mm
       component.SetSelected(0, 0); // mm
       ComponentTesting.ComputeOutputs(component);
       Assert.Empty(component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
