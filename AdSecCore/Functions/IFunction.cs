@@ -22,6 +22,7 @@ namespace AdSecCore.Functions {
   public class Organisation {
     public string Category { get; set; }
     public string SubCategory { get; set; }
+    public bool Hidden { get; set; }
   }
 
   public class Attribute {
