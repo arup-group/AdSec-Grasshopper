@@ -1,14 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using System.Text;
 
 using AdSecGH.Parameters;
 
-using Oasys.AdSec.DesignCode;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Data;
+using Grasshopper.Kernel.Types;
 
+using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.IO.Serialization;
+using Oasys.Collections;
+
+using OasysUnits;
+
+using Rhino.UI;
+
+using static System.Collections.Specialized.BitVector32;
 namespace AdSecGH.Helpers {
   internal class AdSecFile {
-    internal static Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>() {
+    private AdSecFile() { }
+    internal static readonly Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>() {
       { "ACI318M_02",  ACI318.Edition_2002.Metric },
       { "ACI318M_05",  ACI318.Edition_2005.Metric },
       { "ACI318M_08",  ACI318.Edition_2008.Metric },
@@ -69,7 +86,7 @@ namespace AdSecGH.Helpers {
       { "IRC112_2011",  IRC112.Edition_2011 }
     };
 
-    internal static Dictionary<string, string> CodesStrings = new Dictionary<string, string>()
+    internal static readonly Dictionary<string, string> CodesStrings = new Dictionary<string, string>()
 {
       { "ACI318M_02", "ACI318+Edition_2002+Metric" },
       { "ACI318M_05", "ACI318+Edition_2005+Metric" },
@@ -150,6 +167,81 @@ namespace AdSecGH.Helpers {
       var designCodeLevelsSplit = codeString.Split('+').ToList();
 
       return new AdSecDesignCode(designCodeLevelsSplit);
+    }
+
+    public static List<ISection> ReadSection(string fileName) {
+      var sections = new List<ISection>();
+      if (!File.Exists(fileName)) {
+        return sections;
+      }
+      string json = File.ReadAllText(fileName);
+      var jsonParser = JsonParser.Deserialize(json);
+      sections.AddRange(from section in jsonParser.Sections select section);
+      return sections;
+    }
+
+    internal static List<string> SectionJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
+      var jsonStrings = new List<string>();
+      var json = new JsonConverter(sections[0].DesignCode);
+      for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
+
+        var adSecload = Oasys.Collections.IList<ILoad>.Create();
+        var adSecDeformation = Oasys.Collections.IList<IDeformation>.Create();
+        if (loads.ContainsKey(sectionId)) {
+
+          foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecLoadGoo))) {
+            adSecload.Add(((AdSecLoadGoo)item).Value);
+          }
+
+          foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecDeformationGoo))) {
+            adSecDeformation.Add(((AdSecDeformationGoo)item).Value);
+          }
+        }
+
+        if (adSecload.Any() && adSecDeformation.Any()) {
+          throw new ArgumentException("Only either deformation or load can be specified to a section.");
+        }
+
+        if (adSecload.Any()) {
+          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecload));
+        } else {
+          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecDeformation));
+        }
+      }
+      return jsonStrings;
+    }
+
+    internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
+      if (sections == null || !sections.Any()) {
+        return string.Empty;
+      }
+      var json = SectionJson(sections, loads);
+      return CombineJSonStrings(json);
+    }
+
+    internal static string SaveFilePath() {
+      var saveDialog = new SaveFileDialog {
+        Filter = "AdSec File (*.ads)|*.ads|All files (*.*)|*.*",
+      };
+      return saveDialog.ShowSaveDialog() ? saveDialog.FileName : string.Empty;
+    }
+
+    internal static string CombineJSonStrings(List<string> jsonStrings) {
+      if (jsonStrings == null || jsonStrings.Count == 0) {
+        return null;
+      }
+
+      var stringBuilder = new StringBuilder();
+      string firstJson = jsonStrings[0].Remove(jsonStrings[0].Length - 2, 2);
+      stringBuilder.Append(firstJson);
+      for (int i = 1; i < jsonStrings.Count; i++) {
+        string nextJson = jsonStrings[i];
+        int start = nextJson.IndexOf("components") - 2;
+        nextJson = $",{nextJson.Substring(start)}";
+        stringBuilder.Append(nextJson.Remove(nextJson.Length - 2, 2));
+      }
+      stringBuilder.Append(jsonStrings[0].Substring(jsonStrings[0].Length - 2));
+      return stringBuilder.ToString();
     }
   }
 }
