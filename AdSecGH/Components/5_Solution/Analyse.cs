@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Drawing;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using AdSecGHCore.Constants;
-
 using Grasshopper.Kernel;
 
 using Oasys.AdSec;
+using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Components;
 
 namespace AdSecGH.Components {
-  public class Analyse : GH_OasysComponent {
 
-    public Analyse() : base("Analyse Section", "Analyse", "Analyse an AdSec Section", CategoryName.Name(),
-      SubCategoryName.Cat6()) {
-      Hidden = false; // sets the initial state of the component to hidden
-    }
+  public class AnalyseGh : AnalyseFunction { }
+
+  public class Analyse : ComponentAdapter<AnalyseGh> {
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("4621cc01-0b76-4f58-b24e-81e32ae24f92");

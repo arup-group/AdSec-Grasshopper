@@ -1,8 +1,27 @@
-﻿using AdSecGHCore.Constants;
+﻿using System;
+
+using AdSecGHCore.Constants;
 
 using Oasys.Profiles;
 
 namespace AdSecCore.Functions {
+  public class AnalyseFunction : IFunction {
+    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
+      Description = "Analyse an AdSec Section",
+      Name = "Analyse Section",
+      NickName = "Analyse",
+    };
+    public Organisation Organisation { get; set; } = new Organisation {
+      Category = CategoryName.Name(),
+      SubCategory = SubCategoryName.Cat6(),
+    };
+    public Attribute[] GetAllInputAttributes() { throw new NotImplementedException(); }
+
+    public Attribute[] GetAllOutputAttributes() { throw new NotImplementedException(); }
+
+    public void Compute() { throw new NotImplementedException(); }
+  }
+
   public class PointRebarFunction : IFunction {
 
     public LengthParameter Y { get; set; } = new LengthParameter {
