@@ -14,10 +14,12 @@ namespace AdSecGH.Parameters {
     internal AdSecSection m_section;
     private Plane m_plane;
 
+    public AdSecSolutionGoo(ISolution solution) : base(solution) {
+    }
     public AdSecSolutionGoo(ISolution solution, AdSecSection section) : base(solution) {
       m_section = section;
-      m_plane = m_section.LocalPlane;
-      ProfileEdge = m_section.m_profileEdge;
+      m_plane = m_section == null ? Plane.WorldXY : m_section.LocalPlane;
+      ProfileEdge = m_section?.m_profileEdge;
     }
 
     public override IGH_Goo Duplicate() {

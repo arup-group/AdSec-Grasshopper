@@ -17,6 +17,8 @@ using OasysGH.Units;
 
 using OasysUnits;
 
+using Rhino.Geometry;
+
 using Attribute = AdSecCore.Functions.Attribute;
 
 namespace Oasys.GH.Helpers {
@@ -122,6 +124,11 @@ namespace Oasys.GH.Helpers {
         {
           typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value)
         }, {
+          typeof(LoadSurfaceParameter),
+          a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
+        }, {
+          typeof(SolutionParameter), a => new AdSecSolutionGoo((a as SolutionParameter).Value)
+        }, {
           typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
         }, {
           typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value
@@ -221,7 +228,8 @@ namespace Oasys.GH.Helpers {
     public static void SetOutputValues(this IFunction function, GH_Component component, IGH_DataAccess dataAccess) {
       foreach (var attribute in function.GetAllOutputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
-        dynamic goo = ToGoo[attribute.GetType()](attribute);
+        var type = attribute.GetType();
+        dynamic goo = ToGoo[type](attribute);
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           dataAccess.SetData(index, goo);
         } else {

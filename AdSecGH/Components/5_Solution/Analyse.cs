@@ -44,26 +44,5 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.Solution;
-
-    protected override void SolveInstance(IGH_DataAccess DA) {
-      // get section input
-      var section = this.GetAdSecSection(DA, 0);
-
-      // create new adsec instance
-      var adSec = IAdSec.Create(section.DesignCode);
-
-      // analyse
-      var solution = adSec.Analyse(section.Section);
-
-      // display warnings
-      var warnings = solution.Warnings;
-      foreach (var warn in warnings) {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warn.Description);
-      }
-
-      // set outputs
-      DA.SetData(0, new AdSecSolutionGoo(solution, section));
-      DA.SetData(1, new AdSecFailureSurfaceGoo(solution.Strength.GetFailureSurface(), section.LocalPlane));
-    }
   }
 }
