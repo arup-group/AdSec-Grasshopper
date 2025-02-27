@@ -1,15 +1,16 @@
-﻿using System;
+﻿using AdSecGHCore.Constants;
 
-using AdSecGHCore.Constants;
+using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
 
 namespace AdSecCore.Functions {
-  public class AnalyseFunction : IFunction {
-    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
+  public class AnalyseFunction : Function {
+    public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Description = "Analyse an AdSec Section",
       Name = "Analyse Section",
       NickName = "Analyse",
     };
-    public Organisation Organisation { get; set; } = new Organisation {
+    public override Organisation Organisation { get; set; } = new Organisation {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat6(),
     };
@@ -32,19 +33,28 @@ namespace AdSecCore.Functions {
       Description = "Mesh representing the strength failure surface.",
     };
 
-    public virtual Attribute[] GetAllInputAttributes() {
+    public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
         Section,
       };
     }
 
-    public Attribute[] GetAllOutputAttributes() {
+    public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
         Solution,
         LoadSurface,
       };
     }
+    public override void Compute() {
+      var adSec = IAdSec.Create(IS456.Edition_2000);
+      var solution = adSec.Analyse(Section.Value);
 
-    public void Compute() { throw new NotImplementedException(); }
+      foreach (var warning in solution.Warnings) {
+        WarningMessages.Add(warning.Description);
+      }
+
+      Solution.Value = solution;
+      LoadSurface.Value = solution.Strength.GetFailureSurface();
+    }
   }
 }
