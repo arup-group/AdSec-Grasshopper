@@ -15,7 +15,17 @@ namespace AdSecCore.Functions {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat6(),
     };
-    public Attribute[] GetAllInputAttributes() { throw new NotImplementedException(); }
+    public SectionParameter Section { get; set; } = new SectionParameter {
+      Name = "Section",
+      NickName = "Sec",
+      Description = "AdSec Section to analyse",
+    };
+
+    public virtual Attribute[] GetAllInputAttributes() {
+      return new Attribute[] {
+        Section,
+      };
+    }
 
     public Attribute[] GetAllOutputAttributes() { throw new NotImplementedException(); }
 

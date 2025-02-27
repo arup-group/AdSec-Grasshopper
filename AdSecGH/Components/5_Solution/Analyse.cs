@@ -14,9 +14,28 @@ using Oasys.GH.Helpers;
 
 using OasysGH;
 
+using AdSecSectionParameter = Oasys.GH.Helpers.AdSecSectionParameter;
+using Attribute = AdSecCore.Functions.Attribute;
+
 namespace AdSecGH.Components {
 
-  public class AnalyseGh : AnalyseFunction { }
+  public class AnalyseGh : AnalyseFunction {
+    public AdSecSectionParameter AdSecSection { get; set; } = new AdSecSectionParameter();
+
+    public AnalyseGh() {
+      var adSecSection = AdSecSection as Attribute;
+      Section.Update(ref adSecSection);
+      AdSecSection.OnValueChanged += goo => {
+        Section.Value = goo.Value?.Section;
+      };
+    }
+
+    public override Attribute[] GetAllInputAttributes() {
+      return new Attribute[] {
+        AdSecSection,
+      };
+    }
+  }
 
   public class Analyse : ComponentAdapter<AnalyseGh> {
 
@@ -26,9 +45,9 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.Solution;
 
-    protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      pManager.AddGenericParameter("Section", "Sec", "AdSec Section to analyse", GH_ParamAccess.item);
-    }
+    // protected override void RegisterInputParams(GH_InputParamManager pManager) {
+    //   pManager.AddGenericParameter("Section", "Sec", "AdSec Section to analyse", GH_ParamAccess.item);
+    // }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       pManager.AddGenericParameter("Results", "Res",
