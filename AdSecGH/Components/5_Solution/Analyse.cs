@@ -45,14 +45,6 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.Solution;
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("Results", "Res",
-        "AdSec Results for a Section. Results object allows to calculate strength (ULS) and serviceability (SLS) results.",
-        GH_ParamAccess.item);
-      pManager.AddGenericParameter("FailureSurface", "Fail", "Mesh representing the strength failure surface.",
-        GH_ParamAccess.item);
-    }
-
     protected override void SolveInstance(IGH_DataAccess DA) {
       // get section input
       var section = this.GetAdSecSection(DA, 0);

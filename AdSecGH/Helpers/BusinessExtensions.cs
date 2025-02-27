@@ -38,6 +38,20 @@ namespace Oasys.GH.Helpers {
             Access = GetAccess(a),
           }
         }, {
+          typeof(SolutionParameter), a => new Param_GenericObject {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
+        }, {
+          typeof(LoadSurfaceParameter), a => new Param_GenericObject {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
+        }, {
           typeof(DoubleArrayParameter), a => new Param_Number {
             Name = a.Name,
             NickName = a.NickName,
