@@ -22,11 +22,12 @@ namespace AdSecCore.Functions {
     public SolutionParameter Solution { get; set; } = new SolutionParameter {
       Name = "Results",
       NickName = "Res",
-      Description = "AdSec Results for a Section. Results object allows to calculate strength (ULS) and serviceability (SLS) results.",
+      Description
+        = "AdSec Results for a Section. Results object allows to calculate strength (ULS) and serviceability (SLS) results.",
     };
 
     public LoadSurfaceParameter LoadSurface { get; set; } = new LoadSurfaceParameter {
-      Name = "Failure Surface",
+      Name = "FailureSurface",
       NickName = "Fail",
       Description = "Mesh representing the strength failure surface.",
     };
