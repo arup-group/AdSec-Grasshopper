@@ -1,4 +1,5 @@
 ﻿using Oasys.AdSec;
+using Oasys.AdSec.Mesh;
 using Oasys.Profiles;
 
 using OasysUnits;
@@ -16,4 +17,6 @@ namespace AdSecCore.Functions {
   public class PointParameter : ParameterAttribute<IPoint> { }
   public class StringArrayParam : BaseArrayParameter<string> { }
   public class LengthParameter : ParameterAttribute<Length> { }
+  public class SolutionParameter : ParameterAttribute<ISolution> { }
+  public class LoadSurfaceParameter : ParameterAttribute<ILoadSurface> { }
 }

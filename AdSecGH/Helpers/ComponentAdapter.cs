@@ -31,6 +31,12 @@ namespace Oasys.GH.Helpers {
     protected override void SolveInstance(IGH_DataAccess DA) {
       BusinessComponent.UpdateInputValues(this, DA);
       BusinessComponent.Compute();
+      if (BusinessComponent is Function function) {
+        foreach (var warning in function.WarningMessages) {
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning);
+        }
+      }
+
       BusinessComponent.SetOutputValues(this, DA);
     }
   }
