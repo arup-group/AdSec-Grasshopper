@@ -17,7 +17,6 @@ using Rhino.Geometry;
 using Xunit;
 
 namespace AdSecGHTests.Components {
-
   [Collection("GrasshopperFixture collection")]
   public class FlattenRebarGhTests {
     private readonly IDesignCode designCode = IS456.Edition_2000;
