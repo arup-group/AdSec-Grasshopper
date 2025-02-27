@@ -45,10 +45,6 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.Solution;
 
-    // protected override void RegisterInputParams(GH_InputParamManager pManager) {
-    //   pManager.AddGenericParameter("Section", "Sec", "AdSec Section to analyse", GH_ParamAccess.item);
-    // }
-
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       pManager.AddGenericParameter("Results", "Res",
         "AdSec Results for a Section. Results object allows to calculate strength (ULS) and serviceability (SLS) results.",
