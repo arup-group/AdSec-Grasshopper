@@ -1,5 +1,4 @@
 ﻿using System;
-
 namespace AdSecCore.Functions {
 
   public interface IFunction {
@@ -29,11 +28,13 @@ namespace AdSecCore.Functions {
     public string Name { get; set; }
     public string NickName { get; set; }
     public string Description { get; set; }
+    public bool Optional { get; set; } = true;
 
     public void Update(ref Attribute update) {
       update.Name = Name;
       update.NickName = NickName;
       update.Description = Description;
+      update.Optional = Optional;
 
       if (this is IAccessible accessible && update is IAccessible AdSecSection) {
         AdSecSection.Access = accessible.Access;
