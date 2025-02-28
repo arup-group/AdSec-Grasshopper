@@ -24,7 +24,7 @@ namespace AdSecCore.Functions {
   }
 
   public class OasysPlane {
-    public static OasysPlane PlaneYZ = new OasysPlane {
+    public static readonly OasysPlane PlaneYZ = new OasysPlane {
       Origin = new OasysPoint {
         X = 0,
         Y = 0,
