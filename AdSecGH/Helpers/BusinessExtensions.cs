@@ -6,6 +6,7 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -16,6 +17,8 @@ using Grasshopper.Kernel.Types;
 using OasysGH.Units;
 
 using OasysUnits;
+
+using Rhino.Geometry;
 
 using Attribute = AdSecCore.Functions.Attribute;
 
@@ -111,6 +114,19 @@ namespace Oasys.GH.Helpers {
           typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
         }, {
           typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value
+        }, {
+          typeof(LoadSurfaceParameter),
+          a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
+        }, {
+          typeof(SectionSolutionParameter),
+          a => {
+            var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
+            var sectionDesign = sectionSolutionParameter.SectionDesign;
+            var section = sectionDesign.Section;
+            var code = sectionDesign.DesignCode;
+            var adSecSection = new AdSecSection(section, code, sectionDesign.CodeName, sectionDesign.MaterialName, sectionDesign.LocalPlane.ToGh());
+            return new AdSecSolutionGoo(sectionSolutionParameter.Solution, adSecSection);
+          }
         }, {
           typeof(AdSecPointArrayParameter), a => {
             var points = (a as AdSecPointArrayParameter).Value;
