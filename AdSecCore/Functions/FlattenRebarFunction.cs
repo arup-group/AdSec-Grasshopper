@@ -15,6 +15,7 @@ namespace AdSecCore.Functions {
       NickName = "Sec",
       Description = "AdSec Section to get single rebars from",
       Access = Access.Item,
+      Value = new SectionDesign(),
     };
 
     public PointArrayParameter Position { get; set; } = new PointArrayParameter {

@@ -33,7 +33,7 @@ namespace AdSecGHTests.Components {
     public void WhenAdSecSectionChangesSectionChanges() {
       valueChanged = false;
       func.Section.OnValueChanged += section => valueChanged = true;
-      func.AdSecSection.Value = new AdSecSectionGoo();
+      func.AdSecSection.Value = new AdSecSectionGoo(new AdSecSection(Section, designCode, "", "", Plane.WorldXY));
       Assert.True(valueChanged);
     }
 

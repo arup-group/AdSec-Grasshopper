@@ -6,6 +6,7 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -16,6 +17,8 @@ using Grasshopper.Kernel.Types;
 using OasysGH.Units;
 
 using OasysUnits;
+
+using Rhino.Geometry;
 
 using Attribute = AdSecCore.Functions.Attribute;
 
@@ -87,6 +90,22 @@ namespace Oasys.GH.Helpers {
             Access = GetAccess(a),
           }
         }, {
+          typeof(StringParameter), a => {
+            var value = a as StringParameter;
+            var paramString = new Param_String {
+              Name = a.Name,
+              NickName = a.NickName,
+              Description = a.Description,
+              Access = GetAccess(a),
+            };
+
+            if (value.Default != null) {
+              paramString.SetPersistentData(value.Default);
+            }
+
+            return paramString;
+          }
+        }, {
           typeof(StringArrayParam), a => new Param_String {
             Name = a.Name,
             NickName = a.NickName,
@@ -111,6 +130,14 @@ namespace Oasys.GH.Helpers {
           typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
         }, {
           typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value
+        }, {
+          typeof(LoadSurfaceParameter),
+          a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
+        }, {
+          typeof(SectionSolutionParameter), a => {
+            var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
+            return new AdSecSolutionGoo(sectionSolutionParameter);
+          }
         }, {
           typeof(AdSecPointArrayParameter), a => {
             var points = (a as AdSecPointArrayParameter).Value;

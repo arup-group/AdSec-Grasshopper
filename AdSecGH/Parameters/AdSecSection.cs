@@ -4,10 +4,7 @@ using System.Linq;
 
 using AdSecCore;
 
-using AdSecGH.Helpers;
 using AdSecGH.UI;
-
-using Grasshopper.Kernel;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
@@ -408,12 +405,6 @@ namespace AdSecGH.Parameters {
       }
 
       return new Tuple<Oasys.Collections.IList<IGroup>, ICover>(groups, cover);
-    }
-
-    public static ISection GetFlattenSection(GH_Component component, IGH_DataAccess DA, int paramId) {
-      // We simply unpack the section from GH_ObjectWrapper and add logging
-      var adSecSection = component.GetAdSecSection(DA, paramId);
-      return adSecSection.Section.FlattenSection();
     }
   }
 }

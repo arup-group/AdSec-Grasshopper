@@ -26,7 +26,13 @@ namespace AdSecGH.Components {
       var adSecSection = AdSecSection as Attribute;
       Section.Update(ref adSecSection);
       AdSecSection.OnValueChanged += goo => {
-        Section.Value = goo.Value?.Section;
+
+        if (goo.Value != null) {
+          Section.Value = new SectionDesign() {
+            Section = goo.Value.Section,
+            DesignCode = goo.Value.DesignCode
+          };
+        }
       };
 
       var adSecPoint = AdSecPoint as Attribute;
