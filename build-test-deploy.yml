@@ -39,13 +39,16 @@ steps:
   env:
     MSBUILDDISABLENODEREUSE: 1
 
-- powershell: |
-    dotnet new tool-manifest --force
-    dotnet tool install dotnet-stryker
-    dotnet tool restore
-    dotnet tool run stryker -s .\AdSecCore.sln -l basic --reporter html
-  displayName: 'Run Mutation Testing with Stryker for AdSecCore'
-  failOnStderr: false
+- task: run-stryker@1
+  displayName: 'Run Mutation Testing for AdSecCore'
+  inputs:
+    testProject: 'AdSecCoreTests/AdSecCoreTests.csproj'  # Update to your actual test project path
+    parameters: >
+      --solution AdSecCore.sln
+      --reporters "['html', 'dashboard']"
+      --dashboard-api-key $(STRYKER_DASHBOARD_API_KEY)
+      --project github.com/$(Build.Repository.Name)
+      --version $(Build.SourceBranchName)
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Stryker Mutation Report'
