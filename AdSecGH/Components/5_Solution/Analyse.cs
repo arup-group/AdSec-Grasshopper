@@ -3,13 +3,10 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
-using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
 
-using Oasys.AdSec;
 using Oasys.GH.Helpers;
 
 using OasysGH;
@@ -26,7 +23,12 @@ namespace AdSecGH.Components {
       var adSecSection = AdSecSection as Attribute;
       Section.Update(ref adSecSection);
       AdSecSection.OnValueChanged += goo => {
-        Section.Value = goo.Value?.Section;
+        if (goo.Value != null) {
+          Section.Value = new SectionDesign() {
+            Section = goo.Value.Section,
+            DesignCode = goo.Value.DesignCode
+          };
+        }
       };
     }
 

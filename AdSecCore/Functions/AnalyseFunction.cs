@@ -18,9 +18,10 @@ namespace AdSecCore.Functions {
       Name = "Section",
       NickName = "Sec",
       Description = "AdSec Section to analyse",
+      Value = new SectionDesign(),
     };
 
-    public SolutionParameter Solution { get; set; } = new SolutionParameter {
+    public SectionSolutionParameter Solution { get; set; } = new SectionSolutionParameter {
       Name = "Results",
       NickName = "Res",
       Description
@@ -46,14 +47,20 @@ namespace AdSecCore.Functions {
       };
     }
     public override void Compute() {
-      var adSec = IAdSec.Create(IS456.Edition_2000);
-      var solution = adSec.Analyse(Section.Value);
+      var adSec = IAdSec.Create(Section.Value.DesignCode);
+      
+      var solution = adSec.Analyse(Section.Value.Section);
 
       foreach (var warning in solution.Warnings) {
         WarningMessages.Add(warning.Description);
       }
 
-      Solution.Value = solution;
+      var sectionSolution = new SectionSolution() {
+        Solution = solution,
+        SectionDesign = Section.Value,
+      };
+
+      Solution.Value = sectionSolution;
       LoadSurface.Value = solution.Strength.GetFailureSurface();
     }
   }

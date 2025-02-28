@@ -40,7 +40,7 @@ namespace Oasys.GH.Helpers {
             Access = GetAccess(a),
           }
         }, {
-          typeof(SolutionParameter), a => new Param_GenericObject {
+          typeof(SectionSolutionParameter), a => new Param_GenericObject {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
@@ -127,7 +127,17 @@ namespace Oasys.GH.Helpers {
           typeof(LoadSurfaceParameter),
           a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
         }, {
-          typeof(SolutionParameter), a => new AdSecSolutionGoo((a as SolutionParameter).Value)
+          typeof(SectionSolutionParameter),
+          a => {
+            var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
+            var sectionDesign = sectionSolutionParameter.SectionDesign;
+            var section = sectionDesign.Section;
+            var code = sectionDesign.DesignCode;
+            var adSecSection = new AdSecSection(section, code, sectionDesign.CodeName, sectionDesign.MaterialName, Plane.WorldXY);
+            return new AdSecSolutionGoo(sectionSolutionParameter.Solution, adSecSection);
+          }
+          // }, {
+        //   typeof(SolutionParameter), a => new AdSecSolutionGoo((a as SolutionParameter).Value)
         }, {
           typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
         }, {
