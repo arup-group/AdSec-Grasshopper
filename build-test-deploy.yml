@@ -40,7 +40,9 @@ steps:
     MSBUILDDISABLENODEREUSE: 1
 
 - powershell: |
-    dotnet tool install -g dotnet-stryker
+    dotnet new tool-manifest --force
+    dotnet tool install dotnet-stryker
+    dotnet tool restore
     dotnet stryker -s .\AdSecCore.sln -l basic --reporter html
   displayName: 'Run Mutation Testing with Stryker for AdSecCore'
   failOnStderr: false
