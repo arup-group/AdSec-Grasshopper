@@ -13,6 +13,9 @@ namespace AdSecGH.Parameters {
     internal Polyline ProfileEdge { get; }
     internal AdSecSection m_section;
     private Plane m_plane;
+    public AdSecSolutionGoo(ISolution solution) : base(solution) {
+
+    }
 
     public AdSecSolutionGoo(ISolution solution, AdSecSection section) : base(solution) {
       m_section = section;
