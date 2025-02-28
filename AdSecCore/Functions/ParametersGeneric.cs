@@ -55,8 +55,8 @@ namespace AdSecCore.Functions {
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }
   public class PointParameter : ParameterAttribute<IPoint> { }
   public class StringArrayParam : BaseArrayParameter<string> { }
+  public class StringParameter : ParameterAttribute<string> { }
   public class LengthParameter : ParameterAttribute<Length> { }
-  public class SolutionParameter : ParameterAttribute<ISolution> { }
   public class SectionSolutionParameter : ParameterAttribute<SectionSolution> { }
   public class LoadSurfaceParameter : ParameterAttribute<ILoadSurface> { }
 

@@ -90,6 +90,22 @@ namespace Oasys.GH.Helpers {
             Access = GetAccess(a),
           }
         }, {
+          typeof(StringParameter), a => {
+            var value = a as StringParameter;
+            var paramString = new Param_String {
+              Name = a.Name,
+              NickName = a.NickName,
+              Description = a.Description,
+              Access = GetAccess(a),
+            };
+
+            if (value.Default != null) {
+              paramString.SetPersistentData(value.Default);
+            }
+
+            return paramString;
+          }
+        }, {
           typeof(StringArrayParam), a => new Param_String {
             Name = a.Name,
             NickName = a.NickName,
@@ -118,8 +134,7 @@ namespace Oasys.GH.Helpers {
           typeof(LoadSurfaceParameter),
           a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
         }, {
-          typeof(SectionSolutionParameter),
-          a => {
+          typeof(SectionSolutionParameter), a => {
             var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
             return new AdSecSolutionGoo(sectionSolutionParameter);
           }
