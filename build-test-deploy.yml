@@ -40,6 +40,18 @@ steps:
     MSBUILDDISABLENODEREUSE: 1
 
 - powershell: |
+    dotnet tool install -g dotnet-stryker
+    dotnet stryker -s .\AdSecCore.sln -l basic --reporter html
+  displayName: 'Run Mutation Testing with Stryker for AdSecCore'
+  failOnStderr: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Stryker Mutation Report'
+  inputs:
+    pathToPublish: '$(System.DefaultWorkingDirectory)/StrykerOutput'
+    artifactName: 'StrykerReport'
+
+- powershell: |
     dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecCore .\AdSecCoreTests\bin\Release\net7.0\AdSecCoreTests.dll
   displayName: dotnet tests AdSecCore
   failOnStderr: false
