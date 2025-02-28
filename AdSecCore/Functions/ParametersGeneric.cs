@@ -25,21 +25,9 @@ namespace AdSecCore.Functions {
 
   public class OasysPlane {
     public static readonly OasysPlane PlaneYZ = new OasysPlane {
-      Origin = new OasysPoint {
-        X = 0,
-        Y = 0,
-        Z = 0
-      },
-      XAxis = new OasysPoint {
-        X = 0,
-        Y = 1,
-        Z = 0
-      },
-      YAxis = new OasysPoint {
-        X = 0,
-        Y = 0,
-        Z = 1
-      },
+      Origin = new OasysPoint { X = 0, Y = 0, Z = 0 },
+      XAxis = new OasysPoint { X = 0, Y = 1, Z = 0 },
+      YAxis = new OasysPoint { X = 0, Y = 0, Z = 1 },
     };
     public OasysPoint Origin { get; set; }
     public OasysPoint XAxis { get; set; }
