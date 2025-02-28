@@ -1,4 +1,6 @@
 ﻿using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Mesh;
 using Oasys.Profiles;
 
 using OasysUnits;
@@ -11,9 +13,55 @@ namespace AdSecCore.Functions {
 
   public class IntegerArrayParameter : BaseArrayParameter<int> { }
 
-  public class SectionParameter : ParameterAttribute<ISection> { }
+  public class SectionParameter : ParameterAttribute<SectionDesign> { }
+
+  public class SectionDesign {
+    public ISection Section { get; set; }
+    public IDesignCode DesignCode { get; set; }
+    public string CodeName { get; set; }
+    public string MaterialName { get; set; }
+    public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
+  }
+
+  public class OasysPlane {
+    public static OasysPlane PlaneYZ = new OasysPlane {
+      Origin = new OasysPoint {
+        X = 0,
+        Y = 0,
+        Z = 0
+      },
+      XAxis = new OasysPoint {
+        X = 0,
+        Y = 1,
+        Z = 0
+      },
+      YAxis = new OasysPoint {
+        X = 0,
+        Y = 0,
+        Z = 1
+      },
+    };
+    public OasysPoint Origin { get; set; }
+    public OasysPoint XAxis { get; set; }
+    public OasysPoint YAxis { get; set; }
+  }
+
+  public class OasysPoint {
+    public double X { get; set; }
+    public double Y { get; set; }
+    public double Z { get; set; }
+  }
+
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }
   public class PointParameter : ParameterAttribute<IPoint> { }
   public class StringArrayParam : BaseArrayParameter<string> { }
   public class LengthParameter : ParameterAttribute<Length> { }
+  public class SolutionParameter : ParameterAttribute<ISolution> { }
+  public class SectionSolutionParameter : ParameterAttribute<SectionSolution> { }
+  public class LoadSurfaceParameter : ParameterAttribute<ILoadSurface> { }
+
+  public class SectionSolution {
+    public ISolution Solution { get; set; }
+    public SectionDesign SectionDesign { get; set; } = new SectionDesign();
+  }
 }
