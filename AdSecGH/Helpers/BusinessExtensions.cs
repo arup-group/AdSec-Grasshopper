@@ -121,11 +121,7 @@ namespace Oasys.GH.Helpers {
           typeof(SectionSolutionParameter),
           a => {
             var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
-            var sectionDesign = sectionSolutionParameter.SectionDesign;
-            var section = sectionDesign.Section;
-            var code = sectionDesign.DesignCode;
-            var adSecSection = new AdSecSection(section, code, sectionDesign.CodeName, sectionDesign.MaterialName, sectionDesign.LocalPlane.ToGh());
-            return new AdSecSolutionGoo(sectionSolutionParameter.Solution, adSecSection);
+            return new AdSecSolutionGoo(sectionSolutionParameter);
           }
         }, {
           typeof(AdSecPointArrayParameter), a => {

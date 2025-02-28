@@ -1,4 +1,8 @@
-﻿using Grasshopper.Kernel.Types;
+﻿using AdSecCore.Functions;
+
+using AdSecGH.Helpers;
+
+using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
 
@@ -13,6 +17,17 @@ namespace AdSecGH.Parameters {
     internal Polyline ProfileEdge { get; }
     internal AdSecSection m_section;
     private Plane m_plane;
+
+    public AdSecSolutionGoo(SectionSolution sectionSolutionParameter) : base(sectionSolutionParameter.Solution) {
+      var sectionDesign = sectionSolutionParameter.SectionDesign;
+      var section = sectionDesign.Section;
+      var code = sectionDesign.DesignCode;
+
+      m_section = new AdSecSection(section, code, sectionDesign.CodeName, sectionDesign.MaterialName,
+        sectionDesign.LocalPlane.ToGh());
+      m_plane = m_section.LocalPlane;
+      ProfileEdge = m_section.m_profileEdge;
+    }
 
     public AdSecSolutionGoo(ISolution solution, AdSecSection section) : base(solution) {
       m_section = section;
