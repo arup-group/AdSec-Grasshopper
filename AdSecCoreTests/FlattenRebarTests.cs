@@ -1,9 +1,9 @@
-﻿using AdSecCore;
-using AdSecCore.Builders;
+﻿using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using AdSecGHCore.Constants;
 
+using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
 
@@ -25,7 +25,10 @@ namespace AdSecCoreTests {
        .Build();
       var section = new SectionBuilder().WithWidth(SectionSize).CreateSquareSection().WithReinforcementGroup(singleBars)
        .Build();
-      operation.Section.Value = section;
+      operation.Section.Value = new SectionDesign() {
+        Section = section,
+        DesignCode = IS456.Edition_2000,
+      };
       operation.Compute();
     }
 
