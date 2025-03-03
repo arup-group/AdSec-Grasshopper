@@ -25,7 +25,7 @@ namespace Oasys.GH.Helpers {
   public class AdSecPointArrayParameter : BaseArrayParameter<AdSecPointGoo> { }
   public class AdSecPointParameter : ParameterAttribute<AdSecPointGoo> { }
   public class AdSecMaterialArrayParam : BaseArrayParameter<AdSecMaterialGoo> { }
-
+  public class AdSecSolutionParameter : ParameterAttribute<AdSecSolutionGoo> { }
   public static class BusinessExtensions {
 
     private static readonly Dictionary<Type, Func<Attribute, IGH_Param>> ToGhParam
@@ -100,6 +100,13 @@ namespace Oasys.GH.Helpers {
             Description = a.Description,
             Access = GetAccess(a),
           }
+        },{
+          typeof(SolutionParameter), a => new Param_GenericObject {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
         },
       };
 
@@ -127,6 +134,8 @@ namespace Oasys.GH.Helpers {
           typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value
         }, {
           typeof(StringArrayParam), a => (a as StringArrayParam).Value
+        },{
+          typeof(AdSecSolutionParameter), a => (a as AdSecSolutionParameter).Value
         },
       };
 
@@ -149,6 +158,11 @@ namespace Oasys.GH.Helpers {
 
             return null;
           }
+        },{
+          typeof(AdSecSolutionParameter), goo => {
+            dynamic gooDynamic = goo;
+            return new AdSecSolutionGoo(gooDynamic);
+          }
         },
       };
 
@@ -165,7 +179,7 @@ namespace Oasys.GH.Helpers {
       switch (access) {
         case Access.Item: return GH_ParamAccess.item;
         case Access.List: return GH_ParamAccess.list;
-        default: throw new ArgumentOutOfRangeException();
+        default: throw new ArgumentException("Unsupported data access");
       }
     }
 

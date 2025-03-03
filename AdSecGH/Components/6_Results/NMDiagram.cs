@@ -155,7 +155,7 @@ namespace AdSecGH.Components {
         var angle = (Angle)Input.UnitNumber(this, DA, 1, _angleUnit, true);
 
         // get loadcurve
-        var loadCurve = solution.Value.Strength.GetForceMomentInteractionCurve(angle);
+        var loadCurve = solution.Strength.GetForceMomentInteractionCurve(angle);
 
         // create output
         DA.SetData(0, new AdSecInteractionDiagramGoo(loadCurve[0], angle, rect));
@@ -164,7 +164,7 @@ namespace AdSecGH.Components {
         var force = (Force)Input.UnitNumber(this, DA, 1, _forceUnit, true);
 
         // get loadcurve
-        var loadCurve = solution.Value.Strength.GetMomentMomentInteractionCurve(force);
+        var loadCurve = solution.Strength.GetMomentMomentInteractionCurve(force);
 
         // check if curve is valid
         if (loadCurve.Count == 0) {

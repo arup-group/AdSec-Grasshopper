@@ -107,17 +107,17 @@ namespace AdSecGH.Components {
       if (DA.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
         if (gh_typ.Value is AdSecLoadGoo load) {
-          uls = solution.Value.Strength.Check(load.Value);
+          uls = solution.Strength.Check(load.Value);
           var failureLoad = ILoad.Create(load.Value.X / uls.LoadUtilisation.DecimalFractions * 0.999,
             load.Value.YY / uls.LoadUtilisation.DecimalFractions * 0.999,
             load.Value.ZZ / uls.LoadUtilisation.DecimalFractions * 0.999);
-          failure = solution.Value.Strength.Check(failureLoad);
+          failure = solution.Strength.Check(failureLoad);
         } else if (gh_typ.Value is AdSecDeformationGoo def) {
-          uls = solution.Value.Strength.Check(def.Value);
+          uls = solution.Strength.Check(def.Value);
           var failureLoad = IDeformation.Create(def.Value.X / uls.LoadUtilisation.DecimalFractions * 0.999,
             def.Value.YY / uls.LoadUtilisation.DecimalFractions * 0.999,
             def.Value.ZZ / uls.LoadUtilisation.DecimalFractions * 0.999);
-          failure = solution.Value.Strength.Check(failureLoad);
+          failure = solution.Strength.Check(failureLoad);
         } else {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Unable to convert {Params.Input[1].NickName} to AdSec Load");
           return;

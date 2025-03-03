@@ -80,7 +80,7 @@ namespace AdSecGH.Components {
         return;
       }
 
-      var sls = solution.Value.Serviceability.Check(load.Value);
+      var sls = solution.Serviceability.Check(load.Value);
 
       string loadComponent = "X";
       DA.GetData(2, ref loadComponent);
@@ -121,7 +121,7 @@ namespace AdSecGH.Components {
             break;
         }
 
-        sls = solution.Value.Serviceability.Check(load.Value);
+        sls = solution.Serviceability.Check(load.Value);
       }
 
       // update load to one step back
@@ -151,7 +151,7 @@ namespace AdSecGH.Components {
           break;
       }
 
-      sls = solution.Value.Serviceability.Check(load.Value);
+      sls = solution.Serviceability.Check(load.Value);
 
       DA.SetData(0, new AdSecLoadGoo(sls.Load, solution.LocalPlane));
 

@@ -72,11 +72,11 @@ namespace AdSecGH.Components {
       if (DA.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
         if (gh_typ.Value is AdSecLoadGoo load) {
-          uls = solution.Value.Strength.Check(load.Value);
-          sls = solution.Value.Serviceability.Check(load.Value);
+          uls = solution.Strength.Check(load.Value);
+          sls = solution.Serviceability.Check(load.Value);
         } else if (gh_typ.Value is AdSecDeformationGoo def) {
-          uls = solution.Value.Strength.Check(def.Value);
-          sls = solution.Value.Serviceability.Check(def.Value);
+          uls = solution.Strength.Check(def.Value);
+          sls = solution.Serviceability.Check(def.Value);
         } else {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Unable to convert {Params.Input[1].NickName} to AdSec Load");
           return;
@@ -141,12 +141,12 @@ namespace AdSecGH.Components {
 
     private static ISection FlatSection(AdSecSolutionGoo solution) {
       ISection flat;
-      if (solution.m_section.DesignCode != null) {
-        var adSec = IAdSec.Create(solution.m_section.DesignCode);
-        flat = adSec.Flatten(solution.m_section.Section);
+      if (solution.DesignCode != null) {
+        var adSec = IAdSec.Create(solution.DesignCode);
+        flat = adSec.Flatten(solution.Section);
       } else {
-        var prof = IPerimeterProfile.Create(solution.m_section.Section.Profile);
-        flat = ISection.Create(prof, solution.m_section.Section.Material);
+        var prof = IPerimeterProfile.Create(solution.Section.Profile);
+        flat = ISection.Create(prof, solution.Section.Material);
       }
 
       return flat;

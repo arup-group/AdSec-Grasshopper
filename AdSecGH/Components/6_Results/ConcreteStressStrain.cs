@@ -69,11 +69,11 @@ namespace AdSecGH.Components {
       if (DA.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
         if (gh_typ.Value is AdSecLoadGoo load) {
-          uls = solution.Value.Strength.Check(load.Value);
-          sls = solution.Value.Serviceability.Check(load.Value);
+          uls = solution.Strength.Check(load.Value);
+          sls = solution.Serviceability.Check(load.Value);
         } else if (gh_typ.Value is AdSecDeformationGoo def) {
-          uls = solution.Value.Strength.Check(def.Value);
-          sls = solution.Value.Serviceability.Check(def.Value);
+          uls = solution.Strength.Check(def.Value);
+          sls = solution.Serviceability.Check(def.Value);
         } else {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Unable to convert {Params.Input[1].NickName} to AdSec Load");
           return;
@@ -91,7 +91,7 @@ namespace AdSecGH.Components {
       DA.SetData(0, outStrainULS);
 
       // ULS stress in concrete material from strain
-      var stressULS = solution.m_section.Section.Material.Strength.StressAt(strainULS);
+      var stressULS = solution.Section.Material.Strength.StressAt(strainULS);
       var outStressULS = new GH_UnitNumber(stressULS.ToUnit(DefaultUnits.StressUnitResult));
       DA.SetData(1, outStressULS);
 
@@ -101,7 +101,7 @@ namespace AdSecGH.Components {
       DA.SetData(2, outStrainSLS);
 
       // SLS stress in concrete material from strain
-      var stressSLS = solution.m_section.Section.Material.Serviceability.StressAt(strainSLS);
+      var stressSLS = solution.Section.Material.Serviceability.StressAt(strainSLS);
       var outStressSLS = new GH_UnitNumber(stressSLS.ToUnit(DefaultUnits.StressUnitResult));
 
       DA.SetData(3, outStressSLS);
