@@ -34,83 +34,60 @@ namespace Oasys.GH.Helpers {
     private static readonly Dictionary<Type, Func<Attribute, IGH_Param>> ToGhParam
       = new Dictionary<Type, Func<Attribute, IGH_Param>> {
         {
-          typeof(DoubleParameter), a => new Param_Number {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
+          typeof(DoubleParameter),
+          a => new Param_Number {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
-          typeof(SectionSolutionParameter), a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
+          typeof(SectionSolutionParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
-          typeof(LoadSurfaceParameter), a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
+          typeof(LoadSurfaceParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
-          typeof(DoubleArrayParameter), a => new Param_Number {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
+          typeof(DoubleArrayParameter),
+          a => new Param_Number {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
-          typeof(AdSecSectionParameter), a => new AdSecGH.Parameters.AdSecSectionParameter {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
+          typeof(AdSecSectionParameter),
+          a => new AdSecGH.Parameters.AdSecSectionParameter {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
-          typeof(AdSecPointArrayParameter), a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
+          typeof(AdSecPointArrayParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
-          typeof(AdSecPointParameter), a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
+          typeof(AdSecPointParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
-          typeof(PointParameter), a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
+          typeof(PointParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
-          typeof(AdSecMaterialArrayParam), a => new AdSecMaterialParameter {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
+          typeof(AdSecMaterialArrayParam),
+          a => new AdSecMaterialParameter {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
-          typeof(IntegerArrayParameter), a => new Param_Integer {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
+          typeof(IntegerArrayParameter),
+          a => new Param_Integer {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
           typeof(StringParameter), a => {
             var value = a as StringParameter;
             var paramString = new Param_String {
-              Name = a.Name,
-              NickName = a.NickName,
-              Description = a.Description,
-              Access = GetAccess(a),
+              Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
             };
 
             if (value.Default != null) {
@@ -120,49 +97,26 @@ namespace Oasys.GH.Helpers {
             return paramString;
           }
         }, {
-          typeof(StringArrayParam), a => new Param_String {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
+          typeof(StringArrayParam),
+          a => new Param_String {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
-          typeof(LengthParameter), a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
+          typeof(LengthParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         },
       };
 
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
-        {
-          typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value)
-        }, {
+        { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
           typeof(LoadSurfaceParameter),
           a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
-        }, {
-          typeof(SectionSolutionParameter),
-          a => {
-            var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
-            var sectionDesign = sectionSolutionParameter.SectionDesign;
-            var section = sectionDesign.Section;
-            var code = sectionDesign.DesignCode;
-            var adSecSection = new AdSecSection(section, code, sectionDesign.CodeName, sectionDesign.MaterialName, Plane.WorldXY);
-            return new AdSecSolutionGoo(sectionSolutionParameter.Solution, adSecSection);
-          }
-          // }, {
-        //   typeof(SolutionParameter), a => new AdSecSolutionGoo((a as SolutionParameter).Value)
-        }, {
-          typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
-        }, {
-          typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value
-        }, {
-          typeof(LoadSurfaceParameter),
-          a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
-        }, {
+        },
+        { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value },
+        { typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value }, {
           typeof(SectionSolutionParameter), a => {
             var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
             return new AdSecSolutionGoo(sectionSolutionParameter);
@@ -172,26 +126,22 @@ namespace Oasys.GH.Helpers {
             var points = (a as AdSecPointArrayParameter).Value;
             return points?.ToList();
           }
-        }, {
-          typeof(AdSecPointParameter), a => (a as AdSecPointParameter).Value
-        }, {
+        },
+        { typeof(AdSecPointParameter), a => (a as AdSecPointParameter).Value }, {
           typeof(AdSecMaterialArrayParam), a => {
             var materials = (a as AdSecMaterialArrayParam).Value;
             return materials?.ToList();
           }
-        }, {
-          typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value
-        }, {
-          typeof(StringArrayParam), a => (a as StringArrayParam).Value
         },
+        { typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value },
+        { typeof(StringArrayParam), a => (a as StringArrayParam).Value },
       };
 
     private static readonly Dictionary<Type, Func<object, object>> GooToParam
       = new Dictionary<Type, Func<object, object>> {
         {
-          typeof(LengthParameter), goo => {
-            return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry);
-          }
+          typeof(LengthParameter),
+          goo => { return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry); }
         }, {
           typeof(AdSecSectionParameter), goo => {
             dynamic gooDynamic = goo;
