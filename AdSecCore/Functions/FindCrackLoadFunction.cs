@@ -10,7 +10,7 @@ using OasysUnits;
 namespace AdSecCore.Functions {
   public class FindCrackLoadFunction : IFunction {
 
-    public SolutionParameter Solution { get; set; } = new SolutionParameter {
+    public SectionSolutionParameter Solution { get; set; } = new SectionSolutionParameter {
       Name = "Results",
       NickName = "Res",
       Description = "AdSec Results to perform serviceability check on",
@@ -26,7 +26,7 @@ namespace AdSecCore.Functions {
       Optional = false,
     };
 
-    public TextParameter OptimisedLoad { get; set; } = new TextParameter {
+    public StringParameter OptimisedLoad { get; set; } = new StringParameter {
       Name = "OptimisedLoad",
       NickName = "Opt",
       Description = "Text input to select which load component to optimise for, X, YY or ZZ (default 'YY')",
@@ -103,7 +103,7 @@ namespace AdSecCore.Functions {
       var loadComponent = OptimisedLoad.Value ?? OptimisedLoad.Default;
       var increment = LoadIncrement.Value;
       var maxCrack = MaximumCrack.Value.ToUnit(lengthUnitGeometry);
-      var sls = solution.Serviceability.Check(baseLoad);
+      var sls = solution.Solution.Serviceability.Check(baseLoad);
 
       while (sls.MaximumWidthCrack.Width <= maxCrack) {
         // update load
@@ -132,7 +132,7 @@ namespace AdSecCore.Functions {
             new Moment(baseLoad.ZZ.As(momentUnit) + increment, momentUnit));
             break;
         }
-        sls = solution.Serviceability.Check(baseLoad);
+        sls = solution.Solution.Serviceability.Check(baseLoad);
       }
 
       // update load to one step back
@@ -162,7 +162,7 @@ namespace AdSecCore.Functions {
           break;
       }
 
-      sls = solution.Serviceability.Check(baseLoad);
+      sls = solution.Solution.Serviceability.Check(baseLoad);
 
       SectionLoad.Value = sls.Load;
       MaximumCracking.Value = sls.MaximumWidthCrack;

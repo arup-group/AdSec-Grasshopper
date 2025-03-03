@@ -15,7 +15,6 @@ using OasysGH;
 using Attribute = AdSecCore.Functions.Attribute;
 namespace AdSecGH.Components {
   public class FindCrackLoadGh : FindCrackLoadFunction {
-
     public FindCrackLoadGh() {
       var solution = AdSecSolution as Attribute;
       Solution.Update(ref solution);
@@ -29,23 +28,6 @@ namespace AdSecGH.Components {
         BaseLoad.Value = goo.Value;
       };
 
-      var optimisedLoad = AdSecOptimisedLoad as Attribute;
-      OptimisedLoad.Update(ref optimisedLoad);
-      AdSecOptimisedLoad.OnValueChanged += goo => {
-        OptimisedLoad.Value = goo;
-      };
-
-      var loadIncrement = AdSecLoadIncrement as Attribute;
-      LoadIncrement.Update(ref loadIncrement);
-      AdSecLoadIncrement.OnValueChanged += goo => {
-        LoadIncrement.Value = goo;
-      };
-
-      var maximumCrack = AdSecMaximumCrack as Attribute;
-      MaximumCrack.Update(ref maximumCrack);
-      AdSecMaximumCrack.OnValueChanged += goo => {
-        MaximumCrack.Value = goo;
-      };
 
       var adSecSectionLoad = AdSecSectionLoad as Attribute;
       SectionLoad.Update(ref adSecSectionLoad);
@@ -59,32 +41,27 @@ namespace AdSecGH.Components {
         AdSecMaximumCracking.Value = new AdSecCrackGoo(goo);
       };
     }
-
     public AdSecSolutionParameter AdSecSolution { get; set; } = new AdSecSolutionParameter();
     public AdSecLoadParameter AdSecBaseLoad { get; set; } = new AdSecLoadParameter();
-    public TextParameter AdSecOptimisedLoad { get; set; } = new TextParameter();
-    public IntegerParameter AdSecLoadIncrement { get; set; } = new IntegerParameter();
-    public LengthParameter AdSecMaximumCrack { get; set; } = new LengthParameter();
     public AdSecLoadParameter AdSecSectionLoad { get; set; } = new AdSecLoadParameter();
     public AdSecCrackParameter AdSecMaximumCracking { get; set; } = new AdSecCrackParameter();
-
     public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
        AdSecSolution,
        AdSecBaseLoad,
-       AdSecOptimisedLoad,
-       AdSecLoadIncrement,
-       AdSecMaximumCrack,
+       OptimisedLoad,
+       LoadIncrement,
+       MaximumCrack,
       };
     }
-
     public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
         AdSecSectionLoad,
         AdSecMaximumCracking,
       };
     }
-  }
+  };
+
 
   public class FindCrackLoad : ComponentAdapter<FindCrackLoadGh> {
     public FindCrackLoad() { Hidden = true; }

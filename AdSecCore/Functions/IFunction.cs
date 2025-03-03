@@ -65,8 +65,8 @@ namespace AdSecCore.Functions {
         OnValueChanged?.Invoke(value);
       }
     }
-    public T Default { get; set; }
     public virtual Access Access { get; set; } = Access.Item;
+    public T Default { get; set; }
 
     public void SetDefault() {
       Value = Default;

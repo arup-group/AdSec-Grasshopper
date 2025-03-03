@@ -6,6 +6,7 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -19,17 +20,19 @@ using OasysGH.Units;
 
 using OasysUnits;
 
+using Rhino.Geometry;
+
 using Attribute = AdSecCore.Functions.Attribute;
 
 namespace Oasys.GH.Helpers {
-  public class AdSecLoadParameter : ParameterAttribute<AdSecLoadGoo> { }
-  public class AdSecCrackParameter : ParameterAttribute<AdSecCrackGoo> { }
-  public class AdSecSolutionParameter : ParameterAttribute<AdSecSolutionGoo> { }
+
   public class AdSecSectionParameter : ParameterAttribute<AdSecSectionGoo> { }
   public class AdSecPointArrayParameter : BaseArrayParameter<AdSecPointGoo> { }
   public class AdSecPointParameter : ParameterAttribute<AdSecPointGoo> { }
   public class AdSecMaterialArrayParam : BaseArrayParameter<AdSecMaterialGoo> { }
-
+  public class AdSecSolutionParameter : ParameterAttribute<AdSecSolutionGoo> { }
+  public class AdSecLoadParameter : ParameterAttribute<AdSecLoadGoo> { }
+  public class AdSecCrackParameter : ParameterAttribute<AdSecCrackGoo> { }
   public static class BusinessExtensions {
 
     private static readonly Dictionary<Type, Func<Attribute, IGH_Param>> ToGhParam
@@ -40,24 +43,6 @@ namespace Oasys.GH.Helpers {
             NickName = a.NickName,
             Description = a.Description,
             Access = GetAccess(a),
-            Optional = a.Optional,
-          }
-
-        },{
-          typeof(IntegerParameter), a => new Param_Integer {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
-            Optional = a.Optional,
-          }
-        },{
-          typeof(TextParameter), a => new Param_String {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
-            Optional = a.Optional,
           }
         }, {
           typeof(DoubleArrayParameter), a => new Param_Number {
@@ -65,7 +50,6 @@ namespace Oasys.GH.Helpers {
             NickName = a.NickName,
             Description = a.Description,
             Access = GetAccess(a),
-            Optional = a.Optional,
           }
         }, {
           typeof(AdSecSectionParameter), a => new AdSecGH.Parameters.AdSecSectionParameter {
@@ -73,15 +57,79 @@ namespace Oasys.GH.Helpers {
             NickName = a.NickName,
             Description = a.Description,
             Access = GetAccess(a),
-            Optional = a.Optional,
           }
         }, {
-          typeof(AdSecSolutionParameter), a => new Param_GenericObject {
+          typeof(AdSecPointArrayParameter), a => new Param_GenericObject {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
             Access = GetAccess(a),
-            Optional = a.Optional,
+          }
+        }, {
+          typeof(AdSecPointParameter), a => new Param_GenericObject {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
+        }, {
+          typeof(PointParameter), a => new Param_GenericObject {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
+        }, {
+          typeof(AdSecMaterialArrayParam), a => new AdSecMaterialParameter {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
+        }, {
+          typeof(IntegerArrayParameter), a => new Param_Integer {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
+        }, {
+          typeof(StringParameter), a => {
+            var value = a as StringParameter;
+            var paramString = new Param_String {
+              Name = a.Name,
+              NickName = a.NickName,
+              Description = a.Description,
+              Access = GetAccess(a),
+            };
+
+            if (value.Default != null) {
+              paramString.SetPersistentData(value.Default);
+            }
+
+            return paramString;
+          }
+        }, {
+          typeof(StringArrayParam), a => new Param_String {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
+        }, {
+          typeof(LengthParameter), a => new Param_GenericObject {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+          }
+        },
+        {
+          typeof(SectionSolutionParameter), a => new Param_GenericObject {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
           }
         },{
           typeof(AdSecCrackParameter), a => new Param_GenericObject {
@@ -100,55 +148,29 @@ namespace Oasys.GH.Helpers {
             Optional = a.Optional,
           }
         }, {
-          typeof(AdSecPointArrayParameter), a => new Param_GenericObject {
+          typeof(LoadParameter), a => new Param_GenericObject {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
             Access = GetAccess(a),
-            Optional = a.Optional,
           }
-        }, {
-          typeof(AdSecPointParameter), a => new Param_GenericObject {
+        },{
+          typeof(CrackParameter), a => new Param_GenericObject {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
             Access = GetAccess(a),
-            Optional = a.Optional,
           }
-        }, {
-          typeof(PointParameter), a => new Param_GenericObject {
+        },{
+          typeof(IntegerParameter), a => new Param_Integer {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
             Access = GetAccess(a),
-            Optional = a.Optional,
           }
-        }, {
-          typeof(AdSecMaterialArrayParam), a => new AdSecMaterialParameter {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
-            Optional = a.Optional,
-          }
-        }, {
-          typeof(IntegerArrayParameter), a => new Param_Integer {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
-            Optional = a.Optional,
-          }
-        }, {
-          typeof(StringArrayParam), a => new Param_String {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
-            Optional = a.Optional,
-          }
-        }, {
-          typeof(LengthParameter), a => new Param_GenericObject {
+        },
+        {
+          typeof(AdSecSolutionParameter), a => new Param_GenericObject {
             Name = a.Name,
             NickName = a.NickName,
             Description = a.Description,
@@ -163,15 +185,13 @@ namespace Oasys.GH.Helpers {
         {
           typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value)
         }, {
-          typeof(IntegerParameter), a => new GH_Integer((a as IntegerParameter).Value)
-        }, {
-          typeof(TextParameter), a => new GH_String((a as TextParameter).Value)
-        }, {
           typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value
         }, {
           typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value
-        },
-         {
+        }, {
+          typeof(LoadSurfaceParameter),
+          a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
+        }, {
           typeof(AdSecSolutionParameter), a => (a as AdSecSolutionParameter).Value
         },
          {
@@ -179,8 +199,7 @@ namespace Oasys.GH.Helpers {
         },
          {
           typeof(AdSecCrackParameter), a => (a as AdSecCrackParameter).Value
-        },
-        {
+        }, {
           typeof(AdSecPointArrayParameter), a => {
             var points = (a as AdSecPointArrayParameter).Value;
             return points?.ToList();
@@ -196,6 +215,12 @@ namespace Oasys.GH.Helpers {
           typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value
         }, {
           typeof(StringArrayParam), a => (a as StringArrayParam).Value
+        }, {
+          typeof(IntegerParameter), a => (a as IntegerParameter).Value
+        },{
+          typeof(LoadParameter), a => (a as LoadParameter).Value
+        },{
+          typeof(CrackParameter), a => (a as CrackParameter).Value
         },
       };
 
@@ -210,7 +235,37 @@ namespace Oasys.GH.Helpers {
             dynamic gooDynamic = goo;
             return new AdSecSectionGoo(gooDynamic);
           }
-        },  {
+        }, {
+          typeof(DoubleParameter), goo => {
+            if (goo is double value) {
+              return value;
+            }
+
+            return null;
+          }
+        },{
+          typeof(IntegerParameter), goo => {
+            if (goo is int value) {
+              return value;
+            }
+            return null;
+          }
+        },{
+          typeof(LoadParameter), goo => {
+           dynamic gooDynamic = goo;
+            return new AdSecLoadGoo(gooDynamic);
+          }
+        },{
+          typeof(CrackParameter), goo => {
+             dynamic gooDynamic = goo;
+            return new AdSecCrackGoo(gooDynamic);
+          }
+        },{
+          typeof(AdSecSolutionParameter), goo => {
+           dynamic gooDynamic = goo;
+            return new AdSecSolutionGoo(gooDynamic);
+          }
+        },{
           typeof(AdSecLoadParameter), goo => {
             dynamic gooDynamic = goo;
             return new AdSecLoadGoo(gooDynamic);
@@ -221,29 +276,8 @@ namespace Oasys.GH.Helpers {
             return new AdSecCrackGoo(gooDynamic);
           }
         },{
-          typeof(TextParameter), goo => {
-           if (goo is string value) {
-              return value;
-            }
-
-            return null;
-          }
-        },{
-          typeof(IntegerParameter), goo => {
-           if (goo is int value) {
-              return value;
-            }
-
-            return null;
-          }
-        },{
-          typeof(AdSecSolutionParameter), goo => {
-           dynamic gooDynamic = goo;
-             return new AdSecSolutionGoo(gooDynamic);
-          }
-        },   {
-          typeof(DoubleParameter), goo => {
-            if (goo is double value) {
+          typeof(StringParameter), goo => {
+             if (goo is string value) {
               return value;
             }
             return null;
@@ -264,7 +298,7 @@ namespace Oasys.GH.Helpers {
       switch (access) {
         case Access.Item: return GH_ParamAccess.item;
         case Access.List: return GH_ParamAccess.list;
-        default: throw new ArgumentException("Input data type is not supported");
+        default: throw new ArgumentOutOfRangeException();
       }
     }
 
