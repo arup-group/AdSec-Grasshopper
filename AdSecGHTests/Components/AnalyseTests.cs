@@ -37,6 +37,7 @@ namespace AdSecGHTests.Components {
 
       ComponentTesting.ComputeOutputs(component);
     }
+
     [Fact]
     public void ShouldHaveAWarning() {
       component.BusinessComponent.WarningMessages.Add("Test");

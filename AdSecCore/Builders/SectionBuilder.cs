@@ -39,6 +39,31 @@ namespace AdSecCore.Builders {
       return section;
     }
 
+    /// <summary>
+    /// Creates an invalid section for testing purposes
+    /// Given a Perimeter profile with a void polygon outside the solid polygon
+    /// </summary>
+    /// <returns></returns>
+    public static ISection InvalidSection(int size = 100) {
+      // Important to pick a material that has the checks for warnings.
+      IMaterial concreteMaterial = Concrete.IS456.Edition_2000.M10;
+
+      var invalid = IPerimeterProfile.Create();
+      invalid.SolidPolygon = CreateRectangle(0, size);
+      invalid.VoidPolygons.Add(CreateRectangle(-1, 2));
+
+      return ISection.Create(invalid, concreteMaterial);
+    }
+
+    public static IPolygon CreateRectangle(int @base, int size) {
+      var voidOutside = IPolygon.Create();
+      voidOutside.Points.Add(IPoint.Create(Length.FromMillimeters(@base), Length.FromMillimeters(@base)));
+      voidOutside.Points.Add(IPoint.Create(Length.FromMillimeters(@base), Length.FromMillimeters(size)));
+      voidOutside.Points.Add(IPoint.Create(Length.FromMillimeters(size), Length.FromMillimeters(size)));
+      voidOutside.Points.Add(IPoint.Create(Length.FromMillimeters(size), Length.FromMillimeters(@base)));
+      return voidOutside;
+    }
+
     public SectionBuilder CreateRectangularSection() {
       sectionType = SectionType.Rectangular;
       return this;
@@ -68,6 +93,7 @@ namespace AdSecCore.Builders {
       foreach (var group in groups) {
         ReinforcementGroups.Add(group);
       }
+
       return this;
     }
 
