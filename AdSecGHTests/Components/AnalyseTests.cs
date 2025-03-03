@@ -37,6 +37,12 @@ namespace AdSecGHTests.Components {
 
       ComponentTesting.ComputeOutputs(component);
     }
+    [Fact]
+    public void ShouldHaveAWarning() {
+      component.BusinessComponent.WarningMessages.Add("Test");
+      ComponentTesting.ComputeOutputs(component);
+      Assert.Single(component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
+    }
 
     [Fact]
     public void ShouldHaveOneInput() {
