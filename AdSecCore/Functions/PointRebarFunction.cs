@@ -3,8 +3,8 @@
 using Oasys.Profiles;
 
 namespace AdSecCore.Functions {
-  public class PointRebarFunction : IFunction {
 
+  public class PointRebarFunction : IFunction {
     public LengthParameter Y { get; set; } = new LengthParameter {
       Name = "Y",
       NickName = "Y",
