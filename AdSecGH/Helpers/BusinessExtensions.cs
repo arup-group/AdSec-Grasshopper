@@ -6,7 +6,6 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
