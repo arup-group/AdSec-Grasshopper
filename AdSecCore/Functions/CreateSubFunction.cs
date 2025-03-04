@@ -12,6 +12,12 @@ namespace AdSecCore.Functions {
       Access = Access.Item,
       Value = new SectionDesign(),
     };
+    public SubComponentParameter SubComponent { get; set; } = new SubComponentParameter {
+      Name = "SubComponent",
+      NickName = "Sub",
+      Description = "AdSec Sub Component",
+      Access = Access.Item,
+    };
     public PointParameter Offset { get; set; } = new PointParameter {
       Name = "Offset",
       NickName = "Off",
@@ -32,7 +38,7 @@ namespace AdSecCore.Functions {
     };
     public virtual Attribute[] GetAllInputAttributes() { return new Attribute[] { Section, Offset, }; }
 
-    public virtual Attribute[] GetAllOutputAttributes() { throw new NotImplementedException(); }
+    public virtual Attribute[] GetAllOutputAttributes() { return new Attribute[] { SubComponent, }; }
 
     public void Compute() { throw new NotImplementedException(); }
   }

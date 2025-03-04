@@ -54,10 +54,6 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.SubComponent;
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("SubComponent", "Sub", "AdSet Subcomponent", GH_ParamAccess.item);
-    }
-
     protected override void SolveInstance(IGH_DataAccess DA) {
       var section = this.GetAdSecSection(DA, 0);
       if (section == null) {

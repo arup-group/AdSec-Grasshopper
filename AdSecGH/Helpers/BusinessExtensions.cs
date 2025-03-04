@@ -33,6 +33,11 @@ namespace Oasys.GH.Helpers {
     private static readonly Dictionary<Type, Func<Attribute, IGH_Param>> ToGhParam
       = new Dictionary<Type, Func<Attribute, IGH_Param>> {
         {
+          typeof(SubComponentParameter),
+          a => new Param_Number {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
+        }, {
           typeof(DoubleParameter),
           a => new Param_Number {
             Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
@@ -113,6 +118,14 @@ namespace Oasys.GH.Helpers {
         { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
           typeof(LoadSurfaceParameter),
           a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
+        }, {
+          typeof(SubComponentParameter),
+          a => {
+            var subComponent = (a as SubComponentParameter).Value;
+            var sectionDesign = subComponent.SectionDesign;
+            return new AdSecSubComponentGoo(subComponent.ISubComponent, Plane.WorldXY, sectionDesign.DesignCode,
+              sectionDesign.CodeName, sectionDesign.MaterialName);
+          }
         },
         { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value },
         { typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value }, {
