@@ -110,14 +110,6 @@ namespace Oasys.GH.Helpers {
           a => new Param_GenericObject {
             Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
-        },
-        {
-          typeof(SectionSolutionParameter), a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
-          }
         },{
           typeof(AdSecCrackParameter), a => new Param_GenericObject {
             Name = a.Name,
