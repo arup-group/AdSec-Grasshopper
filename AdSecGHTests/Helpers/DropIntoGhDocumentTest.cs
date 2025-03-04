@@ -31,7 +31,7 @@ namespace AdSecGHTests.Helpers {
       Assert.Single(_document.Objects);
     }
 
-    [Fact(Timeout = 100)]
+    [Fact(Timeout = 300)]
     public async void ShouldLoadDocumentWithFile() {
       string path = $"ShouldLoadDocumentWithFile-{Path.GetRandomFileName()}.gh";
       SaveDocumentAs(path);

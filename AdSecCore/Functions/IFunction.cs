@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace AdSecCore.Functions {
 
   public interface IFunction {
@@ -10,6 +12,17 @@ namespace AdSecCore.Functions {
     Attribute[] GetAllOutputAttributes();
 
     void Compute();
+  }
+
+  public abstract class Function : IFunction {
+    public List<string> WarningMessages { get; set; } = new List<string>();
+    public abstract FuncAttribute Metadata { get; set; }
+    public abstract Organisation Organisation { get; set; }
+    public virtual Attribute[] GetAllInputAttributes() { return Array.Empty<Attribute>(); }
+
+    public virtual Attribute[] GetAllOutputAttributes() { return Array.Empty<Attribute>(); }
+
+    public abstract void Compute();
   }
 
   public class FuncAttribute {

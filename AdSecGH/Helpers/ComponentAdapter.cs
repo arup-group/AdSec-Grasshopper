@@ -32,6 +32,12 @@ namespace Oasys.GH.Helpers {
 
       BusinessComponent.UpdateInputValues(this, DA);
       BusinessComponent.Compute();
+      if (BusinessComponent is Function function) {
+        foreach (var warning in function.WarningMessages) {
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning);
+        }
+      }
+
       BusinessComponent.SetOutputValues(this, DA);
     }
   }
