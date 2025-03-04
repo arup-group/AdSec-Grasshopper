@@ -191,7 +191,11 @@ namespace Oasys.GH.Helpers {
         { typeof(StringArrayParam), a => (a as StringArrayParam).Value },
         { typeof(IntegerParameter), a => (a as IntegerParameter).Value },
         { typeof(LoadParameter), a => (a as LoadParameter).Value },
-        { typeof(CrackParameter), a => (a as CrackParameter).Value },
+        { typeof(CrackParameter), a => {
+            var crack = (a as CrackParameter).Value;
+            return new AdSecCrackGoo(crack);
+          }
+        }
       };
 
     private static readonly Dictionary<Type, Func<object, object>> GooToParam

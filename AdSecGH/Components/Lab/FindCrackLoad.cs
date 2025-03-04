@@ -16,11 +16,6 @@ using Attribute = AdSecCore.Functions.Attribute;
 namespace AdSecGH.Components {
   public class FindCrackLoadGh : FindCrackLoadFunction {
     public FindCrackLoadGh() {
-      // var solution = AdSecSolution as Attribute;
-      // Solution.Update(ref solution);
-      // AdSecSolution.OnValueChanged += goo => {
-      //   Solution.Value = goo.Value;
-      // };
 
       var baseLoad = AdSecBaseLoad as Attribute;
       BaseLoad.Update(ref baseLoad);
@@ -34,17 +29,10 @@ namespace AdSecGH.Components {
       SectionLoad.OnValueChanged += goo => {
         AdSecSectionLoad.Value = new AdSecLoadGoo(goo);
       };
-
-      var adSecMaximumCracking = AdSecMaximumCracking as Attribute;
-      MaximumCracking.Update(ref adSecMaximumCracking);
-      MaximumCracking.OnValueChanged += goo => {
-        AdSecMaximumCracking.Value = new AdSecCrackGoo(goo);
-      };
     }
-    // public SectionSolutionParameter AdSecSolution { get; set; } = new AdSecSolutionParameter();
+
     public AdSecLoadParameter AdSecBaseLoad { get; set; } = new AdSecLoadParameter();
     public AdSecLoadParameter AdSecSectionLoad { get; set; } = new AdSecLoadParameter();
-    public AdSecCrackParameter AdSecMaximumCracking { get; set; } = new AdSecCrackParameter();
     public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
        Solution,
@@ -57,7 +45,7 @@ namespace AdSecGH.Components {
     public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
         AdSecSectionLoad,
-        AdSecMaximumCracking,
+        MaximumCracking,
       };
     }
   };
