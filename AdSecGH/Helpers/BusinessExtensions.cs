@@ -184,7 +184,7 @@ namespace Oasys.GH.Helpers {
             if (goo is LengthParameter parameter) {
              return parameter.Value;
             }
-           return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry);;
+           return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry);
 
           }
         }, {
