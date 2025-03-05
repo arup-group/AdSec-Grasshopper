@@ -31,7 +31,6 @@ namespace AdSecGHTests.Components {
 
     public FindCrackLoadTests() {
       component = new FindCrackLoad();
-      ComponentTestHelper.SetInput(component, "yy", 2);
       ComponentTestHelper.SetInput(component, 10, 3);
     }
 
@@ -51,6 +50,14 @@ namespace AdSecGHTests.Components {
       var BottomRight = new BuilderReinforcementGroup().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(13, -28)).Build();
       var BottomLeft = new BuilderReinforcementGroup().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(-13, -28)).Build();
       return new SectionBuilder().WithWidth(30).WithHeight(60).CreateRectangularSection().WithReinforcementGroups(new List<IGroup>() { BottomLeft, BottomRight }).Build();
+    }
+
+    private void SetLoadDirectionXX() {
+      ComponentTestHelper.SetInput(component, "xx", 2);
+    }
+
+    private void SetLoadDirectionZZ() {
+      ComponentTestHelper.SetInput(component, "zz", 2);
     }
 
     private void SetSolutionAsParameter() {
@@ -104,6 +111,26 @@ namespace AdSecGHTests.Components {
       SetLoadInputAsValue();
       SetMaximumCracking();
 
+      Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
+      Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
+    }
+
+    [Fact]
+    public void ShouldHaveResultWhenLoadDirectionIsZZ() {
+      SetSolutionAsValue();
+      SetLoadInputAsValue();
+      SetMaximumCrackingAsValue();
+      SetLoadDirectionZZ();
+      Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
+      Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
+    }
+
+    [Fact]
+    public void ShouldHaveResultWhenLoadDirectionIsXX() {
+      SetSolutionAsValue();
+      SetLoadInputAsValue();
+      SetMaximumCrackingAsValue();
+      SetLoadDirectionXX();
       Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
       Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
     }
