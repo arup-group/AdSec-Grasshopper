@@ -100,7 +100,7 @@ namespace AdSecCore.Functions {
 
       var solution = Solution.Value;
       var baseLoad = BaseLoad.Value;
-      var loadComponent = OptimisedLoad.Value ?? OptimisedLoad.Default;
+      var loadComponent = OptimisedLoad.Value;
       var increment = LoadIncrement.Value;
       var maxCrack = MaximumCrack.Value.ToUnit(lengthUnitGeometry);
       var sls = solution.Solution.Serviceability.Check(baseLoad);

@@ -14,6 +14,8 @@ using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
+using Microsoft.CSharp.RuntimeBinder;
+
 using Oasys.AdSec;
 
 using OasysGH.Units;
@@ -30,7 +32,6 @@ namespace Oasys.GH.Helpers {
   public class AdSecPointArrayParameter : BaseArrayParameter<AdSecPointGoo> { }
   public class AdSecPointParameter : ParameterAttribute<AdSecPointGoo> { }
   public class AdSecMaterialArrayParam : BaseArrayParameter<AdSecMaterialGoo> { }
-  public class AdSecSolutionParameter : ParameterAttribute<AdSecSolutionGoo> { }
 
   public static class BusinessExtensions {
 
@@ -128,16 +129,7 @@ namespace Oasys.GH.Helpers {
           a => new Param_Integer {
             Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
-        }, {
-          typeof(AdSecSolutionParameter),
-          a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
-            Optional = a.Optional,
-          }
-        },
+        }
       };
 
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
@@ -153,7 +145,6 @@ namespace Oasys.GH.Helpers {
             return new AdSecSolutionGoo(sectionSolutionParameter);
           }
         },
-        { typeof(AdSecSolutionParameter), a => (a as AdSecSolutionParameter).Value },
         {
           typeof(AdSecPointArrayParameter), a => {
             var points = (a as AdSecPointArrayParameter).Value;
@@ -185,7 +176,17 @@ namespace Oasys.GH.Helpers {
       = new Dictionary<Type, Func<object, object>> {
         {
           typeof(LengthParameter),
-          goo => { return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry); }
+          goo => {
+            if (goo is Length value) {
+              return value;
+            }
+
+            if (goo is LengthParameter parameter) {
+             return parameter.Value;
+            }
+           return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry);;
+
+          }
         }, {
           typeof(AdSecSectionParameter), goo => {
             dynamic gooDynamic = goo;
@@ -207,18 +208,38 @@ namespace Oasys.GH.Helpers {
 
             return null;
           }
-        }, {
-          typeof(AdSecSolutionParameter), goo => {
-            dynamic gooDynamic = goo;
-            return new AdSecSolutionGoo(gooDynamic);
-          }
-        }, {
+        },{
           typeof(StringParameter), goo => {
             if (goo is string value) {
               return value;
             }
 
             return null;
+          }
+        },
+        {
+          typeof(LoadParameter), goo => {
+            if (goo is ILoad value) {
+              return value;
+            }
+
+             if (goo is LoadParameter valueParam) {
+              return valueParam.Value;
+            }
+             throw new RuntimeBinderException();
+          }
+        },
+        {
+          typeof(SectionSolutionParameter), goo => {
+            if (goo is SectionSolution value) {
+              return value;
+            }
+
+            if (goo is SectionSolutionParameter valueParam) {
+              return valueParam.Value;
+            }
+
+            throw new RuntimeBinderException();
           }
         },
       };
@@ -267,14 +288,20 @@ namespace Oasys.GH.Helpers {
         int index = component.Params.IndexOfInputParam(attribute.Name);
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           dynamic inputs = null;
-          if (dataAccess.GetData(index, ref inputs)) {
-            dynamic valueBasedParameter = attribute;
-            if (GooToParam.ContainsKey(attribute.GetType())) {
-              dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
-              valueBasedParameter.Value = newValue;
-            } else {
-              valueBasedParameter.Value = inputs.Value;
+          try {
+            if (dataAccess.GetData(index, ref inputs)) {
+              dynamic valueBasedParameter = attribute;
+              if (GooToParam.ContainsKey(attribute.GetType())) {
+                dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
+                valueBasedParameter.Value = newValue;
+              } else {
+                valueBasedParameter.Value = inputs.Value;
+              }
             }
+          } catch (Exception ex) when (ex is RuntimeBinderException ||
+                                 ex is InvalidCastException) {
+            component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
+            return;
           }
         }
       }
