@@ -17,39 +17,8 @@ namespace AdSecGH.Components {
   public class FindCrackLoadGh : FindCrackLoadFunction {
     public FindCrackLoadGh() {
 
-      var baseLoad = AdSecBaseLoad as Attribute;
-      BaseLoad.Update(ref baseLoad);
-      AdSecBaseLoad.OnValueChanged += goo => {
-        BaseLoad.Value = goo.Value;
-      };
-
-
-      var adSecSectionLoad = AdSecSectionLoad as Attribute;
-      SectionLoad.Update(ref adSecSectionLoad);
-      SectionLoad.OnValueChanged += goo => {
-        AdSecSectionLoad.Value = new AdSecLoadGoo(goo);
-      };
     }
-
-    public AdSecLoadParameter AdSecBaseLoad { get; set; } = new AdSecLoadParameter();
-    public AdSecLoadParameter AdSecSectionLoad { get; set; } = new AdSecLoadParameter();
-    public override Attribute[] GetAllInputAttributes() {
-      return new Attribute[] {
-       Solution,
-       AdSecBaseLoad,
-       OptimisedLoad,
-       LoadIncrement,
-       MaximumCrack,
-      };
-    }
-    public override Attribute[] GetAllOutputAttributes() {
-      return new Attribute[] {
-        AdSecSectionLoad,
-        MaximumCracking,
-      };
-    }
-  };
-
+  }
 
   public class FindCrackLoad : ComponentAdapter<FindCrackLoadGh> {
     public FindCrackLoad() { Hidden = true; }

@@ -31,8 +31,6 @@ namespace Oasys.GH.Helpers {
   public class AdSecPointParameter : ParameterAttribute<AdSecPointGoo> { }
   public class AdSecMaterialArrayParam : BaseArrayParameter<AdSecMaterialGoo> { }
   public class AdSecSolutionParameter : ParameterAttribute<AdSecSolutionGoo> { }
-  public class AdSecLoadParameter : ParameterAttribute<AdSecLoadGoo> { }
-  public class AdSecCrackParameter : ParameterAttribute<AdSecCrackGoo> { }
 
   public static class BusinessExtensions {
 
@@ -107,25 +105,7 @@ namespace Oasys.GH.Helpers {
             Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
-          typeof(AdSecCrackParameter),
-          a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
-            Optional = a.Optional,
-          }
-                  }, {
           typeof(LoadSurfaceParameter),
-          a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
-            Optional = a.Optional,
-          }
-        }, {
-          typeof(AdSecLoadParameter),
           a => new Param_GenericObject {
             Name = a.Name,
             NickName = a.NickName,
@@ -174,8 +154,7 @@ namespace Oasys.GH.Helpers {
           }
         },
         { typeof(AdSecSolutionParameter), a => (a as AdSecSolutionParameter).Value },
-        { typeof(AdSecLoadParameter), a => (a as AdSecLoadParameter).Value },
-        { typeof(AdSecCrackParameter), a => (a as AdSecCrackParameter).Value }, {
+        {
           typeof(AdSecPointArrayParameter), a => {
             var points = (a as AdSecPointArrayParameter).Value;
             return points?.ToList();
@@ -190,11 +169,15 @@ namespace Oasys.GH.Helpers {
         { typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value },
         { typeof(StringArrayParam), a => (a as StringArrayParam).Value },
         { typeof(IntegerParameter), a => (a as IntegerParameter).Value },
-        { typeof(LoadParameter), a => (a as LoadParameter).Value },
         { typeof(CrackParameter), a => {
             var crack = (a as CrackParameter).Value;
             return new AdSecCrackGoo(crack);
           }
+        },
+        { typeof(LoadParameter), a => {
+            var load = (a as LoadParameter).Value;
+            return new AdSecLoadGoo(load);
+        }
         }
       };
 
@@ -225,34 +208,9 @@ namespace Oasys.GH.Helpers {
             return null;
           }
         }, {
-          typeof(LoadParameter), goo => {
-            dynamic gooDynamic = goo;
-            return new AdSecLoadGoo(gooDynamic);
-          }
-        }, {
-          typeof(CrackParameter), goo => {
-            dynamic gooDynamic = goo;
-            return new AdSecCrackGoo(gooDynamic);
-          }
-        }, {
           typeof(AdSecSolutionParameter), goo => {
             dynamic gooDynamic = goo;
             return new AdSecSolutionGoo(gooDynamic);
-          }
-        // }, {
-        //   typeof(SectionSolutionParameter), goo => {
-        //     dynamic gooDynamic = goo;
-        //     return gooDynamic;
-        //   }
-        }, {
-          typeof(AdSecLoadParameter), goo => {
-            dynamic gooDynamic = goo;
-            return new AdSecLoadGoo(gooDynamic);
-          }
-        }, {
-          typeof(AdSecCrackParameter), goo => {
-            dynamic gooDynamic = goo;
-            return new AdSecCrackGoo(gooDynamic);
           }
         }, {
           typeof(StringParameter), goo => {
@@ -278,7 +236,8 @@ namespace Oasys.GH.Helpers {
       switch (access) {
         case Access.Item: return GH_ParamAccess.item;
         case Access.List: return GH_ParamAccess.list;
-        default: throw new ArgumentOutOfRangeException();
+        default: throw new ArgumentException("Invalid parameter access type");
+
       }
     }
 
