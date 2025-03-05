@@ -2,6 +2,11 @@
 
 using AdSecGHCore.Constants;
 
+using Oasys.AdSec;
+using Oasys.Profiles;
+
+using OasysUnits;
+
 namespace AdSecCore.Functions {
   public class CreateSubComponentFunction : IFunction {
 
@@ -40,6 +45,15 @@ namespace AdSecCore.Functions {
 
     public virtual Attribute[] GetAllOutputAttributes() { return new Attribute[] { SubComponent, }; }
 
-    public void Compute() { throw new NotImplementedException(); }
+    public void Compute() {
+      if (Offset.Value == null) {
+        Offset.Value = IPoint.Create(Length.Zero, Length.Zero);
+      }
+
+      SubComponent.Value = new SubComponent() {
+        ISubComponent = ISubComponent.Create(Section.Value.Section, Offset.Value),
+        SectionDesign = Section.Value,
+      };
+    }
   }
 }
