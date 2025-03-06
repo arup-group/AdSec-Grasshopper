@@ -177,15 +177,14 @@ namespace Oasys.GH.Helpers {
         {
           typeof(LengthParameter),
           goo => {
-            if (goo is Length value) {
-              return value;
+            switch(goo) {
+              case Length value:
+                return value;
+              case LengthParameter valueParam:
+                return valueParam.Value;
+              default:
+                return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry);
             }
-
-            if (goo is LengthParameter parameter) {
-             return parameter.Value;
-            }
-           return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry);
-
           }
         }, {
           typeof(AdSecSectionParameter), goo => {
@@ -194,52 +193,62 @@ namespace Oasys.GH.Helpers {
           }
         }, {
           typeof(DoubleParameter), goo => {
-            if (goo is double value) {
-              return value;
+            switch(goo) {
+              case double value:
+                return value;
+              case DoubleParameter valueParam:
+                return valueParam.Value;
+              default:
+                throw new RuntimeBinderException();
             }
-
-            return null;
           }
         }, {
           typeof(IntegerParameter), goo => {
-            if (goo is int value) {
-              return value;
+            switch(goo) {
+              case int value:
+                return value;
+              case IntegerParameter valueParam:
+                return valueParam.Value;
+              default:
+                throw new RuntimeBinderException();
             }
-
-            return null;
           }
         },{
           typeof(StringParameter), goo => {
-            if (goo is string value) {
-              return value;
+            switch(goo) {
+              case string value:
+                return value;
+              case StringParameter valueParam:
+                return valueParam.Value;
+              default:
+                throw new RuntimeBinderException();
             }
-
-            return null;
           }
         },
         {
           typeof(LoadParameter), goo => {
-            if (goo is ILoad value) {
-              return value;
+            switch(goo) {
+              case ILoad load:
+                return load;
+              case AdSecLoadGoo loadGoo:
+                return loadGoo.Value;
+              case LoadParameter valueParam:
+                return valueParam.Value;
+              default:
+                throw new RuntimeBinderException();
             }
-
-             if (goo is LoadParameter valueParam) {
-              return valueParam.Value;
-            }
-             throw new RuntimeBinderException();
           }
         },
         {
           typeof(SectionSolutionParameter), goo => {
-            if (goo is SectionSolution value) {
-              return value;
+            switch(goo) {
+              case SectionSolution value:
+                return value;
+              case SectionSolutionParameter valueParam:
+                return valueParam.Value;
+              default:
+                throw new RuntimeBinderException();
             }
-
-            if (goo is SectionSolutionParameter valueParam) {
-              return valueParam.Value;
-            }
-
-            throw new RuntimeBinderException();
           }
         },
       };

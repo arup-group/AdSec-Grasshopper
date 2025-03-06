@@ -78,6 +78,11 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.SetInput(component, parameter, 1);
     }
 
+    private void SetLoadInputAsGoo() {
+      var loadGoo = new AdSecLoadGoo(ILoad.Create(Force.FromNewtons(100), Moment.Zero, Moment.Zero));
+      ComponentTestHelper.SetInput(component, loadGoo, 1);
+    }
+
     private void SetLoadInputAsValue() {
       ComponentTestHelper.SetInput(component, ILoad.Create(Force.FromNewtons(100), Moment.Zero, Moment.Zero), 1);
     }
@@ -149,6 +154,15 @@ namespace AdSecGHTests.Components {
     public void ShouldHaveResultWhenInputSetByParameter() {
       SetSolutionAsParameter();
       SetLoadInputAsParameter();
+      SetMaximumCrackingAsParameter();
+      Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
+      Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
+    }
+
+    [Fact]
+    public void ShouldHaveResultWhenInputLoadSetByGoo() {
+      SetSolutionAsParameter();
+      SetLoadInputAsGoo();
       SetMaximumCrackingAsParameter();
       Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
       Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
