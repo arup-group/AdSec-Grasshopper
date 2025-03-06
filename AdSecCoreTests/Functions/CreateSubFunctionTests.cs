@@ -1,7 +1,6 @@
 ﻿using AdSecCore.Builders;
 using AdSecCore.Functions;
 
-using Oasys.AdSec;
 using Oasys.Profiles;
 
 using OasysUnits;

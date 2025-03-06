@@ -15,5 +15,9 @@ namespace AdSecGHTests.Components {
     public void ShouldHaveTwoInputs() {
       Assert.Equal(2, component.Params.Input.Count);
     }
+    [Fact]
+    public void ShouldHaveOneOutput() {
+      Assert.Single(component.Params.Output);
+    }
   }
 }
