@@ -34,7 +34,7 @@ namespace Oasys.GH.Helpers {
       = new Dictionary<Type, Func<Attribute, IGH_Param>> {
         {
           typeof(SubComponentParameter),
-          a => new Param_Number {
+          a => new Param_GenericObject {
             Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
@@ -164,8 +164,12 @@ namespace Oasys.GH.Helpers {
             if (goo is double value) {
               return value;
             }
-
             return null;
+          }
+        }, {
+          typeof(AdSecPointParameter), goo => {
+            dynamic gooDynamic = goo;
+            return new AdSecPointGoo(gooDynamic);
           }
         },
       };

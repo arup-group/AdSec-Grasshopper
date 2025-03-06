@@ -13,6 +13,9 @@ namespace AdSecCoreTests.Functions {
 
     public CreateSubFunctionTests() {
       function = new CreateSubComponentFunction();
+      function.Section.Value = new SectionDesign {
+        Section = SectionBuilder.Get100Section(),
+      };
     }
 
     [Fact]
@@ -31,9 +34,6 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldProduceAValidSubComponentWithOffset() {
-      function.Section.Value = new SectionDesign {
-        Section = SectionBuilder.Get100Section(),
-      };
       function.Offset.Value = IPoint.Create(Length.FromMillimeters(100), Length.FromMillimeters(100));
       function.Compute();
       Assert.NotNull(function.SubComponent.Value);
@@ -42,9 +42,11 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(100, valueSubComponent.Offset.Z.As(LengthUnit.Millimeter));
     }
 
-    [Fact]
+    [Fact(Skip = "Need to bring the changes of optional parameters")]
     public void ShouldHaveOffsetAsOptional() {
-      // Assert.True(createSubComponentFunction.GetAllInputAttributes()[1].Optional);
+      function.Offset.Value = null;
+      function.Compute();
+      Assert.NotNull(function.SubComponent.Value);
     }
   }
 }

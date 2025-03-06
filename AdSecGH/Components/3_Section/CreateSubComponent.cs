@@ -3,19 +3,13 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
-using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
 
-using Oasys.AdSec;
 using Oasys.GH.Helpers;
-using Oasys.Profiles;
 
 using OasysGH;
-
-using OasysUnits;
 
 using AdSecSectionParameter = Oasys.GH.Helpers.AdSecSectionParameter;
 using Attribute = AdSecCore.Functions.Attribute;
@@ -34,14 +28,23 @@ namespace AdSecGH.Components {
           };
         }
       };
+
+      var adSecOffset = AdSecOffset as Attribute;
+      Offset.Update(ref adSecOffset);
+      AdSecOffset.OnValueChanged += goo => {
+        if (goo.Value != null) {
+          Offset.Value = goo.AdSecPoint;
+        }
+      };
     }
 
     public AdSecSectionParameter AdSecSection { get; set; } = new AdSecSectionParameter();
+    public AdSecPointParameter AdSecOffset { get; set; } = new AdSecPointParameter();
 
     public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
         AdSecSection,
-        Offset,
+        AdSecOffset,
       };
     }
   }
@@ -53,18 +56,5 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.SubComponent;
-
-    protected override void SolveInstance(IGH_DataAccess DA) {
-      var section = this.GetAdSecSection(DA, 0);
-      if (section == null) {
-        return;
-      }
-
-      var offset = this.GetAdSecPointGoo(DA, 1, true).AdSecPoint ?? IPoint.Create(Length.Zero, Length.Zero);
-      var subComponent = ISubComponent.Create(section.Section, offset);
-      var subGoo = new AdSecSubComponentGoo(subComponent, section.LocalPlane, section.DesignCode, section._codeName,
-        section._materialName);
-      DA.SetData(0, subGoo);
-    }
   }
 }
