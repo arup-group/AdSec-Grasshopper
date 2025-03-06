@@ -31,11 +31,7 @@ namespace AdSecGH.Components {
 
       var adSecOffset = AdSecOffset as Attribute;
       Offset.Update(ref adSecOffset);
-      AdSecOffset.OnValueChanged += goo => {
-        if (goo.Value != null) {
-          Offset.Value = goo.AdSecPoint;
-        }
-      };
+      AdSecOffset.OnValueChanged += goo => { Offset.Value = goo.AdSecPoint; };
     }
 
     public AdSecSectionParameter AdSecSection { get; set; } = new AdSecSectionParameter();

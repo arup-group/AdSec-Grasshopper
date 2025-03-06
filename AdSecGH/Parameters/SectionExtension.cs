@@ -7,7 +7,7 @@ using Oasys.AdSec.DesignCode;
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
-  public class SectionExtension {
+  public static class SectionExtension {
     public static AdSecSectionGoo AdSecSectionGooSample() {
       var singleBars = new BuilderReinforcementGroup().WithSize(2).CreateSingleBar().AtPosition(Geometry.Zero())
        .Build();
