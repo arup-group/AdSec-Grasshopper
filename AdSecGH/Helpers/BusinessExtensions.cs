@@ -231,10 +231,14 @@ namespace Oasys.GH.Helpers {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
         var type = attribute.GetType();
         dynamic goo = ToGoo[type](attribute);
+        bool success = false;
         if (attribute.GetAccess() == GH_ParamAccess.item) {
-          dataAccess.SetData(index, goo);
+          success = dataAccess.SetData(index, goo);
         } else {
-          dataAccess.SetDataList(index, goo);
+          success = dataAccess.SetDataList(index, goo);
+        }
+        if (!success) {
+          throw new Exception($"Failed to set data for {attribute.Name} of type {type} at index {index} into param of type {component.Params.Output[index].GetType()}");
         }
       }
     }
