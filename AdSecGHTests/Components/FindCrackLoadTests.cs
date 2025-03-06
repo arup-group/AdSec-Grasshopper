@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 
 using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using AdSecGH.Components;
-using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
 
@@ -14,12 +12,8 @@ using Grasshopper.Kernel;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.GH.Helpers;
 
 using OasysUnits;
-
-using Rhino.Geometry;
-using Rhino.NodeInCode;
 
 using Xunit;
 

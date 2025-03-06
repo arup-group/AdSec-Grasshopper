@@ -93,11 +93,59 @@ namespace AdSecCore.Functions {
       };
     }
 
-    public void Compute() {
-      var lengthUnitGeometry = ContextUnits.Instance.LengthUnitGeometry;
+    public static bool IsFx(string loadComponent) {
+      switch (loadComponent.ToLower().Trim()) {
+        case "x":
+        case "xx":
+        case "fx":
+        case "fxx":
+          return true;
+        default:
+          return false;
+      }
+    }
+
+    public static bool IsMyy(string loadComponent) {
+      switch (loadComponent.ToLower().Trim()) {
+        case "y":
+        case "yy":
+        case "my":
+        case "myy":
+          return true;
+        default:
+          return false;
+      }
+    }
+
+    public static bool IsMzz(string loadComponent) {
+      switch (loadComponent.ToLower().Trim()) {
+        case "z":
+        case "zz":
+        case "mz":
+        case "mzz":
+          return true;
+        default:
+          return false;
+      }
+    }
+
+    private static void UpdatedLoad(string loadComponent, ref ILoad baseLoad, int increment) {
       var forceUnit = ContextUnits.Instance.ForceUnit;
       var momentUnit = ContextUnits.Instance.MomentUnit;
+      if (IsFx(loadComponent)) {
+        baseLoad = ILoad.Create(new Force(baseLoad.X.As(forceUnit) + increment, forceUnit), baseLoad.YY,
+          baseLoad.ZZ);
+      } else if (IsMyy(loadComponent)) {
+        baseLoad = ILoad.Create(baseLoad.X, new Moment(baseLoad.YY.As(momentUnit) + increment, momentUnit),
+          baseLoad.ZZ);
+      } else if (IsMzz(loadComponent)) {
+        baseLoad = ILoad.Create(baseLoad.X, baseLoad.YY,
+          new Moment(baseLoad.ZZ.As(momentUnit) + increment, momentUnit));
+      }
+    }
 
+    public void Compute() {
+      var lengthUnitGeometry = ContextUnits.Instance.LengthUnitGeometry;
       var solution = Solution.Value;
       var baseLoad = BaseLoad.Value;
       var loadComponent = OptimisedLoad.Value;
@@ -107,60 +155,12 @@ namespace AdSecCore.Functions {
 
       while (sls.MaximumWidthCrack.Width <= maxCrack) {
         // update load
-        switch (loadComponent.ToLower().Trim()) {
-          case "x":
-          case "xx":
-          case "fx":
-          case "fxx":
-            baseLoad = ILoad.Create(new Force(baseLoad.X.As(forceUnit) + increment, forceUnit), baseLoad.YY,
-            baseLoad.ZZ);
-            break;
-
-          case "y":
-          case "yy":
-          case "my":
-          case "myy":
-            baseLoad = ILoad.Create(baseLoad.X, new Moment(baseLoad.YY.As(momentUnit) + increment, momentUnit),
-            baseLoad.ZZ);
-            break;
-
-          case "z":
-          case "zz":
-          case "mz":
-          case "mzz":
-            baseLoad = ILoad.Create(baseLoad.X, baseLoad.YY,
-            new Moment(baseLoad.ZZ.As(momentUnit) + increment, momentUnit));
-            break;
-        }
+        UpdatedLoad(loadComponent, ref baseLoad, increment);
         sls = solution.Solution.Serviceability.Check(baseLoad);
       }
 
       // update load to one step back
-      switch (loadComponent.ToLower().Trim()) {
-        case "x":
-        case "xx":
-        case "fx":
-        case "fxx":
-          baseLoad = ILoad.Create(new Force(baseLoad.X.As(forceUnit) - increment, forceUnit), baseLoad.YY,
-           baseLoad.ZZ);
-          break;
-
-        case "y":
-        case "yy":
-        case "my":
-        case "myy":
-          baseLoad = ILoad.Create(baseLoad.X, new Moment(baseLoad.YY.As(momentUnit) - increment, momentUnit),
-           baseLoad.ZZ);
-          break;
-
-        case "z":
-        case "zz":
-        case "mz":
-        case "mzz":
-          baseLoad = ILoad.Create(baseLoad.X, baseLoad.YY,
-            new Moment(baseLoad.ZZ.As(momentUnit) - increment, momentUnit));
-          break;
-      }
+      UpdatedLoad(loadComponent, ref baseLoad, -increment);
 
       sls = solution.Solution.Serviceability.Check(baseLoad);
 
