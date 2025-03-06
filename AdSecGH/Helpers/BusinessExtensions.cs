@@ -177,78 +177,12 @@ namespace Oasys.GH.Helpers {
         {
           typeof(LengthParameter),
           goo => {
-            switch(goo) {
-              case Length value:
-                return value;
-              case LengthParameter valueParam:
-                return valueParam.Value;
-              default:
-                return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry);
-            }
+           return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry);
           }
         }, {
           typeof(AdSecSectionParameter), goo => {
             dynamic gooDynamic = goo;
             return new AdSecSectionGoo(gooDynamic);
-          }
-        }, {
-          typeof(DoubleParameter), goo => {
-            switch(goo) {
-              case double value:
-                return value;
-              case DoubleParameter valueParam:
-                return valueParam.Value;
-              default:
-                throw new RuntimeBinderException();
-            }
-          }
-        }, {
-          typeof(IntegerParameter), goo => {
-            switch(goo) {
-              case int value:
-                return value;
-              case IntegerParameter valueParam:
-                return valueParam.Value;
-              default:
-                throw new RuntimeBinderException();
-            }
-          }
-        },{
-          typeof(StringParameter), goo => {
-            switch(goo) {
-              case string value:
-                return value;
-              case StringParameter valueParam:
-                return valueParam.Value;
-              default:
-                throw new RuntimeBinderException();
-            }
-          }
-        },
-        {
-          typeof(LoadParameter), goo => {
-            switch(goo) {
-              case ILoad load:
-                return load;
-              case AdSecLoadGoo loadGoo:
-                return loadGoo.Value;
-              case LoadParameter valueParam:
-                return valueParam.Value;
-              default:
-                throw new RuntimeBinderException();
-            }
-          }
-        },
-        {
-          typeof(SectionSolutionParameter), goo => {
-            switch(goo) {
-              case SectionSolution value:
-                return value;
-              case SectionSolutionParameter valueParam:
-                return valueParam.Value;
-              default:
-                throw new RuntimeBinderException();
-            }
           }
         },
       };
@@ -297,20 +231,19 @@ namespace Oasys.GH.Helpers {
         int index = component.Params.IndexOfInputParam(attribute.Name);
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           dynamic inputs = null;
-          try {
-            if (dataAccess.GetData(index, ref inputs)) {
-              dynamic valueBasedParameter = attribute;
-              if (GooToParam.ContainsKey(attribute.GetType())) {
-                dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
-                valueBasedParameter.Value = newValue;
-              } else {
+          if (dataAccess.GetData(index, ref inputs)) {
+            dynamic valueBasedParameter = attribute;
+            if (GooToParam.ContainsKey(attribute.GetType())) {
+              dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
+              valueBasedParameter.Value = newValue;
+            } else {
+              try {
                 valueBasedParameter.Value = inputs.Value;
+              } catch (RuntimeBinderException) {
+                component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
+                return;
               }
             }
-          } catch (Exception ex) when (ex is RuntimeBinderException ||
-                                 ex is InvalidCastException) {
-            component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
-            return;
           }
         }
       }

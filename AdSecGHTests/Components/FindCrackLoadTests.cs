@@ -32,9 +32,10 @@ namespace AdSecGHTests.Components {
     public FindCrackLoadTests() {
       component = new FindCrackLoad();
       ComponentTestHelper.SetInput(component, 10, 3);
+      ComponentTestHelper.SetInput(component, ILoad.Create(Force.FromNewtons(100), Moment.Zero, Moment.Zero), 1);
     }
 
-    static SectionSolutionParameter SolveSection() {
+    static SectionSolution SolveSection() {
       var analyseFunction = new AnalyseFunction();
       analyseFunction.Section = new SectionParameter() {
         Value = new SectionDesign() {
@@ -43,7 +44,7 @@ namespace AdSecGHTests.Components {
         }
       };
       analyseFunction.Compute();
-      return analyseFunction.Solution;
+      return analyseFunction.Solution.Value;
     }
 
     private static ISection CreateSTDRectangularSection() {
@@ -60,31 +61,12 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.SetInput(component, "zz", 2);
     }
 
-    private void SetSolutionAsParameter() {
+    private void SetSolution() {
       ComponentTestHelper.SetInput(component, SolveSection(), 0);
-    }
-
-    private void SetSolutionAsValue() {
-      ComponentTestHelper.SetInput(component, SolveSection().Value, 0);
     }
 
     private void SetInvalidSolution() {
       ComponentTestHelper.SetInput(component, "", 0);
-    }
-
-    private void SetLoadInputAsParameter() {
-      var parameter = new LoadParameter();
-      parameter.Value = ILoad.Create(Force.FromNewtons(100), Moment.Zero, Moment.Zero);
-      ComponentTestHelper.SetInput(component, parameter, 1);
-    }
-
-    private void SetLoadInputAsGoo() {
-      var loadGoo = new AdSecLoadGoo(ILoad.Create(Force.FromNewtons(100), Moment.Zero, Moment.Zero));
-      ComponentTestHelper.SetInput(component, loadGoo, 1);
-    }
-
-    private void SetLoadInputAsValue() {
-      ComponentTestHelper.SetInput(component, ILoad.Create(Force.FromNewtons(100), Moment.Zero, Moment.Zero), 1);
     }
 
     private void SetMaximumCracking() {
@@ -95,16 +77,6 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.SetInput(component, "", 4);
     }
 
-    private void SetMaximumCrackingAsParameter() {
-      var parameter = new LengthParameter();
-      parameter.Value = Length.FromMillimeters(0.00005);
-      ComponentTestHelper.SetInput(component, parameter, 4);
-    }
-
-    private void SetMaximumCrackingAsValue() {
-      ComponentTestHelper.SetInput(component, Length.FromMillimeters(0.00005), 4);
-    }
-
     [Fact]
     public void ShouldHaveFiveInput() {
       Assert.Equal(5, component.Params.Input.Count);
@@ -112,19 +84,16 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveTwoOutputs() {
-      SetSolutionAsValue();
-      SetLoadInputAsValue();
+      SetSolution();
       SetMaximumCracking();
-
       Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
       Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
     }
 
     [Fact]
     public void ShouldHaveResultWhenLoadDirectionIsZZ() {
-      SetSolutionAsValue();
-      SetLoadInputAsValue();
-      SetMaximumCrackingAsValue();
+      SetSolution();
+      SetMaximumCracking();
       SetLoadDirectionZZ();
       Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
       Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
@@ -132,38 +101,9 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveResultWhenLoadDirectionIsXX() {
-      SetSolutionAsValue();
-      SetLoadInputAsValue();
-      SetMaximumCrackingAsValue();
+      SetSolution();
+      SetMaximumCracking();
       SetLoadDirectionXX();
-      Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
-      Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
-    }
-
-    [Fact]
-    public void ShouldHaveResultWhenInputSetByValue() {
-      SetSolutionAsValue();
-      SetLoadInputAsValue();
-      SetMaximumCrackingAsValue();
-
-      Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
-      Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
-    }
-
-    [Fact]
-    public void ShouldHaveResultWhenInputSetByParameter() {
-      SetSolutionAsParameter();
-      SetLoadInputAsParameter();
-      SetMaximumCrackingAsParameter();
-      Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
-      Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
-    }
-
-    [Fact]
-    public void ShouldHaveResultWhenInputLoadSetByGoo() {
-      SetSolutionAsParameter();
-      SetLoadInputAsGoo();
-      SetMaximumCrackingAsParameter();
       Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
       Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
     }
@@ -171,7 +111,6 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldHaveErrors() {
       SetInvalidSolution();
-      SetLoadInputAsValue();
       SetMaximumCracking();
       ComponentTestHelper.GetOutput(component);
       Assert.Single(component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
@@ -180,7 +119,6 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldHaveErrorWhenCrackingIsInvalid() {
       SetInvalidSolution();
-      SetLoadInputAsValue();
       SetInvalidCracking();
       ComponentTestHelper.GetOutput(component);
       Assert.Single(component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
