@@ -6,15 +6,6 @@ using Oasys.Profiles;
 using OasysUnits;
 
 namespace AdSecCore.Functions {
-
-  public class DoubleParameter : ParameterAttribute<double> { }
-
-  public class DoubleArrayParameter : BaseArrayParameter<double> { }
-
-  public class IntegerArrayParameter : BaseArrayParameter<int> { }
-
-  public class SectionParameter : ParameterAttribute<SectionDesign> { }
-
   public class SectionDesign {
     public ISection Section { get; set; }
     public IDesignCode DesignCode { get; set; }
@@ -40,6 +31,17 @@ namespace AdSecCore.Functions {
     public double Z { get; set; }
   }
 
+  public class SectionSolution {
+    public ISolution Solution { get; set; }
+    public SectionDesign SectionDesign { get; set; } = new SectionDesign();
+    public IStrength Strength => Solution.Strength;
+    public IServiceability Serviceability => Solution.Serviceability;
+  }
+
+  public class DoubleParameter : ParameterAttribute<double> { }
+  public class DoubleArrayParameter : BaseArrayParameter<double> { }
+  public class IntegerArrayParameter : BaseArrayParameter<int> { }
+  public class SectionParameter : ParameterAttribute<SectionDesign> { }
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }
   public class PointParameter : ParameterAttribute<IPoint> { }
   public class StringArrayParam : BaseArrayParameter<string> { }
@@ -54,8 +56,9 @@ namespace AdSecCore.Functions {
     public SectionDesign SectionDesign { get; set; } = new SectionDesign();
   }
 
-  public class SectionSolution {
-    public ISolution Solution { get; set; }
-    public SectionDesign SectionDesign { get; set; } = new SectionDesign();
-  }
+  public class IntegerParameter : ParameterAttribute<int> { }
+  public class LoadParameter : ParameterAttribute<ILoad> { }
+  public class CrackParameter : ParameterAttribute<ICrack> { }
+
+
 }

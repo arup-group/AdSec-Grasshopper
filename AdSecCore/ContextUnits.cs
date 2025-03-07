@@ -22,6 +22,7 @@ namespace AdSecGHCore.Constants {
       set => CurrentUnits.LengthUnitGeometry = value;
     }
     public ForceUnit ForceUnit => CurrentUnits.ForceUnit;
+    public MomentUnit MomentUnit => CurrentUnits.MomentUnit;
     public StrainUnit StrainUnit => CurrentUnits.StrainUnit;
     public PressureUnit PressureUnit => CurrentUnits.PressureUnit;
 
@@ -36,6 +37,7 @@ namespace AdSecGHCore.Constants {
     public ForceUnit ForceUnit { get; set; } = ForceUnit.Kilonewton;
     public StrainUnit StrainUnit { get; set; } = StrainUnit.Ratio;
     public PressureUnit PressureUnit { get; set; } = PressureUnit.Megapascal;
+    public MomentUnit MomentUnit { get; set; } = MomentUnit.NewtonMeter;
   }
 
   public interface IUnitSet {
@@ -44,6 +46,7 @@ namespace AdSecGHCore.Constants {
     ForceUnit ForceUnit { get; set; }
     StrainUnit StrainUnit { get; set; }
     PressureUnit PressureUnit { get; set; }
+    MomentUnit MomentUnit { get; set; }
   }
 
 }

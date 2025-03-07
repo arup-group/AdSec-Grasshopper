@@ -9,7 +9,7 @@ using Oasys.AdSec;
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
-  public class AdSecSolutionGoo : GH_Goo<ISolution> {
+  public class AdSecSolutionGoo : GH_Goo<SectionSolution> {
     public override bool IsValid => true;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Results";
@@ -18,7 +18,8 @@ namespace AdSecGH.Parameters {
     internal AdSecSection m_section;
     private Plane m_plane;
 
-    public AdSecSolutionGoo(SectionSolution sectionSolutionParameter) : base(sectionSolutionParameter.Solution) {
+    public AdSecSolutionGoo(SectionSolution sectionSolutionParameter) {
+      Value = sectionSolutionParameter;
       var sectionDesign = sectionSolutionParameter.SectionDesign;
       var section = sectionDesign.Section;
       var code = sectionDesign.DesignCode;
@@ -29,14 +30,20 @@ namespace AdSecGH.Parameters {
       ProfileEdge = m_section.m_profileEdge;
     }
 
-    public AdSecSolutionGoo(ISolution solution, AdSecSection section) : base(solution) {
+    public AdSecSolutionGoo(ISolution solution, AdSecSection section) {
+      Value = new SectionSolution() {
+        Solution = solution, SectionDesign = new SectionDesign() {
+          Section = section.Section,
+          DesignCode = section.DesignCode
+        }
+      };
       m_section = section;
       m_plane = m_section.LocalPlane;
       ProfileEdge = m_section.m_profileEdge;
     }
 
     public override IGH_Goo Duplicate() {
-      return new AdSecSolutionGoo(Value, m_section);
+      return new AdSecSolutionGoo(Value);
     }
 
     public override string ToString() {

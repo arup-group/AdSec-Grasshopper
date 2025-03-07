@@ -111,7 +111,7 @@ namespace AdSecGHTests.Helpers {
     public void ShouldConvertAccessException() {
       var item = new ParameterAttribute<int>();
       item.Access = (Access)10;
-      Assert.Throws<ArgumentOutOfRangeException>(() => item.GetAccess());
+      Assert.Throws<ArgumentException>(() => item.GetAccess());
     }
   }
 }
