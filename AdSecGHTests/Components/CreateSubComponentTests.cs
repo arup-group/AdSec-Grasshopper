@@ -15,10 +15,10 @@ namespace AdSecGHTests.Components {
 
   [Collection("GrasshopperFixture collection")]
   public class CreateSubComponentTests {
-    private readonly CreateSubcomponent component;
+    private readonly CreateSubComponent component;
 
     public CreateSubComponentTests() {
-      component = new CreateSubcomponent();
+      component = new CreateSubComponent();
       component.SetInputParamAt(0, SectionExtension.AdSecSectionGooSample());
       component.SetInputParamAt(1, IPointBuilder.InMillimeters());
     }

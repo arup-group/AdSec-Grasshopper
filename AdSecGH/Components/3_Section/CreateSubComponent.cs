@@ -15,9 +15,9 @@ using AdSecSectionParameter = Oasys.GH.Helpers.AdSecSectionParameter;
 using Attribute = AdSecCore.Functions.Attribute;
 
 namespace AdSecGH.Components {
-  public class CreateSubComponentComponentGh : CreateSubComponentFunction {
+  public class CreateSubComponentGh : CreateSubComponentFunction {
 
-    public CreateSubComponentComponentGh() {
+    public CreateSubComponentGh() {
       var adSecSection = AdSecSection as Attribute;
       Section.Update(ref adSecSection);
       AdSecSection.OnValueChanged += goo => {
@@ -45,7 +45,7 @@ namespace AdSecGH.Components {
     }
   }
 
-  public class CreateSubcomponent : ComponentAdapter<CreateSubComponentComponentGh> {
+  public class CreateSubComponent : ComponentAdapter<CreateSubComponentGh> {
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("38747c89-01a4-4388-921b-8c8d8cbca410");
