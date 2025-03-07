@@ -3,7 +3,6 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
-using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
@@ -12,7 +11,6 @@ using Oasys.GH.Helpers;
 
 using OasysGH;
 
-using Attribute = AdSecCore.Functions.Attribute;
 namespace AdSecGH.Components {
   public class FindCrackLoadGh : FindCrackLoadFunction {
     public FindCrackLoadGh() {

@@ -7,79 +7,46 @@ namespace AdSecCoreTests {
       function = new FindCrackLoadFunction();
     }
 
-    [Fact]
-    public void IsFxWhenX() {
-      Assert.True(FindCrackLoadFunction.IsFx("X"));
+    [Theory]
+    [InlineData("X")]
+    [InlineData("XX")]
+    [InlineData("Fx")]
+    [InlineData("Fxx")]
+    public void FxShouldReturnTrueFor(string x) {
+      Assert.True(FindCrackLoadFunction.IsFx(x));
     }
 
     [Fact]
-    public void IsFxWhenXX() {
-      Assert.True(FindCrackLoadFunction.IsFx("XX"));
+    public void FxShouldReturnFalseFor() {
+      Assert.False(FindCrackLoadFunction.IsFx("zz"));
+    }
+
+    [Theory]
+    [InlineData("Y")]
+    [InlineData("YY")]
+    [InlineData("My")]
+    [InlineData("Myy")]
+    public void MyyShouldReturnTrueFor(string x) {
+      Assert.True(FindCrackLoadFunction.IsMyy(x));
     }
 
     [Fact]
-    public void IsFxWhenFx() {
-      Assert.True(FindCrackLoadFunction.IsFx("Fx"));
+    public void MyyShouldReturnFalseFor() {
+      Assert.False(FindCrackLoadFunction.IsMyy("xx"));
+    }
+
+    [Theory]
+    [InlineData("Z")]
+    [InlineData("ZZ")]
+    [InlineData("Mz")]
+    [InlineData("Mzz")]
+    public void MzzShouldReturnTrueFor(string x) {
+      Assert.True(FindCrackLoadFunction.IsMzz(x));
     }
 
     [Fact]
-    public void IsFxWhenFXX() {
-      Assert.True(FindCrackLoadFunction.IsFx("FXX"));
-    }
-
-    [Fact]
-    public void IsNotFxWhenZZ() {
-      Assert.False(FindCrackLoadFunction.IsFx("ZZ"));
-    }
-
-    [Fact]
-    public void IsMyyWhenY() {
-      Assert.True(FindCrackLoadFunction.IsMyy("Y"));
-    }
-
-    [Fact]
-    public void IsMyyWhenYY() {
-      Assert.True(FindCrackLoadFunction.IsMyy("YY"));
-    }
-
-    [Fact]
-    public void IsMyyWhenMy() {
-      Assert.True(FindCrackLoadFunction.IsMyy("MY"));
-    }
-
-    [Fact]
-    public void IsMyyWhenMyy() {
-      Assert.True(FindCrackLoadFunction.IsMyy("MYY"));
-    }
-
-    [Fact]
-    public void IsNotMyyWhenZZ() {
-      Assert.False(FindCrackLoadFunction.IsMyy("ZZ"));
-    }
-
-    [Fact]
-    public void IsMzzWhenZ() {
-      Assert.True(FindCrackLoadFunction.IsMzz("Z"));
-    }
-
-    [Fact]
-    public void IsMzzWhenZZ() {
-      Assert.True(FindCrackLoadFunction.IsMzz("ZZ"));
-    }
-
-    [Fact]
-    public void IsMzzWhenMz() {
-      Assert.True(FindCrackLoadFunction.IsMzz("MZ"));
-    }
-
-    [Fact]
-    public void IsMzzWhenMzz() {
-      Assert.True(FindCrackLoadFunction.IsMzz("MZZ"));
-    }
-
-    [Fact]
-    public void IsNotMzzWhenYY() {
-      Assert.False(FindCrackLoadFunction.IsMzz("YY"));
+    public void MzzShouldReturnFalseFor() {
+      Assert.False(FindCrackLoadFunction.IsMzz("xx"));
     }
 
     [Fact]

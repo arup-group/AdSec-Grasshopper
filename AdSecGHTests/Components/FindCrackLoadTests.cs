@@ -29,24 +29,6 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.SetInput(component, ILoad.Create(Force.FromNewtons(100), Moment.Zero, Moment.Zero), 1);
     }
 
-    static SectionSolution SolveSection() {
-      var analyseFunction = new AnalyseFunction();
-      analyseFunction.Section = new SectionParameter() {
-        Value = new SectionDesign() {
-          DesignCode = IS456.Edition_2000,
-          Section = CreateSTDRectangularSection()
-        }
-      };
-      analyseFunction.Compute();
-      return analyseFunction.Solution.Value;
-    }
-
-    private static ISection CreateSTDRectangularSection() {
-      var BottomRight = new BuilderReinforcementGroup().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(13, -28)).Build();
-      var BottomLeft = new BuilderReinforcementGroup().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(-13, -28)).Build();
-      return new SectionBuilder().WithWidth(30).WithHeight(60).CreateRectangularSection().WithReinforcementGroups(new List<IGroup>() { BottomLeft, BottomRight }).Build();
-    }
-
     private void SetLoadDirectionXX() {
       ComponentTestHelper.SetInput(component, "xx", 2);
     }
@@ -56,11 +38,11 @@ namespace AdSecGHTests.Components {
     }
 
     private void SetSolution() {
-      ComponentTestHelper.SetInput(component, SolveSection(), 0);
+      ComponentTestHelper.SetInput(component, new SolutionBuilder().Build(), 0);
     }
 
     private void SetInvalidSolution() {
-      ComponentTestHelper.SetInput(component, "", 0);
+      ComponentTestHelper.SetInput(component, string.Empty, 0);
     }
 
     private void SetMaximumCracking() {
@@ -68,7 +50,7 @@ namespace AdSecGHTests.Components {
     }
 
     private void SetInvalidCracking() {
-      ComponentTestHelper.SetInput(component, "", 4);
+      ComponentTestHelper.SetInput(component, string.Empty, 4);
     }
 
     [Fact]

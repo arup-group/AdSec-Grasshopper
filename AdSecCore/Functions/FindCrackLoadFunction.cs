@@ -93,7 +93,7 @@ namespace AdSecCore.Functions {
       };
     }
 
-    public static bool IsFx(string loadComponent) {
+    internal static bool IsFx(string loadComponent) {
       switch (loadComponent.ToLower().Trim()) {
         case "x":
         case "xx":
@@ -105,7 +105,7 @@ namespace AdSecCore.Functions {
       }
     }
 
-    public static bool IsMyy(string loadComponent) {
+    internal static bool IsMyy(string loadComponent) {
       switch (loadComponent.ToLower().Trim()) {
         case "y":
         case "yy":
@@ -117,7 +117,7 @@ namespace AdSecCore.Functions {
       }
     }
 
-    public static bool IsMzz(string loadComponent) {
+    internal static bool IsMzz(string loadComponent) {
       switch (loadComponent.ToLower().Trim()) {
         case "z":
         case "zz":
