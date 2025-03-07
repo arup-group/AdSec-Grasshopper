@@ -14,6 +14,10 @@ using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
+using Microsoft.CSharp.RuntimeBinder;
+
+using Oasys.AdSec;
+
 using OasysGH.Units;
 
 using OasysUnits;
@@ -36,16 +40,6 @@ namespace Oasys.GH.Helpers {
         {
           typeof(DoubleParameter),
           a => new Param_Number {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
-        }, {
-          typeof(SectionSolutionParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
-        }, {
-          typeof(LoadSurfaceParameter),
-          a => new Param_GenericObject {
             Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
@@ -106,22 +100,52 @@ namespace Oasys.GH.Helpers {
           a => new Param_GenericObject {
             Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
-        },
+        }, {
+          typeof(SectionSolutionParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
+        }, {
+          typeof(LoadSurfaceParameter),
+          a => new Param_GenericObject {
+            Name = a.Name,
+            NickName = a.NickName,
+            Description = a.Description,
+            Access = GetAccess(a),
+            Optional = a.Optional,
+          }
+        }, {
+          typeof(LoadParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
+        }, {
+          typeof(CrackParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
+        }, {
+          typeof(IntegerParameter),
+          a => new Param_Integer {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
+        }
       };
 
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
-        { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
-          typeof(LoadSurfaceParameter),
-          a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
-        },
+        { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) },
         { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value },
         { typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value }, {
+          typeof(LoadSurfaceParameter),
+          a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
+        }, {
           typeof(SectionSolutionParameter), a => {
             var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
             return new AdSecSolutionGoo(sectionSolutionParameter);
           }
-        }, {
+        },
+        {
           typeof(AdSecPointArrayParameter), a => {
             var points = (a as AdSecPointArrayParameter).Value;
             return points?.ToList();
@@ -135,25 +159,30 @@ namespace Oasys.GH.Helpers {
         },
         { typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value },
         { typeof(StringArrayParam), a => (a as StringArrayParam).Value },
+        { typeof(IntegerParameter), a => (a as IntegerParameter).Value },
+        { typeof(CrackParameter), a => {
+            var crack = (a as CrackParameter).Value;
+            return new AdSecCrackGoo(crack);
+          }
+        },
+        { typeof(LoadParameter), a => {
+            var load = (a as LoadParameter).Value;
+            return new AdSecLoadGoo(load);
+        }
+        }
       };
 
     private static readonly Dictionary<Type, Func<object, object>> GooToParam
       = new Dictionary<Type, Func<object, object>> {
         {
           typeof(LengthParameter),
-          goo => { return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry); }
+          goo => {
+           return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry);
+          }
         }, {
           typeof(AdSecSectionParameter), goo => {
             dynamic gooDynamic = goo;
             return new AdSecSectionGoo(gooDynamic);
-          }
-        }, {
-          typeof(DoubleParameter), goo => {
-            if (goo is double value) {
-              return value;
-            }
-
-            return null;
           }
         },
       };
@@ -171,7 +200,8 @@ namespace Oasys.GH.Helpers {
       switch (access) {
         case Access.Item: return GH_ParamAccess.item;
         case Access.List: return GH_ParamAccess.list;
-        default: throw new ArgumentOutOfRangeException();
+        default: throw new ArgumentException("Invalid parameter access type");
+
       }
     }
 
@@ -203,8 +233,17 @@ namespace Oasys.GH.Helpers {
           dynamic inputs = null;
           if (dataAccess.GetData(index, ref inputs)) {
             dynamic valueBasedParameter = attribute;
-            dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
-            valueBasedParameter.Value = newValue;
+            if (GooToParam.ContainsKey(attribute.GetType())) {
+              dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
+              valueBasedParameter.Value = newValue;
+            } else {
+              try {
+                valueBasedParameter.Value = inputs.Value;
+              } catch (RuntimeBinderException) {
+                component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
+                return;
+              }
+            }
           }
         }
       }
@@ -213,8 +252,7 @@ namespace Oasys.GH.Helpers {
     public static void SetOutputValues(this IFunction function, GH_Component component, IGH_DataAccess dataAccess) {
       foreach (var attribute in function.GetAllOutputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
-        var type = attribute.GetType();
-        dynamic goo = ToGoo[type](attribute);
+        dynamic goo = ToGoo[attribute.GetType()](attribute);
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           dataAccess.SetData(index, goo);
         } else {
