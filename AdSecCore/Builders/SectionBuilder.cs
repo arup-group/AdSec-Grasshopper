@@ -18,6 +18,14 @@ namespace AdSecCore.Builders {
     private double _width { get; set; }
     private double _height { get; set; }
 
+    public static ISection Get100Section() {
+      var section = new SectionBuilder()
+       .CreateRectangularSection()
+       .WithHeight(100)
+       .WithWidth(100)
+       .Build();
+      return section;
+    }
     public ISection Build() {
       switch (sectionType) {
         case SectionType.Square:
