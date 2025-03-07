@@ -1,4 +1,6 @@
-﻿using AdSecGH.Components;
+﻿using AdSecCore.Builders;
+
+using AdSecGH.Components;
 
 using AdSecGHTests.Helpers;
 
@@ -15,11 +17,15 @@ namespace AdSecGHTests.Components {
   public class FindCrackLoadTests {
 
     private readonly FindCrackLoad component;
-
     public FindCrackLoadTests() {
       component = new FindCrackLoad();
+      ComponentTestHelper.SetInput(component, "xx", 2);
       ComponentTestHelper.SetInput(component, 10, 3);
       ComponentTestHelper.SetInput(component, ILoad.Create(Force.FromNewtons(100), Moment.Zero, Moment.Zero), 1);
+    }
+
+    private void SetSolution() {
+      ComponentTestHelper.SetInput(component, new SolutionBuilder().Build(), 0);
     }
 
     private void SetInvalidSolution() {
@@ -32,6 +38,19 @@ namespace AdSecGHTests.Components {
 
     private void SetInvalidCracking() {
       ComponentTestHelper.SetInput(component, string.Empty, 4);
+    }
+
+    [Fact]
+    public void ShouldHaveFiveInput() {
+      Assert.Equal(5, component.Params.Input.Count);
+    }
+
+    [Fact]
+    public void ShouldHaveTwoOutputs() {
+      SetSolution();
+      SetMaximumCracking();
+      Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
+      Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
     }
 
     [Fact]
