@@ -1,17 +1,10 @@
-﻿using System.Collections.Generic;
-
-using AdSecCore.Builders;
-using AdSecCore.Functions;
-
-using AdSecGH.Components;
+﻿using AdSecGH.Components;
 
 using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
 
 using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Reinforcement.Groups;
 
 using OasysUnits;
 
@@ -29,18 +22,6 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.SetInput(component, ILoad.Create(Force.FromNewtons(100), Moment.Zero, Moment.Zero), 1);
     }
 
-    private void SetLoadDirectionXX() {
-      ComponentTestHelper.SetInput(component, "xx", 2);
-    }
-
-    private void SetLoadDirectionZZ() {
-      ComponentTestHelper.SetInput(component, "zz", 2);
-    }
-
-    private void SetSolution() {
-      ComponentTestHelper.SetInput(component, new SolutionBuilder().Build(), 0);
-    }
-
     private void SetInvalidSolution() {
       ComponentTestHelper.SetInput(component, string.Empty, 0);
     }
@@ -51,37 +32,6 @@ namespace AdSecGHTests.Components {
 
     private void SetInvalidCracking() {
       ComponentTestHelper.SetInput(component, string.Empty, 4);
-    }
-
-    [Fact]
-    public void ShouldHaveFiveInput() {
-      Assert.Equal(5, component.Params.Input.Count);
-    }
-
-    [Fact]
-    public void ShouldHaveTwoOutputs() {
-      SetSolution();
-      SetMaximumCracking();
-      Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
-      Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
-    }
-
-    [Fact]
-    public void ShouldHaveResultWhenLoadDirectionIsZZ() {
-      SetSolution();
-      SetMaximumCracking();
-      SetLoadDirectionZZ();
-      Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
-      Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
-    }
-
-    [Fact]
-    public void ShouldHaveResultWhenLoadDirectionIsXX() {
-      SetSolution();
-      SetMaximumCracking();
-      SetLoadDirectionXX();
-      Assert.NotNull(ComponentTestHelper.GetOutput(component, 0));
-      Assert.NotNull(ComponentTestHelper.GetOutput(component, 1));
     }
 
     [Fact]

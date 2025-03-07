@@ -1,10 +1,29 @@
-﻿using AdSecCore.Functions;
+﻿using AdSecCore.Builders;
+using AdSecCore.Functions;
+
+using Oasys.AdSec;
+
+using OasysUnits;
 
 namespace AdSecCoreTests {
   public class FindCrackLoadFunctionTests {
     private readonly FindCrackLoadFunction function;
+    private static SectionSolution? Solution { get; set; } = null;
+
     public FindCrackLoadFunctionTests() {
       function = new FindCrackLoadFunction();
+      function.LoadIncrement.Value = 1000;
+      function.BaseLoad.Value = ILoad.Create(Force.FromNewtons(100), Moment.Zero, Moment.Zero);
+      function.MaximumCrack.Value = Length.FromMillimeters(5e-5);
+      if (Solution == null) {
+        Solution = new SolutionBuilder().Build();
+      }
+      function.Solution.Value = Solution;
+    }
+
+    private void SetOptimisedLoadDirection(string direction) {
+      function.OptimisedLoad.Value = direction;
+      function.Compute();
     }
 
     [Theory]
@@ -12,13 +31,10 @@ namespace AdSecCoreTests {
     [InlineData("XX")]
     [InlineData("Fx")]
     [InlineData("Fxx")]
-    public void FxShouldReturnTrueFor(string x) {
-      Assert.True(FindCrackLoadFunction.IsFx(x));
-    }
-
-    [Fact]
-    public void FxShouldReturnFalseFor() {
-      Assert.False(FindCrackLoadFunction.IsFx("zz"));
+    public void FxShouldHaveConvergence(string x) {
+      SetOptimisedLoadDirection(x);
+      Assert.NotNull(function.SectionLoad.Value);
+      Assert.NotNull(function.MaximumCracking.Value);
     }
 
     [Theory]
@@ -26,13 +42,10 @@ namespace AdSecCoreTests {
     [InlineData("YY")]
     [InlineData("My")]
     [InlineData("Myy")]
-    public void MyyShouldReturnTrueFor(string x) {
-      Assert.True(FindCrackLoadFunction.IsMyy(x));
-    }
-
-    [Fact]
-    public void MyyShouldReturnFalseFor() {
-      Assert.False(FindCrackLoadFunction.IsMyy("xx"));
+    public void MyyShouldHaveConvergence(string y) {
+      SetOptimisedLoadDirection(y);
+      Assert.NotNull(function.SectionLoad.Value);
+      Assert.NotNull(function.MaximumCracking.Value);
     }
 
     [Theory]
@@ -40,13 +53,15 @@ namespace AdSecCoreTests {
     [InlineData("ZZ")]
     [InlineData("Mz")]
     [InlineData("Mzz")]
-    public void MzzShouldReturnTrueFor(string x) {
-      Assert.True(FindCrackLoadFunction.IsMzz(x));
+    public void MzzShouldHaveConvergence(string z) {
+      SetOptimisedLoadDirection(z);
+      Assert.NotNull(function.SectionLoad.Value);
+      Assert.NotNull(function.MaximumCracking.Value);
     }
 
     [Fact]
-    public void MzzShouldReturnFalseFor() {
-      Assert.False(FindCrackLoadFunction.IsMzz("xx"));
+    public void ShouldThrowExceptionForWrongLoad() {
+      Assert.Throws<ArgumentException>(() => SetOptimisedLoadDirection("p"));
     }
 
     [Fact]

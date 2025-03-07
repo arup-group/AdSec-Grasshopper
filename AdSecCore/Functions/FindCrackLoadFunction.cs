@@ -93,7 +93,7 @@ namespace AdSecCore.Functions {
       };
     }
 
-    internal static bool IsFx(string loadComponent) {
+    private static bool IsFx(string loadComponent) {
       switch (loadComponent.ToLower().Trim()) {
         case "x":
         case "xx":
@@ -105,7 +105,7 @@ namespace AdSecCore.Functions {
       }
     }
 
-    internal static bool IsMyy(string loadComponent) {
+    private static bool IsMyy(string loadComponent) {
       switch (loadComponent.ToLower().Trim()) {
         case "y":
         case "yy":
@@ -117,7 +117,7 @@ namespace AdSecCore.Functions {
       }
     }
 
-    internal static bool IsMzz(string loadComponent) {
+    private static bool IsMzz(string loadComponent) {
       switch (loadComponent.ToLower().Trim()) {
         case "z":
         case "zz":
@@ -141,6 +141,8 @@ namespace AdSecCore.Functions {
       } else if (IsMzz(loadComponent)) {
         baseLoad = ILoad.Create(baseLoad.X, baseLoad.YY,
           new Moment(baseLoad.ZZ.As(momentUnit) + increment, momentUnit));
+      } else {
+        throw new ArgumentException($"Load component {loadComponent} is not supported.");
       }
     }
 
