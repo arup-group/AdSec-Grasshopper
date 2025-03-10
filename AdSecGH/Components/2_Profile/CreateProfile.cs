@@ -11,12 +11,18 @@ using AdSecGHCore.Constants;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
+using Oasys.Profiles;
+using Oasys.Taxonomy.Profiles;
+
 using OasysGH;
 using OasysGH.Components;
 
 using OasysUnits;
 
 using Rhino.Geometry;
+
+using IPerimeterProfile = Oasys.Profiles.IPerimeterProfile;
+using IProfile = Oasys.Profiles.IProfile;
 
 namespace AdSecGH.Components {
   /// <summary>
@@ -117,13 +123,14 @@ namespace AdSecGH.Components {
 
       if (_mode == FoldMode.Catalogue) {
         var profiles = SolveInstanceForCatalogueProfile(DA);
-        var adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
+        IProfile adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
 
+        var perimeterProfile = adSecProfile as IPerimeterProfile;
         DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
       } else if (_mode == FoldMode.Other) {
-        var profile = SolveInstanceForStandardProfile(DA);
+        Oasys.Taxonomy.Profiles.IProfile profile = SolveInstanceForStandardProfile(DA);
         var adSecProfile = AdSecProfiles.CreateProfile(profile);
-
+        var perimeterProfile = adSecProfile as IPerimeterProfile;
         DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
       }
     }

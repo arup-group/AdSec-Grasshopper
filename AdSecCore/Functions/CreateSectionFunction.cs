@@ -1,4 +1,6 @@
-﻿using AdSecGHCore.Constants;
+﻿using AdSecCore.Builders;
+
+using AdSecGHCore.Constants;
 
 namespace AdSecCore.Functions {
   public class CreateSectionFunction : IFunction {
@@ -28,7 +30,7 @@ namespace AdSecCore.Functions {
       Name = "RebarGroup",
       NickName = "RbG",
       Description = "[Optional] AdSec Reinforcement Groups in the section (applicable for only concrete material).",
-      Access = Access.Item,
+      Access = Access.List,
       Optional = true,
     };
     public SubComponentParameter SubComponent { get; set; } = new SubComponentParameter() {
@@ -51,6 +53,13 @@ namespace AdSecCore.Functions {
     };
     public virtual Attribute[] GetAllOutputAttributes() { return new Attribute[] { Section }; }
 
-    public void Compute() { }
+    public void Compute() {
+      var sectionBuilder = new SectionBuilder();
+      sectionBuilder.SetProfile(Profile.Value.Profile);
+      sectionBuilder.WithMaterial(Material.Value);
+      Section.Value = new SectionDesign() {
+        Section = sectionBuilder.Build(),
+      };
+    }
   }
 }
