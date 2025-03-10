@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -13,6 +15,7 @@ using Grasshopper.Kernel;
 using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.GH.Helpers;
 using Oasys.Profiles;
 
 using OasysGH;
@@ -22,12 +25,13 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
-  public class CreateSection : GH_OasysComponent {
 
-    public CreateSection() : base("Create Section", "Section", "Create an AdSec Section", CategoryName.Name(),
-      SubCategoryName.Cat4()) {
-      Hidden = false; // sets the initial state of the component to hidden
+  public class CreateSectionGh : CreateSectionFunction {
+    public CreateSectionGh() {
+
     }
+  }
+  public class CreateSection : ComponentAdapter<CreateSectionGh> {
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("af6a8179-5e5f-498c-a83c-e98b90d4464c");
