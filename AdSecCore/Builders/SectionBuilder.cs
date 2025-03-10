@@ -9,35 +9,34 @@ using Oasys.Profiles;
 using OasysUnits;
 
 namespace AdSecCore.Builders {
+
   public class SectionBuilder : IBuilder<ISection> {
 
     private readonly List<IGroup> ReinforcementGroups = new List<IGroup>();
-    private readonly IConcrete material = Concrete.IS456.Edition_2000.M10;
+    private readonly IConcrete defaultMaterial = Concrete.IS456.Edition_2000.M10;
     private ISection section;
     private SectionType sectionType;
+    private IProfile _profile;
+    private IMaterial _material;
     private double _width { get; set; }
-    private double _height { get; set; }
+    private double _depth { get; set; }
 
     public static ISection Get100Section() {
-      var section = new SectionBuilder()
-       .CreateRectangularSection()
-       .WithHeight(100)
-       .WithWidth(100)
-       .Build();
+      var section = new SectionBuilder().CreateRectangularSection().WithHeight(100).WithWidth(100).Build();
       return section;
     }
-    public ISection Build() {
-      switch (sectionType) {
-        case SectionType.Square:
-          section = ISection.Create(
-            IRectangleProfile.Create(Length.FromCentimeters(_width), Length.FromCentimeters(_width)), material);
-          break;
-        case SectionType.Rectangular:
-          section = ISection.Create(
-            IRectangleProfile.Create(Length.FromCentimeters(_height), Length.FromCentimeters(_width)), material);
-          break;
-      }
 
+    public SectionBuilder WithMaterial(IMaterial material) {
+      _material = material;
+      return this;
+    }
+
+    public ISection Build() {
+      var profileBuilder = new ProfileBuilder();
+      var profile = GetProfile(profileBuilder);
+      var material = _material ?? defaultMaterial;
+
+      section = ISection.Create(profile, material);
       if (ReinforcementGroups.Count > 0) {
         foreach (var group in ReinforcementGroups) {
           section.ReinforcementGroups.Add(group);
@@ -45,6 +44,24 @@ namespace AdSecCore.Builders {
       }
 
       return section;
+    }
+
+    private IProfile GetProfile(ProfileBuilder profileBuilder) {
+      if (_profile != null) {
+        return _profile;
+      }
+
+      IProfile profile = null;
+      switch (sectionType) {
+        case SectionType.Square:
+          profile = profileBuilder.WidthDepth(_width).WithWidth(_width).Build();
+          break;
+        case SectionType.Rectangular:
+          profile = profileBuilder.WidthDepth(_depth).WithWidth(_width).Build();
+          break;
+      }
+
+      return profile;
     }
 
     /// <summary>
@@ -88,7 +105,7 @@ namespace AdSecCore.Builders {
     }
 
     public SectionBuilder WithHeight(double height) {
-      _height = height;
+      _depth = height;
       return this;
     }
 
@@ -109,5 +126,7 @@ namespace AdSecCore.Builders {
       Square,
       Rectangular,
     }
+
+    public void SetProfile(IProfile profile) { _profile = profile; }
   }
 }

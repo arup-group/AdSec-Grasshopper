@@ -35,7 +35,13 @@ namespace Oasys.GH.Helpers {
     private static readonly Dictionary<Type, Func<Attribute, IGH_Param>> ToGhParam
       = new Dictionary<Type, Func<Attribute, IGH_Param>> {
         {
-          typeof(SubComponentParameter),
+          typeof(SubComponentParameter), ParamGenericObject
+        }, {
+          typeof(MaterialParameter), ParamGenericObject
+        }, {
+          typeof(RebarGroupParameter), ParamGenericObject
+        }, {
+          typeof(ProfileParameter),
           a => new Param_GenericObject {
             Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
@@ -133,6 +139,12 @@ namespace Oasys.GH.Helpers {
           }
         },
       };
+
+    private static Param_GenericObject ParamGenericObject(Attribute a) {
+      return new Param_GenericObject {
+        Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a), Optional = a.Optional
+      };
+    }
 
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {

@@ -1,5 +1,8 @@
-﻿using Oasys.AdSec;
+﻿using AdSecGH.Parameters;
+
+using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.Mesh;
 using Oasys.Profiles;
 
@@ -42,6 +45,13 @@ namespace AdSecCore.Functions {
   public class DoubleArrayParameter : BaseArrayParameter<double> { }
   public class IntegerArrayParameter : BaseArrayParameter<int> { }
   public class SectionParameter : ParameterAttribute<SectionDesign> { }
+  public class ProfileParameter : ParameterAttribute<ProfileDesign> { }
+
+  public class ProfileDesign {
+    public IProfile Profile { get; set; }
+    public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
+  }
+
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }
   public class PointParameter : ParameterAttribute<IPoint> { }
   public class StringArrayParam : BaseArrayParameter<string> { }
@@ -59,6 +69,7 @@ namespace AdSecCore.Functions {
   public class IntegerParameter : ParameterAttribute<int> { }
   public class LoadParameter : ParameterAttribute<ILoad> { }
   public class CrackParameter : ParameterAttribute<ICrack> { }
-
+  public class MaterialParameter : ParameterAttribute<IMaterial> { }
+  public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
 
 }
