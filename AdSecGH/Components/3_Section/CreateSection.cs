@@ -8,8 +8,6 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using AdSecGHCore.Constants;
-
 using Grasshopper.Kernel;
 
 using Oasys.AdSec;
@@ -19,18 +17,36 @@ using Oasys.GH.Helpers;
 using Oasys.Profiles;
 
 using OasysGH;
-using OasysGH.Components;
 
 using OasysUnits;
 using OasysUnits.Units;
+
+using AdSecSectionParameter = Oasys.GH.Helpers.AdSecSectionParameter;
+using Attribute = AdSecCore.Functions.Attribute;
 
 namespace AdSecGH.Components {
 
   public class CreateSectionGh : CreateSectionFunction {
     public CreateSectionGh() {
+      var adSecSection = AdSecSection as Attribute;
+      Section.Update(ref adSecSection);
+      AdSecSection.OnValueChanged += goo => {
+        if (goo.Value != null) {
+          Section.Value = new SectionDesign() {
+            Section = goo.Value.Section,
+            DesignCode = goo.Value.DesignCode
+          };
+        }
+      };
+    }
 
+    public AdSecSectionParameter AdSecSection { get; set; } = new AdSecSectionParameter();
+
+    public override Attribute[] GetAllOutputAttributes() {
+      return new Attribute[] { AdSecSection };
     }
   }
+
   public class CreateSection : ComponentAdapter<CreateSectionGh> {
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -55,10 +71,6 @@ namespace AdSecGH.Components {
       for (int i = 2; i < pManager.ParamCount; i++) {
         pManager[i].Optional = true;
       }
-    }
-
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("Section", "Sec", "AdSec Section", GH_ParamAccess.item);
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {

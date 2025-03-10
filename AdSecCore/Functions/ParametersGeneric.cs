@@ -42,6 +42,7 @@ namespace AdSecCore.Functions {
   public class DoubleArrayParameter : BaseArrayParameter<double> { }
   public class IntegerArrayParameter : BaseArrayParameter<int> { }
   public class SectionParameter : ParameterAttribute<SectionDesign> { }
+  public class ProfileParameter : ParameterAttribute<IProfile> { }
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }
   public class PointParameter : ParameterAttribute<IPoint> { }
   public class StringArrayParam : BaseArrayParameter<string> { }

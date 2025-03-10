@@ -12,10 +12,22 @@ namespace AdSecCore.Functions {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat4(),
     };
-    public Attribute[] GetAllInputAttributes() { throw new System.NotImplementedException(); }
+    public ProfileParameter Profile { get; set; } = new ProfileParameter() {
+      Name = "Profile",
+      NickName = "Pf",
+      Description = "AdSec Profile defining the Section solid boundary",
+      Access = Access.Item
+    };
+    public virtual Attribute[] GetAllInputAttributes() { return new Attribute[] { Profile }; }
 
-    public Attribute[] GetAllOutputAttributes() { throw new System.NotImplementedException(); }
+    public SectionParameter Section { get; set; } = new SectionParameter() {
+      Name = "Section",
+      NickName = "Sec",
+      Description = "AdSec Section",
+      Access = Access.Item
+    };
+    public virtual Attribute[] GetAllOutputAttributes() { return new Attribute[] { Section }; }
 
-    public void Compute() { throw new System.NotImplementedException(); }
+    public void Compute() { }
   }
 }
