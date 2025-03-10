@@ -16,6 +16,8 @@ namespace AdSecCore.Functions {
 
   public abstract class Function : IFunction {
     public List<string> WarningMessages { get; set; } = new List<string>();
+    public List<string> RemarkMessages { get; set; } = new List<string>();
+    public List<string> ErrorMessages { get; set; } = new List<string>();
     public abstract FuncAttribute Metadata { get; set; }
     public abstract Organisation Organisation { get; set; }
     public virtual Attribute[] GetAllInputAttributes() { return Array.Empty<Attribute>(); }
