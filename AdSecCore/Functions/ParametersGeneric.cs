@@ -1,5 +1,8 @@
-﻿using Oasys.AdSec;
+﻿using AdSecGH.Parameters;
+
+using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.Mesh;
 using Oasys.Profiles;
 
@@ -60,6 +63,8 @@ namespace AdSecCore.Functions {
   public class IntegerParameter : ParameterAttribute<int> { }
   public class LoadParameter : ParameterAttribute<ILoad> { }
   public class CrackParameter : ParameterAttribute<ICrack> { }
+  public class MaterialParameter : ParameterAttribute<IMaterial> { }
+  public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
 
 
 }

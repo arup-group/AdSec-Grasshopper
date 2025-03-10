@@ -18,7 +18,21 @@ namespace AdSecCore.Functions {
       Description = "AdSec Profile defining the Section solid boundary",
       Access = Access.Item
     };
-    public virtual Attribute[] GetAllInputAttributes() { return new Attribute[] { Profile }; }
+    public MaterialParameter Material { get; set; } = new MaterialParameter() {
+      Name = "Material",
+      NickName = "Mat",
+      Description = "AdSet Material for the section. The DesignCode of this material will be used for analysis",
+      Access = Access.Item,
+      Optional = true,
+    };
+    public RebarGroupParameter RebarGroup { get; set; } = new RebarGroupParameter() {
+      Name = "RebarGroup",
+      NickName = "RbG",
+      Description = "[Optional] AdSec Reinforcement Groups in the section (applicable for only concrete material).",
+      Access = Access.Item,
+      Optional = true,
+    };
+    public virtual Attribute[] GetAllInputAttributes() { return new Attribute[] { Profile, Material, RebarGroup }; }
 
     public SectionParameter Section { get; set; } = new SectionParameter() {
       Name = "Section",
