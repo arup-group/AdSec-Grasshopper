@@ -37,7 +37,7 @@ namespace AdSecCore.Functions {
       Name = "SubComponent",
       NickName = "Sub",
       Description = "[Optional] AdSet Subcomponents contained within the section",
-      Access = Access.Item,
+      Access = Access.List,
       Optional = true,
     };
 
