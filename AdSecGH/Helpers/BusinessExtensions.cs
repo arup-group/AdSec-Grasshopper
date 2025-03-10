@@ -40,6 +40,21 @@ namespace Oasys.GH.Helpers {
             Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
         }, {
+          typeof(MaterialParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
+        }, {
+          typeof(RebarGroupParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
+        }, {
+          typeof(ProfileParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
+        }, {
           typeof(DoubleParameter),
           a => new Param_Number {
             Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),

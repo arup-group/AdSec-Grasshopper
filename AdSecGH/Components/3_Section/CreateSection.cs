@@ -55,24 +55,6 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.CreateSection;
 
-    protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      pManager.AddGenericParameter("Profile", "Pf", "AdSec Profile defining the Section solid boundary",
-        GH_ParamAccess.item);
-      pManager.AddGenericParameter("Material", "Mat",
-        "AdSet Material for the section. The DesignCode of this material will be used for analysis",
-        GH_ParamAccess.item);
-      pManager.AddGenericParameter("RebarGroup", "RbG",
-        "[Optional] AdSec Reinforcement Groups in the section (applicable for only concrete material).",
-        GH_ParamAccess.list);
-      pManager.AddGenericParameter("SubComponent", "Sub", "[Optional] AdSet Subcomponents contained within the section",
-        GH_ParamAccess.list);
-
-      // make all from second input optional
-      for (int i = 2; i < pManager.ParamCount; i++) {
-        pManager[i].Optional = true;
-      }
-    }
-
     protected override void SolveInstance(IGH_DataAccess DA) {
       // 0 profile
       var profile = this.GetAdSecProfileGoo(DA, 0);

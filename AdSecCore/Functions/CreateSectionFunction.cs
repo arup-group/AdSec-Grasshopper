@@ -23,7 +23,6 @@ namespace AdSecCore.Functions {
       NickName = "Mat",
       Description = "AdSet Material for the section. The DesignCode of this material will be used for analysis",
       Access = Access.Item,
-      Optional = true,
     };
     public RebarGroupParameter RebarGroup { get; set; } = new RebarGroupParameter() {
       Name = "RebarGroup",
@@ -32,7 +31,17 @@ namespace AdSecCore.Functions {
       Access = Access.Item,
       Optional = true,
     };
-    public virtual Attribute[] GetAllInputAttributes() { return new Attribute[] { Profile, Material, RebarGroup }; }
+    public SubComponentParameter SubComponent { get; set; } = new SubComponentParameter() {
+      Name = "SubComponent",
+      NickName = "Sub",
+      Description = "[Optional] AdSet Subcomponents contained within the section",
+      Access = Access.Item,
+      Optional = true,
+    };
+
+    public virtual Attribute[] GetAllInputAttributes() {
+      return new Attribute[] { Profile, Material, RebarGroup, SubComponent };
+    }
 
     public SectionParameter Section { get; set; } = new SectionParameter() {
       Name = "Section",
