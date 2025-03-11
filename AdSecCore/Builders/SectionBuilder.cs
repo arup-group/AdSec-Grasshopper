@@ -17,7 +17,7 @@ using OasysUnits.Units;
 namespace AdSecCore.Builders {
 
   public class SectionBuilder : IBuilder<ISection> {
-    private readonly IConcrete defaultMaterial = Concrete.IS456.Edition_2000.M10;
+    public readonly IConcrete defaultMaterial = Concrete.IS456.Edition_2000.M10;
 
     private readonly List<IGroup> ReinforcementGroups = new List<IGroup>();
     private IMaterial _material;
@@ -65,6 +65,18 @@ namespace AdSecCore.Builders {
         case SectionType.Rectangular:
           profile = profileBuilder.WidthDepth(_depth).WithWidth(_width).Build();
           break;
+        case SectionType.Perimeter:
+          var perimeterBuilder = new PerimeterBuilder();
+          // Create Around 0,0
+          double halfWidth = _width / 2;
+          double halfDepth = _depth / 2;
+          perimeterBuilder = perimeterBuilder.WithPoint(IPointBuilder.InMillimeters(-halfWidth, -halfDepth))
+           .WithPoint(IPointBuilder.InMillimeters(-halfWidth, halfDepth))
+           .WithPoint(IPointBuilder.InMillimeters(halfWidth, halfDepth))
+           .WithPoint(IPointBuilder.InMillimeters(halfWidth, -halfDepth));
+          profile = perimeterBuilder.Build();
+
+          break;
       }
 
       return profile;
@@ -100,6 +112,11 @@ namespace AdSecCore.Builders {
       return this;
     }
 
+    public SectionBuilder CreatePerimeterSection() {
+      sectionType = SectionType.Perimeter;
+      return this;
+    }
+
     public SectionBuilder CreateSquareSection() {
       sectionType = SectionType.Square;
       return this;
@@ -130,14 +147,17 @@ namespace AdSecCore.Builders {
 
     public void SetProfile(IProfile profile) { _profile = profile; }
 
-    public static List<AdSecRebarGroup> CalibrateReinforcementGroupsForIPerimeterProfile(
-      List<AdSecRebarGroup> reinforcements, IDesignCode designCodeDesignCode, IProfile profileProfile,
-      IMaterial material) {
-      var adSec = IAdSec.Create(designCodeDesignCode);
-      var sectionSection = ISection.Create(profileProfile, material);
+    // public static List<AdSecRebarGroup> CalibrateReinforcementGroupsForIPerimeterProfile(
+    //   List<AdSecRebarGroup> reinforcements, IDesignCode designCodeDesignCode, IProfile profileProfile,
+    //   IMaterial material) {
+    // }
+
+    public static List<AdSecRebarGroup> CalibrateReinforcementGroupsForSection(
+      List<AdSecRebarGroup> reinforcements, IDesignCode designCode, ISection sectionSection) {
+      var adSec = IAdSec.Create(designCode);
       var flattened = adSec.Flatten(sectionSection);
 
-      string description = profileProfile.Description();
+      string description = sectionSection.Profile.Description();
       string[] coordinates1 = description.Remove(0, 11).Split(new[] { ") L(", }, StringSplitOptions.None);
       double maxY1 = double.MinValue;
       double maxZ1 = double.MinValue;
@@ -213,6 +233,7 @@ namespace AdSecCore.Builders {
     internal enum SectionType {
       Square,
       Rectangular,
+      Perimeter,
     }
   }
 }
