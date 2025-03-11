@@ -41,56 +41,27 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(RebarGroupParameter), ParamGenericObject
         }, {
-          typeof(ProfileParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(ProfileParameter), ParamGenericObject
         }, {
-          typeof(DoubleParameter),
-          a => new Param_Number {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(DoubleParameter), ParamNumber
         }, {
-          typeof(DoubleArrayParameter),
-          a => new Param_Number {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(DoubleArrayParameter), ParamNumber
         }, {
-          typeof(AdSecSectionParameter),
-          a => new AdSecGH.Parameters.AdSecSectionParameter {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(AdSecSectionParameter), ConfigureParam<AdSecGH.Parameters.AdSecSectionParameter>
         }, {
-          typeof(AdSecPointArrayParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(AdSecPointArrayParameter), ParamGenericObject
         }, {
-          typeof(AdSecPointParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(AdSecPointParameter), ParamGenericObject
         }, {
-          typeof(PointParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(PointParameter), ParamGenericObject
         }, {
-          typeof(AdSecMaterialArrayParam),
-          a => new AdSecMaterialParameter {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(AdSecMaterialArrayParam), ConfigureParam<AdSecMaterialParameter>
         }, {
-          typeof(IntegerArrayParameter),
-          a => new Param_Integer {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(IntegerArrayParameter), ParamInteger
         }, {
           typeof(StringParameter), a => {
             var value = a as StringParameter;
-            var paramString = new Param_String {
-              Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-            };
+            var paramString = ParamString(a);
 
             if (value.Default != null) {
               paramString.SetPersistentData(value.Default);
@@ -99,52 +70,21 @@ namespace Oasys.GH.Helpers {
             return paramString;
           }
         }, {
-          typeof(StringArrayParam),
-          a => new Param_String {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(StringArrayParam), ParamString
         }, {
-          typeof(LengthParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(LengthParameter), ParamGenericObject
         }, {
-          typeof(SectionSolutionParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(SectionSolutionParameter), ParamGenericObject
         }, {
-          typeof(LoadSurfaceParameter),
-          a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
-            Optional = a.Optional,
-          }
+          typeof(LoadSurfaceParameter), ParamGenericObject
         }, {
-          typeof(LoadParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(LoadParameter), ParamGenericObject
         }, {
-          typeof(CrackParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(CrackParameter), ParamGenericObject
         }, {
-          typeof(IntegerParameter),
-          a => new Param_Integer {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(IntegerParameter), ParamInteger
         },
       };
-
-    private static Param_GenericObject ParamGenericObject(Attribute a) {
-      return new Param_GenericObject {
-        Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a), Optional = a.Optional
-      };
-    }
 
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
@@ -219,6 +159,32 @@ namespace Oasys.GH.Helpers {
           }
         },
       };
+
+    private static T ConfigureParam<T>(Attribute a) where T : IGH_Param, new() {
+      return new T {
+        Name = a.Name,
+        NickName = a.NickName,
+        Description = a.Description,
+        Access = GetAccess(a),
+        Optional = a.Optional,
+      };
+    }
+
+    private static Param_GenericObject ParamGenericObject(Attribute a) {
+      return ConfigureParam<Param_GenericObject>(a);
+    }
+
+    private static Param_Number ParamNumber(Attribute a) {
+      return ConfigureParam<Param_Number>(a);
+    }
+
+    private static Param_Integer ParamInteger(Attribute a) {
+      return ConfigureParam<Param_Integer>(a);
+    }
+
+    private static Param_String ParamString(Attribute a) {
+      return ConfigureParam<Param_String>(a);
+    }
 
     public static void UpdateProperties(this IFunction BusinessComponent, GH_Component component) {
       component.Name = BusinessComponent.Metadata.Name;
