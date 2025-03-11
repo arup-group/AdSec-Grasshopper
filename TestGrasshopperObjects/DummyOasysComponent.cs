@@ -13,4 +13,5 @@ namespace AdSecGHTests.Helpers {
 
     protected override void SolveInstance(IGH_DataAccess DA) { }
   }
+
 }
