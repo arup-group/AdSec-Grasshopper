@@ -40,6 +40,11 @@ namespace AdSecCore.Functions {
     public IServiceability Serviceability => Solution.Serviceability;
   }
 
+  public class CrackLoad {
+    public ICrack Load { get; set; }
+    public OasysPlane Plane { get; set; } = OasysPlane.PlaneYZ;
+  }
+
   public class DoubleParameter : ParameterAttribute<double> { }
   public class DoubleArrayParameter : BaseArrayParameter<double> { }
   public class IntegerArrayParameter : BaseArrayParameter<int> { }
@@ -54,10 +59,10 @@ namespace AdSecCore.Functions {
 
   public class IntegerParameter : ParameterAttribute<int> { }
   public class LoadParameter : ParameterAttribute<ILoad> { }
-  public class CrackParameter : ParameterAttribute<ICrack> { }
+  public class CrackParameter : ParameterAttribute<CrackLoad> { }
   public class DeformationParameter : ParameterAttribute<IDeformation> { }
-  public class LoadGenericParameter : ParameterAttribute<object> { }
-  public class CrackArrayParameter : BaseArrayParameter<ICrack> { }
+  public class GenericParameter : ParameterAttribute<object> { }
+  public class CrackArrayParameter : BaseArrayParameter<CrackLoad> { }
   public class SecantStiffnessParameter : ParameterAttribute<IStiffness> { }
   public class IntervalArrayParameter : BaseArrayParameter<Tuple<double, double>> { }
 

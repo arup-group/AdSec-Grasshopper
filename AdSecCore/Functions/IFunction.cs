@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+
+using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
 
@@ -17,7 +21,31 @@ namespace AdSecCore.Functions {
   public abstract class Function : IFunction {
     public List<string> WarningMessages { get; set; } = new List<string>();
     public List<string> RemarkMessages { get; set; } = new List<string>();
-    public List<string> ErrorMessages { get; set; } = new List<string>();
+    public static string StrainUnitAbbreviation(StrainUnit unit) {
+      return Strain.GetAbbreviation(unit);
+    }
+
+    public static string CurvatureUnitAbbreviation(CurvatureUnit unit) {
+      var curvature = new Curvature(0, unit);
+      return string.Concat(curvature.ToString().Where(char.IsLetter));
+    }
+
+    public static string AxialUnitAbbreviation(AxialStiffnessUnit unit) {
+      var axial = new AxialStiffness(0, unit);
+      return string.Concat(axial.ToString().Where(char.IsLetter));
+
+    }
+
+    public static string BendingStiffnessUnitAbbreviation(BendingStiffnessUnit unit) {
+      var bending = new BendingStiffness(0, unit);
+      return string.Concat(bending.ToString().Where(char.IsLetter));
+    }
+
+    public static string MomentUnitAbbreviation(MomentUnit unit) {
+      var bending = new Moment(0, unit);
+      return string.Concat(bending.ToString().Where(char.IsLetter));
+    }
+
     public abstract FuncAttribute Metadata { get; set; }
     public abstract Organisation Organisation { get; set; }
     public virtual Attribute[] GetAllInputAttributes() { return Array.Empty<Attribute>(); }

@@ -21,7 +21,7 @@ namespace AdSecCore.Functions {
       Optional = false,
     };
 
-    public LoadGenericParameter LoadInput { get; set; } = new LoadGenericParameter {
+    public GenericParameter LoadInput { get; set; } = new GenericParameter {
       Name = "Load",
       NickName = "Ld",
       Description = "AdSec Load (Load or Deformation) for which the strength results are to be calculated.",
@@ -39,14 +39,14 @@ namespace AdSecCore.Functions {
 
     public CrackArrayParameter CrackOutput { get; set; } = new CrackArrayParameter {
       Name = "Cracks",
-      NickName = "Crk",
+      NickName = "Crks",
       Description = $"Crack results are calculated at bar positions or section surfaces depending on the Design Code specifications.{Environment.NewLine}If the applied action is outside the capacity range of the section, the returned list will be empty. See MaximumCrack output for the crack result corresponding to the maximum crack width.",
-      Access = Access.Item,
+      Access = Access.List,
     };
 
     public CrackParameter MaximumCrackOutput { get; set; } = new CrackParameter {
       Name = "MaximumCrack",
-      NickName = "Crk",
+      NickName = "MaxCrk",
       Description = $"Crack results are calculated at bar positions or section surfaces depending on the Design Code specifications.{Environment.NewLine}If the applied action is outside the capacity range of the section, the returned list will be empty. See MaximumCrack output for the crack result corresponding to the maximum crack width.",
       Access = Access.Item,
     };
@@ -76,7 +76,7 @@ namespace AdSecCore.Functions {
       Name = "Uncracked Moment Ranges",
       NickName = "Mrs",
       Description = "The range of moments",
-      Access = Access.Item,
+      Access = Access.List,
     };
 
     public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
@@ -111,32 +111,16 @@ namespace AdSecCore.Functions {
       };
     }
 
-    private static string StrainUnitAbbreviation(StrainUnit unit) {
-      return Strain.GetAbbreviation(unit);
-    }
-
-    private static string CurvatureUnitAbbreviation(CurvatureUnit unit) {
-      var curvature = new Curvature(0, unit);
-      return string.Concat(curvature.ToString().Where(char.IsLetter));
-    }
-
-    private static string AxialUnitAbbreviation(AxialStiffnessUnit unit) {
-      var axial = new AxialStiffness(0, unit);
-      return string.Concat(axial.ToString().Where(char.IsLetter));
-
-    }
-
-    private static string BendingUnitAbbreviation(BendingStiffnessUnit unit) {
-      var bending = new BendingStiffness(0, unit);
-      return string.Concat(bending.ToString().Where(char.IsLetter));
-    }
-
     public void RefreshDeformation(StrainUnit strainUnit, CurvatureUnit curvatureUnit) {
       DeformationOutput.Description = $"The section deformation under the applied action. The output is a vector representing:{Environment.NewLine}X: Strain [{StrainUnitAbbreviation(strainUnit)}]{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{CurvatureUnitAbbreviation(curvatureUnit)}]{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{CurvatureUnitAbbreviation(curvatureUnit)}]";
     }
 
     public void RefreshSecantStiffness(AxialStiffnessUnit axialUnit, BendingStiffnessUnit bendingUnit) {
-      SecantStiffnessOutput.Description = $"The secant stiffness under the applied action. The output is a vector representing:{Environment.NewLine}X: Axial stiffness [{AxialUnitAbbreviation(axialUnit)}],{Environment.NewLine}Y: The bending stiffness about the y-axis in the local coordinate system [{BendingUnitAbbreviation(bendingUnit)}],{Environment.NewLine}Z: The bending stiffness about the z-axis in the local coordinate system [{BendingUnitAbbreviation(bendingUnit)}]";
+      SecantStiffnessOutput.Description = $"The secant stiffness under the applied action. The output is a vector representing:{Environment.NewLine}X: Axial stiffness [{AxialUnitAbbreviation(axialUnit)}],{Environment.NewLine}Y: The bending stiffness about the y-axis in the local coordinate system [{BendingStiffnessUnitAbbreviation(bendingUnit)}],{Environment.NewLine}Z: The bending stiffness about the z-axis in the local coordinate system [{BendingStiffnessUnitAbbreviation(bendingUnit)}]";
+    }
+
+    public void RefreshUncrackedMomentRanges(MomentUnit momentUnit) {
+      UncrackedMomentRangesOutput.Description = $"The range of moments (in the direction of the applied moment, assuming constant axial force) over which the section remains uncracked. Moment values are in [{MomentUnitAbbreviation(momentUnit)}]";
     }
 
     public override void Compute() {
@@ -159,13 +143,13 @@ namespace AdSecCore.Functions {
       DeformationOutput.Value = sls.Deformation;
 
 
-      var cracks = new List<ICrack>();
+      var cracks = new List<CrackLoad>();
       foreach (var crack in sls.Cracks) {
-        cracks.Add(crack);
+        cracks.Add(new CrackLoad() { Load = crack, Plane = solution.SectionDesign.LocalPlane });
       }
       CrackOutput.Value = cracks.ToArray();
 
-      MaximumCrackOutput.Value = sls.MaximumWidthCrack;
+      MaximumCrackOutput.Value = new CrackLoad() { Load = sls.MaximumWidthCrack, Plane = solution.SectionDesign.LocalPlane };
       CrackUtilOutput.Value = sls.CrackingUtilisation.As(RatioUnit.DecimalFraction);
       if (CrackUtilOutput.Value > 1) {
         if (CrackOutput.Value.Length == 0) {
@@ -178,10 +162,11 @@ namespace AdSecCore.Functions {
       SecantStiffnessOutput.Value = sls.SecantStiffness;
 
       var momentRanges = new List<Tuple<double, double>>();
-      foreach (var mrng in sls.UncrackedMomentRanges) {
-        var interval = new Tuple<double, double>(mrng.Min.As(momentUnit), mrng.Max.As(momentUnit));
+      foreach (var range in sls.UncrackedMomentRanges) {
+        var interval = new Tuple<double, double>(range.Min.As(momentUnit), range.Max.As(momentUnit));
         momentRanges.Add(interval);
       }
+      UncrackedMomentRangesOutput.Value = momentRanges.ToArray();
     }
   }
 

@@ -167,7 +167,7 @@ namespace AdSecCore.Functions {
       sls = solution.Solution.Serviceability.Check(baseLoad);
 
       SectionLoad.Value = sls.Load;
-      MaximumCracking.Value = sls.MaximumWidthCrack;
+      MaximumCracking.Value = new CrackLoad() { Load = sls.MaximumWidthCrack, Plane = solution.SectionDesign.LocalPlane };
     }
 
   }

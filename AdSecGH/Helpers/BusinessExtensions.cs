@@ -129,6 +129,31 @@ namespace Oasys.GH.Helpers {
           a => new Param_Integer {
             Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
           }
+        }, {
+          typeof(DeformationParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
+        },{
+          typeof(GenericParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
+        },{
+          typeof(CrackArrayParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
+        },{
+          typeof(SecantStiffnessParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
+        },{
+          typeof(IntervalArrayParameter),
+          a => new Param_GenericObject {
+            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
+          }
         }
       };
 
@@ -168,6 +193,33 @@ namespace Oasys.GH.Helpers {
         { typeof(LoadParameter), a => {
             var load = (a as LoadParameter).Value;
             return new AdSecLoadGoo(load);
+        }
+        },{ typeof(IntervalArrayParameter), a => {
+          var intervals = (a as IntervalArrayParameter).Value;
+          var ranges = new List<GH_Interval>();
+          foreach (var interval in intervals) {
+            ranges.Add(new GH_Interval(new Interval(interval.Item1, interval.Item2)));
+          }
+          return ranges;
+        }
+        },{ typeof(SecantStiffnessParameter), a => {
+          var stiffness = (a as SecantStiffnessParameter).Value;
+          return new Vector3d(stiffness.X.As(DefaultUnits.AxialStiffnessUnit),
+          stiffness.YY.As(DefaultUnits.BendingStiffnessUnit),
+          stiffness.ZZ.As(DefaultUnits.BendingStiffnessUnit));
+        }
+        }
+        ,{ typeof(CrackArrayParameter), a => {
+          var cracks = (a as CrackArrayParameter).Value;
+          var cracksGoo = new List<AdSecCrackGoo>();
+        foreach (var crack in cracks) {
+          cracksGoo.Add(new AdSecCrackGoo(crack));
+        }
+        return cracksGoo;
+        }
+        },{ typeof(DeformationParameter), a => {
+          var deformation = (a as DeformationParameter).Value;
+          return new AdSecDeformationGoo(deformation);
         }
         }
       };

@@ -37,6 +37,9 @@ namespace Oasys.GH.Helpers {
         foreach (var warning in function.WarningMessages) {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning);
         }
+        foreach (var remark in function.RemarkMessages) {
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, remark);
+        }
       }
 
       BusinessComponent.SetOutputValues(this, DA);
