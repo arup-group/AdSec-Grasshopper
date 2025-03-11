@@ -1,13 +1,11 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using AdSecGHCore.Constants;
 
 using Oasys.AdSec;
 
-using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
@@ -136,7 +134,8 @@ namespace AdSecCore.Functions {
           sls = solution.Serviceability.Check(deformation);
           break;
         default:
-          throw new ArgumentException("Invalid Load Input");
+          ErrorMessages.Add("Invalid Load Input");
+          return;
       }
 
       LoadOutput.Value = sls.Load;

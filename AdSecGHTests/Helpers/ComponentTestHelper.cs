@@ -9,7 +9,7 @@ using Rhino.Geometry;
 
 namespace AdSecGHTests.Helpers {
   public class ComponentTestHelper {
-
+    private ComponentTestHelper() { }
     public static object GetOutput(GH_Component component, int index = 0, int branch = 0, int item = 0, bool forceUpdate = false) {
       if (forceUpdate || component.Params.Output[index].VolatileDataCount == 0) {
         component.ExpireSolution(true);

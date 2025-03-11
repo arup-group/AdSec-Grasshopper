@@ -40,6 +40,12 @@ namespace Oasys.GH.Helpers {
         foreach (var remark in function.RemarkMessages) {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, remark);
         }
+
+        foreach (var error in function.ErrorMessages) {
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, error);
+        }
+
+        if (function.ErrorMessages.Count > 0) { return; }
       }
 
       BusinessComponent.SetOutputValues(this, DA);

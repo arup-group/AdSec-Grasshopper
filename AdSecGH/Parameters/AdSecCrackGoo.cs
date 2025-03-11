@@ -9,8 +9,6 @@ using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
-using Oasys.AdSec;
-
 using OasysGH;
 using OasysGH.Parameters;
 
@@ -37,16 +35,8 @@ namespace AdSecGH.Parameters {
     private Line m_line;
     private Point3d m_point;
 
-    public AdSecCrackGoo(ICrack crackLoad, Plane plane) : base(new CrackLoad() { Load = crackLoad, Plane = plane.ToOasys() }) {
-      Initialize(Value.Plane);
-    }
     public AdSecCrackGoo(CrackLoad crackLoad) : base(crackLoad) {
-      Initialize(Value.Plane);
-    }
-
-    public void Initialize(OasysPlane OasysPlane) {
-      var plane = OasysPlane.ToGh();
-
+      var plane = Value.Plane.ToGh();
       // create point from crack position in global axis
       var point = new Point3d(
           m_value.Load.Position.Y.Value,
@@ -80,7 +70,6 @@ namespace AdSecGH.Parameters {
 
       m_line = new Line(crackStart, crackWidth);
     }
-
     public override bool CastFrom(object source) {
       if (source == null) {
         return false;
