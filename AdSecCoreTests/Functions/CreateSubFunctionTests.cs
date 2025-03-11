@@ -42,7 +42,7 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(100, valueSubComponent.Offset.Z.As(LengthUnit.Millimeter));
     }
 
-    [Fact(Skip = "Need to bring the changes of optional parameters")]
+    [Fact]
     public void ShouldHaveOffsetAsOptional() {
       function.Offset.Value = null;
       function.Compute();
