@@ -18,9 +18,9 @@ namespace AdSecCore.Functions {
 
   public class OasysPlane {
     public static readonly OasysPlane PlaneYZ = new OasysPlane {
-      Origin = new OasysPoint { X = 0, Y = 0, Z = 0 },
-      XAxis = new OasysPoint { X = 0, Y = 1, Z = 0 },
-      YAxis = new OasysPoint { X = 0, Y = 0, Z = 1 },
+      Origin = new OasysPoint { X = 0, Y = 0, Z = 0, },
+      XAxis = new OasysPoint { X = 0, Y = 1, Z = 0, },
+      YAxis = new OasysPoint { X = 0, Y = 0, Z = 1, },
     };
     public OasysPoint Origin { get; set; }
     public OasysPoint XAxis { get; set; }
@@ -56,6 +56,12 @@ namespace AdSecCore.Functions {
   public class LengthParameter : ParameterAttribute<Length> { }
   public class SectionSolutionParameter : ParameterAttribute<SectionSolution> { }
   public class LoadSurfaceParameter : ParameterAttribute<ILoadSurface> { }
+  public class SubComponentParameter : ParameterAttribute<SubComponent> { }
+
+  public class SubComponent {
+    public ISubComponent ISubComponent { get; set; }
+    public SectionDesign SectionDesign { get; set; } = new SectionDesign();
+  }
 
   public class IntegerParameter : ParameterAttribute<int> { }
   public class LoadParameter : ParameterAttribute<ILoad> { }
