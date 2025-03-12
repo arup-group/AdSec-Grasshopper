@@ -149,79 +149,69 @@ namespace AdSecCore.Builders {
     public static List<AdSecRebarGroup> CalibrateReinforcementGroupsForSection(
       List<AdSecRebarGroup> reinforcements, IDesignCode designCode, ISection sectionSection) {
       var adSec = IAdSec.Create(designCode);
-      var flattened = adSec.Flatten(sectionSection);
 
       string description = sectionSection.Profile.Description();
-      string[] coordinates1 = description.Remove(0, 11).Split(new[] { ") L(", }, StringSplitOptions.None);
-      double maxY1 = double.MinValue;
-      double maxZ1 = double.MinValue;
-      foreach (string c in coordinates1) {
-        string[] value = c.Split('|');
-        double y1 = double.Parse(value[0]);
-        double z1 = double.Parse(value[1].Remove(value[1].Length - 2));
+      MaxYZ(description, out double maxY1, out double maxZ1);
 
-        if (y1 > maxY1) {
-          maxY1 = y1;
-        }
-
-        if (z1 > maxZ1) {
-          maxZ1 = z1;
-        }
-      }
-
-      string[] coordinates2 = flattened.Profile.Description().Remove(0, 11).Split(new[] {
-        ") L(",
-      }, StringSplitOptions.None);
-      double maxY2 = double.MinValue;
-      double maxZ2 = double.MinValue;
-      foreach (string c in coordinates2) {
-        string[] value = c.Split('|');
-        double y2 = double.Parse(value[0]);
-        double z2 = double.Parse(value[1].Remove(value[1].Length - 2));
-
-        if (y2 > maxY2) {
-          maxY2 = y2;
-        }
-
-        if (z2 > maxZ2) {
-          maxZ2 = z2;
-        }
-      }
+      var flattened = adSec.Flatten(sectionSection);
+      string description2 = flattened.Profile.Description();
+      MaxYZ(description2, out double maxY2, out double maxZ2);
 
       double deltaY = maxY2 - maxY1;
       double deltaZ = maxZ2 - maxZ1;
 
+      return UpdateRebarGroups(reinforcements, deltaY, deltaZ);
+    }
+
+    private static List<AdSecRebarGroup> UpdateRebarGroups(
+      List<AdSecRebarGroup> reinforcements, double deltaY, double deltaZ) {
       var updatedReinforcement = new List<AdSecRebarGroup>();
       foreach (var group in reinforcements) {
-        var duplicate = new AdSecRebarGroup();
-        if (group.Cover != null) {
-          duplicate.Cover = ICover.Create(group.Cover.UniformCover);
-        }
-
-        updatedReinforcement.Add(duplicate);
-
-        switch (group.Group) {
-          case ISingleBars bars:
-            var bundle = IBarBundle.Create(bars.BarBundle.Material, bars.BarBundle.Diameter,
-              bars.BarBundle.CountPerBundle);
-            var singleBars = ISingleBars.Create(bundle);
-
-            foreach (var point in bars.Positions) {
-              var p = IPoint.Create(new Length(point.Y.As(LengthUnit.Meter) - deltaY, LengthUnit.Meter),
-                new Length(point.Z.As(LengthUnit.Meter) - deltaZ, LengthUnit.Meter));
-              singleBars.Positions.Add(p);
-            }
-
-            duplicate.Group = singleBars;
-            break;
-
-          default:
-            duplicate.Group = group.Group;
-            break;
-        }
+        updatedReinforcement.Add(RepositionSingleRebars(deltaY, deltaZ, group));
       }
 
       return updatedReinforcement;
+    }
+
+    private static AdSecRebarGroup RepositionSingleRebars(double deltaY, double deltaZ, AdSecRebarGroup group) {
+      var adSecRebarGroup = new AdSecRebarGroup(group);
+
+      if (!(group.Group is ISingleBars bars)) {
+        return adSecRebarGroup;
+      }
+
+      var bundle = IBarBundle.Create(bars.BarBundle.Material, bars.BarBundle.Diameter, bars.BarBundle.CountPerBundle);
+      var singleBars = ISingleBars.Create(bundle);
+
+      foreach (var point in bars.Positions) {
+        var y = new Length(point.Y.As(LengthUnit.Meter) - deltaY, LengthUnit.Meter);
+        var z = new Length(point.Z.As(LengthUnit.Meter) - deltaZ, LengthUnit.Meter);
+        singleBars.Positions.Add(IPoint.Create(y, z));
+      }
+
+      adSecRebarGroup.Group = singleBars;
+      return adSecRebarGroup;
+    }
+
+    private static void MaxYZ(string description, out double maxY, out double maxZ) {
+      string[] coordinates = description.Remove(0, 11).Split(new[] {
+        ") L(",
+      }, StringSplitOptions.None);
+      maxY = double.MinValue;
+      maxZ = double.MinValue;
+      foreach (string c in coordinates) {
+        string[] value = c.Split('|');
+        double y = double.Parse(value[0]);
+        double z = double.Parse(value[1].Remove(value[1].Length - 2));
+
+        if (y > maxY) {
+          maxY = y;
+        }
+
+        if (z > maxZ) {
+          maxZ = z;
+        }
+      }
     }
 
     internal enum SectionType {
