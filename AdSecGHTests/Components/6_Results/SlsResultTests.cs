@@ -20,12 +20,12 @@ using Xunit;
 
 namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
-  public class ResultsSlsTest {
-    private readonly ResultsSls _component;
+  public class SlsResultTests {
+    private readonly SlsResult _component;
     private static SectionSolution Solution { get; set; } = null;
 
-    public ResultsSlsTest() {
-      _component = new ResultsSls();
+    public SlsResultTests() {
+      _component = new SlsResult();
       if (Solution == null) {
         Solution = new SolutionBuilder().Build();
       }

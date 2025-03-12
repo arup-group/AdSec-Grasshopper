@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using AdSecCore.Functions;
 
@@ -7,6 +8,7 @@ using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
 
+using Attribute = AdSecCore.Functions.Attribute;
 namespace Oasys.GH.Helpers {
 
   public abstract class ComponentAdapter<T> : GH_OasysComponent, IDefaultValues where T : IFunction {
@@ -49,6 +51,23 @@ namespace Oasys.GH.Helpers {
       }
 
       BusinessComponent.SetOutputValues(this, DA);
+    }
+
+    public void RefreshParameters() {
+      BusinessComponent.GetAllInputAttributes().ToList().ForEach(UpdateInputFrom);
+      BusinessComponent.GetAllOutputAttributes().ToList().ForEach(UpdateOutputFrom);
+    }
+
+    private void UpdateInputFrom(Attribute attribute) {
+      var param = Params.Input.Where(x => x.NickName == attribute.NickName).First();
+      param.Name = attribute.Name;
+      param.Description = attribute.Description;
+    }
+
+    private void UpdateOutputFrom(Attribute attribute) {
+      var param = Params.Output.Where(x => x.NickName == attribute.NickName).First();
+      param.Name = attribute.Name;
+      param.Description = attribute.Description;
     }
   }
 
