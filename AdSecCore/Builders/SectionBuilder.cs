@@ -22,7 +22,6 @@ namespace AdSecCore.Builders {
     private readonly List<IGroup> ReinforcementGroups = new List<IGroup>();
     private IMaterial _material;
     private IProfile _profile;
-    private ISection section;
     private SectionType sectionType;
     private double _width { get; set; }
     private double _depth { get; set; }
@@ -32,7 +31,7 @@ namespace AdSecCore.Builders {
       var profile = GetProfile(profileBuilder);
       var material = _material ?? defaultMaterial;
 
-      section = ISection.Create(profile, material);
+      var section = ISection.Create(profile, material);
       if (ReinforcementGroups.Count > 0) {
         foreach (var group in ReinforcementGroups) {
           section.ReinforcementGroups.Add(group);
