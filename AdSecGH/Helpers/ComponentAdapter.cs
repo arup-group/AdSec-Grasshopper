@@ -59,13 +59,21 @@ namespace Oasys.GH.Helpers {
     }
 
     private void UpdateInputFrom(Attribute attribute) {
-      var param = Params.Input.Where(x => x.NickName == attribute.NickName).First();
+      var list = Params.Input.Where(x => x.NickName == attribute.NickName);
+      if (!list.Any()) {
+        return;
+      }
+      var param = list.First();
       param.Name = attribute.Name;
       param.Description = attribute.Description;
     }
 
     private void UpdateOutputFrom(Attribute attribute) {
-      var param = Params.Output.Where(x => x.NickName == attribute.NickName).First();
+      var list = Params.Output.Where(x => x.NickName == attribute.NickName);
+      if (!list.Any()) {
+        return;
+      }
+      var param = list.First();
       param.Name = attribute.Name;
       param.Description = attribute.Description;
     }
