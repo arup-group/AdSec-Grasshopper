@@ -111,7 +111,9 @@ namespace AdSecCore.Functions {
     }
 
     public void RefreshDeformation(StrainUnit strainUnit, CurvatureUnit curvatureUnit) {
-      DeformationOutput.Description = $"The section deformation under the applied action. The output is a vector representing:{Environment.NewLine}X: Strain [{Strain.GetAbbreviation(strainUnit)}]{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{Curvature.GetAbbreviation(curvatureUnit)}]{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{Curvature.GetAbbreviation(curvatureUnit)}]";
+      var strainAbbreviation = Strain.GetAbbreviation(strainUnit);
+      var curvatureAbbreviation = $"{strainAbbreviation}{Curvature.GetAbbreviation(curvatureUnit)}";
+      DeformationOutput.Description = $"The section deformation under the applied action. The output is a vector representing:{Environment.NewLine}X: Strain [{strainAbbreviation}]{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{curvatureAbbreviation}]{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{curvatureAbbreviation}]";
     }
 
     public void RefreshSecantStiffness(AxialStiffnessUnit axialUnit, BendingStiffnessUnit bendingUnit) {
