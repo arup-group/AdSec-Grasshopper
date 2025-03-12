@@ -76,12 +76,10 @@ namespace AdSecGH.Components {
       var designCodeDesignCode = material.DesignCode.DesignCode;
 
       if (profile.Profile is IPerimeterProfile) {
-        var adSec = IAdSec.Create(designCodeDesignCode);
+        IAdSec.Create(designCodeDesignCode);
         var sectionSection = ISection.Create(profileProfile, materialMaterial);
         reinforcements
           = SectionBuilder.CalibrateReinforcementGroupsForSection(reinforcements, designCodeDesignCode, sectionSection);
-        // reinforcements = SectionBuilder.CalibrateReinforcementGroupsForIPerimeterProfile(reinforcements,
-        //   designCodeDesignCode, profileProfile, materialMaterial);
       }
 
       var section = new AdSecSection(profileProfile, profile.LocalPlane, material, reinforcements, subComponents);
