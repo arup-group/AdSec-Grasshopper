@@ -146,11 +146,6 @@ namespace AdSecCore.Builders {
 
     public void SetProfile(IProfile profile) { _profile = profile; }
 
-    // public static List<AdSecRebarGroup> CalibrateReinforcementGroupsForIPerimeterProfile(
-    //   List<AdSecRebarGroup> reinforcements, IDesignCode designCodeDesignCode, IProfile profileProfile,
-    //   IMaterial material) {
-    // }
-
     public static List<AdSecRebarGroup> CalibrateReinforcementGroupsForSection(
       List<AdSecRebarGroup> reinforcements, IDesignCode designCode, ISection sectionSection) {
       var adSec = IAdSec.Create(designCode);
