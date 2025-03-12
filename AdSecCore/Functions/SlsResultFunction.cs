@@ -6,6 +6,7 @@ using AdSecGHCore.Constants;
 
 using Oasys.AdSec;
 
+using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
@@ -110,15 +111,15 @@ namespace AdSecCore.Functions {
     }
 
     public void RefreshDeformation(StrainUnit strainUnit, CurvatureUnit curvatureUnit) {
-      DeformationOutput.Description = $"The section deformation under the applied action. The output is a vector representing:{Environment.NewLine}X: Strain [{StrainUnitAbbreviation(strainUnit)}]{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{CurvatureUnitAbbreviation(curvatureUnit)}]{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{CurvatureUnitAbbreviation(curvatureUnit)}]";
+      DeformationOutput.Description = $"The section deformation under the applied action. The output is a vector representing:{Environment.NewLine}X: Strain [{Strain.GetAbbreviation(strainUnit)}]{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{Curvature.GetAbbreviation(curvatureUnit)}]{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{Curvature.GetAbbreviation(curvatureUnit)}]";
     }
 
     public void RefreshSecantStiffness(AxialStiffnessUnit axialUnit, BendingStiffnessUnit bendingUnit) {
-      SecantStiffnessOutput.Description = $"The secant stiffness under the applied action. The output is a vector representing:{Environment.NewLine}X: Axial stiffness [{AxialUnitAbbreviation(axialUnit)}],{Environment.NewLine}Y: The bending stiffness about the y-axis in the local coordinate system [{BendingStiffnessUnitAbbreviation(bendingUnit)}],{Environment.NewLine}Z: The bending stiffness about the z-axis in the local coordinate system [{BendingStiffnessUnitAbbreviation(bendingUnit)}]";
+      SecantStiffnessOutput.Description = $"The secant stiffness under the applied action. The output is a vector representing:{Environment.NewLine}X: Axial stiffness [{AxialStiffness.GetAbbreviation(axialUnit)}],{Environment.NewLine}Y: The bending stiffness about the y-axis in the local coordinate system [{BendingStiffness.GetAbbreviation(bendingUnit)}],{Environment.NewLine}Z: The bending stiffness about the z-axis in the local coordinate system [{BendingStiffness.GetAbbreviation(bendingUnit)}]";
     }
 
     public void RefreshUncrackedMomentRanges(MomentUnit momentUnit) {
-      UncrackedMomentRangesOutput.Description = $"The range of moments (in the direction of the applied moment, assuming constant axial force) over which the section remains uncracked. Moment values are in [{MomentUnitAbbreviation(momentUnit)}]";
+      UncrackedMomentRangesOutput.Description = $"The range of moments (in the direction of the applied moment, assuming constant axial force) over which the section remains uncracked. Moment values are in [{Moment.GetAbbreviation(momentUnit)}]";
     }
 
     public override void Compute() {
