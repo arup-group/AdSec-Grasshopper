@@ -1,6 +1,10 @@
-﻿using AdSecCore.Builders;
+﻿using System.Linq;
+
+using AdSecCore.Builders;
 
 using AdSecGHCore.Constants;
+
+using Oasys.Profiles;
 
 namespace AdSecCore.Functions {
   public class CreateSectionFunction : IFunction {
@@ -57,10 +61,22 @@ namespace AdSecCore.Functions {
     public void Compute() {
       var sectionBuilder = new SectionBuilder();
       sectionBuilder.SetProfile(Profile.Value.Profile);
-      // sectionBuilder.WithReinforcementGroups()
+      var groups = RebarGroup.Value.Select(x => x.Group).ToList();
+      sectionBuilder.WithReinforcementGroups(groups);
       sectionBuilder.WithMaterial(Material.Value);
+      var section = sectionBuilder.Build();
+
+      if (Profile.Value.Profile is IPerimeterProfile) {
+        var reinforcements = RebarGroup.Value;
+        var recalibrated = SectionBuilder.CalibrateReinforcementGroupsForSection(
+          reinforcements.ToList(), Section.Value.DesignCode, section);
+
+        sectionBuilder.WithReinforcementGroups(recalibrated.Select(x => x.Group).ToList());
+        section = sectionBuilder.Build();
+      }
+
       Section.Value = new SectionDesign {
-        Section = sectionBuilder.Build(),
+        Section = section,
       };
     }
   }
