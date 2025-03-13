@@ -58,7 +58,7 @@ namespace AdSecGH.Parameters {
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Profile";
     public List<Polyline> VoidEdges { get; private set; }
-    public Polyline Polyline;
+    public Polyline Polyline { get; private set; }
     private Plane m_plane = Plane.WorldYZ;
     private Line previewXaxis;
     private Line previewYaxis;

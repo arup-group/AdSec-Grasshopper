@@ -304,7 +304,6 @@ namespace Oasys.GH.Helpers {
           }
         } else if (attribute.GetAccess() == GH_ParamAccess.list) {
           List<object> inputs = new List<object>();
-          // GooToParam[attribute.GetType()];
           if (dataAccess.GetDataList(index, inputs)) {
             dynamic valueBasedParameter = attribute;
             if (GooToParam.ContainsKey(attribute.GetType())) {

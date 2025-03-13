@@ -13,7 +13,6 @@ using Oasys.GH.Helpers;
 
 using OasysGH;
 
-// using AdSecMaterialParameter = Oasys.GH.Helpers.AdSecMaterialParameter;
 using AdSecSectionParameter = Oasys.GH.Helpers.AdSecSectionParameter;
 using Attribute = AdSecCore.Functions.Attribute;
 
