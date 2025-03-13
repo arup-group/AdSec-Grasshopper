@@ -74,6 +74,10 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecProfileGoo(IProfile profile, Plane local) {
+      Value = new ProfileDesign() {
+        Profile = profile,
+        LocalPlane = local.ToOasys()
+      };
       Profile = profile;
       Tuple<Polyline, List<Polyline>> edges = PolylinesFromAdSecProfile(profile, local);
       Polyline = edges.Item1;
@@ -95,6 +99,11 @@ namespace AdSecGH.Parameters {
       VoidEdges = null;
       m_plane = plane;
       Profile = perimprofile;
+
+      Value = new ProfileDesign() {
+        Profile = Profile,
+        LocalPlane = plane.ToOasys()
+      };
       UpdatePreview();
     }
 
