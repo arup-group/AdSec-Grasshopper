@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -9,6 +10,7 @@ using AdSecGH.Properties;
 using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Geometry;
 
 using Oasys.GH.Helpers;
 
@@ -24,10 +26,11 @@ namespace AdSecGH.Components {
 
   public class SlsResult : ComponentAdapter<SlsResultGh> {
     protected override void BeforeSolveInstance() {
-      BusinessComponent.RefreshDeformation(DefaultUnits.StrainUnitResult, DefaultUnits.CurvatureUnit);
-      BusinessComponent.RefreshSecantStiffness(DefaultUnits.AxialStiffnessUnit, DefaultUnits.BendingStiffnessUnit);
-      BusinessComponent.RefreshUncrackedMomentRanges(DefaultUnits.MomentUnit);
-      RefreshParameters();
+      var outputAttributes = new List<OutputAttributeInfo>();
+      outputAttributes.Add(SlsResultFunction.DeformationDescription(DefaultUnits.StrainUnitResult, DefaultUnits.CurvatureUnit));
+      outputAttributes.Add(SlsResultFunction.SecantStiffnessDescription(DefaultUnits.AxialStiffnessUnit, DefaultUnits.BendingStiffnessUnit));
+      outputAttributes.Add(SlsResultFunction.UncrackedMomentRangesDescription(DefaultUnits.MomentUnit));
+      RefreshOutputParameter(outputAttributes);
     }
 
     public SlsResult() { Hidden = true; Category = CategoryName.Name(); SubCategory = SubCategoryName.Cat7(); }

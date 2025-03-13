@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-
-using OasysUnits;
-using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
+
+  public struct OutputAttributeInfo {
+    public int Id { get; set; }
+    public string Description { get; set; }
+  }
 
   public interface IFunction {
 

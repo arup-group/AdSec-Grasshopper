@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 
 using AdSecCore.Functions;
 
@@ -8,7 +8,6 @@ using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
 
-using Attribute = AdSecCore.Functions.Attribute;
 namespace Oasys.GH.Helpers {
 
   public abstract class ComponentAdapter<T> : GH_OasysComponent, IDefaultValues where T : IFunction {
@@ -39,6 +38,7 @@ namespace Oasys.GH.Helpers {
         foreach (var warning in function.WarningMessages) {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning);
         }
+
         foreach (var remark in function.RemarkMessages) {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, remark);
         }
@@ -53,29 +53,10 @@ namespace Oasys.GH.Helpers {
       BusinessComponent.SetOutputValues(this, DA);
     }
 
-    public void RefreshParameters() {
-      BusinessComponent.GetAllInputAttributes().ToList().ForEach(UpdateInputFrom);
-      BusinessComponent.GetAllOutputAttributes().ToList().ForEach(UpdateOutputFrom);
-    }
-
-    private void UpdateInputFrom(Attribute attribute) {
-      var list = Params.Input.Where(x => x.NickName == attribute.NickName);
-      if (!list.Any()) {
-        return;
+    public void RefreshOutputParameter(List<OutputAttributeInfo> attributes) {
+      foreach (var attribute in attributes) {
+        Params.Output[attribute.Id].Description = attribute.Description;
       }
-      var param = list.First();
-      param.Name = attribute.Name;
-      param.Description = attribute.Description;
-    }
-
-    private void UpdateOutputFrom(Attribute attribute) {
-      var list = Params.Output.Where(x => x.NickName == attribute.NickName);
-      if (!list.Any()) {
-        return;
-      }
-      var param = list.First();
-      param.Name = attribute.Name;
-      param.Description = attribute.Description;
     }
   }
 
