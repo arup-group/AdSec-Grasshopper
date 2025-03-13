@@ -39,6 +39,10 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(MaterialParameter), ParamGenericObject
         }, {
+          typeof(SectionParameter), ParamGenericObject
+        }, {
+          typeof(AdSecMaterialParameter), ParamGenericObject
+        }, {
           typeof(RebarGroupParameter), ParamGenericObject
         }, {
           typeof(ProfileParameter), ParamGenericObject
@@ -55,7 +59,7 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(PointParameter), ParamGenericObject
         }, {
-          typeof(AdSecMaterialArrayParam), ConfigureParam<AdSecMaterialParameter>
+          typeof(AdSecMaterialArrayParam), ConfigureParam<AdSecGH.Parameters.AdSecMaterialParameter>
         }, {
           typeof(IntegerArrayParameter), ParamInteger
         }, {
@@ -102,7 +106,12 @@ namespace Oasys.GH.Helpers {
           a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
         },
         { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value },
-        { typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value }, {
+        { typeof(SectionParameter), a => (a as SectionParameter).Value },
+        { typeof(AdSecSectionParameter), a => {
+            var sectionParameter = a as SectionParameter;
+            return new AdSecSectionGoo(new AdSecSection(sectionParameter.Value));
+          }
+        }, {
           typeof(SectionSolutionParameter), a => {
             var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
             return new AdSecSolutionGoo(sectionSolutionParameter);
@@ -154,7 +163,6 @@ namespace Oasys.GH.Helpers {
             if (goo is double value) {
               return value;
             }
-
             return null;
           }
         },
@@ -251,7 +259,11 @@ namespace Oasys.GH.Helpers {
       foreach (var attribute in function.GetAllOutputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
         var type = attribute.GetType();
-        dynamic goo = ToGoo[type](attribute);
+        if (!ToGoo.ContainsKey(type)) {
+          throw new Exception($"No conversion function found for type {type}");
+        }
+        var func = ToGoo[type];
+        dynamic goo = func(attribute);
         bool success = false;
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           success = dataAccess.SetData(index, goo);

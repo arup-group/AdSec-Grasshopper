@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Drawing;
 
-using AdSecCore.Builders;
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
 
-using Oasys.AdSec;
 using Oasys.GH.Helpers;
-using Oasys.Profiles;
 
 using OasysGH;
 
+// using AdSecMaterialParameter = Oasys.GH.Helpers.AdSecMaterialParameter;
 using AdSecSectionParameter = Oasys.GH.Helpers.AdSecSectionParameter;
 using Attribute = AdSecCore.Functions.Attribute;
 
@@ -26,20 +23,22 @@ namespace AdSecGH.Components {
     public CreateSectionGh() {
       var adSecSection = AdSecSection as Attribute;
       Section.Update(ref adSecSection);
-      AdSecSection.OnValueChanged += goo => {
-        if (goo.Value != null) {
-          Section.Value = new SectionDesign {
-            Section = goo.Value.Section,
-            DesignCode = goo.Value.DesignCode,
-          };
+
+      Section.OnValueChanged += goo => {
+        if (goo.Section != null) {
+          AdSecSection.Value = new AdSecSectionGoo(new AdSecSection(goo));
         }
       };
     }
 
     public AdSecSectionParameter AdSecSection { get; set; } = new AdSecSectionParameter();
 
+    public override Attribute[] GetAllInputAttributes() {
+      return new Attribute[] { Profile, Material, RebarGroup, SubComponent };
+    }
+
     public override Attribute[] GetAllOutputAttributes() {
-      return new Attribute[] { AdSecSection, };
+      return new Attribute[] { Section, };
     }
   }
 
