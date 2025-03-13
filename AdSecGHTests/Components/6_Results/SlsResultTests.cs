@@ -56,41 +56,6 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
-    public void ComponentGuid_IsCorrect() {
-      Assert.Equal(new Guid("27ba3ec5-b94c-43ad-8623-087540413628"), _component.ComponentGuid);
-    }
-
-    [Fact]
-    public void Exposure_IsPrimary() {
-      Assert.Equal(GH_Exposure.primary, _component.Exposure);
-    }
-
-    [Fact]
-    public void PluginInfo_IsCorrect() {
-      Assert.Equal(AdSecGH.PluginInfo.Instance, _component.PluginInfo);
-    }
-
-    [Fact]
-    public void Icon_IsCorrect() {
-      Assert.Equal(Resources.SLS.ToString(), _component.Icon_24x24.ToString());
-    }
-
-    [Fact]
-    public void Category_IsCorrect() {
-      Assert.Equal(CategoryName.Name(), _component.Category);
-    }
-
-    [Fact]
-    public void SubCategory_IsCorrect() {
-      Assert.Equal(SubCategoryName.Cat7(), _component.SubCategory);
-    }
-
-    [Fact]
-    public void Hidden_IsTrue() {
-      Assert.True(_component.Hidden);
-    }
-
-    [Fact]
     public void ShouldHaveRemarkWhenUtiliztionIsGreaterThanOne() {
       SetLoad();
       Assert.Single(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));

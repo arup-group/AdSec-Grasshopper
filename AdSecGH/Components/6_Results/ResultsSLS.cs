@@ -26,11 +26,10 @@ namespace AdSecGH.Components {
 
   public class SlsResult : ComponentAdapter<SlsResultGh> {
     protected override void BeforeSolveInstance() {
-      var outputAttributes = new List<OutputAttributeInfo>();
-      outputAttributes.Add(SlsResultFunction.DeformationDescription(DefaultUnits.StrainUnitResult, DefaultUnits.CurvatureUnit));
-      outputAttributes.Add(SlsResultFunction.SecantStiffnessDescription(DefaultUnits.AxialStiffnessUnit, DefaultUnits.BendingStiffnessUnit));
-      outputAttributes.Add(SlsResultFunction.UncrackedMomentRangesDescription(DefaultUnits.MomentUnit));
-      RefreshOutputParameter(outputAttributes);
+      BusinessComponent.DeformationDescription(DefaultUnits.StrainUnitResult, DefaultUnits.CurvatureUnit);
+      BusinessComponent.SecantStiffnessDescription(DefaultUnits.AxialStiffnessUnit, DefaultUnits.BendingStiffnessUnit);
+      BusinessComponent.UncrackedMomentRangesDescription(DefaultUnits.MomentUnit);
+      RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
     }
 
     public SlsResult() { Hidden = true; Category = CategoryName.Name(); SubCategory = SubCategoryName.Cat7(); }

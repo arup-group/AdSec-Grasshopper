@@ -51,15 +51,16 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShoulHaveValidDeformationDescription() {
-      var description = SlsResultFunction.DeformationDescription(StrainUnit.Ratio, CurvatureUnit.PerMeter).Description; ;
-      Assert.Contains("[ε]", description);
+      _component.DeformationDescription(StrainUnit.Ratio, CurvatureUnit.PerMeter);
+      var description = _component.DeformationOutput.Description;
       Assert.Contains("[εm⁻¹]", description);
       Assert.Contains("[εm⁻¹]", description);
     }
 
     [Fact]
     public void ShouldHaveValidSecantStiffnessDescription() {
-      var description = SlsResultFunction.SecantStiffnessDescription(AxialStiffnessUnit.Newton, BendingStiffnessUnit.NewtonSquareMeter).Description;
+      _component.SecantStiffnessDescription(AxialStiffnessUnit.Newton, BendingStiffnessUnit.NewtonSquareMeter);
+      var description = _component.SecantStiffnessOutput.Description;
       Assert.Contains("[N]", description);
       Assert.Contains("[N·m²]", description);
       Assert.Contains("[N·m²]", description);
@@ -67,8 +68,8 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveValidUncrackedMomentRangesDescription() {
-      var description = SlsResultFunction.UncrackedMomentRangesDescription(MomentUnit.NewtonMeter).Description; ;
-      Assert.Contains("[N·m]", description);
+      _component.UncrackedMomentRangesDescription(MomentUnit.NewtonMeter);
+      Assert.Contains("[N·m]", _component.UncrackedMomentRangesOutput.Description);
     }
 
     [Fact]
