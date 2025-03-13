@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using AdSecGH.Parameters;
 
@@ -23,6 +24,7 @@ namespace AdSecCore.Builders {
     private ICover _cover;
     private IMaterial _material;
     private IProfile _profile;
+    private List<ISubComponent> _subComponents = new List<ISubComponent>();
     private SectionType sectionType;
     private double _width { get; set; }
     private double _depth { get; set; }
@@ -33,6 +35,10 @@ namespace AdSecCore.Builders {
       var material = _material ?? defaultMaterial;
 
       var section = ISection.Create(profile, material);
+      foreach (var subComponents in _subComponents) {
+        section.SubComponents.Add(subComponents);
+      }
+
       if (ReinforcementGroups.Count > 0) {
         foreach (var group in ReinforcementGroups) {
           section.ReinforcementGroups.Add(group);
@@ -232,6 +238,10 @@ namespace AdSecCore.Builders {
       Square,
       Rectangular,
       Perimeter,
+    }
+
+    public void WithSubComponents(List<ISubComponent> subComponents) {
+      _subComponents = subComponents;
     }
   }
 }

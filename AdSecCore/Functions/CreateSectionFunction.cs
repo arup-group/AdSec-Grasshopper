@@ -69,6 +69,11 @@ namespace AdSecCore.Functions {
       }
 
       sectionBuilder.WithMaterial(Material.Value.Material);
+
+      if (SubComponent.Value != null) {
+        sectionBuilder.WithSubComponents(SubComponent.Value.Select(x => x.ISubComponent).ToList());
+      }
+
       var section = sectionBuilder.Build();
 
       if (Profile.Value.Profile is IPerimeterProfile && RebarGroup.Value != null) {
