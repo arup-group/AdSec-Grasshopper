@@ -108,8 +108,8 @@ namespace Oasys.GH.Helpers {
         { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value },
         { typeof(SectionParameter), a => (a as SectionParameter).Value },
         { typeof(AdSecSectionParameter), a => {
-            var sectionParameter = a as SectionParameter;
-            return new AdSecSectionGoo(new AdSecSection(sectionParameter.Value));
+            return (a as AdSecSectionParameter).Value;
+            //return new AdSecSectionGoo(new AdSecSection(sectionParameter.Value));
           }
         }, {
           typeof(SectionSolutionParameter), a => {

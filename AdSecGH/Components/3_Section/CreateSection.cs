@@ -38,7 +38,7 @@ namespace AdSecGH.Components {
     }
 
     public override Attribute[] GetAllOutputAttributes() {
-      return new Attribute[] { Section, };
+      return new Attribute[] { AdSecSection, };
     }
   }
 
