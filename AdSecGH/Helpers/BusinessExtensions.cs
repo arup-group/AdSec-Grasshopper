@@ -101,17 +101,14 @@ namespace Oasys.GH.Helpers {
               sectionDesign.CodeName, sectionDesign.MaterialName);
           }
         },
+        { typeof(RebarGroupParameter), a => (a as RebarGroupParameter).Value },
         { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
           typeof(LoadSurfaceParameter),
           a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
         },
         { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value },
         { typeof(SectionParameter), a => (a as SectionParameter).Value },
-        { typeof(AdSecSectionParameter), a => {
-            return (a as AdSecSectionParameter).Value;
-            //return new AdSecSectionGoo(new AdSecSection(sectionParameter.Value));
-          }
-        }, {
+        { typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value }, {
           typeof(SectionSolutionParameter), a => {
             var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
             return new AdSecSolutionGoo(sectionSolutionParameter);
@@ -152,6 +149,13 @@ namespace Oasys.GH.Helpers {
           typeof(AdSecSectionParameter), goo => {
             dynamic gooDynamic = goo;
             return new AdSecSectionGoo(gooDynamic);
+          }
+        }, {
+          typeof(RebarGroupParameter), goo => {
+            var gooDynamic = goo as List<object>;
+            return gooDynamic
+            .Select(x => new AdSecRebarGroup((x as AdSecRebarGroupGoo).Value))
+            .ToArray();
           }
         }, {
           typeof(AdSecPointParameter), goo => {
@@ -245,6 +249,23 @@ namespace Oasys.GH.Helpers {
             } else {
               try {
                 valueBasedParameter.Value = inputs.Value;
+              } catch (RuntimeBinderException) {
+                component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
+                return;
+              }
+            }
+          }
+        } else if (attribute.GetAccess() == GH_ParamAccess.list) {
+          List<object> inputs = new List<object>();
+          // GooToParam[attribute.GetType()];
+          if (dataAccess.GetDataList(index, inputs)) {
+            dynamic valueBasedParameter = attribute;
+            if (GooToParam.ContainsKey(attribute.GetType())) {
+              dynamic newValue = GooToParam[attribute.GetType()](inputs);
+              valueBasedParameter.Value = newValue;
+            } else {
+              try {
+                valueBasedParameter.Value = inputs.ToArray();
               } catch (RuntimeBinderException) {
                 component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
                 return;
