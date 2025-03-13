@@ -60,6 +60,7 @@ namespace AdSecCore.Functions {
   public class SectionSolutionParameter : ParameterAttribute<SectionSolution> { }
   public class LoadSurfaceParameter : ParameterAttribute<ILoadSurface> { }
   public class SubComponentParameter : ParameterAttribute<SubComponent> { }
+  public class SubComponentArrayParameter : BaseArrayParameter<SubComponent> { }
 
   public class SubComponent {
     public ISubComponent ISubComponent { get; set; }

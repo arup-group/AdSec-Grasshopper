@@ -6,6 +6,7 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -14,6 +15,8 @@ using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
 using Microsoft.CSharp.RuntimeBinder;
+
+using Oasys.AdSec;
 
 using OasysGH.Units;
 
@@ -36,6 +39,8 @@ namespace Oasys.GH.Helpers {
       = new Dictionary<Type, Func<Attribute, IGH_Param>> {
         {
           typeof(SubComponentParameter), ParamGenericObject
+        }, {
+          typeof(SubComponentArrayParameter), ParamGenericObject
         }, {
           typeof(MaterialParameter), ParamGenericObject
         }, {
@@ -92,8 +97,15 @@ namespace Oasys.GH.Helpers {
 
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
-        {
-          typeof(SubComponentParameter),
+        { typeof(SubComponentParameter),
+          a => {
+            var subComponent = (a as SubComponentParameter).Value;
+            var sectionDesign = subComponent.SectionDesign;
+            return new AdSecSubComponentGoo(subComponent.ISubComponent, Plane.WorldXY, sectionDesign.DesignCode,
+              sectionDesign.CodeName, sectionDesign.MaterialName);
+          }
+        },
+        { typeof(SubComponentArrayParameter),
           a => {
             var subComponent = (a as SubComponentParameter).Value;
             var sectionDesign = subComponent.SectionDesign;
@@ -155,6 +167,33 @@ namespace Oasys.GH.Helpers {
             var gooDynamic = goo as List<object>;
             return gooDynamic
             .Select(x => new AdSecRebarGroup((x as AdSecRebarGroupGoo).Value))
+            .ToArray();
+          }
+        }, {
+          typeof(SubComponentArrayParameter), goo => {
+            var gooDynamic = goo as List<object>;
+            return gooDynamic
+            .Select(x => {
+                if(x is AdSecSubComponentGoo subComponentGoo) {
+                  var component = subComponentGoo.Value;
+                  return new SubComponent() {
+                   ISubComponent = component,
+                   SectionDesign = new SectionDesign() {
+                     Section = component.Section,
+                   }
+                 };
+                }
+                else if(x is AdSecSectionGoo sectionGoo) {
+                  var section = sectionGoo.Value;
+                  return new SubComponent() {
+                   ISubComponent = ISubComponent.Create(section.Section, AdSecCore.Builders.Geometry.Zero()),
+                   SectionDesign = new SectionDesign() {
+                     Section = section.Section,
+                   }
+                 };
+                }
+                return null;
+              })
             .ToArray();
           }
         }, {

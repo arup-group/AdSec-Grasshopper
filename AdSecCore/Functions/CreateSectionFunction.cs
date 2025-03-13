@@ -27,7 +27,7 @@ namespace AdSecCore.Functions {
       Access = Access.List,
       Optional = true,
     };
-    public SubComponentParameter SubComponent { get; set; } = new SubComponentParameter {
+    public SubComponentArrayParameter SubComponent { get; set; } = new SubComponentArrayParameter {
       Name = "SubComponent",
       NickName = "Sub",
       Description = "[Optional] AdSet Subcomponents contained within the section",
