@@ -11,7 +11,7 @@ namespace AdSecCoreTests.Builder {
   public class SectionBuilderTests {
 
     [Fact]
-    public void ShouldNotDoAnythingForNonSingleBars() {
+    public void ShouldNotDoAnythingForCenteredBars() {
       var designCode = IS456.Edition_2000;
 
       var singleBars = new BuilderSingleBar().AtPosition(Geometry.Zero()).WithSize(2).CreateSingleBar()

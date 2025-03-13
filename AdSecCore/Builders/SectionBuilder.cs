@@ -65,20 +65,24 @@ namespace AdSecCore.Builders {
           profile = profileBuilder.WidthDepth(_depth).WithWidth(_width).Build();
           break;
         case SectionType.Perimeter:
-          var perimeterBuilder = new PerimeterBuilder();
-          // Create Around 0,0
-          double halfWidth = _width / 2;
-          double halfDepth = _depth / 2;
-          perimeterBuilder = perimeterBuilder.WithPoint(IPointBuilder.InMillimeters(-halfWidth, -halfDepth))
-           .WithPoint(IPointBuilder.InMillimeters(-halfWidth, halfDepth))
-           .WithPoint(IPointBuilder.InMillimeters(halfWidth, halfDepth))
-           .WithPoint(IPointBuilder.InMillimeters(halfWidth, -halfDepth));
-          profile = perimeterBuilder.Build();
+          profile = SimplePerimeterProfile(_width, _depth);
 
           break;
       }
 
       return profile;
+    }
+
+    public static IProfile SimplePerimeterProfile(double width, double depth) {
+      var perimeterBuilder = new PerimeterBuilder();
+      // Create Around 0,0
+      double halfWidth = width / 2;
+      double halfDepth = depth / 2;
+      perimeterBuilder = perimeterBuilder.WithPoint(IPointBuilder.InMillimeters(-halfWidth, -halfDepth))
+       .WithPoint(IPointBuilder.InMillimeters(-halfWidth, halfDepth))
+       .WithPoint(IPointBuilder.InMillimeters(halfWidth, halfDepth))
+       .WithPoint(IPointBuilder.InMillimeters(halfWidth, -halfDepth));
+      return perimeterBuilder.Build();
     }
 
     /// <summary>

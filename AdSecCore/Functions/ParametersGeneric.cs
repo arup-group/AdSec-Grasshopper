@@ -69,7 +69,13 @@ namespace AdSecCore.Functions {
   public class IntegerParameter : ParameterAttribute<int> { }
   public class LoadParameter : ParameterAttribute<ILoad> { }
   public class CrackParameter : ParameterAttribute<ICrack> { }
-  public class MaterialParameter : ParameterAttribute<IMaterial> { }
+  public class MaterialParameter : ParameterAttribute<MaterialDesign> { }
+
+  public class MaterialDesign {
+    public IMaterial Material { get; set; }
+    public IDesignCode DesignCode { get; set; }
+  }
+
   public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
 
 }
