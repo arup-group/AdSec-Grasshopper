@@ -1,4 +1,13 @@
-﻿using AdSecGH.Components;
+﻿using AdSecCore.Builders;
+using AdSecCore.Functions;
+
+using AdSecGH.Components;
+
+using AdSecGHTests.Helpers;
+
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.StandardMaterials;
+using Oasys.GH.Helpers;
 
 using Xunit;
 
@@ -9,6 +18,20 @@ namespace AdSecGHTests.Components {
 
     public CreateSectionTests() {
       component = new CreateSection();
+      component.SetInputParamAt(0, new ProfileDesign() {
+        Profile = new ProfileBuilder().WidthDepth(1).WithWidth(2).Build(),
+        LocalPlane = OasysPlane.PlaneYZ,
+      });
+      component.SetInputParamAt(1, new MaterialDesign() {
+        Material = Concrete.IS456.Edition_2000.M10,
+        DesignCode = IS456.Edition_2000
+      });
+    }
+
+    [Fact]
+    public void ShouldHaveAnInputWithoutOptional() {
+      ComponentTesting.ComputeOutputs(component);
+      Assert.NotNull(component.GetOutputParamAt(0));
     }
 
     [Fact]
