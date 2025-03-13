@@ -64,6 +64,8 @@ namespace AdSecCore.Functions {
       if (RebarGroup.Value != null) {
         var groups = RebarGroup.Value.Select(x => x.Group).ToList();
         sectionBuilder.WithReinforcementGroups(groups);
+
+        sectionBuilder.WithCover(RebarGroup.Value.FirstOrDefault(x => x.Cover != null)?.Cover);
       }
 
       sectionBuilder.WithMaterial(Material.Value.Material);

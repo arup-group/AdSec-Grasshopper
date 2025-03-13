@@ -20,6 +20,7 @@ namespace AdSecCore.Builders {
     public readonly IConcrete defaultMaterial = Concrete.IS456.Edition_2000.M10;
 
     private readonly List<IGroup> ReinforcementGroups = new List<IGroup>();
+    private ICover _cover;
     private IMaterial _material;
     private IProfile _profile;
     private SectionType sectionType;
@@ -38,7 +39,16 @@ namespace AdSecCore.Builders {
         }
       }
 
+      if (_cover != null) {
+        section.Cover = _cover;
+      }
+
       return section;
+    }
+
+    public SectionBuilder WithCover(ICover cover) {
+      _cover = cover;
+      return this;
     }
 
     public static ISection Get100Section() {
