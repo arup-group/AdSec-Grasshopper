@@ -169,6 +169,14 @@ namespace Oasys.GH.Helpers {
             }
             return null;
           }
+        }, {
+          typeof(DoubleArrayParameter), goo => {
+            var list = goo as List<object>;
+            return list.Select(x => {
+             dynamic y = x;
+              return (double)y.Value;
+            }).ToArray();
+          }
         },
       };
 
