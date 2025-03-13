@@ -3,11 +3,6 @@ using System.Collections.Generic;
 
 namespace AdSecCore.Functions {
 
-  public struct OutputAttributeInfo {
-    public int Id { get; set; }
-    public string Description { get; set; }
-  }
-
   public interface IFunction {
 
     FuncAttribute Metadata { get; set; }
