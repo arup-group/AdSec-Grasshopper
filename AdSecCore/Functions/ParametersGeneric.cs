@@ -74,6 +74,7 @@ namespace AdSecCore.Functions {
   public class MaterialDesign {
     public IMaterial Material { get; set; }
     public IDesignCode DesignCode { get; set; }
+    public string GradeName { get; set; }
   }
 
   public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }

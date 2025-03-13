@@ -80,6 +80,8 @@ namespace AdSecCore.Functions {
 
       Section.Value = new SectionDesign {
         Section = section,
+        DesignCode = Material.Value.DesignCode,
+        LocalPlane = Profile.Value.LocalPlane,
       };
     }
   }
