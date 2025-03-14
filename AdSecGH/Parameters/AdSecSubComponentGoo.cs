@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 
+using AdSecCore.Functions;
+
+using AdSecGH.Helpers;
+
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
@@ -36,6 +40,13 @@ namespace AdSecGH.Parameters {
     private Line _previewXaxis;
     private Line _previewYaxis;
     private Line _previewZaxis;
+
+    public AdSecSubComponentGoo(SubComponent subComponent) : base(subComponent.ISubComponent) {
+      _offset = subComponent.ISubComponent.Offset;
+      var sectionDesign = subComponent.SectionDesign;
+      _plane = sectionDesign.LocalPlane.ToGh();
+      _section = new AdSecSection(sectionDesign.Section, sectionDesign.DesignCode, sectionDesign.MaterialName, sectionDesign.CodeName, _plane, _offset);
+    }
 
     public AdSecSubComponentGoo(ISubComponent subComponent, Plane local, IDesignCode code, string codeName, string materialName) : base(subComponent) {
       _offset = subComponent.Offset;

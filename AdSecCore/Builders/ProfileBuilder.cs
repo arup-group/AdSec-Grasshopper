@@ -22,6 +22,12 @@ namespace AdSecCore.Builders {
       this.width = width;
       return this;
     }
+
+    public static IIBeamSymmetricalProfile GetIBeam(double width = 10, double depth = 10, double thickness = 1) {
+      var thick = Length.FromCentimeters(thickness);
+      return IIBeamSymmetricalProfile.Create(Length.FromCentimeters(depth),
+        IFlange.Create(Length.FromCentimeters(width), thick), IWebConstant.Create(thick));
+    }
   }
 
   public class PerimeterBuilder : IBuilder<IProfile> {

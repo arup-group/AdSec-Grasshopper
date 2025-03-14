@@ -74,16 +74,9 @@ namespace AdSecCore.Builders {
 
       IProfile profile = null;
       switch (sectionType) {
-        case SectionType.Square:
-          profile = profileBuilder.WidthDepth(_width).WithWidth(_width).Build();
-          break;
-        case SectionType.Rectangular:
-          profile = profileBuilder.WidthDepth(_depth).WithWidth(_width).Build();
-          break;
-        case SectionType.Perimeter:
-          profile = SimplePerimeterProfile(_width, _depth);
-
-          break;
+        case SectionType.Square: profile = profileBuilder.WidthDepth(_width).WithWidth(_width).Build(); break;
+        case SectionType.Rectangular: profile = profileBuilder.WidthDepth(_depth).WithWidth(_width).Build(); break;
+        case SectionType.Perimeter: profile = SimplePerimeterProfile(_width, _depth); break;
       }
 
       return profile;
@@ -164,7 +157,10 @@ namespace AdSecCore.Builders {
       return this;
     }
 
-    public void SetProfile(IProfile profile) { _profile = profile; }
+    public SectionBuilder SetProfile(IProfile profile) {
+      _profile = profile;
+      return this;
+    }
 
     public static List<AdSecRebarGroup> CalibrateReinforcementGroupsForSection(
       List<AdSecRebarGroup> reinforcements, IDesignCode designCode, ISection sectionSection) {

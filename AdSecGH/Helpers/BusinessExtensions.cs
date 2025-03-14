@@ -105,32 +105,25 @@ namespace Oasys.GH.Helpers {
         }
       };
 
+    /// <summary>
+    /// For the Outputs
+    /// This is use to DA.SetData()
+    /// i.e. we will get the value from the Attribute.Value and set it to a Goo object
+    /// Since the value is all we need and this is often shared between the "Business" Parameter and the Gh (Goo) object, it can take the form:
+    /// { typeof(<ParamType), a => (a as ParamType).Value }
+    /// We need to do more work when the Goo, has a more complex constructor in which
+    /// case it might be best to create a new constructor, so we can simplify this dictionary and even deprecated later on.
+    /// </summary>
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
-        {
-          typeof(SubComponentParameter),
-          a => {
-            var subComponent = (a as SubComponentParameter).Value;
-            var sectionDesign = subComponent.SectionDesign;
-            return new AdSecSubComponentGoo(subComponent.ISubComponent, Plane.WorldXY, sectionDesign.DesignCode,
-              sectionDesign.CodeName, sectionDesign.MaterialName);
-          }
-        }, {
-          typeof(SubComponentArrayParameter),
-          a => {
-            var subComponent = (a as SubComponentParameter).Value;
-            var sectionDesign = subComponent.SectionDesign;
-            return new AdSecSubComponentGoo(subComponent.ISubComponent, Plane.WorldXY, sectionDesign.DesignCode,
-              sectionDesign.CodeName, sectionDesign.MaterialName);
-          }
-        },
-        { typeof(RebarGroupParameter), a => (a as RebarGroupParameter).Value },
+        { typeof(SubComponentParameter), a => new AdSecSubComponentGoo((a as SubComponentParameter)?.Value) },
+        // { typeof(RebarGroupParameter), a => (a as RebarGroupParameter).Value },
         { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
           typeof(LoadSurfaceParameter),
           a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
         },
         { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value },
-        { typeof(SectionParameter), a => (a as SectionParameter).Value },
+        // { typeof(SectionParameter), a => (a as SectionParameter).Value },
         { typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value }, {
           typeof(SectionSolutionParameter), a => {
             var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
@@ -150,7 +143,8 @@ namespace Oasys.GH.Helpers {
         },
         { typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value },
         { typeof(StringArrayParam), a => (a as StringArrayParam).Value },
-        { typeof(IntegerParameter), a => (a as IntegerParameter).Value }, {
+        // { typeof(IntegerParameter), a => (a as IntegerParameter).Value },
+        {
           typeof(CrackParameter), a => {
             var crack = (a as CrackParameter).Value;
             return new AdSecCrackGoo(crack);
@@ -194,6 +188,18 @@ namespace Oasys.GH.Helpers {
         }
       };
 
+    /// <summary>
+    /// Setting the Inputs
+    /// ***************************************************************************
+    /// ******* if the base data is the same, you can skip this completely! *******
+    /// ***************************************************************************
+    /// This is for grabbing the Values from Grasshopper and feeding the to the Business Input Params
+    /// So we often need to convert the Grasshopper object to the Business object
+    /// Again we aim to have the data, so the conversion would be simple
+    /// example: { typeof(ParamType), goo => new DataType(goo) }
+    /// This is the place where we might need to call AdSecInput to account for different inputed types
+    /// like in the case of SubComponent, that can also accept a Section Type
+    /// </summary>
     private static readonly Dictionary<Type, Func<object, object>> GooToParam
       = new Dictionary<Type, Func<object, object>> {
         {
