@@ -6,6 +6,7 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -14,6 +15,8 @@ using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
 using Microsoft.CSharp.RuntimeBinder;
+
+using Oasys.AdSec;
 
 using OasysGH.Units;
 
@@ -35,56 +38,39 @@ namespace Oasys.GH.Helpers {
     private static readonly Dictionary<Type, Func<Attribute, IGH_Param>> ToGhParam
       = new Dictionary<Type, Func<Attribute, IGH_Param>> {
         {
-          typeof(SubComponentParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(SubComponentParameter), ParamGenericObject
         }, {
-          typeof(DoubleParameter),
-          a => new Param_Number {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(SubComponentArrayParameter), ParamGenericObject
         }, {
-          typeof(DoubleArrayParameter),
-          a => new Param_Number {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(MaterialParameter), ParamGenericObject
         }, {
-          typeof(AdSecSectionParameter),
-          a => new AdSecGH.Parameters.AdSecSectionParameter {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(SectionParameter), ParamGenericObject
         }, {
-          typeof(AdSecPointArrayParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(AdSecMaterialParameter), ParamGenericObject
         }, {
-          typeof(AdSecPointParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(RebarGroupParameter), ParamGenericObject
         }, {
-          typeof(PointParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(ProfileParameter), ParamGenericObject
         }, {
-          typeof(AdSecMaterialArrayParam),
-          a => new AdSecMaterialParameter {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(DoubleParameter), ParamNumber
         }, {
-          typeof(IntegerArrayParameter),
-          a => new Param_Integer {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(DoubleArrayParameter), ParamNumber
+        }, {
+          typeof(AdSecSectionParameter), ConfigureParam<AdSecGH.Parameters.AdSecSectionParameter>
+        }, {
+          typeof(AdSecPointArrayParameter), ParamGenericObject
+        }, {
+          typeof(AdSecPointParameter), ParamGenericObject
+        }, {
+          typeof(PointParameter), ParamGenericObject
+        }, {
+          typeof(AdSecMaterialArrayParam), ConfigureParam<AdSecMaterialParameter>
+        }, {
+          typeof(IntegerArrayParameter), ParamInteger
         }, {
           typeof(StringParameter), a => {
             var value = a as StringParameter;
-            var paramString = new Param_String {
-              Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-            };
+            var paramString = ParamString(a);
 
             if (value.Default != null) {
               paramString.SetPersistentData(value.Default);
@@ -93,88 +79,51 @@ namespace Oasys.GH.Helpers {
             return paramString;
           }
         }, {
-          typeof(StringArrayParam),
-          a => new Param_String {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(StringArrayParam), ParamString
         }, {
-          typeof(LengthParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(LengthParameter), ParamGenericObject
         }, {
-          typeof(SectionSolutionParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(SectionSolutionParameter), ParamGenericObject
         }, {
-          typeof(LoadSurfaceParameter),
-          a => new Param_GenericObject {
-            Name = a.Name,
-            NickName = a.NickName,
-            Description = a.Description,
-            Access = GetAccess(a),
-            Optional = a.Optional,
-          }
+          typeof(LoadSurfaceParameter), ParamGenericObject
         }, {
-          typeof(LoadParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(LoadParameter), ParamGenericObject
         }, {
-          typeof(CrackParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(CrackParameter), ParamGenericObject
         }, {
-          typeof(IntegerParameter),
-          a => new Param_Integer {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(IntegerParameter), ParamInteger
         }, {
-          typeof(DeformationParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
-        },{
-          typeof(GenericParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
-        },{
-          typeof(CrackArrayParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
-        },{
-          typeof(SecantStiffnessParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
-        },{
-          typeof(IntervalArrayParameter),
-          a => new Param_GenericObject {
-            Name = a.Name, NickName = a.NickName, Description = a.Description, Access = GetAccess(a),
-          }
+          typeof(DeformationParameter), ParamGenericObject
+        }, {
+          typeof(GenericParameter), ParamGenericObject
+        }, {
+          typeof(CrackArrayParameter), ParamGenericObject
+        }, {
+          typeof(SecantStiffnessParameter), ParamGenericObject
+        }, {
+          typeof(IntervalArrayParameter), ParamGenericObject
         }
       };
 
+    /// <summary>
+    /// For the Outputs
+    /// This is use to DA.SetData()
+    /// i.e. we will get the value from the Attribute.Value and set it to a Goo object
+    /// Since the value is all we need and this is often shared between the "Business" Parameter and the Gh (Goo) object, it can take the form:
+    /// { typeof(<ParamType), a => (a as ParamType).Value }
+    /// We need to do more work when the Goo, has a more complex constructor in which
+    /// case it might be best to create a new constructor, so we can simplify this dictionary and even deprecated later on.
+    /// </summary>
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
-        {
-          typeof(SubComponentParameter),
-          a => {
-            var subComponent = (a as SubComponentParameter).Value;
-            var sectionDesign = subComponent.SectionDesign;
-            return new AdSecSubComponentGoo(subComponent.ISubComponent, Plane.WorldXY, sectionDesign.DesignCode,
-              sectionDesign.CodeName, sectionDesign.MaterialName);
-          }
-        },
+        { typeof(SubComponentParameter), a => new AdSecSubComponentGoo((a as SubComponentParameter)?.Value) },
+        // { typeof(RebarGroupParameter), a => (a as RebarGroupParameter).Value },
         { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
           typeof(LoadSurfaceParameter),
           a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
         },
         { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value },
+        // { typeof(SectionParameter), a => (a as SectionParameter).Value },
         { typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value }, {
           typeof(SectionSolutionParameter), a => {
             var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
@@ -194,7 +143,8 @@ namespace Oasys.GH.Helpers {
         },
         { typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value },
         { typeof(StringArrayParam), a => (a as StringArrayParam).Value },
-        { typeof(IntegerParameter), a => (a as IntegerParameter).Value }, {
+        // { typeof(IntegerParameter), a => (a as IntegerParameter).Value },
+        {
           typeof(CrackParameter), a => {
             var crack = (a as CrackParameter).Value;
             return new AdSecCrackGoo(crack);
@@ -204,36 +154,52 @@ namespace Oasys.GH.Helpers {
             var load = (a as LoadParameter).Value;
             return new AdSecLoadGoo(load);
           }
-        },{ typeof(IntervalArrayParameter), a => {
-          var intervals = (a as IntervalArrayParameter).Value;
-          var ranges = new List<GH_Interval>();
-          foreach (var interval in intervals) {
-            ranges.Add(new GH_Interval(new Interval(interval.Item1, interval.Item2)));
+        }, {
+          typeof(IntervalArrayParameter), a => {
+            var intervals = (a as IntervalArrayParameter).Value;
+            var ranges = new List<GH_Interval>();
+            foreach (var interval in intervals) {
+              ranges.Add(new GH_Interval(new Interval(interval.Item1, interval.Item2)));
+            }
+
+            return ranges;
           }
-          return ranges;
-        }
-        },{ typeof(SecantStiffnessParameter), a => {
-          var stiffness = (a as SecantStiffnessParameter).Value;
-          return new Vector3d(stiffness.X.As(DefaultUnits.AxialStiffnessUnit),
-          stiffness.YY.As(DefaultUnits.BendingStiffnessUnit),
-          stiffness.ZZ.As(DefaultUnits.BendingStiffnessUnit));
-        }
-        }
-        ,{ typeof(CrackArrayParameter), a => {
-          var cracks = (a as CrackArrayParameter).Value;
-          var cracksGoo = new List<AdSecCrackGoo>();
-        foreach (var crack in cracks) {
-          cracksGoo.Add(new AdSecCrackGoo(crack));
-        }
-        return cracksGoo;
-        }
-        },{ typeof(DeformationParameter), a => {
-          var deformation = (a as DeformationParameter).Value;
-          return new AdSecDeformationGoo(deformation);
-        }
+        }, {
+          typeof(SecantStiffnessParameter), a => {
+            var stiffness = (a as SecantStiffnessParameter).Value;
+            return new Vector3d(stiffness.X.As(DefaultUnits.AxialStiffnessUnit),
+              stiffness.YY.As(DefaultUnits.BendingStiffnessUnit), stiffness.ZZ.As(DefaultUnits.BendingStiffnessUnit));
+          }
+        }, {
+          typeof(CrackArrayParameter), a => {
+            var cracks = (a as CrackArrayParameter).Value;
+            var cracksGoo = new List<AdSecCrackGoo>();
+            foreach (var crack in cracks) {
+              cracksGoo.Add(new AdSecCrackGoo(crack));
+            }
+
+            return cracksGoo;
+          }
+        }, {
+          typeof(DeformationParameter), a => {
+            var deformation = (a as DeformationParameter).Value;
+            return new AdSecDeformationGoo(deformation);
+          }
         }
       };
 
+    /// <summary>
+    /// Setting the Inputs
+    /// ***************************************************************************
+    /// ******* if the base data is the same, you can skip this completely! *******
+    /// ***************************************************************************
+    /// This is for grabbing the Values from Grasshopper and feeding the to the Business Input Params
+    /// So we often need to convert the Grasshopper object to the Business object
+    /// Again we aim to have the data, so the conversion would be simple
+    /// example: { typeof(ParamType), goo => new DataType(goo) }
+    /// This is the place where we might need to call AdSecInput to account for different inputed types
+    /// like in the case of SubComponent, that can also accept a Section Type
+    /// </summary>
     private static readonly Dictionary<Type, Func<object, object>> GooToParam
       = new Dictionary<Type, Func<object, object>> {
         {
@@ -243,6 +209,36 @@ namespace Oasys.GH.Helpers {
           typeof(AdSecSectionParameter), goo => {
             dynamic gooDynamic = goo;
             return new AdSecSectionGoo(gooDynamic);
+          }
+        }, {
+          typeof(RebarGroupParameter), goo => {
+            var gooDynamic = goo as List<object>;
+            return gooDynamic.Select(x => new AdSecRebarGroup((x as AdSecRebarGroupGoo).Value)).ToArray();
+          }
+        }, {
+          typeof(SubComponentArrayParameter), goo => {
+            var gooDynamic = goo as List<object>;
+            return gooDynamic.Select(x => {
+              if (x is AdSecSubComponentGoo subComponentGoo) {
+                var component = subComponentGoo.Value;
+                return new SubComponent() {
+                  ISubComponent = component,
+                  SectionDesign = new SectionDesign() {
+                    Section = component.Section,
+                  }
+                };
+              } else if (x is AdSecSectionGoo sectionGoo) {
+                var section = sectionGoo.Value;
+                return new SubComponent() {
+                  ISubComponent = ISubComponent.Create(section.Section, AdSecCore.Builders.Geometry.Zero()),
+                  SectionDesign = new SectionDesign() {
+                    Section = section.Section,
+                  }
+                };
+              }
+
+              return null;
+            }).ToArray();
           }
         }, {
           typeof(AdSecPointParameter), goo => {
@@ -257,8 +253,42 @@ namespace Oasys.GH.Helpers {
 
             return null;
           }
+        }, {
+          typeof(DoubleArrayParameter), goo => {
+            var list = goo as List<object>;
+            return list.Select(x => {
+              dynamic y = x;
+              return (double)y.Value;
+            }).ToArray();
+          }
         },
       };
+
+    private static T ConfigureParam<T>(Attribute a) where T : IGH_Param, new() {
+      return new T {
+        Name = a.Name,
+        NickName = a.NickName,
+        Description = a.Description,
+        Access = GetAccess(a),
+        Optional = a.Optional,
+      };
+    }
+
+    private static Param_GenericObject ParamGenericObject(Attribute a) {
+      return ConfigureParam<Param_GenericObject>(a);
+    }
+
+    private static Param_Number ParamNumber(Attribute a) {
+      return ConfigureParam<Param_Number>(a);
+    }
+
+    private static Param_Integer ParamInteger(Attribute a) {
+      return ConfigureParam<Param_Integer>(a);
+    }
+
+    private static Param_String ParamString(Attribute a) {
+      return ConfigureParam<Param_String>(a);
+    }
 
     public static void UpdateProperties(this IFunction BusinessComponent, GH_Component component) {
       component.Name = BusinessComponent.Metadata.Name;
@@ -317,6 +347,22 @@ namespace Oasys.GH.Helpers {
               }
             }
           }
+        } else if (attribute.GetAccess() == GH_ParamAccess.list) {
+          List<object> inputs = new List<object>();
+          if (dataAccess.GetDataList(index, inputs)) {
+            dynamic valueBasedParameter = attribute;
+            if (GooToParam.ContainsKey(attribute.GetType())) {
+              dynamic newValue = GooToParam[attribute.GetType()](inputs);
+              valueBasedParameter.Value = newValue;
+            } else {
+              try {
+                valueBasedParameter.Value = inputs.ToArray();
+              } catch (RuntimeBinderException) {
+                component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
+                return;
+              }
+            }
+          }
         }
       }
     }
@@ -325,7 +371,12 @@ namespace Oasys.GH.Helpers {
       foreach (var attribute in function.GetAllOutputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
         var type = attribute.GetType();
-        dynamic goo = ToGoo[type](attribute);
+        if (!ToGoo.ContainsKey(type)) {
+          throw new Exception($"No conversion function found for type {type}");
+        }
+
+        var func = ToGoo[type];
+        dynamic goo = func(attribute);
         bool success = false;
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           success = dataAccess.SetData(index, goo);

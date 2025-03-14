@@ -20,12 +20,7 @@ namespace AdSecGH.Parameters {
 
     public AdSecSolutionGoo(SectionSolution sectionSolutionParameter) {
       Value = sectionSolutionParameter;
-      var sectionDesign = sectionSolutionParameter.SectionDesign;
-      var section = sectionDesign.Section;
-      var code = sectionDesign.DesignCode;
-
-      m_section = new AdSecSection(section, code, sectionDesign.CodeName, sectionDesign.MaterialName,
-        sectionDesign.LocalPlane.ToGh());
+      m_section = new AdSecSection(sectionSolutionParameter.SectionDesign);
       m_plane = m_section.LocalPlane;
       ProfileEdge = m_section.m_profileEdge;
     }

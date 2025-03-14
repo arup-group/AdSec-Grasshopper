@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -275,12 +277,18 @@ namespace AdSecGH.Components {
           var filteredMaterials = new List<AdSecMaterialGoo>();
 
           for (int i = 0; i < materialsList.Count; i++) {
+            var material = new AdSecMaterial(_materials[materialsList[i]]);
+
+            var materialDesign = new MaterialDesign() {
+              Material = material.Material,
+              DesignCode = material.DesignCode.DesignCode
+            };
             if (search.ToLower() == "all") {
-              filteredMaterials.Add(new AdSecMaterialGoo(new AdSecMaterial(_materials[materialsList[i]])));
+              filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
               _selectedItems[_selectedItems.Count - 1] = "all";
             } else {
               if (materialsList[i].ToLower().Contains(search)) {
-                filteredMaterials.Add(new AdSecMaterialGoo(new AdSecMaterial(_materials[materialsList[i]])));
+                filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
                 _selectedItems[_selectedItems.Count - 1] = materialsList[i];
               }
 
@@ -291,7 +299,7 @@ namespace AdSecGH.Components {
                 test = test.Replace("-", string.Empty);
                 test = test.ToLower();
                 if (test.Contains(search)) {
-                  filteredMaterials.Add(new AdSecMaterialGoo(new AdSecMaterial(_materials[materialsList[i]])));
+                  filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
                   _selectedItems[_selectedItems.Count - 1] = materialsList[i];
                 }
               }
@@ -307,9 +315,13 @@ namespace AdSecGH.Components {
       var selectedMaterial = _materials[_selectedItems.Last()];
 
       // create new material
-      var mat = new AdSecMaterial(selectedMaterial);
+      var adSecMaterial = new AdSecMaterial(selectedMaterial);
+      var materialDesign2 = new MaterialDesign() {
+        Material = adSecMaterial.Material,
+        DesignCode = adSecMaterial.DesignCode.DesignCode
+      };
 
-      DA.SetData(0, new AdSecMaterialGoo(mat));
+      DA.SetData(0, new AdSecMaterialGoo(materialDesign2));
     }
 
     protected override void UpdateUIFromSelectedItems() {

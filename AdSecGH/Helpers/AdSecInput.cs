@@ -40,8 +40,9 @@ namespace AdSecGH.Helpers {
 
     public static bool TryCastToAdSecMaterial(GH_ObjectWrapper ghType, ref AdSecMaterial material) {
       bool castSuccessful = true;
-      if (ghType.Value is AdSecMaterialGoo) {
+      if (ghType.Value is AdSecMaterialGoo materialGoo) {
         ghType.CastTo(ref material);
+        material = materialGoo.Material;
       } else {
         castSuccessful = false;
       }
