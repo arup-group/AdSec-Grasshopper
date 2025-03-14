@@ -64,7 +64,7 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(PointParameter), ParamGenericObject
         }, {
-          typeof(AdSecMaterialArrayParam), ConfigureParam<AdSecGH.Parameters.AdSecMaterialParameter>
+          typeof(AdSecMaterialArrayParam), ConfigureParam<AdSecMaterialParameter>
         }, {
           typeof(IntegerArrayParameter), ParamInteger
         }, {
@@ -92,20 +92,31 @@ namespace Oasys.GH.Helpers {
           typeof(CrackParameter), ParamGenericObject
         }, {
           typeof(IntegerParameter), ParamInteger
-        },
+        }, {
+          typeof(DeformationParameter), ParamGenericObject
+        }, {
+          typeof(GenericParameter), ParamGenericObject
+        }, {
+          typeof(CrackArrayParameter), ParamGenericObject
+        }, {
+          typeof(SecantStiffnessParameter), ParamGenericObject
+        }, {
+          typeof(IntervalArrayParameter), ParamGenericObject
+        }
       };
 
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
-        { typeof(SubComponentParameter),
+        {
+          typeof(SubComponentParameter),
           a => {
             var subComponent = (a as SubComponentParameter).Value;
             var sectionDesign = subComponent.SectionDesign;
             return new AdSecSubComponentGoo(subComponent.ISubComponent, Plane.WorldXY, sectionDesign.DesignCode,
               sectionDesign.CodeName, sectionDesign.MaterialName);
           }
-        },
-        { typeof(SubComponentArrayParameter),
+        }, {
+          typeof(SubComponentArrayParameter),
           a => {
             var subComponent = (a as SubComponentParameter).Value;
             var sectionDesign = subComponent.SectionDesign;
@@ -149,7 +160,38 @@ namespace Oasys.GH.Helpers {
             var load = (a as LoadParameter).Value;
             return new AdSecLoadGoo(load);
           }
-        },
+        }, {
+          typeof(IntervalArrayParameter), a => {
+            var intervals = (a as IntervalArrayParameter).Value;
+            var ranges = new List<GH_Interval>();
+            foreach (var interval in intervals) {
+              ranges.Add(new GH_Interval(new Interval(interval.Item1, interval.Item2)));
+            }
+
+            return ranges;
+          }
+        }, {
+          typeof(SecantStiffnessParameter), a => {
+            var stiffness = (a as SecantStiffnessParameter).Value;
+            return new Vector3d(stiffness.X.As(DefaultUnits.AxialStiffnessUnit),
+              stiffness.YY.As(DefaultUnits.BendingStiffnessUnit), stiffness.ZZ.As(DefaultUnits.BendingStiffnessUnit));
+          }
+        }, {
+          typeof(CrackArrayParameter), a => {
+            var cracks = (a as CrackArrayParameter).Value;
+            var cracksGoo = new List<AdSecCrackGoo>();
+            foreach (var crack in cracks) {
+              cracksGoo.Add(new AdSecCrackGoo(crack));
+            }
+
+            return cracksGoo;
+          }
+        }, {
+          typeof(DeformationParameter), a => {
+            var deformation = (a as DeformationParameter).Value;
+            return new AdSecDeformationGoo(deformation);
+          }
+        }
       };
 
     private static readonly Dictionary<Type, Func<object, object>> GooToParam
@@ -165,36 +207,32 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(RebarGroupParameter), goo => {
             var gooDynamic = goo as List<object>;
-            return gooDynamic
-            .Select(x => new AdSecRebarGroup((x as AdSecRebarGroupGoo).Value))
-            .ToArray();
+            return gooDynamic.Select(x => new AdSecRebarGroup((x as AdSecRebarGroupGoo).Value)).ToArray();
           }
         }, {
           typeof(SubComponentArrayParameter), goo => {
             var gooDynamic = goo as List<object>;
-            return gooDynamic
-            .Select(x => {
-                if(x is AdSecSubComponentGoo subComponentGoo) {
-                  var component = subComponentGoo.Value;
-                  return new SubComponent() {
-                   ISubComponent = component,
-                   SectionDesign = new SectionDesign() {
-                     Section = component.Section,
-                   }
-                 };
-                }
-                else if(x is AdSecSectionGoo sectionGoo) {
-                  var section = sectionGoo.Value;
-                  return new SubComponent() {
-                   ISubComponent = ISubComponent.Create(section.Section, AdSecCore.Builders.Geometry.Zero()),
-                   SectionDesign = new SectionDesign() {
-                     Section = section.Section,
-                   }
-                 };
-                }
-                return null;
-              })
-            .ToArray();
+            return gooDynamic.Select(x => {
+              if (x is AdSecSubComponentGoo subComponentGoo) {
+                var component = subComponentGoo.Value;
+                return new SubComponent() {
+                  ISubComponent = component,
+                  SectionDesign = new SectionDesign() {
+                    Section = component.Section,
+                  }
+                };
+              } else if (x is AdSecSectionGoo sectionGoo) {
+                var section = sectionGoo.Value;
+                return new SubComponent() {
+                  ISubComponent = ISubComponent.Create(section.Section, AdSecCore.Builders.Geometry.Zero()),
+                  SectionDesign = new SectionDesign() {
+                    Section = section.Section,
+                  }
+                };
+              }
+
+              return null;
+            }).ToArray();
           }
         }, {
           typeof(AdSecPointParameter), goo => {
@@ -206,13 +244,14 @@ namespace Oasys.GH.Helpers {
             if (goo is double value) {
               return value;
             }
+
             return null;
           }
         }, {
           typeof(DoubleArrayParameter), goo => {
             var list = goo as List<object>;
             return list.Select(x => {
-             dynamic y = x;
+              dynamic y = x;
               return (double)y.Value;
             }).ToArray();
           }
@@ -329,6 +368,7 @@ namespace Oasys.GH.Helpers {
         if (!ToGoo.ContainsKey(type)) {
           throw new Exception($"No conversion function found for type {type}");
         }
+
         var func = ToGoo[type];
         dynamic goo = func(attribute);
         bool success = false;
