@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using AdSecCore.Functions;
 
@@ -7,6 +8,7 @@ using Grasshopper.Kernel;
 using OasysGH;
 using OasysGH.Components;
 
+using Attribute = AdSecCore.Functions.Attribute;
 namespace Oasys.GH.Helpers {
 
   public abstract class ComponentAdapter<T> : GH_OasysComponent, IDefaultValues where T : IFunction {
@@ -37,9 +39,25 @@ namespace Oasys.GH.Helpers {
         foreach (var warning in function.WarningMessages) {
           AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning);
         }
+
+        foreach (var remark in function.RemarkMessages) {
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, remark);
+        }
+
+        foreach (var error in function.ErrorMessages) {
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, error);
+        }
+
+        if (function.ErrorMessages.Count > 0) { return; }
       }
 
       BusinessComponent.SetOutputValues(this, DA);
+    }
+
+    public void RefreshOutputParameter(Attribute[] attributes) {
+      for (int id = 0; id < attributes.Length; id++) {
+        Params.Output[id].Description = attributes[id].Description;
+      }
     }
   }
 
