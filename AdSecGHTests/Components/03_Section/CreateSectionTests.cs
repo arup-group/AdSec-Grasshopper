@@ -52,6 +52,12 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
+    public void ShouldHaveOutputWithOptionalAsNull() {
+      component.SetInputParamAt(3, null);
+      ComponentTesting.ComputeOutputs(component);
+      Assert.NotNull(component.GetOutputParamAt(0));
+    }
+    [Fact]
     public void ShouldHaveOutputWithOptional() {
       var iBeamSymmetricalProfile = ProfileBuilder.GetIBeam();
       var section = new SectionBuilder().SetProfile(iBeamSymmetricalProfile).WithMaterial(iBeamMat).Build();
