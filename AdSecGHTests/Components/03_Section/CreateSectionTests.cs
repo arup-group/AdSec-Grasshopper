@@ -73,6 +73,15 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
+    public void ShouldHaveOutputWithReinforcementGroups() {
+      var reinforcementGroup = new BuilderLineGroup().Build();
+      var reinforcementGroupGoo = new AdSecRebarGroupGoo(reinforcementGroup);
+      component.SetInputParamAt(2, reinforcementGroupGoo);
+      ComponentTesting.ComputeOutputs(component);
+      Assert.NotNull(component.GetOutputParamAt(0));
+    }
+
+    [Fact]
     public void ShouldHaveOutputWithSubComponent() {
       var iBeamSymmetricalProfile = ProfileBuilder.GetIBeam();
       var section = new SectionBuilder().SetProfile(iBeamSymmetricalProfile).WithMaterial(iBeamMat).Build();
