@@ -52,13 +52,30 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
-    public void ShouldHaveOutputWithOptionalAsNull() {
+    public void ShouldHaveOutputWithOptionalSubComponentAsNull() {
       component.SetInputParamAt(3, null);
       ComponentTesting.ComputeOutputs(component);
       Assert.NotNull(component.GetOutputParamAt(0));
     }
+
     [Fact]
-    public void ShouldHaveOutputWithOptional() {
+    public void ShouldHaveOutputWithSubComponentThroughSection() {
+      var iBeamSymmetricalProfile = ProfileBuilder.GetIBeam();
+      var section = new SectionBuilder().SetProfile(iBeamSymmetricalProfile).WithMaterial(iBeamMat).Build();
+      var sectionDesign = new SectionDesign() {
+        Section = section,
+        DesignCode = DesignCode,
+        MaterialName = "AS1163_C250",
+        CodeName = "AS4100",
+      };
+      var subComponentGoo = new AdSecSectionGoo(new AdSecSection(sectionDesign));
+      component.SetInputParamAt(3, subComponentGoo);
+      ComponentTesting.ComputeOutputs(component);
+      Assert.NotNull(component.GetOutputParamAt(0));
+    }
+
+    [Fact]
+    public void ShouldHaveOutputWithSubComponent() {
       var iBeamSymmetricalProfile = ProfileBuilder.GetIBeam();
       var section = new SectionBuilder().SetProfile(iBeamSymmetricalProfile).WithMaterial(iBeamMat).Build();
       var subComponent = new SubComponent() {
