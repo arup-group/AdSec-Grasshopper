@@ -15,8 +15,10 @@ using Grasshopper.Kernel;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
+using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.StandardMaterials;
 using Oasys.GH.Helpers;
+using Oasys.Profiles;
 
 using Xunit;
 
@@ -57,43 +59,40 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
-    public void ShouldHaveOutputWithSubComponentThroughSection() {
-      var iBeamSymmetricalProfile = ProfileBuilder.GetIBeam();
-      var section = new SectionBuilder().SetProfile(iBeamSymmetricalProfile).WithMaterial(iBeamMat).Build();
-      var sectionDesign = new SectionDesign() {
-        Section = section,
-        DesignCode = DesignCode,
-        MaterialName = "AS1163_C250",
-        CodeName = "AS4100",
-      };
-      var subComponentGoo = new AdSecSectionGoo(new AdSecSection(sectionDesign));
-      component.SetInputParamAt(3, subComponentGoo);
-      ComponentTesting.ComputeOutputs(component);
-      Assert.NotNull(component.GetOutputParamAt(0));
-    }
-
-    [Fact]
     public void ShouldHaveOutputWithReinforcementGroups() {
-      var reinforcementGroup = new BuilderLineGroup().Build();
-      var reinforcementGroupGoo = new AdSecRebarGroupGoo(reinforcementGroup);
+      var reinforcementGroupGoo = new AdSecRebarGroupGoo(new BuilderLineGroup().Build());
       component.SetInputParamAt(2, reinforcementGroupGoo);
       ComponentTesting.ComputeOutputs(component);
       Assert.NotNull(component.GetOutputParamAt(0));
     }
 
     [Fact]
+    public void ShouldHaveOutputWithSubComponentThroughSection() {
+      var sectionDesign = GetSectionDesign();
+      var subComponentGoo = new AdSecSectionGoo(new AdSecSection(sectionDesign));
+      component.SetInputParamAt(3, subComponentGoo);
+      ComponentTesting.ComputeOutputs(component);
+      Assert.NotNull(component.GetOutputParamAt(0));
+    }
+
+    private SectionDesign GetSectionDesign() {
+      var section = new SectionBuilder().SetProfile(ProfileBuilder.GetIBeam()).WithMaterial(iBeamMat).Build();
+      var sectionDesign = new SectionDesign() {
+        Section = section,
+        DesignCode = DesignCode,
+        MaterialName = "AS1163_C250",
+        CodeName = "AS4100",
+        LocalPlane = OasysPlane.PlaneYZ
+      };
+      return sectionDesign;
+    }
+
+    [Fact]
     public void ShouldHaveOutputWithSubComponent() {
-      var iBeamSymmetricalProfile = ProfileBuilder.GetIBeam();
-      var section = new SectionBuilder().SetProfile(iBeamSymmetricalProfile).WithMaterial(iBeamMat).Build();
+      var sectionDesign = GetSectionDesign();
       var subComponent = new SubComponent() {
-        SectionDesign = new SectionDesign() {
-          Section = section,
-          DesignCode = DesignCode,
-          MaterialName = "AS1163_C250",
-          CodeName = "AS4100",
-          LocalPlane = OasysPlane.PlaneYZ
-        },
-        ISubComponent = ISubComponent.Create(section, Geometry.Zero())
+        SectionDesign = sectionDesign,
+        ISubComponent = ISubComponent.Create(sectionDesign.Section, Geometry.Zero())
       };
       var subComponentGoo = new AdSecSubComponentGoo(subComponent);
       component.SetInputParamAt(3, subComponentGoo);
