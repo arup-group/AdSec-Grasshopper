@@ -45,6 +45,12 @@ namespace AdSecCore.Functions {
     public OasysPlane Plane { get; set; } = OasysPlane.PlaneYZ;
   }
 
+  public class NeutralLine {
+    public Length Offset { get; set; }
+    public double Angle { get; set; }
+    public SectionSolution Solution { get; set; }
+  }
+
   public class DoubleParameter : ParameterAttribute<double> { }
   public class DoubleArrayParameter : BaseArrayParameter<double> { }
   public class IntegerArrayParameter : BaseArrayParameter<int> { }
@@ -71,6 +77,6 @@ namespace AdSecCore.Functions {
   public class CrackArrayParameter : BaseArrayParameter<CrackLoad> { }
   public class SecantStiffnessParameter : ParameterAttribute<IStiffness> { }
   public class IntervalArrayParameter : BaseArrayParameter<Tuple<double, double>> { }
-
+  public class NeutralLineParameter : ParameterAttribute<NeutralLine> { }
 
 }
