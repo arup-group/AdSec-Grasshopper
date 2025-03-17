@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Drawing;
+using System.Reflection;
 
 using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using AdSecGH.Components;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
@@ -15,10 +17,6 @@ using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.StandardMaterials;
 using Oasys.GH.Helpers;
-using Oasys.Profiles;
-
-using OasysUnits;
-using OasysUnits.Units;
 
 using Xunit;
 
@@ -102,6 +100,23 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldHaveOneOutput() {
       Assert.Single(component.Params.Output);
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(AdSecGH.PluginInfo.Instance, component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(MatchesExpectedIcon(component, Resources.CreateFlange));
+    }
+
+    public static bool MatchesExpectedIcon(GH_Component component, Bitmap expected) {
+      var propertyInfo = component.GetType().GetProperty("Icon", BindingFlags.Instance | BindingFlags.NonPublic);
+      var icon = (Bitmap)(propertyInfo?.GetValue(component, null));
+      var expectedRawFormat = expected.RawFormat;
+      return expectedRawFormat.Guid.Equals(icon?.RawFormat.Guid);
     }
   }
 }
