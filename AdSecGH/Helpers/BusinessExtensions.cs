@@ -19,6 +19,7 @@ using Microsoft.CSharp.RuntimeBinder;
 using Oasys.AdSec;
 
 using OasysGH.Units;
+using OasysGH.Units.Helpers;
 
 using OasysUnits;
 
@@ -82,6 +83,8 @@ namespace Oasys.GH.Helpers {
           typeof(StringArrayParam), ParamString
         }, {
           typeof(LengthParameter), ParamGenericObject
+        },{
+          typeof(DisplacementParameter), ParamGenericObject
         }, {
           typeof(SectionSolutionParameter), ParamGenericObject
         }, {
@@ -194,6 +197,12 @@ namespace Oasys.GH.Helpers {
               default:
                 return null;
             }
+          }
+        },{
+          typeof(DisplacementParameter), a => {
+            var value = (a as DisplacementParameter).Value;
+            var unit = DefaultUnits.LengthUnitResult;
+            return UnitHelpers.ParseToQuantity<Length>(value.As(unit), unit);
           }
         }
       };
@@ -419,7 +428,6 @@ namespace Oasys.GH.Helpers {
 
     private static Line CreateNeutralLine(Length offset, double angleRadians, SectionSolution solution) {
       // calculate temp plane for width of neutral line
-      offset = new Length(offset.Value, DefaultUnits.LengthUnitResult);
       var solutionGoo = new AdSecSolutionGoo(solution);
       var profile = solutionGoo.ProfileEdge;
       Plane local = solution.SectionDesign.LocalPlane.ToGh();
@@ -430,7 +438,9 @@ namespace Oasys.GH.Helpers {
       var bbox = tempCrv.GetBoundingBox(tempPlane);
 
       // calculate width of neutral line to display
-      double width = 1.05 * bbox.PointAt(0, 0, 0).DistanceTo(bbox.PointAt(1, 0, 0));
+      var widthDefaultUnit = new Length(1.05 * bbox.PointAt(0, 0, 0).DistanceTo(bbox.PointAt(1, 0, 0)), DefaultUnits.LengthUnitGeometry);
+      double width = widthDefaultUnit.As(RhinoUnit.GetRhinoLengthUnit());
+
 
       // get direction as vector
       var direction = new Vector3d(local.XAxis);
@@ -448,7 +458,7 @@ namespace Oasys.GH.Helpers {
       offsVec.Rotate(Math.PI / 2, local.ZAxis);
       offsVec.Unitize();
       // move the line
-      double off = offset.As(DefaultUnits.LengthUnitResult);
+      double off = offset.As(RhinoUnit.GetRhinoLengthUnit());
       ln.Transform(Transform.Translation(offsVec.X * off, offsVec.Y * off, offsVec.Z * off));
       return ln;
     }

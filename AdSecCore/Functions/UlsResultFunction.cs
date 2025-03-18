@@ -68,7 +68,7 @@ namespace AdSecCore.Functions {
       Access = Access.Item,
     };
 
-    public LengthParameter NeutralAxisOffsetOutput { get; set; } = new LengthParameter {
+    public DisplacementParameter NeutralAxisOffsetOutput { get; set; } = new DisplacementParameter {
       Name = "Neutral Axis Offset",
       NickName = "NaO",
       Description = "The Offset of the Neutral Axis from the Sections centroid",
@@ -96,7 +96,7 @@ namespace AdSecCore.Functions {
       Access = Access.Item,
     };
 
-    public LengthParameter FailureNeutralAxisOffsetOutput { get; set; } = new LengthParameter {
+    public DisplacementParameter FailureNeutralAxisOffsetOutput { get; set; } = new DisplacementParameter {
       Name = "Failure Neutral Axis Offset",
       NickName = "FaO",
       Description = "The Offset of the Neutral Axis at failure from the Sections centroid",
@@ -232,10 +232,8 @@ namespace AdSecCore.Functions {
       }
 
       // temp length in SI units
+      var tempOffset = new Length(offsetSI, LengthUnit.Meter);
 
-      var tempOffset = new Length(offsetSI, ContextUnits.Instance.LengthUnitGeometry);
-
-      // offset in user selected unit
       return tempOffset;
     }
 
