@@ -45,7 +45,7 @@ namespace AdSecCore.Functions {
     public string Name { get; set; }
     public string NickName { get; set; }
     public string Description { get; set; }
-    public bool Optional { get; set; } = true;
+    public bool Optional { get; set; } = false;
 
     public void Update(ref Attribute update) {
       update.Name = Name;

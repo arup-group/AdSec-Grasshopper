@@ -18,17 +18,16 @@ using Xunit;
 namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
   public class AnalyseTests {
+    private readonly AdSecSectionGoo adSecSectionGoo;
 
     private readonly Analyse component;
     private readonly IDesignCode designCode = IS456.Edition_2000;
     private readonly ISection Section;
-    private readonly AdSecSectionGoo adSecSectionGoo;
 
     public AnalyseTests() {
       component = new Analyse();
 
-      var singleBars = new BuilderReinforcementGroup().WithSize(2).CreateSingleBar().AtPosition(Geometry.Zero())
-       .Build();
+      var singleBars = new BuilderSingleBar().WithSize(2).CreateSingleBar().AtPosition(Geometry.Zero()).Build();
       Section = new SectionBuilder().WithWidth(40).CreateSquareSection().WithReinforcementGroup(singleBars).Build();
 
       var secSection = new AdSecSection(Section, designCode, "", "", Plane.WorldXY);

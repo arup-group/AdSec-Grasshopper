@@ -58,8 +58,7 @@ namespace AdSecGHTests.Components {
     public FlattenRebarTests() {
       component = new FlattenRebar();
 
-      var singleBars = new BuilderReinforcementGroup().WithSize(2).CreateSingleBar().AtPosition(Geometry.Zero())
-       .Build();
+      var singleBars = new BuilderSingleBar().WithSize(2).CreateSingleBar().AtPosition(Geometry.Zero()).Build();
       Section = new SectionBuilder().WithWidth(40).CreateSquareSection().WithReinforcementGroup(singleBars).Build();
 
       var secSection = new AdSecSection(Section, designCode, "", "", Plane.WorldXY);

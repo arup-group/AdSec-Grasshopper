@@ -13,6 +13,7 @@ using Rhino.Geometry;
 
 using Xunit;
 
+using AdSecMaterialParameter = AdSecGH.Parameters.AdSecMaterialParameter;
 using AdSecSectionParameter = AdSecGH.Parameters.AdSecSectionParameter;
 
 namespace AdSecGHTests.Helpers {
@@ -83,7 +84,7 @@ namespace AdSecGHTests.Helpers {
     [Fact]
     public void ShouldHaveSameMaterialOutput() {
       allParameters.Material.Default = new[] {
-        new AdSecMaterialGoo(new AdSecMaterial()),
+        new AdSecMaterialGoo(new MaterialDesign()),
       };
       Recompute();
 

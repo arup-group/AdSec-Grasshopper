@@ -11,22 +11,26 @@ namespace AdSecCore.Builders {
   public class SolutionBuilder : IBuilder<SectionSolution> {
     private ISection Section { get; set; } = CreateRectangularSection();
     private IDesignCode DesignCode { get; set; } = IS456.Edition_2000;
+
     public SectionSolution Build() {
       var analyseFunction = new AnalyseFunction();
-      analyseFunction.Section = new SectionParameter() {
-        Value = new SectionDesign() {
+      analyseFunction.Section = new SectionParameter {
+        Value = new SectionDesign {
           DesignCode = DesignCode,
-          Section = Section
-        }
+          Section = Section,
+        },
       };
       analyseFunction.Compute();
       return analyseFunction.Solution.Value;
     }
 
     private static ISection CreateRectangularSection() {
-      var BottomRight = new BuilderReinforcementGroup().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(13, -28)).Build();
-      var BottomLeft = new BuilderReinforcementGroup().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(-13, -28)).Build();
-      return new SectionBuilder().WithWidth(30).WithHeight(60).CreateRectangularSection().WithReinforcementGroups(new List<IGroup>() { BottomLeft, BottomRight }).Build();
+      var BottomRight = new BuilderSingleBar().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(13, -28))
+       .Build();
+      var BottomLeft = new BuilderSingleBar().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(-13, -28))
+       .Build();
+      return new SectionBuilder().WithWidth(30).WithHeight(60).CreateRectangularSection()
+       .WithReinforcementGroups(new List<IGroup> { BottomLeft, BottomRight, }).Build();
     }
 
     public SolutionBuilder WithSection(ISection section) {
@@ -38,6 +42,5 @@ namespace AdSecCore.Builders {
       DesignCode = code;
       return this;
     }
-
   }
 }
