@@ -6,7 +6,6 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -41,6 +40,8 @@ namespace Oasys.GH.Helpers {
           typeof(SubComponentParameter), ParamGenericObject
         }, {
           typeof(SubComponentArrayParameter), ParamGenericObject
+        }, {
+          typeof(DesignCodeParameter), ParamGenericObject
         }, {
           typeof(MaterialParameter), ParamGenericObject
         }, {
@@ -102,17 +103,20 @@ namespace Oasys.GH.Helpers {
           typeof(SecantStiffnessParameter), ParamGenericObject
         }, {
           typeof(IntervalArrayParameter), ParamGenericObject
-        }
+        },
       };
 
     /// <summary>
-    /// For the Outputs
-    /// This is use to DA.SetData()
-    /// i.e. we will get the value from the Attribute.Value and set it to a Goo object
-    /// Since the value is all we need and this is often shared between the "Business" Parameter and the Gh (Goo) object, it can take the form:
-    /// { typeof(<ParamType), a => (a as ParamType).Value }
-    /// We need to do more work when the Goo, has a more complex constructor in which
-    /// case it might be best to create a new constructor, so we can simplify this dictionary and even deprecated later on.
+    ///   For the Outputs
+    ///   This is use to DA.SetData()
+    ///   i.e. we will get the value from the Attribute.Value and set it to a Goo object
+    ///   Since the value is all we need and this is often shared between the "Business" Parameter and the Gh (Goo) object, it
+    ///   can take the form:
+    ///   { typeof(
+    ///   <ParamType), a=>
+    ///     (a as ParamType).Value }
+    ///     We need to do more work when the Goo, has a more complex constructor in which
+    ///     case it might be best to create a new constructor, so we can simplify this dictionary and even deprecated later on.
     /// </summary>
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
@@ -185,20 +189,20 @@ namespace Oasys.GH.Helpers {
             var deformation = (a as DeformationParameter).Value;
             return new AdSecDeformationGoo(deformation);
           }
-        }
+        },
       };
 
     /// <summary>
-    /// Setting the Inputs
-    /// ***************************************************************************
-    /// ******* if the base data is the same, you can skip this completely! *******
-    /// ***************************************************************************
-    /// This is for grabbing the Values from Grasshopper and feeding the to the Business Input Params
-    /// So we often need to convert the Grasshopper object to the Business object
-    /// Again we aim to have the data, so the conversion would be simple
-    /// example: { typeof(ParamType), goo => new DataType(goo) }
-    /// This is the place where we might need to call AdSecInput to account for different inputed types
-    /// like in the case of SubComponent, that can also accept a Section Type
+    ///   Setting the Inputs
+    ///   ***************************************************************************
+    ///   ******* if the base data is the same, you can skip this completely! *******
+    ///   ***************************************************************************
+    ///   This is for grabbing the Values from Grasshopper and feeding the to the Business Input Params
+    ///   So we often need to convert the Grasshopper object to the Business object
+    ///   Again we aim to have the data, so the conversion would be simple
+    ///   example: { typeof(ParamType), goo => new DataType(goo) }
+    ///   This is the place where we might need to call AdSecInput to account for different inputed types
+    ///   like in the case of SubComponent, that can also accept a Section Type
     /// </summary>
     private static readonly Dictionary<Type, Func<object, object>> GooToParam
       = new Dictionary<Type, Func<object, object>> {
@@ -221,19 +225,21 @@ namespace Oasys.GH.Helpers {
             return gooDynamic.Select(x => {
               if (x is AdSecSubComponentGoo subComponentGoo) {
                 var component = subComponentGoo.Value;
-                return new SubComponent() {
+                return new SubComponent {
                   ISubComponent = component,
-                  SectionDesign = new SectionDesign() {
+                  SectionDesign = new SectionDesign {
                     Section = component.Section,
-                  }
+                  },
                 };
-              } else if (x is AdSecSectionGoo sectionGoo) {
+              }
+
+              if (x is AdSecSectionGoo sectionGoo) {
                 var section = sectionGoo.Value;
-                return new SubComponent() {
+                return new SubComponent {
                   ISubComponent = ISubComponent.Create(section.Section, AdSecCore.Builders.Geometry.Zero()),
-                  SectionDesign = new SectionDesign() {
+                  SectionDesign = new SectionDesign {
                     Section = section.Section,
-                  }
+                  },
                 };
               }
 
@@ -348,7 +354,7 @@ namespace Oasys.GH.Helpers {
             }
           }
         } else if (attribute.GetAccess() == GH_ParamAccess.list) {
-          List<object> inputs = new List<object>();
+          var inputs = new List<object>();
           if (dataAccess.GetDataList(index, inputs)) {
             dynamic valueBasedParameter = attribute;
             if (GooToParam.ContainsKey(attribute.GetType())) {

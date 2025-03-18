@@ -28,26 +28,6 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.EditSection;
 
-    protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      pManager.AddGenericParameter("Section", "Sec", "AdSec Section to edit or get information from",
-        GH_ParamAccess.item);
-      pManager.AddGenericParameter("Profile", "Pf", "[Optional] Edit the Profile defining the Section solid boundary",
-        GH_ParamAccess.item);
-      pManager.AddGenericParameter("Material", "Mat", "[Optional] Edit the Material for the section",
-        GH_ParamAccess.item);
-      pManager.AddGenericParameter("DesignCode", "Code", "[Optional] Edit the Section DesignCode", GH_ParamAccess.item);
-      pManager.AddGenericParameter("RebarGroup", "RbG",
-        "[Optional] Edit the Reinforcement Groups in the section (applicable for only concrete material).",
-        GH_ParamAccess.list);
-      pManager.AddGenericParameter("SubComponent", "Sub",
-        "[Optional] Edit the Subcomponents contained within the section", GH_ParamAccess.list);
-
-      // make all from second input optional
-      for (int i = 1; i < pManager.ParamCount; i++) {
-        pManager[i].Optional = true;
-      }
-    }
-
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       pManager.AddGenericParameter("Section", "Sec", "Edited AdSec Section", GH_ParamAccess.item);
       pManager.AddGenericParameter("Profile", "Pf", "Profile defining the Section solid boundary", GH_ParamAccess.item);

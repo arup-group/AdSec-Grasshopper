@@ -22,5 +22,11 @@ namespace AdSecGHTests.Components {
       var component = new EditSection();
       Assert.Equal("EditSection", component.BusinessComponent.Metadata.Name);
     }
+
+    [Fact]
+    public void ShouldHaveSixInputs() {
+      var component = new EditSection();
+      Assert.Equal(6, component.Params.Input.Count);
+    }
   }
 }
