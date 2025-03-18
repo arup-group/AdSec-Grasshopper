@@ -15,7 +15,7 @@ namespace AdSecCore.Functions {
     public SectionSolutionParameter SolutionInput { get; set; } = new SectionSolutionParameter {
       Name = "Results",
       NickName = "Res",
-      Description = "AdSec Results to perform serviceability check",
+      Description = CommonDescriptions.SolutionInputDescription,
       Access = Access.Item,
       Optional = false,
     };
@@ -23,7 +23,7 @@ namespace AdSecCore.Functions {
     public GenericParameter LoadInput { get; set; } = new GenericParameter {
       Name = "Load",
       NickName = "Ld",
-      Description = "AdSec Load (Load or Deformation) for which the strength results are to be calculated.",
+      Description = CommonDescriptions.LoadInputDescription,
       Access = Access.Item,
       Optional = false,
     };
@@ -31,7 +31,7 @@ namespace AdSecCore.Functions {
     public LoadParameter LoadOutput { get; set; } = new LoadParameter {
       Name = "Load",
       NickName = "Ld",
-      Description = $"The section load under the applied action.{Environment.NewLine}If the applied deformation is outside the capacity range of the section, the returned load will be zero.",
+      Description = CommonDescriptions.LoadOutputDescription,
       Access = Access.Item,
       Optional = false,
     };
@@ -39,14 +39,14 @@ namespace AdSecCore.Functions {
     public CrackArrayParameter CrackOutput { get; set; } = new CrackArrayParameter {
       Name = "Cracks",
       NickName = "Crks",
-      Description = $"Crack results are calculated at bar positions or section surfaces depending on the Design Code specifications.{Environment.NewLine}If the applied action is outside the capacity range of the section, the returned list will be empty. See MaximumCrack output for the crack result corresponding to the maximum crack width.",
+      Description = CommonDescriptions.CrackDescription,
       Access = Access.List,
     };
 
     public CrackParameter MaximumCrackOutput { get; set; } = new CrackParameter {
       Name = "MaximumCrack",
       NickName = "MaxCrk",
-      Description = $"Crack results are calculated at bar positions or section surfaces depending on the Design Code specifications.{Environment.NewLine}If the applied action is outside the capacity range of the section, the returned list will be empty. See MaximumCrack output for the crack result corresponding to the maximum crack width.",
+      Description = CommonDescriptions.CrackDescription,
       Access = Access.Item,
     };
 
@@ -60,7 +60,7 @@ namespace AdSecCore.Functions {
     public DeformationParameter DeformationOutput { get; set; } = new DeformationParameter {
       Name = "Deformation",
       NickName = "Def",
-      Description = "The section deformation under the applied action",
+      Description = CommonDescriptions.DeformationDescription,
       Access = Access.Item,
     };
 
