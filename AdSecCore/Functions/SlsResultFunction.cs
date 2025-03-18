@@ -10,12 +10,22 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
+
+  public static class CommonDescriptions {
+    public static readonly string DefaultUtilizationDescription = $"The strength load utilisation is the ratio of the applied load to the load in the same direction that would cause the section to reach its capacity. Utilisation > 1 means the applied load exceeds the section capacity.{Environment.NewLine}If the applied load is outside the capacity range of the section, the utilisation will be greater than 1. Whereas, if the applied deformation exceeds the capacity, the load utilisation will be zero.";
+    public static readonly string DefaultCrackDescription = $"Crack results are calculated at bar positions or section surfaces depending on the Design Code specifications.{Environment.NewLine}If the applied action is outside the capacity range of the section, the returned list will be empty. See MaximumCrack output for the crack result corresponding to the maximum crack width.";
+    public static readonly string DefaultLoadOutputDescription = $"The section load under the applied action.{Environment.NewLine}If the applied deformation is outside the capacity range of the section, the returned load will be zero.";
+    public static readonly string DefaultLoadInputDescription = "AdSec Load (Load or Deformation) for which the strength results are to be calculated.";
+    public static readonly string DefaultDeformationDescription = "The section deformation under the applied action";
+    public static readonly string DefaultSolutionInputDescription = "AdSec Results to perform strength check on";
+  }
+
   public class SlsResultFunction : Function {
 
     public SectionSolutionParameter SolutionInput { get; set; } = new SectionSolutionParameter {
       Name = "Results",
       NickName = "Res",
-      Description = CommonDescriptions.SolutionInputDescription,
+      Description = CommonDescriptions.DefaultSolutionInputDescription,
       Access = Access.Item,
       Optional = false,
     };
@@ -23,7 +33,7 @@ namespace AdSecCore.Functions {
     public GenericParameter LoadInput { get; set; } = new GenericParameter {
       Name = "Load",
       NickName = "Ld",
-      Description = CommonDescriptions.LoadInputDescription,
+      Description = CommonDescriptions.DefaultLoadInputDescription,
       Access = Access.Item,
       Optional = false,
     };
@@ -31,7 +41,7 @@ namespace AdSecCore.Functions {
     public LoadParameter LoadOutput { get; set; } = new LoadParameter {
       Name = "Load",
       NickName = "Ld",
-      Description = CommonDescriptions.LoadOutputDescription,
+      Description = CommonDescriptions.DefaultLoadOutputDescription,
       Access = Access.Item,
       Optional = false,
     };
@@ -39,14 +49,14 @@ namespace AdSecCore.Functions {
     public CrackArrayParameter CrackOutput { get; set; } = new CrackArrayParameter {
       Name = "Cracks",
       NickName = "Crks",
-      Description = CommonDescriptions.CrackDescription,
+      Description = CommonDescriptions.DefaultCrackDescription,
       Access = Access.List,
     };
 
     public CrackParameter MaximumCrackOutput { get; set; } = new CrackParameter {
       Name = "MaximumCrack",
       NickName = "MaxCrk",
-      Description = CommonDescriptions.CrackDescription,
+      Description = CommonDescriptions.DefaultCrackDescription,
       Access = Access.Item,
     };
 
@@ -60,7 +70,7 @@ namespace AdSecCore.Functions {
     public DeformationParameter DeformationOutput { get; set; } = new DeformationParameter {
       Name = "Deformation",
       NickName = "Def",
-      Description = CommonDescriptions.DeformationDescription,
+      Description = CommonDescriptions.DefaultDeformationDescription,
       Access = Access.Item,
     };
 

@@ -9,58 +9,20 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
-  public static class CommonDescriptions {
-    public static readonly string UtilizationDescription = $"The strength load utilisation is the ratio of the applied load to the load in the same direction that would cause the section to reach its capacity. Utilisation > 1 means the applied load exceeds the section capacity.{Environment.NewLine}If the applied load is outside the capacity range of the section, the utilisation will be greater than 1. Whereas, if the applied deformation exceeds the capacity, the load utilisation will be zero.";
-    public static readonly string CrackDescription = $"Crack results are calculated at bar positions or section surfaces depending on the Design Code specifications.{Environment.NewLine}If the applied action is outside the capacity range of the section, the returned list will be empty. See MaximumCrack output for the crack result corresponding to the maximum crack width.";
-    public static readonly string LoadOutputDescription = $"The section load under the applied action.{Environment.NewLine}If the applied deformation is outside the capacity range of the section, the returned load will be zero.";
-    public static readonly string LoadInputDescription = "AdSec Load (Load or Deformation) for which the strength results are to be calculated.";
-    public static readonly string DeformationDescription = "The section deformation under the applied action";
-    public static readonly string SolutionInputDescription = "AdSec Results to perform strength check on";
 
-  }
-  public class UlsResultFunction : Function {
-
-    public SectionSolutionParameter SolutionInput { get; set; } = new SectionSolutionParameter {
-      Name = "Results",
-      NickName = "Res",
-      Description = CommonDescriptions.SolutionInputDescription,
-      Access = Access.Item,
-      Optional = false,
-    };
-
-    public GenericParameter LoadInput { get; set; } = new GenericParameter {
-      Name = "Load",
-      NickName = "Ld",
-      Description = CommonDescriptions.LoadInputDescription,
-      Access = Access.Item,
-      Optional = false,
-    };
-
-    public LoadParameter LoadOutput { get; set; } = new LoadParameter {
-      Name = "Load",
-      NickName = "Ld",
-      Description = CommonDescriptions.LoadOutputDescription,
-      Access = Access.Item,
-    };
+  public class UlsResultFunction : SlsResultFunction {
 
     public DoubleParameter LoadUtilOutput { get; set; } = new DoubleParameter {
       Name = "LoadUtil",
       NickName = "Ul",
-      Description = CommonDescriptions.UtilizationDescription,
-      Access = Access.Item,
-    };
-
-    public DeformationParameter DeformationOutput { get; set; } = new DeformationParameter {
-      Name = "Deformation",
-      NickName = "Def",
-      Description = CommonDescriptions.DeformationDescription,
+      Description = CommonDescriptions.DefaultUtilizationDescription,
       Access = Access.Item,
     };
 
     public DoubleParameter DeformationUtilOutput { get; set; } = new DoubleParameter {
       Name = "DeformationUtil",
       NickName = "Ud",
-      Description = CommonDescriptions.UtilizationDescription,
+      Description = CommonDescriptions.DefaultUtilizationDescription,
       Access = Access.Item,
     };
 
@@ -153,12 +115,6 @@ namespace AdSecCore.Functions {
         FailureNeutralAxisOffsetOutput,
         FailureNeutralAxisAngleOutput,
       };
-    }
-
-    public void DeformationDescription(StrainUnit strainUnit, CurvatureUnit curvatureUnit) {
-      var strainAbbreviation = Strain.GetAbbreviation(strainUnit);
-      var curvatureAbbreviation = $"{strainAbbreviation}{Curvature.GetAbbreviation(curvatureUnit)}";
-      DeformationOutput.Description = $"The section deformation under the applied action. The output is a vector representing:{Environment.NewLine}X: Strain [{strainAbbreviation}]{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{curvatureAbbreviation}]{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{curvatureAbbreviation}]";
     }
 
     public override void Compute() {
