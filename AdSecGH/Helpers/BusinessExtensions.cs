@@ -427,6 +427,7 @@ namespace Oasys.GH.Helpers {
     }
 
     private static Line CreateNeutralLine(Length offset, double angleRadians, SectionSolution solution) {
+      //Line is a Rhino.Geometry line and So need to be converted to RhinoUnit for display
       // calculate temp plane for width of neutral line
       var solutionGoo = new AdSecSolutionGoo(solution);
       var profile = solutionGoo.ProfileEdge;
@@ -438,8 +439,8 @@ namespace Oasys.GH.Helpers {
       var bbox = tempCrv.GetBoundingBox(tempPlane);
 
       // calculate width of neutral line to display
-      var widthDefaultUnit = new Length(1.05 * bbox.PointAt(0, 0, 0).DistanceTo(bbox.PointAt(1, 0, 0)), DefaultUnits.LengthUnitGeometry);
-      double width = widthDefaultUnit.As(RhinoUnit.GetRhinoLengthUnit());
+      var widthInDefaultUnit = new Length(1.05 * bbox.PointAt(0, 0, 0).DistanceTo(bbox.PointAt(1, 0, 0)), DefaultUnits.LengthUnitGeometry);
+      double width = widthInDefaultUnit.As(RhinoUnit.GetRhinoLengthUnit());
 
 
       // get direction as vector
@@ -451,7 +452,7 @@ namespace Oasys.GH.Helpers {
       var start = new Point3d(local.Origin);
       start.Transform(Transform.Translation(direction.X * width / 2 * -1, direction.Y * width / 2 * -1,
         direction.Z * width / 2 * -1));
-      var ln = new Line(start, direction, width);
+      var line = new Line(start, direction, width);
 
       // offset vector
       var offsVec = new Vector3d(direction);
@@ -459,8 +460,8 @@ namespace Oasys.GH.Helpers {
       offsVec.Unitize();
       // move the line
       double off = offset.As(RhinoUnit.GetRhinoLengthUnit());
-      ln.Transform(Transform.Translation(offsVec.X * off, offsVec.Y * off, offsVec.Z * off));
-      return ln;
+      line.Transform(Transform.Translation(offsVec.X * off, offsVec.Y * off, offsVec.Z * off));
+      return line;
     }
   }
 

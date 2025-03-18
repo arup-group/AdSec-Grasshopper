@@ -10,6 +10,7 @@ using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
   public class UlsResultFunction : Function {
+    private static string _utilizationDescription = $"The strength load utilisation is the ratio of the applied load to the load in the same direction that would cause the section to reach its capacity. Utilisation > 1 means the applied load exceeds the section capacity.{Environment.NewLine}If the applied load is outside the capacity range of the section, the utilisation will be greater than 1. Whereas, if the applied deformation exceeds the capacity, the load utilisation will be zero."
     public SectionSolutionParameter SolutionInput { get; set; } = new SectionSolutionParameter {
       Name = "Results",
       NickName = "Res",
@@ -36,7 +37,7 @@ namespace AdSecCore.Functions {
     public DoubleParameter LoadUtilOutput { get; set; } = new DoubleParameter {
       Name = "LoadUtil",
       NickName = "Ul",
-      Description = $"The strength load utilisation is the ratio of the applied load to the load in the same direction that would cause the section to reach its capacity. Utilisation > 1 means the applied load exceeds the section capacity.{Environment.NewLine}If the applied load is outside the capacity range of the section, the utilisation will be greater than 1. Whereas, if the applied deformation exceeds the capacity, the load utilisation will be zero.",
+      Description = _utilizationDescription,
       Access = Access.Item,
     };
 
@@ -50,7 +51,7 @@ namespace AdSecCore.Functions {
     public DoubleParameter DeformationUtilOutput { get; set; } = new DoubleParameter {
       Name = "DeformationUtil",
       NickName = "Ud",
-      Description = $"The strength deformation utilisation is the ratio of the applied deformation to the deformation in the same direction that would cause the section to reach its capacity. Utilisation > 1 means capacity has been exceeded.{Environment.NewLine}Capacity has been exceeded when the utilisation is greater than 1. If the applied load is outside the capacity range of the section, the deformation utilisation will be the maximum double value.",
+      Description = _utilizationDescription,
       Access = Access.Item,
     };
 
@@ -156,21 +157,22 @@ namespace AdSecCore.Functions {
       var solution = SolutionInput.Value;
       IStrengthResult uls = null;
       IStrengthResult failure = null;
+      double adjustmentFactor = 0.999;
       switch (LoadInput.Value) {
         case ILoad load:
           uls = solution.Strength.Check(load);
           var failureLoad = ILoad.Create(
-            load.X / uls.LoadUtilisation.DecimalFractions * 0.999,
-            load.YY / uls.LoadUtilisation.DecimalFractions * 0.999,
-            load.ZZ / uls.LoadUtilisation.DecimalFractions * 0.999);
+            load.X / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
+            load.YY / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
+            load.ZZ / uls.LoadUtilisation.DecimalFractions * adjustmentFactor);
           failure = solution.Strength.Check(failureLoad);
           break;
         case IDeformation def:
           uls = solution.Strength.Check(def);
           var failureDeformation = IDeformation.Create(
-            def.X / uls.LoadUtilisation.DecimalFractions * 0.999,
-            def.YY / uls.LoadUtilisation.DecimalFractions * 0.999,
-            def.ZZ / uls.LoadUtilisation.DecimalFractions * 0.999);
+            def.X / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
+            def.YY / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
+            def.ZZ / uls.LoadUtilisation.DecimalFractions * adjustmentFactor);
           failure = solution.Strength.Check(failureDeformation);
           break;
         default:
