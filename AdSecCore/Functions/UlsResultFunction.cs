@@ -61,7 +61,7 @@ namespace AdSecCore.Functions {
       Access = Access.List,
     };
 
-    public NeutralLineParameter NeutralAxisLineOutput { get; set; } = new NeutralLineParameter {
+    public GenericParameter NeutralAxisLineOutput { get; set; } = new GenericParameter {
       Name = "Neutral Axis",
       NickName = "NaL",
       Description = "Line of Neutral Axis",
@@ -89,7 +89,7 @@ namespace AdSecCore.Functions {
       Access = Access.Item,
     };
 
-    public NeutralLineParameter FailureNeutralAxisLineOutput { get; set; } = new NeutralLineParameter {
+    public GenericParameter FailureNeutralAxisLineOutput { get; set; } = new GenericParameter {
       Name = "Failure Neutral Axis",
       NickName = "FaL",
       Description = "Line of Neutral Axis at failure",
@@ -130,21 +130,22 @@ namespace AdSecCore.Functions {
 
     public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
+        DeformationOutput,
         LoadOutput,
         LoadUtilOutput,
-        DeformationOutput,
         DeformationUtilOutput,
         MomentRangesOutput,
         NeutralAxisLineOutput,
         NeutralAxisOffsetOutput,
         NeutralAxisAngleOutput,
+        FailureDeformationOutput,
         FailureNeutralAxisLineOutput,
         FailureNeutralAxisOffsetOutput,
         FailureNeutralAxisAngleOutput,
       };
     }
 
-    public void RefreshDeformation(StrainUnit strainUnit, CurvatureUnit curvatureUnit) {
+    public void DeformationDescription(StrainUnit strainUnit, CurvatureUnit curvatureUnit) {
       var strainAbbreviation = Strain.GetAbbreviation(strainUnit);
       var curvatureAbbreviation = $"{strainAbbreviation}{Curvature.GetAbbreviation(curvatureUnit)}";
       DeformationOutput.Description = $"The section deformation under the applied action. The output is a vector representing:{Environment.NewLine}X: Strain [{strainAbbreviation}]{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{curvatureAbbreviation}]{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{curvatureAbbreviation}]";
@@ -237,5 +238,6 @@ namespace AdSecCore.Functions {
       // offset in user selected unit
       return tempOffset;
     }
+
   }
 }

@@ -185,6 +185,16 @@ namespace Oasys.GH.Helpers {
             var deformation = (a as DeformationParameter).Value;
             return new AdSecDeformationGoo(deformation);
           }
+        },{
+          typeof(GenericParameter), a => {
+            var value = (a as GenericParameter).Value;
+            switch(value) {
+              case NeutralLine line:
+               return  CreateNeutralLine(line.Offset,line.Angle, line.Solution);
+              default:
+                return null;
+            }
+          }
         }
       };
 
@@ -372,7 +382,7 @@ namespace Oasys.GH.Helpers {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
         var type = attribute.GetType();
         if (!ToGoo.ContainsKey(type)) {
-          throw new Exception($"No conversion function found for type {type}");
+          throw new ArgumentException($"No conversion function found for type {type}");
         }
 
         var func = ToGoo[type];
@@ -385,7 +395,7 @@ namespace Oasys.GH.Helpers {
         }
 
         if (!success) {
-          throw new Exception(
+          throw new ArgumentException(
             $"Failed to set data for {attribute.Name} of type {type} at index {index} into param of type {component.Params.Output[index].GetType()}");
         }
       }
@@ -405,6 +415,42 @@ namespace Oasys.GH.Helpers {
 
     public static void PopulateOutputParams(this IFunction function, GH_Component component) {
       RegisterParams(function.GetAllOutputAttributes(), param => component.Params.RegisterOutputParam(param));
+    }
+
+    private static Line CreateNeutralLine(Length offset, double angleRadians, SectionSolution solution) {
+      // calculate temp plane for width of neutral line
+      offset = new Length(offset.Value, DefaultUnits.LengthUnitResult);
+      var solutionGoo = new AdSecSolutionGoo(solution);
+      var profile = solutionGoo.ProfileEdge;
+      Plane local = solution.SectionDesign.LocalPlane.ToGh();
+      var tempPlane = local.Clone();
+      tempPlane.Rotate(angleRadians, tempPlane.ZAxis);
+      // get profile's bounding box in rotate plane
+      Curve tempCrv = profile.ToPolylineCurve();
+      var bbox = tempCrv.GetBoundingBox(tempPlane);
+
+      // calculate width of neutral line to display
+      double width = 1.05 * bbox.PointAt(0, 0, 0).DistanceTo(bbox.PointAt(1, 0, 0));
+
+      // get direction as vector
+      var direction = new Vector3d(local.XAxis);
+      direction.Rotate(angleRadians, local.ZAxis);
+      direction.Unitize();
+
+      // starting point for rotated line
+      var start = new Point3d(local.Origin);
+      start.Transform(Transform.Translation(direction.X * width / 2 * -1, direction.Y * width / 2 * -1,
+        direction.Z * width / 2 * -1));
+      var ln = new Line(start, direction, width);
+
+      // offset vector
+      var offsVec = new Vector3d(direction);
+      offsVec.Rotate(Math.PI / 2, local.ZAxis);
+      offsVec.Unitize();
+      // move the line
+      double off = offset.As(DefaultUnits.LengthUnitResult);
+      ln.Transform(Transform.Translation(offsVec.X * off, offsVec.Y * off, offsVec.Z * off));
+      return ln;
     }
   }
 

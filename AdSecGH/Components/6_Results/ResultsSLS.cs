@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 using AdSecCore.Functions;
 
@@ -10,13 +8,11 @@ using AdSecGH.Properties;
 using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Geometry;
 
 using Oasys.GH.Helpers;
 
 using OasysGH;
 using OasysGH.Units;
-
 namespace AdSecGH.Components {
   public class SlsResultGh : SlsResultFunction {
     public SlsResultGh() {
