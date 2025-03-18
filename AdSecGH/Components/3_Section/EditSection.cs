@@ -8,23 +8,19 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using AdSecGHCore.Constants;
-
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
+using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Components;
 
 namespace AdSecGH.Components {
-  public class EditSection : GH_OasysComponent {
 
-    public EditSection() : base("EditSection", "EditSect", "Edit an AdSec Section", CategoryName.Name(),
-      SubCategoryName.Cat4()) {
-      Hidden = false; // sets the initial state of the component to hidden
-    }
+  public class EditSectionGh : EditSectionFunction { }
+
+  public class EditSection : ComponentAdapter<EditSectionGh> {
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("9b0acde5-f57f-4a39-a9c3-cdc935037490");
@@ -104,7 +100,7 @@ namespace AdSecGH.Components {
       DA.SetData(3, new AdSecDesignCodeGoo(material.DesignCode));
 
       // after potentially changing the design code we can also set the material output now:
-      DA.SetData(2, new AdSecMaterialGoo(new MaterialDesign() {
+      DA.SetData(2, new AdSecMaterialGoo(new MaterialDesign {
         Material = material.Material,
         DesignCode = material.DesignCode.DesignCode,
       }));
