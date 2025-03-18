@@ -1,4 +1,6 @@
-﻿using AdSecGH.Parameters;
+﻿using AdSecCore.Functions;
+
+using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
 
@@ -82,7 +84,7 @@ namespace AdSecGHTests.Helpers.Extensions {
 
     [Fact]
     public void ReturnsMaterialWhenDataCorrect() {
-      var material = new AdSecMaterialGoo(new AdSecMaterial());
+      var material = new AdSecMaterialGoo(new MaterialDesign());
       ComponentTestHelper.SetInput(_component, material);
 
       object result = ComponentTestHelper.GetOutput(_component);

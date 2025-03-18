@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -102,7 +104,10 @@ namespace AdSecGH.Components {
       DA.SetData(3, new AdSecDesignCodeGoo(material.DesignCode));
 
       // after potentially changing the design code we can also set the material output now:
-      DA.SetData(2, new AdSecMaterialGoo(material));
+      DA.SetData(2, new AdSecMaterialGoo(new MaterialDesign() {
+        Material = material.Material,
+        DesignCode = material.DesignCode.DesignCode,
+      }));
 
       // 4 Rebars
       var reinforcements = new List<AdSecRebarGroup>();

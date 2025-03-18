@@ -118,12 +118,10 @@ namespace AdSecGH.Components {
       if (_mode == FoldMode.Catalogue) {
         var profiles = SolveInstanceForCatalogueProfile(DA);
         var adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
-
         DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
       } else if (_mode == FoldMode.Other) {
         var profile = SolveInstanceForStandardProfile(DA);
         var adSecProfile = AdSecProfiles.CreateProfile(profile);
-
         DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
       }
     }

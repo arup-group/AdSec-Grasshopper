@@ -21,11 +21,10 @@ namespace AdSecCoreTests {
     public FlattenRebarTests() {
       ContextUnits.Instance.SetDefaultUnits();
       operation = new FlattenRebarFunction();
-      singleBars = new BuilderReinforcementGroup().WithSize(rebarSize).CreateSingleBar().AtPosition(Geometry.Zero())
-       .Build();
+      singleBars = new BuilderSingleBar().WithSize(rebarSize).CreateSingleBar().AtPosition(Geometry.Zero()).Build();
       var section = new SectionBuilder().WithWidth(SectionSize).CreateSquareSection().WithReinforcementGroup(singleBars)
        .Build();
-      operation.Section.Value = new SectionDesign() {
+      operation.Section.Value = new SectionDesign {
         Section = section,
         DesignCode = IS456.Edition_2000,
       };
@@ -65,8 +64,6 @@ namespace AdSecCoreTests {
       Assert.NotEqual(0, operation.PreLoad.Value[0]);
     }
 
-    private class DummyPreload : IPreload { }
-
     [Fact]
     public void ShouldThrowForOtherPreloadTypes() {
       Assert.Throws<NotSupportedException>(() => FlattenRebarFunction.GetPreLoad(new DummyPreload()));
@@ -104,5 +101,7 @@ namespace AdSecCoreTests {
       operation.Compute();
       Assert.Equal(rebarSize * 10, operation.Diameter.Value[0]);
     }
+
+    private class DummyPreload : IPreload { }
   }
 }

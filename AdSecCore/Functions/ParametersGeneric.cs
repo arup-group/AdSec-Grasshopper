@@ -1,7 +1,10 @@
-﻿using System;
+using System;
+
+using AdSecGH.Parameters;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.Mesh;
 using Oasys.Profiles;
 
@@ -45,16 +48,17 @@ namespace AdSecCore.Functions {
     public OasysPlane Plane { get; set; } = OasysPlane.PlaneYZ;
   }
 
-  public class NeutralLine {
-    public Length Offset { get; set; }
-    public double Angle { get; set; }
-    public SectionSolution Solution { get; set; }
-  }
-
   public class DoubleParameter : ParameterAttribute<double> { }
   public class DoubleArrayParameter : BaseArrayParameter<double> { }
   public class IntegerArrayParameter : BaseArrayParameter<int> { }
   public class SectionParameter : ParameterAttribute<SectionDesign> { }
+  public class ProfileParameter : ParameterAttribute<ProfileDesign> { }
+
+  public class ProfileDesign {
+    public IProfile Profile { get; set; }
+    public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
+  }
+
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }
   public class PointParameter : ParameterAttribute<IPoint> { }
   public class StringArrayParam : BaseArrayParameter<string> { }
@@ -63,6 +67,7 @@ namespace AdSecCore.Functions {
   public class SectionSolutionParameter : ParameterAttribute<SectionSolution> { }
   public class LoadSurfaceParameter : ParameterAttribute<ILoadSurface> { }
   public class SubComponentParameter : ParameterAttribute<SubComponent> { }
+  public class SubComponentArrayParameter : BaseArrayParameter<SubComponent> { }
 
   public class SubComponent {
     public ISubComponent ISubComponent { get; set; }
@@ -71,12 +76,19 @@ namespace AdSecCore.Functions {
 
   public class IntegerParameter : ParameterAttribute<int> { }
   public class LoadParameter : ParameterAttribute<ILoad> { }
+  public class MaterialParameter : ParameterAttribute<MaterialDesign> { }
   public class CrackParameter : ParameterAttribute<CrackLoad> { }
   public class DeformationParameter : ParameterAttribute<IDeformation> { }
   public class GenericParameter : ParameterAttribute<object> { }
   public class CrackArrayParameter : BaseArrayParameter<CrackLoad> { }
   public class SecantStiffnessParameter : ParameterAttribute<IStiffness> { }
   public class IntervalArrayParameter : BaseArrayParameter<Tuple<double, double>> { }
-  public class NeutralLineParameter : ParameterAttribute<NeutralLine> { }
 
+  public class MaterialDesign {
+    public IMaterial Material { get; set; }
+    public IDesignCode DesignCode { get; set; }
+    public string GradeName { get; set; }
+  }
+
+  public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
 }
