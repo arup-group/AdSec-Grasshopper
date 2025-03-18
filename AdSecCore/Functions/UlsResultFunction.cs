@@ -140,9 +140,9 @@ namespace AdSecCore.Functions {
 
     public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
-        DeformationOutput,
         LoadOutput,
         LoadUtilOutput,
+        DeformationOutput,
         DeformationUtilOutput,
         MomentRangesOutput,
         NeutralAxisLineOutput,
