@@ -10,77 +10,7 @@ using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
 
-  public class UlsResultFunction : SlsResultFunction {
-
-    public DoubleParameter LoadUtilOutput { get; set; } = new DoubleParameter {
-      Name = "LoadUtil",
-      NickName = "Ul",
-      Description = CommonDescriptions.DefaultUtilizationDescription,
-      Access = Access.Item,
-    };
-
-    public DoubleParameter DeformationUtilOutput { get; set; } = new DoubleParameter {
-      Name = "DeformationUtil",
-      NickName = "Ud",
-      Description = CommonDescriptions.DefaultUtilizationDescription,
-      Access = Access.Item,
-    };
-
-    public IntervalArrayParameter MomentRangesOutput { get; set; } = new IntervalArrayParameter {
-      Name = "Moment Ranges",
-      NickName = "MRs",
-      Description = "The range of moments within the section's capacity",
-      Access = Access.List,
-    };
-
-    public GenericParameter NeutralAxisLineOutput { get; set; } = new GenericParameter {
-      Name = "Neutral Axis",
-      NickName = "NaL",
-      Description = "Line of Neutral Axis",
-      Access = Access.Item,
-    };
-
-    public DisplacementParameter NeutralAxisOffsetOutput { get; set; } = new DisplacementParameter {
-      Name = "Neutral Axis Offset",
-      NickName = "NaO",
-      Description = "The Offset of the Neutral Axis from the Sections centroid",
-      Access = Access.Item,
-    };
-
-    public DoubleParameter NeutralAxisAngleOutput { get; set; } = new DoubleParameter {
-      Name = "Neutral Axis Angle",
-      NickName = "NaA",
-      Description = "The Angle [rad] of the Neutral Axis from the Sections centroid",
-      Access = Access.Item,
-    };
-
-    public DeformationParameter FailureDeformationOutput { get; set; } = new DeformationParameter {
-      Name = "Failure Deformation",
-      NickName = "DU",
-      Description = "The section deformation at failure",
-      Access = Access.Item,
-    };
-
-    public GenericParameter FailureNeutralAxisLineOutput { get; set; } = new GenericParameter {
-      Name = "Failure Neutral Axis",
-      NickName = "FaL",
-      Description = "Line of Neutral Axis at failure",
-      Access = Access.Item,
-    };
-
-    public DisplacementParameter FailureNeutralAxisOffsetOutput { get; set; } = new DisplacementParameter {
-      Name = "Failure Neutral Axis Offset",
-      NickName = "FaO",
-      Description = "The Offset of the Neutral Axis at failure from the Sections centroid",
-      Access = Access.Item,
-    };
-
-    public DoubleParameter FailureNeutralAxisAngleOutput { get; set; } = new DoubleParameter {
-      Name = "Failure Neutral Axis Angle",
-      NickName = "FaA",
-      Description = "The Angle [rad] of the Neutral Axis at failure from the Sections centroid",
-      Access = Access.Item,
-    };
+  public class UlsResultFunction : ResultFunction {
 
     public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Name = "Strength Result",

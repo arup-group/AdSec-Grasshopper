@@ -23,6 +23,8 @@ namespace AdSecGH.Components {
   public class UlsResult : ComponentAdapter<UlsResultGh> {
     protected override void BeforeSolveInstance() {
       BusinessComponent.DeformationDescription(DefaultUnits.StrainUnitResult, DefaultUnits.CurvatureUnit);
+      BusinessComponent.FailureDeformationDescription(DefaultUnits.StrainUnitResult, DefaultUnits.CurvatureUnit);
+      BusinessComponent.MomentRangesDescription(DefaultUnits.MomentUnit);
       RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
     }
 

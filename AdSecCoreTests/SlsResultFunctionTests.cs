@@ -22,9 +22,9 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveCorrectMetadata() {
-      Assert.Equal("Find Crack Load", _component.Metadata.Name);
-      Assert.Equal("CrackLd", _component.Metadata.NickName);
-      Assert.Equal("Increases the load until set crack width is reached", _component.Metadata.Description);
+      Assert.Equal("Serviceability Result", _component.Metadata.Name);
+      Assert.Equal("SLS", _component.Metadata.NickName);
+      Assert.Equal("Performs serviceability analysis (SLS), for a given Load or Deformation.", _component.Metadata.Description);
     }
 
 
@@ -68,7 +68,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveValidUncrackedMomentRangesDescription() {
-      _component.UncrackedMomentRangesDescription(MomentUnit.NewtonMeter);
+      _component.MomentRangesDescription(MomentUnit.NewtonMeter);
       Assert.Contains("[N·m]", _component.UncrackedMomentRangesOutput.Description);
     }
 

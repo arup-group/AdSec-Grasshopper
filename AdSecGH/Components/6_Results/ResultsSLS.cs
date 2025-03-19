@@ -24,7 +24,7 @@ namespace AdSecGH.Components {
     protected override void BeforeSolveInstance() {
       BusinessComponent.DeformationDescription(DefaultUnits.StrainUnitResult, DefaultUnits.CurvatureUnit);
       BusinessComponent.SecantStiffnessDescription(DefaultUnits.AxialStiffnessUnit, DefaultUnits.BendingStiffnessUnit);
-      BusinessComponent.UncrackedMomentRangesDescription(DefaultUnits.MomentUnit);
+      BusinessComponent.MomentRangesDescription(DefaultUnits.MomentUnit);
       RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
     }
 
