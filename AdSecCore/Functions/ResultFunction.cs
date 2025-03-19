@@ -128,7 +128,7 @@ namespace AdSecCore.Functions {
       Access = Access.Item,
     };
 
-    public GenericParameter FailureNeutralAxisLineOutput { get; set; } = new GenericParameter {
+    public NeutralLineParameter FailureNeutralAxisLineOutput { get; set; } = new NeutralLineParameter {
       Name = "Failure Neutral Axis",
       NickName = "FaL",
       Description = "Line of Neutral Axis at failure",

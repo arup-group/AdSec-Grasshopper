@@ -85,11 +85,11 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(69, _component.CrackOutput.Value.Length);
     }
 
-    private static bool IsLoadEqual(ILoad expected, ILoad calculated) {
+    public static bool IsLoadEqual(ILoad expected, ILoad calculated) {
       return expected.X.Value.Equals(calculated.X.Value) && expected.YY.Value.Equals(calculated.YY.Value) && expected.ZZ.Value.Equals(calculated.ZZ.Value);
     }
 
-    private static bool IsDeformationEqual(IDeformation expected, IDeformation calculated) {
+    public static bool IsDeformationEqual(IDeformation expected, IDeformation calculated) {
       var tolernaceStrain = Strain.FromRatio(0.00001);
       var tolernaceCurvature = Curvature.FromPerMeters(0.0001);
       return expected.X.Equals(calculated.X, tolernaceStrain) && expected.YY.Equals(calculated.YY, tolernaceCurvature) && expected.ZZ.Equals(calculated.ZZ, tolernaceCurvature);
