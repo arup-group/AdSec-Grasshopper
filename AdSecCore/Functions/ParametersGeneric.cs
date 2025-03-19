@@ -92,4 +92,5 @@ namespace AdSecCore.Functions {
 
   public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
   public class DesignCodeParameter : ParameterAttribute<IDesignCode> { }
+  public class GeometryParameter : ParameterAttribute<object> { }
 }

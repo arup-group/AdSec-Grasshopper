@@ -25,7 +25,8 @@ namespace AdSecCore.Functions {
 
     public ProfileParameter ProfileOut { get; set; } = Default.Profile();
 
-    public MaterialParameter Material { get; set; } = Default.Material(description: "[Optional] Edit the Material for the section");
+    public MaterialParameter Material { get; set; }
+      = Default.Material(description: "[Optional] Edit the Material for the section");
     public MaterialParameter MaterialOut { get; set; } = Default.Material();
 
     public DesignCodeParameter DesignCode { get; set; }
@@ -41,12 +42,15 @@ namespace AdSecCore.Functions {
 
     public SubComponentArrayParameter SubComponentOut { get; set; } = Default.SubComponent();
 
+    public GeometryParameter Geometry { get; set; } = new GeometryParameter();
+
     public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] { Section, Profile, Material, DesignCode, RebarGroup, SubComponent, };
     }
 
     public override Attribute[] GetAllOutputAttributes() {
-      return new Attribute[] { SectionOut, ProfileOut, MaterialOut, DesignCodeOut, RebarGroupOut, SubComponentOut, };
+      return new Attribute[]
+        { SectionOut, ProfileOut, MaterialOut, DesignCodeOut, RebarGroupOut, SubComponentOut, Geometry };
     }
 
     public override void Compute() { }
