@@ -28,5 +28,11 @@ namespace AdSecGHTests.Components {
       var component = new EditSection();
       Assert.Equal(6, component.Params.Input.Count);
     }
+
+    [Fact]
+    public void ShouldHaveSixOutput() {
+      var component = new EditSection();
+      Assert.Equal(6, component.Params.Output.Count);
+    }
   }
 }
