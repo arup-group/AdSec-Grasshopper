@@ -100,7 +100,7 @@ namespace AdSecCore.Functions {
       Access = Access.List,
     };
 
-    public GenericParameter NeutralAxisLineOutput { get; set; } = new GenericParameter {
+    public NeutralLineParameter NeutralAxisLineOutput { get; set; } = new NeutralLineParameter {
       Name = "Neutral Axis",
       NickName = "NaL",
       Description = "Line of Neutral Axis",

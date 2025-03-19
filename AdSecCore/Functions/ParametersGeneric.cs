@@ -98,4 +98,5 @@ namespace AdSecCore.Functions {
   public class SecantStiffnessParameter : ParameterAttribute<IStiffness> { }
   public class IntervalArrayParameter : BaseArrayParameter<Tuple<double, double>> { }
   public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
+  public class NeutralLineParameter : ParameterAttribute<NeutralLine> { }
 }

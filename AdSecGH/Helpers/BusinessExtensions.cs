@@ -105,6 +105,8 @@ namespace Oasys.GH.Helpers {
           typeof(SecantStiffnessParameter), ParamGenericObject
         }, {
           typeof(IntervalArrayParameter), ParamGenericObject
+        },{
+          typeof(NeutralLineParameter), ParamGenericObject
         }
       };
 
@@ -189,14 +191,9 @@ namespace Oasys.GH.Helpers {
             return new AdSecDeformationGoo(deformation);
           }
         },{
-          typeof(GenericParameter), a => {
-            var value = (a as GenericParameter).Value;
-            switch(value) {
-              case NeutralLine line:
-               return  CreateNeutralLine(line.Offset,line.Angle, line.Solution);
-              default:
-                return null;
-            }
+          typeof(NeutralLineParameter), a => {
+            var value = (a as NeutralLineParameter).Value;
+            return  CreateNeutralLine(value);
           }
         },{
           typeof(DisplacementParameter), a => {
@@ -426,12 +423,15 @@ namespace Oasys.GH.Helpers {
       RegisterParams(function.GetAllOutputAttributes(), param => component.Params.RegisterOutputParam(param));
     }
 
-    private static Line CreateNeutralLine(Length offset, double angleRadians, SectionSolution solution) {
+    private static Line CreateNeutralLine(NeutralLine neutralLine) {
+      var offset = neutralLine.Offset;
+      var angleRadians = neutralLine.Angle;
+
       //Line is a Rhino.Geometry line and So need to be converted to RhinoUnit for display
       // calculate temp plane for width of neutral line
-      var solutionGoo = new AdSecSolutionGoo(solution);
+      var solutionGoo = new AdSecSolutionGoo(neutralLine.Solution);
       var profile = solutionGoo.ProfileEdge;
-      Plane local = solution.SectionDesign.LocalPlane.ToGh();
+      Plane local = neutralLine.Solution.SectionDesign.LocalPlane.ToGh();
       var tempPlane = local.Clone();
       tempPlane.Rotate(angleRadians, tempPlane.ZAxis);
       // get profile's bounding box in rotate plane
