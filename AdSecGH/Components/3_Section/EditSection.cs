@@ -28,20 +28,6 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.EditSection;
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("Section", "Sec", "Edited AdSec Section", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Profile", "Pf", "Profile defining the Section solid boundary", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Material", "Mat", "Material for the section", GH_ParamAccess.item);
-      pManager.AddGenericParameter("DesignCode", "Code", "Section DesignCode", GH_ParamAccess.item);
-      pManager.AddGenericParameter("RebarGroup", "RbG",
-        "Reinforcement Groups in the section (applicable for only concrete material).", GH_ParamAccess.list);
-      pManager.AddGenericParameter("SubComponent", "Sub", "Subcomponents contained within the section",
-        GH_ParamAccess.list);
-      pManager.AddGenericParameter("SectionCurves", "CAD",
-        "All curves used for displaying the section - useful for making CAD drawings", GH_ParamAccess.list);
-      pManager.HideParameter(7);
-    }
-
     protected override void SolveInstance(IGH_DataAccess DA) {
       // 0 section
       var in_section = this.GetAdSecSection(DA, 0);

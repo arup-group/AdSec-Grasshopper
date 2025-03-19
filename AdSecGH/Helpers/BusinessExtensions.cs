@@ -47,6 +47,8 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(SectionParameter), ParamGenericObject
         }, {
+          typeof(GeometryParameter), ConfigureParam<Param_Geometry>
+        }, {
           typeof(AdSecMaterialParameter), ParamGenericObject
         }, {
           typeof(RebarGroupParameter), ParamGenericObject
