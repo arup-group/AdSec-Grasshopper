@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Numerics;
 using System.Reflection;
 
 using AdSecCore.Builders;
@@ -16,10 +15,8 @@ using Grasshopper.Kernel;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
-using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.StandardMaterials;
 using Oasys.GH.Helpers;
-using Oasys.Profiles;
 
 using Xunit;
 
@@ -27,8 +24,8 @@ namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
   public class CreateSectionTests {
     readonly CreateSection component;
-    private IDesignCode DesignCode = IS456.Edition_2000;
     private IConcrete SectionMat = Concrete.IS456.Edition_2000.M10;
+    private IDesignCode DesignCode = IS456.Edition_2000;
     private ISteel iBeamMat = Steel.AS4100.Edition_1998.AS1163_C250;
 
     public CreateSectionTests() {
@@ -69,28 +66,17 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveOutputWithSubComponentThroughSection() {
-      var sectionDesign = GetSectionDesign();
+      var sectionDesign = SampleData.GetSectionDesign(DesignCode, iBeamMat);
       var subComponentGoo = new AdSecSectionGoo(new AdSecSection(sectionDesign));
       component.SetInputParamAt(3, subComponentGoo);
       ComponentTesting.ComputeOutputs(component);
       Assert.NotNull(component.GetOutputParamAt(0));
     }
 
-    private SectionDesign GetSectionDesign() {
-      var section = new SectionBuilder().SetProfile(ProfileBuilder.GetIBeam()).WithMaterial(iBeamMat).Build();
-      var sectionDesign = new SectionDesign() {
-        Section = section,
-        DesignCode = DesignCode,
-        MaterialName = "AS1163_C250",
-        CodeName = "AS4100",
-        LocalPlane = OasysPlane.PlaneYZ
-      };
-      return sectionDesign;
-    }
 
     [Fact]
     public void ShouldHaveOutputWithSubComponent() {
-      var sectionDesign = GetSectionDesign();
+      var sectionDesign = SampleData.GetSectionDesign(DesignCode, iBeamMat);
       var subComponent = new SubComponent() {
         SectionDesign = sectionDesign,
         ISubComponent = ISubComponent.Create(sectionDesign.Section, Geometry.Zero())

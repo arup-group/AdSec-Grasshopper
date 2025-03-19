@@ -16,9 +16,34 @@ using Oasys.GH.Helpers;
 
 using OasysGH;
 
+using AdSecSectionParameter = Oasys.GH.Helpers.AdSecSectionParameter;
+using Attribute = AdSecCore.Functions.Attribute;
+
 namespace AdSecGH.Components {
 
-  public class EditSectionGh : EditSectionFunction { }
+  public class EditSectionGh : EditSectionFunction {
+
+    public EditSectionGh() {
+      var adSecSection = AdSecSection as Attribute;
+      Section.Update(ref adSecSection);
+      AdSecSection.OnValueChanged += goo => {
+        if (goo.Value != null) {
+          Section.Value = new SectionDesign() {
+            Section = goo.Value.Section,
+            DesignCode = goo.Value.DesignCode
+          };
+        }
+      };
+    }
+
+    public AdSecSectionParameter AdSecSection { get; set; } = new AdSecSectionParameter();
+
+    public override Attribute[] GetAllInputAttributes() {
+      return new Attribute[] {
+        AdSecSection, Profile, Material, DesignCode, RebarGroup, SubComponent,
+      };
+    }
+  }
 
   public class EditSection : ComponentAdapter<EditSectionGh> {
 

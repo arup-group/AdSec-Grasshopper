@@ -21,28 +21,29 @@ namespace AdSecCore.Functions {
     public SectionParameter SectionOut { get; set; } = Default.Section(description: "Edited AdSec Section");
 
     public ProfileParameter Profile { get; set; }
-      = Default.Profile(description: "[Optional] Edit the Profile defining the Section solid boundary");
-
+      = Default.Profile(description: "[Optional] Edit the Profile defining the Section solid boundary", optional: true);
     public ProfileParameter ProfileOut { get; set; } = Default.Profile();
-
     public MaterialParameter Material { get; set; }
-      = Default.Material(description: "[Optional] Edit the Material for the section");
+      = Default.Material(description: "[Optional] Edit the Material for the section", optional: true);
     public MaterialParameter MaterialOut { get; set; } = Default.Material();
-
     public DesignCodeParameter DesignCode { get; set; }
-      = Default.DesignCode(description: "[Optional] Edit the Section DesignCode");
-
+      = Default.DesignCode(description: "[Optional] Edit the Section DesignCode", optional: true);
     public DesignCodeParameter DesignCodeOut { get; set; } = Default.DesignCode();
     public RebarGroupParameter RebarGroup { get; set; } = Default.RebarGroup(
-      description: "[Optional] Edit the Reinforcement Groups in the section (applicable for only concrete material).");
-    public RebarGroupParameter RebarGroupOut { get; set; }
-      = Default.RebarGroup(description: "Reinforcement Groups in the section (applicable for only concrete material).");
-    public SubComponentArrayParameter SubComponent { get; set; }
-      = Default.SubComponent(description: "[Optional] Edit the Subcomponents contained within the section");
+      description: "[Optional] Edit the Reinforcement Groups in the section (applicable for only concrete material).",
+      optional: true);
+    public RebarGroupParameter RebarGroupOut { get; set; } = Default.RebarGroup(
+      description: "Reinforcement Groups in the section (applicable for only concrete material).");
+    public SubComponentArrayParameter SubComponent { get; set; } = Default.SubComponent(
+      description: "[Optional] Edit the Subcomponents contained within the section", optional: true);
+    public SubComponentArrayParameter SubComponentOut { get; set; } = Default.SubComponent(optional: true);
 
-    public SubComponentArrayParameter SubComponentOut { get; set; } = Default.SubComponent();
-
-    public GeometryParameter Geometry { get; set; } = new GeometryParameter();
+    public GeometryParameter Geometry { get; set; } = new GeometryParameter() {
+      Name = "SectionCurves",
+      NickName = "CAD",
+      Description = "All curves used for displaying the section - useful for making CAD drawings",
+      Access = Access.List,
+    };
 
     public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] { Section, Profile, Material, DesignCode, RebarGroup, SubComponent, };
