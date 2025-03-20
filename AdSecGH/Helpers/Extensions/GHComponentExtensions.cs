@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using AdSecCore;
@@ -6,6 +8,7 @@ using AdSecCore;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
@@ -20,6 +23,8 @@ using OasysGH.Units;
 
 using OasysUnits;
 using OasysUnits.Units;
+
+using static System.Collections.Specialized.BitVector32;
 
 namespace AdSecGH.Helpers {
   public static class GHComponentExtensions {
@@ -153,7 +158,10 @@ namespace AdSecGH.Helpers {
         invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "Section"));
       }
 
-      return sections.Any() ? sections : null;
+      if (sections.Count > 1) {
+        owner.AddRuntimeRemark("Note that the first Section's designcode will be used for all sections in the list");
+      }
+      return sections;
     }
 
     public static IConcreteCrackCalculationParameters GetIConcreteCrackCalculationParameters(
@@ -359,5 +367,15 @@ namespace AdSecGH.Helpers {
 
       return covers;
     }
+
+    public static Dictionary<int, List<object>> GetLoads(
+      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      var adSecloads = new Dictionary<int, List<object>>();
+      if (DA.GetDataTree(inputId, out GH_Structure<IGH_Goo> inputData) && !AdSecInput.TryCastToLoads(inputData, ref adSecloads, out int path, out int index)) {
+        owner.AddRuntimeWarning($"Unable to convert {owner.Params.Input[1].NickName} path {path} index {index} to AdSec Load. Section will be saved without this load.");
+      }
+      return adSecloads;
+    }
+
   }
 }

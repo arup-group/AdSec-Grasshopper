@@ -40,10 +40,6 @@
       return $"{new string(' ', 1)}Results";
     }
 
-    public static string Cat8() {
-      return "Lab";
-    }
-
     public static string Cat9() {
       return "Params";
     }

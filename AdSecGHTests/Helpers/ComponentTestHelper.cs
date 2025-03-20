@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
@@ -52,6 +53,13 @@ namespace AdSecGHTests.Helpers {
       component.Params.Input[index].AddSource(input);
     }
 
+    public static void SetInput(GH_Component component, GH_Structure<IGH_Goo> tree, int index = 0) {
+      var input = new Param_GenericObject();
+      input.CreateAttributes();
+      input.SetPersistentData(tree);
+      component.Params.Input[index].AddSource(input);
+    }
+
     public static void SetInput(GH_Component component, List<object> generic_input, int index = 0) {
       var input = new Param_GenericObject();
       input.CreateAttributes();
@@ -88,6 +96,22 @@ namespace AdSecGHTests.Helpers {
       input.CreateAttributes();
       input.PersistentData.Append(new GH_Mesh(mesh_input));
       component.Params.Input[index].AddSource(input);
+    }
+
+    public static void SetListInput(GH_Component component, List<object> objs, int index = 0) {
+      var input = new Param_GenericObject();
+      input.CreateAttributes();
+      input.Access = GH_ParamAccess.list;
+      foreach (object obj in objs) {
+        input.PersistentData.Append(new GH_ObjectWrapper(obj));
+      }
+      component.Params.Input[index].AddSource(input);
+    }
+
+    public static void ComputeData(GH_Component component) {
+      component.ExpireSolution(true);
+      component.CollectData();
+      component.ComputeData();
     }
   }
 }

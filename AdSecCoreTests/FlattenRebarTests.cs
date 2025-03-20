@@ -62,6 +62,13 @@ namespace AdSecCoreTests {
       Assert.NotEqual(0, operation.PreLoad.Value[0]);
     }
 
+    private class DummyPreload : IPreload { }
+
+    [Fact]
+    public void ShouldThrowForOtherPreloadTypes() {
+      Assert.Throws<NotSupportedException>(() => FlattenRebarFunction.GetPreLoad(new DummyPreload()));
+    }
+
     [Fact]
     public void ShouldBeAbleToGetPreLoadsWithStrain() {
       singleBars.Preload = IPreStrain.Create(Strain.FromPercent(1));
