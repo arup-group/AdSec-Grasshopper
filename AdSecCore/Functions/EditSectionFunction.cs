@@ -38,7 +38,7 @@ namespace AdSecCore.Functions {
       description: "[Optional] Edit the Subcomponents contained within the section", optional: true);
     public SubComponentArrayParameter SubComponentOut { get; set; } = Default.SubComponent(optional: true);
 
-    public GeometryParameter Geometry { get; set; } = new GeometryParameter() {
+    public GeometryParameter Geometry { get; set; } = new GeometryParameter {
       Name = "SectionCurves",
       NickName = "CAD",
       Description = "All curves used for displaying the section - useful for making CAD drawings",
