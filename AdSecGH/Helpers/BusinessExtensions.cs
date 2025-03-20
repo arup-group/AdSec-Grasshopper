@@ -6,7 +6,6 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -19,7 +18,6 @@ using Microsoft.CSharp.RuntimeBinder;
 using Oasys.AdSec;
 
 using OasysGH.Units;
-using OasysGH.Units.Helpers;
 
 using OasysUnits;
 
@@ -193,7 +191,7 @@ namespace Oasys.GH.Helpers {
         },{
           typeof(NeutralLineParameter), a => {
             var value = (a as NeutralLineParameter).Value;
-            return  CreateNeutralLine(value);
+            return new AdSecNeutralAxisGoo(value);
           }
         },{
           typeof(DisplacementParameter), a => {
@@ -421,47 +419,6 @@ namespace Oasys.GH.Helpers {
 
     public static void PopulateOutputParams(this IFunction function, GH_Component component) {
       RegisterParams(function.GetAllOutputAttributes(), param => component.Params.RegisterOutputParam(param));
-    }
-
-    private static Line CreateNeutralLine(NeutralLine neutralLine) {
-      var offset = neutralLine.Offset;
-      var angleRadians = neutralLine.Angle;
-
-      //Line is a Rhino.Geometry line and So need to be converted to RhinoUnit for display
-      // calculate temp plane for width of neutral line
-      var solutionGoo = new AdSecSolutionGoo(neutralLine.Solution);
-      var profile = solutionGoo.ProfileEdge;
-      Plane local = neutralLine.Solution.SectionDesign.LocalPlane.ToGh();
-      var tempPlane = local.Clone();
-      tempPlane.Rotate(angleRadians, tempPlane.ZAxis);
-      // get profile's bounding box in rotate plane
-      Curve tempCrv = profile.ToPolylineCurve();
-      var bbox = tempCrv.GetBoundingBox(tempPlane);
-
-      // calculate width of neutral line to display
-      var widthInDefaultUnit = new Length(1.05 * bbox.PointAt(0, 0, 0).DistanceTo(bbox.PointAt(1, 0, 0)), DefaultUnits.LengthUnitGeometry);
-      double width = widthInDefaultUnit.As(RhinoUnit.GetRhinoLengthUnit());
-
-
-      // get direction as vector
-      var direction = new Vector3d(local.XAxis);
-      direction.Rotate(angleRadians, local.ZAxis);
-      direction.Unitize();
-
-      // starting point for rotated line
-      var start = new Point3d(local.Origin);
-      start.Transform(Transform.Translation(direction.X * width / 2 * -1, direction.Y * width / 2 * -1,
-        direction.Z * width / 2 * -1));
-      var line = new Line(start, direction, width);
-
-      // offset vector
-      var offsVec = new Vector3d(direction);
-      offsVec.Rotate(Math.PI / 2, local.ZAxis);
-      offsVec.Unitize();
-      // move the line
-      double off = offset.As(RhinoUnit.GetRhinoLengthUnit());
-      line.Transform(Transform.Translation(offsVec.X * off, offsVec.Y * off, offsVec.Z * off));
-      return line;
     }
   }
 

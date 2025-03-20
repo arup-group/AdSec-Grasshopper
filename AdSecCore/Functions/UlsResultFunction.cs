@@ -98,14 +98,14 @@ namespace AdSecCore.Functions {
       var offset = CalculateOffset(uls.Deformation);
       var angle = CalculateAngle(uls.Deformation);
       MomentRangesOutput.Value = momentRanges.ToArray();
-      NeutralAxisLineOutput.Value = new NeutralLine { Angle = angle, Offset = offset, Solution = solution };
+      NeutralAxisLineOutput.Value = new NeutralAxis { Angle = angle, Offset = offset, Solution = solution };
       NeutralAxisOffsetOutput.Value = offset;
       NeutralAxisAngleOutput.Value = angle;
 
       FailureDeformationOutput.Value = failure.Deformation;
       var failureOffset = CalculateOffset(failure.Deformation);
       var failureAngle = CalculateAngle(failure.Deformation);
-      FailureNeutralAxisLineOutput.Value = new NeutralLine { Angle = failureAngle, Offset = failureOffset, Solution = solution };
+      FailureNeutralAxisLineOutput.Value = new NeutralAxis { Angle = failureAngle, Offset = failureOffset, Solution = solution };
       FailureNeutralAxisOffsetOutput.Value = failureOffset;
       FailureNeutralAxisAngleOutput.Value = failureAngle;
     }

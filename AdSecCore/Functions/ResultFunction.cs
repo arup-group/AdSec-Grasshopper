@@ -1,10 +1,5 @@
 ﻿
 using System;
-using System.Collections.Generic;
-
-using AdSecGHCore.Constants;
-
-using Oasys.AdSec;
 
 using OasysUnits;
 using OasysUnits.Units;
