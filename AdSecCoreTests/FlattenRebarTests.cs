@@ -1,9 +1,9 @@
-﻿using AdSecCore;
-using AdSecCore.Builders;
+﻿using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using AdSecGHCore.Constants;
 
+using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
 
@@ -21,11 +21,13 @@ namespace AdSecCoreTests {
     public FlattenRebarTests() {
       ContextUnits.Instance.SetDefaultUnits();
       operation = new FlattenRebarFunction();
-      singleBars = new BuilderReinforcementGroup().WithSize(rebarSize).CreateSingleBar().AtPosition(Geometry.Zero())
-       .Build();
+      singleBars = new BuilderSingleBar().WithSize(rebarSize).CreateSingleBar().AtPosition(Geometry.Zero()).Build();
       var section = new SectionBuilder().WithWidth(SectionSize).CreateSquareSection().WithReinforcementGroup(singleBars)
        .Build();
-      operation.Section.Value = section;
+      operation.Section.Value = new SectionDesign {
+        Section = section,
+        DesignCode = IS456.Edition_2000,
+      };
       operation.Compute();
     }
 
@@ -61,8 +63,6 @@ namespace AdSecCoreTests {
       Assert.Single(operation.PreLoad.Value);
       Assert.NotEqual(0, operation.PreLoad.Value[0]);
     }
-
-    private class DummyPreload : IPreload { }
 
     [Fact]
     public void ShouldThrowForOtherPreloadTypes() {
@@ -101,5 +101,7 @@ namespace AdSecCoreTests {
       operation.Compute();
       Assert.Equal(rebarSize * 10, operation.Diameter.Value[0]);
     }
+
+    private class DummyPreload : IPreload { }
   }
 }

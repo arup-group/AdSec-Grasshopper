@@ -14,7 +14,11 @@ namespace AdSecCore {
     }
 
     public static string NameWithUnits(this Attribute attribute, LengthUnit unit) {
-      return $"{attribute.Name} [{unit.GetUnit()}]";
+      return NameWithUnits(attribute.Name, unit);
+    }
+
+    public static string NameWithUnits(string name, LengthUnit unit) {
+      return $"{name} [{unit.GetUnit()}]";
     }
   }
 }

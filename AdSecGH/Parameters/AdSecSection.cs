@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 using AdSecCore;
+using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
 using AdSecGH.UI;
-
-using Grasshopper.Kernel;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
@@ -45,6 +44,18 @@ namespace AdSecGH.Parameters {
     internal Line previewYaxis;
     internal Line previewZaxis;
 
+    public AdSecSection(SectionDesign sectionDesign) {
+      Section = sectionDesign.Section;
+      DesignCode = sectionDesign.DesignCode;
+      _codeName = sectionDesign.CodeName;
+      _materialName = sectionDesign.MaterialName;
+      LocalPlane = sectionDesign.LocalPlane.ToGh();
+
+      CreatePreview(ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour, ref m_rebars,
+        ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref _subProfiles, ref m_subEdges, ref m_subVoidEdges,
+        ref m_subColours);
+    }
+
     public AdSecSection(
       ISection section, IDesignCode code, string codeName, string materialName, Plane local,
       IPoint subComponentOffset = null) {
@@ -56,11 +67,11 @@ namespace AdSecGH.Parameters {
       CreatePreview(ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour, ref m_rebars,
         ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref _subProfiles, ref m_subEdges, ref m_subVoidEdges,
         ref m_subColours, subComponentOffset);
-
     }
 
     public AdSecSection(
-      IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement, Oasys.Collections.IList<ISubComponent> subComponents) {
+      IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement,
+      Oasys.Collections.IList<ISubComponent> subComponents) {
       DesignCode = material.DesignCode.Duplicate().DesignCode;
       _codeName = material.DesignCodeName;
       _materialName = material.GradeName;
@@ -264,7 +275,7 @@ namespace AdSecGH.Parameters {
 
     private Brep CreateBrepFromProfile(AdSecProfileGoo profile) {
       var crvs = new List<Curve> {
-        profile.Value.ToPolylineCurve(),
+        profile.Polyline.ToPolylineCurve(),
       };
       crvs.AddRange(profile.VoidEdges.Select(x => x.ToPolylineCurve()));
       return Brep.CreatePlanarBreps(crvs, 0.001).First(); //TODO: use OasysUnits tolerance
@@ -408,12 +419,6 @@ namespace AdSecGH.Parameters {
       }
 
       return new Tuple<Oasys.Collections.IList<IGroup>, ICover>(groups, cover);
-    }
-
-    public static ISection GetFlattenSection(GH_Component component, IGH_DataAccess DA, int paramId) {
-      // We simply unpack the section from GH_ObjectWrapper and add logging
-      var adSecSection = component.GetAdSecSection(DA, paramId);
-      return adSecSection.Section.FlattenSection();
     }
   }
 }

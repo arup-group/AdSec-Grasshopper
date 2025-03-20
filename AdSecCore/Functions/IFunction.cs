@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AdSecCore.Functions {
 
@@ -13,6 +14,20 @@ namespace AdSecCore.Functions {
     void Compute();
   }
 
+  public abstract class Function : IFunction {
+    public List<string> ErrorMessages { get; set; } = new List<string>();
+    public List<string> WarningMessages { get; set; } = new List<string>();
+    public List<string> RemarkMessages { get; set; } = new List<string>();
+
+    public abstract FuncAttribute Metadata { get; set; }
+    public abstract Organisation Organisation { get; set; }
+    public virtual Attribute[] GetAllInputAttributes() { return Array.Empty<Attribute>(); }
+
+    public virtual Attribute[] GetAllOutputAttributes() { return Array.Empty<Attribute>(); }
+
+    public abstract void Compute();
+  }
+
   public class FuncAttribute {
     public string Name { get; set; }
     public string NickName { get; set; }
@@ -22,6 +37,7 @@ namespace AdSecCore.Functions {
   public class Organisation {
     public string Category { get; set; }
     public string SubCategory { get; set; }
+    public bool Hidden { get; set; }
   }
 
   public class Attribute {
@@ -29,11 +45,13 @@ namespace AdSecCore.Functions {
     public string Name { get; set; }
     public string NickName { get; set; }
     public string Description { get; set; }
+    public bool Optional { get; set; } = false;
 
     public void Update(ref Attribute update) {
       update.Name = Name;
       update.NickName = NickName;
       update.Description = Description;
+      update.Optional = Optional;
 
       if (this is IAccessible accessible && update is IAccessible AdSecSection) {
         AdSecSection.Access = accessible.Access;
@@ -63,8 +81,8 @@ namespace AdSecCore.Functions {
         OnValueChanged?.Invoke(value);
       }
     }
-    public T Default { get; set; }
     public virtual Access Access { get; set; } = Access.Item;
+    public T Default { get; set; }
 
     public void SetDefault() {
       Value = Default;

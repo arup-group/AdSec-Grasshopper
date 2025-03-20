@@ -10,17 +10,18 @@ using OasysUnits;
 
 namespace AdSecCore.Builders {
 
-  public class BuilderReinforcementGroup : IBuilder<ISingleBars> {
+  public class BuilderSingleBar : IBuilder<ISingleBars> {
+    private readonly IReinforcement material = Reinforcement.Steel.IS456.Edition_2000.S415;
     private readonly List<IPoint> positions = new List<IPoint>();
     private ISingleBars group;
     private GroupType groupType;
-    private readonly IReinforcement material = Reinforcement.Steel.IS456.Edition_2000.S415;
     private double rebarDiameter = 2;
 
     public ISingleBars Build() {
+      var barBundle = IBarBundle.Create(material, Length.FromCentimeters(rebarDiameter), 1);
       switch (groupType) {
         case GroupType.SingleBar:
-          var singleBars = ISingleBars.Create(IBarBundle.Create(material, Length.FromCentimeters(rebarDiameter), 1));
+          var singleBars = ISingleBars.Create(barBundle);
           foreach (var position in positions) {
             singleBars.Positions.Add(position);
           }
@@ -32,17 +33,17 @@ namespace AdSecCore.Builders {
       return group;
     }
 
-    public BuilderReinforcementGroup AtPosition(IPoint position) {
+    public BuilderSingleBar AtPosition(IPoint position) {
       positions.Add(position);
       return this;
     }
 
-    public BuilderReinforcementGroup WithSize(double size) {
+    public BuilderSingleBar WithSize(double size) {
       rebarDiameter = size;
       return this;
     }
 
-    public BuilderReinforcementGroup CreateSingleBar() {
+    public BuilderSingleBar CreateSingleBar() {
       groupType = GroupType.SingleBar;
       return this;
     }

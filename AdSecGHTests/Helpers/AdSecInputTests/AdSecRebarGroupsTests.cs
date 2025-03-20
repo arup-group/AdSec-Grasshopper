@@ -7,15 +7,13 @@ using AdSecGH.Parameters;
 
 using Grasshopper.Kernel.Types;
 
-using Oasys.AdSec.Reinforcement.Groups;
-
 using Xunit;
 
 namespace AdSecGHTests.Helpers {
   [Collection("GrasshopperFixture collection")]
   public class AdSecRebarGroupsTests {
-    private List<AdSecRebarGroup> _groups;
-    private List<int> invalidIds;
+    private readonly List<AdSecRebarGroup> _groups;
+    private readonly List<int> invalidIds;
 
     public AdSecRebarGroupsTests() {
       _groups = new List<AdSecRebarGroup>();
@@ -53,7 +51,7 @@ namespace AdSecGHTests.Helpers {
     [Fact]
     public void TryCastToAdSecRebarGroupsReturnsFalseWhenValueIsNull() {
       AdSecRebarGroupGoo group = null;
-      var objectWrappers = new List<GH_ObjectWrapper>() {
+      var objectWrappers = new List<GH_ObjectWrapper> {
         new GH_ObjectWrapper(group),
       };
       bool castSuccessful = AdSecInput.TryCastToAdSecRebarGroups(objectWrappers, _groups, invalidIds);
@@ -67,7 +65,7 @@ namespace AdSecGHTests.Helpers {
     [Fact]
     public void TryCastToAdSecRebarGroupsReturnsEmptyWhenNullItemSections() {
       var objectWrapper = new GH_ObjectWrapper(null);
-      var objectWrappers = new List<GH_ObjectWrapper>() {
+      var objectWrappers = new List<GH_ObjectWrapper> {
         objectWrapper,
       };
       bool castSuccessful = AdSecInput.TryCastToAdSecRebarGroups(objectWrappers, _groups, invalidIds);
@@ -81,7 +79,7 @@ namespace AdSecGHTests.Helpers {
     [Fact]
     public void TryCastToAdSecRebarGroupsReturnsFalseWhenSecondItemIncorrect() {
       var rebarGroup = new AdSecRebarGroupGoo();
-      var objectWrappers = new List<GH_ObjectWrapper>() {
+      var objectWrappers = new List<GH_ObjectWrapper> {
         new GH_ObjectWrapper(rebarGroup),
         new GH_ObjectWrapper(null),
       };
@@ -97,7 +95,7 @@ namespace AdSecGHTests.Helpers {
     public void TryCastToAdSecRebarGroupsReturnsCorrectDataFromRebarLayerGoo() {
       var rebarGroup = new AdSecRebarGroupGoo();
 
-      var objwrap = new List<GH_ObjectWrapper>() {
+      var objwrap = new List<GH_ObjectWrapper> {
         new GH_ObjectWrapper(rebarGroup),
       };
       bool castSuccessful = AdSecInput.TryCastToAdSecRebarGroups(objwrap, _groups, invalidIds);
@@ -109,10 +107,10 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToAdSecRebarGroupsReturnsCorrectDataFromIGroup() {
-      var rebarGroup = new BuilderReinforcementGroup().Build();
+      var rebarGroup = new BuilderSingleBar().Build();
 
-      var objwrap = new List<GH_ObjectWrapper>() {
-        new GH_ObjectWrapper((IGroup)rebarGroup),
+      var objwrap = new List<GH_ObjectWrapper> {
+        new GH_ObjectWrapper(rebarGroup),
       };
       bool castSuccessful = AdSecInput.TryCastToAdSecRebarGroups(objwrap, _groups, invalidIds);
 

@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Drawing;
 
+using AdSecCore.Functions;
+
+using AdSecGH.Helpers;
+
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-
-using Oasys.AdSec;
 
 using OasysGH;
 using OasysGH.Parameters;
 
 using Rhino.Geometry;
-
 namespace AdSecGH.Parameters {
-  public class AdSecCrackGoo : GH_OasysGeometricGoo<ICrack>, IGH_PreviewData {
+  public class AdSecCrackGoo : GH_OasysGeometricGoo<CrackLoad>, IGH_PreviewData {
     public static string Description => "AdSec Crack Parameter";
     public static string Name => "Crack";
     public static string NickName => "Cr";
@@ -32,34 +33,28 @@ namespace AdSecGH.Parameters {
     public override BoundingBox ClippingBox => Boundingbox;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     private Line m_line;
-    private Plane m_plane;
-    private Point3d m_point = Point3d.Unset;
+    private Point3d m_point;
 
-    public AdSecCrackGoo(ICrack item) : base(item) {
-    }
-
-    public AdSecCrackGoo(ICrack crack, Plane local) : base(crack) {
-      m_value = crack;
-      m_plane = local;
-
+    public AdSecCrackGoo(CrackLoad crackLoad) : base(crackLoad) {
+      var plane = Value.Plane.ToGh();
       // create point from crack position in global axis
       var point = new Point3d(
-          crack.Position.Y.Value,
-          crack.Position.Z.Value,
+          m_value.Load.Position.Y.Value,
+          m_value.Load.Position.Z.Value,
           0);
 
       // remap to local coordinate system
-      var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
+      var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
       point.Transform(mapFromLocal);
       m_point = point;
 
       // move starting point of line by half the width
-      var halfCrack = new Vector3d(local.ZAxis);
+      var halfCrack = new Vector3d(plane.ZAxis);
       halfCrack.Unitize();
       halfCrack = new Vector3d(
-          halfCrack.X * crack.Width.Value / 2,
-          halfCrack.Y * crack.Width.Value / 2,
-          halfCrack.Z * crack.Width.Value / 2);
+          halfCrack.X * m_value.Load.Width.Value / 2,
+          halfCrack.Y * m_value.Load.Width.Value / 2,
+          halfCrack.Z * m_value.Load.Width.Value / 2);
 
       var move = Rhino.Geometry.Transform.Translation(halfCrack);
       var crackStart = new Point3d(m_point);
@@ -69,13 +64,12 @@ namespace AdSecGH.Parameters {
       var crackWidth = new Vector3d(halfCrack);
       crackWidth.Unitize();
       crackWidth = new Vector3d(
-          crackWidth.X * crack.Width.Value * -1,
-          crackWidth.Y * crack.Width.Value * -1,
-          crackWidth.Z * crack.Width.Value * -1);
+          crackWidth.X * m_value.Load.Width.Value * -1,
+          crackWidth.Y * m_value.Load.Width.Value * -1,
+          crackWidth.Z * m_value.Load.Width.Value * -1);
 
       m_line = new Line(crackStart, crackWidth);
     }
-
     public override bool CastFrom(object source) {
       if (source == null) {
         return false;
@@ -85,7 +79,7 @@ namespace AdSecGH.Parameters {
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecCrackGoo))) {
-        target = (Q)(object)new AdSecCrackGoo(Value, m_plane);
+        target = (Q)(object)new AdSecCrackGoo(Value);
         return true;
       }
 
@@ -100,12 +94,12 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(Vector3d))) {
-        target = (Q)(object)new Vector3d(Value.Width.Value, m_point.Y, m_point.Z);
+        target = (Q)(object)new Vector3d(Value.Load.Width.Value, m_point.Y, m_point.Z);
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Vector))) {
-        target = (Q)(object)new GH_Vector(new Vector3d(Value.Width.Value, m_point.Y, m_point.Z));
+        target = (Q)(object)new GH_Vector(new Vector3d(Value.Load.Width.Value, m_point.Y, m_point.Z));
         return true;
       }
 
@@ -120,12 +114,12 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_UnitNumber))) {
-        target = (Q)(object)new GH_UnitNumber(Value.Width);
+        target = (Q)(object)new GH_UnitNumber(Value.Load.Width);
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Number))) {
-        target = (Q)(object)new GH_Number(Value.Width.Value);
+        target = (Q)(object)new GH_Number(Value.Load.Width.Value);
         return true;
       }
 
@@ -153,7 +147,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      var dup = new AdSecCrackGoo(Value, m_plane);
+      var dup = new AdSecCrackGoo(Value);
       return dup;
     }
 
@@ -178,7 +172,7 @@ namespace AdSecGH.Parameters {
 
     public override string ToString() {
       return
-        $"AdSec {TypeName} {{Y:{Math.Round(Value.Position.Y.Value, 4)}{Value.Position.Y.Unit}, Z:{Math.Round(Value.Position.Z.Value, 4)}{Value.Position.Z.Unit}, Width:{Math.Round(Value.Width.Value, 4)}{Value.Width.Unit}}}";
+        $"AdSec {TypeName} {{Y:{Math.Round(Value.Load.Position.Y.Value, 4)}{Value.Load.Position.Y.Unit}, Z:{Math.Round(Value.Load.Position.Z.Value, 4)}{Value.Load.Position.Z.Unit}, Width:{Math.Round(Value.Load.Width.Value, 4)}{Value.Load.Width.Unit}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {

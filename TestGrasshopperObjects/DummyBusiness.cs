@@ -13,6 +13,7 @@ namespace AdSecGHTests.Helpers {
       NickName = "A",
       Description = "Alpha description",
       Default = 1,
+      Optional = false,
     };
     public DoubleArrayParameter Gama { get; set; } = new DoubleArrayParameter {
       Name = "Gama",
@@ -23,6 +24,7 @@ namespace AdSecGHTests.Helpers {
         2,
         3,
       },
+      Optional = false,
     };
     public DoubleParameter Beta { get; set; } = new DoubleParameter {
       Name = "Beta",
