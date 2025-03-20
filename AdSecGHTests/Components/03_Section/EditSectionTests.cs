@@ -19,6 +19,8 @@ namespace AdSecGHTests.Components {
 
     public EditSectionTests() {
       _component = new EditSection();
+      var section = new AdSecSectionGoo(new AdSecSection(SampleData.GetSectionDesign()));
+      _component.SetInputParamAt(0, section);
     }
 
     [Fact]
@@ -29,11 +31,16 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveNoWarnings() {
-      var section = new AdSecSectionGoo(new AdSecSection(SampleData.GetSectionDesign()));
-      _component.SetInputParamAt(0, section);
       ComponentTesting.ComputeOutputs(_component);
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
       Assert.Empty(runtimeMessages);
+    }
+
+    [Fact]
+    public void ShouldHaveAProfile() {
+      ComponentTesting.ComputeOutputs(_component);
+      object profileOut = _component.GetOutputParamAt(1).GetValue(0, 0);
+      Assert.NotNull(profileOut);
     }
 
     [Fact]
@@ -47,6 +54,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldNeedSectionToWork() {
+      _component.ClearInputs();
       ComponentTesting.ComputeOutputs(_component);
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
       Assert.Single(runtimeMessages);

@@ -57,6 +57,13 @@ namespace AdSecCore.Functions {
   public class ProfileDesign {
     public IProfile Profile { get; set; }
     public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
+
+    public static ProfileDesign From(SectionDesign sectionDesign) {
+      return new ProfileDesign {
+        Profile = sectionDesign.Section.Profile,
+        LocalPlane = sectionDesign.LocalPlane,
+      };
+    }
   }
 
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }

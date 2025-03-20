@@ -57,16 +57,8 @@ namespace AdSecGH.Components {
       base.SolveInstance(DA);
       var sectionDesign = BusinessComponent.AdSecSection.Value;
       var in_section = sectionDesign.Value;
-      // var profile = new AdSecProfileGoo(BusinessComponent.Profile.Value
-      //   ?? ProfileDesign.From(BusinessComponent.Section.Value));
-
-      // 1 profile
-      AdSecProfileGoo profile = null;
-      if (Params.Input[1].SourceCount > 0) {
-        profile = this.GetAdSecProfileGoo(DA, 1, true);
-      } else {
-        profile = new AdSecProfileGoo(in_section.Section.Profile, in_section.LocalPlane);
-      }
+      var profile = new AdSecProfileGoo(BusinessComponent.Profile.Value
+        ?? ProfileDesign.From(BusinessComponent.Section.Value));
 
       DA.SetData(1, profile);
 
