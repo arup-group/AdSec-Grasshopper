@@ -28,9 +28,9 @@ namespace AdSecGH.Components {
       Section.Update(ref adSecSection);
       AdSecSection.OnValueChanged += goo => {
         if (goo.Value != null) {
-          Section.Value = new SectionDesign() {
+          Section.Value = new SectionDesign {
             Section = goo.Value.Section,
-            DesignCode = goo.Value.DesignCode
+            DesignCode = goo.Value.DesignCode,
           };
         }
       };
@@ -54,13 +54,11 @@ namespace AdSecGH.Components {
     protected override Bitmap Icon => Resources.EditSection;
 
     protected override void SolveInstance(IGH_DataAccess DA) {
-      // 0 section
-      var in_section = this.GetAdSecSection(DA, 0);
-      if (in_section == null) {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-          $"Input parameter {Params.Input[0].NickName} failed to collect data!");
-        return;
-      }
+      base.SolveInstance(DA);
+      var sectionDesign = BusinessComponent.AdSecSection.Value;
+      var in_section = sectionDesign.Value;
+      // var profile = new AdSecProfileGoo(BusinessComponent.Profile.Value
+      //   ?? ProfileDesign.From(BusinessComponent.Section.Value));
 
       // 1 profile
       AdSecProfileGoo profile = null;
