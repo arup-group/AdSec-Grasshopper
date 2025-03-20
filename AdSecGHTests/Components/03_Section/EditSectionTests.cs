@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Components;
 using AdSecGH.Parameters;
 
@@ -41,6 +43,22 @@ namespace AdSecGHTests.Components {
       ComponentTesting.ComputeOutputs(_component);
       object profileOut = _component.GetOutputParamAt(1).GetValue(0, 0);
       Assert.NotNull(profileOut);
+    }
+
+    [Fact]
+    public void ShouldOverrideTheProfile() {
+      var profileDesign = ProfileDesign.From(SampleData.GetSectionDesign());
+      var plane = OasysPlane.PlaneYZ;
+      plane.XAxis = new OasysPoint { X = 1, Z = 2, Y = 3, };
+      profileDesign.LocalPlane = plane;
+      var profile = new AdSecProfileGoo(profileDesign);
+      _component.SetInputParamAt(1, profile);
+      ComponentTesting.ComputeOutputs(_component);
+      var profileOut = _component.GetOutputParamAt(1).GetValue<AdSecProfileGoo>(0, 0);
+      Assert.NotNull(profileOut);
+      Assert.Equal(profileDesign.LocalPlane.XAxis.X, profileOut.Value.LocalPlane.XAxis.X);
+      Assert.Equal(profileDesign.LocalPlane.XAxis.Y, profileOut.Value.LocalPlane.XAxis.Y);
+      Assert.Equal(profileDesign.LocalPlane.XAxis.Z, profileOut.Value.LocalPlane.XAxis.Z);
     }
 
     [Fact]

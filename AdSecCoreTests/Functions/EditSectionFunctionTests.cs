@@ -1,7 +1,23 @@
 ﻿using AdSecCore.Functions;
 
+using AdSecGHTests;
+
 namespace AdSecCoreTests.Functions {
   public class EditSectionFunctionTests {
+
+    private readonly EditSectionFunction function;
+
+    public EditSectionFunctionTests() {
+      function = new EditSectionFunction();
+      function.Section.Value = SampleData.GetSectionDesign();
+    }
+
+    [Fact]
+    public void ShouldPassProfile() {
+      function.Compute();
+      Assert.NotNull(function.ProfileOut.Value);
+    }
+
     [Fact]
     public void ShouldHaveAllButFirstParametersOptional() {
       Assert.True(AllButFirstOptional());

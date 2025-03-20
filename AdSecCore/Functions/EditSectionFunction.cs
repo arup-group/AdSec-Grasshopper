@@ -51,9 +51,12 @@ namespace AdSecCore.Functions {
 
     public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[]
-        { SectionOut, ProfileOut, MaterialOut, DesignCodeOut, RebarGroupOut, SubComponentOut, Geometry };
+        { SectionOut, ProfileOut, MaterialOut, DesignCodeOut, RebarGroupOut, SubComponentOut, Geometry, };
     }
 
-    public override void Compute() { }
+    public override void Compute() {
+      ProfileOut.Value = Profile.Value ?? ProfileDesign.From(Section.Value);
+      MaterialOut.Value = Material.Value ?? MaterialDesign.From(Section.Value);
+    }
   }
 }
