@@ -103,5 +103,19 @@ namespace AdSecCoreTests.Functions {
       _component.Compute();
       Assert.Equal(2, _component.WarningMessages.Count);
     }
+
+    [Fact]
+    public void ShouldHaveWarningForInvalidLoad() {
+      _component.LoadInput.Value = ILoad.Create(Force.Zero, Moment.Zero, Moment.Zero);
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
+
+    [Fact]
+    public void ShouldHaveWarningForInvalidDeformation() {
+      _component.LoadInput.Value = IDeformation.Create(Strain.Zero, Curvature.Zero, Curvature.Zero);
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
   }
 }

@@ -95,6 +95,19 @@ namespace AdSecCoreTests.Functions {
       return expected.X.Equals(calculated.X, tolernaceStrain) && expected.YY.Equals(calculated.YY, tolernaceCurvature) && expected.ZZ.Equals(calculated.ZZ, tolernaceCurvature);
     }
 
+    [Fact]
+    public void ShouldHaveWarningForInvalidLoad() {
+      _component.LoadInput.Value = ILoad.Create(Force.Zero, Moment.Zero, Moment.Zero);
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
+
+    [Fact]
+    public void ShouldHaveWarningForInvalidDeformation() {
+      _component.LoadInput.Value = IDeformation.Create(Strain.Zero, Curvature.Zero, Curvature.Zero);
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
 
   }
 }

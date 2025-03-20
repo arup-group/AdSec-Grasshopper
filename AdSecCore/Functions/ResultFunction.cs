@@ -1,6 +1,8 @@
 ﻿
 using System;
 
+using Oasys.AdSec;
+
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -170,6 +172,22 @@ namespace AdSecCore.Functions {
     public void MomentRangesDescription(MomentUnit momentUnit) {
       UncrackedMomentRangesOutput.Description = $"The range of moments (in the direction of the applied moment, assuming constant axial force) over which the section remains uncracked. Moment values are in [{Moment.GetAbbreviation(momentUnit)}]";
       MomentRangesOutput.Description = UncrackedMomentRangesOutput.Description;
+    }
+
+    public bool IsLoadValid(ILoad load) {
+      bool isValid = Math.Abs(load.X.Value) > 0 || Math.Abs(load.YY.Value) > 0 || Math.Abs(load.ZZ.Value) > 0;
+      if (!isValid) {
+        ErrorMessages.Add("Load Input should be finite number. Zero load has no boundary");
+      }
+      return isValid;
+    }
+
+    public bool IsDeformationValid(IDeformation load) {
+      bool isValid = Math.Abs(load.X.Value) > 0 || Math.Abs(load.YY.Value) > 0 || Math.Abs(load.ZZ.Value) > 0;
+      if (!isValid) {
+        ErrorMessages.Add("Deformation Input should be finite number. Zero deformation has no boundary");
+      }
+      return isValid;
     }
 
   }

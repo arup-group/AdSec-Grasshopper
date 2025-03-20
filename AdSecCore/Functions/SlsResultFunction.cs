@@ -44,15 +44,16 @@ namespace AdSecCore.Functions {
     }
 
     public override void Compute() {
-      var momentUnit = ContextUnits.Instance.MomentUnit;
       // get solution input
       var solution = SolutionInput.Value;
       IServiceabilityResult sls = null;
       switch (LoadInput.Value) {
         case ILoad load:
+          if (!IsLoadValid(load)) { return; }
           sls = solution.Serviceability.Check(load);
           break;
         case IDeformation deformation:
+          if (!IsDeformationValid(deformation)) { return; }
           sls = solution.Serviceability.Check(deformation);
           break;
         default:
@@ -81,9 +82,9 @@ namespace AdSecCore.Functions {
       }
       DeformationOutput.Value = sls.Deformation;
       SecantStiffnessOutput.Value = sls.SecantStiffness;
-
       var momentRanges = new List<Tuple<double, double>>();
       foreach (var range in sls.UncrackedMomentRanges) {
+        var momentUnit = sls.Load.YY.Unit;
         var interval = new Tuple<double, double>(range.Min.As(momentUnit), range.Max.As(momentUnit));
         momentRanges.Add(interval);
       }

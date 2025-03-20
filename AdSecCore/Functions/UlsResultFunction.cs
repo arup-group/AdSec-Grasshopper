@@ -48,13 +48,13 @@ namespace AdSecCore.Functions {
     }
 
     public override void Compute() {
-      var momentUnit = ContextUnits.Instance.MomentUnit;
       var solution = SolutionInput.Value;
       IStrengthResult uls = null;
       IStrengthResult failure = null;
       double adjustmentFactor = 0.999;
       switch (LoadInput.Value) {
         case ILoad load:
+          if (!IsLoadValid(load)) { return; }
           uls = solution.Strength.Check(load);
           var failureLoad = ILoad.Create(
             load.X / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
@@ -63,6 +63,7 @@ namespace AdSecCore.Functions {
           failure = solution.Strength.Check(failureLoad);
           break;
         case IDeformation def:
+          if (!IsDeformationValid(def)) { return; }
           uls = solution.Strength.Check(def);
           var failureDeformation = IDeformation.Create(
             def.X / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
@@ -91,6 +92,7 @@ namespace AdSecCore.Functions {
 
       var momentRanges = new List<Tuple<double, double>>();
       foreach (var range in uls.MomentRanges) {
+        var momentUnit = uls.Load.YY.Unit;
         momentRanges.Add(new Tuple<double, double>(
           range.Min.As(momentUnit),
           range.Max.As(momentUnit)));
@@ -124,9 +126,6 @@ namespace AdSecCore.Functions {
 
       // compute offset
       double offsetSI = -defX / Math.Sqrt(Math.Pow(kYY, 2) + Math.Pow(kZZ, 2));
-      if (double.IsNaN(offsetSI)) {
-        offsetSI = 0.0;
-      }
 
       // temp length in SI units
       var tempOffset = new Length(offsetSI, LengthUnit.Meter);

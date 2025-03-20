@@ -33,7 +33,7 @@ namespace AdSecGHTests.Components {
     }
 
     private void SetMaximumCracking() {
-      ComponentTestHelper.SetInput(component, 5e-8, 4);
+      ComponentTestHelper.SetInput(component, 5e-5, 4);
     }
 
     private void SetInvalidCracking() {

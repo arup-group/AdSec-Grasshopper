@@ -103,7 +103,8 @@ namespace AdSecGHTests.Components {
     public void ShouldCalculateNeutralAxisForGivenLoad() {
       SetLoad();
       var axis = (AdSecNeutralAxisGoo)ComponentTestHelper.GetOutput(_component, 5);
-      Assert.Equal(0.6682, axis.AxisLine.Length, new DoubleComparer());
+      var length = new Length(axis.AxisLine.Length, DefaultUnits.LengthUnitGeometry);
+      Assert.Equal(0.6682, length.As(LengthUnit.Meter), new DoubleComparer());
     }
 
   }
