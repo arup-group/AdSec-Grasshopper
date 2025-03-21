@@ -10,19 +10,19 @@ using OasysUnits.Units;
 
 namespace AdSecGHTests.Helpers {
   public static class SampleProfiles {
-    private static Length GetThickness() {
+    public static Length GetThickness() {
       return new Length(0.2, LengthUnit.Meter);
     }
 
-    private static Flange GetFlange() {
+    public static Flange GetFlange() {
       return new Flange(GetThickness(), LengthOne());
     }
 
-    private static Length LengthOne() {
+    public static Length LengthOne() {
       return new Length(1, DefaultUnits.LengthUnitGeometry);
     }
 
-    private static WebConstant GetWebConstant() {
+    public static WebConstant GetWebConstant() {
       return new WebConstant(GetThickness());
     }
 
