@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+
+using AdSecCore.Builders;
+using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
@@ -47,7 +49,7 @@ namespace AdSecGHTests.Parameters {
     public Type[] GoosWithoutNickname = {
       typeof(AdSecDeformationGoo),
       typeof(AdSecFailureSurfaceGoo),
-      typeof(AdSecNMMCurveGoo),
+      typeof(AdSecInteractionDiagramGoo),
       typeof(AdSecPointGoo),
       typeof(AdSecProfileFlangeGoo),
       typeof(AdSecProfileGoo),
@@ -96,26 +98,23 @@ namespace AdSecGHTests.Parameters {
       var adSecSection = new AdSecSection(section, designCode.DesignCode, "", "", Plane.WorldXY);
       var adSec = IAdSec.Create(adSecSection.DesignCode);
       var solution = adSec.Analyse(adSecSection.Section);
-      var material = new AdSecMaterial() {
-        GradeName = "test",
-        Material = section.Material,
-      };
+      var solutionBuilder = new SolutionBuilder().Build();
       var stressStrainPoint
         = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio));
       IStressStrainCurve curve = ILinearStressStrainCurve.Create(stressStrainPoint);
       var tensionCompressionCurve = ITensionCompressionCurve.Create(curve, curve);
+      var load = ILoad.Create(Force.FromKilonewtons(100), Moment.FromKilonewtonMeters(100), Moment.Zero);
       //-----------------
       InstanceOfGoos.Add(new AdSecConcreteCrackCalculationParametersGoo(concreteCrackCalculationParameters));
-      InstanceOfGoos.Add(new AdSecCrackGoo(solution.Serviceability
-       .Check(IDeformation.Create(GetStrainOne(), GetCurvatureOne(), GetCurvatureOne())).Cracks.FirstOrDefault()));
+      InstanceOfGoos.Add(new AdSecCrackGoo(new CrackLoad() { Plane = OasysPlane.PlaneYZ, Load = solutionBuilder.Serviceability.Check(load).MaximumWidthCrack, }));
       InstanceOfGoos.Add(
         new AdSecDeformationGoo(IDeformation.Create(GetStrainOne(), GetCurvatureOne(), GetCurvatureOne())));
       InstanceOfGoos.Add(new AdSecDesignCodeGoo(designCode));
       InstanceOfGoos.Add(new AdSecFailureSurfaceGoo(solution.Strength.GetFailureSurface(), Plane.WorldXY));
       InstanceOfGoos.Add(new AdSecLoadGoo(ILoad.Create(new Force(), new Moment(), new Moment())));
-      InstanceOfGoos.Add(new AdSecMaterialGoo(material));
-      InstanceOfGoos.Add(new AdSecNMMCurveGoo(solution.Strength.GetForceMomentInteractionCurve(new Angle())[0],
-        Angle.FromRadians(0), new Rectangle3d()));
+      InstanceOfGoos.Add(new AdSecMaterialGoo(new MaterialDesign()));
+      InstanceOfGoos.Add(new AdSecInteractionDiagramGoo(
+        solution.Strength.GetForceMomentInteractionCurve(new Angle())[0], Angle.FromRadians(0), new Rectangle3d()));
       InstanceOfGoos.Add(new AdSecPointGoo(length, length));
       InstanceOfGoos.Add(new AdSecProfileFlangeGoo(IFlange.Create(length, thickness)));
       InstanceOfGoos.Add(new AdSecProfileGoo(profile, Plane.WorldXY));
