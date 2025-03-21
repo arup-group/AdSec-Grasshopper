@@ -299,8 +299,6 @@ namespace AdSecGH.Parameters {
       return null;
     }
 
-    public void BakeGeometry(RhinoDoc doc, List<Guid> obj_ids) { Bake(doc, obj_ids); }
-
     private void Bake(RhinoDoc doc, List<Guid> obj_ids, ObjectAttributes attributes = null) {
       foreach (var drawInstruction in _drawInstructions) {
         if (drawInstruction is DrawPolyline drawPolyline) {
@@ -323,6 +321,7 @@ namespace AdSecGH.Parameters {
       return objectAttributes;
     }
 
+    public void BakeGeometry(RhinoDoc doc, List<Guid> obj_ids) { Bake(doc, obj_ids); }
     public void BakeGeometry(RhinoDoc doc, ObjectAttributes att, List<Guid> obj_ids) { Bake(doc, obj_ids, att); }
 
     public bool IsBakeCapable => Value != null;
