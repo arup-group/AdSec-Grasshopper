@@ -80,6 +80,6 @@ namespace AdSecGH.Parameters {
       }
     }
 
-    public bool IsBakeCapable { get; }
+    public bool IsBakeCapable { get; } = true;
   }
 }

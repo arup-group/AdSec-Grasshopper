@@ -51,7 +51,10 @@ namespace AdSecGH.Parameters {
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Section";
 
-    public AdSecSectionGoo() { }
+    public AdSecSectionGoo() {
+      _drawInstructions.Clear();
+      _drawInstructions.AddRange(UpdateDrawInstructions(true));
+    }
 
     public AdSecSectionGoo(AdSecSection section) {
       if (section == null) {
@@ -59,6 +62,9 @@ namespace AdSecGH.Parameters {
       } else {
         Value = section.Duplicate();
       }
+
+      _drawInstructions.Clear();
+      _drawInstructions.AddRange(UpdateDrawInstructions(true));
     }
 
     public override bool CastFrom(object source) {
@@ -191,7 +197,7 @@ namespace AdSecGH.Parameters {
       }
 
       _drawInstructions.Clear();
-      _drawInstructions.AddRange(UpdateDrawInstructions(args));
+      _drawInstructions.AddRange(UpdateDrawInstructions(IsNotSelected(args)));
 
       foreach (var instruction in _drawInstructions) {
         Draw(args.Pipeline, instruction);
@@ -203,13 +209,17 @@ namespace AdSecGH.Parameters {
       args.Pipeline.DrawLine(Value.previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
     }
 
-    private List<DrawInstructions> UpdateDrawInstructions(GH_PreviewWireArgs args) {
+    private List<DrawInstructions> UpdateDrawInstructions(bool isNotSelected) {
+      if (Value == null) {
+        return new List<DrawInstructions>();
+      }
+
       var drawInstructions = new List<DrawInstructions>();
 
-      var primaryColor = IsNotSelected(args) ? UI.Colour.OasysBlue : UI.Colour.OasysYellow;
-      var secondaryColor = IsNotSelected(args) ? Color.Black : UI.Colour.UILightGrey;
-      var primaryThickness = IsNotSelected(args) ? 2 : 3;
-      var secondaryThickness = IsNotSelected(args) ? 1 : 2;
+      var primaryColor = isNotSelected ? UI.Colour.OasysBlue : UI.Colour.OasysYellow;
+      var secondaryColor = isNotSelected ? Color.Black : UI.Colour.UILightGrey;
+      var primaryThickness = isNotSelected ? 2 : 3;
+      var secondaryThickness = isNotSelected ? 1 : 2;
 
       drawInstructions.Add(new DrawPolyline() { Polyline = Value.m_profileEdge, Color = primaryColor, Thickness = primaryThickness });
 
@@ -311,6 +321,6 @@ namespace AdSecGH.Parameters {
 
     public void BakeGeometry(RhinoDoc doc, ObjectAttributes att, List<Guid> obj_ids) { Bake(doc, obj_ids, att); }
 
-    public bool IsBakeCapable { get; }
+    public bool IsBakeCapable => Value != null;
   }
 }
