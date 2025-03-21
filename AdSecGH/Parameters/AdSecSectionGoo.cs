@@ -11,7 +11,7 @@ using Rhino.DocObjects;
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
-  public class AdSecSectionGoo : GH_GeometricGoo<AdSecSection>, IGH_PreviewData {
+  public class AdSecSectionGoo : GH_GeometricGoo<AdSecSection>, IGH_PreviewData, IGH_BakeAwareObject {
     public override BoundingBox Boundingbox {
       get {
         if (Value == null) {
@@ -284,5 +284,33 @@ namespace AdSecGH.Parameters {
       //return new AdSecSectionGoo(Value.Transform(xform));
       return null;
     }
+
+    public void BakeGeometry(RhinoDoc doc, List<Guid> obj_ids) { Bake(doc, obj_ids); }
+
+    private void Bake(RhinoDoc doc, List<Guid> obj_ids, ObjectAttributes attributes = null) {
+      foreach (var drawInstruction in _drawInstructions) {
+        if (drawInstruction is DrawPolyline drawPolyline) {
+          var objectAttributes = GetAttribute(attributes, drawPolyline);
+          obj_ids.Add(doc.Objects.AddPolyline(drawPolyline.Polyline, objectAttributes));
+        } else if (drawInstruction is DrawCircle drawCircle) {
+          var objectAttributes = GetAttribute(attributes, drawCircle);
+          obj_ids.Add(doc.Objects.AddCircle(drawCircle.Circle, objectAttributes));
+        } else if (drawInstruction is DrawCurve drawCurve) {
+          var objectAttributes = GetAttribute(attributes, drawCurve);
+          obj_ids.Add(doc.Objects.AddCurve(drawCurve.Curve, objectAttributes));
+        }
+      }
+    }
+
+    private static ObjectAttributes GetAttribute(ObjectAttributes attributes, DrawInstructions instructions) {
+      var objectAttributes = attributes?.Duplicate() ?? new ObjectAttributes();
+      objectAttributes.ColorSource = ObjectColorSource.ColorFromObject;
+      objectAttributes.ObjectColor = instructions.Color;
+      return objectAttributes;
+    }
+
+    public void BakeGeometry(RhinoDoc doc, ObjectAttributes att, List<Guid> obj_ids) { Bake(doc, obj_ids, att); }
+
+    public bool IsBakeCapable { get; }
   }
 }
