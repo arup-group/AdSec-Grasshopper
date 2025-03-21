@@ -137,6 +137,7 @@ namespace AdSecGH.Components {
       var out_section = new AdSecSection(profile.Profile, profile.LocalPlane, material, reinforcements, subComponents);
 
       var adSecSectionGoo = new AdSecSectionGoo(out_section);
+      adSecSectionGoo.UpdateGeometryRepresentation();
       DA.SetData(0, adSecSectionGoo);
 
       // ### output section geometry ###

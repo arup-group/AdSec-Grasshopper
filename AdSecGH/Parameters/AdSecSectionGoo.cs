@@ -51,10 +51,7 @@ namespace AdSecGH.Parameters {
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Section";
 
-    public AdSecSectionGoo() {
-      _drawInstructions.Clear();
-      _drawInstructions.AddRange(UpdateDrawInstructions(true));
-    }
+    public AdSecSectionGoo() { UpdateGeometryRepresentation(); }
 
     public AdSecSectionGoo(AdSecSection section) {
       if (section == null) {
@@ -63,6 +60,10 @@ namespace AdSecGH.Parameters {
         Value = section.Duplicate();
       }
 
+      UpdateGeometryRepresentation();
+    }
+
+    public void UpdateGeometryRepresentation() {
       _drawInstructions.Clear();
       _drawInstructions.AddRange(UpdateDrawInstructions(true));
     }
