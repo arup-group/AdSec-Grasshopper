@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
 using AdSecCore.Functions;
@@ -41,7 +42,7 @@ namespace AdSecGH.Parameters {
       var bbox = tempCrv.GetBoundingBox(tempPlane);
 
       // calculate width of neutral line to display
-      var width = 1.05 * bbox.PointAt(0, 0, 0).DistanceTo(bbox.PointAt(1, 0, 0)); ;
+      var width = 1.05 * bbox.PointAt(0, 0, 0).DistanceTo(bbox.PointAt(1, 0, 0));
 
       // get direction as vector
       var direction = new Vector3d(local.XAxis);
@@ -98,23 +99,17 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      PreviewAxis(args);
-    }
-
-    public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
-      PreviewAxis(args);
-    }
-
-    private void PreviewAxis(object args) {
-      if (args is GH_PreviewWireArgs previewWire) {
-        var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-        if (previewWire.Color.R == defaultCol.R && previewWire.Color.G == defaultCol.G && previewWire.Color.B == defaultCol.B) {
-          // not selected
-          previewWire.Pipeline.DrawLine(AxisLine, UI.Colour.OasysBlue);
-        } else {
-          previewWire.Pipeline.DrawLine(AxisLine, UI.Colour.OasysYellow);
-        }
+      var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) {
+        // not selected
+        args.Pipeline.DrawLine(AxisLine, UI.Colour.OasysBlue);
+      } else {
+        args.Pipeline.DrawLine(AxisLine, UI.Colour.OasysYellow);
       }
+    }
+
+    [SuppressMessage("Minor Code Smell", "S1186:Methods should not be empty", Justification = "Required for Interface but Meshes are not used in this component")]
+    public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
     }
   }
 }
