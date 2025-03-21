@@ -57,6 +57,13 @@ namespace AdSecCore.Functions {
   public class ProfileDesign {
     public IProfile Profile { get; set; }
     public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
+
+    public static ProfileDesign From(SectionDesign sectionDesign) {
+      return new ProfileDesign {
+        Profile = sectionDesign.Section.Profile,
+        LocalPlane = sectionDesign.LocalPlane,
+      };
+    }
   }
 
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }
@@ -88,7 +95,11 @@ namespace AdSecCore.Functions {
     public IMaterial Material { get; set; }
     public IDesignCode DesignCode { get; set; }
     public string GradeName { get; set; }
+
+    public static MaterialDesign From(SectionDesign sectionValue) { return null; }
   }
 
   public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
+  public class DesignCodeParameter : ParameterAttribute<IDesignCode> { }
+  public class GeometryParameter : ParameterAttribute<object> { }
 }

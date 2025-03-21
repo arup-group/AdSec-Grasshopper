@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 using AdSecGH.Properties;
@@ -9,10 +10,13 @@ using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
 
+using Rhino;
+using Rhino.DocObjects;
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
-  public class AdSecSectionParameter : GH_PersistentGeometryParam<AdSecSectionGoo>, IGH_PreviewObject {
+  public class AdSecSectionParameter : GH_PersistentGeometryParam<AdSecSectionGoo>, IGH_PreviewObject,
+    IGH_BakeAwareObject {
 
     public AdSecSectionParameter() : base(new GH_InstanceDescription("Section", "Sec",
       "Maintains a collection of AdSec Section data.", CategoryName.Name(), SubCategoryName.Cat9())) { }
@@ -59,5 +63,23 @@ namespace AdSecGH.Parameters {
     protected override GH_GetterResult Prompt_Singular(ref AdSecSectionGoo value) {
       return GH_GetterResult.cancel;
     }
+
+    public void BakeGeometry(RhinoDoc doc, List<Guid> obj_ids) {
+      foreach (var data in m_data) {
+        if (data is AdSecSectionGoo goo) {
+          goo.BakeGeometry(doc, obj_ids);
+        }
+      }
+    }
+
+    public void BakeGeometry(RhinoDoc doc, ObjectAttributes att, List<Guid> obj_ids) {
+      foreach (var data in m_data) {
+        if (data is AdSecSectionGoo goo) {
+          goo.BakeGeometry(doc, att, obj_ids);
+        }
+      }
+    }
+
+    public bool IsBakeCapable { get; } = true;
   }
 }

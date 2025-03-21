@@ -17,10 +17,10 @@ namespace AdSecCoreTests {
 
     public class FakeFunc : IFunction {
 
-      public DoubleParameter Diameter { get; set; } = new();
+      public DoubleParameter Diameter { get; set; } = new DoubleParameter();
 
-      public FuncAttribute Metadata { get; set; } = new();
-      public Organisation Organisation { get; set; } = new();
+      public FuncAttribute Metadata { get; set; } = new FuncAttribute();
+      public Organisation Organisation { get; set; } = new Organisation();
 
       public Attribute[] GetAllInputAttributes() {
         return new Attribute[] {
