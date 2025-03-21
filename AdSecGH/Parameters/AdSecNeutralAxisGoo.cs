@@ -106,8 +106,7 @@ namespace AdSecGH.Parameters {
     }
 
     private void PreviewAxis(object args) {
-      if (args is GH_PreviewWireArgs) {
-        var previewWire = (GH_PreviewWireArgs)args;
+      if (args is GH_PreviewWireArgs previewWire) {
         var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
         if (previewWire.Color.R == defaultCol.R && previewWire.Color.G == defaultCol.G && previewWire.Color.B == defaultCol.B) {
           // not selected
