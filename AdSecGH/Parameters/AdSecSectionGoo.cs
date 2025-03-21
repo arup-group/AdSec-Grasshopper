@@ -32,7 +32,7 @@ namespace AdSecGH.Parameters {
           return false;
         }
 
-        if (Value.SolidBrep == null || Value.IsValid == false) {
+        if (Value.SolidBrep == null || !Value.IsValid) {
           return false;
         }
 
@@ -76,20 +76,6 @@ namespace AdSecGH.Parameters {
     }
 
     public override bool CastTo<Q>(out Q target) {
-      //if (InteropAdSecComputeTypes.IsPresent())
-      //{
-      //  Type type = InteropAdSecComputeTypes.GetType(typeof(IAdSecSection));
-      //  if (typeof(Q).IsAssignableFrom(type))
-      //  {
-      //    if (Value == null)
-      //      target = default;
-      //    else
-      //    {
-      //      target = (Q)(object)InteropAdSecComputeTypes.CastToSection(Value.Section, Value.codeName, Value.materialName);
-      //    }
-      //    return true;
-      //  }
-      //}
       if (typeof(Q).IsAssignableFrom(typeof(AdSecSectionGoo))) {
         if (Value == null) {
           target = default;
@@ -193,7 +179,7 @@ namespace AdSecGH.Parameters {
       public override object Geometry => Curve;
     }
 
-    public readonly List<DrawInstructions> _drawInstructions = new List<DrawInstructions>();
+    public List<DrawInstructions> _drawInstructions { get; private set; } = new List<DrawInstructions>();
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
       if (Value == null) {
@@ -282,7 +268,6 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
-      //return new AdSecSectionGoo(Value.Morph(xmorph));
       return null;
     }
 
@@ -295,7 +280,6 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {
-      //return new AdSecSectionGoo(Value.Transform(xform));
       return null;
     }
 

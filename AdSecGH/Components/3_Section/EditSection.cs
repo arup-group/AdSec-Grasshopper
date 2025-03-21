@@ -117,7 +117,7 @@ namespace AdSecGH.Components {
       DA.SetDataList(4, out_rebars);
 
       // 5 Subcomponents
-      var subComponents = Oasys.Collections.IList<ISubComponent>.Create();
+      Oasys.Collections.IList<ISubComponent> subComponents;
       if (Params.Input[5].SourceCount > 0) {
         subComponents = this.GetSubComponents(DA, 5, true);
       } else {
@@ -147,12 +147,7 @@ namespace AdSecGH.Components {
         GH_Convert.ToGHCurve(x.Geometry, GH_Conversion.Both, ref curve);
         return curve;
       }).ToList();
-      // DA.SetDataList(6, curves);
-    }
-
-    protected override void AfterSolveInstance() {
-      base.AfterSolveInstance();
-      dataAccess.SetDataList(6, curves);
+      DA.SetDataList(6, curves);
     }
   }
 }
