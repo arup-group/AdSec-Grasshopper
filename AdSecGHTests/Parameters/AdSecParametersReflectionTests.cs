@@ -172,5 +172,27 @@ namespace AdSecGHTests.Parameters {
         Assert.False(string.IsNullOrEmpty(value), $"Failed for {type}");
       }
     }
+
+    [Fact]
+    public void TypeNameProperty_ReturnsValidString() {
+      foreach (var type in GoosWithoutNickname) {
+        var instance = InstanceOfGoos.Find(goo => goo.GetType() == type);
+        var property = instance.GetType().GetProperty("TypeName");
+        string value = property?.GetValue(instance) as string;
+
+        Assert.False(string.IsNullOrEmpty(value), $"Failed for {type}");
+      }
+    }
+
+    [Fact]
+    public void TypeDescriptionProperty_ReturnsValidString() {
+      foreach (var type in GoosWithoutNickname) {
+        var instance = InstanceOfGoos.Find(goo => goo.GetType() == type);
+        var property = instance.GetType().GetProperty("TypeDescription");
+        string value = property?.GetValue(instance) as string;
+
+        Assert.False(string.IsNullOrEmpty(value), $"Failed for {type}");
+      }
+    }
   }
 }
