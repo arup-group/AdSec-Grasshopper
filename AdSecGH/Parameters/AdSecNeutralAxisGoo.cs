@@ -98,18 +98,24 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) {
-        // not selected
-        args.Pipeline.DrawLine(AxisLine, UI.Colour.OasysBlue);
-      } else {
-        args.Pipeline.DrawLine(AxisLine, UI.Colour.OasysYellow);
-      }
+      PreviewAxis(args);
     }
 
-    // @SuppressWarnings("squid:S1186")
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
-      // Empty implementation - no mesh preview needed
+      PreviewAxis(args);
+    }
+
+    private void PreviewAxis(object args) {
+      if (args is GH_PreviewWireArgs) {
+        var previewWire = (GH_PreviewWireArgs)args;
+        var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+        if (previewWire.Color.R == defaultCol.R && previewWire.Color.G == defaultCol.G && previewWire.Color.B == defaultCol.B) {
+          // not selected
+          previewWire.Pipeline.DrawLine(AxisLine, UI.Colour.OasysBlue);
+        } else {
+          previewWire.Pipeline.DrawLine(AxisLine, UI.Colour.OasysYellow);
+        }
+      }
     }
   }
 }
