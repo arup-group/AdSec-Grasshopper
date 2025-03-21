@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.Linq;
 
 using AdSecCore.Functions;
 
@@ -15,6 +17,10 @@ using Oasys.AdSec;
 using Oasys.GH.Helpers;
 
 using OasysGH;
+
+using Rhino;
+using Rhino.DocObjects;
+using Rhino.Geometry;
 
 using AdSecSectionParameter = Oasys.GH.Helpers.AdSecSectionParameter;
 using Attribute = AdSecCore.Functions.Attribute;
@@ -46,6 +52,7 @@ namespace AdSecGH.Components {
   }
 
   public class EditSection : ComponentAdapter<EditSectionGh> {
+    private List<GH_Curve> curves;
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("9b0acde5-f57f-4a39-a9c3-cdc935037490");
@@ -53,7 +60,10 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.EditSection;
 
+    private IGH_DataAccess dataAccess;
+
     protected override void SolveInstance(IGH_DataAccess DA) {
+      dataAccess = DA;
       base.SolveInstance(DA);
       var sectionDesign = BusinessComponent.AdSecSection.Value;
       var in_section = sectionDesign.Value;
@@ -126,65 +136,23 @@ namespace AdSecGH.Components {
       // create new section
       var out_section = new AdSecSection(profile.Profile, profile.LocalPlane, material, reinforcements, subComponents);
 
-      DA.SetData(0, new AdSecSectionGoo(out_section));
+      var adSecSectionGoo = new AdSecSectionGoo(out_section);
+      DA.SetData(0, adSecSectionGoo);
 
       // ### output section geometry ###
       // collect all curves in this list
-      var curves = new List<GH_Curve>();
+      curves = new List<GH_Curve>();
+      curves = adSecSectionGoo._drawInstructions.Select(x => {
+        GH_Curve curve = null;
+        GH_Convert.ToGHCurve(x.Geometry, GH_Conversion.Both, ref curve);
+        return curve;
+      }).ToList();
+      // DA.SetDataList(6, curves);
+    }
 
-      GH_Curve ghProfileEdge = null;
-      if (GH_Convert.ToGHCurve(out_section.m_profileEdge, GH_Conversion.Both, ref ghProfileEdge)) {
-        curves.Add(ghProfileEdge);
-      }
-
-      if (out_section.m_profileVoidEdges != null && out_section.m_profileVoidEdges.Count > 0) {
-        foreach (var voidEdge in out_section.m_profileVoidEdges) {
-          GH_Curve ghVoidEdge = null;
-          if (GH_Convert.ToGHCurve(voidEdge, GH_Conversion.Both, ref ghVoidEdge)) {
-            curves.Add(ghVoidEdge);
-          }
-        }
-      }
-
-      if (out_section.m_rebarEdges != null && out_section.m_rebarEdges.Count > 0) {
-        foreach (var rebar in out_section.m_rebarEdges) {
-          GH_Curve ghRebar = null;
-          if (GH_Convert.ToGHCurve(rebar, GH_Conversion.Both, ref ghRebar)) {
-            curves.Add(ghRebar);
-          }
-        }
-      }
-
-      if (out_section.m_linkEdges != null && out_section.m_linkEdges.Count > 0) {
-        foreach (var link in out_section.m_linkEdges) {
-          GH_Curve ghLink = null;
-          if (GH_Convert.ToGHCurve(link, GH_Conversion.Both, ref ghLink)) {
-            curves.Add(ghLink);
-          }
-        }
-      }
-
-      if (out_section.m_subEdges != null && out_section.m_subEdges.Count > 0) {
-        foreach (var subEdge in out_section.m_subEdges) {
-          GH_Curve ghSubEdge = null;
-          if (GH_Convert.ToGHCurve(subEdge, GH_Conversion.Both, ref ghSubEdge)) {
-            curves.Add(ghSubEdge);
-          }
-        }
-      }
-
-      if (out_section.m_subVoidEdges != null && out_section.m_subVoidEdges.Count > 0) {
-        foreach (var subVoidEdges in out_section.m_subVoidEdges) {
-          foreach (var subVoidEdge in subVoidEdges) {
-            GH_Curve ghSubEdge = null;
-            if (GH_Convert.ToGHCurve(subVoidEdge, GH_Conversion.Both, ref ghSubEdge)) {
-              curves.Add(ghSubEdge);
-            }
-          }
-        }
-      }
-
-      DA.SetDataList(6, curves);
+    protected override void AfterSolveInstance() {
+      base.AfterSolveInstance();
+      dataAccess.SetDataList(6, curves);
     }
   }
 }

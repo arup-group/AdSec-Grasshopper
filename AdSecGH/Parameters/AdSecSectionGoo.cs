@@ -175,21 +175,25 @@ namespace AdSecGH.Parameters {
     public class DrawInstructions {
       public Color Color { get; set; }
       public int Thickness { get; set; }
+      public virtual object Geometry { get; set; }
     }
 
     public class DrawPolyline : DrawInstructions {
       public Polyline Polyline { get; set; }
+      public override object Geometry => Polyline;
     }
 
     public class DrawCircle : DrawInstructions {
       public Circle Circle { get; set; }
+      public override object Geometry => Circle;
     }
 
     public class DrawCurve : DrawInstructions {
       public Curve Curve { get; set; }
+      public override object Geometry => Curve;
     }
 
-    readonly List<DrawInstructions> _drawInstructions = new List<DrawInstructions>();
+    public readonly List<DrawInstructions> _drawInstructions = new List<DrawInstructions>();
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
       if (Value == null) {
