@@ -107,8 +107,9 @@ namespace AdSecGH.Parameters {
       }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S1186:Methods should not be empty", Justification = "Interface implementation - no mesh preview needed")]
+    // @SuppressWarnings("squid:S1186")
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
+      // Empty implementation - no mesh preview needed
     }
   }
 }
