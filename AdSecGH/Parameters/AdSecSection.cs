@@ -28,18 +28,18 @@ namespace AdSecGH.Parameters {
     internal string _codeName;
     internal string _materialName;
     internal List<Brep> _subProfiles;
-    internal List<Curve> m_linkEdges;
+    internal List<Curve> m_linkEdges = new List<Curve>();
     // cache for preview
     internal Brep m_profile;
     internal DisplayMaterial m_profileColour;
     internal Polyline m_profileEdge;
-    internal List<Polyline> m_profileVoidEdges;
+    internal List<Polyline> m_profileVoidEdges = new List<Polyline>();
     internal List<DisplayMaterial> m_rebarColours;
-    internal List<Circle> m_rebarEdges;
+    internal List<Circle> m_rebarEdges = new List<Circle>();
     internal List<Brep> m_rebars;
     internal List<DisplayMaterial> m_subColours;
-    internal List<Polyline> m_subEdges;
-    internal List<List<Polyline>> m_subVoidEdges;
+    internal List<Polyline> m_subEdges = new List<Polyline>();
+    internal List<List<Polyline>> m_subVoidEdges = new List<List<Polyline>>();
     internal Line previewXaxis;
     internal Line previewYaxis;
     internal Line previewZaxis;

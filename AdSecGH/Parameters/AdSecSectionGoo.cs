@@ -6,6 +6,7 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
 using Rhino;
+using Rhino.Display;
 using Rhino.DocObjects;
 using Rhino.Geometry;
 
@@ -155,47 +156,45 @@ namespace AdSecGH.Parameters {
       }
     }
 
+    private static void Draw(DisplayPipeline pipeline, DrawInstructions geometry) {
+      if (geometry is DrawPolyline drawPolyline) {
+        pipeline.DrawPolyline(drawPolyline.Polyline, drawPolyline.Color, drawPolyline.Thickness);
+      } else if (geometry is DrawCircle drawCircle) {
+        pipeline.DrawCircle(drawCircle.Circle, drawCircle.Color, drawCircle.Thickness);
+      } else if (geometry is DrawCurve drawCurve) {
+        pipeline.DrawCurve(drawCurve.Curve, drawCurve.Color, drawCurve.Thickness);
+      }
+    }
+
+    public class DrawInstructions {
+      public Color Color { get; set; }
+      public int Thickness { get; set; }
+    }
+
+    public class DrawPolyline : DrawInstructions {
+      public Polyline Polyline { get; set; }
+    }
+
+    public class DrawCircle : DrawInstructions {
+      public Circle Circle { get; set; }
+    }
+
+    public class DrawCurve : DrawInstructions {
+      public Curve Curve { get; set; }
+    }
+
+    readonly List<DrawInstructions> _drawInstructions = new List<DrawInstructions>();
+
     public void DrawViewportWires(GH_PreviewWireArgs args) {
       if (Value == null) {
         return;
       }
 
-      var primaryColor = IsSelected(args) ? UI.Colour.OasysBlue : UI.Colour.OasysYellow;
-      var secondaryColor = IsSelected(args) ? Color.Black : UI.Colour.UILightGrey;
-      var primaryThickness = IsSelected(args) ? 2 : 3;
-      var secondaryThickness = IsSelected(args) ? 2 : 1;
+      _drawInstructions.Clear();
+      _drawInstructions.AddRange(UpdateDrawInstructions(args));
 
-      args.Pipeline.DrawPolyline(Value.m_profileEdge, primaryColor, primaryThickness);
-      if (Value.m_profileVoidEdges != null) {
-        foreach (Polyline crv in Value.m_profileVoidEdges) {
-          args.Pipeline.DrawPolyline(crv, primaryColor, secondaryThickness);
-        }
-      }
-
-      if (Value.m_subEdges != null) {
-        foreach (Polyline crv in Value.m_subEdges) {
-          args.Pipeline.DrawPolyline(crv, primaryColor, secondaryThickness);
-        }
-      }
-
-      if (Value.m_subVoidEdges != null) {
-        foreach (List<Polyline> crvs in Value.m_subVoidEdges) {
-          foreach (Polyline crv in crvs) {
-            args.Pipeline.DrawPolyline(crv, primaryColor, secondaryThickness);
-          }
-        }
-      }
-
-      if (Value.m_rebarEdges != null) {
-        foreach (Circle crv in Value.m_rebarEdges) {
-          args.Pipeline.DrawCircle(crv, secondaryColor, secondaryThickness);
-        }
-      }
-
-      if (Value.m_linkEdges != null) {
-        foreach (Curve crv in Value.m_linkEdges) {
-          args.Pipeline.DrawCurve(crv, secondaryColor, secondaryThickness);
-        }
+      foreach (var instruction in _drawInstructions) {
+        Draw(args.Pipeline, instruction);
       }
 
       // local axis
@@ -204,7 +203,42 @@ namespace AdSecGH.Parameters {
       args.Pipeline.DrawLine(Value.previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
     }
 
-    private static bool IsSelected(GH_PreviewWireArgs args) {
+    private List<DrawInstructions> UpdateDrawInstructions(GH_PreviewWireArgs args) {
+      var drawInstructions = new List<DrawInstructions>();
+
+      var primaryColor = IsNotSelected(args) ? UI.Colour.OasysBlue : UI.Colour.OasysYellow;
+      var secondaryColor = IsNotSelected(args) ? Color.Black : UI.Colour.UILightGrey;
+      var primaryThickness = IsNotSelected(args) ? 2 : 3;
+      var secondaryThickness = IsNotSelected(args) ? 1 : 2;
+
+      drawInstructions.Add(new DrawPolyline() { Polyline = Value.m_profileEdge, Color = primaryColor, Thickness = primaryThickness });
+
+      foreach (Polyline polyline in Value.m_profileVoidEdges) {
+        drawInstructions.Add(new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness });
+      }
+
+      foreach (Polyline polyline in Value.m_subEdges) {
+        drawInstructions.Add(new DrawPolyline() { Polyline = polyline, Color = primaryColor, Thickness = secondaryThickness });
+      }
+
+      foreach (List<Polyline> voids in Value.m_subVoidEdges) {
+        foreach (Polyline polyline in voids) {
+          drawInstructions.Add(new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness });
+        }
+      }
+
+      foreach (Circle crv in Value.m_rebarEdges) {
+        drawInstructions.Add(new DrawCircle() { Circle = crv, Color = secondaryColor, Thickness = secondaryThickness });
+      }
+
+      foreach (Curve crv in Value.m_linkEdges) {
+        drawInstructions.Add(new DrawCurve() { Curve = crv, Color = secondaryColor, Thickness = secondaryThickness });
+      }
+
+      return drawInstructions;
+    }
+
+    private static bool IsNotSelected(GH_PreviewWireArgs args) {
       Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
       return args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B;
     }
