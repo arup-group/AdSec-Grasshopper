@@ -135,6 +135,15 @@ namespace AdSecGHTests.Parameters {
         designCode.DesignCode, "test", "test1"));
     }
 
+    //extra test for validity of instances
+    [Fact]
+    public void CheckInstancesAreValid() {
+      foreach (var type in GoosWithoutNickname) {
+        var instance = InstanceOfGoos.Find(goo => goo.GetType() == type);
+        Assert.False(instance == null, $"Instance not found for {type}");
+      }
+    }
+
     [Fact]
     public void CheckInstancesDuplicate() {
       foreach (var goo in InstanceOfGoos) {
@@ -178,6 +187,8 @@ namespace AdSecGHTests.Parameters {
     public void TypeNameProperty_ReturnsValidString() {
       foreach (var type in GoosWithoutNickname) {
         var instance = InstanceOfGoos.Find(goo => goo.GetType() == type);
+        Assert.False(instance == null, $"Instance not found for {type}");
+
         var property = instance.GetType().GetProperty("TypeName");
         string value = property?.GetValue(instance) as string;
 
