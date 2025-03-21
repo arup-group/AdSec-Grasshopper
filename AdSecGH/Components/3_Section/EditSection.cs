@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 
@@ -17,10 +16,6 @@ using Oasys.AdSec;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-
-using Rhino;
-using Rhino.DocObjects;
-using Rhino.Geometry;
 
 using AdSecSectionParameter = Oasys.GH.Helpers.AdSecSectionParameter;
 using Attribute = AdSecCore.Functions.Attribute;
@@ -52,7 +47,6 @@ namespace AdSecGH.Components {
   }
 
   public class EditSection : ComponentAdapter<EditSectionGh> {
-    private List<GH_Curve> curves;
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("9b0acde5-f57f-4a39-a9c3-cdc935037490");
@@ -60,10 +54,7 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.EditSection;
 
-    private IGH_DataAccess dataAccess;
-
     protected override void SolveInstance(IGH_DataAccess DA) {
-      dataAccess = DA;
       base.SolveInstance(DA);
       var sectionDesign = BusinessComponent.AdSecSection.Value;
       var in_section = sectionDesign.Value;
@@ -142,8 +133,7 @@ namespace AdSecGH.Components {
 
       // ### output section geometry ###
       // collect all curves in this list
-      curves = new List<GH_Curve>();
-      curves = adSecSectionGoo._drawInstructions.Select(x => {
+      var curves = adSecSectionGoo._drawInstructions.Select(x => {
         GH_Curve curve = null;
         GH_Convert.ToGHCurve(x.Geometry, GH_Conversion.Both, ref curve);
         return curve;
