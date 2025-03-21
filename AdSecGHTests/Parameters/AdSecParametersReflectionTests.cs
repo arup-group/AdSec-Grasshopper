@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 using AdSecCore.Builders;
@@ -193,6 +194,15 @@ namespace AdSecGHTests.Parameters {
 
         Assert.False(string.IsNullOrEmpty(value), $"Failed for {type}");
       }
+    }
+
+    [Fact]
+    public void AllGoosAreTested() {
+      //get all classes from this namespace with "goo" at the end of the name
+      var types = typeof(AdSecConcreteCrackCalculationParametersGoo).Assembly.GetTypes()
+       .Where(t => t.Namespace == "AdSecGH.Parameters" && t.Name.EndsWith("Goo"));
+
+      Assert.Equal(types.Count(), InstanceOfGoos.Count);
     }
   }
 }
