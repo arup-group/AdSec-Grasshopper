@@ -6,7 +6,6 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -82,6 +81,8 @@ namespace Oasys.GH.Helpers {
           typeof(StringArrayParam), ParamString
         }, {
           typeof(LengthParameter), ParamGenericObject
+        },{
+          typeof(DisplacementParameter), ParamGenericObject
         }, {
           typeof(SectionSolutionParameter), ParamGenericObject
         }, {
@@ -102,6 +103,8 @@ namespace Oasys.GH.Helpers {
           typeof(SecantStiffnessParameter), ParamGenericObject
         }, {
           typeof(IntervalArrayParameter), ParamGenericObject
+        },{
+          typeof(NeutralLineParameter), ParamGenericObject
         }
       };
 
@@ -184,6 +187,17 @@ namespace Oasys.GH.Helpers {
           typeof(DeformationParameter), a => {
             var deformation = (a as DeformationParameter).Value;
             return new AdSecDeformationGoo(deformation);
+          }
+        },{
+          typeof(NeutralLineParameter), a => {
+            var value = (a as NeutralLineParameter).Value;
+            return new AdSecNeutralAxisGoo(value);
+          }
+        },{
+          typeof(DisplacementParameter), a => {
+            var value = (a as DisplacementParameter).Value;
+            var unit = DefaultUnits.LengthUnitResult;
+            return UnitHelpers.ParseToQuantity<Length>(value.As(unit), unit);
           }
         }
       };
@@ -372,7 +386,7 @@ namespace Oasys.GH.Helpers {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
         var type = attribute.GetType();
         if (!ToGoo.ContainsKey(type)) {
-          throw new Exception($"No conversion function found for type {type}");
+          throw new ArgumentException($"No conversion function found for type {type}");
         }
 
         var func = ToGoo[type];
@@ -385,7 +399,7 @@ namespace Oasys.GH.Helpers {
         }
 
         if (!success) {
-          throw new Exception(
+          throw new ArgumentException(
             $"Failed to set data for {attribute.Name} of type {type} at index {index} into param of type {component.Params.Output[index].GetType()}");
         }
       }

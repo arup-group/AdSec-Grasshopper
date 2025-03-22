@@ -147,14 +147,12 @@ namespace AdSecCore.Functions {
     }
 
     public void Compute() {
-      var lengthUnitGeometry = ContextUnits.Instance.LengthUnitGeometry;
       var solution = Solution.Value;
       var baseLoad = BaseLoad.Value;
       var loadComponent = OptimisedLoad.Value;
       var increment = LoadIncrement.Value;
-      var maxCrack = MaximumCrack.Value.ToUnit(lengthUnitGeometry);
       var sls = solution.Solution.Serviceability.Check(baseLoad);
-
+      var maxCrack = MaximumCrack.Value.ToUnit(sls.MaximumWidthCrack.Width.Unit);
       while (sls.MaximumWidthCrack.Width <= maxCrack) {
         // update load
         UpdatedLoad(loadComponent, ref baseLoad, increment);

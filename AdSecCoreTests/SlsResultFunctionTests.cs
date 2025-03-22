@@ -22,9 +22,9 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveCorrectMetadata() {
-      Assert.Equal("Find Crack Load", _component.Metadata.Name);
-      Assert.Equal("CrackLd", _component.Metadata.NickName);
-      Assert.Equal("Increases the load until set crack width is reached", _component.Metadata.Description);
+      Assert.Equal("Serviceability Result", _component.Metadata.Name);
+      Assert.Equal("SLS", _component.Metadata.NickName);
+      Assert.Equal("Performs serviceability analysis (SLS), for a given Load or Deformation.", _component.Metadata.Description);
     }
 
 
@@ -68,7 +68,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveValidUncrackedMomentRangesDescription() {
-      _component.UncrackedMomentRangesDescription(MomentUnit.NewtonMeter);
+      _component.MomentRangesDescription(MomentUnit.NewtonMeter);
       Assert.Contains("[N·m]", _component.UncrackedMomentRangesOutput.Description);
     }
 
@@ -85,16 +85,43 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(69, _component.CrackOutput.Value.Length);
     }
 
-    private static bool IsLoadEqual(ILoad expected, ILoad calculated) {
+    public static bool IsLoadEqual(ILoad expected, ILoad calculated) {
       return expected.X.Value.Equals(calculated.X.Value) && expected.YY.Value.Equals(calculated.YY.Value) && expected.ZZ.Value.Equals(calculated.ZZ.Value);
     }
 
-    private static bool IsDeformationEqual(IDeformation expected, IDeformation calculated) {
+    public static bool IsDeformationEqual(IDeformation expected, IDeformation calculated) {
       var tolernaceStrain = Strain.FromRatio(0.00001);
       var tolernaceCurvature = Curvature.FromPerMeters(0.0001);
       return expected.X.Equals(calculated.X, tolernaceStrain) && expected.YY.Equals(calculated.YY, tolernaceCurvature) && expected.ZZ.Equals(calculated.ZZ, tolernaceCurvature);
     }
 
+    [Fact]
+    public void ShouldHaveWarningForInvalidLoad() {
+      _component.LoadInput.Value = ILoad.Create(Force.Zero, Moment.Zero, Moment.Zero);
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
+
+    [Fact]
+    public void ShouldHaveWarningForInvalidDeformation() {
+      _component.LoadInput.Value = IDeformation.Create(Strain.Zero, Curvature.Zero, Curvature.Zero);
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
+
+    [Fact]
+    public void ShouldHaveErrorMessageForNullSolution() {
+      _component.SolutionInput.Value = null;
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
+
+    [Fact]
+    public void ShouldHaveErrorMessageForNullLoad() {
+      _component.LoadInput.Value = null;
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
 
   }
 }
