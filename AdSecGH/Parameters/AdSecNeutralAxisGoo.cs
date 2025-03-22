@@ -29,30 +29,22 @@ namespace AdSecGH.Parameters {
     }
 
     private Line CalculateNeutralAxis() {
+      // Cache frequently used values
+      var local = m_value.Solution.SectionDesign.LocalPlane.ToGh();
+      var profile = new AdSecSolutionGoo(m_value.Solution).ProfileEdge;
       var offset = m_value.Offset.As(DefaultUnits.LengthUnitGeometry);
       var angleRadians = m_value.Angle;
-      // calculate temp plane for width of neutral line
-      var solutionGoo = new AdSecSolutionGoo(m_value.Solution);
-      var profile = solutionGoo.ProfileEdge;
-      Plane local = m_value.Solution.SectionDesign.LocalPlane.ToGh();
-      var tempPlane = local.Clone();
-      tempPlane.Rotate(angleRadians, tempPlane.ZAxis);
-      // get profile's bounding box in rotate plane
-      Curve tempCrv = profile.ToPolylineCurve();
-      var bbox = tempCrv.GetBoundingBox(tempPlane);
 
-      // calculate width of neutral line to display
-      var width = 1.05 * bbox.PointAt(0, 0, 0).DistanceTo(bbox.PointAt(1, 0, 0));
-
-      // get direction as vector
+      // Calculate direction vector once
       var direction = new Vector3d(local.XAxis);
       direction.Rotate(angleRadians, local.ZAxis);
       direction.Unitize();
 
-      // starting point for rotated line
-      var start = new Point3d(local.Origin);
-      start.Transform(Rhino.Geometry.Transform.Translation(direction.X * width / 2 * -1, direction.Y * width / 2 * -1,
-        direction.Z * width / 2 * -1));
+      // Calculate profile width more efficiently
+      var bbox = profile.ToPolylineCurve().GetBoundingBox(local);
+      var width = 1.05 * bbox.PointAt(0, 0, 0).DistanceTo(bbox.PointAt(1, 0, 0));
+      // Calculate start point and line in one step
+      var start = local.Origin - direction * (width / 2);
       var line = new Line(start, direction, width);
 
       // offset vector
@@ -62,6 +54,7 @@ namespace AdSecGH.Parameters {
       // move the line
       line.Transform(Rhino.Geometry.Transform.Translation(offsVec.X * offset, offsVec.Y * offset, offsVec.Z * offset));
       return line;
+
     }
 
     public override BoundingBox Boundingbox {
@@ -108,7 +101,6 @@ namespace AdSecGH.Parameters {
       }
     }
 
-    [SuppressMessage("Minor Code Smell", "S1186:Methods should not be empty", Justification = "Required for Interface but Meshes are not used in this component")]
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
     }
   }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using AdSecGHCore.Constants;
 
@@ -48,68 +49,32 @@ namespace AdSecCore.Functions {
     }
 
     public override void Compute() {
+      // 1. Get and validate solution
+      if (!ValidateInputs()) {
+        return;
+      }
       var solution = SolutionInput.Value;
-      IStrengthResult uls = null;
-      IStrengthResult failure = null;
-      double adjustmentFactor = 0.999;
-      switch (LoadInput.Value) {
-        case ILoad load:
-          if (!IsLoadValid(load)) { return; }
-          uls = solution.Strength.Check(load);
-          var failureLoad = ILoad.Create(
-            load.X / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
-            load.YY / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
-            load.ZZ / uls.LoadUtilisation.DecimalFractions * adjustmentFactor);
-          failure = solution.Strength.Check(failureLoad);
-          break;
-        case IDeformation def:
-          if (!IsDeformationValid(def)) { return; }
-          uls = solution.Strength.Check(def);
-          var failureDeformation = IDeformation.Create(
-            def.X / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
-            def.YY / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
-            def.ZZ / uls.LoadUtilisation.DecimalFractions * adjustmentFactor);
-          failure = solution.Strength.Check(failureDeformation);
-          break;
-        default:
-          ErrorMessages.Add("Invalid Load Input");
-          return;
+
+      // 2. Calculate strength results
+      var (uls, failure) = CalculateStrengthResults(solution);
+      if (uls == null || failure == null) {
+        return;
       }
 
-      LoadOutput.Value = uls.Load;
-      double util = uls.LoadUtilisation.As(RatioUnit.DecimalFraction);
-      LoadUtilOutput.Value = util;
-      if (util > 1) {
-        WarningMessages.Add("Load utilisation is above 1!");
-      }
+      // 3. Process load results
+      ProcessLoadResults(uls);
 
-      DeformationOutput.Value = uls.Deformation;
-      double defUtil = uls.DeformationUtilisation.As(RatioUnit.DecimalFraction);
-      DeformationUtilOutput.Value = defUtil;
-      if (defUtil > 1) {
-        WarningMessages.Add("Deformation utilisation is above 1!");
-      }
+      // 4. Process deformation results
+      ProcessDeformationResults(uls);
 
-      var momentRanges = new List<Tuple<double, double>>();
-      foreach (var range in uls.MomentRanges) {
-        var momentUnit = uls.Load.YY.Unit;
-        momentRanges.Add(new Tuple<double, double>(
-          range.Min.As(momentUnit),
-          range.Max.As(momentUnit)));
-      }
-      var offset = CalculateOffset(uls.Deformation);
-      var angle = CalculateAngle(uls.Deformation);
-      MomentRangesOutput.Value = momentRanges.ToArray();
-      NeutralAxisLineOutput.Value = new NeutralAxis { Angle = angle, Offset = offset, Solution = solution };
-      NeutralAxisOffsetOutput.Value = offset;
-      NeutralAxisAngleOutput.Value = angle;
+      // 5. Process moment ranges
+      ProcessMomentRanges(uls);
 
-      FailureDeformationOutput.Value = failure.Deformation;
-      var failureOffset = CalculateOffset(failure.Deformation);
-      var failureAngle = CalculateAngle(failure.Deformation);
-      FailureNeutralAxisLineOutput.Value = new NeutralAxis { Angle = failureAngle, Offset = failureOffset, Solution = solution };
-      FailureNeutralAxisOffsetOutput.Value = failureOffset;
-      FailureNeutralAxisAngleOutput.Value = failureAngle;
+      // 6. Process neutral axis results
+      ProcessNeutralAxisResults(uls, solution);
+
+      // 7. Process failure results
+      ProcessFailureResults(failure, solution);
     }
 
     private static double CalculateAngle(IDeformation ulsDeformationResult) {
@@ -131,6 +96,95 @@ namespace AdSecCore.Functions {
       var tempOffset = new Length(offsetSI, LengthUnit.Meter);
 
       return tempOffset;
+    }
+
+
+    private (IStrengthResult uls, IStrengthResult failure) CalculateStrengthResults(SectionSolution solution) {
+      const double adjustmentFactor = 0.999;
+      switch (LoadInput.Value) {
+        case ILoad load:
+          if (!IsLoadValid(load)) {
+            return (null, null);
+          }
+          var uls = solution.Strength.Check(load);
+          var failureLoad = ILoad.Create(
+              load.X / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
+              load.YY / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
+              load.ZZ / uls.LoadUtilisation.DecimalFractions * adjustmentFactor);
+          var failure = solution.Strength.Check(failureLoad);
+          return (uls, failure);
+
+        case IDeformation def:
+          if (!IsDeformationValid(def)) {
+            return (null, null);
+          }
+          var ulsResult = solution.Strength.Check(def);
+          var failureDeformation = IDeformation.Create(
+              def.X / ulsResult.LoadUtilisation.DecimalFractions * adjustmentFactor,
+              def.YY / ulsResult.LoadUtilisation.DecimalFractions * adjustmentFactor,
+              def.ZZ / ulsResult.LoadUtilisation.DecimalFractions * adjustmentFactor);
+          var failureResult = solution.Strength.Check(failureDeformation);
+          return (ulsResult, failureResult);
+
+        default:
+          ErrorMessages.Add("Invalid Load Input");
+          return (null, null);
+      }
+    }
+
+    private void ProcessLoadResults(IStrengthResult uls) {
+      LoadOutput.Value = uls.Load;
+      double util = uls.LoadUtilisation.As(RatioUnit.DecimalFraction);
+      LoadUtilOutput.Value = util;
+      if (util > 1) {
+        WarningMessages.Add("Load utilisation is above 1!");
+      }
+    }
+
+    private void ProcessDeformationResults(IStrengthResult uls) {
+      DeformationOutput.Value = uls.Deformation;
+      double defUtil = uls.DeformationUtilisation.As(RatioUnit.DecimalFraction);
+      DeformationUtilOutput.Value = defUtil;
+      if (defUtil > 1) {
+        WarningMessages.Add("Deformation utilisation is above 1!");
+      }
+    }
+
+    private void ProcessMomentRanges(IStrengthResult uls) {
+      var momentUnit = uls.Load.YY.Unit;
+      var momentRanges = uls.MomentRanges.Select(range =>
+          new Tuple<double, double>(
+              range.Min.As(momentUnit),
+              range.Max.As(momentUnit)))
+          .ToList();
+      MomentRangesOutput.Value = momentRanges.ToArray();
+    }
+
+    private void ProcessNeutralAxisResults(IStrengthResult uls, SectionSolution solution) {
+      var offset = CalculateOffset(uls.Deformation);
+      var angle = CalculateAngle(uls.Deformation);
+
+      NeutralAxisLineOutput.Value = new NeutralAxis {
+        Angle = angle,
+        Offset = offset,
+        Solution = solution
+      };
+      NeutralAxisOffsetOutput.Value = offset;
+      NeutralAxisAngleOutput.Value = angle;
+    }
+
+    private void ProcessFailureResults(IStrengthResult failure, SectionSolution solution) {
+      FailureDeformationOutput.Value = failure.Deformation;
+      var failureOffset = CalculateOffset(failure.Deformation);
+      var failureAngle = CalculateAngle(failure.Deformation);
+
+      FailureNeutralAxisLineOutput.Value = new NeutralAxis {
+        Angle = failureAngle,
+        Offset = failureOffset,
+        Solution = solution
+      };
+      FailureNeutralAxisOffsetOutput.Value = failureOffset;
+      FailureNeutralAxisAngleOutput.Value = failureAngle;
     }
 
   }

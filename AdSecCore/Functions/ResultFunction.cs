@@ -190,6 +190,18 @@ namespace AdSecCore.Functions {
       return isValid;
     }
 
+    public bool ValidateInputs() {
+      if (SolutionInput.Value == null) {
+        ErrorMessages.Add("Solution input is null");
+        return false;
+      }
+      if (LoadInput.Value == null) {
+        ErrorMessages.Add("Load input is null");
+        return false;
+      }
+      return true;
+    }
+
   }
 
 }

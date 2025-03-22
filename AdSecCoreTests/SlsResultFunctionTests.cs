@@ -109,5 +109,19 @@ namespace AdSecCoreTests.Functions {
       Assert.Single(_component.ErrorMessages);
     }
 
+    [Fact]
+    public void ShouldHaveErrorMessageForNullSolution() {
+      _component.SolutionInput.Value = null;
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
+
+    [Fact]
+    public void ShouldHaveErrorMessageForNullLoad() {
+      _component.LoadInput.Value = null;
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
+
   }
 }
