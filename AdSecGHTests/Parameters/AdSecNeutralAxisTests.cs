@@ -52,8 +52,10 @@ namespace AdSecGHTests.Parameters {
     public void Transform_WhenGivenValidTransform_ShouldReturnNewTransformedInstance() {
       var transform = Transform.Translation(new Vector3d(10, 10, 10));
       var transformed = _neutralAxisGoo.Transform(transform);
-      var expectedMaxPoint = new Point3d(10, 10.1655, 10.3069);
-      var expectedMinPoint = new Point3d(10, 9.6930, 9.8344);
+      var maxPoint = _neutralAxisGoo.Boundingbox.Max;
+      var minPoint = _neutralAxisGoo.Boundingbox.Min;
+      var expectedMaxPoint = new Point3d(maxPoint.X + 10, maxPoint.Y + 10, maxPoint.Z + 10);
+      var expectedMinPoint = new Point3d(minPoint.X + 10, minPoint.Y + 10, minPoint.Z + 10);
       var expectedBoundingBox = new BoundingBox(expectedMinPoint, expectedMaxPoint);
       bool areEqual = AdSecUtility.IsBoundingBoxEqual(expectedBoundingBox, transformed.Boundingbox);
       Assert.True(areEqual);

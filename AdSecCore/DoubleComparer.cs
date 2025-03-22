@@ -24,7 +24,7 @@ namespace AdSecCore {
           return true;
         }
       } else {
-        double error = Math.Abs(x - y) / (x + y) * 0.5;
+        double error = Math.Abs((x - y) / (x + y) * 0.5);
         return error < _epsilon;
       }
 
