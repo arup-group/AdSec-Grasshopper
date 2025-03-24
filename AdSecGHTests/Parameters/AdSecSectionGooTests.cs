@@ -4,7 +4,10 @@ using System.Drawing;
 
 using AdSecGH.Parameters;
 
+using Grasshopper.Kernel;
+
 using Rhino;
+using Rhino.Display;
 using Rhino.DocObjects;
 
 using Xunit;
@@ -63,6 +66,18 @@ namespace AdSecGHTests.Parameters {
       var selectedColour = Color.FromArgb(b.A, b.R, b.G, b.B);
 
       Assert.NotEqual(notSelectedColour, selectedColour);
+    }
+
+    [Fact]
+    public void ShouldDrawOnViewPort() {
+      var doc = RhinoDoc.Create(string.Empty);
+      sectionGoo._drawInstructions.Clear();
+      var displayPipeline = doc.Views.ActiveView.DisplayPipeline;
+      var rhinoViewport = doc.Views.ActiveView.ActiveViewport;
+      var ghPreviewWireArgs = new GH_PreviewWireArgs(rhinoViewport, displayPipeline, Color.White, 1);
+      sectionGoo.DrawViewportWires(ghPreviewWireArgs);
+      Assert.NotEmpty(sectionGoo._drawInstructions);
+      doc.Dispose();
     }
   }
 }
