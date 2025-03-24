@@ -63,9 +63,9 @@ namespace AdSecGH.Parameters {
       UpdateGeometryRepresentation();
     }
 
-    public void UpdateGeometryRepresentation() {
+    public void UpdateGeometryRepresentation(bool isNotSelected = true) {
       _drawInstructions.Clear();
-      _drawInstructions.AddRange(UpdateDrawInstructions(true));
+      _drawInstructions.AddRange(UpdateDrawInstructions(isNotSelected));
     }
 
     public override bool CastFrom(object source) {
@@ -241,7 +241,11 @@ namespace AdSecGH.Parameters {
 
     private static bool IsNotSelected(GH_PreviewWireArgs args) {
       Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      return args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B;
+      return AreEqual(defaultCol, args.Color);
+    }
+
+    private static bool AreEqual(Color defaultCol, Color color) {
+      return color.R == defaultCol.R && color.G == defaultCol.G && color.B == defaultCol.B;
     }
 
     public AdSecSectionGoo DuplicateAdSecSection() {

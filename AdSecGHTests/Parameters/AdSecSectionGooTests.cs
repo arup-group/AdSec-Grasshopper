@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 using AdSecGH.Parameters;
 
@@ -50,6 +51,18 @@ namespace AdSecGHTests.Parameters {
 
       Assert.Equal("Test", doc.Objects.FindId(obj_ids[0]).Attributes.Name);
       doc.Dispose();
+    }
+
+    [Fact]
+    public void ShouldDrawForSelected() {
+      sectionGoo.UpdateGeometryRepresentation(false);
+      var a = sectionGoo._drawInstructions[0].Color;
+      var notSelectedColour = Color.FromArgb(a.A, a.R, a.G, a.B);
+      sectionGoo.UpdateGeometryRepresentation(true);
+      var b = sectionGoo._drawInstructions[0].Color;
+      var selectedColour = Color.FromArgb(b.A, b.R, b.G, b.B);
+
+      Assert.NotEqual(notSelectedColour, selectedColour);
     }
   }
 }
