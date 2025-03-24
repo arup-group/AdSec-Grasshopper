@@ -4,34 +4,51 @@ using System.Collections.Generic;
 using AdSecGH.Parameters;
 
 using Rhino;
+using Rhino.DocObjects;
 
 using Xunit;
 
 namespace AdSecGHTests.Parameters {
   [Collection("GrasshopperFixture collection")]
   public class AdSecSectionGooTests {
+    private readonly AdSecSectionGoo sectionGoo;
+
+    public AdSecSectionGooTests() {
+      var section = SampleData.GetSectionDesign();
+      sectionGoo = new AdSecSectionGoo(new AdSecSection(section));
+    }
+
     [Fact]
-    public void IsBakeCapable_WithNullValue_ReturnsFalse() {
+    public void ShouldNotBeBakeCapable() {
       Assert.False(new AdSecSectionGoo().IsBakeCapable);
     }
 
     [Fact]
-    public void IsBakeCapable_WithValidValue_ReturnsTrue() {
-      var section = SampleData.GetSectionDesign();
-      var sectionGoo = new AdSecSectionGoo(new AdSecSection(section));
+    public void ShouldbeBakeCapable() {
       Assert.True(sectionGoo.IsBakeCapable);
     }
 
     [Fact]
-    public void BakeGeometry_WithValidSection_AddsMultipleObjectIds() {
-      var section = SampleData.GetSectionDesign();
-      var sectionGoo = new AdSecSectionGoo(new AdSecSection(section));
+    public void ShouldBakeIds() {
       var doc = RhinoDoc.Create(string.Empty);
       var obj_ids = new List<Guid>();
-
       sectionGoo.BakeGeometry(doc, obj_ids);
 
       Assert.True(obj_ids.Count > 0, $"Expected at least one object to be created, but got {obj_ids.Count}");
+      doc.Dispose();
+    }
+
+    [Fact]
+    public void ShouldBakeWithAttributes() {
+      var doc = RhinoDoc.Create(string.Empty);
+      var obj_ids = new List<Guid>();
+
+      var objectAttributes = new ObjectAttributes() {
+        Name = "Test",
+      };
+      sectionGoo.BakeGeometry(doc, objectAttributes, obj_ids);
+
+      Assert.Equal("Test", doc.Objects.FindId(obj_ids[0]).Attributes.Name);
       doc.Dispose();
     }
   }
