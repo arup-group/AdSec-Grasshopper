@@ -235,8 +235,9 @@ namespace AdSecCore.Builders {
       Perimeter,
     }
 
-    public void WithSubComponents(List<ISubComponent> subComponents) {
+    public SectionBuilder WithSubComponents(List<ISubComponent> subComponents) {
       _subComponents = subComponents;
+      return this;
     }
   }
 }

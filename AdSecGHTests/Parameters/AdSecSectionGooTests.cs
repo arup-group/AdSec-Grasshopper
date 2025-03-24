@@ -18,7 +18,7 @@ namespace AdSecGHTests.Parameters {
     private readonly AdSecSectionGoo sectionGoo;
 
     public AdSecSectionGooTests() {
-      var section = SampleData.GetSectionDesign();
+      var section = SampleData.GetCompositeSectionDesign();
       sectionGoo = new AdSecSectionGoo(new AdSecSection(section));
     }
 
