@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using OasysUnits.Units;
+
 namespace AdSecCore.Functions {
 
   public interface IFunction {
@@ -15,6 +17,7 @@ namespace AdSecCore.Functions {
   }
 
   public abstract class Function : IFunction {
+    public LengthUnit LengthUnit = LengthUnit.Meter;
     public List<string> ErrorMessages { get; set; } = new List<string>();
     public List<string> WarningMessages { get; set; } = new List<string>();
     public List<string> RemarkMessages { get; set; } = new List<string>();

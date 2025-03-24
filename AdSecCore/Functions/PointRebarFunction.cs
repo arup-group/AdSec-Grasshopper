@@ -2,9 +2,12 @@
 
 using Oasys.Profiles;
 
+using OasysUnits;
+
 namespace AdSecCore.Functions {
 
-  public class PointRebarFunction : IFunction {
+  public class PointRebarFunction : Function {
+
     public LengthParameter Y { get; set; } = new LengthParameter {
       Name = "Y",
       NickName = "Y",
@@ -21,32 +24,32 @@ namespace AdSecCore.Functions {
       NickName = "Vx",
       Description = "A 2D vertex in the yz-plane for AdSec Profile and Reinforcement",
     };
-    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
+    public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Name = "Create Vertex Point",
       NickName = "Vertex Point",
       Description = "Create a 2D vertex in local yz-plane for AdSec Profile and Reinforcement",
     };
-    public Organisation Organisation { get; set; } = new Organisation {
+    public override Organisation Organisation { get; set; } = new Organisation {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat3(),
       Hidden = false,
     };
 
-    public virtual Attribute[] GetAllInputAttributes() {
+    public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
         Y,
         Z,
       };
     }
 
-    public virtual Attribute[] GetAllOutputAttributes() {
+    public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
         Point,
       };
     }
 
-    public void Compute() {
-      Point.Value = IPoint.Create(Y.Value, Z.Value);
+    public override void Compute() {
+      Point.Value = IPoint.Create(new Length(Y.Value.Value, LengthUnit), new Length(Z.Value.Value, LengthUnit));
     }
   }
 }
