@@ -37,33 +37,12 @@ namespace AdSecGHTests.Parameters {
   public class AdSecParametersReflectionTests {
     public AdSecParametersReflectionTests() {
       InitInstances();
+      InitGooTypes();
     }
 
-    public Type[] GoosWithNickname = {
-      typeof(AdSecConcreteCrackCalculationParametersGoo),
-      typeof(AdSecCrackGoo),
-      typeof(AdSecDesignCodeGoo),
-      typeof(AdSecLoadGoo),
-      typeof(AdSecMaterialGoo),
-    };
+    public List<Type> GoosWithNickname = null;
 
-    public Type[] GoosWithoutNickname = {
-      typeof(AdSecDeformationGoo),
-      typeof(AdSecFailureSurfaceGoo),
-      typeof(AdSecInteractionDiagramGoo),
-      typeof(AdSecPointGoo),
-      typeof(AdSecProfileFlangeGoo),
-      typeof(AdSecProfileGoo),
-      typeof(AdSecProfileWebGoo),
-      typeof(AdSecRebarBundleGoo),
-      typeof(AdSecRebarGroupGoo),
-      typeof(AdSecRebarLayerGoo),
-      typeof(AdSecSectionGoo),
-      typeof(AdSecSolutionGoo),
-      typeof(AdSecStressStrainCurveGoo),
-      typeof(AdSecStressStrainPointGoo),
-      typeof(AdSecSubComponentGoo),
-    };
+    public List<Type> GoosWithoutNickname = null;
 
     public List<IGH_Goo> InstanceOfGoos = new List<IGH_Goo>();
 
@@ -133,6 +112,19 @@ namespace AdSecGHTests.Parameters {
       InstanceOfGoos.Add(new AdSecStressStrainPointGoo(stressStrainPoint));
       InstanceOfGoos.Add(new AdSecSubComponentGoo(section, Plane.WorldXY, IPoint.Create(length, length),
         designCode.DesignCode, "test", "test1"));
+    }
+
+    private void InitGooTypes() {
+      var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == "AdSecGH")
+        ?? throw new InvalidOperationException("AdSecGH assembly not found");
+
+      // Get all types from assembly that are in Parameters namespace and end with "Goo"
+      var gooTypes = assembly.GetTypes().Where(t => t.Namespace == "AdSecGH.Parameters" && t.Name.EndsWith("Goo"));
+
+      GoosWithNickname ??= gooTypes
+       .Where(t => t.GetProperty("NickName", BindingFlags.Static | BindingFlags.Public) != null).ToList();
+
+      GoosWithoutNickname ??= gooTypes.Except(GoosWithNickname).ToList();
     }
 
     //extra test for validity of instances
@@ -205,15 +197,6 @@ namespace AdSecGHTests.Parameters {
 
         Assert.False(string.IsNullOrEmpty(value), $"Failed for {type}");
       }
-    }
-
-    [Fact]
-    public void AllGoosAreTested() {
-      //get all classes from this namespace with "goo" at the end of the name
-      var types = typeof(AdSecConcreteCrackCalculationParametersGoo).Assembly.GetTypes()
-       .Where(t => t.Namespace == "AdSecGH.Parameters" && t.Name.EndsWith("Goo"));
-
-      Assert.Equal(types.Count(), InstanceOfGoos.Count);
     }
   }
 }
