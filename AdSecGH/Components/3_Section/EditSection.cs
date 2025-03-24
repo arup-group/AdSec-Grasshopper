@@ -35,13 +35,23 @@ namespace AdSecGH.Components {
           };
         }
       };
+
+      var adSecSectionOut = AdSecSectionOut as Attribute;
+      SectionOut.Update(ref adSecSectionOut);
     }
 
     public AdSecSectionParameter AdSecSection { get; set; } = new AdSecSectionParameter();
+    public AdSecSectionParameter AdSecSectionOut { get; set; } = new AdSecSectionParameter();
 
     public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
         AdSecSection, Profile, Material, DesignCode, RebarGroup, SubComponent,
+      };
+    }
+
+    public override Attribute[] GetAllOutputAttributes() {
+      return new Attribute[] {
+        AdSecSectionOut, ProfileOut, MaterialOut, DesignCodeOut, RebarGroupOut, SubComponentOut, Geometry,
       };
     }
   }
