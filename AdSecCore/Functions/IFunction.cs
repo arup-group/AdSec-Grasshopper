@@ -17,7 +17,7 @@ namespace AdSecCore.Functions {
   }
 
   public abstract class Function : IFunction {
-    public LengthUnit LengthUnit = LengthUnit.Meter;
+    public LengthUnit LengthUnit { get; set; } = LengthUnit.Meter;
     public List<string> ErrorMessages { get; set; } = new List<string>();
     public List<string> WarningMessages { get; set; } = new List<string>();
     public List<string> RemarkMessages { get; set; } = new List<string>();
