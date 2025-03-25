@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using AdSecCore;
@@ -24,9 +22,8 @@ using OasysGH.Units;
 using OasysUnits;
 using OasysUnits.Units;
 
-using static System.Collections.Specialized.BitVector32;
-
 namespace AdSecGH.Helpers {
+#pragma warning disable S1168
   public static class GHComponentExtensions {
     public static AdSecDesignCode GetAdSecDesignCode(
       this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
@@ -161,6 +158,7 @@ namespace AdSecGH.Helpers {
       if (sections.Count > 1) {
         owner.AddRuntimeRemark("Note that the first Section's designcode will be used for all sections in the list");
       }
+
       return sections;
     }
 
@@ -371,9 +369,12 @@ namespace AdSecGH.Helpers {
     public static Dictionary<int, List<object>> GetLoads(
       this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
       var adSecloads = new Dictionary<int, List<object>>();
-      if (DA.GetDataTree(inputId, out GH_Structure<IGH_Goo> inputData) && !AdSecInput.TryCastToLoads(inputData, ref adSecloads, out int path, out int index)) {
-        owner.AddRuntimeWarning($"Unable to convert {owner.Params.Input[1].NickName} path {path} index {index} to AdSec Load. Section will be saved without this load.");
+      if (DA.GetDataTree(inputId, out GH_Structure<IGH_Goo> inputData)
+        && !AdSecInput.TryCastToLoads(inputData, ref adSecloads, out int path, out int index)) {
+        owner.AddRuntimeWarning(
+          $"Unable to convert {owner.Params.Input[1].NickName} path {path} index {index} to AdSec Load. Section will be saved without this load.");
       }
+
       return adSecloads;
     }
 
