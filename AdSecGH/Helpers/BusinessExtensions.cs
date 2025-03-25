@@ -123,13 +123,24 @@ namespace Oasys.GH.Helpers {
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
         { typeof(SubComponentParameter), a => new AdSecSubComponentGoo((a as SubComponentParameter)?.Value) },
-        // { typeof(RebarGroupParameter), a => (a as RebarGroupParameter).Value },
+        { typeof(RebarGroupParameter), a => (a as RebarGroupParameter).Value },
         { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
           typeof(LoadSurfaceParameter),
           a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
         },
         { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value },
-        // { typeof(SectionParameter), a => (a as SectionParameter).Value },
+        { typeof(ProfileParameter), a => {
+            var profileDesign = (a as ProfileParameter).Value;
+            return new AdSecProfileGoo(profileDesign);
+          }
+        },
+        { typeof(MaterialParameter), a => {
+            var materialDesign = (a as MaterialParameter).Value;
+            return new AdSecMaterialGoo(materialDesign);
+          }
+        },
+        { typeof(DesignCodeParameter), a => (a as DesignCodeParameter).Value },
+        { typeof(GeometryParameter), a => (a as GeometryParameter).Value },
         { typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value }, {
           typeof(SectionSolutionParameter), a => {
             var sectionSolutionParameter = (a as SectionSolutionParameter).Value;

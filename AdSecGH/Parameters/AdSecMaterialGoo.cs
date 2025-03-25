@@ -31,5 +31,13 @@ namespace AdSecGH.Parameters {
     public override IGH_Goo Duplicate() {
       return new AdSecMaterialGoo(Value);
     }
+
+    public override string ToString() {
+      if (Material == null || Material.Material == null) {
+        return "Empty Material";
+      }
+      var mat = new AdSecMaterial(Material.Material, Material.GradeName);
+      return mat.ToString();
+    }
   }
 }
