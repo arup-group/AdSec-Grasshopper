@@ -84,7 +84,7 @@ namespace AdSecGH.Components {
               _spacerDescriptions[level] = "Part";
             }
 
-            if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
+            if (typeString.StartsWith("Metric") || typeString.StartsWith("US")) {
               _spacerDescriptions[level] = "Unit";
             }
 
@@ -114,7 +114,7 @@ namespace AdSecGH.Components {
               _spacerDescriptions[_selectedItems.Count - 1] = "Part";
             }
 
-            if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
+            if (typeString.StartsWith("Metric") || typeString.StartsWith("US")) {
               _spacerDescriptions[_selectedItems.Count - 1] = "Unit";
             }
           }
@@ -238,7 +238,7 @@ namespace AdSecGH.Components {
             _spacerDescriptions[level] = "Part";
           }
 
-          if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
+          if (typeString.StartsWith("Metric") || typeString.StartsWith("US")) {
             _spacerDescriptions[level] = "Unit";
           }
 
@@ -264,7 +264,7 @@ namespace AdSecGH.Components {
             _spacerDescriptions[_selectedItems.Count - 1] = "Part";
           }
 
-          if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
+          if (typeString.StartsWith("Metric") || typeString.StartsWith("US")) {
             _spacerDescriptions[_selectedItems.Count - 1] = "Unit";
           }
         }

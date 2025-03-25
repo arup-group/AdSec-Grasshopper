@@ -2,6 +2,9 @@
 using System.Drawing;
 using System.Linq;
 
+using AdSecGH.UI;
+
+using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
@@ -9,6 +12,8 @@ using Oasys.AdSec.Mesh;
 
 using OasysGH.Units;
 
+using Rhino.Display;
+using Rhino.DocObjects;
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
@@ -25,12 +30,12 @@ namespace AdSecGH.Parameters {
     public ILoadSurface FailureSurface { get; }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "FailureSurface";
-    internal Rhino.Display.Text3d negMyy;
-    internal Rhino.Display.Text3d negMzz;
-    internal Rhino.Display.Text3d negN;
-    internal Rhino.Display.Text3d posMyy;
-    internal Rhino.Display.Text3d posMzz;
-    internal Rhino.Display.Text3d posN;
+    internal Text3d negMyy;
+    internal Text3d negMzz;
+    internal Text3d negN;
+    internal Text3d posMyy;
+    internal Text3d posMzz;
+    internal Text3d posN;
     private BoundingBox bbox;
     private Plane m_plane;
     private Line previewNegXaxis;
@@ -40,7 +45,7 @@ namespace AdSecGH.Parameters {
     private Line previewPosYaxis;
     private Line previewPosZaxis;
 
-    public AdSecFailureSurfaceGoo(ILoadSurface loadsurface, Plane local, Mesh mesh = null) : base(mesh) {
+    public AdSecFailureSurfaceGoo(ILoadSurface loadsurface, Plane local, Mesh mesh) : base(mesh) {
       if (mesh == null) {
         m_value = MeshFromILoadSurface(loadsurface, local);
       }
@@ -90,18 +95,18 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
-      Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
       if (args.Material.Diffuse.R == defaultCol.R && args.Material.Diffuse.G == defaultCol.G && args.Material.Diffuse.B == defaultCol.B) {
         // not selected
-        args.Pipeline.DrawMeshShaded(Value, UI.Colour.FailureNormal);
+        args.Pipeline.DrawMeshShaded(Value, Colour.FailureNormal);
       } else {
-        args.Pipeline.DrawMeshShaded(Value, UI.Colour.FailureSelected);
+        args.Pipeline.DrawMeshShaded(Value, Colour.FailureSelected);
       }
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
       if (!Value.IsValid) { return; }
-      args.Pipeline.DrawMeshWires(Value, UI.Colour.UILightGrey, 1);
+      args.Pipeline.DrawMeshWires(Value, Colour.UILightGrey, 1);
       // local axis
       if (previewPosXaxis != null) {
         args.Pipeline.DrawArrow(previewPosXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5);//red
@@ -209,49 +214,49 @@ namespace AdSecGH.Parameters {
         var plnPosN = new Plane(m_plane) {
           Origin = previewPosXaxis.PointAt(1.05)
         };
-        posN = new Rhino.Display.Text3d("Tension", plnPosN, size) {
-          HorizontalAlignment = Rhino.DocObjects.TextHorizontalAlignment.Center,
-          VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Bottom
+        posN = new Text3d("Tension", plnPosN, size) {
+          HorizontalAlignment = TextHorizontalAlignment.Center,
+          VerticalAlignment = TextVerticalAlignment.Bottom
         };
 
         var plnNegN = new Plane(m_plane) {
           Origin = previewNegXaxis.PointAt(1.05)
         };
-        negN = new Rhino.Display.Text3d("Compression", plnNegN, size) {
-          HorizontalAlignment = Rhino.DocObjects.TextHorizontalAlignment.Center,
-          VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Bottom
+        negN = new Text3d("Compression", plnNegN, size) {
+          HorizontalAlignment = TextHorizontalAlignment.Center,
+          VerticalAlignment = TextVerticalAlignment.Bottom
         };
 
         var plnPosMyy = new Plane(m_plane) {
           Origin = previewPosYaxis.PointAt(1.05)
         };
-        posMyy = new Rhino.Display.Text3d("+Myy", plnPosMyy, size) {
-          HorizontalAlignment = Rhino.DocObjects.TextHorizontalAlignment.Center,
-          VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Bottom
+        posMyy = new Text3d("+Myy", plnPosMyy, size) {
+          HorizontalAlignment = TextHorizontalAlignment.Center,
+          VerticalAlignment = TextVerticalAlignment.Bottom
         };
 
         var plnNegMyy = new Plane(m_plane) {
           Origin = previewNegYaxis.PointAt(1.05)
         };
-        negMyy = new Rhino.Display.Text3d("-Myy", plnNegMyy, size) {
-          HorizontalAlignment = Rhino.DocObjects.TextHorizontalAlignment.Center,
-          VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Top
+        negMyy = new Text3d("-Myy", plnNegMyy, size) {
+          HorizontalAlignment = TextHorizontalAlignment.Center,
+          VerticalAlignment = TextVerticalAlignment.Top
         };
 
         var plnPosMzz = new Plane(m_plane) {
           Origin = previewPosZaxis.PointAt(1.05)
         };
-        posMzz = new Rhino.Display.Text3d("+Mzz", plnPosMzz, size) {
-          HorizontalAlignment = Rhino.DocObjects.TextHorizontalAlignment.Left,
-          VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Middle
+        posMzz = new Text3d("+Mzz", plnPosMzz, size) {
+          HorizontalAlignment = TextHorizontalAlignment.Left,
+          VerticalAlignment = TextVerticalAlignment.Middle
         };
 
         var plnNegMzz = new Plane(m_plane) {
           Origin = previewNegZaxis.PointAt(1.05)
         };
-        negMzz = new Rhino.Display.Text3d("-Mzz", plnNegMzz, size) {
-          HorizontalAlignment = Rhino.DocObjects.TextHorizontalAlignment.Right,
-          VerticalAlignment = Rhino.DocObjects.TextVerticalAlignment.Middle
+        negMzz = new Text3d("-Mzz", plnNegMzz, size) {
+          HorizontalAlignment = TextHorizontalAlignment.Right,
+          VerticalAlignment = TextVerticalAlignment.Middle
         };
       }
     }

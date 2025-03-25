@@ -129,7 +129,7 @@ namespace AdSecGH.Components {
               _spacerDescriptions[level] = "Edition";
             }
 
-            if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
+            if (typeString.StartsWith("Metric") || typeString.StartsWith("US")) {
               _spacerDescriptions[level] = "Unit";
             }
           } else if (designCodeKVP.Count == 1) {
@@ -361,7 +361,7 @@ namespace AdSecGH.Components {
             _spacerDescriptions[level] = "Edition";
           }
 
-          if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
+          if (typeString.StartsWith("Metric") || typeString.StartsWith("US")) {
             _spacerDescriptions[level] = "Unit";
           }
         } else if (designCodeKVP.Count == 1) {
