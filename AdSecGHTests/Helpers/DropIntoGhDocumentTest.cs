@@ -71,6 +71,7 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void ShouldHaveNoErrors() {
+      Assert.NotNull(_document);
       TestNoRuntimeMessagesInDocument(_document, GH_RuntimeMessageLevel.Error);
     }
 

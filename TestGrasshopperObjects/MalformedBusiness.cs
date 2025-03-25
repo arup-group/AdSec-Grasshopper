@@ -34,8 +34,9 @@ namespace AdSecGHTests.Helpers {
       };
     }
 
-    public void Compute() { }
+    public void Compute() { /* empty method, how it should be*/
+    }
 
-    public void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
+    public static void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
   }
 }

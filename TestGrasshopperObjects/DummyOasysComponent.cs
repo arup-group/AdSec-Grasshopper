@@ -11,6 +11,7 @@ namespace AdSecGHTests.Helpers {
 
     public override Guid ComponentGuid => new Guid("CAA08C9E-417C-42AE-B734-91F214C8B87F");
 
-    protected override void SolveInstance(IGH_DataAccess DA) { }
+    protected override void SolveInstance(IGH_DataAccess DA) { /* empty method, leave it */
+    }
   }
 }

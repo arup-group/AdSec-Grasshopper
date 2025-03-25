@@ -58,8 +58,9 @@ namespace AdSecGHTests.Helpers {
       };
     }
 
-    public void UpdateInputValues(params object[] values) { }
+    public void UpdateInputValues(params object[] values) { /* will be continued, wait patiently */
+    }
 
-    public void GetDefaultValues() { throw new NotImplementedException(); }
+    public static void GetDefaultValues() { throw new NotImplementedException(); }
   }
 }

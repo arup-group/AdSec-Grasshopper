@@ -59,7 +59,7 @@ namespace AdSecGHTests.Helpers {
 
     public Attribute[] GetAllOutputAttributes() { return GetAllParams(); }
 
-    public void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
+    public static void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
 
     private Attribute[] GetAllParams() {
       return new Attribute[] {
