@@ -1,4 +1,9 @@
-﻿using AdSecCore.Parameters;
+﻿using System.Linq;
+
+using AdSecCore.Builders;
+using AdSecCore.Parameters;
+
+using AdSecGH.Parameters;
 
 using AdSecGHCore.Constants;
 
@@ -56,7 +61,32 @@ namespace AdSecCore.Functions {
 
     public override void Compute() {
       ProfileOut.Value = Profile.Value ?? ProfileDesign.From(Section.Value);
+
       MaterialOut.Value = Material.Value ?? MaterialDesign.From(Section.Value);
+
+      DesignCodeOut.Value = DesignCode.Value ?? DesignCodeParameter.From(Section.Value);
+
+      MaterialOut.Value.DesignCode = DesignCodeOut.Value; // The material needs the new Designcode
+
+      RebarGroupOut.Value = RebarGroup.Value ?? Section.Value.Section.ReinforcementGroups
+       .Select(x => new AdSecRebarGroup(x)).ToArray();
+      foreach (var t in RebarGroupOut.Value) {
+        t.Cover = Section.Value.Section.Cover;
+      }
+
+      SubComponentOut.Value = SubComponent.Value ?? SubComponent.From(Section.Value);
+
+      var section = new SectionBuilder().WithSubComponents(SubComponentOut.Value.Select(x => x.ISubComponent).ToList())
+       .WithMaterial(MaterialOut.Value.Material).WithCover(Section.Value.Section.Cover)
+       .WithReinforcementGroups(RebarGroupOut.Value.Select(x => x.Group).ToList()).WithProfile(ProfileOut.Value.Profile)
+       .Build();
+      SectionOut.Value = new SectionDesign {
+        Section = section,
+        DesignCode = DesignCodeOut.Value,
+        LocalPlane = Section.Value.LocalPlane,
+        CodeName = MaterialOut.Value.GradeName,
+        MaterialName = MaterialOut.Value.GradeName, // TODO
+      };
     }
   }
 }

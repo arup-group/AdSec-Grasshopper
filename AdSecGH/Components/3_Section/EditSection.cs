@@ -38,6 +38,11 @@ namespace AdSecGH.Components {
 
       var adSecSectionOut = AdSecSectionOut as Attribute;
       SectionOut.Update(ref adSecSectionOut);
+      SectionOut.OnValueChanged += design => {
+        if (design != null) {
+          AdSecSectionOut.Value = new AdSecSectionGoo(new AdSecSection(design));
+        }
+      };
     }
 
     public AdSecSectionParameter AdSecSection { get; set; } = new AdSecSectionParameter();
@@ -66,80 +71,80 @@ namespace AdSecGH.Components {
 
     protected override void SolveInstance(IGH_DataAccess DA) {
       base.SolveInstance(DA);
-      var sectionDesign = BusinessComponent.AdSecSection.Value;
-      var in_section = sectionDesign.Value;
-      var profile = new AdSecProfileGoo(BusinessComponent.Profile.Value
-        ?? ProfileDesign.From(BusinessComponent.Section.Value));
+      // var sectionDesign = BusinessComponent.AdSecSection.Value;
+      // var in_section = sectionDesign.Value;
+      // var profile = new AdSecProfileGoo(BusinessComponent.Profile.Value
+      // ?? ProfileDesign.From(BusinessComponent.Section.Value));
 
-      DA.SetData(1, profile);
+      // DA.SetData(1, profile);
 
       // 2 material
-      var material = new AdSecMaterial();
-      if (Params.Input[2].SourceCount > 0) {
-        material = this.GetAdSecMaterial(DA, 2, true);
-      } else {
-        material = new AdSecMaterial(in_section.Section.Material, in_section._materialName);
-      }
+      // var material = new AdSecMaterial();
+      // if (Params.Input[2].SourceCount > 0) {
+      // material = this.GetAdSecMaterial(DA, 2, true);
+      // } else {
+      // material = new AdSecMaterial(in_section.Section.Material, in_section._materialName);
+      // }
       // wait for potential update to designcode to set material output
 
       // 3 DesignCode
-      if (Params.Input[3].SourceCount > 0) {
-        material.DesignCode = this.GetAdSecDesignCode(DA, 3);
-      } else {
-        material.DesignCode = new AdSecDesignCode(in_section.DesignCode, in_section._codeName);
-      }
-
-      DA.SetData(3, new AdSecDesignCodeGoo(material.DesignCode));
+      // if (Params.Input[3].SourceCount > 0) {
+      //   material.DesignCode = this.GetAdSecDesignCode(DA, 3);
+      // } else {
+      //   material.DesignCode = new AdSecDesignCode(in_section.DesignCode, in_section._codeName);
+      // }
+      //
+      // DA.SetData(3, new AdSecDesignCodeGoo(material.DesignCode));
 
       // after potentially changing the design code we can also set the material output now:
-      DA.SetData(2, new AdSecMaterialGoo(new MaterialDesign {
-        Material = material.Material,
-        DesignCode = material.DesignCode.DesignCode,
-      }));
+      // DA.SetData(2, new AdSecMaterialGoo(new MaterialDesign {
+      //   Material = material.Material,
+      //   DesignCode = material.DesignCode.DesignCode,
+      // }));
 
       // 4 Rebars
-      var reinforcements = new List<AdSecRebarGroup>();
-      if (Params.Input[4].SourceCount > 0) {
-        reinforcements = this.GetReinforcementGroups(DA, 4, true);
-      } else {
-        foreach (var rebarGrp in in_section.Section.ReinforcementGroups) {
-          var rebar = new AdSecRebarGroup(rebarGrp) {
-            Cover = in_section.Section.Cover,
-          };
-          reinforcements.Add(rebar);
-        }
-      }
+      // var reinforcements = new List<AdSecRebarGroup>();
+      // if (Params.Input[4].SourceCount > 0) {
+      //   reinforcements = this.GetReinforcementGroups(DA, 4, true);
+      // } else {
+      //   foreach (var rebarGrp in in_section.Section.ReinforcementGroups) {
+      //     var rebar = new AdSecRebarGroup(rebarGrp) {
+      //       Cover = in_section.Section.Cover,
+      //     };
+      //     reinforcements.Add(rebar);
+      //   }
+      // }
 
-      var out_rebars = new List<AdSecRebarGroupGoo>();
-      foreach (var rebar in reinforcements) {
-        out_rebars.Add(new AdSecRebarGroupGoo(rebar));
-      }
+      // var out_rebars = new List<AdSecRebarGroupGoo>();
+      // foreach (var rebar in reinforcements) {
+      //   out_rebars.Add(new AdSecRebarGroupGoo(rebar));
+      // }
 
-      DA.SetDataList(4, out_rebars);
+      // DA.SetDataList(4, out_rebars);
 
       // 5 Subcomponents
-      Oasys.Collections.IList<ISubComponent> subComponents;
-      if (Params.Input[5].SourceCount > 0) {
-        subComponents = this.GetSubComponents(DA, 5, true);
-      } else {
-        subComponents = in_section.Section.SubComponents;
-      }
+      // Oasys.Collections.IList<ISubComponent> subComponents;
+      // if (Params.Input[5].SourceCount > 0) {
+      //   subComponents = this.GetSubComponents(DA, 5, true);
+      // } else {
+      //   subComponents = in_section.Section.SubComponents;
+      // }
 
-      var out_subComponents = new List<AdSecSubComponentGoo>();
-      foreach (var sub in subComponents) {
-        var subGoo = new AdSecSubComponentGoo(sub, in_section.LocalPlane, in_section.DesignCode, in_section._codeName,
-          in_section._materialName);
-        out_subComponents.Add(subGoo);
-      }
-
-      DA.SetDataList(5, out_subComponents);
+      // var out_subComponents = new List<AdSecSubComponentGoo>();
+      // foreach (var sub in subComponents) {
+      //   var subGoo = new AdSecSubComponentGoo(sub, in_section.LocalPlane, in_section.DesignCode, in_section._codeName,
+      //     in_section._materialName);
+      //   out_subComponents.Add(subGoo);
+      // }
+      //
+      // DA.SetDataList(5, out_subComponents);
 
       // create new section
-      var out_section = new AdSecSection(profile.Profile, profile.LocalPlane, material, reinforcements, subComponents);
+      // var out_section = new AdSecSection(profile.Profile, profile.LocalPlane, material, reinforcements, subComponents);
 
-      var adSecSectionGoo = new AdSecSectionGoo(out_section);
+      var adSecSectionGoo = BusinessComponent.AdSecSectionOut.Value;
       adSecSectionGoo.UpdateGeometryRepresentation();
-      DA.SetData(0, adSecSectionGoo);
+      // DA.SetData(0, adSecSectionGoo);
 
       // ### output section geometry ###
       // collect all curves in this list

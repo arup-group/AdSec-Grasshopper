@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 using AdSecGH.Parameters;
 
@@ -74,7 +75,16 @@ namespace AdSecCore.Functions {
   public class SectionSolutionParameter : ParameterAttribute<SectionSolution> { }
   public class LoadSurfaceParameter : ParameterAttribute<ILoadSurface> { }
   public class SubComponentParameter : ParameterAttribute<SubComponent> { }
-  public class SubComponentArrayParameter : BaseArrayParameter<SubComponent> { }
+
+  public class SubComponentArrayParameter : BaseArrayParameter<SubComponent> {
+    public SubComponent[] From(SectionDesign sectionDesign) {
+      var sectionSubComponents = sectionDesign.Section.SubComponents;
+      return sectionSubComponents.Select(x => new SubComponent {
+        ISubComponent = ISubComponent.Create(x.Section, x.Offset),
+        SectionDesign = sectionDesign,
+      }).ToArray();
+    }
+  }
 
   public class SubComponent {
     public ISubComponent ISubComponent { get; set; }
@@ -96,10 +106,22 @@ namespace AdSecCore.Functions {
     public IDesignCode DesignCode { get; set; }
     public string GradeName { get; set; }
 
-    public static MaterialDesign From(SectionDesign sectionValue) { return null; }
+    public static MaterialDesign From(SectionDesign sectionValue) {
+      return new MaterialDesign {
+        Material = sectionValue.Section.Material,
+        DesignCode = sectionValue.DesignCode,
+        GradeName = sectionValue.MaterialName,
+      };
+    }
   }
 
   public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
-  public class DesignCodeParameter : ParameterAttribute<IDesignCode> { }
+
+  public class DesignCodeParameter : ParameterAttribute<IDesignCode> {
+    public static IDesignCode From(SectionDesign section) {
+      return section.DesignCode;
+    }
+  }
+
   public class GeometryParameter : ParameterAttribute<object> { }
 }

@@ -26,7 +26,7 @@ namespace AdSecGHTests {
         designCode = _defaulyDesignCode;
       }
 
-      var section = new SectionBuilder().SetProfile(ProfileBuilder.GetIBeam()).WithMaterial(iBeamMat).Build();
+      var section = new SectionBuilder().WithProfile(ProfileBuilder.GetIBeam()).WithMaterial(iBeamMat).Build();
       var sectionDesign = new SectionDesign() {
         Section = section,
         DesignCode = designCode,
@@ -44,9 +44,9 @@ namespace AdSecGHTests {
 
       var iProfile = ProfileBuilder.GetIBeam();
       var profile = new ProfileBuilder().WithWidth(100).WidthDepth(100).Build();
-      var subSection = new SectionBuilder().SetProfile(iProfile).WithMaterial(_defaultSteelBeam).Build();
+      var subSection = new SectionBuilder().WithProfile(iProfile).WithMaterial(_defaultSteelBeam).Build();
 
-      var section = new SectionBuilder().SetProfile(profile).WithMaterial(_defaultConcrete).WithSubComponents(
+      var section = new SectionBuilder().WithProfile(profile).WithMaterial(_defaultConcrete).WithSubComponents(
         new List<ISubComponent> {
           ISubComponent.Create(subSection, Geometry.Zero())
         })

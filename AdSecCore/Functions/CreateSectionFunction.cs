@@ -60,7 +60,7 @@ namespace AdSecCore.Functions {
 
     public void Compute() {
       var sectionBuilder = new SectionBuilder();
-      sectionBuilder.SetProfile(Profile.Value.Profile);
+      sectionBuilder.WithProfile(Profile.Value.Profile);
       if (RebarGroup.Value != null) {
         var groups = RebarGroup.Value.Select(x => x.Group).ToList();
         sectionBuilder.WithReinforcementGroups(groups);

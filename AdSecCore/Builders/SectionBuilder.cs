@@ -156,7 +156,7 @@ namespace AdSecCore.Builders {
       return this;
     }
 
-    public SectionBuilder SetProfile(IProfile profile) {
+    public SectionBuilder WithProfile(IProfile profile) {
       _profile = profile;
       return this;
     }

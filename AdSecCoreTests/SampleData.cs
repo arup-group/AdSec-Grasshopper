@@ -8,25 +8,21 @@ using Oasys.AdSec.StandardMaterials;
 namespace AdSecGHTests {
   public static class SampleData {
 
-    private static ISteel _defaultSteelBeam = Steel.AS4100.Edition_1998.AS1163_C250;
-    private static IDesignCode _defaulyDesignCode = IS456.Edition_2000;
+    private static readonly ISteel _defaultSteelBeam = Steel.AS4100.Edition_1998.AS1163_C250;
+    private static readonly IDesignCode _defaultDesignCode = IS456.Edition_2000;
 
-    public static SectionDesign GetSectionDesign(IDesignCode designCode = null, ISteel iBeamMat = null) {
-      if (iBeamMat == null) {
-        iBeamMat = _defaultSteelBeam;
-      }
+    public static SectionDesign GetSectionDesign(IDesignCode? designCode = null, ISteel? iBeamMat = null) {
+      iBeamMat ??= _defaultSteelBeam;
 
-      if (designCode == null) {
-        designCode = _defaulyDesignCode;
-      }
+      designCode ??= _defaultDesignCode;
 
-      var section = new SectionBuilder().SetProfile(ProfileBuilder.GetIBeam()).WithMaterial(iBeamMat).Build();
+      var section = new SectionBuilder().WithProfile(ProfileBuilder.GetIBeam()).WithMaterial(iBeamMat).Build();
       var sectionDesign = new SectionDesign() {
         Section = section,
         DesignCode = designCode,
         MaterialName = "AS1163_C250",
         CodeName = "AS4100",
-        LocalPlane = OasysPlane.PlaneYZ
+        LocalPlane = OasysPlane.PlaneYZ,
       };
       return sectionDesign;
     }
