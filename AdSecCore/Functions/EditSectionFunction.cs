@@ -84,8 +84,8 @@ namespace AdSecCore.Functions {
         Section = section,
         DesignCode = DesignCodeOut.Value,
         LocalPlane = Section.Value.LocalPlane,
-        CodeName = MaterialOut.Value.GradeName,
-        MaterialName = MaterialOut.Value.GradeName, // TODO
+        CodeName = DesignCodeOut.Value.DesignCodeName,
+        MaterialName = MaterialOut.Value.GradeName,
       };
     }
   }

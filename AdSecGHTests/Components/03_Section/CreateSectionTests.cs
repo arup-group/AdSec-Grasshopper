@@ -34,7 +34,7 @@ namespace AdSecGHTests.Components {
       var profile = new ProfileBuilder().WidthDepth(1).WithWidth(2).Build();
       var profileDesign = new ProfileDesign { Profile = profile, LocalPlane = OasysPlane.PlaneYZ, };
       component.SetInputParamAt(0, new AdSecProfileGoo(profileDesign));
-      var adSecMaterial = new AdSecMaterialGoo(new MaterialDesign { Material = SectionMat, DesignCode = DesignCode, });
+      var adSecMaterial = new AdSecMaterialGoo(new MaterialDesign { Material = SectionMat, DesignCode = new DesignCode() { IDesignCode = DesignCode, DesignCodeName = null }, });
       component.SetInputParamAt(1, adSecMaterial);
     }
 

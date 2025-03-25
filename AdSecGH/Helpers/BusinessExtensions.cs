@@ -140,7 +140,11 @@ namespace Oasys.GH.Helpers {
             return new AdSecMaterialGoo(materialDesign);
           }
         },
-        { typeof(DesignCodeParameter), a => (a as DesignCodeParameter).Value },
+        { typeof(DesignCodeParameter), a => {
+            var designCode = (a as DesignCodeParameter).Value;
+            return new AdSecDesignCodeGoo(designCode);
+          }
+        },
         { typeof(GeometryParameter), a => (a as GeometryParameter).Value },
         { typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value }, {
           typeof(SectionSolutionParameter), a => {

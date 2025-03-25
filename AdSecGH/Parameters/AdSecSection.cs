@@ -46,8 +46,8 @@ namespace AdSecGH.Parameters {
 
     public AdSecSection(SectionDesign sectionDesign) {
       Section = sectionDesign.Section;
-      DesignCode = sectionDesign.DesignCode;
-      _codeName = sectionDesign.CodeName;
+      DesignCode = sectionDesign.DesignCode.IDesignCode;
+      _codeName = sectionDesign.DesignCode.DesignCodeName;
       _materialName = sectionDesign.MaterialName;
       LocalPlane = sectionDesign.LocalPlane.ToGh();
 

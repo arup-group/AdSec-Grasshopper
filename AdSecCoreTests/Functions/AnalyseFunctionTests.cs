@@ -28,7 +28,9 @@ namespace AdSecCoreTests.Functions {
       var section = sectionBuilder.WithHeight(0.0001).WithWidth(0.01).CreateRectangularSection().Build();
       analyseFunction.Section = new SectionParameter() {
         Value = new SectionDesign() {
-          DesignCode = IS456.Edition_2000,
+          DesignCode = new DesignCode() {
+            IDesignCode = IS456.Edition_2000,
+          },
           Section = section
         }
       };
@@ -41,7 +43,9 @@ namespace AdSecCoreTests.Functions {
     public void ShouldAddWarnings() {
       analyseFunction.Section = new SectionParameter() {
         Value = new SectionDesign() {
-          DesignCode = IS456.Edition_2000,
+          DesignCode = new DesignCode() {
+            IDesignCode = IS456.Edition_2000,
+          },
           Section = SectionBuilder.InvalidSection()
         }
       };

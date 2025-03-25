@@ -24,7 +24,10 @@ namespace AdSecGH.Components {
         if (goo.Value != null) {
           Section.Value = new SectionDesign {
             Section = goo.Value.Section,
-            DesignCode = goo.Value.DesignCode,
+            DesignCode = new DesignCode() {
+              IDesignCode = goo.Value.DesignCode,
+              DesignCodeName = goo.Value._codeName
+            }
           };
         }
       };

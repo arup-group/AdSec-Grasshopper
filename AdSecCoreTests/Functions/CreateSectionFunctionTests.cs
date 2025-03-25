@@ -19,7 +19,9 @@ namespace AdSecCoreTests.Functions {
       };
       function.Material.Value = new MaterialDesign() {
         Material = Concrete.IS456.Edition_2000.M10,
-        DesignCode = IS456.Edition_2000
+        DesignCode = new DesignCode() {
+          IDesignCode = IS456.Edition_2000,
+        },
       };
     }
 

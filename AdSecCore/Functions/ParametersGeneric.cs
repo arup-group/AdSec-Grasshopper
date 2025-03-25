@@ -14,7 +14,7 @@ using OasysUnits;
 namespace AdSecCore.Functions {
   public class SectionDesign {
     public ISection Section { get; set; }
-    public IDesignCode DesignCode { get; set; }
+    public DesignCode DesignCode { get; set; }
     public string CodeName { get; set; }
     public string MaterialName { get; set; }
     public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
@@ -103,13 +103,13 @@ namespace AdSecCore.Functions {
 
   public class MaterialDesign {
     public IMaterial Material { get; set; }
-    public IDesignCode DesignCode { get; set; }
+    public DesignCode DesignCode { get; set; }
     public string GradeName { get; set; }
 
     public static MaterialDesign From(SectionDesign sectionValue) {
       return new MaterialDesign {
         Material = sectionValue.Section.Material,
-        DesignCode = sectionValue.DesignCode,
+        DesignCode = DesignCodeParameter.From(sectionValue),
         GradeName = sectionValue.MaterialName,
       };
     }
@@ -117,10 +117,18 @@ namespace AdSecCore.Functions {
 
   public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
 
-  public class DesignCodeParameter : ParameterAttribute<IDesignCode> {
-    public static IDesignCode From(SectionDesign section) {
-      return section.DesignCode;
+  public class DesignCodeParameter : ParameterAttribute<DesignCode> {
+    public static DesignCode From(SectionDesign section) {
+      return new DesignCode {
+        IDesignCode = section.DesignCode.IDesignCode,
+        DesignCodeName = section.DesignCode.DesignCodeName,
+      };
     }
+  }
+
+  public class DesignCode {
+    public IDesignCode IDesignCode { get; set; }
+    public string DesignCodeName { get; set; }
   }
 
   public class GeometryParameter : ParameterAttribute<object> { }

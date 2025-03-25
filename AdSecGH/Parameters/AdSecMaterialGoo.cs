@@ -20,11 +20,11 @@ namespace AdSecGH.Parameters {
 
     public AdSecMaterialGoo(MaterialDesign materialDesign) : base(materialDesign) {
       Material = new AdSecMaterial() {
-        Material = Value.Material,
+        Material = Value?.Material,
         DesignCode = new AdSecDesignCode() {
-          DesignCode = Value.DesignCode,
+          DesignCode = Value?.DesignCode?.IDesignCode,
         },
-        GradeName = materialDesign.GradeName,
+        GradeName = Value?.GradeName,
       };
     }
 
@@ -36,6 +36,7 @@ namespace AdSecGH.Parameters {
       if (Material == null || Material.Material == null) {
         return "Empty Material";
       }
+
       var mat = new AdSecMaterial(Material.Material, Material.GradeName);
       return mat.ToString();
     }
