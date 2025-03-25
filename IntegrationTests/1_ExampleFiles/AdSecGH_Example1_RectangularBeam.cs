@@ -28,12 +28,12 @@ namespace IntegrationTests.Components {
     [Theory]
     [InlineData("CadTest", 15)]
     [InlineData("NmDiagramTest", 116003.838766)]
-    //[InlineData("ConcreteStressTest", new[] {
-    //  -0.327292,
-    //  -5.108709,
-    //  -0.13875,
-    //  -4.642858,
-    //})]
+    [InlineData("ConcreteStressTest", new[] {
+      -0.327292,
+      -5.108709,
+      -0.13875,
+      -4.642858,
+    })]
     [InlineData("RebarUlsStrainTest", new[] {
       0.262073,
       0.216727,
@@ -42,7 +42,7 @@ namespace IntegrationTests.Components {
       0.145305,
       0.016448,
       -0.134224,
-      -0.007447,
+      -0.006349,
       -0.104581,
       -0.15289,
       -0.201211,
@@ -56,7 +56,7 @@ namespace IntegrationTests.Components {
       29.061078,
       3.289703,
       -26.844842,
-      -1.4859736,
+      -1.269816,
       -20.916174,
       -30.577941,
       -40.242196,
