@@ -19,6 +19,18 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void ShouldHaveSevenOutputs() {
+      function.Compute();
+      Assert.Equal(7, function.GetAllOutputAttributes().Length);
+    }
+
+    [Fact]
+    public void ShouldHaveSixInputs() {
+      function.Compute();
+      Assert.Equal(6, function.GetAllInputAttributes().Length);
+    }
+
+    [Fact]
     public void ShouldHaveAllButFirstParametersOptional() {
       Assert.True(AllButFirstOptional());
     }
