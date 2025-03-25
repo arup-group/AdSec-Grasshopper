@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 using AdSecCore;
@@ -391,12 +392,12 @@ namespace Oasys.GH.Helpers {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
         var type = attribute.GetType();
         if (!ToGoo.ContainsKey(type)) {
-          throw new Exception($"No conversion function found for type {type}");
+          throw new MissingPrimaryKeyException($"No conversion function found for type {type}");
         }
 
         var func = ToGoo[type];
         dynamic goo = func(attribute);
-        bool success = false;
+        bool success;
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           success = dataAccess.SetData(index, goo);
         } else {
@@ -404,7 +405,7 @@ namespace Oasys.GH.Helpers {
         }
 
         if (!success) {
-          throw new Exception(
+          throw new InvalidCastException(
             $"Failed to set data for {attribute.Name} of type {type} at index {index} into param of type {component.Params.Output[index].GetType()}");
         }
       }
