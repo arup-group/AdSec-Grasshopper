@@ -1,8 +1,4 @@
-﻿using System;
-
-using AdSecCore.Functions;
-
-using Attribute = AdSecCore.Functions.Attribute;
+﻿using AdSecCore.Functions;
 
 namespace AdSecGHTests.Helpers {
   public class MalformedFunction : IFunction {
@@ -34,9 +30,7 @@ namespace AdSecGHTests.Helpers {
       };
     }
 
-    public void Compute() { /* empty method, how it should be*/
+    public void Compute() { /* need to implement the interface but is not needed for the test */
     }
-
-    public static void UpdateInputValues(params object[] values) { throw new NotImplementedException(); }
   }
 }

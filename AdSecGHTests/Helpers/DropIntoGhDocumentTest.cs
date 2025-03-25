@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Grasshopper.Kernel;
@@ -66,22 +67,26 @@ namespace AdSecGHTests.Helpers {
 
     [Fact(Skip = "No Default Values Set Yet")]
     public void ShouldHaveNoWarnings() {
-      TestNoRuntimeMessagesInDocument(_document, GH_RuntimeMessageLevel.Warning);
+      Assert.Empty(TestNoRuntimeMessagesInDocument(_document, GH_RuntimeMessageLevel.Warning));
     }
 
     [Fact]
     public void ShouldHaveNoErrors() {
-      Assert.NotNull(_document);
-      TestNoRuntimeMessagesInDocument(_document, GH_RuntimeMessageLevel.Error);
+      Assert.Empty(TestNoRuntimeMessagesInDocument(_document, GH_RuntimeMessageLevel.Error));
     }
 
-    private static void TestNoRuntimeMessagesInDocument(GH_Document doc, GH_RuntimeMessageLevel runtimeMessageLevel) {
+    private static string TestNoRuntimeMessagesInDocument(GH_Document doc, GH_RuntimeMessageLevel runtimeMessageLevel) {
       foreach (var obj in doc.Objects) {
         if (obj is GH_Component comp) {
           comp.CollectData();
-          Assert.Empty(comp.RuntimeMessages(runtimeMessageLevel));
+          var runtimeMessages = comp.RuntimeMessages(runtimeMessageLevel);
+          if (runtimeMessages.Any()) {
+            return $"Failed for {comp}";
+          }
         }
       }
+
+      return string.Empty;
     }
   }
 }
