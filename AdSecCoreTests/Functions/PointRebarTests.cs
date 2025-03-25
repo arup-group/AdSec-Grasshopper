@@ -11,8 +11,8 @@ namespace AdSecCoreTests.Functions {
 
     public PointRebarTests() {
       pointRebarFunction = new PointRebarFunction();
-      pointRebarFunction.Y.Value = Length.From(1, LengthUnit.Meter);
-      pointRebarFunction.Z.Value = Length.From(1, LengthUnit.Meter);
+      pointRebarFunction.Y.Value = 1;
+      pointRebarFunction.Z.Value = 1;
       pointRebarFunction.Compute();
     }
 

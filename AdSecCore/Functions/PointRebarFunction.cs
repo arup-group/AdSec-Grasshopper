@@ -8,12 +8,12 @@ namespace AdSecCore.Functions {
 
   public class PointRebarFunction : Function {
 
-    public LengthParameter Y { get; set; } = new LengthParameter {
+    public DoubleParameter Y { get; set; } = new DoubleParameter {
       Name = "Y",
       NickName = "Y",
       Description = "The local Y coordinate in yz-plane",
     };
-    public LengthParameter Z { get; set; } = new LengthParameter {
+    public DoubleParameter Z { get; set; } = new DoubleParameter {
       Name = "Z",
       NickName = "Z",
       Description = "The local Z coordinate in yz-plane",
@@ -49,7 +49,7 @@ namespace AdSecCore.Functions {
     }
 
     public override void Compute() {
-      Point.Value = IPoint.Create(new Length(Y.Value.Value, LengthUnit), new Length(Z.Value.Value, LengthUnit));
+      Point.Value = IPoint.Create(new Length(Y.Value, LengthUnit), new Length(Z.Value, LengthUnit));
     }
   }
 }
