@@ -6,7 +6,6 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -372,7 +371,7 @@ namespace Oasys.GH.Helpers {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
         var type = attribute.GetType();
         if (!ToGoo.ContainsKey(type)) {
-          throw new Exception($"No conversion function found for type {type}");
+          throw new InvalidOperationException($"No conversion function found for type {type}");
         }
 
         var func = ToGoo[type];
@@ -385,7 +384,7 @@ namespace Oasys.GH.Helpers {
         }
 
         if (!success) {
-          throw new Exception(
+          throw new InvalidOperationException(
             $"Failed to set data for {attribute.Name} of type {type} at index {index} into param of type {component.Params.Output[index].GetType()}");
         }
       }
