@@ -46,17 +46,17 @@ namespace AdSecCoreTests.Functions {
       Assert.IsType<DoubleParameter>(outputs[3]);
       Assert.IsType<IntervalArrayParameter>(outputs[4]);
       Assert.IsType<NeutralLineParameter>(outputs[5]);
-      Assert.IsType<DisplacementParameter>(outputs[6]);
+      Assert.IsType<LengthParameter>(outputs[6]);
       Assert.IsType<DoubleParameter>(outputs[7]);
       Assert.IsType<DeformationParameter>(outputs[8]);
       Assert.IsType<NeutralLineParameter>(outputs[9]);
-      Assert.IsType<DisplacementParameter>(outputs[10]);
+      Assert.IsType<LengthParameter>(outputs[10]);
       Assert.IsType<DoubleParameter>(outputs[11]);
     }
 
     [Fact]
     public void ShoulHaveValidDeformationDescription() {
-      _component.DeformationDescription(StrainUnit.Ratio, CurvatureUnit.PerMeter);
+      _component.DeformationDescription();
       var description = _component.DeformationOutput.Description;
       Assert.Contains("[εm⁻¹]", description);
       Assert.Contains("[εm⁻¹]", description);
@@ -64,7 +64,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShoulHaveValidFailureDeformationDescription() {
-      _component.FailureDeformationDescription(StrainUnit.Ratio, CurvatureUnit.PerMeter);
+      _component.FailureDeformationDescription();
       var description = _component.FailureDeformationOutput.Description;
       Assert.Contains("[εm⁻¹]", description);
       Assert.Contains("[εm⁻¹]", description);
@@ -72,7 +72,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveValidMomentRangesDescription() {
-      _component.MomentRangesDescription(MomentUnit.NewtonMeter);
+      _component.MomentRangesDescription();
       Assert.Contains("[N·m]", _component.MomentRangesOutput.Description);
     }
 

@@ -12,7 +12,6 @@ using Grasshopper.Kernel;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Units;
 
 namespace AdSecGH.Components {
   public class UlsResultGh : UlsResultFunction {
@@ -22,9 +21,10 @@ namespace AdSecGH.Components {
 
   public class UlsResult : ComponentAdapter<UlsResultGh> {
     protected override void BeforeSolveInstance() {
-      BusinessComponent.DeformationDescription(DefaultUnits.StrainUnitResult, DefaultUnits.CurvatureUnit);
-      BusinessComponent.FailureDeformationDescription(DefaultUnits.StrainUnitResult, DefaultUnits.CurvatureUnit);
-      BusinessComponent.MomentRangesDescription(DefaultUnits.MomentUnit);
+      UpdateUnit();
+      BusinessComponent.DeformationDescription();
+      BusinessComponent.FailureDeformationDescription();
+      BusinessComponent.MomentRangesDescription();
       RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
     }
 

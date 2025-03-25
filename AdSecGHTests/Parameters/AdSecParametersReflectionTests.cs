@@ -112,6 +112,7 @@ namespace AdSecGHTests.Parameters {
       InstanceOfGoos.Add(new AdSecStressStrainPointGoo(stressStrainPoint));
       InstanceOfGoos.Add(new AdSecSubComponentGoo(section, Plane.WorldXY, IPoint.Create(length, length),
         designCode.DesignCode, "test", "test1"));
+      InstanceOfGoos.Add(new AdSecNeutralAxisGoo(new NeutralAxis() { Angle = 0, Offset = length, Solution = solutionBuilder }));
     }
 
     private void InitGooTypes() {

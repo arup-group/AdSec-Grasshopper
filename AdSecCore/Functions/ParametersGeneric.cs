@@ -81,7 +81,6 @@ namespace AdSecCore.Functions {
   public class StringArrayParam : BaseArrayParameter<string> { }
   public class StringParameter : ParameterAttribute<string> { }
   public class LengthParameter : ParameterAttribute<Length> { }
-  public class DisplacementParameter : ParameterAttribute<Length> { }
   public class SectionSolutionParameter : ParameterAttribute<SectionSolution> { }
   public class LoadSurfaceParameter : ParameterAttribute<ILoadSurface> { }
   public class SubComponentParameter : ParameterAttribute<SubComponent> { }

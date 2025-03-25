@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using AdSecGHCore.Constants;
@@ -151,17 +150,17 @@ namespace AdSecCore.Functions {
     }
 
     private void ProcessMomentRanges(IStrengthResult uls) {
-      var momentUnit = uls.Load.YY.Unit;
+
       var momentRanges = uls.MomentRanges.Select(range =>
           new Tuple<double, double>(
-              range.Min.As(momentUnit),
-              range.Max.As(momentUnit)))
+              range.Min.As(MomentUnit),
+              range.Max.As(MomentUnit)))
           .ToList();
       MomentRangesOutput.Value = momentRanges.ToArray();
     }
 
     private void ProcessNeutralAxisResults(IStrengthResult uls, SectionSolution solution) {
-      var offset = CalculateOffset(uls.Deformation);
+      var offset = CalculateOffset(uls.Deformation).ToUnit(LengthUnitResult);
       var angle = CalculateAngle(uls.Deformation);
 
       NeutralAxisLineOutput.Value = new NeutralAxis {
@@ -175,7 +174,7 @@ namespace AdSecCore.Functions {
 
     private void ProcessFailureResults(IStrengthResult failure, SectionSolution solution) {
       FailureDeformationOutput.Value = failure.Deformation;
-      var failureOffset = CalculateOffset(failure.Deformation);
+      var failureOffset = CalculateOffset(failure.Deformation).ToUnit(LengthUnitResult);
       var failureAngle = CalculateAngle(failure.Deformation);
 
       FailureNeutralAxisLineOutput.Value = new NeutralAxis {

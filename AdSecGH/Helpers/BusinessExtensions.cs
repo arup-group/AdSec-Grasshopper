@@ -82,8 +82,6 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(LengthParameter), ParamGenericObject
         },{
-          typeof(DisplacementParameter), ParamGenericObject
-        }, {
           typeof(SectionSolutionParameter), ParamGenericObject
         }, {
           typeof(LoadSurfaceParameter), ParamGenericObject
@@ -192,12 +190,6 @@ namespace Oasys.GH.Helpers {
           typeof(NeutralLineParameter), a => {
             var value = (a as NeutralLineParameter).Value;
             return new AdSecNeutralAxisGoo(value);
-          }
-        },{
-          typeof(DisplacementParameter), a => {
-            var value = (a as DisplacementParameter).Value;
-            var unit = DefaultUnits.LengthUnitResult;
-            return UnitHelpers.ParseToQuantity<Length>(value.As(unit), unit);
           }
         }
       };
