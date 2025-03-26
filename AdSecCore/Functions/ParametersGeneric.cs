@@ -91,4 +91,7 @@ namespace AdSecCore.Functions {
   }
 
   public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
+  public class StrainParameter : ParameterAttribute<Strain> { }
+  public class PressureParameter : ParameterAttribute<Pressure> { }
+
 }
