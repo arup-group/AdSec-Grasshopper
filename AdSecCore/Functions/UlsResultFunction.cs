@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 
+using AdSecCore.Extensions;
+
 using AdSecGHCore.Constants;
 
 using Oasys.AdSec;
@@ -48,31 +50,23 @@ namespace AdSecCore.Functions {
     }
 
     public override void Compute() {
-      // 1. Get and validate solution
       if (!ValidateInputs()) {
         return;
       }
       var solution = SolutionInput.Value;
 
-      // 2. Calculate strength results
-      var (uls, failure) = CalculateStrengthResults(solution);
-      if (uls == null || failure == null) {
+      if (!CalculateStrengthResults(solution, out var uls, out var failure)) {
         return;
       }
 
-      // 3. Process load results
       ProcessLoadResults(uls);
 
-      // 4. Process deformation results
       ProcessDeformationResults(uls);
 
-      // 5. Process moment ranges
       ProcessMomentRanges(uls);
 
-      // 6. Process neutral axis results
       ProcessNeutralAxisResults(uls, solution);
 
-      // 7. Process failure results
       ProcessFailureResults(failure, solution);
     }
 
@@ -98,37 +92,38 @@ namespace AdSecCore.Functions {
     }
 
 
-    private (IStrengthResult uls, IStrengthResult failure) CalculateStrengthResults(SectionSolution solution) {
+    private bool CalculateStrengthResults(SectionSolution solution, out IStrengthResult uls, out IStrengthResult failure) {
+      uls = null;
+      failure = null;
       const double adjustmentFactor = 0.999;
       switch (LoadInput.Value) {
         case ILoad load:
-          if (!IsLoadValid(load)) {
-            return (null, null);
+          if (!ILoadExtensions.IsValid(load, this)) {
+            return false;
           }
-          var uls = solution.Strength.Check(load);
+          uls = solution.Strength.Check(load);
           var failureLoad = ILoad.Create(
               load.X / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
               load.YY / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
               load.ZZ / uls.LoadUtilisation.DecimalFractions * adjustmentFactor);
-          var failure = solution.Strength.Check(failureLoad);
-          return (uls, failure);
-
+          failure = solution.Strength.Check(failureLoad);
+          break;
         case IDeformation def:
-          if (!IsDeformationValid(def)) {
-            return (null, null);
+          if (!IDeformationExtensions.IsValid(def, this)) {
+            return false;
           }
-          var ulsResult = solution.Strength.Check(def);
+          uls = solution.Strength.Check(def);
           var failureDeformation = IDeformation.Create(
-              def.X / ulsResult.LoadUtilisation.DecimalFractions * adjustmentFactor,
-              def.YY / ulsResult.LoadUtilisation.DecimalFractions * adjustmentFactor,
-              def.ZZ / ulsResult.LoadUtilisation.DecimalFractions * adjustmentFactor);
-          var failureResult = solution.Strength.Check(failureDeformation);
-          return (ulsResult, failureResult);
-
+              def.X / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
+              def.YY / uls.LoadUtilisation.DecimalFractions * adjustmentFactor,
+              def.ZZ / uls.LoadUtilisation.DecimalFractions * adjustmentFactor);
+          failure = solution.Strength.Check(failureDeformation);
+          break;
         default:
           ErrorMessages.Add("Invalid Load Input");
-          return (null, null);
+          return false;
       }
+      return true;
     }
 
     private void ProcessLoadResults(IStrengthResult uls) {

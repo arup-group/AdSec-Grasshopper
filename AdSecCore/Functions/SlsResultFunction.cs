@@ -1,7 +1,8 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Numerics;
+
+using AdSecCore.Extensions;
 
 using AdSecGHCore.Constants;
 
@@ -44,49 +45,44 @@ namespace AdSecCore.Functions {
       };
     }
 
-    private IServiceabilityResult ComputeServiceabilityResult(SectionSolution solution) {
+    private bool ComputeServiceabilityResult(SectionSolution solution, out IServiceabilityResult sls) {
+      sls = null;
       switch (LoadInput.Value) {
         case ILoad load:
-          if (!IsLoadValid(load)) {
-            return null;
+          if (!ILoadExtensions.IsValid(load, this)) {
+            return false;
           }
 
-          return solution.Serviceability.Check(load);
-
+          sls = solution.Serviceability.Check(load);
+          break;
         case IDeformation deformation:
-          if (!IsDeformationValid(deformation)) {
-            return null;
+          if (!IDeformationExtensions.IsValid(deformation, this)) {
+            return false;
           }
-
-          return solution.Serviceability.Check(deformation);
-
+          sls = solution.Serviceability.Check(deformation);
+          break;
         default:
           ErrorMessages.Add("Invalid Load Input");
-          return null;
+          return false;
       }
+      return true;
     }
 
     private void ProcessResults(IServiceabilityResult sls, OasysPlane localPlane) {
-      // Process Load and Deformation
       LoadOutput.Value = sls.Load;
       DeformationOutput.Value = sls.Deformation;
 
-      // Process Cracks
       ProcessCracks(sls, localPlane);
 
-      // Process Maximum Crack
       MaximumCrackOutput.Value = new CrackLoad {
         Load = sls.MaximumWidthCrack,
         Plane = localPlane
       };
 
-      // Process Crack Utilisation
       ProcessCrackUtilisation(sls);
 
-      // Process Secant Stiffness
       SecantStiffnessOutput.Value = sls.SecantStiffness;
 
-      // Process Moment Ranges
       ProcessMomentRanges(sls);
     }
 
@@ -135,8 +131,7 @@ namespace AdSecCore.Functions {
       }
 
       var solution = SolutionInput.Value;
-      var sls = ComputeServiceabilityResult(solution);
-      if (sls == null) {
+      if (!ComputeServiceabilityResult(solution, out var sls)) {
         return;
       }
 

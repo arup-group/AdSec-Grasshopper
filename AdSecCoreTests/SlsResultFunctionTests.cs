@@ -1,16 +1,17 @@
 ﻿using AdSecCore;
 using AdSecCore.Builders;
+using AdSecCore.Extensions;
 using AdSecCore.Functions;
 
 using Oasys.AdSec;
 
 using OasysUnits;
-using OasysUnits.Units;
 
 namespace AdSecCoreTests.Functions {
   public class SlsResultFunctionTest {
     private readonly SlsResultFunction _component;
     private static SectionSolution? Solution { get; set; } = null;
+    private readonly DoubleComparer comparer = new DoubleComparer();
     public SlsResultFunctionTest() {
       _component = new SlsResultFunction();
       if (Solution == null) {
@@ -79,8 +80,8 @@ namespace AdSecCoreTests.Functions {
       var expectedDeformation = IDeformation.Create(Strain.FromRatio(0.0014), Curvature.FromPerMeters(0.0064), Curvature.FromPerMeters(0.0029));
       Assert.True(IsLoadEqual(expectedLoad, _component.LoadOutput.Value));
       Assert.True(IsDeformationEqual(expectedDeformation, _component.DeformationOutput.Value));
-      Assert.Equal(0.00208, _component.MaximumCrackOutput.Value.Load.Width.Value, new DoubleComparer());
-      Assert.Equal(5.8156, _component.CrackUtilOutput.Value, new DoubleComparer());
+      Assert.Equal(0.00208, _component.MaximumCrackOutput.Value.Load.Width.Value, comparer);
+      Assert.Equal(5.8156, _component.CrackUtilOutput.Value, comparer);
       Assert.Single(_component.RemarkMessages);
       Assert.Equal(69, _component.CrackOutput.Value.Length);
     }
@@ -123,5 +124,14 @@ namespace AdSecCoreTests.Functions {
       Assert.Single(_component.ErrorMessages);
     }
 
+    [Fact]
+    public void NullDeformationShouldBeInvalid() {
+      Assert.False(IDeformationExtensions.IsValid(null));
+    }
+
+    [Fact]
+    public void NullLoadShouldBeInvalid() {
+      Assert.False(ILoadExtensions.IsValid(null));
+    }
   }
 }

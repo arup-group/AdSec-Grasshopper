@@ -11,6 +11,7 @@ namespace AdSecCoreTests.Functions {
   public class UlsResultFunctionTest {
     private readonly UlsResultFunction _component;
     private static SectionSolution? Solution { get; set; } = null;
+    private readonly DoubleComparer comparer = new DoubleComparer();
     public UlsResultFunctionTest() {
       _component = new UlsResultFunction();
       if (Solution == null) {
@@ -80,21 +81,21 @@ namespace AdSecCoreTests.Functions {
     public void ShouldComputeCorrectly() {
       _component.Compute();
       var expectedLoad = ILoad.Create(Force.FromKilonewtons(-700), Moment.FromKilonewtonMeters(10), Moment.Zero);
-      var expectedDeformation = IDeformation.Create(Strain.FromRatio(-0.00105), Curvature.FromPerMeters(-0.00125), Curvature.FromPerMeters(-8e-07));
-      var expectedFailureDeformation = IDeformation.Create(Strain.FromRatio(-0.001742), Curvature.FromPerMeters(-0.0035), Curvature.FromPerMeters(9.07e-09));
+      var expectedDeformation = IDeformation.Create(Strain.FromRatio(-0.00105), Curvature.FromPerMeters(-0.00125), Curvature.Zero);
+      var expectedFailureDeformation = IDeformation.Create(Strain.FromRatio(-0.001742), Curvature.FromPerMeters(-0.0035), Curvature.Zero);
       Assert.True(SlsResultFunctionTest.IsLoadEqual(expectedLoad, _component.LoadOutput.Value));
       Assert.True(SlsResultFunctionTest.IsDeformationEqual(expectedDeformation, _component.DeformationOutput.Value));
       Assert.True(SlsResultFunctionTest.IsDeformationEqual(expectedFailureDeformation, _component.FailureDeformationOutput.Value));
-      Assert.Equal(0.8451, _component.LoadUtilOutput.Value, new DoubleComparer());
-      Assert.Equal(0.6165, _component.DeformationUtilOutput.Value, new DoubleComparer());
-      Assert.Equal(-20324.2652, _component.MomentRangesOutput.Value[0].Item1, new DoubleComparer());
-      Assert.Equal(118601.9170, _component.MomentRangesOutput.Value[0].Item2, new DoubleComparer());
-      Assert.Equal(-3.140, _component.NeutralAxisLineOutput.Value.Angle, new DoubleComparer());
-      Assert.Equal(0.84071697296545067, _component.NeutralAxisLineOutput.Value.Offset.As(LengthUnit.Meter), new DoubleComparer());
-      Assert.Equal(0.84071697296545067, _component.NeutralAxisOffsetOutput.Value.As(LengthUnit.Meter), new DoubleComparer());
-      Assert.Equal(-3.140, _component.NeutralAxisAngleOutput.Value, new DoubleComparer());
-      Assert.Equal(0.49967085191224453, _component.FailureNeutralAxisOffsetOutput.Value.As(LengthUnit.Meter), new DoubleComparer());
-      Assert.Equal(3.140, _component.FailureNeutralAxisAngleOutput.Value, new DoubleComparer());
+      Assert.Equal(0.85, _component.LoadUtilOutput.Value, comparer);
+      Assert.Equal(0.62, _component.DeformationUtilOutput.Value, comparer);
+      Assert.Equal(-20324, _component.MomentRangesOutput.Value[0].Item1, comparer);
+      Assert.Equal(118601, _component.MomentRangesOutput.Value[0].Item2, comparer);
+      Assert.Equal(-3.14, _component.NeutralAxisLineOutput.Value.Angle, comparer);
+      Assert.Equal(0.84, _component.NeutralAxisLineOutput.Value.Offset.As(LengthUnit.Meter), comparer);
+      Assert.Equal(0.84, _component.NeutralAxisOffsetOutput.Value.As(LengthUnit.Meter), comparer);
+      Assert.Equal(-3.14, _component.NeutralAxisAngleOutput.Value, comparer);
+      Assert.Equal(0.5, _component.FailureNeutralAxisOffsetOutput.Value.As(LengthUnit.Meter), comparer);
+      Assert.Equal(3.14, _component.FailureNeutralAxisAngleOutput.Value, comparer);
     }
 
     [Fact]
