@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-using AdSecCore.Functions;
+﻿using AdSecCore.Functions;
 
 using AdSecGH;
 using AdSecGH.Components;
@@ -78,7 +76,7 @@ namespace AdSecGHTests.Components {
       ComponentTesting.ComputeOutputs(_component);
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
       Assert.Single(runtimeMessages);
-      string message = runtimeMessages.First();
+      string message = runtimeMessages[0];
       Assert.Contains("Sec", message);
       Assert.Contains("failed", message);
     }

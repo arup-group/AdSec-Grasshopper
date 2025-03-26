@@ -66,7 +66,7 @@ namespace AdSecCore.Functions {
 
       DesignCodeOut.Value = DesignCode.Value ?? DesignCodeParameter.From(Section.Value);
 
-      MaterialOut.Value.DesignCode = DesignCodeOut.Value; // The material needs the new Designcode
+      MaterialOut.Value.DesignCode = DesignCodeOut.Value; // The material needs the new DesignCode
 
       RebarGroupOut.Value = RebarGroup.Value ?? Section.Value.Section.ReinforcementGroups
        .Select(x => new AdSecRebarGroup(x)).ToArray();
