@@ -30,13 +30,13 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.septenary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.CreateDesignCode;
-    private const string _nationalKey = "National";
-    private IDictionary<string, string> _prefixMappings = new Dictionary<string, string> {
+    private const string _excludeKey = "National";
+    private readonly IDictionary<string, string> _prefixMappings = new Dictionary<string, string> {
       { "Edition", "Edition" },
       { "Part", "Part" },
       { "Metric", "Unit" },
       { "US", "Unit" },
-      { _nationalKey, "National Annex" },
+      { _excludeKey, "National Annex" },
     };
 
     public override void SetSelected(int i, int j) {
@@ -99,7 +99,7 @@ namespace AdSecGH.Components {
             // stop drilling
             drill = false;
 
-            _spacerDescriptions[_selectedItems.Count - 1] = GetDescription(typeString, _nationalKey);
+            _spacerDescriptions[_selectedItems.Count - 1] = GetDescription(typeString, _excludeKey);
           }
         }
       }
@@ -222,7 +222,7 @@ namespace AdSecGH.Components {
           // stop drilling
           drill = false;
 
-          _spacerDescriptions[_selectedItems.Count - 1] = GetDescription(typeString, _nationalKey);
+          _spacerDescriptions[_selectedItems.Count - 1] = GetDescription(typeString, _excludeKey);
         }
       }
 
