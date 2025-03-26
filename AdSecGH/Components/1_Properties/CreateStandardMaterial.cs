@@ -33,6 +33,11 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.StandardMaterial;
+    private readonly IDictionary<string, string> _prefixMappings = new Dictionary<string, string> {
+      { "Edition", "Edition" },
+      { "Metric", "Unit" },
+      { "US", "Unit" },
+    };
 
     public override void SetSelected(int i, int j) {
       // change selected item
@@ -125,13 +130,7 @@ namespace AdSecGH.Components {
               typeString = _selectedItems[level];
             }
 
-            if (typeString.StartsWith("Edition")) {
-              _spacerDescriptions[level] = "Edition";
-            }
-
-            if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
-              _spacerDescriptions[level] = "Unit";
-            }
+            _spacerDescriptions[level] = GetDescription(typeString);
           } else if (designCodeKVP.Count == 1) {
             // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
             typeString = designCodeKVP.Keys.First();
@@ -357,13 +356,7 @@ namespace AdSecGH.Components {
           level++;
           typeString = _selectedItems[level];
 
-          if (typeString.StartsWith("Edition")) {
-            _spacerDescriptions[level] = "Edition";
-          }
-
-          if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
-            _spacerDescriptions[level] = "Unit";
-          }
+          _spacerDescriptions[level] = GetDescription(typeString);
         } else if (designCodeKVP.Count == 1) {
           // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
           typeString = designCodeKVP.Keys.First();
@@ -379,6 +372,13 @@ namespace AdSecGH.Components {
       }
 
       base.UpdateUIFromSelectedItems();
+    }
+
+    private string GetDescription(string typeString) {
+      string result = _prefixMappings.Where(mapping => typeString.StartsWith(mapping.Key))
+       .Select(mapping => mapping.Value).FirstOrDefault();
+
+      return string.IsNullOrEmpty(result) ? "Design Code" : result;
     }
   }
 }
