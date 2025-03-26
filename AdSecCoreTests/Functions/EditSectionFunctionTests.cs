@@ -3,7 +3,7 @@ using AdSecCore.Functions;
 
 using AdSecGH.Parameters;
 
-using AdSecGHTests;
+using AdSecGHCore;
 
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.StandardMaterials;
@@ -68,6 +68,16 @@ namespace AdSecCoreTests.Functions {
       };
       function.Compute();
       Assert.Equal(adSecRebarGroup, function.RebarGroupOut.Value[0]);
+    }
+
+    [Fact]
+    public void ShouldUpdateSubComponent() {
+      var subComponent = SampleData.GetSubComponentZero();
+      function.SubComponent.Value = new[] {
+        subComponent,
+      };
+      function.Compute();
+      Assert.Equal(SampleData.GetSubComponentZero(), function.SubComponentOut.Value[0]);
     }
 
     [Fact]
