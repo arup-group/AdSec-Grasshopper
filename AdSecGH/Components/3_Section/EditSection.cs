@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
-using Oasys.AdSec;
 using Oasys.GH.Helpers;
 
 using OasysGH;
@@ -31,10 +28,10 @@ namespace AdSecGH.Components {
         if (goo.Value != null) {
           Section.Value = new SectionDesign {
             Section = goo.Value.Section,
-            DesignCode = new DesignCode() {
+            DesignCode = new DesignCode {
               IDesignCode = goo.Value.DesignCode,
               DesignCodeName = goo.Value._codeName,
-            }
+            },
           };
         }
       };
@@ -66,7 +63,6 @@ namespace AdSecGH.Components {
 
   public class EditSection : ComponentAdapter<EditSectionGh> {
 
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("9b0acde5-f57f-4a39-a9c3-cdc935037490");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;

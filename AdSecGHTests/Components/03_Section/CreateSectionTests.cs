@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System.Reflection;
-
-using AdSecCore.Builders;
+﻿using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using AdSecGH;
@@ -34,7 +31,7 @@ namespace AdSecGHTests.Components {
       var profile = new ProfileBuilder().WidthDepth(1).WithWidth(2).Build();
       var profileDesign = new ProfileDesign { Profile = profile, LocalPlane = OasysPlane.PlaneYZ, };
       component.SetInputParamAt(0, new AdSecProfileGoo(profileDesign));
-      var adSecMaterial = new AdSecMaterialGoo(new MaterialDesign { Material = SectionMat, DesignCode = new DesignCode() { IDesignCode = DesignCode, DesignCodeName = null }, });
+      var adSecMaterial = new AdSecMaterialGoo(new MaterialDesign { Material = SectionMat, DesignCode = new DesignCode { IDesignCode = DesignCode, DesignCodeName = null, }, });
       component.SetInputParamAt(1, adSecMaterial);
     }
 
@@ -104,14 +101,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(MatchesExpectedIcon(component, Resources.CreateFlange));
-    }
-
-    public static bool MatchesExpectedIcon(GH_Component component, Bitmap expected) {
-      var propertyInfo = component.GetType().GetProperty("Icon", BindingFlags.Instance | BindingFlags.NonPublic);
-      var icon = (Bitmap)propertyInfo?.GetValue(component, null);
-      var expectedRawFormat = expected.RawFormat;
-      return expectedRawFormat.Guid.Equals(icon?.RawFormat.Guid);
+      Assert.True(component.MatchesExpectedIcon(Resources.CreateFlange));
     }
   }
 }

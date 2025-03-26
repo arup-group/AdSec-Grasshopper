@@ -2,8 +2,10 @@
 
 using AdSecCore.Functions;
 
+using AdSecGH;
 using AdSecGH.Components;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
@@ -94,6 +96,16 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldHaveSevenOutput() {
       Assert.Equal(7, _component.Params.Output.Count);
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(_component.MatchesExpectedIcon(Resources.EditSection));
     }
   }
 }
