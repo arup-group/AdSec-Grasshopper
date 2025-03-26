@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 
 using AdSecCore;
 
@@ -109,18 +110,22 @@ namespace IntegrationTests {
       }
     }
 
-    public static void TestNoRuntimeMessagesInDocument(
+    public static string TestNoRuntimeMessagesInDocument(
       GH_Document doc, GH_RuntimeMessageLevel runtimeMessageLevel, string exceptComponentNamed = "") {
       foreach (var obj in doc.Objects) {
-        if (obj is GH_Component comp) {
-          comp.CollectData();
-          comp.Params.Output[0].CollectData();
-          comp.Params.Output[0].VolatileData.get_Branch(0);
-          if (comp.Name != exceptComponentNamed) {
-            Assert.Empty(comp.RuntimeMessages(runtimeMessageLevel));
-          }
+        if (!(obj is GH_Component comp)) {
+          continue;
+        }
+
+        comp.CollectData();
+        comp.Params.Output[0].CollectData();
+        comp.Params.Output[0].VolatileData.get_Branch(0);
+        if (comp.Name != exceptComponentNamed && comp.RuntimeMessages(runtimeMessageLevel).Any()) {
+          return $"Failed for {comp}";
         }
       }
+
+      return string.Empty;
     }
   }
 }

@@ -30,6 +30,14 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.septenary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.CreateDesignCode;
+    private const string _excludeKey = "National";
+    private readonly IDictionary<string, string> _prefixMappings = new Dictionary<string, string> {
+      { "Edition", "Edition" },
+      { "Part", "Part" },
+      { "Metric", "Unit" },
+      { "US", "Unit" },
+      { _excludeKey, "National Annex" },
+    };
 
     public override void SetSelected(int i, int j) {
       // change selected item
@@ -76,21 +84,7 @@ namespace AdSecGH.Components {
               typeString = _selectedItems[level];
             }
 
-            if (typeString.StartsWith("Edition")) {
-              _spacerDescriptions[level] = "Edition";
-            }
-
-            if (typeString.StartsWith("Part")) {
-              _spacerDescriptions[level] = "Part";
-            }
-
-            if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
-              _spacerDescriptions[level] = "Unit";
-            }
-
-            if (typeString.StartsWith("National")) {
-              _spacerDescriptions[level] = "National Annex";
-            }
+            _spacerDescriptions[level] = GetDescription(typeString);
           } else if (designCodeKVP.Count == 1) {
             // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
             typeString = designCodeKVP.Keys.First();
@@ -105,18 +99,7 @@ namespace AdSecGH.Components {
             // stop drilling
             drill = false;
 
-            _spacerDescriptions[_selectedItems.Count - 1] = "Design Code";
-            if (typeString.StartsWith("Edition")) {
-              _spacerDescriptions[_selectedItems.Count - 1] = "Edition";
-            }
-
-            if (typeString.StartsWith("Part")) {
-              _spacerDescriptions[_selectedItems.Count - 1] = "Part";
-            }
-
-            if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
-              _spacerDescriptions[_selectedItems.Count - 1] = "Unit";
-            }
+            _spacerDescriptions[_selectedItems.Count - 1] = GetDescription(typeString, _excludeKey);
           }
         }
       }
@@ -227,24 +210,8 @@ namespace AdSecGH.Components {
         // determine if we have reached the fields layer
         if (designCodeKVP.Count > 1) {
           level++;
-
           typeString = _selectedItems[level];
-
-          if (typeString.StartsWith("Edition")) {
-            _spacerDescriptions[level] = "Edition";
-          }
-
-          if (typeString.StartsWith("Part")) {
-            _spacerDescriptions[level] = "Part";
-          }
-
-          if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
-            _spacerDescriptions[level] = "Unit";
-          }
-
-          if (typeString.StartsWith("National")) {
-            _spacerDescriptions[level] = "National Annex";
-          }
+          _spacerDescriptions[level] = GetDescription(typeString);
         } else if (designCodeKVP.Count == 1) {
           // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
           typeString = designCodeKVP.Keys.First();
@@ -255,22 +222,18 @@ namespace AdSecGH.Components {
           // stop drilling
           drill = false;
 
-          _spacerDescriptions[_selectedItems.Count - 1] = "Design Code";
-          if (typeString.StartsWith("Edition")) {
-            _spacerDescriptions[_selectedItems.Count - 1] = "Edition";
-          }
-
-          if (typeString.StartsWith("Part")) {
-            _spacerDescriptions[_selectedItems.Count - 1] = "Part";
-          }
-
-          if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
-            _spacerDescriptions[_selectedItems.Count - 1] = "Unit";
-          }
+          _spacerDescriptions[_selectedItems.Count - 1] = GetDescription(typeString, _excludeKey);
         }
       }
 
       base.UpdateUIFromSelectedItems();
+    }
+
+    private string GetDescription(string typeString, string excludedKey = "") {
+      string result = _prefixMappings.Where(mapping => typeString.StartsWith(mapping.Key) && mapping.Key != excludedKey)
+       .Select(mapping => mapping.Value).FirstOrDefault();
+
+      return string.IsNullOrEmpty(result) ? "Design Code" : result;
     }
   }
 }

@@ -8,7 +8,9 @@ using OasysGH;
 using OasysGH.Components;
 
 namespace TestGrasshopperObjects.Extensions {
+#pragma warning disable S101 // Types should be named in PascalCase
   public class IConcreteCrackCalculationParametersTestComponent : GH_OasysComponent {
+#pragma warning restore S101 // Types should be named in PascalCase
     public bool Optional { get; set; }
     public IConcreteCrackCalculationParametersTestComponent() : base("t0", "t1", "t2", "t3", "t4") { }
     public override Guid ComponentGuid => Guid.NewGuid();

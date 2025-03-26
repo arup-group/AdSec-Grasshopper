@@ -129,18 +129,18 @@ namespace Oasys.GH.Helpers {
           typeof(LoadSurfaceParameter),
           a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
         },
-        { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value },
-        { typeof(ProfileParameter), a => {
+        { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value }, {
+          typeof(ProfileParameter), a => {
             var profileDesign = (a as ProfileParameter).Value;
             return new AdSecProfileGoo(profileDesign);
           }
-        },
-        { typeof(MaterialParameter), a => {
+        }, {
+          typeof(MaterialParameter), a => {
             var materialDesign = (a as MaterialParameter).Value;
             return new AdSecMaterialGoo(materialDesign);
           }
-        },
-        { typeof(DesignCodeParameter), a => {
+        }, {
+          typeof(DesignCodeParameter), a => {
             var designCode = (a as DesignCodeParameter).Value;
             return new AdSecDesignCodeGoo(designCode);
           }

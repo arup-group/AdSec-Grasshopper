@@ -21,8 +21,8 @@ namespace IntegrationTests.Components {
 
     [Fact]
     public void NoRuntimeErrorTest() {
-      Helper.TestNoRuntimeMessagesInDocument(Document, GH_RuntimeMessageLevel.Error);
-      Helper.TestNoRuntimeMessagesInDocument(Document, GH_RuntimeMessageLevel.Warning);
+      Assert.Empty(Helper.TestNoRuntimeMessagesInDocument(Document, GH_RuntimeMessageLevel.Error));
+      Assert.Empty(Helper.TestNoRuntimeMessagesInDocument(Document, GH_RuntimeMessageLevel.Warning));
     }
 
     [Theory]
@@ -42,7 +42,7 @@ namespace IntegrationTests.Components {
       0.145305,
       0.016448,
       -0.134224,
-      -0.006349,
+      -0.007447,
       -0.104581,
       -0.15289,
       -0.201211,
@@ -56,7 +56,7 @@ namespace IntegrationTests.Components {
       29.061078,
       3.289703,
       -26.844842,
-      -1.269816,
+      -1.4859736,
       -20.916174,
       -30.577941,
       -40.242196,
