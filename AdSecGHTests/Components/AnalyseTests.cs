@@ -19,22 +19,23 @@ namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
   public class AnalyseTests {
     private readonly AdSecSectionGoo adSecSectionGoo;
-
-    private readonly Analyse component;
+    private static Analyse component;
     private readonly IDesignCode designCode = IS456.Edition_2000;
     private readonly ISection Section;
 
     public AnalyseTests() {
-      component = new Analyse();
+      if (component == null) {
+        component = new Analyse();
 
-      var singleBars = new BuilderSingleBar().WithSize(2).CreateSingleBar().AtPosition(Geometry.Zero()).Build();
-      Section = new SectionBuilder().WithWidth(40).CreateSquareSection().WithReinforcementGroup(singleBars).Build();
+        var singleBars = new BuilderSingleBar().WithSize(2).CreateSingleBar().AtPosition(Geometry.Zero()).Build();
+        Section = new SectionBuilder().WithWidth(40).CreateSquareSection().WithReinforcementGroup(singleBars).Build();
 
-      var secSection = new AdSecSection(Section, designCode, "", "", Plane.WorldXY);
-      adSecSectionGoo = new AdSecSectionGoo(secSection);
-      component.SetInputParamAt(0, adSecSectionGoo);
+        var secSection = new AdSecSection(Section, designCode, "", "", Plane.WorldXY);
+        adSecSectionGoo = new AdSecSectionGoo(secSection);
+        component.SetInputParamAt(0, adSecSectionGoo);
 
-      ComponentTesting.ComputeOutputs(component);
+        ComponentTesting.ComputeOutputs(component);
+      }
     }
 
     [Fact]

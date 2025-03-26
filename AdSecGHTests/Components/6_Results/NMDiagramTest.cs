@@ -19,6 +19,7 @@ namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
   public class NMDiagramTest {
     private static NMDiagram _component;
+    private static AdSecSolutionGoo _solution;
     public NMDiagramTest() {
       _component = ComponentMother();
     }
@@ -31,7 +32,10 @@ namespace AdSecGHTests.Components {
       var component = new NMDiagram();
       component.CreateAttributes();
       component.SetSelected(0, 0);
-      ComponentTestHelper.SetInput(component, AdSecUtility.GetResult(), 0);
+      if (_solution == null) {
+        _solution = AdSecUtility.GetResult();
+      }
+      ComponentTestHelper.SetInput(component, _solution, 0);
       return component;
     }
 
