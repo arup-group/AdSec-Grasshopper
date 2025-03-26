@@ -8,6 +8,8 @@ using AdSecGH.Parameters;
 using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
+using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
 
@@ -23,7 +25,7 @@ namespace AdSecGHTests.Components {
   public class UlsResultTests {
     private readonly UlsResult _component;
     private static SectionSolution Solution { get; set; } = null;
-
+    private readonly DoubleComparer comparer = new DoubleComparer();
     public UlsResultTests() {
       _component = new UlsResult();
       if (Solution == null) {
@@ -104,7 +106,15 @@ namespace AdSecGHTests.Components {
       SetLoad();
       var axis = (AdSecNeutralAxisGoo)ComponentTestHelper.GetOutput(_component, 5);
       var length = new Length(axis.AxisLine.Length, DefaultUnits.LengthUnitGeometry);
-      Assert.Equal(0.315, length.As(LengthUnit.Meter), new DoubleComparer());
+      Assert.Equal(0.315, length.As(LengthUnit.Meter), comparer);
+    }
+
+    [Fact]
+    public void ShouldCalculateOffsetForGivenLoad() {
+      SetLoad();
+      var wrapper = (GH_ObjectWrapper)ComponentTestHelper.GetOutput(_component, 6);
+      var offset = (Length)wrapper.Value;
+      Assert.Equal(-0.707, offset.As(LengthUnit.Meter), comparer);
     }
 
   }

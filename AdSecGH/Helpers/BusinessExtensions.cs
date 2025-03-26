@@ -191,6 +191,10 @@ namespace Oasys.GH.Helpers {
             var value = (a as NeutralLineParameter).Value;
             return new AdSecNeutralAxisGoo(value);
           }
+        },{
+          typeof(LengthParameter), a => {
+            return (a as LengthParameter).Value;
+          }
         }
       };
 
