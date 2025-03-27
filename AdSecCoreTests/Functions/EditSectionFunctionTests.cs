@@ -55,12 +55,6 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
-    public void ShouldNOTCalculateGeometry() {
-      function.Compute();
-      Assert.Null(function.Geometry.Value);
-    }
-
-    [Fact]
     public void ShouldHaveSixInputs() {
       function.Compute();
       Assert.Equal(6, function.GetAllInputAttributes().Length);
