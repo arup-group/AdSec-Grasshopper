@@ -122,7 +122,7 @@ namespace AdSecCoreTests.Functions {
         (ILineGroup)function.SectionOut.Value.Section.ReinforcementGroups[0]));
     }
 
-    [Fact(Skip = "Not Equality method finished")]
+    [Fact]
     public void ShouldUpdateSubComponent() {
       var subComponent = SampleData.GetSubComponentZero();
       function.SubComponent.Value = new[] {
@@ -138,11 +138,11 @@ namespace AdSecCoreTests.Functions {
       Assert.True(AllButFirstOptional());
     }
 
-    public static bool Equal(IIBeamSymmetricalProfile flanges, IIBeamSymmetricalProfile flanges2) {
-      return Equal(flanges.BottomFlange, flanges2.BottomFlange) && Equal(flanges.TopFlange, flanges2.TopFlange)
-        && Equal(flanges.Web, flanges2.Web) && Equals(flanges.Depth, flanges2.Depth)
-        && Equals(flanges.Rotation, flanges2.Rotation) && Equals(flanges.IsReflectedY, flanges2.IsReflectedY)
-        && Equals(flanges.IsReflectedZ, flanges2.IsReflectedZ);
+    public static bool Equal(IIBeamSymmetricalProfile profile, IIBeamSymmetricalProfile profile2) {
+      return Equal(profile.BottomFlange, profile2.BottomFlange) && Equal(profile.TopFlange, profile2.TopFlange)
+        && Equal(profile.Web, profile2.Web) && Equals(profile.Depth, profile2.Depth)
+        && Equals(profile.Rotation, profile2.Rotation) && Equals(profile.IsReflectedY, profile2.IsReflectedY)
+        && Equals(profile.IsReflectedZ, profile2.IsReflectedZ);
     }
 
     public static bool Equal(IWebConstant web, IWebConstant web2) {
@@ -155,14 +155,64 @@ namespace AdSecCoreTests.Functions {
     }
 
     public static bool Equal(ISubComponent subComponent, ISubComponent subComponent2) {
-      return Equals(subComponent.Offset, subComponent2.Offset) && Equal(subComponent.Section, subComponent2.Section);
+      return Equal(subComponent.Offset, subComponent2.Offset) && Equal(subComponent.Section, subComponent2.Section);
     }
 
     public static bool Equal(ISection section, ISection section2) {
-      return Equals(section.Cover, section2.Cover) && Equal(section.Material, section2.Material)
-        && Equals(section.Profile, section2.Profile)
-        && Equal((ILineGroup)section.ReinforcementGroups[0], (ILineGroup)section2.ReinforcementGroups[0])
-        && Equal(section.SubComponents[0], section2.SubComponents[0]);
+      bool equals = Equals(section.Cover?.UniformCover, section2.Cover?.UniformCover)
+        && Equal(section.Material, section2.Material) && Equals(section.Profile, section2.Profile)
+        && Equal(section.ReinforcementGroups, section2.ReinforcementGroups)
+        && Equal(section.SubComponents, section2.SubComponents);
+
+      return equals;
+    }
+
+    public static bool Equal(IList<ISubComponent> subComponents, IList<ISubComponent> subComponents2) {
+      if (subComponents.Count != subComponents2.Count) {
+        return false;
+      }
+
+      if (subComponents.Count == 0) {
+        return true;
+      }
+
+      for (int i = 0; i < subComponents.Count; i++) {
+        if (!Equal(subComponents[i], subComponents2[i])) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    public static bool Equal(IList<IGroup> groups, IList<IGroup> groups2) {
+      if (groups.Count != groups2.Count) {
+        return false;
+      }
+
+      if (groups.Count == 0) {
+        return true;
+      }
+
+      for (int i = 0; i < groups.Count; i++) {
+        if (groups[i] is ILineGroup lineGroup) {
+          if (!Equal(lineGroup, (ILineGroup)groups2[i])) {
+            return false;
+          }
+        } else {
+          throw new NotImplementedException($"Haven't implemented comparison for {groups[i].GetType().Name}");
+        }
+      }
+
+      return true;
+    }
+
+    public static bool Equal(IProfile profile, IProfile profile2) {
+      if (profile is IIBeamSymmetricalProfile iBeam) {
+        return Equal(iBeam, (IIBeamSymmetricalProfile)profile2);
+      }
+
+      throw new NotImplementedException($"Haven't implemented comparison for {profile.GetType().Name}");
     }
 
     public static bool Equal(ILayer layer, ILayer layer2) {
