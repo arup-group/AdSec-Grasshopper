@@ -93,7 +93,6 @@ namespace AdSecCoreTests.Functions {
       };
       function.Compute();
       Assert.Equal(newMat, function.MaterialOut.Value.Material);
-      Assert.Equal(newMat, function.SectionOut.Value.Section.Material);
       Assert.True(Equal(newMat, function.SectionOut.Value.Section.Material));
     }
 
@@ -138,6 +137,7 @@ namespace AdSecCoreTests.Functions {
       Assert.True(AllButFirstOptional());
     }
 
+    // TODO: cast to IPerimeter and the Check
     public static bool Equal(IIBeamSymmetricalProfile profile, IIBeamSymmetricalProfile profile2) {
       return Equal(profile.BottomFlange, profile2.BottomFlange) && Equal(profile.TopFlange, profile2.TopFlange)
         && Equal(profile.Web, profile2.Web) && Equals(profile.Depth, profile2.Depth)
@@ -160,7 +160,7 @@ namespace AdSecCoreTests.Functions {
 
     public static bool Equal(ISection section, ISection section2) {
       bool equals = Equals(section.Cover?.UniformCover, section2.Cover?.UniformCover)
-        && Equal(section.Material, section2.Material) && Equals(section.Profile, section2.Profile)
+        && Equal(section.Material, section2.Material) && Equal(section.Profile, section2.Profile)
         && Equal(section.ReinforcementGroups, section2.ReinforcementGroups)
         && Equal(section.SubComponents, section2.SubComponents);
 
@@ -263,7 +263,7 @@ namespace AdSecCoreTests.Functions {
     public static bool Equal(IMaterial material, IMaterial material2) {
       var serviceability1 = material.Serviceability;
       var serviceability2 = material2.Serviceability;
-
+      // TODO: material2.Strength.Compression.FailureStrain
       return Equals(serviceability1.Tension.FailureStrain, serviceability2.Tension.FailureStrain)
         && Equals(serviceability1.Compression.FailureStrain, serviceability2.Compression.FailureStrain)
         && Equals(material.Strength.Compression.FailureStrain, material2.Strength.Compression.FailureStrain);
