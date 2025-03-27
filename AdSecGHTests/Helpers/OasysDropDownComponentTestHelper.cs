@@ -10,10 +10,9 @@ using OasysGH.Components;
 using Xunit;
 
 namespace AdSecGHTests.Helpers {
-  public class OasysDropDownComponentTestHelper {
+  public static class OasysDropDownComponentTestHelper {
 
     public static void ChangeDropDownTest(GH_OasysDropDownComponent comp, bool ignoreSpacerDescriptionsCount = false) {
-      Assert.True(comp.IsInitialised);
       if (!ignoreSpacerDescriptionsCount) {
         Assert.Equal(comp.DropDownItems.Count, comp.SpacerDescriptions.Count);
       }

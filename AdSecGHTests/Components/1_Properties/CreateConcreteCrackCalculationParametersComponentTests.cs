@@ -27,6 +27,7 @@ namespace AdSecGHTests.Properties {
     [Fact]
     public void ChangeDropDownTest() {
       var comp = ComponentMother();
+      Assert.True(comp.IsInitialised);
       OasysDropDownComponentTestHelper.ChangeDropDownTest(comp);
     }
 
@@ -35,29 +36,8 @@ namespace AdSecGHTests.Properties {
       var comp = ComponentMother();
       comp.SetSelected(0, 0); // change dropdown to ?
       var output = (AdSecConcreteCrackCalculationParametersGoo)ComponentTestHelper.GetOutput(comp);
-      //Assert.Equal(0, output.Value.StartPosition.Value);
-      //Assert.Equal(130, output.Value.OverallDepth.Millimeters);
-      //Assert.Equal(1.7, output.Value.AvailableWidthLeft.Meters);
-      //Assert.Equal(1.2, output.Value.AvailableWidthRight.Meters);
-      //Assert.False(output.Value.TaperedToNext);
+      Assert.NotNull(output);
     }
-
-    //[Fact]
-    //public void CreateComponentWithInputs1()
-    //{
-    //  var comp = ComponentMother();
-
-    //  comp.SetSelected(0, 2); // change dropdown to m
-
-    //  ComponentTestHelper.SetInput(comp, 1.5, 4);
-    //  ComponentTestHelper.SetInput(comp, 1.0, 5);
-    //  ComponentTestHelper.SetInput(comp, true, 6);
-
-    //  SlabDimensionGoo output = (SlabDimensionGoo)ComponentTestHelper.GetOutput(comp);
-    //  Assert.Equal(1.5, output.Value.EffectiveWidthLeft.Meters);
-    //  Assert.Equal(1.0, output.Value.EffectiveWidthRight.Meters);
-    //  Assert.True(output.Value.TaperedToNext);
-    //}
 
     [Fact]
     public void DeserializeTest() {
