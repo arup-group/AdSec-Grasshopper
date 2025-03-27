@@ -1,16 +1,17 @@
 ﻿using AdSecCore;
 using AdSecCore.Builders;
+using AdSecCore.Extensions;
 using AdSecCore.Functions;
 
 using Oasys.AdSec;
 
 using OasysUnits;
-using OasysUnits.Units;
 
 namespace AdSecCoreTests.Functions {
   public class SlsResultFunctionTest {
     private readonly SlsResultFunction _component;
     private static SectionSolution? Solution { get; set; } = null;
+    private readonly DoubleComparer comparer = new DoubleComparer();
     public SlsResultFunctionTest() {
       _component = new SlsResultFunction();
       if (Solution == null) {
@@ -22,9 +23,9 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveCorrectMetadata() {
-      Assert.Equal("Find Crack Load", _component.Metadata.Name);
-      Assert.Equal("CrackLd", _component.Metadata.NickName);
-      Assert.Equal("Increases the load until set crack width is reached", _component.Metadata.Description);
+      Assert.Equal("Serviceability Result", _component.Metadata.Name);
+      Assert.Equal("SLS", _component.Metadata.NickName);
+      Assert.Equal("Performs serviceability analysis (SLS), for a given Load or Deformation.", _component.Metadata.Description);
     }
 
 
@@ -51,7 +52,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShoulHaveValidDeformationDescription() {
-      _component.DeformationDescription(StrainUnit.Ratio, CurvatureUnit.PerMeter);
+      _component.DeformationDescription();
       var description = _component.DeformationOutput.Description;
       Assert.Contains("[εm⁻¹]", description);
       Assert.Contains("[εm⁻¹]", description);
@@ -59,7 +60,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveValidSecantStiffnessDescription() {
-      _component.SecantStiffnessDescription(AxialStiffnessUnit.Newton, BendingStiffnessUnit.NewtonSquareMeter);
+      _component.SecantStiffnessDescription();
       var description = _component.SecantStiffnessOutput.Description;
       Assert.Contains("[N]", description);
       Assert.Contains("[N·m²]", description);
@@ -68,7 +69,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveValidUncrackedMomentRangesDescription() {
-      _component.UncrackedMomentRangesDescription(MomentUnit.NewtonMeter);
+      _component.MomentRangesDescription();
       Assert.Contains("[N·m]", _component.UncrackedMomentRangesOutput.Description);
     }
 
@@ -79,22 +80,60 @@ namespace AdSecCoreTests.Functions {
       var expectedDeformation = IDeformation.Create(Strain.FromRatio(0.0014), Curvature.FromPerMeters(0.0064), Curvature.FromPerMeters(0.0029));
       Assert.True(IsLoadEqual(expectedLoad, _component.LoadOutput.Value));
       Assert.True(IsDeformationEqual(expectedDeformation, _component.DeformationOutput.Value));
-      Assert.Equal(0.00208, _component.MaximumCrackOutput.Value.Load.Width.Value, new DoubleComparer());
-      Assert.Equal(5.8156, _component.CrackUtilOutput.Value, new DoubleComparer());
+      Assert.Equal(0.00208, _component.MaximumCrackOutput.Value.Load.Width.Value, comparer);
+      Assert.Equal(5.8156, _component.CrackUtilOutput.Value, comparer);
       Assert.Single(_component.RemarkMessages);
       Assert.Equal(69, _component.CrackOutput.Value.Length);
     }
 
-    private static bool IsLoadEqual(ILoad expected, ILoad calculated) {
+    public static bool IsLoadEqual(ILoad expected, ILoad calculated) {
       return expected.X.Value.Equals(calculated.X.Value) && expected.YY.Value.Equals(calculated.YY.Value) && expected.ZZ.Value.Equals(calculated.ZZ.Value);
     }
 
-    private static bool IsDeformationEqual(IDeformation expected, IDeformation calculated) {
+    public static bool IsDeformationEqual(IDeformation expected, IDeformation calculated) {
       var tolernaceStrain = Strain.FromRatio(0.00001);
       var tolernaceCurvature = Curvature.FromPerMeters(0.0001);
       return expected.X.Equals(calculated.X, tolernaceStrain) && expected.YY.Equals(calculated.YY, tolernaceCurvature) && expected.ZZ.Equals(calculated.ZZ, tolernaceCurvature);
     }
 
+    [Fact]
+    public void ShouldHaveWarningForInvalidLoad() {
+      _component.LoadInput.Value = ILoad.Create(Force.Zero, Moment.Zero, Moment.Zero);
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
 
+    [Fact]
+    public void ShouldHaveWarningForInvalidDeformation() {
+      _component.LoadInput.Value = IDeformation.Create(Strain.Zero, Curvature.Zero, Curvature.Zero);
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
+
+    [Fact]
+    public void ShouldHaveErrorMessageForNullSolution() {
+      _component.SolutionInput.Value = null;
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
+
+    [Fact]
+    public void ShouldHaveErrorMessageForNullLoad() {
+      _component.LoadInput.Value = null;
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
+
+    [Fact]
+    public void NullDeformationShouldBeInvalid() {
+      ILoad? load = null;
+      Assert.False(LoadExtensions.IsValid(load));
+    }
+
+    [Fact]
+    public void NullLoadShouldBeInvalid() {
+      IDeformation? deformation = null;
+      Assert.False(LoadExtensions.IsValid(deformation));
+    }
   }
 }

@@ -106,6 +106,8 @@ namespace Oasys.GH.Helpers {
           typeof(SecantStiffnessParameter), ParamGenericObject
         }, {
           typeof(IntervalArrayParameter), ParamGenericObject
+        }, {
+          typeof(NeutralLineParameter), ParamGenericObject
         },
       };
 
@@ -207,6 +209,13 @@ namespace Oasys.GH.Helpers {
             var deformation = (a as DeformationParameter).Value;
             return new AdSecDeformationGoo(deformation);
           }
+        }, {
+          typeof(NeutralLineParameter), a => {
+            var value = (a as NeutralLineParameter).Value;
+            return new AdSecNeutralAxisGoo(value);
+          }
+        }, {
+          typeof(LengthParameter), a => { return (a as LengthParameter).Value; }
         },
       };
 
@@ -431,5 +440,4 @@ namespace Oasys.GH.Helpers {
       RegisterParams(function.GetAllOutputAttributes(), param => component.Params.RegisterOutputParam(param));
     }
   }
-
 }

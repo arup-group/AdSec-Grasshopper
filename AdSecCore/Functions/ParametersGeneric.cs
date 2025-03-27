@@ -67,6 +67,17 @@ namespace AdSecCore.Functions {
     }
   }
 
+  public class NeutralAxis {
+    public Length Offset { get; set; }
+    public double Angle { get; set; }
+    public SectionSolution Solution { get; set; }
+  }
+
+  public class SubComponent {
+    public ISubComponent ISubComponent { get; set; }
+    public SectionDesign SectionDesign { get; set; } = new SectionDesign();
+  }
+
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }
   public class PointParameter : ParameterAttribute<IPoint> { }
   public class StringArrayParam : BaseArrayParameter<string> { }
@@ -84,11 +95,6 @@ namespace AdSecCore.Functions {
         SectionDesign = sectionDesign,
       }).ToArray();
     }
-  }
-
-  public class SubComponent {
-    public ISubComponent ISubComponent { get; set; }
-    public SectionDesign SectionDesign { get; set; } = new SectionDesign();
   }
 
   public class IntegerParameter : ParameterAttribute<int> { }
@@ -132,4 +138,5 @@ namespace AdSecCore.Functions {
   }
 
   public class GeometryParameter : ParameterAttribute<object> { }
+  public class NeutralLineParameter : ParameterAttribute<NeutralAxis> { }
 }
