@@ -1,10 +1,10 @@
 {
     "stryker-config": {
-        "solution-path": "AdSecCore.sln",
+        
             "test-projects": [
                   "AdSecCore.Tests/AdSecCore.Tests.csproj"
                       ],
-                          "reporters": [ "html", "progress" ],
-                              "log-level": "info"
+                          "reporters": [ "html", "progress" ]
+                            
                                 }
                                 }
