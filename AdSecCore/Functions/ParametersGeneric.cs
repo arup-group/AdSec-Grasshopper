@@ -59,6 +59,23 @@ namespace AdSecCore.Functions {
     public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
   }
 
+  public class NeutralAxis {
+    public Length Offset { get; set; }
+    public double Angle { get; set; }
+    public SectionSolution Solution { get; set; }
+  }
+
+  public class MaterialDesign {
+    public IMaterial Material { get; set; }
+    public IDesignCode DesignCode { get; set; }
+    public string GradeName { get; set; }
+  }
+
+  public class SubComponent {
+    public ISubComponent ISubComponent { get; set; }
+    public SectionDesign SectionDesign { get; set; } = new SectionDesign();
+  }
+
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }
   public class PointParameter : ParameterAttribute<IPoint> { }
   public class StringArrayParam : BaseArrayParameter<string> { }
@@ -69,10 +86,6 @@ namespace AdSecCore.Functions {
   public class SubComponentParameter : ParameterAttribute<SubComponent> { }
   public class SubComponentArrayParameter : BaseArrayParameter<SubComponent> { }
 
-  public class SubComponent {
-    public ISubComponent ISubComponent { get; set; }
-    public SectionDesign SectionDesign { get; set; } = new SectionDesign();
-  }
 
   public class IntegerParameter : ParameterAttribute<int> { }
   public class LoadParameter : ParameterAttribute<ILoad> { }
@@ -83,12 +96,6 @@ namespace AdSecCore.Functions {
   public class CrackArrayParameter : BaseArrayParameter<CrackLoad> { }
   public class SecantStiffnessParameter : ParameterAttribute<IStiffness> { }
   public class IntervalArrayParameter : BaseArrayParameter<Tuple<double, double>> { }
-
-  public class MaterialDesign {
-    public IMaterial Material { get; set; }
-    public IDesignCode DesignCode { get; set; }
-    public string GradeName { get; set; }
-  }
-
   public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
+  public class NeutralLineParameter : ParameterAttribute<NeutralAxis> { }
 }

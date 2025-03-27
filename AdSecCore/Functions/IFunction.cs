@@ -18,6 +18,12 @@ namespace AdSecCore.Functions {
 
   public abstract class Function : IFunction {
     public LengthUnit LengthUnit { get; set; } = LengthUnit.Meter;
+    public LengthUnit LengthUnitResult { get; set; } = LengthUnit.Millimeter;
+    public StrainUnit StrainUnitResult { get; set; } = StrainUnit.Ratio;
+    public CurvatureUnit CurvatureUnit { get; set; } = CurvatureUnit.PerMeter;
+    public MomentUnit MomentUnit { get; set; } = MomentUnit.NewtonMeter;
+    public AxialStiffnessUnit AxialStiffnessUnit { get; set; } = AxialStiffnessUnit.Newton;
+    public BendingStiffnessUnit BendingStiffnessUnit { get; set; } = BendingStiffnessUnit.NewtonSquareMeter;
     public List<string> ErrorMessages { get; set; } = new List<string>();
     public List<string> WarningMessages { get; set; } = new List<string>();
     public List<string> RemarkMessages { get; set; } = new List<string>();

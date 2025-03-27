@@ -1,13 +1,7 @@
-﻿using System;
-using System.ComponentModel;
-
-using AdSecCore.Builders;
+﻿using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using AdSecGH.Components;
-using AdSecGH.Properties;
-
-using AdSecGHCore.Constants;
 
 using AdSecGHTests.Helpers;
 
