@@ -263,10 +263,13 @@ namespace AdSecCoreTests.Functions {
     public static bool Equal(IMaterial material, IMaterial material2) {
       var serviceability1 = material.Serviceability;
       var serviceability2 = material2.Serviceability;
-      // TODO: material2.Strength.Compression.FailureStrain
+      var stress = material.Strength.StressAt(material.Strength.Compression.FailureStrain);
+      var stress2 = material2.Strength.StressAt(material2.Strength.Compression.FailureStrain);
+
       return Equals(serviceability1.Tension.FailureStrain, serviceability2.Tension.FailureStrain)
         && Equals(serviceability1.Compression.FailureStrain, serviceability2.Compression.FailureStrain)
-        && Equals(material.Strength.Compression.FailureStrain, material2.Strength.Compression.FailureStrain);
+        && Equals(material.Strength.Compression.FailureStrain, material2.Strength.Compression.FailureStrain)
+        && Equals(stress, stress2);
     }
 
     private static bool AllButFirstOptional() {
