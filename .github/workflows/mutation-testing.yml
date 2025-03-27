@@ -1,0 +1,29 @@
+name: Mutation Testing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  mutation-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'  # Or the version you’re using
+
+    - name: Restore dependencies
+      run: dotnet restore AdSecCore.sln
+
+    - name: Install Stryker
+      run: dotnet tool install --global dotnet-stryker
+
+    - name: Run Mutation Tests
+      run: stryker --solution-path AdSecCore.sln
