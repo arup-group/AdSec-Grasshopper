@@ -12,7 +12,7 @@ using Grasshopper.Kernel;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Units;
+
 namespace AdSecGH.Components {
   public class SlsResultGh : SlsResultFunction {
     public SlsResultGh() {

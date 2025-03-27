@@ -1,5 +1,9 @@
 ﻿using System;
 
+using AdSecCore.Extensions;
+
+using Oasys.AdSec;
+
 using OasysUnits;
 
 namespace AdSecCore.Functions {
@@ -179,9 +183,28 @@ namespace AdSecCore.Functions {
         ErrorMessages.Add("Load input is null");
         return false;
       }
-      return true;
+      return IsLoadValid();
     }
 
+    private bool IsLoadValid() {
+      switch (LoadInput.Value) {
+        case ILoad load:
+          if (!LoadExtensions.IsValid(load)) {
+            ErrorMessages.Add("Load Input should be finite number. Zero load has no boundary");
+            return false;
+          }
+          break;
+        case IDeformation def:
+          if (!LoadExtensions.IsValid(def)) {
+            ErrorMessages.Add("Deformation Input should be finite number. Zero deformation has no boundary");
+            return false;
+          }
+          break;
+        default:
+          ErrorMessages.Add("Invalid Load Input");
+          return false;
+      }
+      return true;
+    }
   }
-
 }
