@@ -1,0 +1,6 @@
+{
+  "solution-path": "AdSecCore.sln",
+  "test-projects": [
+    "AdSecCoreTests/AdSecCoreTests.csproj"
+  ]
+}
