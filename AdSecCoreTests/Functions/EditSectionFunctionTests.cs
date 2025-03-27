@@ -80,7 +80,7 @@ namespace AdSecCoreTests.Functions {
       };
       function.Compute();
       Assert.Equal(newProfile, function.ProfileOut.Value.Profile);
-      var profile = (IIBeamSymmetricalProfile)function.SectionOut.Value.Section.Profile;
+      var profile = function.SectionOut.Value.Section.Profile;
       Assert.True(Equal(newProfile, profile));
     }
 
@@ -137,21 +137,43 @@ namespace AdSecCoreTests.Functions {
       Assert.True(AllButFirstOptional());
     }
 
-    // TODO: cast to IPerimeter and the Check
-    public static bool Equal(IIBeamSymmetricalProfile profile, IIBeamSymmetricalProfile profile2) {
-      return Equal(profile.BottomFlange, profile2.BottomFlange) && Equal(profile.TopFlange, profile2.TopFlange)
-        && Equal(profile.Web, profile2.Web) && Equals(profile.Depth, profile2.Depth)
-        && Equals(profile.Rotation, profile2.Rotation) && Equals(profile.IsReflectedY, profile2.IsReflectedY)
-        && Equals(profile.IsReflectedZ, profile2.IsReflectedZ);
-    }
+    public static bool Equal(IProfile profile, IProfile profile2) {
+      var perimenter = IPerimeterProfile.Create(profile);
+      var perimenter2 = IPerimeterProfile.Create(profile2);
+      var points = perimenter.SolidPolygon.Points;
+      var points2 = perimenter2.SolidPolygon.Points;
+      if (points.Count != points2.Count) {
+        return false;
+      }
 
-    public static bool Equal(IWebConstant web, IWebConstant web2) {
-      return Equals(web.Thickness, web2.Thickness) && Equals(web.BottomThickness, web2.BottomThickness)
-        && Equals(web.TopThickness, web2.TopThickness);
-    }
+      for (int i = 0; i < points.Count; i++) {
+        if (!Equal(points[i], points2[i])) {
+          return false;
+        }
+      }
 
-    public static bool Equal(IFlange flange, IFlange flange2) {
-      return Equals(flange.Thickness, flange2.Thickness) && Equals(flange.Width, flange2.Width);
+      var voids = perimenter.VoidPolygons;
+      var voids2 = perimenter2.VoidPolygons;
+      if (voids.Count != voids2.Count) {
+        return false;
+      }
+
+      for (int i = 0; i < voids.Count; i++) {
+        var void1 = voids[i].Points;
+        var void2 = voids2[i].Points;
+        if (void1.Count != void2.Count) {
+          return false;
+        }
+
+        for (int j = 0; j < void1.Count; j++) {
+          if (!Equal(void1[j], void2[j])) {
+            return false;
+          }
+        }
+      }
+
+      return Equals(perimenter.Rotation, perimenter2.Rotation) && Equals(perimenter.IsReflectedY, perimenter2.IsReflectedY)
+        && Equals(perimenter.IsReflectedZ, perimenter2.IsReflectedZ);
     }
 
     public static bool Equal(ISubComponent subComponent, ISubComponent subComponent2) {
@@ -205,14 +227,6 @@ namespace AdSecCoreTests.Functions {
       }
 
       return true;
-    }
-
-    public static bool Equal(IProfile profile, IProfile profile2) {
-      if (profile is IIBeamSymmetricalProfile iBeam) {
-        return Equal(iBeam, (IIBeamSymmetricalProfile)profile2);
-      }
-
-      throw new NotImplementedException($"Haven't implemented comparison for {profile.GetType().Name}");
     }
 
     public static bool Equal(ILayer layer, ILayer layer2) {
