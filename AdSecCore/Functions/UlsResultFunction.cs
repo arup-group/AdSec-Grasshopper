@@ -136,7 +136,7 @@ namespace AdSecCore.Functions {
       //uls neutral axis
       NeutralAxisLineOutput.Value = GetNeutralAxisResults(Uls.Deformation);
       NeutralAxisOffsetOutput.Value = NeutralAxisLineOutput.Value.Offset;
-      NeutralAxisAngleOutput.Value = NeutralAxisLineOutput.Value.Angle; ;
+      NeutralAxisAngleOutput.Value = NeutralAxisLineOutput.Value.Angle;
 
       //failure deformation
       FailureDeformationOutput.Value = Failure.Deformation;
