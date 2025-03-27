@@ -67,18 +67,5 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.EditSection;
-
-    protected override void SolveInstance(IGH_DataAccess DA) {
-      base.SolveInstance(DA);
-      var adSecSectionGoo = BusinessComponent.AdSecSectionOut.Value;
-      adSecSectionGoo.UpdateGeometryRepresentation();
-
-      var curves = adSecSectionGoo._drawInstructions.Select(x => {
-        GH_Curve curve = null;
-        GH_Convert.ToGHCurve(x.Geometry, GH_Conversion.Both, ref curve);
-        return curve;
-      }).ToList();
-      DA.SetDataList(6, curves);
-    }
   }
 }

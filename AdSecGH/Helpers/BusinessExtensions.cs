@@ -147,7 +147,6 @@ namespace Oasys.GH.Helpers {
             return new AdSecDesignCodeGoo(designCode);
           }
         },
-        { typeof(GeometryParameter), a => (a as GeometryParameter).Value },
         { typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value }, {
           typeof(SectionSolutionParameter), a => {
             var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
@@ -166,6 +165,18 @@ namespace Oasys.GH.Helpers {
           }
         },
         { typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value },
+        { typeof(GeometryParameter), a => {
+            var value = (a as GeometryParameter).Value;
+            var sectionDesign = value as SectionDesign;
+            var sectionGoo = new AdSecSectionGoo(new AdSecSection(sectionDesign));
+            var curves = sectionGoo._drawInstructions.Select(x => {
+            GH_Curve curve = null;
+            GH_Convert.ToGHCurve(x.Geometry, GH_Conversion.Both, ref curve);
+            return curve;
+            }).ToList();
+            return curves;
+          }
+        },
         { typeof(StringArrayParam), a => (a as StringArrayParam).Value },
         // { typeof(IntegerParameter), a => (a as IntegerParameter).Value },
         {

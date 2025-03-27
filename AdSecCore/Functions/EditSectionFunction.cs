@@ -87,6 +87,8 @@ namespace AdSecCore.Functions {
         CodeName = DesignCodeOut.Value.DesignCodeName,
         MaterialName = MaterialOut.Value.GradeName,
       };
+
+      Geometry.Value = SectionOut.Value;
     }
   }
 }
