@@ -126,12 +126,14 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void NullDeformationShouldBeInvalid() {
-      Assert.False(IDeformationExtensions.IsValid(null));
+      ILoad? load = null;
+      Assert.False(LoadExtensions.IsValid(load));
     }
 
     [Fact]
     public void NullLoadShouldBeInvalid() {
-      Assert.False(ILoadExtensions.IsValid(null));
+      IDeformation? deformation = null;
+      Assert.False(LoadExtensions.IsValid(deformation));
     }
   }
 }
