@@ -78,7 +78,7 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
-    public void ShouldComputeCorrectly() {
+    public void ShouldComputeCorrectlyForLoad() {
       _component.Compute();
       var expectedLoad = ILoad.Create(Force.FromKilonewtons(-700), Moment.FromKilonewtonMeters(10), Moment.Zero);
       var expectedDeformation = IDeformation.Create(Strain.FromRatio(-0.00105), Curvature.FromPerMeters(-0.00125), Curvature.Zero);
@@ -96,6 +96,14 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(-3.14, _component.NeutralAxisAngleOutput.Value, comparer);
       Assert.Equal(0.5, _component.FailureNeutralAxisOffsetOutput.Value.As(LengthUnit.Meter), comparer);
       Assert.Equal(3.14, _component.FailureNeutralAxisAngleOutput.Value, comparer);
+    }
+
+    [Fact]
+    public void ShouldComputeCorrectlyForDeformation() {
+      _component.LoadInput.Value = IDeformation.Create(Strain.FromRatio(0.001), Curvature.Zero, Curvature.Zero);
+      _component.Compute();
+      Assert.Equal(0.55, _component.LoadUtilOutput.Value, comparer);
+      Assert.Equal(0.02, _component.DeformationUtilOutput.Value, comparer);
     }
 
     [Fact]
