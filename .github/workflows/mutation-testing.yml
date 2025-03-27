@@ -26,4 +26,5 @@ jobs:
       run: dotnet tool install --global dotnet-stryker
 
     - name: Run Mutation Tests
-      run: dotnet stryker -s AdSecCore.sln
+      run: dotnet stryker -s AdSecCore.sln -v trace
+
