@@ -9,6 +9,8 @@ using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Layers;
+using Oasys.AdSec.Reinforcement.Preloads;
 using Oasys.AdSec.StandardMaterials;
 using Oasys.Profiles;
 
@@ -82,22 +84,6 @@ namespace AdSecCoreTests.Functions {
       Assert.True(Equal(newProfile, profile));
     }
 
-    public bool Equal(IIBeamSymmetricalProfile flanges, IIBeamSymmetricalProfile flanges2) {
-      return Equal(flanges.BottomFlange, flanges2.BottomFlange) && Equal(flanges.TopFlange, flanges2.TopFlange)
-        && Equal(flanges.Web, flanges2.Web) && Equals(flanges.Depth, flanges2.Depth)
-        && Equals(flanges.Rotation, flanges2.Rotation) && Equals(flanges.IsReflectedY, flanges2.IsReflectedY)
-        && Equals(flanges.IsReflectedZ, flanges2.IsReflectedZ);
-    }
-
-    public bool Equal(IWebConstant web, IWebConstant web2) {
-      return Equals(web.Thickness, web2.Thickness) && Equals(web.BottomThickness, web2.BottomThickness)
-        && Equals(web.TopThickness, web2.TopThickness);
-    }
-
-    public bool Equal(IFlange flange, IFlange flange2) {
-      return Equals(flange.Thickness, flange2.Thickness) && Equals(flange.Width, flange2.Width);
-    }
-
     [Fact]
     public void ShouldUpdateMaterial() {
       var newMat = Steel.AS4100.Edition_1998.AS1163_C250;
@@ -107,16 +93,8 @@ namespace AdSecCoreTests.Functions {
       };
       function.Compute();
       Assert.Equal(newMat, function.MaterialOut.Value.Material);
+      Assert.Equal(newMat, function.SectionOut.Value.Section.Material);
       Assert.True(Equal(newMat, function.SectionOut.Value.Section.Material));
-    }
-
-    public bool Equal(IMaterial material, IMaterial material2) {
-      var serviceability1 = material.Serviceability;
-      var serviceability2 = material2.Serviceability;
-
-      return Equals(serviceability1.Tension.FailureStrain, serviceability2.Tension.FailureStrain)
-        && Equals(serviceability1.Compression.FailureStrain, serviceability2.Compression.FailureStrain)
-        && Equals(material.Strength.Compression.FailureStrain, material2.Strength.Compression.FailureStrain);
     }
 
     [Fact]
@@ -130,7 +108,7 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(newCode, function.MaterialOut.Value.DesignCode.IDesignCode);
     }
 
-    [Fact(Skip = "Not Equality method finished")]
+    [Fact]
     public void ShouldUpdateRebarGroup() {
       var adSecRebarGroup = new AdSecRebarGroup {
         Group = new BuilderLineGroup().Build(),
@@ -155,26 +133,90 @@ namespace AdSecCoreTests.Functions {
       Assert.True(Equal(subComponent.ISubComponent, function.SectionOut.Value.Section.SubComponents[0]));
     }
 
-    public bool Equal(ISubComponent subComponent, ISubComponent subComponent2) {
+    [Fact]
+    public void ShouldHaveAllButFirstParametersOptional() {
+      Assert.True(AllButFirstOptional());
+    }
+
+    public static bool Equal(IIBeamSymmetricalProfile flanges, IIBeamSymmetricalProfile flanges2) {
+      return Equal(flanges.BottomFlange, flanges2.BottomFlange) && Equal(flanges.TopFlange, flanges2.TopFlange)
+        && Equal(flanges.Web, flanges2.Web) && Equals(flanges.Depth, flanges2.Depth)
+        && Equals(flanges.Rotation, flanges2.Rotation) && Equals(flanges.IsReflectedY, flanges2.IsReflectedY)
+        && Equals(flanges.IsReflectedZ, flanges2.IsReflectedZ);
+    }
+
+    public static bool Equal(IWebConstant web, IWebConstant web2) {
+      return Equals(web.Thickness, web2.Thickness) && Equals(web.BottomThickness, web2.BottomThickness)
+        && Equals(web.TopThickness, web2.TopThickness);
+    }
+
+    public static bool Equal(IFlange flange, IFlange flange2) {
+      return Equals(flange.Thickness, flange2.Thickness) && Equals(flange.Width, flange2.Width);
+    }
+
+    public static bool Equal(ISubComponent subComponent, ISubComponent subComponent2) {
       return Equals(subComponent.Offset, subComponent2.Offset) && Equal(subComponent.Section, subComponent2.Section);
     }
 
-    public bool Equal(ISection section, ISection section2) {
+    public static bool Equal(ISection section, ISection section2) {
       return Equals(section.Cover, section2.Cover) && Equal(section.Material, section2.Material)
         && Equals(section.Profile, section2.Profile)
         && Equal((ILineGroup)section.ReinforcementGroups[0], (ILineGroup)section2.ReinforcementGroups[0])
         && Equal(section.SubComponents[0], section2.SubComponents[0]);
     }
 
-    public bool Equal(ILineGroup group, ILineGroup group2) {
-      return Equals(group.Layer, group2.Layer) && Equals(group.Layer.BarBundle, group2.Layer.BarBundle)
-        && Equals(group.FirstBarPosition, group2.FirstBarPosition)
-        && Equals(group.LastBarPosition, group2.LastBarPosition) && Equals(group.Preload, group2.Preload);
+    public static bool Equal(ILayer layer, ILayer layer2) {
+      return Equals(layer.BarBundle.CountPerBundle, layer2.BarBundle.CountPerBundle)
+        && Equals(layer.BarBundle.Diameter, layer2.BarBundle.Diameter)
+        && Equal(layer.BarBundle.Material, layer2.BarBundle.Material);
     }
 
-    [Fact]
-    public void ShouldHaveAllButFirstParametersOptional() {
-      Assert.True(AllButFirstOptional());
+    public static bool Equal(ILineGroup group, ILineGroup group2) {
+      bool equals = Equal(group.Layer, group2.Layer) && Equal(group.FirstBarPosition, group2.FirstBarPosition)
+        && Equal(group.LastBarPosition, group2.LastBarPosition) && Equal(group.Preload, group2.Preload);
+
+      return equals;
+    }
+
+    public static bool Equal(IPreload preload, IPreload preload2) {
+      if (preload is IPreForce force) {
+        return Equal(force, (IPreForce)preload2);
+      }
+
+      if (preload is IPreStress stress) {
+        return Equal(stress, (IPreStress)preload2);
+      }
+
+      if (preload is IPreStrain strain) {
+        return Equal(strain, (IPreStrain)preload2);
+      }
+
+      return false;
+    }
+
+    public static bool Equal(IPreForce preload, IPreForce preload2) {
+      return Equals(preload.Force, preload2.Force);
+    }
+
+    public static bool Equal(IPreStrain preload, IPreStrain preload2) {
+      return Equals(preload.Strain, preload2.Strain);
+    }
+
+    public static bool Equal(IPreStress preload, IPreStress preload2) {
+      return Equals(preload.Stress, preload2.Stress);
+    }
+
+    public static bool Equal(IPoint point, IPoint point2) {
+      return Equals(point.Y, point2.Y) && Equals(point.Z, point2.Z);
+    }
+
+    public static bool Equal(IMaterial material, IMaterial material2) {
+      var serviceability1 = material.Serviceability;
+      var serviceability2 = material2.Serviceability;
+
+      return Equals(serviceability1.Tension.FailureStrain, serviceability2.Tension.FailureStrain)
+        && Equals(serviceability1.Compression.FailureStrain, serviceability2.Compression.FailureStrain)
+        && Equals(material.Strength.Compression.FailureStrain, material2.Strength.Compression.FailureStrain);
     }
 
     private static bool AllButFirstOptional() {
