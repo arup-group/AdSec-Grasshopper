@@ -25,12 +25,12 @@ using OasysGH.UI;
 using Rhino.UI;
 
 namespace AdSecGH.Components {
-  public class SaveSVG : GH_OasysDropDownComponent {
-    private static string imageSVG;
+  public class SaveSvg : GH_OasysDropDownComponent {
+    private string imageSVG;
     private bool _canOpen;
     private string _fileName;
 
-    public SaveSVG() : base("Section SVG", "SVG", "Creates a SVG file from an AdSec Section", CategoryName.Name(),
+    public SaveSvg() : base("Section SVG", "SVG", "Creates a SVG file from an AdSec Section", CategoryName.Name(),
       SubCategoryName.Cat0()) {
       Hidden = true; // sets the initial state of the component to hidden
     }
