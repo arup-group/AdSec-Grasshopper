@@ -48,6 +48,11 @@ steps:
     arguments: install dotnet-stryker --tool-path $(Agent.BuildDirectory)/tools
 
 - powershell: |
+    dotnet tool install --global dotnet-stryker
+  displayName: Install Stryker
+  failOnStderr: false
+
+- powershell: |
     dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj 
   displayName: Run Stryker
   failOnStderr: false
