@@ -57,10 +57,10 @@ steps:
       pwsh: true
       script: $(Agent.BuildDirectory)/tools/dotnet-stryker
 
-  - task: PublishMutationReport@1
-    displayName: 'Publish Mutation Test Report'
-    inputs:
-      reportPattern: '**/mutation-report.html'
+#  - task: PublishMutationReport@1
+#    displayName: 'Publish Mutation Test Report'
+#    inputs:
+#      reportPattern: '**/mutation-report.html'
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Stryker Mutation Report'
