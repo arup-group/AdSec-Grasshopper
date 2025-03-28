@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 using AdSecGH.Parameters;
 
@@ -13,7 +14,7 @@ using OasysUnits;
 namespace AdSecCore.Functions {
   public class SectionDesign {
     public ISection Section { get; set; }
-    public IDesignCode DesignCode { get; set; }
+    public DesignCode DesignCode { get; set; }
     public string CodeName { get; set; }
     public string MaterialName { get; set; }
     public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
@@ -57,6 +58,24 @@ namespace AdSecCore.Functions {
   public class ProfileDesign {
     public IProfile Profile { get; set; }
     public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
+
+    public static ProfileDesign From(SectionDesign sectionDesign) {
+      return new ProfileDesign {
+        Profile = sectionDesign.Section.Profile,
+        LocalPlane = sectionDesign.LocalPlane,
+      };
+    }
+  }
+
+  public class NeutralAxis {
+    public Length Offset { get; set; }
+    public double Angle { get; set; }
+    public SectionSolution Solution { get; set; }
+  }
+
+  public class SubComponent {
+    public ISubComponent ISubComponent { get; set; }
+    public SectionDesign SectionDesign { get; set; } = new SectionDesign();
   }
 
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }
@@ -67,11 +86,15 @@ namespace AdSecCore.Functions {
   public class SectionSolutionParameter : ParameterAttribute<SectionSolution> { }
   public class LoadSurfaceParameter : ParameterAttribute<ILoadSurface> { }
   public class SubComponentParameter : ParameterAttribute<SubComponent> { }
-  public class SubComponentArrayParameter : BaseArrayParameter<SubComponent> { }
 
-  public class SubComponent {
-    public ISubComponent ISubComponent { get; set; }
-    public SectionDesign SectionDesign { get; set; } = new SectionDesign();
+  public class SubComponentArrayParameter : BaseArrayParameter<SubComponent> {
+    public SubComponent[] From(SectionDesign sectionDesign) {
+      var sectionSubComponents = sectionDesign.Section.SubComponents;
+      return sectionSubComponents.Select(x => new SubComponent {
+        ISubComponent = ISubComponent.Create(x.Section, x.Offset),
+        SectionDesign = sectionDesign,
+      }).ToArray();
+    }
   }
 
   public class IntegerParameter : ParameterAttribute<int> { }
@@ -86,12 +109,36 @@ namespace AdSecCore.Functions {
 
   public class MaterialDesign {
     public IMaterial Material { get; set; }
-    public IDesignCode DesignCode { get; set; }
+    public DesignCode DesignCode { get; set; }
     public string GradeName { get; set; }
+
+    public static MaterialDesign From(SectionDesign sectionValue) {
+      return new MaterialDesign {
+        Material = sectionValue.Section.Material,
+        DesignCode = DesignCodeParameter.From(sectionValue),
+        GradeName = sectionValue.MaterialName,
+      };
+    }
   }
 
   public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
+
+  public class DesignCodeParameter : ParameterAttribute<DesignCode> {
+    public static DesignCode From(SectionDesign section) {
+      return new DesignCode {
+        IDesignCode = section.DesignCode.IDesignCode,
+        DesignCodeName = section.DesignCode.DesignCodeName,
+      };
+    }
+  }
+
+  public class DesignCode {
+    public IDesignCode IDesignCode { get; set; }
+    public string DesignCodeName { get; set; }
+  }
+
+  public class GeometryParameter : ParameterAttribute<object> { }
+  public class NeutralLineParameter : ParameterAttribute<NeutralAxis> { }
   public class StrainParameter : ParameterAttribute<Strain> { }
   public class PressureParameter : ParameterAttribute<Pressure> { }
-
 }

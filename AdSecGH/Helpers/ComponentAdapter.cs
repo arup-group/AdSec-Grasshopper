@@ -7,6 +7,7 @@ using Grasshopper.Kernel;
 
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.Units;
 
 using Attribute = AdSecCore.Functions.Attribute;
 namespace Oasys.GH.Helpers {
@@ -31,6 +32,7 @@ namespace Oasys.GH.Helpers {
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {
+
       BusinessComponent.UpdateInputValues(this, DA);
       if (RuntimeMessages(GH_RuntimeMessageLevel.Error).Count > 0) { return; }
       BusinessComponent.Compute();
@@ -51,6 +53,18 @@ namespace Oasys.GH.Helpers {
       }
 
       BusinessComponent.SetOutputValues(this, DA);
+    }
+
+    public void UpdateUnit() {
+      if (BusinessComponent is Function function) {
+        function.MomentUnit = DefaultUnits.MomentUnit;
+        function.LengthUnit = DefaultUnits.LengthUnitGeometry;
+        function.StrainUnitResult = DefaultUnits.StrainUnitResult;
+        function.CurvatureUnit = DefaultUnits.CurvatureUnit;
+        function.LengthUnitResult = DefaultUnits.LengthUnitResult;
+        function.AxialStiffnessUnit = DefaultUnits.AxialStiffnessUnit;
+        function.BendingStiffnessUnit = DefaultUnits.BendingStiffnessUnit;
+      }
     }
 
     public void RefreshOutputParameter(Attribute[] attributes) {

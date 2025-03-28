@@ -32,7 +32,10 @@ namespace AdSecGHTests.Helpers {
       };
       var materialDesign = new MaterialDesign() {
         Material = material.Material,
-        DesignCode = material.DesignCode?.DesignCode,
+        DesignCode = new DesignCode() {
+          IDesignCode = material.DesignCode?.DesignCode,
+          DesignCodeName = material.DesignCodeName,
+        },
         GradeName = material.GradeName,
       };
       var objwrap = new GH_ObjectWrapper(new AdSecMaterialGoo(materialDesign));

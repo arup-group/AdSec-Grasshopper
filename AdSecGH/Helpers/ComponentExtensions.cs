@@ -1,4 +1,8 @@
-﻿using Grasshopper.Kernel;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
+using System.Reflection;
+
+using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 
 namespace Oasys.GH.Helpers {
@@ -39,6 +43,15 @@ namespace Oasys.GH.Helpers {
 
     public static object GetValue(this IGH_Param param, int branch, int index) {
       return param.VolatileData.get_Branch(branch)[index];
+    }
+
+    [SuppressMessage("Major Code Smell", "S3011:Make sure that this accessibility bypass is safe here.",
+      Justification = "This is for testing purposes")]
+    public static bool MatchesExpectedIcon(this GH_Component component, Bitmap expected) {
+      var propertyInfo = component.GetType().GetProperty("Icon", BindingFlags.Instance | BindingFlags.NonPublic);
+      var icon = (Bitmap)propertyInfo?.GetValue(component, null);
+      var expectedRawFormat = expected.RawFormat;
+      return expectedRawFormat.Guid.Equals(icon?.RawFormat.Guid);
     }
   }
 }

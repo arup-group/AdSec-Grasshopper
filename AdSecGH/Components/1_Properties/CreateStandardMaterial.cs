@@ -33,6 +33,11 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.StandardMaterial;
+    private readonly IDictionary<string, string> _prefixMappings = new Dictionary<string, string> {
+      { "Edition", "Edition" },
+      { "Metric", "Unit" },
+      { "US", "Unit" },
+    };
 
     public override void SetSelected(int i, int j) {
       // change selected item
@@ -125,13 +130,7 @@ namespace AdSecGH.Components {
               typeString = _selectedItems[level];
             }
 
-            if (typeString.StartsWith("Edition")) {
-              _spacerDescriptions[level] = "Edition";
-            }
-
-            if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
-              _spacerDescriptions[level] = "Unit";
-            }
+            _spacerDescriptions[level] = GetDescription(typeString);
           } else if (designCodeKVP.Count == 1) {
             // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
             typeString = designCodeKVP.Keys.First();
@@ -179,7 +178,8 @@ namespace AdSecGH.Components {
         Params.RegisterInputParam(new Param_String());
         Params.Input[0].NickName = "S";
         Params.Input[0].Name = "Search";
-        Params.Input[0].Description = $"[Optional] Search for Grade {Environment.NewLine}Note: input 'all' to list all grades from the selected code";
+        Params.Input[0].Description
+          = $"[Optional] Search for Grade {Environment.NewLine}Note: input 'all' to list all grades from the selected code";
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = true;
       }
@@ -259,7 +259,8 @@ namespace AdSecGH.Components {
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddTextParameter("Search", "S",
-        $"[Optional] Search for Grade {Environment.NewLine}Note: input 'all' to list all grades from the selected code", GH_ParamAccess.item);
+        $"[Optional] Search for Grade {Environment.NewLine}Note: input 'all' to list all grades from the selected code",
+        GH_ParamAccess.item);
       pManager[0].Optional = true;
     }
 
@@ -281,7 +282,10 @@ namespace AdSecGH.Components {
 
             var materialDesign = new MaterialDesign() {
               Material = material.Material,
-              DesignCode = material.DesignCode.DesignCode
+              DesignCode = new DesignCode() {
+                IDesignCode = material.DesignCode.DesignCode,
+                DesignCodeName = material.DesignCode.DesignCodeName
+              }
             };
             if (search.ToLower() == "all") {
               filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
@@ -318,7 +322,11 @@ namespace AdSecGH.Components {
       var adSecMaterial = new AdSecMaterial(selectedMaterial);
       var materialDesign2 = new MaterialDesign() {
         Material = adSecMaterial.Material,
-        DesignCode = adSecMaterial.DesignCode.DesignCode
+        DesignCode = new DesignCode() {
+          IDesignCode = adSecMaterial.DesignCode.DesignCode,
+          DesignCodeName = adSecMaterial.DesignCode.DesignCodeName
+        },
+        GradeName = selectedMaterial.Name,
       };
 
       DA.SetData(0, new AdSecMaterialGoo(materialDesign2));
@@ -357,13 +365,7 @@ namespace AdSecGH.Components {
           level++;
           typeString = _selectedItems[level];
 
-          if (typeString.StartsWith("Edition")) {
-            _spacerDescriptions[level] = "Edition";
-          }
-
-          if (typeString.StartsWith("Metric") | typeString.StartsWith("US")) {
-            _spacerDescriptions[level] = "Unit";
-          }
+          _spacerDescriptions[level] = GetDescription(typeString);
         } else if (designCodeKVP.Count == 1) {
           // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
           typeString = designCodeKVP.Keys.First();
@@ -379,6 +381,13 @@ namespace AdSecGH.Components {
       }
 
       base.UpdateUIFromSelectedItems();
+    }
+
+    private string GetDescription(string typeString) {
+      string result = _prefixMappings.Where(mapping => typeString.StartsWith(mapping.Key))
+       .Select(mapping => mapping.Value).FirstOrDefault();
+
+      return string.IsNullOrEmpty(result) ? "Design Code" : result;
     }
   }
 }

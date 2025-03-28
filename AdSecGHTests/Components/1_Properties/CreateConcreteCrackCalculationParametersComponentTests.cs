@@ -62,7 +62,7 @@ namespace AdSecGHTests.Properties {
     [Fact]
     public void DeserializeTest() {
       var comp = ComponentMother();
-      OasysDropDownComponentTestHelper.DeserializeTest(comp);
+      Assert.Empty(OasysDropDownComponentTestHelper.DeserializeTest(comp));
     }
   }
 }

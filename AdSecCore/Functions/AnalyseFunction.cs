@@ -47,7 +47,7 @@ namespace AdSecCore.Functions {
       };
     }
     public override void Compute() {
-      var adSec = IAdSec.Create(Section.Value.DesignCode);
+      var adSec = IAdSec.Create(Section.Value.DesignCode.IDesignCode);
 
       var solution = adSec.Analyse(Section.Value.Section);
 

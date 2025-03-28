@@ -36,15 +36,20 @@ namespace AdSecGHTests.Parameters {
   [Collection("GrasshopperFixture collection")]
   public class AdSecParametersReflectionTests {
     public AdSecParametersReflectionTests() {
-      InitInstances();
-      InitGooTypes();
+      if (!InstanceOfGoos.Any()) {
+        InitInstances();
+      }
+
+      if (GoosWithNickname == null || GoosWithoutNickname == null) {
+        InitGooTypes();
+      }
     }
 
-    public List<Type> GoosWithNickname = null;
+    private static List<Type> GoosWithNickname = null;
 
-    public List<Type> GoosWithoutNickname = null;
+    private static List<Type> GoosWithoutNickname = null;
 
-    public List<IGH_Goo> InstanceOfGoos = new List<IGH_Goo>();
+    private static readonly List<IGH_Goo> InstanceOfGoos = new List<IGH_Goo>();
 
     private static bool IsNullOrEmptyOrWhitespace(string value) {
       return string.IsNullOrWhiteSpace(value) || value == string.Empty;
@@ -112,13 +117,13 @@ namespace AdSecGHTests.Parameters {
       InstanceOfGoos.Add(new AdSecStressStrainPointGoo(stressStrainPoint));
       InstanceOfGoos.Add(new AdSecSubComponentGoo(section, Plane.WorldXY, IPoint.Create(length, length),
         designCode.DesignCode, "test", "test1"));
+      InstanceOfGoos.Add(new AdSecNeutralAxisGoo(new NeutralAxis() { Angle = 0, Offset = length, Solution = solutionBuilder }));
     }
 
     private void InitGooTypes() {
       var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == "AdSecGH")
         ?? throw new InvalidOperationException("AdSecGH assembly not found");
 
-      // Get all types from assembly that are in Parameters namespace and end with "Goo"
       var gooTypes = assembly.GetTypes().Where(t => t.Namespace == "AdSecGH.Parameters" && t.Name.EndsWith("Goo"));
 
       GoosWithNickname ??= gooTypes

@@ -192,9 +192,13 @@ namespace AdSecGH.Components {
       }
 
       // set output
+      var adSecDesignCode = material.DesignCode;
       var materialDesign = new MaterialDesign() {
         Material = material.Material,
-        DesignCode = material.DesignCode.DesignCode
+        DesignCode = new DesignCode() {
+          IDesignCode = adSecDesignCode.DesignCode,
+          DesignCodeName = adSecDesignCode.DesignCodeName
+        }
       };
       DA.SetData(0, new AdSecMaterialGoo(materialDesign));
     }
