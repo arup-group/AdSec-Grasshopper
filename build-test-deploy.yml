@@ -39,14 +39,6 @@ steps:
   env:
     MSBUILDDISABLENODEREUSE: 1
 
-
-- task: DotNetCoreCLI@2
-  displayName: 'Install dotnet-stryker'
-  inputs:
-    command: custom
-    custom: tool
-    arguments: install dotnet-stryker --tool-path $(Agent.BuildDirectory)/tools
-
 - powershell: |
     dotnet tool install --global dotnet-stryker
   displayName: Install Stryker
