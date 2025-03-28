@@ -23,7 +23,7 @@ jobs:
       run: |
         dotnet restore Oasys.LicenceManager.Cli/Oasys.LicenceManager.Cli.sln
         dotnet build Oasys.LicenceManager.Cli/Oasys.LicenceManager.Cli.sln --configuration Debug --no-restore
-        Oasys.LicenceManager.Cli/Oasys.LicenceManager.Cli/bin/Debug/net7.0/Oasys.LicenceManager.Cli -l "test" -p "test"
+        Oasys.LicenceManager.Cli/Oasys.LicenceManager.Cli/bin/Debug/net8.0/Oasys.LicenceManager.Cli -l "test" -p "test"
 
     - name: Restore dependencies
       run: dotnet restore AdSecCore.sln
