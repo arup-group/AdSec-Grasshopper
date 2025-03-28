@@ -156,7 +156,7 @@ namespace AdSecCore.Builders {
       return this;
     }
 
-    public SectionBuilder SetProfile(IProfile profile) {
+    public SectionBuilder WithProfile(IProfile profile) {
       _profile = profile;
       return this;
     }
@@ -235,8 +235,9 @@ namespace AdSecCore.Builders {
       Perimeter,
     }
 
-    public void WithSubComponents(List<ISubComponent> subComponents) {
+    public SectionBuilder WithSubComponents(List<ISubComponent> subComponents) {
       _subComponents = subComponents;
+      return this;
     }
   }
 }
