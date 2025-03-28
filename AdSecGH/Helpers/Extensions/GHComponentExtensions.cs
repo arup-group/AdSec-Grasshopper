@@ -26,11 +26,11 @@ namespace AdSecGH.Helpers {
 #pragma warning disable S1168
   public static class GHComponentExtensions {
     public static AdSecDesignCode GetAdSecDesignCode(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       AdSecDesignCode designCode = null;
       GH_ObjectWrapper inputData = null;
 
-      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      bool isDataAvailable = da.GetData(inputId, ref inputData);
 
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
@@ -42,11 +42,11 @@ namespace AdSecGH.Helpers {
     }
 
     public static AdSecMaterial GetAdSecMaterial(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       AdSecMaterial material = null;
       GH_ObjectWrapper inputData = null;
 
-      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      bool isDataAvailable = da.GetData(inputId, ref inputData);
 
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
@@ -58,11 +58,11 @@ namespace AdSecGH.Helpers {
     }
 
     public static AdSecPointGoo GetAdSecPointGoo(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       AdSecPointGoo pointGoo = null;
       GH_ObjectWrapper inputData = null;
 
-      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      bool isDataAvailable = da.GetData(inputId, ref inputData);
 
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
@@ -77,10 +77,10 @@ namespace AdSecGH.Helpers {
     }
 
     public static AdSecProfileGoo GetAdSecProfileGoo(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       GH_ObjectWrapper inputData = null;
       AdSecProfileGoo profileGoo = null;
-      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      bool isDataAvailable = da.GetData(inputId, ref inputData);
 
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
@@ -92,12 +92,12 @@ namespace AdSecGH.Helpers {
     }
 
     public static AdSecRebarBundleGoo GetAdSecRebarBundleGoo(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       AdSecRebarBundleGoo rebar = null;
       GH_ObjectWrapper inputData = null;
       bool showRemark = false;
 
-      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      bool isDataAvailable = da.GetData(inputId, ref inputData);
 
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
@@ -112,11 +112,11 @@ namespace AdSecGH.Helpers {
     }
 
     public static AdSecRebarLayerGoo GetAdSecRebarLayerGoo(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       AdSecRebarLayerGoo spacing = null;
       GH_ObjectWrapper inputData = null;
 
-      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      bool isDataAvailable = da.GetData(inputId, ref inputData);
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
       } else if (isDataAvailable && !AdSecInput.TryCastToAdSecRebarLayerGoo(inputData, ref spacing)) {
@@ -127,11 +127,11 @@ namespace AdSecGH.Helpers {
     }
 
     public static AdSecSection GetAdSecSection(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       AdSecSection section = null;
       GH_ObjectWrapper inputData = null;
 
-      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      bool isDataAvailable = da.GetData(inputId, ref inputData);
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
       } else if (isDataAvailable && !AdSecInput.TryCastToAdSecSection(inputData, ref section)) {
@@ -142,12 +142,12 @@ namespace AdSecGH.Helpers {
     }
 
     public static List<AdSecSection> GetAdSecSections(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       var sections = new List<AdSecSection>();
       var inputData = new List<GH_ObjectWrapper>();
       var invalidIds = new List<int>();
 
-      DA.GetDataList(inputId, inputData);
+      da.GetDataList(inputId, inputData);
       bool isDataAvailable = inputData.TrueForAll(item => item != null);
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
@@ -163,11 +163,11 @@ namespace AdSecGH.Helpers {
     }
 
     public static IConcreteCrackCalculationParameters GetIConcreteCrackCalculationParameters(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       IConcreteCrackCalculationParameters calculationParameters = null;
       GH_ObjectWrapper inputData = null;
 
-      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      bool isDataAvailable = da.GetData(inputId, ref inputData);
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
       } else if (isDataAvailable
@@ -179,10 +179,10 @@ namespace AdSecGH.Helpers {
     }
 
     public static Oasys.Collections.IList<ILayer> GetILayers(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       var inputData = new List<GH_ObjectWrapper>();
 
-      DA.GetDataList(inputId, inputData);
+      da.GetDataList(inputId, inputData);
       bool isDataAvailable = inputData.TrueForAll(item => item != null);
       var layers = Oasys.Collections.IList<ILayer>.Create();
       var invalidIds = new List<int>();
@@ -197,13 +197,13 @@ namespace AdSecGH.Helpers {
     }
 
     public static Oasys.Collections.IList<IPoint> GetIPoints(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       var inputData = new List<GH_ObjectWrapper>();
       var points = Oasys.Collections.IList<IPoint>.Create();
       var invalidIds = new List<int>();
       int pointsConverted = 0;
 
-      DA.GetDataList(inputId, inputData);
+      da.GetDataList(inputId, inputData);
       bool isDataAvailable = inputData.TrueForAll(item => item != null);
 
       if (!isDataAvailable && !isOptional) {
@@ -225,11 +225,11 @@ namespace AdSecGH.Helpers {
     }
 
     public static AdSecRebarGroupGoo GetReinforcementGroup(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       AdSecRebarGroupGoo rebarGroupGoo = null;
       GH_ObjectWrapper inputData = null;
 
-      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      bool isDataAvailable = da.GetData(inputId, ref inputData);
 
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
@@ -241,10 +241,10 @@ namespace AdSecGH.Helpers {
     }
 
     public static List<AdSecRebarGroup> GetReinforcementGroups(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       var inputData = new List<GH_ObjectWrapper>();
 
-      DA.GetDataList(inputId, inputData);
+      da.GetDataList(inputId, inputData);
       bool isDataAvailable = inputData.TrueForAll(item => item != null);
 
       var adSecRebarGroups = new List<AdSecRebarGroup>();
@@ -260,11 +260,11 @@ namespace AdSecGH.Helpers {
     }
 
     public static AdSecSolutionGoo GetSolutionGoo(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       AdSecSolutionGoo solutionGoo = null;
       GH_ObjectWrapper inputData = null;
 
-      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      bool isDataAvailable = da.GetData(inputId, ref inputData);
 
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
@@ -276,10 +276,10 @@ namespace AdSecGH.Helpers {
     }
 
     public static Oasys.Collections.IList<ISubComponent> GetSubComponents(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       var inputData = new List<GH_ObjectWrapper>();
 
-      DA.GetDataList(inputId, inputData);
+      da.GetDataList(inputId, inputData);
       bool isDataAvailable = inputData.TrueForAll(item => item != null);
 
       var subComponents = Oasys.Collections.IList<ISubComponent>.Create();
@@ -296,11 +296,11 @@ namespace AdSecGH.Helpers {
     }
 
     public static AdSecStressStrainCurveGoo GetStressStrainCurveGoo(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool compression, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool compression, bool isOptional = false) {
       AdSecStressStrainCurveGoo curveGoo = null;
       GH_ObjectWrapper inputData = null;
 
-      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      bool isDataAvailable = da.GetData(inputId, ref inputData);
 
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
@@ -312,11 +312,11 @@ namespace AdSecGH.Helpers {
     }
 
     public static IStressStrainPoint GetStressStrainPoint(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       IStressStrainPoint stressStrainPoint = null;
       GH_ObjectWrapper inputData = null;
 
-      bool isDataAvailable = DA.GetData(inputId, ref inputData);
+      bool isDataAvailable = da.GetData(inputId, ref inputData);
 
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
@@ -328,10 +328,10 @@ namespace AdSecGH.Helpers {
     }
 
     public static Oasys.Collections.IList<IStressStrainPoint> GetStressStrainPoints(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       var inputData = new List<GH_ObjectWrapper>();
 
-      DA.GetDataList(inputId, inputData);
+      da.GetDataList(inputId, inputData);
       bool isDataAvailable = inputData.TrueForAll(item => item != null);
       var points = Oasys.Collections.IList<IStressStrainPoint>.Create();
 
@@ -351,10 +351,10 @@ namespace AdSecGH.Helpers {
     }
 
     public static List<ICover> GetCovers(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, LengthUnit docLengthUnit) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, LengthUnit docLengthUnit) {
       var covers = new List<ICover>();
 
-      var lengths = Input.UnitNumberList(owner, DA, inputId, docLengthUnit);
+      var lengths = Input.UnitNumberList(owner, da, inputId, docLengthUnit);
       var doubleComparer = new DoubleComparer(10e-12f);
       covers.AddRange(lengths.Select(v => (Length)v).Where(v => !doubleComparer.Equals(v.Value, 0.0))
        .Select(length => ICover.Create(length)));
@@ -367,9 +367,9 @@ namespace AdSecGH.Helpers {
     }
 
     public static Dictionary<int, List<object>> GetLoads(
-      this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
+      this GH_Component owner, IGH_DataAccess da, int inputId, bool isOptional = false) {
       var adSecloads = new Dictionary<int, List<object>>();
-      if (DA.GetDataTree(inputId, out GH_Structure<IGH_Goo> inputData)
+      if (da.GetDataTree(inputId, out GH_Structure<IGH_Goo> inputData)
         && !AdSecInput.TryCastToLoads(inputData, ref adSecloads, out int path, out int index)) {
         owner.AddRuntimeWarning(
           $"Unable to convert {owner.Params.Input[1].NickName} path {path} index {index} to AdSec Load. Section will be saved without this load.");

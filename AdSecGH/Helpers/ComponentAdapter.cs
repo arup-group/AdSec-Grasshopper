@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using AdSecCore.Functions;
 
@@ -10,6 +9,7 @@ using OasysGH.Components;
 using OasysGH.Units;
 
 using Attribute = AdSecCore.Functions.Attribute;
+
 namespace Oasys.GH.Helpers {
 
   public abstract class ComponentAdapter<T> : GH_OasysComponent, IDefaultValues where T : IFunction {
@@ -31,9 +31,8 @@ namespace Oasys.GH.Helpers {
       BusinessComponent.PopulateOutputParams(this);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
-
-      BusinessComponent.UpdateInputValues(this, DA);
+    protected override void SolveInstance(IGH_DataAccess da) {
+      BusinessComponent.UpdateInputValues(this, da);
       if (RuntimeMessages(GH_RuntimeMessageLevel.Error).Count > 0) { return; }
       BusinessComponent.Compute();
       if (BusinessComponent is Function function) {
@@ -52,7 +51,7 @@ namespace Oasys.GH.Helpers {
         if (function.ErrorMessages.Count > 0) { return; }
       }
 
-      BusinessComponent.SetOutputValues(this, DA);
+      BusinessComponent.SetOutputValues(this, da);
     }
 
     public void UpdateUnit() {

@@ -114,9 +114,9 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Section", "Sec", "AdSec Sections", GH_ParamAccess.list);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       var gh_typ = new GH_ObjectWrapper();
-      DA.GetData(0, ref gh_typ);
+      da.GetData(0, ref gh_typ);
       GH_Convert.ToString(gh_typ, out string fileName, GH_Conversion.Both);
       if (!fileName.EndsWith(".ads")) {
         fileName += ".ads";
@@ -126,7 +126,7 @@ namespace AdSecGH.Components {
       var jsonParser = JsonParser.Deserialize(json);
 
       var planes = new List<Plane>();
-      DA.GetDataList(1, planes);
+      da.GetDataList(1, planes);
 
       var sections = new List<AdSecSectionGoo>();
       var code = AdSecFile.GetDesignCode(json);
@@ -152,7 +152,7 @@ namespace AdSecGH.Components {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning.Description);
       }
 
-      DA.SetDataList(0, sections);
+      da.SetDataList(0, sections);
     }
   }
 }

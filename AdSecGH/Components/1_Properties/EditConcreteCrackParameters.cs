@@ -58,10 +58,10 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Tension", "ft", "Value of Characteristic Tension Strength", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInstance(IGH_DataAccess da) {
       // 0 Cracked params
       var concreteCrack
-        = new AdSecConcreteCrackCalculationParametersGoo(this.GetIConcreteCrackCalculationParameters(DA, 0));
+        = new AdSecConcreteCrackCalculationParametersGoo(this.GetIConcreteCrackCalculationParameters(da, 0));
 
       if (concreteCrack != null && concreteCrack.Value != null) {
         // #### get the remaining inputs ####
@@ -72,7 +72,7 @@ namespace AdSecGH.Components {
 
         // 1 Elastic modulus
         if (Params.Input[1].SourceCount > 0) {
-          e = (Pressure)Input.UnitNumber(this, DA, 1, DefaultUnits.StressUnitResult);
+          e = (Pressure)Input.UnitNumber(this, da, 1, DefaultUnits.StressUnitResult);
           if (e.Value < 0) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
               "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
@@ -84,7 +84,7 @@ namespace AdSecGH.Components {
 
         // 2 Compression
         if (Params.Input[2].SourceCount > 0) {
-          fck = (Pressure)Input.UnitNumber(this, DA, 2, DefaultUnits.StressUnitResult);
+          fck = (Pressure)Input.UnitNumber(this, da, 2, DefaultUnits.StressUnitResult);
           if (fck.Value > 0) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
               "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
@@ -96,7 +96,7 @@ namespace AdSecGH.Components {
 
         // 3 Tension
         if (Params.Input[3].SourceCount > 0) {
-          ft = (Pressure)Input.UnitNumber(this, DA, 3, DefaultUnits.StressUnitResult);
+          ft = (Pressure)Input.UnitNumber(this, da, 3, DefaultUnits.StressUnitResult);
           if (ft.Value < 0) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
               "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
@@ -112,10 +112,10 @@ namespace AdSecGH.Components {
         }
 
         // #### set outputs ####
-        DA.SetData(0, concreteCrack);
-        DA.SetData(1, new GH_UnitNumber(e.ToUnit(DefaultUnits.StressUnitResult)));
-        DA.SetData(2, new GH_UnitNumber(fck.ToUnit(DefaultUnits.StressUnitResult)));
-        DA.SetData(3, new GH_UnitNumber(ft.ToUnit(DefaultUnits.StressUnitResult)));
+        da.SetData(0, concreteCrack);
+        da.SetData(1, new GH_UnitNumber(e.ToUnit(DefaultUnits.StressUnitResult)));
+        da.SetData(2, new GH_UnitNumber(fck.ToUnit(DefaultUnits.StressUnitResult)));
+        da.SetData(3, new GH_UnitNumber(ft.ToUnit(DefaultUnits.StressUnitResult)));
       } else {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "ConcreteCrackCalculationParameters are null");
       }

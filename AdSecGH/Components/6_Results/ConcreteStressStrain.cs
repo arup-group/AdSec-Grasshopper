@@ -57,16 +57,16 @@ namespace AdSecGH.Components {
         GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInstance(IGH_DataAccess da) {
       // get solution input
-      var solution = this.GetSolutionGoo(DA, 0);
+      var solution = this.GetSolutionGoo(da, 0);
 
       IStrengthResult uls = null;
       IServiceabilityResult sls = null;
 
       // get load - can be either load or deformation
       var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(1, ref gh_typ)) {
+      if (da.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
         if (gh_typ.Value is AdSecLoadGoo load) {
           uls = solution.Value.Strength.Check(load.Value);
@@ -84,27 +84,27 @@ namespace AdSecGH.Components {
         return;
       }
 
-      var point = this.GetAdSecPointGoo(DA, 2).AdSecPoint;
+      var point = this.GetAdSecPointGoo(da, 2).AdSecPoint;
       // ULS strain
       var strainULS = uls.Deformation.StrainAt(point);
       var outStrainULS = new GH_UnitNumber(strainULS.ToUnit(DefaultUnits.StrainUnitResult));
-      DA.SetData(0, outStrainULS);
+      da.SetData(0, outStrainULS);
 
       // ULS stress in concrete material from strain
       var stressULS = solution.m_section.Section.Material.Strength.StressAt(strainULS);
       var outStressULS = new GH_UnitNumber(stressULS.ToUnit(DefaultUnits.StressUnitResult));
-      DA.SetData(1, outStressULS);
+      da.SetData(1, outStressULS);
 
       // SLS strain
       var strainSLS = sls.Deformation.StrainAt(point);
       var outStrainSLS = new GH_UnitNumber(strainSLS.ToUnit(DefaultUnits.StrainUnitResult));
-      DA.SetData(2, outStrainSLS);
+      da.SetData(2, outStrainSLS);
 
       // SLS stress in concrete material from strain
       var stressSLS = solution.m_section.Section.Material.Serviceability.StressAt(strainSLS);
       var outStressSLS = new GH_UnitNumber(stressSLS.ToUnit(DefaultUnits.StressUnitResult));
 
-      DA.SetData(3, outStressSLS);
+      da.SetData(3, outStressSLS);
     }
   }
 }

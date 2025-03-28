@@ -268,9 +268,9 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Material", "Mat", "AdSec Material", GH_ParamAccess.list);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       string search = "";
-      if (DA.GetData(0, ref search)) {
+      if (da.GetData(0, ref search)) {
         search = search.ToLower();
         // filter by search pattern
         if (search != "") {
@@ -310,7 +310,7 @@ namespace AdSecGH.Components {
             }
           }
 
-          DA.SetDataList(0, filteredMaterials);
+          da.SetDataList(0, filteredMaterials);
           return;
         }
       }
@@ -329,7 +329,7 @@ namespace AdSecGH.Components {
         GradeName = selectedMaterial.Name,
       };
 
-      DA.SetData(0, new AdSecMaterialGoo(materialDesign2));
+      da.SetData(0, new AdSecMaterialGoo(materialDesign2));
     }
 
     protected override void UpdateUIFromSelectedItems() {

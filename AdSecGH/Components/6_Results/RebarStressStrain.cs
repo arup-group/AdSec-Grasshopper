@@ -60,16 +60,16 @@ namespace AdSecGH.Components {
         "SLS stress for each rebar position", GH_ParamAccess.list);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInstance(IGH_DataAccess da) {
       // get solution input
-      var solution = this.GetSolutionGoo(DA, 0);
+      var solution = this.GetSolutionGoo(da, 0);
 
       IStrengthResult uls;
       IServiceabilityResult sls;
 
       // get load - can be either load or deformation
       var gh_typ = new GH_ObjectWrapper();
-      if (DA.GetData(1, ref gh_typ)) {
+      if (da.GetData(1, ref gh_typ)) {
         // try cast directly to quantity type
         if (gh_typ.Value is AdSecLoadGoo load) {
           uls = solution.Value.Strength.Check(load.Value);
@@ -132,11 +132,11 @@ namespace AdSecGH.Components {
         }
       }
 
-      DA.SetDataList(0, pointGoos);
-      DA.SetDataList(1, outStrainULS);
-      DA.SetDataList(2, outStressULS);
-      DA.SetDataList(3, outStrainSLS);
-      DA.SetDataList(4, outStressSLS);
+      da.SetDataList(0, pointGoos);
+      da.SetDataList(1, outStrainULS);
+      da.SetDataList(2, outStressULS);
+      da.SetDataList(3, outStrainSLS);
+      da.SetDataList(4, outStressSLS);
     }
 
     private static ISection FlatSection(AdSecSolutionGoo solution) {

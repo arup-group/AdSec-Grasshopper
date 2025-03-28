@@ -75,11 +75,11 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("FlangeProfile", "Fla", "Flange Profile for AdSec Profile", GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
-      var flange = new AdSecProfileFlangeGoo(IFlange.Create((Length)Input.UnitNumber(this, DA, 0, _lengthUnit),
-        (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
+    protected override void SolveInternal(IGH_DataAccess da) {
+      var flange = new AdSecProfileFlangeGoo(IFlange.Create((Length)Input.UnitNumber(this, da, 0, _lengthUnit),
+        (Length)Input.UnitNumber(this, da, 1, _lengthUnit)));
 
-      DA.SetData(0, flange);
+      da.SetData(0, flange);
     }
 
     protected override void UpdateUIFromSelectedItems() {

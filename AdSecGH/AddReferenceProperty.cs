@@ -16,7 +16,9 @@ using Utility = OasysGH.Utility;
 
 namespace AdSecGH {
   public class AddReferencePriority : GH_AssemblyPriority {
+#pragma warning disable S2223, S1104
     public static Assembly AdSecAPI;
+#pragma warning restore S2223, S1104
     private static string _pluginPath;
     public static string PluginPath {
       get {
@@ -49,9 +51,12 @@ namespace AdSecGH {
 
       // ### Reference AdSecAPI and SQLite dlls ###
       try {
-        AdSecAPI = Assembly.LoadFile($"{PluginPath}\\AdSec_API.dll");
+#pragma warning disable S2696 // Instance members should not write to "static" fields
+        AdSecAPI = Assembly.Load($"{PluginPath}\\AdSec_API.dll");
+#pragma warning restore S2696 // Instance members should not write to "static" fields
       } catch (Exception ex) {
-        string message = $"{ex.Message}{Environment.NewLine}{Environment.NewLine}Error loading the file AdSec_API.dll from path {PluginPath} - check if the file exist.{Environment.NewLine}The plugin cannot be loaded.";
+        string message
+          = $"{ex.Message}{Environment.NewLine}{Environment.NewLine}Error loading the file AdSec_API.dll from path {PluginPath} - check if the file exist.{Environment.NewLine}The plugin cannot be loaded.";
         var exception = new Exception(message);
         var gH_LoadingException = new GH_LoadingException("AdSec: AdSec_API.dll loading", exception);
         Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
@@ -104,7 +109,8 @@ namespace AdSecGH {
             }
           }
 
-          string message = $"Error loading the file {keyword} from any Grasshopper plugin folders - check if the file exist.{Environment.NewLine}The plugin cannot be loaded.{Environment.NewLine}Folders (including subfolder) that was searched:{Environment.NewLine}{sDir}";
+          string message
+            = $"Error loading the file {keyword} from any Grasshopper plugin folders - check if the file exist.{Environment.NewLine}The plugin cannot be loaded.{Environment.NewLine}Folders (including subfolder) that was searched:{Environment.NewLine}{sDir}";
           foreach (var pluginFolder in Folders.AssemblyFolders) {
             message += Environment.NewLine + pluginFolder.Folder;
           }

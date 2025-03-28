@@ -98,13 +98,13 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Load", "Ld", "AdSec Load", GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       // Create new load
-      var deformation = IDeformation.Create((Strain)Input.UnitNumber(this, DA, 0, _strainUnit),
-        (Curvature)Input.UnitNumber(this, DA, 1, _curvatureUnit),
-        (Curvature)Input.UnitNumber(this, DA, 2, _curvatureUnit));
+      var deformation = IDeformation.Create((Strain)Input.UnitNumber(this, da, 0, _strainUnit),
+        (Curvature)Input.UnitNumber(this, da, 1, _curvatureUnit),
+        (Curvature)Input.UnitNumber(this, da, 2, _curvatureUnit));
 
-      DA.SetData(0, new AdSecDeformationGoo(deformation));
+      da.SetData(0, new AdSecDeformationGoo(deformation));
     }
 
     protected override void UpdateUIFromSelectedItems() {

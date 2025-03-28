@@ -24,9 +24,9 @@ namespace TestGrasshopperObjects.Extensions {
       pManager.AddGenericParameter("test Output", "o", "output", GH_ParamAccess.list);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
-      var result = this.GetCovers(DA, 0, LengthUnit.Meter);
-      DA.SetData(0, result);
+    protected override void SolveInstance(IGH_DataAccess da) {
+      var result = this.GetCovers(da, 0, LengthUnit.Meter);
+      da.SetData(0, result);
     }
   }
 }

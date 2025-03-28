@@ -161,23 +161,23 @@ namespace AdSecGH.Components {
         GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       // get rebargroup
-      var rebar = this.GetReinforcementGroup(DA, 0);
+      var rebar = this.GetReinforcementGroup(da, 0);
 
       IPreload load = null;
       // Create new load
       switch (_selectedItems[0]) {
         case "Force":
-          load = IPreForce.Create((Force)Input.UnitNumber(this, DA, 1, _forceUnit));
+          load = IPreForce.Create((Force)Input.UnitNumber(this, da, 1, _forceUnit));
           break;
 
         case "Strain":
-          load = IPreStrain.Create((Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
+          load = IPreStrain.Create((Strain)Input.UnitNumber(this, da, 1, _strainUnit));
           break;
 
         case "Stress":
-          load = IPreStress.Create((Pressure)Input.UnitNumber(this, DA, 1, _stressUnit));
+          load = IPreStress.Create((Pressure)Input.UnitNumber(this, da, 1, _stressUnit));
           break;
       }
 
@@ -188,7 +188,7 @@ namespace AdSecGH.Components {
         out_rebar.Cover = ICover.Create(rebar.Cover.UniformCover);
       }
 
-      DA.SetData(0, out_rebar);
+      da.SetData(0, out_rebar);
 
       AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
         "Applying prestress will change the up-stream (backwards) rebar object as well "

@@ -96,22 +96,22 @@ namespace AdSecGH.Components {
         GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
-      var modulus = (Pressure)Input.UnitNumber(this, DA, 0, _stressUnit);
+    protected override void SolveInternal(IGH_DataAccess da) {
+      var modulus = (Pressure)Input.UnitNumber(this, da, 0, _stressUnit);
       if (modulus.Value < 0) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
           "Elastic Modulus value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
         modulus = new Pressure(Math.Abs(modulus.Value), modulus.Unit);
       }
 
-      var compression = (Pressure)Input.UnitNumber(this, DA, 1, _strengthUnit);
+      var compression = (Pressure)Input.UnitNumber(this, da, 1, _strengthUnit);
       if (compression.Value > 0) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
           "Compression value must be negative. Input value has been inverted. This service has been provided free of charge, enjoy!");
         compression = new Pressure(compression.Value * -1, compression.Unit);
       }
 
-      var tension = (Pressure)Input.UnitNumber(this, DA, 2, _strengthUnit);
+      var tension = (Pressure)Input.UnitNumber(this, da, 2, _strengthUnit);
       if (tension.Value < 0) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
           "Tension value must be positive. Input value has been inverted. This service has been provided free of charge, enjoy!");
@@ -122,7 +122,7 @@ namespace AdSecGH.Components {
       var ccp = IConcreteCrackCalculationParameters.Create(modulus, compression, tension);
       var ccpGoo = new AdSecConcreteCrackCalculationParametersGoo(ccp);
 
-      DA.SetData(0, ccpGoo);
+      da.SetData(0, ccpGoo);
     }
 
     protected override void UpdateUIFromSelectedItems() {

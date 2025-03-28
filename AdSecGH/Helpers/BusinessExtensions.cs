@@ -113,7 +113,7 @@ namespace Oasys.GH.Helpers {
 
     /// <summary>
     ///   For the Outputs
-    ///   This is use to DA.SetData()
+    ///   This is use to da.SetData()
     ///   i.e. we will get the value from the Attribute.Value and set it to a Goo object
     ///   Since the value is all we need and this is often shared between the "Business" Parameter and the Gh (Goo) object, it
     ///   can take the form:

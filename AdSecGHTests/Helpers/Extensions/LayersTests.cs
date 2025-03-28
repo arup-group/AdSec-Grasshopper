@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-
-using AdSecGH.Parameters;
+﻿using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
 
-using Rhino.Geometry;
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Layers;
+using Oasys.AdSec.StandardMaterials;
+
+using OasysUnits;
 
 using TestGrasshopperObjects.Extensions;
 
@@ -12,13 +14,13 @@ using Xunit;
 
 namespace AdSecGHTests.Helpers.Extensions {
   [Collection("GrasshopperFixture collection")]
-  public class IPointsTests {
-    private IpointsTestComponent _component;
-    private readonly string _failToRetrieveDataWarning = "failed";
+  public class LayersTests {
     private readonly string _convertDataError = "convert";
+    private readonly string _failToRetrieveDataWarning = "failed";
+    private LayersTestComponent _component;
 
-    public IPointsTests() {
-      _component = new IpointsTestComponent();
+    public LayersTests() {
+      _component = new LayersTestComponent();
     }
 
     [Fact]
@@ -54,7 +56,7 @@ namespace AdSecGHTests.Helpers.Extensions {
     [Fact]
     public void ReturnsErrorWhenDataIncorrectInputIsOptional() {
       _component.Optional = true;
-      ComponentTestHelper.SetInput(_component, new List<string>());
+      ComponentTestHelper.SetInput(_component, string.Empty);
 
       object result = ComponentTestHelper.GetOutput(_component);
       Assert.Null(result);
@@ -70,7 +72,7 @@ namespace AdSecGHTests.Helpers.Extensions {
     [Fact]
     public void ReturnsErrorWhenDataIncorrectInputIsNonOptional() {
       _component.Optional = false;
-      ComponentTestHelper.SetInput(_component, new List<string>());
+      ComponentTestHelper.SetInput(_component, string.Empty);
 
       object result = ComponentTestHelper.GetOutput(_component);
       Assert.Null(result);
@@ -85,8 +87,11 @@ namespace AdSecGHTests.Helpers.Extensions {
     }
 
     [Fact]
-    public void ReturnsIPointWhenDataCorrect() {
-      ComponentTestHelper.SetInput(_component, new AdSecPointGoo(new Point3d()));
+    public void ReturnsILayerWhenDataCorrect() {
+      var layer = ILayerByBarCount.Create(2,
+        IBarBundle.Create(Reinforcement.Steel.IS456.Edition_2000.S415, Length.FromMillimeters(1)));
+      var input = new AdSecRebarLayerGoo(layer);
+      ComponentTestHelper.SetInput(_component, input);
 
       object result = ComponentTestHelper.GetOutput(_component);
       Assert.NotNull(result);
@@ -94,39 +99,6 @@ namespace AdSecGHTests.Helpers.Extensions {
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
-    }
-
-    [Fact]
-    public void ReturnsIPointWhenDataCorrectButShowRemarkForSinglePoint() {
-      ComponentTestHelper.SetInput(_component, new Point3d());
-
-      object result = ComponentTestHelper.GetOutput(_component);
-      Assert.NotNull(result);
-
-      var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Remark);
-
-      Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
-      Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
-      Assert.Single(runtimeMessages);
-      Assert.Contains(runtimeMessages, item => item.Contains("converted to local point."));
-    }
-
-    [Fact]
-    public void ReturnsIPointWhenDataCorrectButShowRemarkForManyPoints() {
-      ComponentTestHelper.SetInput(_component, new List<object>() {
-        new Point3d(1, 1, 1),
-        new Point3d(2, 2, 2),
-      });
-
-      object result = ComponentTestHelper.GetOutput(_component);
-      Assert.NotNull(result);
-
-      var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Remark);
-
-      Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
-      Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
-      Assert.Single(runtimeMessages);
-      Assert.Contains(runtimeMessages, item => item.Contains("List of Points"));
     }
   }
 }

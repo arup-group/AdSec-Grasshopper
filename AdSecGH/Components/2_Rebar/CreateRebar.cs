@@ -92,25 +92,25 @@ namespace AdSecGH.Components {
         GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       // 0 material input
-      var material = this.GetAdSecMaterial(DA, 0);
+      var material = this.GetAdSecMaterial(da, 0);
 
       switch (_mode) {
         case FoldMode.Single:
           var rebar = new AdSecRebarBundleGoo(IBarBundle.Create((IReinforcement)material.Material,
-            (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
-          DA.SetData(0, rebar);
+            (Length)Input.UnitNumber(this, da, 1, _lengthUnit)));
+          da.SetData(0, rebar);
           break;
 
         case FoldMode.Bundle:
           int count = 1;
-          DA.GetData(2, ref count);
+          da.GetData(2, ref count);
 
           var bundle = new AdSecRebarBundleGoo(IBarBundle.Create((IReinforcement)material.Material,
-            (Length)Input.UnitNumber(this, DA, 1, _lengthUnit), count));
+            (Length)Input.UnitNumber(this, da, 1, _lengthUnit), count));
 
-          DA.SetData(0, bundle);
+          da.SetData(0, bundle);
           break;
       }
     }

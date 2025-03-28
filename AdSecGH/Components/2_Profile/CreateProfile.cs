@@ -103,7 +103,7 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Profile", "Pf", "Profile for AdSec Section", GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       ClearRuntimeMessages();
       for (int i = 0; i < Params.Input.Count; i++) {
         Params.Input[i].ClearRuntimeMessages();
@@ -111,18 +111,18 @@ namespace AdSecGH.Components {
 
       var local = Plane.WorldYZ;
       var temp = Plane.Unset;
-      if (DA.GetData(Params.Input.Count - 1, ref temp)) {
+      if (da.GetData(Params.Input.Count - 1, ref temp)) {
         local = temp;
       }
 
       if (_mode == FoldMode.Catalogue) {
-        var profiles = SolveInstanceForCatalogueProfile(DA);
+        var profiles = SolveInstanceForCatalogueProfile(da);
         var adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
+        da.SetData(0, new AdSecProfileGoo(adSecProfile, local));
       } else if (_mode == FoldMode.Other) {
-        var profile = SolveInstanceForStandardProfile(DA);
+        var profile = SolveInstanceForStandardProfile(da);
         var adSecProfile = AdSecProfiles.CreateProfile(profile);
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
+        da.SetData(0, new AdSecProfileGoo(adSecProfile, local));
       }
     }
   }

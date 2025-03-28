@@ -8,11 +8,9 @@ using OasysGH;
 using OasysGH.Components;
 
 namespace TestGrasshopperObjects.Extensions {
-#pragma warning disable S101 // Types should be named in PascalCase
-  public class IConcreteCrackCalculationParametersTestComponent : GH_OasysComponent {
-#pragma warning restore S101 // Types should be named in PascalCase
+  public class ConcreteCrackCalculationParametersTestComponent : GH_OasysComponent {
     public bool Optional { get; set; }
-    public IConcreteCrackCalculationParametersTestComponent() : base("t0", "t1", "t2", "t3", "t4") { }
+    public ConcreteCrackCalculationParametersTestComponent() : base("t0", "t1", "t2", "t3", "t4") { }
     public override Guid ComponentGuid => Guid.NewGuid();
 
     public override OasysPluginInfo PluginInfo => null;
@@ -25,9 +23,9 @@ namespace TestGrasshopperObjects.Extensions {
       pManager.AddGenericParameter("test Output", "o", "output", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
-      var result = this.GetIConcreteCrackCalculationParameters(DA, 0, Optional);
-      DA.SetData(0, result);
+    protected override void SolveInstance(IGH_DataAccess da) {
+      var result = this.GetIConcreteCrackCalculationParameters(da, 0, Optional);
+      da.SetData(0, result);
     }
 
   }

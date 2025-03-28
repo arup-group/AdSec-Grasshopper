@@ -1,26 +1,25 @@
-﻿using AdSecGH.Parameters;
-
+﻿
 using Grasshopper.Kernel;
 
-using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Layers;
-using Oasys.AdSec.StandardMaterials;
+using Oasys.AdSec.Materials;
 
 using OasysUnits;
+using OasysUnits.Units;
 
 using TestGrasshopperObjects.Extensions;
 
 using Xunit;
 
 namespace AdSecGHTests.Helpers.Extensions {
+
   [Collection("GrasshopperFixture collection")]
-  public class ILayersTests {
-    private ILayersTestComponent _component;
+  public class ConcreteCrackCalculationParametersTests {
+    private ConcreteCrackCalculationParametersTestComponent _component;
     private readonly string _failToRetrieveDataWarning = "failed";
     private readonly string _convertDataError = "convert";
 
-    public ILayersTests() {
-      _component = new ILayersTestComponent();
+    public ConcreteCrackCalculationParametersTests() {
+      _component = new ConcreteCrackCalculationParametersTestComponent();
     }
 
     [Fact]
@@ -81,16 +80,16 @@ namespace AdSecGHTests.Helpers.Extensions {
 
       Assert.Single(runtimeMessages);
       Assert.Contains(runtimeMessages, item => item.Contains(_convertDataError));
-      Assert.Contains(runtimeMessages, item => item.Contains("item 0"));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
 
     [Fact]
-    public void ReturnsILayerWhenDataCorrect() {
-      var layer = ILayerByBarCount.Create(2,
-        IBarBundle.Create(Reinforcement.Steel.IS456.Edition_2000.S415, Length.FromMillimeters(1)));
-      var input = new AdSecRebarLayerGoo(layer);
+    public void ReturnsIConcreteCrackCalculationParametersWhenDataCorrect() {
+      var pressure = new Pressure(-0.5, PressureUnit.Bar);
+      var pressure2 = new Pressure(1, PressureUnit.Bar);
+      var input = IConcreteCrackCalculationParameters.Create(pressure2, pressure, pressure2);
+
       ComponentTestHelper.SetInput(_component, input);
 
       object result = ComponentTestHelper.GetOutput(_component);
