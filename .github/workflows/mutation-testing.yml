@@ -25,11 +25,14 @@ jobs:
         dotnet build Oasys.LicenceManager.Cli/Oasys.LicenceManager.Cli.sln --configuration Debug --no-restore
         Oasys.LicenceManager.Cli/Oasys.LicenceManager.Cli/bin/Debug/net8.0/Oasys.LicenceManager.Cli -l "test" -p "test"
 
-    - name: Restore dependencies
-      run: dotnet restore AdSecCore.sln
+    - name: Run Stryker Mutation Testing
+      uses: stryker-mutator/github-action@v0.0.1
+      with:
+        testProject: "AdSecCoreTests/AdSecCoreTests.csproj"  # required
+        breakAt: "75"  # Optional
 
-    - name: Install Stryker
-      run: dotnet tool install --global dotnet-stryker
-
-    - name: Run Mutation Tests
-      run: dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -v trace
+    - name: Upload Mutation Test Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: stryker-html-report
+        path: ${{github.workspace}}/AdSecCoreTests/StrykerOutput/**/**/*.html
