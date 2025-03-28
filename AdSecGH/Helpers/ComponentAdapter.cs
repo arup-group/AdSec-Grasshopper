@@ -60,6 +60,7 @@ namespace Oasys.GH.Helpers {
         function.MomentUnit = DefaultUnits.MomentUnit;
         function.LengthUnit = DefaultUnits.LengthUnitGeometry;
         function.StrainUnitResult = DefaultUnits.StrainUnitResult;
+        function.StressUnitResult = DefaultUnits.StressUnitResult;
         function.CurvatureUnit = DefaultUnits.CurvatureUnit;
         function.LengthUnitResult = DefaultUnits.LengthUnitResult;
         function.AxialStiffnessUnit = DefaultUnits.AxialStiffnessUnit;

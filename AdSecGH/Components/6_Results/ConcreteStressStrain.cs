@@ -3,6 +3,7 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
+using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using AdSecGHCore.Constants;
@@ -13,13 +14,36 @@ using Oasys.GH.Helpers;
 
 using OasysGH;
 
-namespace AdSecGH.Components {
+using Attribute = AdSecCore.Functions.Attribute;
+namespace AdSecCore.Functions {
   public class ConcreteStressStrainGh : ConcreteStressStrainFunction {
     public ConcreteStressStrainGh() {
+      var vertex = Vertex as Attribute;
+      VertexInput.Update(ref vertex);
+      Vertex.OnValueChanged += goo => { VertexInput.Value = goo.AdSecPoint; };
+    }
+
+    public AdSecPointParameter Vertex { get; set; } = new AdSecPointParameter();
+
+    public override Attribute[] GetAllInputAttributes() {
+      return new Attribute[] {
+       SolutionInput,
+       LoadInput,
+       Vertex,
+      };
     }
   }
 
+
+
   public class ConcreteStressStrain : ComponentAdapter<ConcreteStressStrainGh> {
+
+    protected override void BeforeSolveInstance() {
+      UpdateUnit();
+      BusinessComponent.UpdateOutputDescription();
+      RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
+    }
+
     public ConcreteStressStrain() {
       Hidden = true;
       Category = CategoryName.Name();

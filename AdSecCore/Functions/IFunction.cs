@@ -24,6 +24,7 @@ namespace AdSecCore.Functions {
     public MomentUnit MomentUnit { get; set; } = MomentUnit.NewtonMeter;
     public AxialStiffnessUnit AxialStiffnessUnit { get; set; } = AxialStiffnessUnit.Newton;
     public BendingStiffnessUnit BendingStiffnessUnit { get; set; } = BendingStiffnessUnit.NewtonSquareMeter;
+    public PressureUnit StressUnitResult { get; set; } = PressureUnit.Megapascal;
     public List<string> ErrorMessages { get; set; } = new List<string>();
     public List<string> WarningMessages { get; set; } = new List<string>();
     public List<string> RemarkMessages { get; set; } = new List<string>();

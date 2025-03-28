@@ -5,22 +5,9 @@ using Oasys.AdSec;
 using OasysUnits;
 
 namespace AdSecCore.Functions {
-  public class ConcreteStressStrainFunction : Function {
-    public SectionSolutionParameter SolutionInput { get; set; } = new SectionSolutionParameter {
-      Name = "Results",
-      NickName = "Res",
-      Description = "AdSec Results to perform serviceability check on",
-      Access = Access.Item,
-      Optional = false,
-    };
-
-    public GenericParameter LoadInput { get; set; } = new GenericParameter {
-      Name = "Load",
-      NickName = "Ld",
-      Description = "AdSec Load (Load or Deformation) for which the strength results are to be calculated.",
-      Access = Access.Item,
-      Optional = false,
-    };
+  public class ConcreteStressStrainFunction : ResultFunction {
+    private IServiceabilityResult Sls { get; set; }
+    private IStrengthResult Uls { get; set; }
 
     public PointParameter VertexInput { get; set; } = new PointParameter {
       Name = "Vertex Point",
@@ -69,71 +56,79 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat7(),
     };
 
-    public void UpdateOutputDescription() {
-      string strainUnitAbbreviation = "";// Strain.GetAbbreviation(DefaultUnits.StrainUnitResult);
-      string stressUnitAbbreviation = "";//Pressure.GetAbbreviation(DefaultUnits.StressUnitResult);
+    public override Attribute[] GetAllInputAttributes() {
+      return new Attribute[] {
+       SolutionInput,
+       LoadInput,
+       VertexInput,
+      };
+    }
+
+    public override Attribute[] GetAllOutputAttributes() {
+      return new Attribute[] {
+       UlsStrainOutput,
+       UlsStressOutput,
+       SlsStrainOutput,
+       SlsStressOutput,
+      };
+    }
+
+    public override void UpdateOutputDescription() {
+      base.UpdateOutputDescription();
+      string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
+      string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
       UlsStrainOutput.Description = $"ULS strain at Vertex Point [{strainUnitAbbreviation}]";
       UlsStressOutput.Description = $"ULS stress at Vertex Point [{stressUnitAbbreviation}]";
       SlsStrainOutput.Description = $"SLS strain at Vertex Point [{strainUnitAbbreviation}]";
       SlsStressOutput.Description = $"SLS stress at Vertex Point [{stressUnitAbbreviation}]";
     }
 
+
     public override void Compute() {
       if (!ValidateInputs()) {
         return;
       }
 
-      var solution = SolutionInput.Value;
-      var point = VertexInput.Value;
+      ProcessInput();
 
-      var (uls, sls) = CalculateResults(solution.Solution);
-      if (uls == null || sls == null) {
-        return;
-      }
-
-      // Calculate ULS results
-      var strainULS = uls.Deformation.StrainAt(point);
-      UlsStrainOutput.Value = strainULS;
-      UlsStressOutput.Value = solution.SectionDesign.Section.Material.Strength.StressAt(strainULS);
-
-      // Calculate SLS results
-      var strainSLS = sls.Deformation.StrainAt(point);
-      SlsStrainOutput.Value = strainSLS;
-      SlsStressOutput.Value = solution.SectionDesign.Section.Material.Serviceability.StressAt(strainSLS);
+      ProcessOutput();
     }
 
-    private bool ValidateInputs() {
-      if (SolutionInput?.Value == null) {
-        ErrorMessages.Add("Solution input is null");
+    protected override bool ValidateInputs() {
+      if (!base.ValidateInputs()) {
         return false;
       }
-      if (LoadInput?.Value == null) {
-        ErrorMessages.Add("Load input is null");
-        return false;
-      }
-      if (VertexInput?.Value == null) {
+      if (VertexInput.Value == null) {
         ErrorMessages.Add("Vertex point is null");
         return false;
       }
       return true;
     }
 
-    private (IStrengthResult uls, IServiceabilityResult sls) CalculateResults(ISolution solution) {
+    private void ProcessInput() {
       switch (LoadInput.Value) {
         case ILoad load:
-          return (
-            solution.Strength.Check(load),
-            solution.Serviceability.Check(load)
-          );
+          Uls = SolutionInput.Value.Solution.Strength.Check(load);
+          Sls = SolutionInput.Value.Serviceability.Check(load);
+          break;
         case IDeformation def:
-          return (
-            solution.Strength.Check(def),
-            solution.Serviceability.Check(def)
-          );
+          Uls = SolutionInput.Value.Solution.Strength.Check(def);
+          Sls = SolutionInput.Value.Serviceability.Check(def);
+          break;
         default:
-          ErrorMessages.Add("Invalid Load Input");
-          return (null, null);
+          break;
       }
+    }
+    private void ProcessOutput() {
+      // Calculate ULS results
+      var strainULS = Uls.Deformation.StrainAt(VertexInput.Value);
+      UlsStrainOutput.Value = strainULS;
+      UlsStressOutput.Value = SolutionInput.Value.SectionDesign.Section.Material.Strength.StressAt(strainULS);
+
+      // Calculate SLS results
+      var strainSLS = Sls.Deformation.StrainAt(VertexInput.Value);
+      SlsStrainOutput.Value = strainSLS;
+      SlsStressOutput.Value = SolutionInput.Value.SectionDesign.Section.Material.Serviceability.StressAt(strainSLS);
     }
   }
 }

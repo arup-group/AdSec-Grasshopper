@@ -52,7 +52,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShoulHaveValidDeformationDescription() {
-      _component.DeformationDescription();
+      _component.UpdateOutputDescription();
       var description = _component.DeformationOutput.Description;
       Assert.Contains("[εm⁻¹]", description);
       Assert.Contains("[εm⁻¹]", description);
@@ -60,7 +60,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveValidSecantStiffnessDescription() {
-      _component.SecantStiffnessDescription();
+      _component.UpdateOutputDescription();
       var description = _component.SecantStiffnessOutput.Description;
       Assert.Contains("[N]", description);
       Assert.Contains("[N·m²]", description);
@@ -69,7 +69,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveValidUncrackedMomentRangesDescription() {
-      _component.MomentRangesDescription();
+      _component.UpdateOutputDescription();
       Assert.Contains("[N·m]", _component.UncrackedMomentRangesOutput.Description);
     }
 
