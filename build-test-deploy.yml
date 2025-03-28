@@ -20,7 +20,7 @@ steps:
   - task: UseDotNet@2
     inputs:
       packageType: 'sdk'
-      version: '7.x'  # Specify the version you need, e.g., '7.0.100'
+      version: '8.x'  # Specify the version you need, e.g., '7.0.100'
 
   - task: NuGetCommand@2
     displayName: 'Restoring NuGet packages'
