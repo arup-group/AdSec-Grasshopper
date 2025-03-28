@@ -45,7 +45,7 @@ steps:
     failOnStderr: false
 
   - powershell: |
-      dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj
+      dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l basic
     displayName: Run Stryker
     failOnStderr: false
 
