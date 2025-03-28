@@ -152,29 +152,18 @@ namespace AdSecCore.Functions {
       Description = "Increases the load until set crack width is reached",
     };
 
-
-    public void DeformationDescription() {
-      var strainAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
-      var curvatureAbbreviation = $"{strainAbbreviation}{Curvature.GetAbbreviation(CurvatureUnit)}";
-      DeformationOutput.Description = $"The section deformation under the applied action. The output is a vector representing:{Environment.NewLine}X: Strain [{strainAbbreviation}]{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{curvatureAbbreviation}]{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{curvatureAbbreviation}]";
-    }
-
-    public void FailureDeformationDescription() {
-      var strainAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
-      var curvatureAbbreviation = $"{strainAbbreviation}{Curvature.GetAbbreviation(CurvatureUnit)}";
-      FailureDeformationOutput.Description = $"The section deformation at failure. The output is a vector representing:{Environment.NewLine}X: Strain [{strainAbbreviation}],{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{curvatureAbbreviation}],{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{curvatureAbbreviation}]";
-    }
-
-    public void SecantStiffnessDescription() {
+    public virtual void UpdateOutputDescription() {
+      string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
+      string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
+      var curvatureAbbreviation = $"{stressUnitAbbreviation}{Curvature.GetAbbreviation(CurvatureUnit)}";
+      DeformationOutput.Description = $"The section deformation under the applied action. The output is a vector representing:{Environment.NewLine}X: Strain [{strainUnitAbbreviation}]{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{curvatureAbbreviation}]{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{curvatureAbbreviation}]";
+      FailureDeformationOutput.Description = $"The section deformation at failure. The output is a vector representing:{Environment.NewLine}X: Strain [{strainUnitAbbreviation}],{Environment.NewLine}Y: Curvature around zz (so in local y-direction) [{curvatureAbbreviation}],{Environment.NewLine}Z: Curvature around yy (so in local z-direction) [{curvatureAbbreviation}]";
       SecantStiffnessOutput.Description = $"The secant stiffness under the applied action. The output is a vector representing:{Environment.NewLine}X: Axial stiffness [{AxialStiffness.GetAbbreviation(AxialStiffnessUnit)}],{Environment.NewLine}Y: The bending stiffness about the y-axis in the local coordinate system [{BendingStiffness.GetAbbreviation(BendingStiffnessUnit)}],{Environment.NewLine}Z: The bending stiffness about the z-axis in the local coordinate system [{BendingStiffness.GetAbbreviation(BendingStiffnessUnit)}]";
-    }
-
-    public void MomentRangesDescription() {
       UncrackedMomentRangesOutput.Description = $"The range of moments (in the direction of the applied moment, assuming constant axial force) over which the section remains uncracked. Moment values are in [{Moment.GetAbbreviation(MomentUnit)}]";
       MomentRangesOutput.Description = UncrackedMomentRangesOutput.Description;
     }
 
-    public bool ValidateInputs() {
+    protected virtual bool ValidateInputs() {
       if (SolutionInput.Value == null) {
         ErrorMessages.Add("Solution input is null");
         return false;

@@ -23,9 +23,7 @@ namespace AdSecGH.Components {
   public class SlsResult : ComponentAdapter<SlsResultGh> {
     protected override void BeforeSolveInstance() {
       UpdateUnit();
-      BusinessComponent.DeformationDescription();
-      BusinessComponent.SecantStiffnessDescription();
-      BusinessComponent.MomentRangesDescription();
+      BusinessComponent.UpdateOutputDescription();
       RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
     }
 

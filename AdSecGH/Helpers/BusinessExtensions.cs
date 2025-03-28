@@ -18,6 +18,7 @@ using Microsoft.CSharp.RuntimeBinder;
 
 using Oasys.AdSec;
 
+using OasysGH.Parameters;
 using OasysGH.Units;
 
 using OasysUnits;
@@ -108,6 +109,10 @@ namespace Oasys.GH.Helpers {
           typeof(IntervalArrayParameter), ParamGenericObject
         }, {
           typeof(NeutralLineParameter), ParamGenericObject
+        }, {
+          typeof(StrainParameter), ParamGenericObject
+        }, {
+          typeof(PressureParameter), ParamGenericObject
         },
       };
 
@@ -227,6 +232,16 @@ namespace Oasys.GH.Helpers {
           }
         }, {
           typeof(LengthParameter), a => { return (a as LengthParameter).Value; }
+        },{
+          typeof(StrainParameter), a => {
+            var value = (a as StrainParameter).Value;
+            return new GH_UnitNumber(value.ToUnit(DefaultUnits.StrainUnitResult));
+          }
+        },{
+          typeof(PressureParameter), a => {
+            var value = (a as PressureParameter).Value;
+            return new GH_UnitNumber(value.ToUnit(DefaultUnits.StressUnitResult));
+          }
         },
       };
 
