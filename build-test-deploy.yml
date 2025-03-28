@@ -49,19 +49,6 @@ steps:
     displayName: Run Stryker
     failOnStderr: false
 
-  - task: Powershell@2
-    displayName: 'Run dotnet-stryker'
-    inputs:
-      workingDirectory: AdSecCoreTests
-      targetType: 'inline'
-      pwsh: true
-      script: $(Agent.BuildDirectory)/tools/dotnet-stryker
-
-#  - task: PublishMutationReport@1
-#    displayName: 'Publish Mutation Test Report'
-#    inputs:
-#      reportPattern: '**/mutation-report.html'
-
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Stryker Mutation Report'
     inputs:
