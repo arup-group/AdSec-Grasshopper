@@ -39,12 +39,18 @@ steps:
   env:
     MSBUILDDISABLENODEREUSE: 1
 
+
 - task: DotNetCoreCLI@2
   displayName: 'Install dotnet-stryker'
   inputs:
     command: custom
     custom: tool
     arguments: install dotnet-stryker --tool-path $(Agent.BuildDirectory)/tools
+
+- powershell: |
+    dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj 
+  displayName: Run Stryker
+  failOnStderr: false
 
 - task: Powershell@2
   displayName: 'Run dotnet-stryker'
@@ -54,10 +60,10 @@ steps:
     pwsh: true
     script: $(Agent.BuildDirectory)/tools/dotnet-stryker
 
-#- task: PublishMutationReport@1
-#  displayName: 'Publish Mutation Test Report'
-#  inputs:
-#    reportPattern: '**/mutation-report.html'
+- task: PublishMutationReport@1
+ displayName: 'Publish Mutation Test Report'
+ inputs:
+   reportPattern: '**/mutation-report.html'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Stryker Mutation Report'
