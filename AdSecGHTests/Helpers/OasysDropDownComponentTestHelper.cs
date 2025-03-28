@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 using GH_IO;
 
@@ -7,26 +8,32 @@ using Grasshopper.Kernel;
 
 using OasysGH.Components;
 
-using Xunit;
-
 namespace AdSecGHTests.Helpers {
   public static class OasysDropDownComponentTestHelper {
 
-    public static void ChangeDropDownTest(GH_OasysDropDownComponent comp, bool ignoreSpacerDescriptionsCount = false) {
-      if (!ignoreSpacerDescriptionsCount) {
-        Assert.Equal(comp.DropDownItems.Count, comp.SpacerDescriptions.Count);
-      }
-      Assert.Equal(comp.DropDownItems.Count, comp.SelectedItems.Count);
+    public static bool ChangeDropDownTest(GH_OasysDropDownComponent comp, bool ignoreSpacerDescriptionsCount = false) {
+      return comp.IsInitialised
+        && (ignoreSpacerDescriptionsCount || comp.DropDownItems.Count == comp.SpacerDescriptions.Count)
+        && comp.DropDownItems.Count == comp.SelectedItems.Count && TestDropDownItemsSelection(comp);
+    }
 
+    private static bool TestDropDownItemsSelection(GH_OasysDropDownComponent comp) {
       for (int i = 0; i < comp.DropDownItems.Count; i++) {
         comp.SetSelected(i, 0);
 
         for (int j = 0; j < comp.DropDownItems[i].Count; j++) {
           comp.SetSelected(i, j);
-          Assert.Empty(DeserializeTest(comp));
-          Assert.Equal(comp.SelectedItems[i], comp.DropDownItems[i][j]);
+          if (DeserializeTest(comp).Any()) {
+            return false;
+          }
+
+          if (comp.SelectedItems[i] != comp.DropDownItems[i][j]) {
+            return false;
+          }
         }
       }
+
+      return true;
     }
 
     public static string DeserializeTest(GH_OasysDropDownComponent comp, string customIdentifier = "") {

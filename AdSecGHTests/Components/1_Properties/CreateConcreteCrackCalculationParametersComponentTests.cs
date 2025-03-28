@@ -27,8 +27,7 @@ namespace AdSecGHTests.Properties {
     [Fact]
     public void ChangeDropDownTest() {
       var comp = ComponentMother();
-      Assert.True(comp.IsInitialised);
-      OasysDropDownComponentTestHelper.ChangeDropDownTest(comp);
+      Assert.True(OasysDropDownComponentTestHelper.ChangeDropDownTest(comp));
     }
 
     [Fact]
