@@ -1,0 +1,38 @@
+name: Mutation Testing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  mutation-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'  # Or the version you’re using
+
+    - name: Setup LicenceManager
+      run: |
+        dotnet restore Oasys.LicenceManager.Cli/Oasys.LicenceManager.Cli.sln
+        dotnet build Oasys.LicenceManager.Cli/Oasys.LicenceManager.Cli.sln --configuration Debug --no-restore
+        Oasys.LicenceManager.Cli/Oasys.LicenceManager.Cli/bin/Debug/net8.0/Oasys.LicenceManager.Cli -l "test" -p "test"
+
+    - name: Run Stryker Mutation Testing
+      uses: stryker-mutator/github-action@v0.0.1
+      with:
+        testProject: "AdSecCoreTests/AdSecCoreTests.csproj"  # required
+        breakAt: "75"  # Optional
+
+    - name: Upload Mutation Test Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: stryker-html-report
+        path: ${{github.workspace}}/AdSecCoreTests/StrykerOutput/**/**/*.html

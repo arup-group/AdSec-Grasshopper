@@ -1,0 +1,10 @@
+{
+    "stryker-config": {
+        
+            "test-projects": [
+                  "AdSecCore.Tests/AdSecCore.Tests.csproj"
+                      ],
+                          "reporters": [ "html", "progress" ]
+                            
+                                }
+                                }
