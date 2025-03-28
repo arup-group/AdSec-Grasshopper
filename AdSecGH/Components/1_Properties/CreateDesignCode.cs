@@ -184,7 +184,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // update selected material
-      var selectedCode = _designCodes[_selectedItems.Last()];
+      var selectedCode = _designCodes[_selectedItems[_selectedItems.Count - 1]];
 
       // create new material
       var dc = new AdSecDesignCode(selectedCode);
