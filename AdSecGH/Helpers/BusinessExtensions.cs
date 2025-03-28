@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 using AdSecCore;
@@ -41,9 +42,13 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(SubComponentArrayParameter), ParamGenericObject
         }, {
+          typeof(DesignCodeParameter), ParamGenericObject
+        }, {
           typeof(MaterialParameter), ParamGenericObject
         }, {
           typeof(SectionParameter), ParamGenericObject
+        }, {
+          typeof(GeometryParameter), ConfigureParam<Param_Geometry>
         }, {
           typeof(AdSecMaterialParameter), ParamGenericObject
         }, {
@@ -81,7 +86,7 @@ namespace Oasys.GH.Helpers {
           typeof(StringArrayParam), ParamString
         }, {
           typeof(LengthParameter), ParamGenericObject
-        },{
+        }, {
           typeof(SectionSolutionParameter), ParamGenericObject
         }, {
           typeof(LoadSurfaceParameter), ParamGenericObject
@@ -101,30 +106,47 @@ namespace Oasys.GH.Helpers {
           typeof(SecantStiffnessParameter), ParamGenericObject
         }, {
           typeof(IntervalArrayParameter), ParamGenericObject
-        },{
+        }, {
           typeof(NeutralLineParameter), ParamGenericObject
-        }
+        },
       };
 
     /// <summary>
-    /// For the Outputs
-    /// This is use to DA.SetData()
-    /// i.e. we will get the value from the Attribute.Value and set it to a Goo object
-    /// Since the value is all we need and this is often shared between the "Business" Parameter and the Gh (Goo) object, it can take the form:
-    /// { typeof(<ParamType), a => (a as ParamType).Value }
-    /// We need to do more work when the Goo, has a more complex constructor in which
-    /// case it might be best to create a new constructor, so we can simplify this dictionary and even deprecated later on.
+    ///   For the Outputs
+    ///   This is use to DA.SetData()
+    ///   i.e. we will get the value from the Attribute.Value and set it to a Goo object
+    ///   Since the value is all we need and this is often shared between the "Business" Parameter and the Gh (Goo) object, it
+    ///   can take the form:
+    ///   { typeof(
+    ///   <ParamType), a=>
+    ///     (a as ParamType).Value }
+    ///     We need to do more work when the Goo, has a more complex constructor in which
+    ///     case it might be best to create a new constructor, so we can simplify this dictionary and even deprecated later on.
     /// </summary>
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
         { typeof(SubComponentParameter), a => new AdSecSubComponentGoo((a as SubComponentParameter)?.Value) },
-        // { typeof(RebarGroupParameter), a => (a as RebarGroupParameter).Value },
+        { typeof(RebarGroupParameter), a => (a as RebarGroupParameter).Value },
         { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
           typeof(LoadSurfaceParameter),
           a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
         },
-        { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value },
-        // { typeof(SectionParameter), a => (a as SectionParameter).Value },
+        { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value }, {
+          typeof(ProfileParameter), a => {
+            var profileDesign = (a as ProfileParameter).Value;
+            return new AdSecProfileGoo(profileDesign);
+          }
+        }, {
+          typeof(MaterialParameter), a => {
+            var materialDesign = (a as MaterialParameter).Value;
+            return new AdSecMaterialGoo(materialDesign);
+          }
+        }, {
+          typeof(DesignCodeParameter), a => {
+            var designCode = (a as DesignCodeParameter).Value;
+            return new AdSecDesignCodeGoo(designCode);
+          }
+        },
         { typeof(AdSecSectionParameter), a => (a as AdSecSectionParameter).Value }, {
           typeof(SectionSolutionParameter), a => {
             var sectionSolutionParameter = (a as SectionSolutionParameter).Value;
@@ -143,6 +165,18 @@ namespace Oasys.GH.Helpers {
           }
         },
         { typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value },
+        { typeof(GeometryParameter), a => {
+            var value = (a as GeometryParameter).Value;
+            var sectionDesign = value as SectionDesign;
+            var sectionGoo = new AdSecSectionGoo(new AdSecSection(sectionDesign));
+            var curves = sectionGoo._drawInstructions.Select(x => {
+            GH_Curve curve = null;
+            GH_Convert.ToGHCurve(x.Geometry, GH_Conversion.Both, ref curve);
+            return curve;
+            }).ToList();
+            return curves;
+          }
+        },
         { typeof(StringArrayParam), a => (a as StringArrayParam).Value },
         // { typeof(IntegerParameter), a => (a as IntegerParameter).Value },
         {
@@ -186,29 +220,27 @@ namespace Oasys.GH.Helpers {
             var deformation = (a as DeformationParameter).Value;
             return new AdSecDeformationGoo(deformation);
           }
-        },{
+        }, {
           typeof(NeutralLineParameter), a => {
             var value = (a as NeutralLineParameter).Value;
             return new AdSecNeutralAxisGoo(value);
           }
-        },{
-          typeof(LengthParameter), a => {
-            return (a as LengthParameter).Value;
-          }
-        }
+        }, {
+          typeof(LengthParameter), a => { return (a as LengthParameter).Value; }
+        },
       };
 
     /// <summary>
-    /// Setting the Inputs
-    /// ***************************************************************************
-    /// ******* if the base data is the same, you can skip this completely! *******
-    /// ***************************************************************************
-    /// This is for grabbing the Values from Grasshopper and feeding the to the Business Input Params
-    /// So we often need to convert the Grasshopper object to the Business object
-    /// Again we aim to have the data, so the conversion would be simple
-    /// example: { typeof(ParamType), goo => new DataType(goo) }
-    /// This is the place where we might need to call AdSecInput to account for different inputed types
-    /// like in the case of SubComponent, that can also accept a Section Type
+    ///   Setting the Inputs
+    ///   ***************************************************************************
+    ///   ******* if the base data is the same, you can skip this completely! *******
+    ///   ***************************************************************************
+    ///   This is for grabbing the Values from Grasshopper and feeding the to the Business Input Params
+    ///   So we often need to convert the Grasshopper object to the Business object
+    ///   Again we aim to have the data, so the conversion would be simple
+    ///   example: { typeof(ParamType), goo => new DataType(goo) }
+    ///   This is the place where we might need to call AdSecInput to account for different inputed types
+    ///   like in the case of SubComponent, that can also accept a Section Type
     /// </summary>
     private static readonly Dictionary<Type, Func<object, object>> GooToParam
       = new Dictionary<Type, Func<object, object>> {
@@ -231,19 +263,21 @@ namespace Oasys.GH.Helpers {
             return gooDynamic.Select(x => {
               if (x is AdSecSubComponentGoo subComponentGoo) {
                 var component = subComponentGoo.Value;
-                return new SubComponent() {
+                return new SubComponent {
                   ISubComponent = component,
-                  SectionDesign = new SectionDesign() {
+                  SectionDesign = new SectionDesign {
                     Section = component.Section,
-                  }
+                  },
                 };
-              } else if (x is AdSecSectionGoo sectionGoo) {
+              }
+
+              if (x is AdSecSectionGoo sectionGoo) {
                 var section = sectionGoo.Value;
-                return new SubComponent() {
+                return new SubComponent {
                   ISubComponent = ISubComponent.Create(section.Section, AdSecCore.Builders.Geometry.Zero()),
-                  SectionDesign = new SectionDesign() {
+                  SectionDesign = new SectionDesign {
                     Section = section.Section,
-                  }
+                  },
                 };
               }
 
@@ -358,7 +392,7 @@ namespace Oasys.GH.Helpers {
             }
           }
         } else if (attribute.GetAccess() == GH_ParamAccess.list) {
-          List<object> inputs = new List<object>();
+          var inputs = new List<object>();
           if (dataAccess.GetDataList(index, inputs)) {
             dynamic valueBasedParameter = attribute;
             if (GooToParam.ContainsKey(attribute.GetType())) {
@@ -382,12 +416,12 @@ namespace Oasys.GH.Helpers {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
         var type = attribute.GetType();
         if (!ToGoo.ContainsKey(type)) {
-          throw new InvalidOperationException($"No conversion function found for type {type}");
+          throw new MissingPrimaryKeyException($"No conversion function found for type {type}");
         }
 
         var func = ToGoo[type];
         dynamic goo = func(attribute);
-        bool success = false;
+        bool success;
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           success = dataAccess.SetData(index, goo);
         } else {
@@ -395,7 +429,7 @@ namespace Oasys.GH.Helpers {
         }
 
         if (!success) {
-          throw new InvalidOperationException(
+          throw new InvalidCastException(
             $"Failed to set data for {attribute.Name} of type {type} at index {index} into param of type {component.Params.Output[index].GetType()}");
         }
       }
@@ -417,5 +451,4 @@ namespace Oasys.GH.Helpers {
       RegisterParams(function.GetAllOutputAttributes(), param => component.Params.RegisterOutputParam(param));
     }
   }
-
 }

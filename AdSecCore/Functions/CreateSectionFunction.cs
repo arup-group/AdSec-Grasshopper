@@ -60,7 +60,7 @@ namespace AdSecCore.Functions {
 
     public void Compute() {
       var sectionBuilder = new SectionBuilder();
-      sectionBuilder.SetProfile(Profile.Value.Profile);
+      sectionBuilder.WithProfile(Profile.Value.Profile);
       if (RebarGroup.Value != null) {
         var groups = RebarGroup.Value.Select(x => x.Group).ToList();
         sectionBuilder.WithReinforcementGroups(groups);
@@ -79,7 +79,7 @@ namespace AdSecCore.Functions {
       if (Profile.Value.Profile is IPerimeterProfile && RebarGroup.Value != null) {
         var reinforcements = RebarGroup.Value;
         var recalibrated = SectionBuilder.CalibrateReinforcementGroupsForSection(
-          reinforcements.ToList(), Material.Value.DesignCode, section);
+          reinforcements.ToList(), Material.Value.DesignCode.IDesignCode, section);
 
         sectionBuilder.WithReinforcementGroups(recalibrated.Select(x => x.Group).ToList());
         section = sectionBuilder.Build();

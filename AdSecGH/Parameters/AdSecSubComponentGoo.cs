@@ -45,7 +45,7 @@ namespace AdSecGH.Parameters {
       _offset = subComponent.ISubComponent.Offset;
       var sectionDesign = subComponent.SectionDesign;
       _plane = sectionDesign.LocalPlane.ToGh();
-      _section = new AdSecSection(sectionDesign.Section, sectionDesign.DesignCode, sectionDesign.MaterialName, sectionDesign.CodeName, _plane, _offset);
+      _section = new AdSecSection(sectionDesign.Section, sectionDesign.DesignCode.IDesignCode, sectionDesign.MaterialName, sectionDesign.CodeName, _plane, _offset);
     }
 
     public AdSecSubComponentGoo(ISubComponent subComponent, Plane local, IDesignCode code, string codeName, string materialName) : base(subComponent) {

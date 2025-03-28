@@ -178,7 +178,8 @@ namespace AdSecGH.Components {
         Params.RegisterInputParam(new Param_String());
         Params.Input[0].NickName = "S";
         Params.Input[0].Name = "Search";
-        Params.Input[0].Description = $"[Optional] Search for Grade {Environment.NewLine}Note: input 'all' to list all grades from the selected code";
+        Params.Input[0].Description
+          = $"[Optional] Search for Grade {Environment.NewLine}Note: input 'all' to list all grades from the selected code";
         Params.Input[0].Access = GH_ParamAccess.item;
         Params.Input[0].Optional = true;
       }
@@ -258,7 +259,8 @@ namespace AdSecGH.Components {
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddTextParameter("Search", "S",
-        $"[Optional] Search for Grade {Environment.NewLine}Note: input 'all' to list all grades from the selected code", GH_ParamAccess.item);
+        $"[Optional] Search for Grade {Environment.NewLine}Note: input 'all' to list all grades from the selected code",
+        GH_ParamAccess.item);
       pManager[0].Optional = true;
     }
 
@@ -280,7 +282,10 @@ namespace AdSecGH.Components {
 
             var materialDesign = new MaterialDesign() {
               Material = material.Material,
-              DesignCode = material.DesignCode.DesignCode
+              DesignCode = new DesignCode() {
+                IDesignCode = material.DesignCode.DesignCode,
+                DesignCodeName = material.DesignCode.DesignCodeName
+              }
             };
             if (search.ToLower() == "all") {
               filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
@@ -317,7 +322,11 @@ namespace AdSecGH.Components {
       var adSecMaterial = new AdSecMaterial(selectedMaterial);
       var materialDesign2 = new MaterialDesign() {
         Material = adSecMaterial.Material,
-        DesignCode = adSecMaterial.DesignCode.DesignCode
+        DesignCode = new DesignCode() {
+          IDesignCode = adSecMaterial.DesignCode.DesignCode,
+          DesignCodeName = adSecMaterial.DesignCode.DesignCodeName
+        },
+        GradeName = selectedMaterial.Name,
       };
 
       DA.SetData(0, new AdSecMaterialGoo(materialDesign2));
