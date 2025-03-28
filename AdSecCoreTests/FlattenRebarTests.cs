@@ -26,7 +26,9 @@ namespace AdSecCoreTests {
        .Build();
       operation.Section.Value = new SectionDesign {
         Section = section,
-        DesignCode = IS456.Edition_2000,
+        DesignCode = new DesignCode() {
+          IDesignCode = IS456.Edition_2000,
+        }
       };
       operation.Compute();
     }

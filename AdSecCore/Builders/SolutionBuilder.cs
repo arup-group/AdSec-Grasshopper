@@ -10,13 +10,15 @@ namespace AdSecCore.Builders {
 
   public class SolutionBuilder : IBuilder<SectionSolution> {
     private ISection Section { get; set; } = CreateRectangularSection();
-    private IDesignCode DesignCode { get; set; } = IS456.Edition_2000;
+    private IDesignCode designCode { get; set; } = IS456.Edition_2000;
 
     public SectionSolution Build() {
       var analyseFunction = new AnalyseFunction();
       analyseFunction.Section = new SectionParameter {
         Value = new SectionDesign {
-          DesignCode = DesignCode,
+          DesignCode = new DesignCode() {
+            IDesignCode = designCode
+          },
           Section = Section,
         },
       };
@@ -39,7 +41,7 @@ namespace AdSecCore.Builders {
     }
 
     public SolutionBuilder WithDesignCode(IDesignCode code) {
-      DesignCode = code;
+      designCode = code;
       return this;
     }
   }
