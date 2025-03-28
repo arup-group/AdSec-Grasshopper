@@ -40,71 +40,83 @@ namespace AdSecGH.Components {
     };
 
     public override void SetSelected(int i, int j) {
-      // change selected item
       _selectedItems[i] = _dropDownItems[i][j];
 
       // if selected item is not in the last dropdown then we need to update lists
       if (_selectedItems.Count - 1 != i) {
-        // remove all sub dropdowns and selected items below changed list
-        while (_dropDownItems.Count > 1) {
-          _dropDownItems.RemoveAt(1);
-        }
-
-        while (_selectedItems.Count > i + 1) {
-          _selectedItems.RemoveAt(i + 1);
-        }
-
-        // get list of standard codes for the selected material
-        var designCodeKVP = ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
-
-        // create string for selected item to use for type search while drilling
-        int level = 0;
-        string typeString = _selectedItems[level];
-        bool drill = true;
-        while (drill) {
-          // get the type of the most recent selected from level above
-          designCodeKVP.TryGetValue(typeString, out var typ);
-
-          // update the KVP by reflecting the type
-          designCodeKVP = ReflectionHelper.ReflectNestedTypes(typ);
-
-          // determine if we have reached the fields layer
-          if (designCodeKVP.Count > 1) {
-            level++;
-
-            // if kvp has >1 values we add them to create a new dropdown list
-            _dropDownItems.Add(designCodeKVP.Keys.ToList());
-
-            // with first item being the selected
-            if (_selectedItems.Count - 1 < level) {
-              _selectedItems.Add(designCodeKVP.Keys.First());
-              // and set the next search item to this
-              typeString = _selectedItems.Last();
-            } else {
-              typeString = _selectedItems[level];
-            }
-
-            _spacerDescriptions[level] = GetDescription(typeString);
-          } else if (designCodeKVP.Count == 1) {
-            // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
-            typeString = designCodeKVP.Keys.First();
-          } else {
-            // if kvp is empty we have reached the field level
-            // where we set the materials by reflecting the type
-            _designCodes = ReflectionHelper.ReflectFields(typ);
-            // if kvp has values we add them to create a new dropdown list
-            _dropDownItems.Add(_designCodes.Keys.ToList());
-            // with first item being the selected
-            _selectedItems.Add(_designCodes.Keys.First());
-            // stop drilling
-            drill = false;
-
-            _spacerDescriptions[_selectedItems.Count - 1] = GetDescription(typeString, _excludeKey);
-          }
-        }
+        RemoveDropDownItems();
+        RemoveSelectedItems(i);
+        ProcessSelectedItems();
       }
 
       base.UpdateUI();
+    }
+
+    private void ProcessSelectedItems() {
+      // get list of standard codes for the selected material
+      var designCodeKVP = ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+      int level = 0;
+      string typeString = _selectedItems[level];
+      bool drill = true;
+
+      while (drill) {
+        designCodeKVP.TryGetValue(typeString, out var typ);
+        designCodeKVP = ReflectionHelper.ReflectNestedTypes(typ);
+
+        if (designCodeKVP.Count > 1) {
+          AddDropDownForNestedTypes(designCodeKVP, ref level, ref typeString);
+        } else if (designCodeKVP.Count == 1) {
+          // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
+          typeString = designCodeKVP.Keys.First();
+        } else {
+          ProcessFieldLevel(typ, typeString);
+          drill = false;
+        }
+      }
+    }
+
+    private void ProcessFieldLevel(Type typ, string typeString) {
+      // if kvp is empty we have reached the field level
+      // where we set the materials by reflecting the type
+      _designCodes = ReflectionHelper.ReflectFields(typ);
+      // if kvp has values we add them to create a new dropdown list
+      _dropDownItems.Add(_designCodes.Keys.ToList());
+      // with first item being the selected
+      _selectedItems.Add(_designCodes.Keys.First());
+      // stop drilling
+
+      _spacerDescriptions[_selectedItems.Count - 1] = GetDescription(typeString, _excludeKey);
+    }
+
+    private void AddDropDownForNestedTypes(
+      Dictionary<string, Type> designCodeKVP, ref int level, ref string typeString) {
+      level++;
+
+      // if kvp has >1 values we add them to create a new dropdown list
+      _dropDownItems.Add(designCodeKVP.Keys.ToList());
+
+      // with first item being the selected
+      int lastItem = _selectedItems.Count - 1;
+      if (lastItem < level) {
+        _selectedItems.Add(designCodeKVP.Keys.First());
+        typeString = _selectedItems[lastItem];
+      } else {
+        typeString = _selectedItems[level];
+      }
+
+      _spacerDescriptions[level] = GetDescription(typeString);
+    }
+
+    private void RemoveSelectedItems(int i) {
+      while (_selectedItems.Count > i + 1) {
+        _selectedItems.RemoveAt(i + 1);
+      }
+    }
+
+    private void RemoveDropDownItems() {
+      while (_dropDownItems.Count > 1) {
+        _dropDownItems.RemoveAt(1);
+      }
     }
 
     protected override void InitialiseDropdowns() {
