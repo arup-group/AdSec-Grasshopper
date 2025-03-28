@@ -139,29 +139,29 @@ namespace AdSecGH.Components {
         GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       // get solution input
-      var solution = this.GetSolutionGoo(DA, 0);
+      var solution = this.GetSolutionGoo(da, 0);
 
       // Get boundary input
       var rect = new Rectangle3d();
-      if (!DA.GetData(2, ref rect)) {
+      if (!da.GetData(2, ref rect)) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Unable to convert {Params.Input[2].NickName} to Rectangle");
         return;
       }
 
       if (_mode == FoldMode.NM) {
         // get angle input
-        var angle = (Angle)Input.UnitNumber(this, DA, 1, _angleUnit, true);
+        var angle = (Angle)Input.UnitNumber(this, da, 1, _angleUnit, true);
 
         // get loadcurve
         var loadCurve = solution.Value.Strength.GetForceMomentInteractionCurve(angle);
 
         // create output
-        DA.SetData(0, new AdSecInteractionDiagramGoo(loadCurve[0], angle, rect));
+        da.SetData(0, new AdSecInteractionDiagramGoo(loadCurve[0], angle, rect));
       } else {
         // get force input
-        var force = (Force)Input.UnitNumber(this, DA, 1, _forceUnit, true);
+        var force = (Force)Input.UnitNumber(this, da, 1, _forceUnit, true);
 
         // get loadcurve
         var loadCurve = solution.Value.Strength.GetMomentMomentInteractionCurve(force);
@@ -174,7 +174,7 @@ namespace AdSecGH.Components {
         }
 
         // create output
-        DA.SetData(0, new AdSecInteractionDiagramGoo(loadCurve[0], Angle.FromRadians(0), rect, AdSecInteractionDiagramGoo.InteractionCurveType.MM));
+        da.SetData(0, new AdSecInteractionDiagramGoo(loadCurve[0], Angle.FromRadians(0), rect, AdSecInteractionDiagramGoo.InteractionCurveType.MM));
       }
     }
 

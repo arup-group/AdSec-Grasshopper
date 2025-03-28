@@ -304,11 +304,11 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("StressStrainCrv", "SCv", "AdSec Stress Strain Curve", GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       IStressStrainCurve crv = null;
       try {
         var stressStrainPoint = _mode != AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit ?
-          this.GetStressStrainPoint(DA, 0) : null;
+          this.GetStressStrainPoint(da, 0) : null;
         switch (_mode) {
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear:
             crv = IBilinearStressStrainCurve.Create(stressStrainPoint, stressStrainPoint);
@@ -316,18 +316,18 @@ namespace AdSecGH.Components {
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit:
             var exCrv = IExplicitStressStrainCurve.Create();
-            exCrv.Points = this.GetStressStrainPoints(DA, 0);
+            exCrv.Points = this.GetStressStrainPoints(da, 0);
             crv = exCrv;
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
-            crv = IFibModelCodeStressStrainCurve.Create((Pressure)Input.UnitNumber(this, DA, 1, _stressUnit),
-              stressStrainPoint, (Strain)Input.UnitNumber(this, DA, 2, _strainUnit));
+            crv = IFibModelCodeStressStrainCurve.Create((Pressure)Input.UnitNumber(this, da, 1, _stressUnit),
+              stressStrainPoint, (Strain)Input.UnitNumber(this, da, 2, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
-            crv = IManderStressStrainCurve.Create((Pressure)Input.UnitNumber(this, DA, 1, _stressUnit),
-              stressStrainPoint, (Strain)Input.UnitNumber(this, DA, 2, _strainUnit));
+            crv = IManderStressStrainCurve.Create((Pressure)Input.UnitNumber(this, da, 1, _stressUnit),
+              stressStrainPoint, (Strain)Input.UnitNumber(this, da, 2, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
@@ -335,14 +335,14 @@ namespace AdSecGH.Components {
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
-            crv = IManderConfinedStressStrainCurve.Create((Pressure)Input.UnitNumber(this, DA, 0, _stressUnit),
-              (Pressure)Input.UnitNumber(this, DA, 1, _stressUnit),
-              (Pressure)Input.UnitNumber(this, DA, 2, _stressUnit), (Strain)Input.UnitNumber(this, DA, 3, _strainUnit));
+            crv = IManderConfinedStressStrainCurve.Create((Pressure)Input.UnitNumber(this, da, 0, _stressUnit),
+              (Pressure)Input.UnitNumber(this, da, 1, _stressUnit),
+              (Pressure)Input.UnitNumber(this, da, 2, _stressUnit), (Strain)Input.UnitNumber(this, da, 3, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
             crv = IParabolaRectangleStressStrainCurve.Create(stressStrainPoint,
-              (Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
+              (Strain)Input.UnitNumber(this, da, 1, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
@@ -351,12 +351,12 @@ namespace AdSecGH.Components {
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics:
             crv = IPopovicsStressStrainCurve.Create(stressStrainPoint,
-              (Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
+              (Strain)Input.UnitNumber(this, da, 1, _strainUnit));
             break;
 
           case AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
             crv = IRectangularStressStrainCurve.Create(stressStrainPoint,
-              (Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
+              (Strain)Input.UnitNumber(this, da, 1, _strainUnit));
             break;
         }
       } catch (Exception e) {
@@ -367,7 +367,7 @@ namespace AdSecGH.Components {
       // create preview
       var tuple = AdSecStressStrainCurveGoo.Create(crv, _mode, true);
 
-      DA.SetData(0, new AdSecStressStrainCurveGoo(tuple.Item1, crv, _mode, tuple.Item2));
+      da.SetData(0, new AdSecStressStrainCurveGoo(tuple.Item1, crv, _mode, tuple.Item2));
     }
 
     protected override void UpdateUIFromSelectedItems() {

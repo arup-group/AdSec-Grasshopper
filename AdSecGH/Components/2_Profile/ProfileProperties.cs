@@ -82,9 +82,9 @@ namespace AdSecGH.Components {
         GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
+    protected override void SolveInstance(IGH_DataAccess da) {
       // 0 profile
-      var profile = this.GetAdSecProfileGoo(DA, 0);
+      var profile = this.GetAdSecProfileGoo(da, 0);
 
       var lengthUnit = DefaultUnits.LengthUnitGeometry;
       var SI = UnitSystem.SI.BaseUnits;
@@ -119,51 +119,51 @@ namespace AdSecGH.Components {
       var iUnit = new AreaMomentOfInertia(1, unitSystem).Unit;
 
       // area
-      DA.SetData(0, new GH_UnitNumber(new Area(profile.Profile.Area().As(areaUnit), unitSystem)));
+      da.SetData(0, new GH_UnitNumber(new Area(profile.Profile.Area().As(areaUnit), unitSystem)));
 
       // elastic centroid
       var elcntrd = profile.Profile.ElasticCentroid();
-      DA.SetData(1, new GH_UnitNumber(new Length(elcntrd.Z.As(lengthUnit), lengthUnit)));
-      DA.SetData(2, new GH_UnitNumber(new Length(elcntrd.Y.As(lengthUnit), lengthUnit)));
+      da.SetData(1, new GH_UnitNumber(new Length(elcntrd.Z.As(lengthUnit), lengthUnit)));
+      da.SetData(2, new GH_UnitNumber(new Length(elcntrd.Y.As(lengthUnit), lengthUnit)));
 
       // radius of gyration
       var rGyro = profile.Profile.RadiusOfGyration();
-      DA.SetData(3, new GH_UnitNumber(new Length(rGyro.Z.As(lengthUnit), lengthUnit)));
-      DA.SetData(4, new GH_UnitNumber(new Length(rGyro.Y.As(lengthUnit), lengthUnit)));
+      da.SetData(3, new GH_UnitNumber(new Length(rGyro.Z.As(lengthUnit), lengthUnit)));
+      da.SetData(4, new GH_UnitNumber(new Length(rGyro.Y.As(lengthUnit), lengthUnit)));
 
       // shear factor
       var fShear = profile.Profile.ShearAreaFactor();
-      DA.SetData(5, fShear.YY.DecimalFractions);
-      DA.SetData(6, fShear.ZZ.DecimalFractions);
+      da.SetData(5, fShear.YY.DecimalFractions);
+      da.SetData(6, fShear.ZZ.DecimalFractions);
 
       // elastic W
       var Wel = profile.Profile.ElasticModulus();
-      DA.SetData(7, new GH_UnitNumber(new SectionModulus(Wel.Y.As(wUnit), wUnit)));
-      DA.SetData(8, new GH_UnitNumber(new SectionModulus(Wel.Z.As(wUnit), wUnit)));
+      da.SetData(7, new GH_UnitNumber(new SectionModulus(Wel.Y.As(wUnit), wUnit)));
+      da.SetData(8, new GH_UnitNumber(new SectionModulus(Wel.Z.As(wUnit), wUnit)));
       // plastic W
       var Wpl = profile.Profile.PlasticModulus();
-      DA.SetData(9, new GH_UnitNumber(new SectionModulus(Wpl.Y.As(wUnit), wUnit)));
-      DA.SetData(10, new GH_UnitNumber(new SectionModulus(Wpl.Z.As(wUnit), wUnit)));
+      da.SetData(9, new GH_UnitNumber(new SectionModulus(Wpl.Y.As(wUnit), wUnit)));
+      da.SetData(10, new GH_UnitNumber(new SectionModulus(Wpl.Z.As(wUnit), wUnit)));
 
       // torsion constant
       profile.Profile.TorsionConstant();
       var J = profile.Profile.TorsionConstant();
-      DA.SetData(11, new GH_UnitNumber(new AreaMomentOfInertia(J.J.As(iUnit), iUnit)));
+      da.SetData(11, new GH_UnitNumber(new AreaMomentOfInertia(J.J.As(iUnit), iUnit)));
 
       // local axis I
       var locW = profile.Profile.LocalAxisSecondMomentOfArea();
-      DA.SetData(12, new GH_UnitNumber(new AreaMomentOfInertia(locW.YY.As(iUnit), iUnit)));
-      DA.SetData(13, new GH_UnitNumber(new AreaMomentOfInertia(locW.ZZ.As(iUnit), iUnit)));
-      DA.SetData(14, new GH_UnitNumber(new AreaMomentOfInertia(locW.YZ.As(iUnit), iUnit)));
+      da.SetData(12, new GH_UnitNumber(new AreaMomentOfInertia(locW.YY.As(iUnit), iUnit)));
+      da.SetData(13, new GH_UnitNumber(new AreaMomentOfInertia(locW.ZZ.As(iUnit), iUnit)));
+      da.SetData(14, new GH_UnitNumber(new AreaMomentOfInertia(locW.YZ.As(iUnit), iUnit)));
 
       // principle axis I
       var prinW = profile.Profile.PrincipalAxisSecondMomentOfArea();
-      DA.SetData(15, new GH_UnitNumber(new AreaMomentOfInertia(prinW.UU.As(iUnit), iUnit)));
-      DA.SetData(16, new GH_UnitNumber(new AreaMomentOfInertia(prinW.VV.As(iUnit), iUnit)));
-      DA.SetData(17, new GH_UnitNumber(new Angle(prinW.Angle.As(AngleUnit.Radian), AngleUnit.Radian)));
+      da.SetData(15, new GH_UnitNumber(new AreaMomentOfInertia(prinW.UU.As(iUnit), iUnit)));
+      da.SetData(16, new GH_UnitNumber(new AreaMomentOfInertia(prinW.VV.As(iUnit), iUnit)));
+      da.SetData(17, new GH_UnitNumber(new Angle(prinW.Angle.As(AngleUnit.Radian), AngleUnit.Radian)));
 
       // surface area per length
-      DA.SetData(18,
+      da.SetData(18,
         new GH_UnitNumber(new Length(profile.Profile.SurfaceAreaPerUnitLength().As(lengthUnit), lengthUnit)));
     }
   }

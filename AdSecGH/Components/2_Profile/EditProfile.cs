@@ -84,31 +84,31 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Profile", "Pf", "Modified AdSet Profile", GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       // #### get material input and duplicate it ####
-      var editPrf = this.GetAdSecProfileGoo(DA, 0);
+      var editPrf = this.GetAdSecProfileGoo(da, 0);
 
       if (editPrf != null) {
         // #### get the remaining inputs ####
 
         // 1 Rotation
         if (Params.Input[1].SourceCount > 0) {
-          editPrf.Rotation = (Angle)Input.UnitNumber(this, DA, 1, _angleUnit);
+          editPrf.Rotation = (Angle)Input.UnitNumber(this, da, 1, _angleUnit);
         }
 
         // 2 ReflectionY
         bool refY = false;
-        if (DA.GetData(2, ref refY)) {
+        if (da.GetData(2, ref refY)) {
           editPrf.IsReflectedY = refY;
         }
 
         // 3 Reflection3
         bool refZ = false;
-        if (DA.GetData(3, ref refZ)) {
+        if (da.GetData(3, ref refZ)) {
           editPrf.IsReflectedZ = refZ;
         }
 
-        DA.SetData(0, new AdSecProfileGoo(editPrf.Profile, editPrf.LocalPlane));
+        da.SetData(0, new AdSecProfileGoo(editPrf.Profile, editPrf.LocalPlane));
       }
     }
 

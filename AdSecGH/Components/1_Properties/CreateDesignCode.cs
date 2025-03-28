@@ -182,14 +182,14 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("DesignCode", "Code", "AdSec Design Code", GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       // update selected material
       var selectedCode = _designCodes[_selectedItems.Last()];
 
       // create new material
       var dc = new AdSecDesignCode(selectedCode);
 
-      DA.SetData(0, new AdSecDesignCodeGoo(dc));
+      da.SetData(0, new AdSecDesignCodeGoo(dc));
     }
 
     protected override void UpdateUIFromSelectedItems() {

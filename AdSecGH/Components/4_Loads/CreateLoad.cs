@@ -104,11 +104,11 @@ namespace AdSecGH.Components {
         GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       // Create new load
-      var load = ILoad.Create((Force)Input.UnitNumber(this, DA, 0, _forceUnit, true),
-        (Moment)Input.UnitNumber(this, DA, 1, _momentUnit, true),
-        (Moment)Input.UnitNumber(this, DA, 2, _momentUnit, true));
+      var load = ILoad.Create((Force)Input.UnitNumber(this, da, 0, _forceUnit, true),
+        (Moment)Input.UnitNumber(this, da, 1, _momentUnit, true),
+        (Moment)Input.UnitNumber(this, da, 2, _momentUnit, true));
 
       // check for enough input parameters
       if (Params.Input[0].SourceCount == 0 && Params.Input[1].SourceCount == 0 && Params.Input[2].SourceCount == 0) {
@@ -117,7 +117,7 @@ namespace AdSecGH.Components {
         return;
       }
 
-      DA.SetData(0, new AdSecLoadGoo(load));
+      da.SetData(0, new AdSecLoadGoo(load));
     }
 
     protected override void UpdateUIFromSelectedItems() {

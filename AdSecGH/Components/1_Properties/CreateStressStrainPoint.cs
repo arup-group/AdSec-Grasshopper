@@ -88,12 +88,12 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("StressStrainPt", "SPt", "AdSec Stress Strain Point", GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       // create new point
-      var pt = new AdSecStressStrainPointGoo((Pressure)Input.UnitNumber(this, DA, 1, _stressUnit),
-        (Strain)Input.UnitNumber(this, DA, 0, _strainUnit));
+      var pt = new AdSecStressStrainPointGoo((Pressure)Input.UnitNumber(this, da, 1, _stressUnit),
+        (Strain)Input.UnitNumber(this, da, 0, _strainUnit));
 
-      DA.SetData(0, pt);
+      da.SetData(0, pt);
     }
 
     protected override void UpdateUIFromSelectedItems() {

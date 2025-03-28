@@ -103,21 +103,21 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("WebProfile", "Web", "Web Profile for AdSec Profile", GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       switch (_mode) {
         case FoldMode.Constant:
 
           var webConst = new AdSecProfileWebGoo(
-            IWebConstant.Create((Length)Input.UnitNumber(this, DA, 0, _lengthUnit)));
+            IWebConstant.Create((Length)Input.UnitNumber(this, da, 0, _lengthUnit)));
 
-          DA.SetData(0, webConst);
+          da.SetData(0, webConst);
           break;
 
         case FoldMode.Tapered:
-          var webTaper = new AdSecProfileWebGoo(IWebTapered.Create((Length)Input.UnitNumber(this, DA, 0, _lengthUnit),
-            (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
+          var webTaper = new AdSecProfileWebGoo(IWebTapered.Create((Length)Input.UnitNumber(this, da, 0, _lengthUnit),
+            (Length)Input.UnitNumber(this, da, 1, _lengthUnit)));
 
-          DA.SetData(0, webTaper);
+          da.SetData(0, webTaper);
           break;
       }
     }

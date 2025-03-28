@@ -23,8 +23,8 @@ namespace TestGrasshopperObjects.Extensions {
       pManager.AddGenericParameter("test Output", "o", "output", GH_ParamAccess.item);
     }
 
-    protected override void SolveInstance(IGH_DataAccess DA) {
-      DA.SetData(0, this.GetStressStrainPoint(DA, 0, Optional));
+    protected override void SolveInstance(IGH_DataAccess da) {
+      da.SetData(0, this.GetStressStrainPoint(da, 0, Optional));
     }
   }
 }

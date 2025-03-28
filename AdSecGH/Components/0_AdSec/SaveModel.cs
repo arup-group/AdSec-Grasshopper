@@ -133,26 +133,26 @@ namespace AdSecGH.Components {
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) { }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
-      var sections = this.GetAdSecSections(DA, 0);
+    protected override void SolveInternal(IGH_DataAccess da) {
+      var sections = this.GetAdSecSections(da, 0);
       if (!sections.Any()) {
         return;
       }
 
-      var loads = this.GetLoads(DA, 1);
+      var loads = this.GetLoads(da, 1);
 
       _jsonString = AdSecFile.ModelJson(sections, loads);
 
       // filepath
       string pathString = "";
-      if (DA.GetData(3, ref pathString)) {
+      if (da.GetData(3, ref pathString)) {
         _fileName = pathString;
         canOpen = false;
       }
 
       // input save bool
       bool save = false;
-      if (DA.GetData(2, ref save) && save) {
+      if (da.GetData(2, ref save) && save) {
         // write to file
         SaveJson();
       }

@@ -111,26 +111,26 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Material", "Mat", "Custom AdSec Material", GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
+    protected override void SolveInternal(IGH_DataAccess da) {
       // 0 DesignCode
-      var designCode = this.GetAdSecDesignCode(DA, 0);
+      var designCode = this.GetAdSecDesignCode(da, 0);
 
       // 1 StressStrain ULS Compression
-      var ulsCompCrv = this.GetStressStrainCurveGoo(DA, 1, true);
+      var ulsCompCrv = this.GetStressStrainCurveGoo(da, 1, true);
 
       // 2 StressStrain ULS Tension
-      var ulsTensCrv = this.GetStressStrainCurveGoo(DA, 2, false);
+      var ulsTensCrv = this.GetStressStrainCurveGoo(da, 2, false);
 
       // 3 StressStrain SLS Compression
-      var slsCompCrv = this.GetStressStrainCurveGoo(DA, 3, true);
+      var slsCompCrv = this.GetStressStrainCurveGoo(da, 3, true);
 
       // 4 StressStrain SLS Tension
-      var slsTensCrv = this.GetStressStrainCurveGoo(DA, 4, false);
+      var slsTensCrv = this.GetStressStrainCurveGoo(da, 4, false);
 
       // 5 Cracked params
       IConcreteCrackCalculationParameters concreteCrack = null;
       if (_isConcrete) {
-        concreteCrack = this.GetIConcreteCrackCalculationParameters(DA, 5);
+        concreteCrack = this.GetIConcreteCrackCalculationParameters(da, 5);
       }
 
       // create new empty material
@@ -200,7 +200,7 @@ namespace AdSecGH.Components {
           DesignCodeName = adSecDesignCode.DesignCodeName
         }
       };
-      DA.SetData(0, new AdSecMaterialGoo(materialDesign));
+      da.SetData(0, new AdSecMaterialGoo(materialDesign));
     }
 
     protected override void UpdateUIFromSelectedItems() {

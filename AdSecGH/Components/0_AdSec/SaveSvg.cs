@@ -145,8 +145,8 @@ namespace AdSecGH.Components {
       pManager.AddTextParameter("SVG string", "SVG", "Text string representing the SVG file", GH_ParamAccess.item);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
-      var section = this.GetAdSecSection(DA, 0);
+    protected override void SolveInternal(IGH_DataAccess da) {
+      var section = this.GetAdSecSection(da, 0);
       if (section == null) {
         return;
       }
@@ -180,7 +180,7 @@ namespace AdSecGH.Components {
 
       // filepath
       string pathString = "";
-      if (DA.GetData(2, ref pathString)) {
+      if (da.GetData(2, ref pathString)) {
         if (_fileName != pathString) {
           _fileName = pathString;
           _canOpen = false;
@@ -189,7 +189,7 @@ namespace AdSecGH.Components {
 
       // input save bool
       bool save = false;
-      if (DA.GetData(1, ref save)) {
+      if (da.GetData(1, ref save)) {
         if (save) {
           // write to file
           File.WriteAllText(_fileName, imageSVG);
@@ -197,7 +197,7 @@ namespace AdSecGH.Components {
         }
       }
 
-      DA.SetData(0, imageSVG);
+      da.SetData(0, imageSVG);
     }
   }
 }
