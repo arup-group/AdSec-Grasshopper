@@ -49,7 +49,7 @@ namespace AdSecGH.Components {
   }
 
   public class CreatePoint : DropdownAdapter<CreatePointGh> {
-    private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
+
 
     public CreatePoint() { Hidden = false; }
 
@@ -59,12 +59,12 @@ namespace AdSecGH.Components {
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
-      _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
+      BusinessComponent.LengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       base.UpdateUI();
     }
 
     public override void VariableParameterMaintenance() {
-      BusinessComponent.RefreshNames(_lengthUnit);
+      BusinessComponent.RefreshNames(BusinessComponent.LengthUnit);
       Params.Input[0].Name = BusinessComponent.Y.Name;
       Params.Input[1].Name = BusinessComponent.Z.Name;
     }
@@ -78,13 +78,13 @@ namespace AdSecGH.Components {
       _selectedItems = new List<string>();
 
       _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-      _selectedItems.Add(Length.GetAbbreviation(_lengthUnit));
+      _selectedItems.Add(Length.GetAbbreviation(BusinessComponent.LengthUnit));
 
       _isInitialised = true;
     }
 
     protected override void UpdateUIFromSelectedItems() {
-      _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[0]);
+      BusinessComponent.LengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[0]);
       base.UpdateUIFromSelectedItems();
     }
   }

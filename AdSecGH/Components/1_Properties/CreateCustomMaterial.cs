@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -190,7 +192,15 @@ namespace AdSecGH.Components {
       }
 
       // set output
-      DA.SetData(0, new AdSecMaterialGoo(material));
+      var adSecDesignCode = material.DesignCode;
+      var materialDesign = new MaterialDesign() {
+        Material = material.Material,
+        DesignCode = new DesignCode() {
+          IDesignCode = adSecDesignCode.DesignCode,
+          DesignCodeName = adSecDesignCode.DesignCodeName
+        }
+      };
+      DA.SetData(0, new AdSecMaterialGoo(materialDesign));
     }
 
     protected override void UpdateUIFromSelectedItems() {

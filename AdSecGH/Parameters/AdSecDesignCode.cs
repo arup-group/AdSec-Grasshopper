@@ -49,7 +49,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return DesignCodeName.Replace("  ", " ");
+      return (string.IsNullOrEmpty(DesignCodeName) ? DesignCode?.ToString() : DesignCodeName.Replace("  ", " ")) ?? string.Empty;
     }
 
     private bool CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false) {

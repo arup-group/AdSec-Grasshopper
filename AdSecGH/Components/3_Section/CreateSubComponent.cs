@@ -1,62 +1,59 @@
 ﻿using System;
 using System.Drawing;
 
-using AdSecGH.Helpers;
-using AdSecGH.Parameters;
-using AdSecGH.Properties;
+using AdSecCore.Functions;
 
-using AdSecGHCore.Constants;
+using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
 
-using Oasys.AdSec;
-using Oasys.Profiles;
+using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Components;
 
-using OasysUnits;
+using AdSecSectionParameter = Oasys.GH.Helpers.AdSecSectionParameter;
+using Attribute = AdSecCore.Functions.Attribute;
 
 namespace AdSecGH.Components {
-  public class CreateSubcomponent : GH_OasysComponent {
+  public class CreateSubComponentGh : CreateSubComponentFunction {
 
-    public CreateSubcomponent() : base("SubComponent", "SubComponent", "Create an AdSec Subcomponent from a Section",
-      CategoryName.Name(), SubCategoryName.Cat4()) {
-      Hidden = false; // sets the initial state of the component to hidden
+    public CreateSubComponentGh() {
+      var adSecSection = AdSecSection as Attribute;
+      Section.Update(ref adSecSection);
+      AdSecSection.OnValueChanged += goo => {
+        if (goo.Value != null) {
+          Section.Value = new SectionDesign {
+            Section = goo.Value.Section,
+            DesignCode = new DesignCode() {
+              IDesignCode = goo.Value.DesignCode,
+              DesignCodeName = goo.Value._codeName
+            }
+          };
+        }
+      };
+
+      var adSecOffset = AdSecOffset as Attribute;
+      Offset.Update(ref adSecOffset);
+      AdSecOffset.OnValueChanged += goo => { Offset.Value = goo.AdSecPoint; };
     }
+
+    public AdSecSectionParameter AdSecSection { get; set; } = new AdSecSectionParameter();
+    public AdSecPointParameter AdSecOffset { get; set; } = new AdSecPointParameter();
+
+    public override Attribute[] GetAllInputAttributes() {
+      return new Attribute[] {
+        AdSecSection,
+        AdSecOffset,
+      };
+    }
+  }
+
+  public class CreateSubComponent : ComponentAdapter<CreateSubComponentGh> {
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("38747c89-01a4-4388-921b-8c8d8cbca410");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.SubComponent;
-
-    protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      pManager.AddGenericParameter("Section", "Sec", "AdSec Section to create Subcomponent from", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Offset", "Off",
-        $"[Optional] Section offset (Vertex Point).{Environment.NewLine}Offset is applied between origins of containing section and sub-component. The offset of the profile is in the containing section's Profile Coordinate System. Any rotation applied to the containing section's profile will be applied to its sub-components. Sub-components can also have an additional rotation for their profiles.",
-        GH_ParamAccess.item);
-      // make all but first input optional
-      for (int i = 1; i < pManager.ParamCount; i++) {
-        pManager[i].Optional = true;
-      }
-    }
-
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("SubComponent", "Sub", "AdSet Subcomponent", GH_ParamAccess.item);
-    }
-
-    protected override void SolveInstance(IGH_DataAccess DA) {
-      var section = this.GetAdSecSection(DA, 0);
-      if (section == null) {
-        return;
-      }
-
-      var offset = this.GetAdSecPointGoo(DA, 1, true).AdSecPoint ?? IPoint.Create(Length.Zero, Length.Zero);
-      var subComponent = ISubComponent.Create(section.Section, offset);
-      var subGoo = new AdSecSubComponentGoo(subComponent, section.LocalPlane, section.DesignCode, section._codeName,
-        section._materialName);
-      DA.SetData(0, subGoo);
-    }
   }
 }

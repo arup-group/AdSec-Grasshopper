@@ -1,12 +1,13 @@
-﻿using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
+﻿using AdSecCore.Functions;
+
+using Oasys.AdSec;
 
 namespace AdSecCore {
   public static class SectionExtensions {
 
-    public static ISection FlattenSection(this ISection section) {
-      var adSec = IAdSec.Create(IS456.Edition_2000);
-      return adSec.Flatten(section);
+    public static ISection FlattenSection(this SectionDesign section) {
+      var adSec = IAdSec.Create(section.DesignCode.IDesignCode);
+      return adSec.Flatten(section.Section);
     }
   }
 }

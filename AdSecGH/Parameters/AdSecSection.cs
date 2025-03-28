@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 using AdSecCore;
+using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
 using AdSecGH.UI;
-
-using Grasshopper.Kernel;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
@@ -29,21 +28,33 @@ namespace AdSecGH.Parameters {
     internal string _codeName;
     internal string _materialName;
     internal List<Brep> _subProfiles;
-    internal List<Curve> m_linkEdges;
+    internal List<Curve> m_linkEdges = new List<Curve>();
     // cache for preview
     internal Brep m_profile;
     internal DisplayMaterial m_profileColour;
     internal Polyline m_profileEdge;
-    internal List<Polyline> m_profileVoidEdges;
+    internal List<Polyline> m_profileVoidEdges = new List<Polyline>();
     internal List<DisplayMaterial> m_rebarColours;
-    internal List<Circle> m_rebarEdges;
+    internal List<Circle> m_rebarEdges = new List<Circle>();
     internal List<Brep> m_rebars;
     internal List<DisplayMaterial> m_subColours;
-    internal List<Polyline> m_subEdges;
-    internal List<List<Polyline>> m_subVoidEdges;
+    internal List<Polyline> m_subEdges = new List<Polyline>();
+    internal List<List<Polyline>> m_subVoidEdges = new List<List<Polyline>>();
     internal Line previewXaxis;
     internal Line previewYaxis;
     internal Line previewZaxis;
+
+    public AdSecSection(SectionDesign sectionDesign) {
+      Section = sectionDesign.Section;
+      DesignCode = sectionDesign.DesignCode.IDesignCode;
+      _codeName = sectionDesign.DesignCode.DesignCodeName;
+      _materialName = sectionDesign.MaterialName;
+      LocalPlane = sectionDesign.LocalPlane.ToGh();
+
+      CreatePreview(ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour, ref m_rebars,
+        ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref _subProfiles, ref m_subEdges, ref m_subVoidEdges,
+        ref m_subColours);
+    }
 
     public AdSecSection(
       ISection section, IDesignCode code, string codeName, string materialName, Plane local,
@@ -56,11 +67,11 @@ namespace AdSecGH.Parameters {
       CreatePreview(ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour, ref m_rebars,
         ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref _subProfiles, ref m_subEdges, ref m_subVoidEdges,
         ref m_subColours, subComponentOffset);
-
     }
 
     public AdSecSection(
-      IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement, Oasys.Collections.IList<ISubComponent> subComponents) {
+      IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement,
+      Oasys.Collections.IList<ISubComponent> subComponents) {
       DesignCode = material.DesignCode.Duplicate().DesignCode;
       _codeName = material.DesignCodeName;
       _materialName = material.GradeName;
@@ -264,7 +275,7 @@ namespace AdSecGH.Parameters {
 
     private Brep CreateBrepFromProfile(AdSecProfileGoo profile) {
       var crvs = new List<Curve> {
-        profile.Value.ToPolylineCurve(),
+        profile.Polyline.ToPolylineCurve(),
       };
       crvs.AddRange(profile.VoidEdges.Select(x => x.ToPolylineCurve()));
       return Brep.CreatePlanarBreps(crvs, 0.001).First(); //TODO: use OasysUnits tolerance
@@ -408,12 +419,6 @@ namespace AdSecGH.Parameters {
       }
 
       return new Tuple<Oasys.Collections.IList<IGroup>, ICover>(groups, cover);
-    }
-
-    public static ISection GetFlattenSection(GH_Component component, IGH_DataAccess DA, int paramId) {
-      // We simply unpack the section from GH_ObjectWrapper and add logging
-      var adSecSection = component.GetAdSecSection(DA, paramId);
-      return adSecSection.Section.FlattenSection();
     }
   }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Drawing;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -187,7 +189,16 @@ namespace AdSecGH.Components {
           }
         }
 
-        DA.SetData(0, new AdSecMaterialGoo(editMat));
+        var materialDesign = new MaterialDesign() {
+          Material = editMat.Material,
+          DesignCode =
+          new DesignCode() {
+            IDesignCode = editMat.DesignCode.DesignCode,
+            DesignCodeName = editMat.DesignCodeName
+          }
+        };
+
+        DA.SetData(0, new AdSecMaterialGoo(materialDesign));
         DA.SetData(1, new AdSecDesignCodeGoo(editMat.DesignCode));
         DA.SetData(2, ulsCompCrv);
         DA.SetData(3, ulsTensCrv);

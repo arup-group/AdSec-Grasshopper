@@ -1,4 +1,8 @@
-﻿using Grasshopper.Kernel.Types;
+﻿using AdSecCore.Functions;
+
+using Grasshopper.Kernel.Types;
+
+using Oasys.AdSec.DesignCode;
 
 using OasysGH;
 using OasysGH.Parameters;
@@ -14,6 +18,10 @@ namespace AdSecGH.Parameters {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
 
     public AdSecDesignCodeGoo(AdSecDesignCode item) : base(item) {
+    }
+
+    public AdSecDesignCodeGoo(DesignCode designCode) : base(new AdSecDesignCode(designCode.IDesignCode, designCode.DesignCodeName)) {
+
     }
 
     public override IGH_Goo Duplicate() {
