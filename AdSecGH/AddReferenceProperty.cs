@@ -52,7 +52,7 @@ namespace AdSecGH {
       // ### Reference AdSecAPI and SQLite dlls ###
       try {
 #pragma warning disable S2696 // Instance members should not write to "static" fields
-        AdSecAPI = Assembly.Load($"{PluginPath}\\AdSec_API.dll");
+        AdSecAPI = Assembly.LoadFile($"{PluginPath}\\AdSec_API.dll");
 #pragma warning restore S2696 // Instance members should not write to "static" fields
       } catch (Exception ex) {
         string message

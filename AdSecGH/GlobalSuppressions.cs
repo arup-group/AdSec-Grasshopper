@@ -9,3 +9,4 @@ using System.Diagnostics.CodeAnalysis;
   SuppressMessage("Critical Code Smell",
     "S927:Parameter names should match base declaration and other partial definitions",
     Justification = "Global suppression for method parameter naming convention")]
+[assembly: SuppressMessage("Major Code Smell", "S3885:\"Assembly.Load\" should be used", Justification = "<Pending>")]
