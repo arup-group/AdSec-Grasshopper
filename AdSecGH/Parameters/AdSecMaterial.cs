@@ -99,7 +99,7 @@ namespace AdSecGH.Parameters {
               Material = IFrp.Create(ulsTC, slsTC);
               Type = AdSecMaterialType.FRP;
             } catch (Exception) {
-              throw new Exception("unable to cast to known material type");
+              throw new InvalidCastException("Unable to cast to known material type");
             }
           }
         }

@@ -77,7 +77,7 @@ namespace AdSecGH.Parameters {
       // we need to find the right type Interface under Oasys.AdSec.IAdsec in order to cast to IDesignCode
       // the string to search for depends on where we call this function from, if we come from an IMaterial type
       // we can simply use the full name but if from IDesignCode we need to add the name of the code with a +
-      string searchFor = fromDesignCode ? $"{typ.FullName}+{designCodeReflectedLevels.Last()}" : typ.FullName;
+      string searchFor = fromDesignCode ? $"{typ?.FullName}+{designCodeReflectedLevels.Last()}" : typ?.FullName;
 
       // loop through all types in Oasys.AdSec.IAdsec and cast to IDesignCode if match with above string
       foreach (Type type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes()) {

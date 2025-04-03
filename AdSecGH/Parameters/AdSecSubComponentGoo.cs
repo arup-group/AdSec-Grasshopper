@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 
 using AdSecCore.Functions;
@@ -116,49 +115,54 @@ namespace AdSecGH.Parameters {
       {
         args.Pipeline.DrawPolyline(_section.m_profileEdge, Colour.OasysBlue, 2);
         if (_section.m_profileVoidEdges != null) {
-          foreach (Polyline crv in _section.m_profileVoidEdges) {
+          foreach (var crv in _section.m_profileVoidEdges) {
             args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
           }
         }
+
         if (_section.m_subEdges != null) {
-          foreach (Polyline crv in _section.m_subEdges) {
+          foreach (var crv in _section.m_subEdges) {
             args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
           }
         }
+
         if (_section.m_subVoidEdges != null) {
-          foreach (List<Polyline> crvs in _section.m_subVoidEdges) {
-            foreach (Polyline crv in crvs) {
+          foreach (var crvs in _section.m_subVoidEdges) {
+            foreach (var crv in crvs) {
               args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
             }
           }
         }
+
         if (_section.m_rebarEdges != null) {
-          foreach (Circle crv in _section.m_rebarEdges) {
+          foreach (var crv in _section.m_rebarEdges) {
             args.Pipeline.DrawCircle(crv, Color.Black, 1);
           }
         }
-      } else // selected
-        {
+      } else {
         args.Pipeline.DrawPolyline(_section.m_profileEdge, Colour.OasysYellow, 3);
         if (_section.m_profileVoidEdges != null) {
-          foreach (Polyline crv in _section.m_profileVoidEdges) {
+          foreach (var crv in _section.m_profileVoidEdges) {
             args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
           }
         }
+
         if (_section.m_subEdges != null) {
-          foreach (Polyline crv in _section.m_subEdges) {
+          foreach (var crv in _section.m_subEdges) {
             args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
           }
         }
+
         if (_section.m_subVoidEdges != null) {
-          foreach (List<Polyline> crvs in _section.m_subVoidEdges) {
-            foreach (Polyline crv in crvs) {
+          foreach (var crvs in _section.m_subVoidEdges) {
+            foreach (var crv in crvs) {
               args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
             }
           }
         }
+
         if (_section.m_rebarEdges != null) {
-          foreach (Circle crv in _section.m_rebarEdges) {
+          foreach (var crv in _section.m_rebarEdges) {
             args.Pipeline.DrawCircle(crv, Colour.UILightGrey, 2);
           }
         }

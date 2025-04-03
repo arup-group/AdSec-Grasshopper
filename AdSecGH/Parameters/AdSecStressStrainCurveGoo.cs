@@ -57,7 +57,7 @@ namespace AdSecGH.Parameters {
           var crv2 = (IExplicitStressStrainCurve)StressStrainCurve;
           return crv2.Points;
         } catch (Exception) {
-          throw new Exception("Unable to cast to internal IStressStrainCurve to IExplicitStressStrainCurve");
+          throw new InvalidCastException("Unable to cast to internal IStressStrainCurve to IExplicitStressStrainCurve");
         }
       }
     }
