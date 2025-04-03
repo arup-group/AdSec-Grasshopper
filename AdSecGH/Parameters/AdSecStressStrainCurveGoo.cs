@@ -63,7 +63,7 @@ namespace AdSecGH.Parameters {
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "StressStrainCurve";
 
-    private StressStrainCurveType m_type;
+    private readonly StressStrainCurveType m_type;
 
     public AdSecStressStrainCurveGoo(Curve curve, IStressStrainCurve stressStrainCurve, StressStrainCurveType type, List<Point3d> points) : base(curve) {
       ControlPoints = points;

@@ -32,7 +32,7 @@ namespace AdSecGH.Parameters {
     }
     public override BoundingBox ClippingBox => Boundingbox;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    private Line m_line;
+    private readonly Line m_line;
     private Point3d m_point;
 
     public AdSecCrackGoo(CrackLoad crackLoad) : base(crackLoad) {
