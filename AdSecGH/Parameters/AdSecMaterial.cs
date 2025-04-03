@@ -135,9 +135,6 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecMaterial Duplicate() {
-      if (this == null) {
-        return null;
-      }
       var dup = (AdSecMaterial)MemberwiseClone();
       return dup;
     }

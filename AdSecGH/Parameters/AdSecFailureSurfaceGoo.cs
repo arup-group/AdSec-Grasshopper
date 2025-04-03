@@ -181,7 +181,6 @@ namespace AdSecGH.Parameters {
 
       bbox = outMesh.GetBoundingBox(false);
       bbox.Transform(Rhino.Geometry.Transform.Scale(new Point3d(0, 0, 0), 1.05));
-      //bbox.Transform(mapFromLocal);
       outMesh.Transform(mapFromLocal);
 
       return outMesh;
@@ -201,7 +200,6 @@ namespace AdSecGH.Parameters {
         double maxMzz = bbox.PointAt(0.5, 1, 0.5).Y;
         double minMzz = bbox.PointAt(0.5, 0, 0.5).Y;
 
-        //Length length = new Length(pythogoras * 0.15, LengthUnit.Meter);
         previewPosXaxis = new Line(m_plane.Origin, m_plane.ZAxis, maxN);
         previewPosYaxis = new Line(m_plane.Origin, m_plane.YAxis, maxMyy);
         previewPosZaxis = new Line(m_plane.Origin, m_plane.XAxis, maxMzz);

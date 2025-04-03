@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 
+using AdSecGH.UI;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
@@ -16,9 +18,6 @@ namespace AdSecGH.Parameters {
   public class AdSecStressStrainPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData {
     public override BoundingBox Boundingbox {
       get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
         var pt1 = new Point3d(Value);
         pt1.Z += 0.25;
         var pt2 = new Point3d(Value);
@@ -134,7 +133,7 @@ namespace AdSecGH.Parameters {
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
       if (Value != null) {
-        args.Pipeline.DrawCircle(new Circle(Value, 0.5), UI.Colour.OasysYellow, 1);
+        args.Pipeline.DrawCircle(new Circle(Value, 0.5), Colour.OasysYellow, 1);
       }
     }
 
@@ -143,7 +142,6 @@ namespace AdSecGH.Parameters {
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null) { return BoundingBox.Empty; }
       var pt = new Point3d(Value);
       pt.Z += 0.001;
       var ln = new Line(Value, pt);

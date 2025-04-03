@@ -113,7 +113,6 @@ namespace AdSecGH.Components {
                   foreach (string code in _dropDownItems[2]) {
                     if (code.Equals(prevSelectedNA)) {
                       _selectedItems.Add(code);
-                      typeString = _selectedItems.Last();
                       break;
                     }
                   }
@@ -206,7 +205,6 @@ namespace AdSecGH.Components {
       _selectedItems.Add(materialTypes[0]);
 
       if (_dropDownItems.Count == 1) {
-        //Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
         var designCodeKVP = ReflectionHelper.StandardCodes(AdSecMaterial.AdSecMaterialType.Concrete);
         _dropDownItems.Add(designCodeKVP.Keys.ToList());
         // select default code to EN1992
@@ -338,7 +336,6 @@ namespace AdSecGH.Components {
       // get list of standard codes for the selected material
       var designCodeKVP = ReflectionHelper.StandardCodes(materialType);
       // add codes for selected material to list of dropdowns
-      //_dropDownItems.Add(designCodeKVP.Keys.ToList());
 
       // make the UI look more intelligent
       if (_selectedItems[1].StartsWith("EN1992")) {

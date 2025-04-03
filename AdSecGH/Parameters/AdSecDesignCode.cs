@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using AdSecGH.Helpers;
+
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 
@@ -41,9 +43,6 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecDesignCode Duplicate() {
-      if (this == null) {
-        return null;
-      }
       var dup = (AdSecDesignCode)MemberwiseClone();
       return dup;
     }
@@ -54,7 +53,7 @@ namespace AdSecGH.Parameters {
 
     private bool CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false) {
       // Get all DesignCodes in DLL under namespace
-      Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+      Dictionary<string, Type> designCodeKVP = ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
       // Loop through DesignCodes types to find the DesignCode type matching our input list of levels
       string designcodeName = "";
@@ -65,7 +64,7 @@ namespace AdSecGH.Parameters {
         if (typ == null) {
           return false;
         }
-        designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
+        designCodeKVP = ReflectionHelper.ReflectNestedTypes(typ);
       }
       if (designCodeReflectedLevels.Count == 1) {
         designcodeName = designCodeReflectedLevels[0];

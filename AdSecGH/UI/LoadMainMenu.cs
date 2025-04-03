@@ -1,8 +1,10 @@
 ﻿using System.Threading;
 using System.Windows.Forms;
 
+using AdSecGH.Properties;
 using AdSecGH.UI;
 
+using Grasshopper;
 using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 
@@ -20,7 +22,7 @@ namespace AdSecGH.Graphics.Menu {
       GH_DocumentEditor editor = null;
 
       while (editor == null) {
-        editor = Grasshopper.Instances.DocumentEditor;
+        editor = Instances.DocumentEditor;
         Thread.Sleep(321);
       }
 
@@ -34,30 +36,12 @@ namespace AdSecGH.Graphics.Menu {
         }
       }
 
-      Grasshopper.Instances.CanvasCreated -= OnStartup;
+      Instances.CanvasCreated -= OnStartup;
     }
 
     private static void PopulateSub(ToolStripMenuItem menuItem) {
-      // add documentation
-      //menuItem.DropDown.Items.Add("AdSecGH Documentation", Properties.Resources.Documentation, (s, a) =>
-      //{
-      //  Process.Start(new ProcessStartInfo
-      //  {
-      //    FileName = "https://docs.oasys-software.com/structural/gsa/explanations/AdSecGH-introduction.html?source=grasshopper",
-      //    UseShellExecute = true
-      //  });
-      //});
-      // add example files
-      //menuItem.DropDown.Items.Add("AdSecGH Example files", Properties.Resources.ExampleFiles, (s, a) =>
-      //{
-      //  Process.Start(new ProcessStartInfo
-      //  {
-      //    FileName = "https://github.com/arup-group/AdSec-Grasshopper/tree/main/ExampleFiles",
-      //    UseShellExecute = true
-      //  });
-      //});
       // add info
-      menuItem.DropDown.Items.Add("AdSecGH Info", Properties.Resources.AdSecInfo, (s, a) => {
+      menuItem.DropDown.Items.Add("AdSecGH Info", Resources.AdSecInfo, (s, a) => {
         var aboutBox = new AboutBox();
         aboutBox.ShowDialog();
       });
