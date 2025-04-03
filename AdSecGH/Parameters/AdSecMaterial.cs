@@ -138,6 +138,7 @@ namespace AdSecGH.Parameters {
       if (this == null) {
         return null;
       }
+
       var dup = (AdSecMaterial)MemberwiseClone();
       return dup;
     }
@@ -149,10 +150,8 @@ namespace AdSecGH.Parameters {
       }
 
       string code = "";
-      if (DesignCode != null) {
-        if (DesignCode.DesignCodeName != null) {
-          code = $" to {DesignCodeName.Replace("  ", " ")}";
-        }
+      if (DesignCode != null && DesignCode.DesignCodeName != null) {
+        code = $" to {DesignCodeName.Replace("  ", " ")}";
       }
 
       return grd + TypeName.Replace("  ", " ") + code;

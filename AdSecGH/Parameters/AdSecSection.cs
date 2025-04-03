@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using AdSecCore;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
@@ -70,8 +69,7 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecSection(
-      IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement,
-      Oasys.Collections.IList<ISubComponent> subComponents) {
+      IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement, Oasys.Collections.IList<ISubComponent> subComponents) {
       DesignCode = material.DesignCode.Duplicate().DesignCode;
       _codeName = material.DesignCodeName;
       _materialName = material.GradeName;
@@ -260,17 +258,16 @@ namespace AdSecGH.Parameters {
         }
       }
 
-      // local axis
-      if (LocalPlane != null) {
-        if (LocalPlane != Plane.WorldXY && LocalPlane != Plane.WorldYZ && LocalPlane != Plane.WorldZX) {
-          var area = Section.Profile.Area();
-          double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-          var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-          previewXaxis = new Line(LocalPlane.Origin, LocalPlane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
-          previewYaxis = new Line(LocalPlane.Origin, LocalPlane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
-          previewZaxis = new Line(LocalPlane.Origin, LocalPlane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
-        }
+      if (LocalPlane == Plane.WorldXY || LocalPlane == Plane.WorldYZ || LocalPlane == Plane.WorldZX) {
+        return;
       }
+
+      var area = Section.Profile.Area();
+      double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
+      var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
+      previewXaxis = new Line(LocalPlane.Origin, LocalPlane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      previewYaxis = new Line(LocalPlane.Origin, LocalPlane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      previewZaxis = new Line(LocalPlane.Origin, LocalPlane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
     }
 
     private Brep CreateBrepFromProfile(AdSecProfileGoo profile) {
@@ -304,7 +301,8 @@ namespace AdSecGH.Parameters {
       return rebarBreps;
     }
 
-    private void CreateCurvesFromLinkGroup(IPerimeterLinkGroup linkGroup, ref List<Curve> linkEdges, Plane local) {
+    private static void CreateCurvesFromLinkGroup(
+      IPerimeterLinkGroup linkGroup, ref List<Curve> linkEdges, Plane local) {
       // transform to local plane
       var mapToLocal = Transform.PlaneToPlane(Plane.WorldYZ, local);
 
@@ -377,7 +375,6 @@ namespace AdSecGH.Parameters {
         offset1[0],
         offset2[0],
       });
-      //linkEdges.Add(centreline);
     }
 
     private Tuple<Oasys.Collections.IList<IGroup>, ICover> CreateReinforcementGroupsWithMaxCover(
@@ -385,36 +382,25 @@ namespace AdSecGH.Parameters {
       var groups = Oasys.Collections.IList<IGroup>.Create();
       ICover cover = null;
       foreach (var grp in reinforcement) {
-        // add group to list of groups
         groups.Add(grp.Group);
 
-        // check if cover of group is bigger than any previous ones
         try {
-          var link = (ILinkGroup)grp.Group;
-          if (grp.Cover != null) {
-            if (cover == null || grp.Cover.UniformCover > cover.UniformCover) {
-              cover = grp.Cover;
-            }
+          if (grp.Cover != null && (cover == null || grp.Cover.UniformCover > cover.UniformCover)) {
+            cover = grp.Cover;
           }
         } catch (Exception) {
           try {
-            var link = (IPerimeterGroup)grp.Group;
-            if (grp.Cover != null) {
-              if (cover == null || grp.Cover.UniformCover > cover.UniformCover) {
-                cover = grp.Cover;
-              }
+            if (grp.Cover != null && (cover == null || grp.Cover.UniformCover > cover.UniformCover)) {
+              cover = grp.Cover;
             }
           } catch (Exception) {
             try {
-              var template = (ITemplateGroup)grp.Group;
-              if (grp.Cover != null) {
-                if (cover == null || grp.Cover.UniformCover > cover.UniformCover) {
-                  cover = grp.Cover;
-                }
+              if (grp.Cover != null && (cover == null || grp.Cover.UniformCover > cover.UniformCover)) {
+                cover = grp.Cover;
               }
-            } catch (Exception) { }
+            } catch (Exception) { /* don't expect any errors */
+            }
           }
-          // not a link group, so we don't set section's cover
         }
       }
 

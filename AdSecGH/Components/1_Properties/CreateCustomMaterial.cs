@@ -216,21 +216,12 @@ namespace AdSecGH.Components {
     }
 
     private void ChangeMode() {
-      if (_isConcrete) {
-        if (Params.Input.Count == 6) {
-          return;
-        }
-      }
-
-      if (!_isConcrete) {
-        if (Params.Input.Count == 5) {
-          return;
-        }
+      if ((_isConcrete && Params.Input.Count == 6) || (!_isConcrete && Params.Input.Count == 5)) {
+        return;
       }
 
       RecordUndoEvent("Changed dropdown");
 
-      // change number of input parameters
       if (_isConcrete) {
         Params.RegisterInputParam(new Param_GenericObject());
       } else {

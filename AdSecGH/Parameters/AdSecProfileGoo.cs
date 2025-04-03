@@ -6,6 +6,7 @@ using System.Linq;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
+using AdSecGH.UI;
 
 using Grasshopper;
 using Grasshopper.Kernel;
@@ -114,17 +115,15 @@ namespace AdSecGH.Parameters {
 
       // try cast using GH_Convert, if that doesnt work we are doomed
       Curve crv = null;
-      if (GH_Convert.ToCurve(source, ref crv, GH_Conversion.Both)) {
-        if (crv.TryGetPolyline(out Polyline poly)) {
-          var temp = new AdSecProfileGoo(poly, DefaultUnits.LengthUnitGeometry);
-          m_value = temp.m_value;
-          Profile = temp.Profile;
-          VoidEdges = temp.VoidEdges;
-          return true;
-        }
+      if (!GH_Convert.ToCurve(source, ref crv, GH_Conversion.Both) || !crv.TryGetPolyline(out var poly)) {
+        return false;
       }
 
-      return false;
+      var temp = new AdSecProfileGoo(poly, DefaultUnits.LengthUnitGeometry);
+      m_value = temp.m_value;
+      Profile = temp.Profile;
+      VoidEdges = temp.VoidEdges;
+      return true;
     }
 
     public override bool CastTo<Q>(out Q target) {
@@ -303,18 +302,18 @@ namespace AdSecGH.Parameters {
         if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G
           && args.Color.B == defaultCol.B) // not selected
         {
-          args.Pipeline.DrawPolyline(Polyline, UI.Colour.OasysBlue, 2);
+          args.Pipeline.DrawPolyline(Polyline, Colour.OasysBlue, 2);
           if (VoidEdges != null) {
             foreach (Polyline crv in VoidEdges) {
-              args.Pipeline.DrawPolyline(crv, UI.Colour.OasysBlue, 1);
+              args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
             }
           }
         } else // selected
         {
-          args.Pipeline.DrawPolyline(Polyline, UI.Colour.OasysYellow, 3);
+          args.Pipeline.DrawPolyline(Polyline, Colour.OasysYellow, 3);
           if (VoidEdges != null) {
             foreach (Polyline crv in VoidEdges) {
-              args.Pipeline.DrawPolyline(crv, UI.Colour.OasysYellow, 2);
+              args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
             }
           }
         }
@@ -440,17 +439,16 @@ namespace AdSecGH.Parameters {
     }
 
     private void UpdatePreview() {
-      // local axis
-      if (m_plane != null) {
-        if (m_plane != Plane.WorldXY && m_plane != Plane.WorldYZ && m_plane != Plane.WorldZX) {
-          Area area = Profile.Area();
-          double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-          var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-          previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
-          previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
-          previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
-        }
+      if (m_plane == Plane.WorldXY || m_plane == Plane.WorldYZ || m_plane == Plane.WorldZX) {
+        return;
       }
+
+      var area = Profile.Area();
+      double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
+      var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
+      previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
     }
   }
 }
