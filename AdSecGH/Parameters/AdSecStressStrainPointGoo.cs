@@ -132,9 +132,7 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (Value != null) {
-        args.Pipeline.DrawCircle(new Circle(Value, 0.5), Colour.OasysYellow, 1);
-      }
+      args.Pipeline.DrawCircle(new Circle(Value, 0.5), Colour.OasysYellow, 1);
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {

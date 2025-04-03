@@ -6,6 +6,7 @@ using System.Linq;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
+using AdSecGH.UI;
 
 using Grasshopper;
 using Grasshopper.Kernel;
@@ -303,28 +304,26 @@ namespace AdSecGH.Parameters {
         if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G
           && args.Color.B == defaultCol.B) // not selected
         {
-          args.Pipeline.DrawPolyline(Polyline, UI.Colour.OasysBlue, 2);
+          args.Pipeline.DrawPolyline(Polyline, Colour.OasysBlue, 2);
           if (VoidEdges != null) {
             foreach (Polyline crv in VoidEdges) {
-              args.Pipeline.DrawPolyline(crv, UI.Colour.OasysBlue, 1);
+              args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
             }
           }
         } else // selected
         {
-          args.Pipeline.DrawPolyline(Polyline, UI.Colour.OasysYellow, 3);
+          args.Pipeline.DrawPolyline(Polyline, Colour.OasysYellow, 3);
           if (VoidEdges != null) {
             foreach (Polyline crv in VoidEdges) {
-              args.Pipeline.DrawPolyline(crv, UI.Colour.OasysYellow, 2);
+              args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
             }
           }
         }
 
         // local axis
-        if (previewXaxis != null) {
-          args.Pipeline.DrawLine(previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
-          args.Pipeline.DrawLine(previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
-          args.Pipeline.DrawLine(previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
-        }
+        args.Pipeline.DrawLine(previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
+        args.Pipeline.DrawLine(previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
+        args.Pipeline.DrawLine(previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
       }
     }
 
@@ -441,15 +440,13 @@ namespace AdSecGH.Parameters {
 
     private void UpdatePreview() {
       // local axis
-      if (m_plane != null) {
-        if (m_plane != Plane.WorldXY && m_plane != Plane.WorldYZ && m_plane != Plane.WorldZX) {
-          Area area = Profile.Area();
-          double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-          var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-          previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
-          previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
-          previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
-        }
+      if (m_plane != Plane.WorldXY && m_plane != Plane.WorldYZ && m_plane != Plane.WorldZX) {
+        var area = Profile.Area();
+        double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
+        var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
+        previewXaxis = new Line(m_plane.Origin, m_plane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
+        previewYaxis = new Line(m_plane.Origin, m_plane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
+        previewZaxis = new Line(m_plane.Origin, m_plane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
       }
     }
   }

@@ -63,7 +63,7 @@ namespace AdSecGH.Components {
       var concreteCrack
         = new AdSecConcreteCrackCalculationParametersGoo(this.GetIConcreteCrackCalculationParameters(DA, 0));
 
-      if (concreteCrack != null && concreteCrack.Value != null) {
+      if (concreteCrack.Value != null) {
         // #### get the remaining inputs ####
         var e = concreteCrack.Value.ElasticModulus;
         var fck = concreteCrack.Value.CharacteristicCompressiveStrength;

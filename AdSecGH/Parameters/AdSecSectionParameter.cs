@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using AdSecGH.Helpers;
 using AdSecGH.Properties;
 
 using AdSecGHCore.Constants;
@@ -39,19 +40,11 @@ namespace AdSecGH.Parameters {
     }
 
     protected override ToolStripMenuItem Menu_CustomMultiValueItem() {
-      var item = new ToolStripMenuItem {
-        Text = "Not available",
-        Visible = false,
-      };
-      return item;
+      return ToolStripMenuHelper.CreateInvisibleMenuItem();
     }
 
     protected override ToolStripMenuItem Menu_CustomSingleValueItem() {
-      var item = new ToolStripMenuItem {
-        Text = "Not available",
-        Visible = false,
-      };
-      return item;
+      return ToolStripMenuHelper.CreateInvisibleMenuItem();
     }
 
     //We do not allow users to pick parameter,

@@ -235,9 +235,6 @@ namespace AdSecGH.Parameters {
               break;
 
             case AdSecMaterial.AdSecMaterialType.FRP:
-              rebColour = Colour.Reinforcement;
-              break;
-
             case AdSecMaterial.AdSecMaterialType.Tendon:
               rebColour = Colour.Reinforcement;
               break;
@@ -250,7 +247,9 @@ namespace AdSecGH.Parameters {
           try {
             var linkGroup = (IPerimeterLinkGroup)rebargrp;
             CreateCurvesFromLinkGroup(linkGroup, ref linkEdges, LocalPlane);
-          } catch (Exception) { }
+          } catch (Exception) {
+            /* don't expect to fail */
+          }
         }
       }
 
@@ -404,7 +403,9 @@ namespace AdSecGH.Parameters {
                   cover = grp.Cover;
                 }
               }
-            } catch (Exception) { }
+            } catch (Exception) {
+              /* don't expect to fail */
+            }
           }
           // not a link group, so we don't set section's cover
         }

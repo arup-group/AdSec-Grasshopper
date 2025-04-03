@@ -36,9 +36,10 @@ namespace AdSecGH.Parameters {
       } catch (Exception) {
         try {
           var byBarPitch = (ILayerByBarPitch)Value;
-          Length spacing = byBarPitch.Pitch.ToUnit(DefaultUnits.LengthUnitGeometry);
+          var spacing = byBarPitch.Pitch.ToUnit(DefaultUnits.LengthUnitGeometry);
           str = $"{bar} bars / {spacing}";
         } catch (Exception) {
+          /* don't expect to fail */
         }
       }
       return $"AdSec {TypeName} {{{str}}}";

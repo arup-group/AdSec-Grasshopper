@@ -5,6 +5,7 @@ using System.Drawing;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
+using AdSecGH.UI;
 
 using Grasshopper;
 using Grasshopper.Kernel;
@@ -60,15 +61,13 @@ namespace AdSecGH.Parameters {
       _section = new AdSecSection(section, code, codeName, materialName, local, _offset);
       _plane = local;
       // local axis
-      if (_plane != null) {
-        if (_plane != Plane.WorldXY && local != Plane.WorldYZ && local != Plane.WorldZX) {
-          Area area = _section.Section.Profile.Area();
-          double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-          var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-          _previewXaxis = new Line(local.Origin, local.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
-          _previewYaxis = new Line(local.Origin, local.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
-          _previewZaxis = new Line(local.Origin, local.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
-        }
+      if (_plane != Plane.WorldXY && local != Plane.WorldYZ && local != Plane.WorldZX) {
+        var area = _section.Section.Profile.Area();
+        double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
+        var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
+        _previewXaxis = new Line(local.Origin, local.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
+        _previewYaxis = new Line(local.Origin, local.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
+        _previewZaxis = new Line(local.Origin, local.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
       }
     }
 
@@ -115,21 +114,21 @@ namespace AdSecGH.Parameters {
       Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
       if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
       {
-        args.Pipeline.DrawPolyline(_section.m_profileEdge, UI.Colour.OasysBlue, 2);
+        args.Pipeline.DrawPolyline(_section.m_profileEdge, Colour.OasysBlue, 2);
         if (_section.m_profileVoidEdges != null) {
           foreach (Polyline crv in _section.m_profileVoidEdges) {
-            args.Pipeline.DrawPolyline(crv, UI.Colour.OasysBlue, 1);
+            args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
           }
         }
         if (_section.m_subEdges != null) {
           foreach (Polyline crv in _section.m_subEdges) {
-            args.Pipeline.DrawPolyline(crv, UI.Colour.OasysBlue, 1);
+            args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
           }
         }
         if (_section.m_subVoidEdges != null) {
           foreach (List<Polyline> crvs in _section.m_subVoidEdges) {
             foreach (Polyline crv in crvs) {
-              args.Pipeline.DrawPolyline(crv, UI.Colour.OasysBlue, 1);
+              args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
             }
           }
         }
@@ -140,37 +139,35 @@ namespace AdSecGH.Parameters {
         }
       } else // selected
         {
-        args.Pipeline.DrawPolyline(_section.m_profileEdge, UI.Colour.OasysYellow, 3);
+        args.Pipeline.DrawPolyline(_section.m_profileEdge, Colour.OasysYellow, 3);
         if (_section.m_profileVoidEdges != null) {
           foreach (Polyline crv in _section.m_profileVoidEdges) {
-            args.Pipeline.DrawPolyline(crv, UI.Colour.OasysYellow, 2);
+            args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
           }
         }
         if (_section.m_subEdges != null) {
           foreach (Polyline crv in _section.m_subEdges) {
-            args.Pipeline.DrawPolyline(crv, UI.Colour.OasysYellow, 2);
+            args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
           }
         }
         if (_section.m_subVoidEdges != null) {
           foreach (List<Polyline> crvs in _section.m_subVoidEdges) {
             foreach (Polyline crv in crvs) {
-              args.Pipeline.DrawPolyline(crv, UI.Colour.OasysYellow, 2);
+              args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
             }
           }
         }
         if (_section.m_rebarEdges != null) {
           foreach (Circle crv in _section.m_rebarEdges) {
-            args.Pipeline.DrawCircle(crv, UI.Colour.UILightGrey, 2);
+            args.Pipeline.DrawCircle(crv, Colour.UILightGrey, 2);
           }
         }
       }
 
       // local axis
-      if (_previewXaxis != null) {
-        args.Pipeline.DrawLine(_previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
-        args.Pipeline.DrawLine(_previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
-        args.Pipeline.DrawLine(_previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
-      }
+      args.Pipeline.DrawLine(_previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
+      args.Pipeline.DrawLine(_previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
+      args.Pipeline.DrawLine(_previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
