@@ -34,7 +34,7 @@ namespace AdSecGH.Parameters {
     public List<AdSecStressStrainPointGoo> AdSecStressStrainPoints {
       get {
         var outPts = new List<AdSecStressStrainPointGoo>();
-        Oasys.Collections.IList<IStressStrainPoint> pts = IStressStrainPoints;
+        var pts = GetIStressStrainPoints();
         foreach (IStressStrainPoint pt in pts) {
           outPts.Add(new AdSecStressStrainPointGoo(pt));
         }
@@ -51,14 +51,13 @@ namespace AdSecGH.Parameters {
     }
     public BoundingBox ClippingBox => Boundingbox;
     public List<Point3d> ControlPoints { get; } = new List<Point3d>();
-    public Oasys.Collections.IList<IStressStrainPoint> IStressStrainPoints {
-      get {
-        try {
-          var crv2 = (IExplicitStressStrainCurve)StressStrainCurve;
-          return crv2.Points;
-        } catch (Exception) {
-          throw new InvalidCastException("Unable to cast to internal IStressStrainCurve to IExplicitStressStrainCurve");
-        }
+
+    public Oasys.Collections.IList<IStressStrainPoint> GetIStressStrainPoints() {
+      try {
+        var crv2 = (IExplicitStressStrainCurve)StressStrainCurve;
+        return crv2.Points;
+      } catch (Exception) {
+        throw new InvalidCastException("Unable to cast to internal IStressStrainCurve to IExplicitStressStrainCurve");
       }
     }
     public IStressStrainCurve StressStrainCurve { get; }
