@@ -439,10 +439,6 @@ namespace Oasys.GH.Helpers {
       }
     }
 
-    public static void PopulateInputParams(this IFunction function, GH_Component component) {
-      RegisterParams(function.GetAllInputAttributes(), param => component.Params.RegisterInputParam(param));
-    }
-
     public static void PopulateInputParams(
       this IFunction function, GH_Component component, Dictionary<string, IGH_Param> previous = null) {
       RegisterParams(function.GetAllInputAttributes(), param => component.Params.RegisterInputParam(param), previous);
@@ -451,8 +447,8 @@ namespace Oasys.GH.Helpers {
     private static void RegisterParams(
       Attribute[] attributesSelector, Action<IGH_Param> action, Dictionary<string, IGH_Param> previous = null) {
       foreach (var attribute in attributesSelector.Where(x => ToGhParam.ContainsKey(x.GetType()))) {
-        if (previous != null && previous.ContainsKey(attribute.Name)) {
-          action(previous[attribute.Name]);
+        if (previous != null && previous.TryGetValue(attribute.Name, out var value)) {
+          action(value);
           continue;
         }
 

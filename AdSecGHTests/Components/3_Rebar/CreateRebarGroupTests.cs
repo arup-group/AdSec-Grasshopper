@@ -2,6 +2,9 @@
 using AdSecGH.Components;
 using AdSecGH.Properties;
 
+using AdSecGHTests.Helpers;
+
+using Oasys.AdSec.StandardMaterials;
 using Oasys.GH.Helpers;
 
 using Xunit;
@@ -23,6 +26,13 @@ namespace AdSecGHTests.Components._3_Rebar {
     [Fact]
     public void ShouldHaveIconReferenced() {
       Assert.True(component.MatchesExpectedIcon(Resources.RebarGroup));
+    }
+
+    [Fact]
+    public void ShouldUpdateParametersWhenChangingMode() {
+      component.SetSelected(0, 1); // Perimeter
+      ComponentTesting.ComputeOutputs(component);
+      Assert.Equal(2, component.Params.Input.Count);
     }
   }
 }
