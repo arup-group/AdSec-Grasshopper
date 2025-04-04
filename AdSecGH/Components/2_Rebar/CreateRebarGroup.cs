@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
-
-using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
 using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Components;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;
 
@@ -23,14 +23,9 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
-  public class CreateReinforcementGroup : GH_OasysDropDownComponent {
+  public class CreateReinforcementGroup : DropdownAdapter<RebarGroupFunction> {
     private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
     private FoldMode _mode = FoldMode.Template;
-
-    public CreateReinforcementGroup() : base("Create Reinforcement Group", "Reinforcement Group",
-      "Create a Template Reinforcement Group for an AdSec Section", CategoryName.Name(), SubCategoryName.Cat3()) {
-      Hidden = false;
-    }
 
     public override Guid ComponentGuid => new Guid("9876f456-de99-4834-8d7f-4019cc0c70ba");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
