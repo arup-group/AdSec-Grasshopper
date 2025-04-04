@@ -91,7 +91,7 @@ namespace AdSecCore.Functions {
     }
 
     public override Attribute[] GetAllInputAttributes() {
-      Attribute[] allInputAttributes;
+      Attribute[] allInputAttributes = { };
       switch (Mode) {
         case FoldMode.Template:
           allInputAttributes = new Attribute[] {
@@ -114,7 +114,6 @@ namespace AdSecCore.Functions {
             Cover
           };
           break;
-        default: throw new ArgumentOutOfRangeException();
       }
 
       return allInputAttributes;
