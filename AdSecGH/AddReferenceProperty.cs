@@ -53,7 +53,11 @@ namespace AdSecGH {
 
       // ### Reference AdSecAPI and SQLite dlls ###
       try {
+#pragma warning disable S2696 // Instance members should not write to "static" fields
+#pragma warning disable S3885 // "Assembly.Load" should be used - we must use LoadFile to load the dll from the plugin folder, without that our tests will not work
         AdSecAPI = Assembly.LoadFile($"{PluginPath}\\AdSec_API.dll");
+#pragma warning restore S3885 // "Assembly.Load" should be used
+#pragma warning restore S2696 // Instance members should not write to "static" fields
       } catch (Exception ex) {
         string message
           = $"{ex.Message}{Environment.NewLine}{Environment.NewLine}Error loading the file AdSec_API.dll from path {PluginPath} - check if the file exist.{Environment.NewLine}The plugin cannot be loaded.";
