@@ -21,12 +21,15 @@ namespace Oasys.GH.Helpers {
     }
 
     private void UpdateInputs() {
-      // Unregister All
+      // Unregister All TODO: Keep the same ones, based on the name and re-register them (avoid wire disconnect)
+
+      Dictionary<string, IGH_Param> previous = new Dictionary<string, IGH_Param>();
       for (int i = Params.Input.Count - 1; i >= 0; i--) {
-        Params.UnregisterInputParameter(Params.Input[i]);
+        previous.Add(Params.Input[i].Name, Params.Input[i]);
+        Params.UnregisterInputParameter(Params.Input[i], false);
       }
 
-      BusinessComponent.PopulateInputParams(this);
+      BusinessComponent.PopulateInputParams(this, previous);
     }
 
     public override OasysPluginInfo PluginInfo { get; } = AdSecGH.PluginInfo.Instance;
