@@ -14,5 +14,17 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat3()
     };
     public override void Compute() { throw new System.NotImplementedException(); }
+
+    public RebarGroupParameter Layout { get; set; } = new RebarGroupParameter() {
+      Name = "Layout",
+      NickName = "RbG",
+      Description = "Rebar Groups for AdSec Section",
+    };
+
+    public override Attribute[] GetAllOutputAttributes() {
+      return new Attribute[] {
+        Layout
+      };
+    }
   }
 }

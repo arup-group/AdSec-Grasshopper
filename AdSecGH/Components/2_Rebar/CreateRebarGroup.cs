@@ -137,10 +137,6 @@ namespace AdSecGH.Components {
       }
     }
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("Layout", "RbG", "Rebar Groups for AdSec Section", GH_ParamAccess.list);
-    }
-
     protected override void SolveInternal(IGH_DataAccess da) {
       var groups = new List<AdSecRebarGroupGoo>();
 

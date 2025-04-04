@@ -25,5 +25,10 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(SubCategoryName.Cat3(), function.Organisation.SubCategory);
     }
 
+    [Fact]
+    public void ShouldHaveOneOutput() {
+      Assert.Single(function.GetAllOutputAttributes());
+    }
+
   }
 }
