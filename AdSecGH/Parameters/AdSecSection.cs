@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using AdSecCore;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
@@ -70,8 +69,7 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecSection(
-      IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement,
-      Oasys.Collections.IList<ISubComponent> subComponents) {
+      IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement, Oasys.Collections.IList<ISubComponent> subComponents) {
       DesignCode = material.DesignCode.Duplicate().DesignCode;
       _codeName = material.DesignCodeName;
       _materialName = material.GradeName;
@@ -108,10 +106,6 @@ namespace AdSecGH.Parameters {
     internal List<Brep> SubBreps => _subProfiles;
 
     public AdSecSection Duplicate() {
-      if (this == null) {
-        return null;
-      }
-
       var dup = (AdSecSection)MemberwiseClone();
       return dup;
     }
@@ -241,9 +235,6 @@ namespace AdSecGH.Parameters {
               break;
 
             case AdSecMaterial.AdSecMaterialType.FRP:
-              rebColour = Colour.Reinforcement;
-              break;
-
             case AdSecMaterial.AdSecMaterialType.Tendon:
               rebColour = Colour.Reinforcement;
               break;
@@ -256,7 +247,9 @@ namespace AdSecGH.Parameters {
           try {
             var linkGroup = (IPerimeterLinkGroup)rebargrp;
             CreateCurvesFromLinkGroup(linkGroup, ref linkEdges, LocalPlane);
-          } catch (Exception) { }
+          } catch (Exception) {
+            /* don't expect to fail */
+          }
         }
       }
 
@@ -285,7 +278,6 @@ namespace AdSecGH.Parameters {
       ISingleBars bars, Vector3d offset, ref List<Circle> edgeCurves, Plane local) {
       // transform to local plane
       var mapToLocal = Transform.PlaneToPlane(Plane.WorldYZ, local);
-      //offs.Transform(mapToLocal);
       var rebarBreps = new List<Brep>();
       for (int i = 0; i < bars.Positions.Count; i++) {
         var center = new Point3d(0, bars.Positions[i].Y.As(DefaultUnits.LengthUnitGeometry),
@@ -377,7 +369,6 @@ namespace AdSecGH.Parameters {
         offset1[0],
         offset2[0],
       });
-      //linkEdges.Add(centreline);
     }
 
     private Tuple<Oasys.Collections.IList<IGroup>, ICover> CreateReinforcementGroupsWithMaxCover(
@@ -412,7 +403,9 @@ namespace AdSecGH.Parameters {
                   cover = grp.Cover;
                 }
               }
-            } catch (Exception) { }
+            } catch (Exception) {
+              /* don't expect to fail */
+            }
           }
           // not a link group, so we don't set section's cover
         }

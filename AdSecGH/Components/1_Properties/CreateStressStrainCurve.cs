@@ -78,12 +78,10 @@ namespace AdSecGH.Components {
 
           case 4:
             // add strain dropdown
-            //_dropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
             _selectedItems.Add(Strain.GetAbbreviation(_strainUnit));
 
             // add pressure dropdown
-            //_dropDownItems.Add(Enum.GetNames(typeof(PressureUnit)).ToList());
             _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress));
             _selectedItems.Add(Pressure.GetAbbreviation(_stressUnit));
 
@@ -96,7 +94,6 @@ namespace AdSecGH.Components {
 
           case 6:
             // add strain dropdown
-            //_dropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
             _selectedItems.Add(Strain.GetAbbreviation(_strainUnit));
 
@@ -109,7 +106,6 @@ namespace AdSecGH.Components {
 
           case 8:
             // add strain dropdown
-            //_dropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
             _selectedItems.Add(Strain.GetAbbreviation(_strainUnit));
             Mode8Clicked();
@@ -117,7 +113,6 @@ namespace AdSecGH.Components {
 
           case 9:
             // add strain dropdown
-            //_dropDownItems.Add(Enum.GetNames(typeof(StrainUnit)).ToList());
             _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
             _selectedItems.Add(Strain.GetAbbreviation(_strainUnit));
             Mode9Clicked();

@@ -2,10 +2,13 @@
 using System.Drawing;
 using System.Linq;
 
+using AdSecGH.UI;
+
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
+using Oasys.Collections;
 using Oasys.Profiles;
 
 using OasysGH.Units;
@@ -20,7 +23,6 @@ namespace AdSecGH.Parameters {
     public IPoint AdSecPoint { get; private set; }
     public override BoundingBox Boundingbox {
       get {
-        if (Value == null) { return BoundingBox.Empty; }
         var pt1 = new Point3d(Value);
         pt1.Z += 0.25;
         var pt2 = new Point3d(Value);
@@ -142,9 +144,9 @@ namespace AdSecGH.Parameters {
     public void DrawViewportWires(GH_PreviewWireArgs args) {
       if (args.Color == Instances.Settings.GetValue("DefaultPreviewColour", Color.White)) {
         //Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", System.Drawing.Color.White)) // not selected
-        args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 3, UI.Colour.OasysBlue);
+        args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 3, Colour.OasysBlue);
       } else {
-        args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 5, UI.Colour.OasysYellow);
+        args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 5, Colour.OasysYellow);
       }
     }
 
@@ -153,7 +155,6 @@ namespace AdSecGH.Parameters {
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null) { return BoundingBox.Empty; }
       var pt = new Point3d(Value);
       pt.Z += 0.001;
       var ln = new Line(Value, pt);
@@ -176,11 +177,11 @@ namespace AdSecGH.Parameters {
       return null;
     }
 
-    internal static Oasys.Collections.IList<IPoint> PtsFromPolyline(Polyline curve) {
+    internal static IList<IPoint> PtsFromPolyline(Polyline curve) {
       Plane.FitPlaneToPoints(curve.ToList(), out Plane plane);
       var mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
 
-      var pts = Oasys.Collections.IList<IPoint>.Create();
+      var pts = IList<IPoint>.Create();
       IPoint pt = null;
       for (int j = 0; j < curve.Count; j++) {
         Point3d point3d = curve[j];
@@ -193,12 +194,12 @@ namespace AdSecGH.Parameters {
       return pts;
     }
 
-    internal static Oasys.Collections.IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve) {
+    internal static IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve) {
       curve.TryGetPolyline(out Polyline temp_crv);
       Plane.FitPlaneToPoints(temp_crv.ToList(), out Plane plane);
       var mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
 
-      var pts = Oasys.Collections.IList<IPoint>.Create();
+      var pts = IList<IPoint>.Create();
       for (int j = 0; j < curve.PointCount; j++) {
         Point3d point3d = curve.Point(j);
         point3d.Transform(mapToLocal);

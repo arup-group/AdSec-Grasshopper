@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Linq;
 
+using AdSecGH.UI;
+
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
@@ -25,9 +27,7 @@ namespace AdSecGH.Parameters {
         if (Value == null) {
           return BoundingBox.Empty;
         }
-        if (m_point == null) {
-          return BoundingBox.Empty;
-        }
+
         var pt1 = new Point3d(m_point);
         pt1.Z += 0.25;
         var pt2 = new Point3d(m_point);
@@ -131,9 +131,9 @@ namespace AdSecGH.Parameters {
         Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
         if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) {
           // not selected
-          args.Pipeline.DrawPoint(m_point, PointStyle.X, 7, UI.Colour.ArupRed);
+          args.Pipeline.DrawPoint(m_point, PointStyle.X, 7, Colour.ArupRed);
         } else {
-          args.Pipeline.DrawPoint(m_point, PointStyle.X, 8, UI.Colour.UILightGrey);
+          args.Pipeline.DrawPoint(m_point, PointStyle.X, 8, Colour.UILightGrey);
         }
       }
     }
@@ -151,7 +151,7 @@ namespace AdSecGH.Parameters {
 
     public override BoundingBox GetBoundingBox(Transform xform) {
       if (Value == null) { return BoundingBox.Empty; }
-      if (m_point == null) { return BoundingBox.Empty; }
+
       var pt1 = new Point3d(m_point);
       pt1.Z += 0.25;
       var pt2 = new Point3d(m_point);

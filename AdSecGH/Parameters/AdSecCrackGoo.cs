@@ -4,6 +4,7 @@ using System.Drawing;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
+using AdSecGH.UI;
 
 using Grasshopper;
 using Grasshopper.Kernel;
@@ -13,6 +14,7 @@ using OasysGH;
 using OasysGH.Parameters;
 
 using Rhino.Geometry;
+
 namespace AdSecGH.Parameters {
   public class AdSecCrackGoo : GH_OasysGeometricGoo<CrackLoad>, IGH_PreviewData {
     public static string Description => "AdSec Crack Parameter";
@@ -23,9 +25,7 @@ namespace AdSecGH.Parameters {
         if (Value == null) {
           return BoundingBox.Empty;
         }
-        if (m_line == null) {
-          return BoundingBox.Empty;
-        }
+
         var crv = new LineCurve(m_line);
         return crv.GetBoundingBox(false);
       }
@@ -135,9 +135,9 @@ namespace AdSecGH.Parameters {
         Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
         if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) {
           // not selected
-          args.Pipeline.DrawLine(m_line, UI.Colour.OasysBlue, 5);
+          args.Pipeline.DrawLine(m_line, Colour.OasysBlue, 5);
         } else {
-          args.Pipeline.DrawLine(m_line, UI.Colour.OasysYellow, 7);
+          args.Pipeline.DrawLine(m_line, Colour.OasysYellow, 7);
         }
       }
     }
@@ -155,9 +155,7 @@ namespace AdSecGH.Parameters {
       if (Value == null) {
         return BoundingBox.Empty;
       }
-      if (m_point == null) {
-        return BoundingBox.Empty;
-      }
+
       var crv = new LineCurve(m_line);
       return crv.GetBoundingBox(xform);
     }

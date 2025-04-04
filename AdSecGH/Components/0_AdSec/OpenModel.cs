@@ -67,7 +67,6 @@ namespace AdSecGH.Components {
           // check if input is the one we automatically create below
           if (Params.Input[0].Sources[0].InstanceGuid == _panelGuid) {
             // update the UserText in existing panel
-            //RecordUndoEvent("Changed OpenGSA Component input");
             panel = input as GH_Panel;
             panel.UserText = fileName;
             panel.ExpireSolution(true); // update the display of the panel
