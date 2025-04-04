@@ -14,8 +14,20 @@ namespace Oasys.GH.Helpers {
 
     protected DropdownAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
       BusinessComponent.UpdateProperties(this);
+
+      if (BusinessComponent is IVariableInput variableInput) {
+        variableInput.OnVariableInputChanged += UpdateInputs;
+      }
     }
 
+    private void UpdateInputs() {
+      // Unregister All
+      for (int i = Params.Input.Count - 1; i >= 0; i--) {
+        Params.UnregisterInputParameter(Params.Input[i]);
+      }
+
+      BusinessComponent.PopulateInputParams(this);
+    }
 
     public override OasysPluginInfo PluginInfo { get; } = AdSecGH.PluginInfo.Instance;
     public void SetDefaultValues() { BusinessComponent.SetDefaultValues(this); }

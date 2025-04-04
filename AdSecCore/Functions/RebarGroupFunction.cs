@@ -10,7 +10,11 @@ namespace AdSecCore.Functions {
     Link,
   }
 
-  public class RebarGroupFunction : Function {
+  public interface IVariableInput {
+    event Action OnVariableInputChanged;
+  }
+
+  public class RebarGroupFunction : Function, IVariableInput {
 
     public event Action OnVariableInputChanged;
 
