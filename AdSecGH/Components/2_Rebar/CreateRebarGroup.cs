@@ -257,10 +257,5 @@ namespace AdSecGH.Components {
       Params.RegisterInputParam(param_Cover);
     }
 
-    private enum FoldMode {
-      Template,
-      Perimeter,
-      Link,
-    }
   }
 }

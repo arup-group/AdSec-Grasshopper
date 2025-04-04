@@ -29,6 +29,18 @@ namespace AdSecCoreTests.Functions {
     public void ShouldHaveOneOutput() {
       Assert.Single(function.GetAllOutputAttributes());
     }
+    [Fact]
+    public void ShouldChangeModes() {
+      Assert.Equal(FoldMode.Template, function.Mode);
+      function.SetMode(FoldMode.Perimeter);
+      Assert.Equal(FoldMode.Perimeter, function.Mode);
+    }
+
+    [Fact]
+    public void ShouldHaveTemplateWithFourInputs() {
+      function.SetMode(FoldMode.Template);
+      Assert.Equal(4, function.GetAllInputAttributes().Length);
+    }
 
   }
 }
