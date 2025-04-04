@@ -10,7 +10,6 @@ using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Parameters;
 
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.GH.Helpers;
@@ -37,7 +36,6 @@ namespace AdSecGH.Components {
       if (i == 0) {
         _mode = (FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[i]);
         BusinessComponent.SetMode(_mode);
-        // ToggleInput();
       } else {
         _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       }
@@ -45,59 +43,9 @@ namespace AdSecGH.Components {
       base.UpdateUI();
     }
 
-    // public override void VariableParameterMaintenance() {
-    //   if (_mode == FoldMode.Template) {
-    //     Params.Input[0].Name = "Top Rebars";
-    //     Params.Input[0].NickName = "TRs";
-    //     Params.Input[0].Description = "Top Face AdSec Rebars Spaced in a Layer";
-    //     Params.Input[0].Access = GH_ParamAccess.list;
-    //     Params.Input[0].Optional = true;
-    //
-    //     Params.Input[1].Name = "Left Side Rebars";
-    //     Params.Input[1].NickName = "LRs";
-    //     Params.Input[1].Description = "Left Side Face AdSec Rebars Spaced in a Layer";
-    //     Params.Input[1].Access = GH_ParamAccess.list;
-    //     Params.Input[1].Optional = true;
-    //
-    //     Params.Input[2].Name = "Right Side Rebars";
-    //     Params.Input[2].NickName = "RRs";
-    //     Params.Input[2].Description = "Right Side Face AdSec Rebars Spaced in a Layer";
-    //     Params.Input[2].Access = GH_ParamAccess.list;
-    //     Params.Input[2].Optional = true;
-    //
-    //     Params.Input[3].Name = "Bottom Rebars";
-    //     Params.Input[3].NickName = "BRs";
-    //     Params.Input[3].Description = "Bottom Face AdSec Rebars Spaced in a Layer";
-    //     Params.Input[3].Access = GH_ParamAccess.list;
-    //     Params.Input[3].Optional = true;
-    //   }
-    //
-    //   if (_mode == FoldMode.Perimeter) {
-    //     Params.Input[0].Name = "Spaced Rebars";
-    //     Params.Input[0].NickName = "RbS";
-    //     Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
-    //     Params.Input[0].Access = GH_ParamAccess.list;
-    //     Params.Input[0].Optional = false;
-    //   }
-    //
-    //   if (_mode == FoldMode.Link) {
-    //     Params.Input[0].Name = "Rebar";
-    //     Params.Input[0].NickName = "Rb";
-    //     Params.Input[0].Description = "AdSec Rebar (single or bundle)";
-    //     Params.Input[0].Access = GH_ParamAccess.item;
-    //     Params.Input[0].Optional = false;
-    //   }
-    //
-    //   string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-    //   Params.Input[Params.Input.Count - 1].Name = $"Cover [{unitAbbreviation}]";
-    //   Params.Input[Params.Input.Count - 1].NickName = "Cov";
-    //   Params.Input[Params.Input.Count - 1].Description = "AdSec Rebars Spaced in a Layer";
-    //   Params.Input[Params.Input.Count - 1].Access = GH_ParamAccess.list;
-    //   Params.Input[Params.Input.Count - 1].Optional = false;
-    // }
-
     protected override string HtmlHelp_Source() {
-      return "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Reinforcement.Groups.ITemplateGroup.Face.html";
+      return
+        "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Reinforcement.Groups.ITemplateGroup.Face.html";
     }
 
     protected override void InitialiseDropdowns() {
@@ -213,30 +161,7 @@ namespace AdSecGH.Components {
     protected override void UpdateUIFromSelectedItems() {
       _mode = (FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[0]);
       _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
-      // ToggleInput();
       base.UpdateUIFromSelectedItems();
     }
-
-    // private void ToggleInput() {
-    //   // remove cover temporarily
-    //   var param_Cover = Params.Input[Params.Input.Count - 1];
-    //   Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
-    //
-    //   // remove any additional input parameters
-    //   while (Params.Input.Count > 1) {
-    //     Params.UnregisterInputParameter(Params.Input[1]);
-    //   }
-    //
-    //   if (_mode == FoldMode.Template) {
-    //     // register 3 generic
-    //     Params.RegisterInputParam(new Param_GenericObject());
-    //     Params.RegisterInputParam(new Param_GenericObject());
-    //     Params.RegisterInputParam(new Param_GenericObject());
-    //   }
-    //
-    //   // add cover back
-    //   Params.RegisterInputParam(param_Cover);
-    // }
-
   }
 }
