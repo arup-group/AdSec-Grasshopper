@@ -1,6 +1,5 @@
 ﻿using AdSecCore;
 using AdSecCore.Builders;
-using AdSecCore.Extensions;
 using AdSecCore.Functions;
 
 using Oasys.AdSec;
@@ -78,12 +77,15 @@ namespace AdSecGHTests.Functions {
       Assert.Equal(-47.43, _component.SlsStressOutput.Value.As(PressureUnit.Megapascal), comparer);
     }
 
-    //[Fact]
-    //public void ShoulHaveValidOutputDescription() {
-    //  Assert.Contains("[εm⁻¹]", _component.UlsStrainOutput.Description);
-    //  Assert.Contains("[εm⁻¹]", _component.SlsStrainOutput.Description);
-    //  Assert.Contains("[εm⁻¹]", _component.UlsStressOutput.Description);
-    //  Assert.Contains("[εm⁻¹]", _component.SlsStressOutput.Description);
-    //}
+    [Fact]
+    public void ShouldRefreshDescription() {
+      _component.StrainUnitResult = StrainUnit.MicroStrain;
+      _component.StressUnitResult = PressureUnit.Pascal;
+      _component.UpdateOutputDescription();
+      Assert.Contains("[µε]", _component.UlsStrainOutput.Description);
+      Assert.Contains("[µε]", _component.SlsStrainOutput.Description);
+      Assert.Contains("[Pa]", _component.UlsStressOutput.Description);
+      Assert.Contains("[Pa]", _component.SlsStressOutput.Description);
+    }
   }
 }

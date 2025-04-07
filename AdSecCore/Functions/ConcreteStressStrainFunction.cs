@@ -77,10 +77,10 @@ namespace AdSecCore.Functions {
       base.UpdateOutputDescription();
       string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
-      UlsStrainOutput.Description = $"ULS strain at Vertex Point [{strainUnitAbbreviation}]";
-      UlsStressOutput.Description = $"ULS stress at Vertex Point [{stressUnitAbbreviation}]";
-      SlsStrainOutput.Description = $"SLS strain at Vertex Point [{strainUnitAbbreviation}]";
-      SlsStressOutput.Description = $"SLS stress at Vertex Point [{stressUnitAbbreviation}]";
+      UlsStrainOutput.Description = $"ULS strain [{strainUnitAbbreviation}] at Vertex Point";
+      UlsStressOutput.Description = $"ULS stress [{stressUnitAbbreviation}] at Vertex Point";
+      SlsStrainOutput.Description = $"SLS strain [{strainUnitAbbreviation}] at Vertex Point";
+      SlsStressOutput.Description = $"SLS stress [{stressUnitAbbreviation}] at Vertex Point";
     }
 
 

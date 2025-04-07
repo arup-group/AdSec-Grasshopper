@@ -1,19 +1,11 @@
-﻿using AdSecCore;
+﻿
 using AdSecCore.Builders;
 using AdSecCore.Functions;
 
-using AdSecGH.Components;
-
 using AdSecGHTests.Helpers;
-
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
 using Oasys.Profiles;
-
-using OasysGH.Parameters;
-using OasysGH.Units;
 
 using OasysUnits;
 using OasysUnits.Units;
@@ -44,21 +36,6 @@ namespace AdSecGHTests.Components {
     private void SetDeformation() {
       ComponentTestHelper.SetInput(_component, IDeformation.Create(Strain.FromRatio(-0.003), Curvature.Zero, Curvature.Zero), 1);
       ComponentTestHelper.ComputeData(_component);
-    }
-
-    [Fact]
-    public void ShouldRefreshComponent() {
-      var originalStrainUnit = DefaultUnits.StrainUnitResult;
-      var originalStressUnit = DefaultUnits.StressUnitResult;
-      DefaultUnits.StrainUnitResult = StrainUnit.MicroStrain;
-      DefaultUnits.StressUnitResult = PressureUnit.Pascal;
-      ComponentTestHelper.ComputeData(_component);
-      Assert.Contains("[µε]", _component.Params.Output[0].Description);
-      Assert.Contains("[µε]", _component.Params.Output[2].Description);
-      Assert.Contains("[Pa]", _component.Params.Output[1].Description);
-      Assert.Contains("[Pa]", _component.Params.Output[3].Description);
-      DefaultUnits.StrainUnitResult = originalStrainUnit;
-      DefaultUnits.StressUnitResult = originalStressUnit;
     }
 
     [Fact]
