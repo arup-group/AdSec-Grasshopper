@@ -152,7 +152,7 @@ namespace AdSecCore.Functions {
       Description = "Increases the load until set crack width is reached",
     };
 
-    public virtual void UpdateOutputDescription() {
+    public virtual void UpdateOutputParameter() {
       string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
       var curvatureAbbreviation = $"{stressUnitAbbreviation}{Curvature.GetAbbreviation(CurvatureUnit)}";

@@ -22,7 +22,7 @@ namespace AdSecGH.Components {
   public class UlsResult : ComponentAdapter<UlsResultGh> {
     protected override void BeforeSolveInstance() {
       UpdateUnit();
-      BusinessComponent.UpdateOutputDescription();
+      BusinessComponent.UpdateOutputParameter();
       RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
     }
 

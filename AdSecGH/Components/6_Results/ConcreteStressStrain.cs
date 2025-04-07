@@ -40,7 +40,7 @@ namespace AdSecCore.Functions {
 
     protected override void BeforeSolveInstance() {
       UpdateUnit();
-      BusinessComponent.UpdateOutputDescription();
+      BusinessComponent.UpdateOutputParameter();
       RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
     }
 

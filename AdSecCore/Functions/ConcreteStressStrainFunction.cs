@@ -65,8 +65,8 @@ namespace AdSecCore.Functions {
       };
     }
 
-    public override void UpdateOutputDescription() {
-      base.UpdateOutputDescription();
+    public override void UpdateOutputParameter() {
+      base.UpdateOutputParameter();
       string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
       UlsStrainOutput.Name = $"ULS Strain [{strainUnitAbbreviation}]";

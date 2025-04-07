@@ -23,7 +23,7 @@ namespace AdSecGH.Components {
   public class SlsResult : ComponentAdapter<SlsResultGh> {
     protected override void BeforeSolveInstance() {
       UpdateUnit();
-      BusinessComponent.UpdateOutputDescription();
+      BusinessComponent.UpdateOutputParameter();
       RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
     }
 
