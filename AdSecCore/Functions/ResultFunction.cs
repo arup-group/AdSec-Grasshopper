@@ -153,6 +153,7 @@ namespace AdSecCore.Functions {
     };
 
     public override void UpdateOutputParameter() {
+      base.UpdateOutputParameter();
       string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
       var curvatureAbbreviation = $"{stressUnitAbbreviation}{Curvature.GetAbbreviation(CurvatureUnit)}";
