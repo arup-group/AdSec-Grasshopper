@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
@@ -34,6 +35,8 @@ namespace AdSecCore.Functions {
     public virtual Attribute[] GetAllInputAttributes() { return Array.Empty<Attribute>(); }
 
     public virtual Attribute[] GetAllOutputAttributes() { return Array.Empty<Attribute>(); }
+
+    public virtual void UpdateOutputParameter() { }
 
     public abstract void Compute();
   }
