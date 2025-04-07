@@ -426,49 +426,9 @@ namespace Oasys.GH.Helpers {
       }
     }
 
-    public static string RemoveBracketContent(string input) {
-      if (string.IsNullOrEmpty(input)) {
-        return input;
-      }
-      var result = new System.Text.StringBuilder();
-      int bracketLevel = 0;
-
-      for (int i = 0; i < input.Length; i++) {
-        char c = input[i];
-        switch (c) {
-          case '[':
-            bracketLevel++;
-            break;
-          case ']':
-            if (bracketLevel > 0) {
-              bracketLevel--;
-            }
-            break;
-          default:
-            if (bracketLevel == 0) {
-              result.Append(c);
-            }
-            break;
-        }
-      }
-      return result.ToString().Trim();
-    }
-
-    private static int GetOutputIndex(GH_Component component, string name) {
-      for (int index = 0; index < component.Params.Output.Count; index++) {
-        var param = component.Params.Output[index];
-        var paramName = RemoveBracketContent(param.Name);
-        var attributeName = RemoveBracketContent(name);
-        if (paramName.Equals(attributeName, StringComparison.OrdinalIgnoreCase)) {
-          return index;
-        }
-      }
-      return -1;
-    }
-
     public static void SetOutputValues(this IFunction function, GH_Component component, IGH_DataAccess dataAccess) {
       foreach (var attribute in function.GetAllOutputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
-        int index = GetOutputIndex(component, attribute.Name);
+        int index = component.Params.IndexOfOutputParam(attribute.Name);
         var type = attribute.GetType();
         if (!ToGoo.ContainsKey(type)) {
           throw new MissingPrimaryKeyException($"No conversion function found for type {type}");

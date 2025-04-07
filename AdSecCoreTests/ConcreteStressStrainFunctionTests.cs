@@ -82,10 +82,10 @@ namespace AdSecGHTests.Functions {
       _component.StrainUnitResult = StrainUnit.MicroStrain;
       _component.StressUnitResult = PressureUnit.Pascal;
       _component.UpdateOutputDescription();
-      Assert.Contains("[µε]", _component.UlsStrainOutput.Description);
-      Assert.Contains("[µε]", _component.SlsStrainOutput.Description);
-      Assert.Contains("[Pa]", _component.UlsStressOutput.Description);
-      Assert.Contains("[Pa]", _component.SlsStressOutput.Description);
+      Assert.Contains("[µε]", _component.UlsStrainOutput.Name);
+      Assert.Contains("[µε]", _component.SlsStrainOutput.Name);
+      Assert.Contains("[Pa]", _component.UlsStressOutput.Name);
+      Assert.Contains("[Pa]", _component.SlsStressOutput.Name);
     }
   }
 }

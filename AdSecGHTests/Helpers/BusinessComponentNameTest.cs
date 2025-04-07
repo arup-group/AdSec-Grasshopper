@@ -1,6 +1,4 @@
-﻿using Oasys.GH.Helpers;
-
-using Xunit;
+﻿using Xunit;
 
 namespace AdSecGHTests.Helpers {
   [Collection("GrasshopperFixture collection")]
@@ -36,16 +34,6 @@ namespace AdSecGHTests.Helpers {
     [Fact]
     public void ShouldBeAtTheRightSubCategory() {
       Assert.Equal(fakeBusiness.Organisation.SubCategory, component.SubCategory);
-    }
-
-    [Fact]
-    public void RemoveBracketContentForNullIsNull() {
-      Assert.Null(BusinessExtensions.RemoveBracketContent(null));
-    }
-
-    [Fact]
-    public void RemoveBracketContentForEmptyStringIsEmpty() {
-      Assert.Equal(string.Empty, BusinessExtensions.RemoveBracketContent(string.Empty));
     }
   }
 }

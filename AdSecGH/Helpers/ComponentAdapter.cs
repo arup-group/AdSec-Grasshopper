@@ -70,6 +70,7 @@ namespace Oasys.GH.Helpers {
     public void RefreshOutputParameter(Attribute[] attributes) {
       for (int id = 0; id < attributes.Length; id++) {
         Params.Output[id].Description = attributes[id].Description;
+        Params.Output[id].Name = attributes[id].Name;
       }
     }
   }
