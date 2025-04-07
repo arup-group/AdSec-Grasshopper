@@ -426,7 +426,7 @@ namespace Oasys.GH.Helpers {
       }
     }
 
-    private static string RemoveBracketContent(string input) {
+    public static string RemoveBracketContent(string input) {
       if (string.IsNullOrEmpty(input)) {
         return input;
       }
@@ -457,9 +457,6 @@ namespace Oasys.GH.Helpers {
     private static int GetOutputIndex(GH_Component component, string name) {
       for (int index = 0; index < component.Params.Output.Count; index++) {
         var param = component.Params.Output[index];
-        if (param == null) {
-          continue;
-        }
         var paramName = RemoveBracketContent(param.Name);
         var attributeName = RemoveBracketContent(name);
         if (paramName.Equals(attributeName, StringComparison.OrdinalIgnoreCase)) {
