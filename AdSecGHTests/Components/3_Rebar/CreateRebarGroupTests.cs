@@ -27,6 +27,11 @@ namespace AdSecGHTests.Components._3_Rebar {
     }
 
     [Fact]
+    public void ShouldHaveTwoDropdowns() {
+      Assert.Equal(2, component.DropDownItems.Count);
+    }
+
+    [Fact]
     public void ShouldHaveIconReferenced() {
       Assert.True(component.MatchesExpectedIcon(Resources.RebarGroup));
     }

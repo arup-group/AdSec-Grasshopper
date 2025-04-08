@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 
 using AdSecGHCore.Constants;
+
+using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
 
@@ -14,7 +17,39 @@ namespace AdSecCore.Functions {
     event Action OnVariableInputChanged;
   }
 
-  public class RebarGroupFunction : Function, IVariableInput {
+  public interface IDropdownOptions {
+    IOptions[] Options { get; set; }
+  }
+
+  public interface IOptions {
+    string Description { get; set; }
+    string[] GetOptions();
+    bool IsComputed { get; set; }
+  }
+
+  public class EnumOptions : IOptions {
+
+    public string Description { get; set; }
+    public Type EnumType { get; set; }
+
+    public string[] GetOptions() {
+      return Enum.GetNames(EnumType);
+    }
+
+    public bool IsComputed { get; set; } = true;
+  }
+
+  public class UnitOptions : IOptions {
+    public string Description { get; set; } = "Measure";
+    public string[] GetOptions() { return Array.Empty<string>(); }
+
+    public Type UnitType { get; set; }
+
+    public bool IsComputed { get; set; } = false;
+
+  }
+
+  public class RebarGroupFunction : Function, IVariableInput, IDropdownOptions {
 
     public event Action OnVariableInputChanged;
 
@@ -129,5 +164,15 @@ namespace AdSecCore.Functions {
     }
 
     public FoldMode Mode { get; set; } = FoldMode.Template;
+    public IOptions[] Options { get; set; } = {
+      new EnumOptions() {
+        EnumType = typeof(FoldMode),
+        Description = "Group Type",
+      },
+      new UnitOptions() {
+        Description = "Measure",
+        UnitType = typeof(LengthUnit),
+      }
+    };
   }
 }
