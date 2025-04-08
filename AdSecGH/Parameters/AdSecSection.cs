@@ -50,7 +50,7 @@ namespace AdSecGH.Parameters {
       _codeName = sectionDesign.DesignCode.DesignCodeName;
       _materialName = sectionDesign.MaterialName;
       LocalPlane = sectionDesign.LocalPlane.ToGh();
-
+      SetDefaultDesignCode();
       CreatePreview(ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour, ref m_rebars,
         ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref _subProfiles, ref m_subEdges, ref m_subVoidEdges,
         ref m_subColours);
@@ -64,32 +64,17 @@ namespace AdSecGH.Parameters {
       DesignCode = code;
       _codeName = codeName;
       LocalPlane = local;
+      SetDefaultDesignCode();
       CreatePreview(ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour, ref m_rebars,
         ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref _subProfiles, ref m_subEdges, ref m_subVoidEdges,
         ref m_subColours, subComponentOffset);
     }
 
-    public AdSecSection(
-      IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement,
-      Oasys.Collections.IList<ISubComponent> subComponents) {
-      DesignCode = material.DesignCode.Duplicate().DesignCode;
-      _codeName = material.DesignCodeName;
-      _materialName = material.GradeName;
-      Section = ISection.Create(profile, material.Material);
-      var rebarAndCover = CreateReinforcementGroupsWithMaxCover(reinforcement);
-      Section.ReinforcementGroups = rebarAndCover.Item1;
-      if (rebarAndCover.Item2 != null) {
-        Section.Cover = rebarAndCover.Item2;
+    private void SetDefaultDesignCode() {
+      if (DesignCode == null) {
+        DesignCode = EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014;
+        _codeName = "EN1992 Part1_1 Edition_2004 NationalAnnex GB Edition_2014";
       }
-
-      if (subComponents != null) {
-        Section.SubComponents = subComponents;
-      }
-
-      LocalPlane = local;
-      CreatePreview(ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour, ref m_rebars,
-        ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref _subProfiles, ref m_subEdges, ref m_subVoidEdges,
-        ref m_subColours);
     }
 
     public IDesignCode DesignCode { get; set; }

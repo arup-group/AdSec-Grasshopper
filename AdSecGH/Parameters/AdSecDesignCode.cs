@@ -33,7 +33,7 @@ namespace AdSecGH.Parameters {
     internal AdSecDesignCode(FieldInfo fieldDesignCode) {
       string designCodeReflectedLevels = fieldDesignCode.DeclaringType.FullName.Replace("Oasys.AdSec.DesignCode.", "");
       var designCodeLevelsSplit = designCodeReflectedLevels.Split('+').ToList();
-      CreateFromReflectedLevels(designCodeLevelsSplit);
+      CreateFromReflectedLevels(designCodeLevelsSplit, true);
     }
 
     internal AdSecDesignCode(List<string> designCodeReflectedLevels) {
@@ -49,18 +49,18 @@ namespace AdSecGH.Parameters {
       return (string.IsNullOrEmpty(DesignCodeName) ? DesignCode?.ToString() : DesignCodeName.Replace("  ", " ")) ?? string.Empty;
     }
 
-    private bool CreateFromReflectedLevels(List<string> designCodeReflectedLevels) {
+    private void CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false) {
       Type codeType = GetDesignCodeType(designCodeReflectedLevels, out string designcodeName);
 
-      GetDesignCode(designCodeReflectedLevels, codeType);
+      GetDesignCode(designCodeReflectedLevels, codeType, fromDesignCode);
 
-      if (DesignCode == null) { return false; }
-      DesignCodeName = $"{designcodeName.TrimEnd(' ')} {designCodeReflectedLevels.Last()}";
-      return true;
+      if (DesignCode != null) {
+        DesignCodeName = $"{designcodeName.TrimEnd(' ')} {designCodeReflectedLevels.Last()}";
+      }
+
     }
 
-    private void GetDesignCode(List<string> designCodeReflectedLevels, Type codeType) {
-
+    private void GetDesignCode(List<string> designCodeReflectedLevels, Type codeType, bool fromDesignCode) {
       if (codeType == null) {
         return;
       }
@@ -69,22 +69,13 @@ namespace AdSecGH.Parameters {
       // we can simply use the full name but if from IDesignCode we need to add the name of the code with a +
       string searchFor = codeType.Namespace;
       for (int i = 0; i < designCodeReflectedLevels.Count; i++) {
-        if (i == 0) {
-          searchFor = $"{searchFor}.{designCodeReflectedLevels[i]}";
-          continue;
-        }
-        searchFor = $"{searchFor}+{designCodeReflectedLevels[i]}";
+        searchFor = $"{searchFor}{(i == 0 ? "." : "+")}{designCodeReflectedLevels[i]}";
       }
 
+      foreach (var field in
       // loop through all types in Oasys.AdSec.IAdsec and cast to IDesignCode if match with above string
-      foreach (Type type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes()) {
-        if (type.IsInterface && type.Namespace == "Oasys.AdSec.DesignCode") {
-          foreach (FieldInfo field in type.GetFields()) {
-            if ($"{field.ReflectedType.FullName}+{field.Name}" == searchFor) {
-              DesignCode = (IDesignCode)field.GetValue(null);
-            }
-          }
-        }
+      from Type type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes() where type.IsInterface && type.Namespace == "Oasys.AdSec.DesignCode" from FieldInfo field in type.GetFields() where (fromDesignCode ? field.ReflectedType.FullName : $"{field.ReflectedType.FullName}+{field.Name}") == searchFor select field) {
+        DesignCode = (IDesignCode)field.GetValue(null);
       }
     }
 

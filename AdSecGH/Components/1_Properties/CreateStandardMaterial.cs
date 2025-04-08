@@ -320,16 +320,16 @@ namespace AdSecGH.Components {
 
       // create new material
       var adSecMaterial = new AdSecMaterial(selectedMaterial);
-      var materialDesign2 = new MaterialDesign() {
+      var updatedDesignMaterial = new MaterialDesign() {
         Material = adSecMaterial.Material,
         DesignCode = new DesignCode() {
-          IDesignCode = adSecMaterial.DesignCode.DesignCode,
-          DesignCodeName = adSecMaterial.DesignCode.DesignCodeName
+          IDesignCode = adSecMaterial.DesignCode == null ? null : adSecMaterial.DesignCode.DesignCode,
+          DesignCodeName = adSecMaterial.DesignCode == null ? null : adSecMaterial.DesignCode.DesignCodeName
         },
         GradeName = selectedMaterial.Name,
       };
 
-      DA.SetData(0, new AdSecMaterialGoo(materialDesign2));
+      DA.SetData(0, new AdSecMaterialGoo(updatedDesignMaterial));
     }
 
     protected override void UpdateUIFromSelectedItems() {
