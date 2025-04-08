@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 
+using AdSecGH.UI;
+
+using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
@@ -64,8 +67,8 @@ namespace AdSecGH.Parameters {
     }
 
     public void UpdateGeometryRepresentation(bool isNotSelected = true) {
-      _drawInstructions.Clear();
-      _drawInstructions.AddRange(UpdateDrawInstructions(isNotSelected));
+      DrawInstructionsList.Clear();
+      DrawInstructionsList.AddRange(UpdateDrawInstructions(isNotSelected));
     }
 
     public override bool CastFrom(object source) {
@@ -133,18 +136,14 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
-      //Draw shape.
       if (Value.SolidBrep != null) {
-        // draw profile
-        args.Pipeline.DrawBrepShaded(Value.SolidBrep, Value.m_profileColour);
-        // draw subcomponents
+        args.Pipeline.DrawBrepShaded(Value.SolidBrep, Value._profileColour);
         for (int i = 0; i < Value._subProfiles.Count; i++) {
-          args.Pipeline.DrawBrepShaded(Value._subProfiles[i], Value.m_subColours[i]);
+          args.Pipeline.DrawBrepShaded(Value._subProfiles[i], Value._subColours[i]);
         }
 
-        // draw rebars
-        for (int i = 0; i < Value.m_rebars.Count; i++) {
-          args.Pipeline.DrawBrepShaded(Value.m_rebars[i], Value.m_rebarColours[i]);
+        for (int i = 0; i < Value._rebars.Count; i++) {
+          args.Pipeline.DrawBrepShaded(Value._rebars[i], Value._rebarColours[i]);
         }
       }
     }
@@ -180,17 +179,17 @@ namespace AdSecGH.Parameters {
       public override object Geometry => Curve;
     }
 
-    public List<DrawInstructions> _drawInstructions { get; private set; } = new List<DrawInstructions>();
+    public List<DrawInstructions> DrawInstructionsList { get; private set; } = new List<DrawInstructions>();
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
       if (Value == null) {
         return;
       }
 
-      _drawInstructions.Clear();
-      _drawInstructions.AddRange(UpdateDrawInstructions(IsNotSelected(args)));
+      DrawInstructionsList.Clear();
+      DrawInstructionsList.AddRange(UpdateDrawInstructions(IsNotSelected(args)));
 
-      foreach (var instruction in _drawInstructions) {
+      foreach (var instruction in DrawInstructionsList) {
         Draw(args.Pipeline, instruction);
       }
 
@@ -207,41 +206,41 @@ namespace AdSecGH.Parameters {
 
       var drawInstructions = new List<DrawInstructions>();
 
-      var primaryColor = isNotSelected ? UI.Colour.OasysBlue : UI.Colour.OasysYellow;
-      var secondaryColor = isNotSelected ? Color.Black : UI.Colour.UILightGrey;
+      var primaryColor = isNotSelected ? Colour.OasysBlue : Colour.OasysYellow;
+      var secondaryColor = isNotSelected ? Color.Black : Colour.UILightGrey;
       var primaryThickness = isNotSelected ? 2 : 3;
       var secondaryThickness = isNotSelected ? 1 : 2;
 
-      drawInstructions.Add(new DrawPolyline() { Polyline = Value.m_profileEdge, Color = primaryColor, Thickness = primaryThickness });
+      drawInstructions.Add(new DrawPolyline() { Polyline = Value._profileEdge, Color = primaryColor, Thickness = primaryThickness, });
 
-      foreach (Polyline polyline in Value.m_profileVoidEdges) {
-        drawInstructions.Add(new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness });
+      foreach (var polyline in Value._profileVoidEdges) {
+        drawInstructions.Add(new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness, });
       }
 
-      foreach (Polyline polyline in Value.m_subEdges) {
-        drawInstructions.Add(new DrawPolyline() { Polyline = polyline, Color = primaryColor, Thickness = secondaryThickness });
+      foreach (var polyline in Value._subEdges) {
+        drawInstructions.Add(new DrawPolyline() { Polyline = polyline, Color = primaryColor, Thickness = secondaryThickness, });
       }
 
-      foreach (List<Polyline> voids in Value.m_subVoidEdges) {
-        foreach (Polyline polyline in voids) {
-          drawInstructions.Add(new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness });
+      foreach (var voids in Value._subVoidEdges) {
+        foreach (var polyline in voids) {
+          drawInstructions.Add(new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness, });
         }
       }
 
-      foreach (Circle crv in Value.m_rebarEdges) {
-        drawInstructions.Add(new DrawCircle() { Circle = crv, Color = secondaryColor, Thickness = secondaryThickness });
+      foreach (var circle in Value._rebarEdges) {
+        drawInstructions.Add(new DrawCircle() { Circle = circle, Color = secondaryColor, Thickness = secondaryThickness, });
       }
 
-      foreach (Curve crv in Value.m_linkEdges) {
-        drawInstructions.Add(new DrawCurve() { Curve = crv, Color = secondaryColor, Thickness = secondaryThickness });
+      foreach (var curve in Value._linkEdges) {
+        drawInstructions.Add(new DrawCurve() { Curve = curve, Color = secondaryColor, Thickness = secondaryThickness, });
       }
 
       return drawInstructions;
     }
 
     private static bool IsNotSelected(GH_PreviewWireArgs args) {
-      Color defaultCol = Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      return AreEqual(defaultCol, args.Color);
+      var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      return AreEqual(defaultColor, args.Color);
     }
 
     private static bool AreEqual(Color defaultCol, Color color) {
@@ -261,15 +260,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null) {
-        return BoundingBox.Empty;
-      }
-
-      if (Value.SolidBrep == null) {
-        return BoundingBox.Empty;
-      }
-
-      return Value.SolidBrep.GetBoundingBox(xform);
+      return Value == null || Value.SolidBrep == null ? BoundingBox.Empty : Value.SolidBrep.GetBoundingBox(xform);
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
@@ -277,11 +268,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      if (Value == null) {
-        return "Null AdSec Section";
-      } else {
-        return $"AdSec {TypeName} {{{Value}}}";
-      }
+      return Value == null ? "Null AdSec Section" : $"AdSec {TypeName} {{{Value}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {
@@ -289,7 +276,7 @@ namespace AdSecGH.Parameters {
     }
 
     private void Bake(RhinoDoc doc, List<Guid> obj_ids, ObjectAttributes attributes = null) {
-      foreach (var drawInstruction in _drawInstructions) {
+      foreach (var drawInstruction in DrawInstructionsList) {
         if (drawInstruction is DrawPolyline drawPolyline) {
           var objectAttributes = GetAttribute(attributes, drawPolyline);
           obj_ids.Add(doc.Objects.AddPolyline(drawPolyline.Polyline, objectAttributes));

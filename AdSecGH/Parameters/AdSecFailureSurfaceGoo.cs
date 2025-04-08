@@ -18,14 +18,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
   public class AdSecFailureSurfaceGoo : GH_GeometricGoo<Mesh>, IGH_PreviewData {
-    public override BoundingBox Boundingbox {
-      get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
-        return Value.GetBoundingBox(false);
-      }
-    }
+    public override BoundingBox Boundingbox => Value == null ? BoundingBox.Empty : Value.GetBoundingBox(false);
     public BoundingBox ClippingBox => Boundingbox;
     public ILoadSurface FailureSurface { get; }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
@@ -49,6 +42,7 @@ namespace AdSecGH.Parameters {
       if (mesh == null) {
         m_value = MeshFromILoadSurface(loadsurface, local);
       }
+
       FailureSurface = loadsurface;
       m_plane = local;
       UpdatePreview();
@@ -95,8 +89,9 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
-      Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      if (args.Material.Diffuse.R == defaultCol.R && args.Material.Diffuse.G == defaultCol.G && args.Material.Diffuse.B == defaultCol.B) {
+      var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      if (args.Material.Diffuse.R == defaultColor.R && args.Material.Diffuse.G == defaultColor.G
+        && args.Material.Diffuse.B == defaultColor.B) {
         // not selected
         args.Pipeline.DrawMeshShaded(Value, Colour.FailureNormal);
       } else {
@@ -105,7 +100,10 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (!Value.IsValid) { return; }
+      if (!Value.IsValid) {
+        return;
+      }
+
       args.Pipeline.DrawMeshWires(Value, Colour.UILightGrey, 1);
       // local axis
       args.Pipeline.DrawArrow(previewPosXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5); //red
@@ -130,6 +128,7 @@ namespace AdSecGH.Parameters {
       if (Value == null) {
         return BoundingBox.Empty;
       }
+
       return Value.GetBoundingBox(xform);
     }
 
@@ -137,11 +136,12 @@ namespace AdSecGH.Parameters {
       if (Value == null) {
         return null;
       }
-      Mesh m = Value.DuplicateMesh();
-      xmorph.Morph(m);
+
+      var mesh = Value.DuplicateMesh();
+      xmorph.Morph(mesh);
       var local = new Plane(m_plane);
       xmorph.Morph(ref local);
-      return new AdSecFailureSurfaceGoo(FailureSurface, local, m);
+      return new AdSecFailureSurfaceGoo(FailureSurface, local, mesh);
     }
 
     public override string ToString() {
@@ -154,26 +154,20 @@ namespace AdSecGH.Parameters {
         return null;
       }
 
-      var m = Value.DuplicateMesh();
-      m.Transform(xform);
+      var mesh = Value.DuplicateMesh();
+      mesh.Transform(xform);
       var local = new Plane(m_plane);
       local.Transform(xform);
-      return new AdSecFailureSurfaceGoo(FailureSurface, local, m);
+      return new AdSecFailureSurfaceGoo(FailureSurface, local, mesh);
     }
 
     internal Mesh MeshFromILoadSurface(ILoadSurface loadsurface, Plane local) {
       var outMesh = new Mesh();
 
-      outMesh.Vertices.AddVertices(
-          loadsurface.Vertices.Select(pt => new Point3d(
-              pt.X.As(DefaultUnits.ForceUnit),
-              pt.ZZ.As(DefaultUnits.MomentUnit),
-              pt.YY.As(DefaultUnits.MomentUnit)
-              )));
+      outMesh.Vertices.AddVertices(loadsurface.Vertices.Select(load => new Point3d(load.X.As(DefaultUnits.ForceUnit),
+        load.ZZ.As(DefaultUnits.MomentUnit), load.YY.As(DefaultUnits.MomentUnit))));
 
-      outMesh.Faces.AddFaces(
-          loadsurface.Faces.Select(face => new MeshFace(
-              face.Vertex1, face.Vertex2, face.Vertex3)));
+      outMesh.Faces.AddFaces(loadsurface.Faces.Select(face => new MeshFace(face.Vertex1, face.Vertex2, face.Vertex3)));
 
       // transform to local plane
       var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);

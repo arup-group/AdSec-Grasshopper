@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
@@ -26,6 +25,12 @@ using Rhino.UI;
 
 namespace AdSecGH.Components {
   public class OpenModel : GH_OasysDropDownComponent {
+
+    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
+    public override Guid ComponentGuid => new Guid("42135d0f-bf55-40c0-8f6f-5dc2ad5f7741");
+    public override GH_Exposure Exposure => GH_Exposure.primary;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override Bitmap Icon => Resources.OpenAdSec;
     private Guid _panelGuid = Guid.NewGuid();
 
     public OpenModel() : base("Open Model", "Open", "Open an existing AdSec .ads file", CategoryName.Name(),
@@ -33,26 +38,17 @@ namespace AdSecGH.Components {
       Hidden = false; // sets the initial state of the component to hidden
     }
 
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
-    public override Guid ComponentGuid => new Guid("42135d0f-bf55-40c0-8f6f-5dc2ad5f7741");
-    public override GH_Exposure Exposure => GH_Exposure.primary;
-    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.OpenAdSec;
-
     public override void CreateAttributes() {
       m_attributes = new ButtonComponentAttributes(this, "Open", OpenFile, "Open AdSec file");
     }
 
     public void OpenFile() {
-      var fdi = new OpenFileDialog {
+      var openFileDialog = new OpenFileDialog {
         Filter = "AdSec Files(*.ads)|*.ads|All files (*.*)|*.*",
       };
-      bool res = fdi.ShowOpenDialog();
-      if (res) // == DialogResult.OK)
-      {
-        string fileName = fdi.FileName;
-
-        // instantiate  new panel
+      bool showOpenDialog = openFileDialog.ShowOpenDialog();
+      if (showOpenDialog) {
+        string fileName = openFileDialog.FileName;
         var panel = new GH_Panel();
         panel.CreateAttributes();
 
@@ -61,25 +57,22 @@ namespace AdSecGH.Components {
           = new PointF(Attributes.DocObject.Attributes.Bounds.Left - panel.Attributes.Bounds.Width - 30,
             Params.Input[0].Attributes.Pivot.Y - (panel.Attributes.Bounds.Height / 2));
 
-        // check for existing input
         while (Params.Input[0].Sources.Count > 0) {
           var input = Params.Input[0].Sources[0];
           // check if input is the one we automatically create below
           if (Params.Input[0].Sources[0].InstanceGuid == _panelGuid) {
-            // update the UserText in existing panel
             panel = input as GH_Panel;
-            panel.UserText = fileName;
-            panel.ExpireSolution(true); // update the display of the panel
+            if (panel != null) {
+              panel.UserText = fileName;
+              panel.ExpireSolution(true);
+            }
           }
 
-          // remove input
           Params.Input[0].RemoveSource(input);
         }
 
-        //populate panel with our own content
         panel.UserText = fileName;
 
-        // record the panel's GUID if new, so that we can update it on change
         _panelGuid = panel.InstanceGuid;
 
         //Until now, the panel is a hypothetical object.
@@ -102,7 +95,8 @@ namespace AdSecGH.Components {
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Filename and path", "File",
-        $"AdSec file to open and work with.{Environment.NewLine}Input either path component, a text string with path and {Environment.NewLine}filename or an existing AdSec File created in Grasshopper.", GH_ParamAccess.item);
+        $"AdSec file to open and work with.{Environment.NewLine}Input either path component, a text string with path and {Environment.NewLine}filename or an existing AdSec File created in Grasshopper.",
+        GH_ParamAccess.item);
       pManager.AddPlaneParameter("LocalPlane", "Pln",
         "[Optional] Plane representing local " + "coordinate system, by default a YZ-plane is used",
         GH_ParamAccess.list, Plane.WorldYZ);
@@ -114,9 +108,9 @@ namespace AdSecGH.Components {
     }
 
     protected override void SolveInternal(IGH_DataAccess DA) {
-      var gh_typ = new GH_ObjectWrapper();
-      DA.GetData(0, ref gh_typ);
-      GH_Convert.ToString(gh_typ, out string fileName, GH_Conversion.Both);
+      var objectWrapper = new GH_ObjectWrapper();
+      DA.GetData(0, ref objectWrapper);
+      GH_Convert.ToString(objectWrapper, out string fileName, GH_Conversion.Both);
       if (!fileName.EndsWith(".ads")) {
         fileName += ".ads";
       }
@@ -139,8 +133,8 @@ namespace AdSecGH.Components {
 
       for (int i = 0; i < jsonParser.Sections.Count; i++) {
         var section = jsonParser.Sections[i];
-        var pln = i > planes.Count - 1 ? planes.Last() : planes[i];
-        sections.Add(new AdSecSectionGoo(new AdSecSection(section, code.DesignCode, code.DesignCodeName, "", pln)));
+        var plane = i > planes.Count - 1 ? planes[planes.Count - 1] : planes[i];
+        sections.Add(new AdSecSectionGoo(new AdSecSection(section, code.DesignCode, code.DesignCodeName, "", plane)));
       }
 
       if (sections.Count == 0) {

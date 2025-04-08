@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
 
-using Rhino.Geometry;
-
 namespace AdSecGH.Parameters {
   /// <summary>
-  /// AdSec Material class, this class defines the basic properties and methods for any AdSec Material
+  ///   AdSec Material class, this class defines the basic properties and methods for any AdSec Material
+  /// </summary>
   public class AdSecMaterial {
     internal enum AdSecMaterialType {
       Concrete,
@@ -31,72 +29,56 @@ namespace AdSecGH.Parameters {
       }
     }
     public string GradeName { get; set; }
-    public bool IsValid {
-      get {
-        if (Material == null) {
-          return false;
-        }
-        return true;
-      }
-    }
+    public bool IsValid => Material != null;
     public IMaterial Material { get; set; }
     public string TypeName => Type.ToString();
     internal AdSecMaterialType Type { get; set; }
 
-    public AdSecMaterial() {
-    }
+    public AdSecMaterial() { }
 
     public AdSecMaterial(IMaterial material, string materialGradeName) {
       if (materialGradeName != null) {
         GradeName = materialGradeName;
       }
 
-      // StressStrain ULS Compression
-      Tuple<Curve, List<Point3d>> ulsComp = AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Compression, true);
-      var ulsCompCrv = new AdSecStressStrainCurveGoo(ulsComp.Item1, material.Strength.Compression,
-          AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsComp.Item2);
-      // StressStrain ULS Tension
-      Tuple<Curve, List<Point3d>> ulsTens = AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Tension, false);
-      var ulsTensCrv = new AdSecStressStrainCurveGoo(ulsTens.Item1, material.Strength.Tension,
-          AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsTens.Item2);
-      // StressStrain SLS Compression
-      Tuple<Curve, List<Point3d>> slsComp = AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Compression, true);
-      var slsCompCrv = new AdSecStressStrainCurveGoo(slsComp.Item1, material.Serviceability.Compression,
-          AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsComp.Item2);
-      // StressStrain SLS Tension
-      Tuple<Curve, List<Point3d>> slsTens = AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Tension, false);
-      var slsTensCrv = new AdSecStressStrainCurveGoo(slsTens.Item1, material.Serviceability.Tension,
-          AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsTens.Item2);
-      // combine compression and tension
-      var ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.StressStrainCurve, ulsCompCrv.StressStrainCurve);
-      var slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
+      var ulsCompression = AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Compression, true);
+      var ulsCompressionCurve = new AdSecStressStrainCurveGoo(ulsCompression.Item1, material.Strength.Compression,
+        AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsCompression.Item2);
+      var ulsTension = AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Tension, false);
+      var ulsTensionCurve = new AdSecStressStrainCurveGoo(ulsTension.Item1, material.Strength.Tension,
+        AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsTension.Item2);
+      var slsCompression = AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Compression, true);
+      var slsComprssionCurve = new AdSecStressStrainCurveGoo(slsCompression.Item1, material.Serviceability.Compression,
+        AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsCompression.Item2);
+      var slsTension = AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Tension, false);
+      var slsTensionCurve = new AdSecStressStrainCurveGoo(slsTension.Item1, material.Serviceability.Tension,
+        AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsTension.Item2);
+      var ulsTensionCompression
+        = ITensionCompressionCurve.Create(ulsTensionCurve.StressStrainCurve, ulsCompressionCurve.StressStrainCurve);
+      var slsTensionCompression
+        = ITensionCompressionCurve.Create(slsTensionCurve.StressStrainCurve, slsComprssionCurve.StressStrainCurve);
 
       try {
-        // try cast to concrete material
         var concrete = (IConcrete)material;
         if (concrete.ConcreteCrackCalculationParameters == null) {
-          Material = IConcrete.Create(ulsTC, slsTC);
+          Material = IConcrete.Create(ulsTensionCompression, slsTensionCompression);
         } else {
-          Material = IConcrete.Create(ulsTC, slsTC, concrete.ConcreteCrackCalculationParameters);
+          Material = IConcrete.Create(ulsTensionCompression, slsTensionCompression,
+            concrete.ConcreteCrackCalculationParameters);
         }
+
         Type = AdSecMaterialType.Concrete;
       } catch (Exception) {
         try {
-          // try cast to steel material
-          var steel = (ISteel)material;
-          Material = ISteel.Create(ulsTC, slsTC);
+          Material = ISteel.Create(ulsTensionCompression, slsTensionCompression);
           Type = AdSecMaterialType.Steel;
         } catch (Exception) {
           try {
-            // try cast to rebar material
-            var reinforcement = (IReinforcement)material;
-            Material = IReinforcement.Create(ulsTC, slsTC);
+            Material = IReinforcement.Create(ulsTensionCompression, slsTensionCompression);
             Type = AdSecMaterialType.Rebar;
           } catch (Exception) {
             try {
-              // try cast to frp material
-              var frp = (IFrp)material;
-              Material = IFrp.Create(ulsTC, slsTC);
+              Material = IFrp.Create(ulsTensionCompression, slsTensionCompression);
               Type = AdSecMaterialType.FRP;
             } catch (Exception) {
               throw new InvalidCastException("Unable to cast to known material type");
@@ -107,22 +89,20 @@ namespace AdSecGH.Parameters {
     }
 
     internal AdSecMaterial(FieldInfo fieldGrade) {
-      // convert reflected interface to member
       Material = (IMaterial)fieldGrade.GetValue(null);
-      // get the name of the grade
       GradeName = fieldGrade.Name;
 
-      // Get material type
-      string designCodeReflectedLevels = fieldGrade.DeclaringType.FullName.Replace("Oasys.AdSec.StandardMaterials.", "");
+      string designCodeReflectedLevels
+        = fieldGrade.DeclaringType.FullName.Replace("Oasys.AdSec.StandardMaterials.", "");
       var designCodeLevelsSplit = designCodeReflectedLevels.Split('+').ToList();
 
-      // set material type
       if (designCodeLevelsSplit[0].StartsWith("Reinforcement")) {
         if (designCodeLevelsSplit[1].StartsWith("Steel")) {
           Type = AdSecMaterialType.Rebar;
         } else {
           Type = AdSecMaterialType.Tendon;
         }
+
         designCodeLevelsSplit.RemoveRange(0, 2);
       } else {
         Enum.TryParse(designCodeLevelsSplit[0], out AdSecMaterialType type);
@@ -130,7 +110,6 @@ namespace AdSecGH.Parameters {
         designCodeLevelsSplit.RemoveRange(0, 1);
       }
 
-      // set designcode
       DesignCode = new AdSecDesignCode(designCodeLevelsSplit);
     }
 
@@ -140,9 +119,9 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      string grd = "Custom ";
+      string grade = "Custom ";
       if (GradeName != null) {
-        grd = $"{GradeName.Replace("  ", " ")} ";
+        grade = $"{GradeName.Replace("  ", " ")} ";
       }
 
       string code = "";
@@ -152,7 +131,7 @@ namespace AdSecGH.Parameters {
         }
       }
 
-      return grd + TypeName.Replace("  ", " ") + code;
+      return grade + TypeName.Replace("  ", " ") + code;
     }
   }
 }
