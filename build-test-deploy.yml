@@ -49,6 +49,11 @@ steps:
     displayName: Run Stryker
     failOnStderr: false
 
+ - task: PublishMutationReport@1
+   displayName: 'Publish Mutation Test Report'
+   inputs:
+     reportPattern: '**/mutation-report.html'
+
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Stryker Mutation Report'
     inputs:
