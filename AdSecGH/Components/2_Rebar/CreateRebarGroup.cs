@@ -48,24 +48,6 @@ namespace AdSecGH.Components {
         "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Reinforcement.Groups.ITemplateGroup.Face.html";
     }
 
-    // protected override void InitialiseDropdowns() {
-    // _spacerDescriptions = new List<string>(new[] {
-    //   "Group Type",
-    //   "Measure",
-    // });
-    //
-    // _dropDownItems = new List<List<string>>();
-    // _selectedItems = new List<string>();
-    //
-    // _dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
-    // _selectedItems.Add(_dropDownItems[0][0]);
-    //
-    // _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-    // _selectedItems.Add(Length.GetAbbreviation(_lengthUnit));
-    //
-    // _isInitialised = true;
-    // }
-
     protected override void SolveInternal(IGH_DataAccess da) {
       var groups = new List<AdSecRebarGroupGoo>();
 

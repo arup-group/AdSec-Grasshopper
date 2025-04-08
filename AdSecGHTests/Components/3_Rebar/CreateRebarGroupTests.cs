@@ -32,6 +32,15 @@ namespace AdSecGHTests.Components._3_Rebar {
     }
 
     [Fact]
+    public void ShouldHaveTemplateOnTheSelectedUnit() {
+      Assert.Equal("Template", component.SelectedItems[0]);
+    }
+    [Fact]
+    public void ShouldHaveMetersOnTheSelectedUnit() {
+      Assert.Equal("m", component.SelectedItems[1]);
+    }
+
+    [Fact]
     public void ShouldHaveIconReferenced() {
       Assert.True(component.MatchesExpectedIcon(Resources.RebarGroup));
     }
