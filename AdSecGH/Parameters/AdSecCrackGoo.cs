@@ -26,6 +26,10 @@ namespace AdSecGH.Parameters {
           return BoundingBox.Empty;
         }
 
+        if (m_line == null) {
+          return BoundingBox.Empty;
+        }
+
         var crv = new LineCurve(m_line);
         return crv.GetBoundingBox(false);
       }
@@ -153,6 +157,10 @@ namespace AdSecGH.Parameters {
 
     public override BoundingBox GetBoundingBox(Transform xform) {
       if (Value == null) {
+        return BoundingBox.Empty;
+      }
+
+      if (m_point == null) {
         return BoundingBox.Empty;
       }
 

@@ -18,6 +18,10 @@ namespace AdSecGH.Parameters {
   public class AdSecStressStrainPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData {
     public override BoundingBox Boundingbox {
       get {
+        if (Value == null) {
+          return BoundingBox.Empty;
+        }
+
         var point1 = new Point3d(Value);
         point1.Z += 0.25;
         var point2 = new Point3d(Value);
@@ -132,7 +136,9 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      args.Pipeline.DrawCircle(new Circle(Value, 0.5), Colour.OasysYellow, 1);
+      if (Value != null) {
+        args.Pipeline.DrawCircle(new Circle(Value, 0.5), Colour.OasysYellow, 1);
+      }
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
@@ -140,6 +146,10 @@ namespace AdSecGH.Parameters {
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
+      if (Value == null) {
+        return BoundingBox.Empty;
+      }
+
       var point3d = new Point3d(Value);
       point3d.Z += 0.001;
       var line = new Line(Value, point3d);

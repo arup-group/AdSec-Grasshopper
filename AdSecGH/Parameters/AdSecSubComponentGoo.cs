@@ -65,13 +65,15 @@ namespace AdSecGH.Parameters {
       _section = new AdSecSection(section, code, codeName, materialName, local, _offset);
       _plane = local;
       // local axis
-      if (_plane != Plane.WorldXY && local != Plane.WorldYZ && local != Plane.WorldZX) {
-        var area = _section.Section.Profile.Area();
-        double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-        var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-        _previewXaxis = new Line(local.Origin, local.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
-        _previewYaxis = new Line(local.Origin, local.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
-        _previewZaxis = new Line(local.Origin, local.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      if (_plane != null) {
+        if (_plane != Plane.WorldXY && local != Plane.WorldYZ && local != Plane.WorldZX) {
+          var area = _section.Section.Profile.Area();
+          double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
+          var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
+          _previewXaxis = new Line(local.Origin, local.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
+          _previewYaxis = new Line(local.Origin, local.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
+          _previewZaxis = new Line(local.Origin, local.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
+        }
       }
     }
 

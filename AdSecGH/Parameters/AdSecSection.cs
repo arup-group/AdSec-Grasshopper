@@ -97,6 +97,10 @@ namespace AdSecGH.Parameters {
     internal List<Brep> SubBreps => _subProfiles;
 
     public AdSecSection Duplicate() {
+      if (this == null) {
+        return null;
+      }
+
       var dup = (AdSecSection)MemberwiseClone();
       return dup;
     }

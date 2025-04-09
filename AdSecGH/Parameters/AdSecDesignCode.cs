@@ -43,6 +43,10 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecDesignCode Duplicate() {
+      if (this == null) {
+        return null;
+      }
+
       var dup = (AdSecDesignCode)MemberwiseClone();
       return dup;
     }

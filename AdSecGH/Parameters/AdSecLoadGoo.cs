@@ -28,6 +28,10 @@ namespace AdSecGH.Parameters {
           return BoundingBox.Empty;
         }
 
+        if (_point == null) {
+          return BoundingBox.Empty;
+        }
+
         var point1 = new Point3d(_point);
         point1.Z += 0.25;
         var point2 = new Point3d(_point);
@@ -141,6 +145,10 @@ namespace AdSecGH.Parameters {
 
     public override BoundingBox GetBoundingBox(Transform xform) {
       if (Value == null) {
+        return BoundingBox.Empty;
+      }
+
+      if (_point == null) {
         return BoundingBox.Empty;
       }
 

@@ -23,6 +23,10 @@ namespace AdSecGH.Parameters {
     public IPoint AdSecPoint { get; private set; }
     public override BoundingBox Boundingbox {
       get {
+        if (Value == null) {
+          return BoundingBox.Empty;
+        }
+
         var point1 = new Point3d(Value);
         point1.Z += 0.25;
         var point2 = new Point3d(Value);
@@ -146,6 +150,10 @@ namespace AdSecGH.Parameters {
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
+      if (Value == null) {
+        return BoundingBox.Empty;
+      }
+
       var point3d = new Point3d(Value);
       point3d.Z += 0.001;
       var line = new Line(Value, point3d);
