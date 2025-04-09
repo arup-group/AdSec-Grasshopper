@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
@@ -43,50 +44,79 @@ namespace AdSecGH.Components {
     }
 
     public void OpenFile() {
+      string fileName = ShowOpenFileDialog();
+      if (string.IsNullOrEmpty(fileName)) {
+        return;
+      }
+
+      var panel = CreatePanel();
+      SetPanelLocation(panel);
+
+      UpdatePanelForExistingSources(panel, fileName);
+
+      // Ensure the panel is real and added to the canvas
+      Instances.ActiveCanvas.Document.AddObject(panel, false);
+
+      // Connect the new panel to the component
+      ConnectNewPanelToComponent(panel);
+
+      ExpireSolution(true);
+    }
+
+    private static string ShowOpenFileDialog() {
       var openFileDialog = new OpenFileDialog {
         Filter = "AdSec Files(*.ads)|*.ads|All files (*.*)|*.*",
       };
+
       bool showOpenDialog = openFileDialog.ShowOpenDialog();
-      if (showOpenDialog) {
-        string fileName = openFileDialog.FileName;
-        var panel = new GH_Panel();
-        panel.CreateAttributes();
+      return showOpenDialog ? openFileDialog.FileName : null;
+    }
 
-        // set the location relative to the open component on the canvas
-        panel.Attributes.Pivot
-          = new PointF(Attributes.DocObject.Attributes.Bounds.Left - panel.Attributes.Bounds.Width - 30,
-            Params.Input[0].Attributes.Pivot.Y - (panel.Attributes.Bounds.Height / 2));
+    private static GH_Panel CreatePanel() {
+      var panel = new GH_Panel();
+      panel.CreateAttributes();
+      return panel;
+    }
 
-        while (Params.Input[0].Sources.Count > 0) {
-          var input = Params.Input[0].Sources[0];
-          // check if input is the one we automatically create below
-          if (Params.Input[0].Sources[0].InstanceGuid == _panelGuid) {
-            panel = input as GH_Panel;
-            if (panel != null) {
-              panel.UserText = fileName;
-              panel.ExpireSolution(true);
-            }
-          }
+    private void SetPanelLocation(IGH_ActiveObject panel) {
+      panel.Attributes.Pivot = new PointF(
+        Attributes.DocObject.Attributes.Bounds.Left - panel.Attributes.Bounds.Width - 30,
+        Params.Input[0].Attributes.Pivot.Y - (panel.Attributes.Bounds.Height / 2));
+    }
 
-          Params.Input[0].RemoveSource(input);
+    private void UpdatePanelForExistingSources(GH_Panel panel, string fileName) {
+      foreach (var input in Params.Input[0].Sources.ToList()) // ToList() to avoid modifying collection while iterating
+      {
+        if (input.InstanceGuid == _panelGuid) {
+          panel = input as GH_Panel;
+          UpdatePanelWithFileName(panel, fileName);
         }
 
-        panel.UserText = fileName;
-
-        _panelGuid = panel.InstanceGuid;
-
-        //Until now, the panel is a hypothetical object.
-        // This command makes it 'real' and adds it to the canvas.
-        Instances.ActiveCanvas.Document.AddObject(panel, false);
-
-        //Connect the new slider to this component
-        Params.Input[0].AddSource(panel);
-
-        (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-        Params.OnParametersChanged();
-
-        ExpireSolution(true);
+        Params.Input[0].RemoveSource(input);
       }
+
+      if (panel == null) {
+        return;
+      }
+
+      panel.UserText = fileName; // Ensure the panel has the correct file name
+      _panelGuid = panel.InstanceGuid;
+    }
+
+    private void ConnectNewPanelToComponent(GH_Panel panel) {
+      Params.Input[0].AddSource(panel);
+
+      (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+      Params.OnParametersChanged();
+    }
+
+    private static void UpdatePanelWithFileName(GH_Panel panel, string fileName) {
+      if (panel == null) {
+        return;
+      }
+
+      panel.UserText = fileName;
+      panel.ExpireSolution(true);
     }
 
     public override void SetSelected(int i, int j) { }
