@@ -1,8 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+
+using AdSecGH.Parameters;
 
 using AdSecGHCore.Constants;
 
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Layers;
+
+using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
@@ -63,7 +72,6 @@ namespace AdSecCore.Functions {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat3()
     };
-    public override void Compute() { throw new System.NotImplementedException(); }
 
     public RebarGroupParameter Layout { get; set; } = new RebarGroupParameter() {
       Name = "Layout",
@@ -152,6 +160,114 @@ namespace AdSecCore.Functions {
       }
 
       return allInputAttributes;
+    }
+
+    public override void Compute() {
+      var groups = new List<AdSecRebarGroup>();
+
+      // cover
+
+      switch (Mode) {
+        case FoldMode.Template:
+          ILayer[] topRebarsValue = TopRebars.Value;
+          var notEnoughValues = topRebarsValue == null && LeftRebars == null && RightRebars == null
+            && BottomRebars == null;
+          if (!notEnoughValues) {
+            WarningMessages.Add(
+              $"Input parameters {TopRebars.NickName}, {LeftRebars.NickName}, {RightRebars.NickName}, and {BottomRebars.NickName} failed to collect data!");
+          }
+
+          // top
+          if (topRebarsValue != null) {
+            var grp = ITemplateGroup.Create(ITemplateGroup.Face.Top);
+
+            foreach (var layer in topRebarsValue) {
+              grp.Layers.Add(layer);
+            }
+
+            groups.Add(new AdSecRebarGroup(grp));
+          }
+
+          // left
+          if (LeftRebars.Value != null) {
+            var grp = ITemplateGroup.Create(ITemplateGroup.Face.LeftSide);
+
+            foreach (var layer in LeftRebars.Value) {
+              grp.Layers.Add(layer);
+            }
+
+            groups.Add(new AdSecRebarGroup(grp));
+          }
+
+          // right
+          if (RightRebars.Value != null) {
+            var grp = ITemplateGroup.Create(ITemplateGroup.Face.RightSide);
+
+            foreach (var layer in RightRebars.Value) {
+              grp.Layers.Add(layer);
+            }
+
+            groups.Add(new AdSecRebarGroup(grp));
+          }
+
+          // bottom
+          if (BottomRebars.Value != null) {
+            var grp = ITemplateGroup.Create(ITemplateGroup.Face.Bottom);
+
+            foreach (var layer in BottomRebars.Value) {
+              grp.Layers.Add(layer);
+            }
+
+            groups.Add(new AdSecRebarGroup(grp));
+          }
+
+          break;
+      }
+
+      var cover = Cover.Value;
+      if (cover == null) {
+        WarningMessages.Add($"Input parameter {Cover.NickName} failed to collect data!");
+        return;
+
+      }
+      Layout.Value = groups.ToArray();
+      double coverSize = 0;
+      for (int i = 0; i < Layout.Value.Length; i++) {
+        if (cover.Length > i) {
+          coverSize = cover[i];
+        }
+
+        var rebarGroup = Layout.Value[i];
+        rebarGroup.Cover = ICover.Create(Length.From(coverSize, LengthUnit));
+      }
+
+      //   case FoldMode.Link:
+      //     // check for enough input parameters
+      //     if (Params.Input[0].SourceCount == 0) {
+      //       AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
+      //         $"Input parameter {Params.Input[0].NickName} failed to collect data!");
+      //       return;
+      //     }
+      //
+      //     // top
+      //     if (Params.Input[0].SourceCount != 0) {
+      //       var grp = ILinkGroup.Create(this.GetAdSecRebarBundleGoo(da, 0).Value);
+      //       groups.Add(new AdSecRebarGroupGoo(grp));
+      //     }
+      //
+      //     break;
+      // }
+      //
+      // for (int i = 0; i < groups.Count; i++) {
+      //   if (covers.Count > i) {
+      //     groups[i].Cover = covers[i];
+      //   } else {
+      //     groups[i].Cover = covers.Last();
+      //   }
+      // }
+      //
+      // // set output
+      // da.SetDataList(0, groups);
     }
 
     public void SetMode(FoldMode template) {

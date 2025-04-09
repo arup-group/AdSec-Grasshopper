@@ -1,6 +1,9 @@
-﻿using AdSecCore.Functions;
+﻿using AdSecCore.Builders;
+using AdSecCore.Functions;
 
 using AdSecGHCore.Constants;
+
+using Oasys.AdSec.Reinforcement.Layers;
 
 namespace AdSecCoreTests.Functions {
   public class RebarGroupFunctionTests {
@@ -9,6 +12,17 @@ namespace AdSecCoreTests.Functions {
 
     public RebarGroupFunctionTests() {
       function = new RebarGroupFunction();
+    }
+
+    [Fact]
+    public void ShouldComputeTemplate() {
+      function.Mode = FoldMode.Template;
+      function.TopRebars.Value = new[] {
+        new BuilderLayer().Build(),
+      };
+      function.Cover.Value = new[] { 0.1 };
+      function.Compute();
+      Assert.NotNull(function.Layout.Value);
     }
 
     [Fact]

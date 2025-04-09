@@ -1,4 +1,6 @@
-﻿using AdSecGH;
+﻿using AdSecCore.Builders;
+
+using AdSecGH;
 using AdSecGH.Components;
 using AdSecGH.Properties;
 
@@ -22,6 +24,15 @@ namespace AdSecGHTests.Components._3_Rebar {
     }
 
     [Fact]
+    public void ShouldComputeTemplate() {
+      component.SetSelected(0, 0); // Template
+      component.SetInputParamAt(0, new[] { new BuilderLayer().Build() });
+
+      component.SetInputParamAt(1, new[] { 0.01 });
+      Assert.NotNull(component.GetOutputParamAt(0));
+    }
+
+    [Fact]
     public void ShouldHavePluginInfoReferenced() {
       Assert.Equal(PluginInfo.Instance, component.PluginInfo);
     }
@@ -35,6 +46,7 @@ namespace AdSecGHTests.Components._3_Rebar {
     public void ShouldHaveTemplateOnTheSelectedUnit() {
       Assert.Equal("Template", component.SelectedItems[0]);
     }
+
     [Fact]
     public void ShouldHaveMetersOnTheSelectedUnit() {
       Assert.Equal("m", component.SelectedItems[1]);
