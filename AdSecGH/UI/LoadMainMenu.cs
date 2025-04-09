@@ -32,6 +32,8 @@ namespace AdSecGH.Graphics.Menu {
 #pragma warning disable S2445 // Blocks should be synchronized on read-only fields
 #pragma warning disable S3998 // Threads should not lock on objects with weak identity
         oasysMenu = (ToolStripMenuItem)editor.MainMenuStrip.Items["Oasys"];
+#pragma warning disable S2445 // Blocks should be synchronized on read-only fields
+#pragma warning disable S3998 // Threads should not lock on objects with weak identity
         lock (oasysMenu) {
           oasysMenu.DropDown.Items.Add(new ToolStripSeparator());
           PopulateSub(oasysMenu);
