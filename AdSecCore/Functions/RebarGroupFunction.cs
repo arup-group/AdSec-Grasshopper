@@ -169,13 +169,7 @@ namespace AdSecCore.Functions {
 
       switch (Mode) {
         case FoldMode.Template:
-          ILayer[] topRebarsValue = TopRebars.Value;
-          var notEnoughValues = topRebarsValue == null && LeftRebars == null && RightRebars == null
-            && BottomRebars == null;
-          if (!notEnoughValues) {
-            WarningMessages.Add(
-              $"Input parameters {TopRebars.NickName}, {LeftRebars.NickName}, {RightRebars.NickName}, and {BottomRebars.NickName} failed to collect data!");
-          }
+          var topRebarsValue = TopRebars.Value;
 
           // top
           if (topRebarsValue != null) {
@@ -221,6 +215,11 @@ namespace AdSecCore.Functions {
             groups.Add(new AdSecRebarGroup(grp));
           }
 
+          if (groups.Count == 0) {
+            WarningMessages.Add(
+              $"Input parameters {TopRebars.NickName}, {LeftRebars.NickName}, {RightRebars.NickName}, and {BottomRebars.NickName} failed to collect data!");
+          }
+
           break;
       }
 
@@ -228,8 +227,8 @@ namespace AdSecCore.Functions {
       if (cover == null) {
         WarningMessages.Add($"Input parameter {Cover.NickName} failed to collect data!");
         return;
-
       }
+
       Layout.Value = groups.ToArray();
       double coverSize = 0;
       for (int i = 0; i < Layout.Value.Length; i++) {

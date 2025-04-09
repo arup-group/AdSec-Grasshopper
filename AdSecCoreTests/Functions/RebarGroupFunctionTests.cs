@@ -15,6 +15,27 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void ShouldAddAWarningIfCoverIsNotProvidedAndNotSetAnyValues() {
+      function.Mode = FoldMode.Template;
+      function.TopRebars.Value = new[] {
+        new BuilderLayer().Build(),
+      };
+      function.Compute();
+      Assert.Single(function.WarningMessages);
+      Assert.Null(function.Layout.Value);
+      Assert.Contains("Cov", function.WarningMessages[0]);
+    }
+    [Fact]
+    public void ShouldAddAWarningIfNotRebarsAreProvided() {
+      function.Mode = FoldMode.Template;
+      function.Cover.Value = new[] { 0.1 };
+      function.Compute();
+      Assert.Empty(function.Layout.Value);
+      Assert.Single(function.WarningMessages);
+      Assert.Contains("TRs, LRs, RRs, and BRs", function.WarningMessages[0]);
+    }
+
+    [Fact]
     public void ShouldComputeTemplate() {
       function.Mode = FoldMode.Template;
       function.TopRebars.Value = new[] {
