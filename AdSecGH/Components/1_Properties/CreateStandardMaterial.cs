@@ -278,7 +278,8 @@ namespace AdSecGH.Components {
 
               if (!search.Any(char.IsDigit)) {
                 string materialName = materialsList[i];
-                materialName = Regex.Replace(materialName, "[0-9]", string.Empty);
+                materialName = Regex.Replace(materialName, "[0-9]", string.Empty, RegexOptions.None,
+                  TimeSpan.FromSeconds(2));
                 materialName = materialName.Replace(".", string.Empty);
                 materialName = materialName.Replace("-", string.Empty);
                 materialName = materialName.ToLower();
