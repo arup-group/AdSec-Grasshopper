@@ -61,7 +61,7 @@ namespace AdSecGH.Components {
     //   //     // top
     //   //     if (Params.Input[0].SourceCount != 0) {
     //   //       var grp = ITemplateGroup.Create(ITemplateGroup.Face.Top);
-    //   //       grp.Layers = this.GetILayers(da, 0);
+    // grp.Layers = this.GetILayers(da, 0);
     //   //       groups.Add(new AdSecRebarGroupGoo(grp));
     //   //     }
     //   //

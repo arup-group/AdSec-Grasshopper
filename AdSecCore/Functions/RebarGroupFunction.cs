@@ -165,54 +165,27 @@ namespace AdSecCore.Functions {
     public override void Compute() {
       var groups = new List<AdSecRebarGroup>();
 
-      // cover
-
       switch (Mode) {
         case FoldMode.Template:
-          var topRebarsValue = TopRebars.Value;
 
           // top
-          if (topRebarsValue != null) {
-            var grp = ITemplateGroup.Create(ITemplateGroup.Face.Top);
-
-            foreach (var layer in topRebarsValue) {
-              grp.Layers.Add(layer);
-            }
-
-            groups.Add(new AdSecRebarGroup(grp));
+          if (CreateRebarGroup(TopRebars.Value, out AdSecRebarGroup topGroup)) {
+            groups.Add(topGroup);
           }
 
           // left
-          if (LeftRebars.Value != null) {
-            var grp = ITemplateGroup.Create(ITemplateGroup.Face.LeftSide);
-
-            foreach (var layer in LeftRebars.Value) {
-              grp.Layers.Add(layer);
-            }
-
-            groups.Add(new AdSecRebarGroup(grp));
+          if (CreateRebarGroup(LeftRebars.Value, out AdSecRebarGroup leftGroup)) {
+            groups.Add(leftGroup);
           }
 
           // right
-          if (RightRebars.Value != null) {
-            var grp = ITemplateGroup.Create(ITemplateGroup.Face.RightSide);
-
-            foreach (var layer in RightRebars.Value) {
-              grp.Layers.Add(layer);
-            }
-
-            groups.Add(new AdSecRebarGroup(grp));
+          if (CreateRebarGroup(RightRebars.Value, out AdSecRebarGroup rightGroup)) {
+            groups.Add(rightGroup);
           }
 
           // bottom
-          if (BottomRebars.Value != null) {
-            var grp = ITemplateGroup.Create(ITemplateGroup.Face.Bottom);
-
-            foreach (var layer in BottomRebars.Value) {
-              grp.Layers.Add(layer);
-            }
-
-            groups.Add(new AdSecRebarGroup(grp));
+          if (CreateRebarGroup(BottomRebars.Value, out AdSecRebarGroup bottomGroup)) {
+            groups.Add(bottomGroup);
           }
 
           if (groups.Count == 0) {
@@ -267,6 +240,23 @@ namespace AdSecCore.Functions {
       //
       // // set output
       // da.SetDataList(0, groups);
+    }
+
+    private static bool CreateRebarGroup(ILayer[] rebar, out AdSecRebarGroup group) {
+      var face = ITemplateGroup.Face.Top;
+      if (rebar != null) {
+        var grp = ITemplateGroup.Create(face);
+
+        foreach (var layer in rebar) {
+          grp.Layers.Add(layer);
+        }
+
+        group = new AdSecRebarGroup(grp);
+        return true;
+      }
+
+      group = null;
+      return false;
     }
 
     public void SetMode(FoldMode template) {
