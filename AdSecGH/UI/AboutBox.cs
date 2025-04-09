@@ -53,17 +53,21 @@ namespace AdSecGH.UI {
       }
     }
 
-    private void AboutBox_Load(object sender, EventArgs e) { }
+    private void AboutBox_Load(object sender, EventArgs e) { /* need to be empty */
+    }
 
     private void button1_Click(object sender, EventArgs e) {
       Process.Start(@"rhino://package/search?name=adsec");
     }
 
-    private void labelApiVersion_Click(object sender, EventArgs e) { }
+    private void labelApiVersion_Click(object sender, EventArgs e) { /* need to be empty */
+    }
 
-    private void labelProductName_Click(object sender, EventArgs e) { }
+    private void labelProductName_Click(object sender, EventArgs e) { /* need to be empty */
+    }
 
-    private void labelVersion_Click(object sender, EventArgs e) { }
+    private void labelVersion_Click(object sender, EventArgs e) { /* need to be empty */
+    }
 
     private void linkEmail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
       var adsecPlugin

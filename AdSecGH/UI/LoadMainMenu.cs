@@ -30,10 +30,14 @@ namespace AdSecGH.Graphics.Menu {
         editor.MainMenuStrip.Items.Add(oasysMenu);
       } else {
         oasysMenu = (ToolStripMenuItem)editor.MainMenuStrip.Items["Oasys"];
+#pragma warning disable S2445 // Blocks should be synchronized on read-only fields
+#pragma warning disable S3998 // Threads should not lock on objects with weak identity
         lock (oasysMenu) {
           oasysMenu.DropDown.Items.Add(new ToolStripSeparator());
           PopulateSub(oasysMenu);
         }
+#pragma warning restore S3998 // Threads should not lock on objects with weak identity
+#pragma warning restore S2445 // Blocks should be synchronized on read-only fields
       }
 
       Instances.CanvasCreated -= OnStartup;

@@ -8,12 +8,12 @@ using OasysGH;
 using OasysGH.Components;
 
 namespace TestGrasshopperObjects.Extensions {
-  public class IpointsTestComponent : GH_OasysComponent {
+  public class LayersTestComponent : GH_OasysComponent {
     public bool Optional { get; set; }
+    public LayersTestComponent() : base("t0", "t1", "t2", "t3", "t4") { }
     public override Guid ComponentGuid => Guid.NewGuid();
 
     public override OasysPluginInfo PluginInfo => null;
-    public IpointsTestComponent() : base("t0", "t1", "t2", "t3", "t4") { }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("test Input", "i", "input", GH_ParamAccess.list);
@@ -24,8 +24,7 @@ namespace TestGrasshopperObjects.Extensions {
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {
-      var result = this.GetIPoints(DA, 0, Optional);
-      DA.SetData(0, result);
+      DA.SetData(0, this.GetILayers(DA, 0, Optional));
     }
   }
 }
