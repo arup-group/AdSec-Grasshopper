@@ -49,10 +49,16 @@ steps:
     displayName: Run Stryker
     failOnStderr: false
 
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Stryker Mutation Report'
+    inputs:
+      pathToPublish: '$(System.DefaultWorkingDirectory)/StrykerOutput'
+      artifactName: 'StrykerReport'
+  
   - task: PublishMutationReport@2
     displayName: 'Publish Mutation Test Report'
     inputs:
-      reportPattern: '**/mutation-report.html'
+      reportPattern: '$(System.DefaultWorkingDirectory)/StrykerOutput/**/mutation-report.html'
       reportDisplayName: 'Mutation Report'
 
   - task: PublishBuildArtifacts@1
