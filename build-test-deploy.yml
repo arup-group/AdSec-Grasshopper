@@ -48,6 +48,17 @@ steps:
       dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l basic
     displayName: Run Stryker
     failOnStderr: false
+  
+  - task: VSBuild@1
+    displayName: 'Re-Building project in $(configuration)'
+    inputs:
+      solution: 'AdSecGH.sln'
+      msbuildArgs: '/p:AppxBundlePlatforms="x64" /p:AppxPackageDir="$(build.artifactStagingDirectory)\AppxPackages" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload /m /nr:false'
+      platform: 'x64'
+      configuration: '$(configuration)'
+      clean: true
+    env:
+      MSBUILDDISABLENODEREUSE: 1
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Stryker Mutation Report'
