@@ -1,0 +1,11 @@
+{
+  "stryker-config": {
+    "reporters": [
+      "html",
+      "progress"
+    ],
+    "since": {
+      "target": "origin/main"
+    }
+  }
+}
