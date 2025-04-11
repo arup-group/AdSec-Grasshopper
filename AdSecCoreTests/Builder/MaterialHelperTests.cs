@@ -1,4 +1,6 @@
-﻿using Oasys.AdSec.StandardMaterials;
+﻿using AdSecGHCore;
+
+using Oasys.AdSec.StandardMaterials;
 
 namespace AdSecCoreTests.Builder {
   public class MaterialHelperTests {
