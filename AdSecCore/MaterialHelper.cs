@@ -29,7 +29,7 @@ public static class MaterialHelper {
       }
     }
 
-    return "No matching static field found.";
+    return null;
   }
 
   private static Dictionary<string, object> FindMaterials() {
