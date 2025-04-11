@@ -38,6 +38,7 @@ namespace AdSecCore.Functions {
   public class EnumOptions : IOptions {
     public string Description { get; set; }
     public Type EnumType { get; set; }
+
     public string[] GetOptions() {
       return Enum.GetNames(EnumType);
     }
@@ -158,46 +159,13 @@ namespace AdSecCore.Functions {
 
       switch (Mode) {
         case FoldMode.Template:
-
-          // top
-          if (CreateRebarGroup(TopRebars.Value, out AdSecRebarGroup topGroup, ITemplateGroup.Face.Top)) {
-            groups.Add(topGroup);
-          }
-
-          // left
-          if (CreateRebarGroup(LeftRebars.Value, out AdSecRebarGroup leftGroup, ITemplateGroup.Face.LeftSide)) {
-            groups.Add(leftGroup);
-          }
-
-          // right
-          if (CreateRebarGroup(RightRebars.Value, out AdSecRebarGroup rightGroup, ITemplateGroup.Face.RightSide)) {
-            groups.Add(rightGroup);
-          }
-
-          // bottom
-          if (CreateRebarGroup(BottomRebars.Value, out AdSecRebarGroup bottomGroup, ITemplateGroup.Face.Bottom)) {
-            groups.Add(bottomGroup);
-          }
-
-          if (groups.Count == 0) {
-            WarningMessages.Add(
-              $"Input parameters {TopRebars.NickName}, {LeftRebars.NickName}, {RightRebars.NickName}, and {BottomRebars.NickName} failed to collect data!");
-          }
-
+          CreateTemplate(groups);
           break;
         case FoldMode.Link:
-          var linkGroup = ILinkGroup.Create(Rebar.Value);
-          groups.Add(new AdSecRebarGroup(linkGroup));
+          CreateLink(groups);
           break;
-
         case FoldMode.Perimeter:
-          var perimeterGroup = IPerimeterGroup.Create();
-          foreach (var layer in SpacedRebars.Value) {
-            perimeterGroup.Layers.Add(layer);
-          }
-
-          groups.Add(new AdSecRebarGroup(perimeterGroup));
-
+          CreatePerimeter(groups);
           break;
       }
 
@@ -216,6 +184,47 @@ namespace AdSecCore.Functions {
 
         var rebarGroup = Layout.Value[i];
         rebarGroup.Cover = ICover.Create(Length.From(coverSize, LengthUnit));
+      }
+    }
+
+    private void CreatePerimeter(List<AdSecRebarGroup> groups) {
+      var perimeterGroup = IPerimeterGroup.Create();
+      foreach (var layer in SpacedRebars.Value) {
+        perimeterGroup.Layers.Add(layer);
+      }
+
+      groups.Add(new AdSecRebarGroup(perimeterGroup));
+    }
+
+    private void CreateLink(List<AdSecRebarGroup> groups) {
+      var linkGroup = ILinkGroup.Create(Rebar.Value);
+      groups.Add(new AdSecRebarGroup(linkGroup));
+    }
+
+    private void CreateTemplate(List<AdSecRebarGroup> groups) {
+      // top
+      if (CreateRebarGroup(TopRebars.Value, out AdSecRebarGroup topGroup, ITemplateGroup.Face.Top)) {
+        groups.Add(topGroup);
+      }
+
+      // left
+      if (CreateRebarGroup(LeftRebars.Value, out AdSecRebarGroup leftGroup, ITemplateGroup.Face.LeftSide)) {
+        groups.Add(leftGroup);
+      }
+
+      // right
+      if (CreateRebarGroup(RightRebars.Value, out AdSecRebarGroup rightGroup, ITemplateGroup.Face.RightSide)) {
+        groups.Add(rightGroup);
+      }
+
+      // bottom
+      if (CreateRebarGroup(BottomRebars.Value, out AdSecRebarGroup bottomGroup, ITemplateGroup.Face.Bottom)) {
+        groups.Add(bottomGroup);
+      }
+
+      if (groups.Count == 0) {
+        WarningMessages.Add(
+          $"Input parameters {TopRebars.NickName}, {LeftRebars.NickName}, {RightRebars.NickName}, and {BottomRebars.NickName} failed to collect data!");
       }
     }
 
