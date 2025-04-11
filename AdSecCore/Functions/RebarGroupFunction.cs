@@ -33,29 +33,20 @@ namespace AdSecCore.Functions {
   public interface IOptions {
     string Description { get; set; }
     string[] GetOptions();
-    bool IsComputed { get; set; }
   }
 
   public class EnumOptions : IOptions {
-
     public string Description { get; set; }
     public Type EnumType { get; set; }
-
     public string[] GetOptions() {
       return Enum.GetNames(EnumType);
     }
-
-    public bool IsComputed { get; set; } = true;
   }
 
   public class UnitOptions : IOptions {
     public string Description { get; set; } = "Measure";
     public string[] GetOptions() { return Array.Empty<string>(); }
-
     public Type UnitType { get; set; }
-
-    public bool IsComputed { get; set; } = false;
-
   }
 
   public class RebarGroupFunction : Function, IVariableInput, IDropdownOptions {
@@ -226,7 +217,6 @@ namespace AdSecCore.Functions {
         var rebarGroup = Layout.Value[i];
         rebarGroup.Cover = ICover.Create(Length.From(coverSize, LengthUnit));
       }
-
     }
 
     private static bool CreateRebarGroup(ILayer[] rebar, out AdSecRebarGroup group, IFace face) {
