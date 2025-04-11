@@ -24,6 +24,7 @@ namespace Oasys.GH.Helpers {
 
       if (BusinessComponent is IVariableInput variableInput) {
         variableInput.OnVariableInputChanged += UpdateInputs;
+        UpdateInputs();
       }
     }
 

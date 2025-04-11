@@ -5,6 +5,8 @@ using AdSecCore.Functions;
 
 using AdSecGH.Properties;
 
+using GH_IO.Serialization;
+
 using Grasshopper.Kernel;
 
 using Oasys.GH.Helpers;
@@ -14,6 +16,8 @@ using OasysGH.Units;
 using OasysGH.Units.Helpers;
 
 using OasysUnits.Units;
+
+using Rhino.Runtime;
 
 namespace AdSecGH.Components {
   public class CreateReinforcementGroup : DropdownAdapter<RebarGroupFunction> {
@@ -31,10 +35,38 @@ namespace AdSecGH.Components {
         _mode = (FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[i]);
         BusinessComponent.SetMode(_mode);
       } else {
-        _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
+        BusinessComponent.LengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       }
 
       base.UpdateUI();
+    }
+
+    const string modeKey = "Mode";
+
+    public override bool Read(GH_IReader reader) {
+      // Save the Units
+      var unitString = "";
+      if (reader.TryGetString("LengthUnit", ref unitString)) {
+        BusinessComponent.LengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), unitString);
+        _selectedItems[1] = unitString;
+      }
+
+      string mode = FoldMode.Template.ToString();
+      if (reader.TryGetString(modeKey, ref mode)) {
+        _mode = (FoldMode)Enum.Parse(typeof(FoldMode), mode);
+        _selectedItems[0] = mode;
+      }
+
+      BusinessComponent.SetMode(_mode);
+
+      return base.Read(reader);
+    }
+
+    public override bool Write(GH_IWriter writer) {
+      writer.SetString("LengthUnit", BusinessComponent.LengthUnit.ToString());
+      writer.SetString(modeKey, _mode.ToString());
+
+      return base.Write(writer);
     }
 
     protected override string HtmlHelp_Source() {

@@ -169,22 +169,22 @@ namespace AdSecCore.Functions {
         case FoldMode.Template:
 
           // top
-          if (CreateRebarGroup(TopRebars.Value, out AdSecRebarGroup topGroup)) {
+          if (CreateRebarGroup(TopRebars.Value, out AdSecRebarGroup topGroup, ITemplateGroup.Face.Top)) {
             groups.Add(topGroup);
           }
 
           // left
-          if (CreateRebarGroup(LeftRebars.Value, out AdSecRebarGroup leftGroup)) {
+          if (CreateRebarGroup(LeftRebars.Value, out AdSecRebarGroup leftGroup, ITemplateGroup.Face.LeftSide)) {
             groups.Add(leftGroup);
           }
 
           // right
-          if (CreateRebarGroup(RightRebars.Value, out AdSecRebarGroup rightGroup)) {
+          if (CreateRebarGroup(RightRebars.Value, out AdSecRebarGroup rightGroup, ITemplateGroup.Face.RightSide)) {
             groups.Add(rightGroup);
           }
 
           // bottom
-          if (CreateRebarGroup(BottomRebars.Value, out AdSecRebarGroup bottomGroup)) {
+          if (CreateRebarGroup(BottomRebars.Value, out AdSecRebarGroup bottomGroup, ITemplateGroup.Face.Bottom)) {
             groups.Add(bottomGroup);
           }
 
@@ -192,6 +192,20 @@ namespace AdSecCore.Functions {
             WarningMessages.Add(
               $"Input parameters {TopRebars.NickName}, {LeftRebars.NickName}, {RightRebars.NickName}, and {BottomRebars.NickName} failed to collect data!");
           }
+
+          break;
+        case FoldMode.Link:
+          var linkGroup = ILinkGroup.Create(Rebar.Value);
+          groups.Add(new AdSecRebarGroup(linkGroup));
+          break;
+
+        case FoldMode.Perimeter:
+          var perimeterGroup = IPerimeterGroup.Create();
+          foreach (var layer in SpacedRebars.Value) {
+            perimeterGroup.Layers.Add(layer);
+          }
+
+          groups.Add(new AdSecRebarGroup(perimeterGroup));
 
           break;
       }
@@ -213,37 +227,9 @@ namespace AdSecCore.Functions {
         rebarGroup.Cover = ICover.Create(Length.From(coverSize, LengthUnit));
       }
 
-      //   case FoldMode.Link:
-      //     // check for enough input parameters
-      //     if (Params.Input[0].SourceCount == 0) {
-      //       AddRuntimeMessage(GH_RuntimeMessageLevel.Warning,
-      //         $"Input parameter {Params.Input[0].NickName} failed to collect data!");
-      //       return;
-      //     }
-      //
-      //     // top
-      //     if (Params.Input[0].SourceCount != 0) {
-      //       var grp = ILinkGroup.Create(this.GetAdSecRebarBundleGoo(da, 0).Value);
-      //       groups.Add(new AdSecRebarGroupGoo(grp));
-      //     }
-      //
-      //     break;
-      // }
-      //
-      // for (int i = 0; i < groups.Count; i++) {
-      //   if (covers.Count > i) {
-      //     groups[i].Cover = covers[i];
-      //   } else {
-      //     groups[i].Cover = covers.Last();
-      //   }
-      // }
-      //
-      // // set output
-      // da.SetDataList(0, groups);
     }
 
-    private static bool CreateRebarGroup(ILayer[] rebar, out AdSecRebarGroup group) {
-      var face = ITemplateGroup.Face.Top;
+    private static bool CreateRebarGroup(ILayer[] rebar, out AdSecRebarGroup group, IFace face) {
       if (rebar != null) {
         var grp = ITemplateGroup.Create(face);
 
