@@ -7,7 +7,6 @@ using AdSecGH.Properties;
 using AdSecGHTests.Helpers;
 
 using Grasshopper.GUI.Base;
-using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
 
 using Oasys.GH.Helpers;
@@ -15,6 +14,7 @@ using Oasys.GH.Helpers;
 using Xunit;
 
 namespace AdSecGHTests.Components._3_Rebar {
+
   [Collection("GrasshopperFixture collection")]
   public class CreateRebarGroupTests {
     public CreateReinforcementGroup component;
