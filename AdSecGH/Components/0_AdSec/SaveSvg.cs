@@ -26,7 +26,7 @@ using Rhino.UI;
 
 namespace AdSecGH.Components {
   public class SaveSvg : GH_OasysDropDownComponent {
-    private static string imageSVG;
+    private string imageSVG;
     private bool _canOpen;
     private string _fileName;
 
