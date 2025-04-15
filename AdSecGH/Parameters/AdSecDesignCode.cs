@@ -68,6 +68,7 @@ namespace AdSecGH.Parameters {
 
         designCodeKVP = ReflectionHelper.ReflectNestedTypes(designCodeType);
       }
+
       if (designCodeReflectedLevels.Count == 1) {
         designcodeName = designCodeReflectedLevels[0];
         designCodeKVP.TryGetValue(designCodeReflectedLevels[0], out designCodeType);
@@ -84,23 +85,26 @@ namespace AdSecGH.Parameters {
         $"{designCodeType.FullName}+{designCodeReflectedLevels[designCodeReflectedLevels.Count - 1]}" :
         designCodeType.FullName;
 
-      foreach (var type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes()) {
-        if (!type.IsInterface || type.Namespace != "Oasys.AdSec.DesignCode") {
-          continue;
-        }
+      FindDesignCode(searchFor);
 
+      if (DesignCode != null) {
+        DesignCodeName = $"{designcodeName.TrimEnd(' ')} {designCodeReflectedLevels.Last()}";
+      }
+    }
+
+    private void FindDesignCode(string searchFor) {
+      var interfaceTypes = Assembly.GetAssembly(typeof(IAdSec)).GetTypes()
+       .Where(t => t.IsInterface && t.Namespace == "Oasys.AdSec.DesignCode");
+
+      foreach (var type in interfaceTypes) {
         foreach (var field in type.GetFields()) {
-          if (field.DeclaringType?.FullName == searchFor) {
-            DesignCode = (IDesignCode)field.GetValue(null);
+          if ((field.DeclaringType?.FullName) != searchFor) {
+            continue;
           }
+          DesignCode = field.GetValue(null) as IDesignCode;
+          return;
         }
       }
-
-      if (DesignCode == null) {
-        return;
-      }
-
-      DesignCodeName = $"{designcodeName.TrimEnd(' ')} {designCodeReflectedLevels.Last()}";
     }
   }
 }
