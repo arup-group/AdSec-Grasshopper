@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-using AdSecCore.Functions;
+﻿using AdSecCore.Functions;
 
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;

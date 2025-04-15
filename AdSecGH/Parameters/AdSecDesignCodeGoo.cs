@@ -1,6 +1,4 @@
-﻿using AdSecCore.Functions;
-
-using Grasshopper.Kernel.Types;
+﻿using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec.DesignCode;
 

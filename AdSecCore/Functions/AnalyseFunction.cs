@@ -1,7 +1,6 @@
 ﻿using AdSecGHCore.Constants;
 
 using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
 
 namespace AdSecCore.Functions {
   public class AnalyseFunction : Function {

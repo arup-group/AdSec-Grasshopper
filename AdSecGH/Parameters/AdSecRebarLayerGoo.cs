@@ -1,6 +1,4 @@
-﻿using System;
-
-using AdSecCore.Functions;
+﻿using AdSecCore.Functions;
 
 using Grasshopper.Kernel.Types;
 

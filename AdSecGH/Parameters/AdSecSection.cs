@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using AdSecCore;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;

@@ -5,8 +5,6 @@ using Grasshopper.Kernel.Types;
 using OasysGH;
 using OasysGH.Parameters;
 
-using Rhino.Render.ChangeQueue;
-
 namespace AdSecGH.Parameters {
   /// <summary>
   /// Goo wrapper class, makes sure this can be used in Grasshopper.

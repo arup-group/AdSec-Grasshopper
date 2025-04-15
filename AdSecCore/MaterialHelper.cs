@@ -9,7 +9,6 @@ using AdSecGH.Parameters;
 
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
-using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.StandardMaterials;
 
 namespace AdSecGHCore {

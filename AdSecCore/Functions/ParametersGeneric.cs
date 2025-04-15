@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Reflection;
 
 using AdSecGH.Parameters;
 
@@ -11,7 +10,6 @@ using Oasys.AdSec.Mesh;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
-using Oasys.Collections;
 using Oasys.Profiles;
 
 using OasysUnits;

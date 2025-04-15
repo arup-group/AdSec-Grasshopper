@@ -5,7 +5,6 @@ using AdSecCore.Parameters;
 
 using AdSecGH.Parameters;
 
-using AdSecGHCore;
 using AdSecGHCore.Constants;
 
 namespace AdSecCore.Functions {
