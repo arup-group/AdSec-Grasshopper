@@ -220,7 +220,7 @@ namespace AdSecGH.Components {
         var perimeterLayer = this.GetLayers(da, 0);
         var grp = IPerimeterGroup.Create();
         grp.Layers = perimeterLayer.GetLayers();
-        groups.Add(new AdSecRebarGroupGoo(grp, CodeName(perimeterLayer)));
+        groups.Add(new AdSecRebarGroupGoo(grp, CodeDescription(perimeterLayer)));
       }
     }
 
@@ -230,7 +230,7 @@ namespace AdSecGH.Components {
         var bottomLayer = this.GetLayers(da, 2);
         var grp = ITemplateGroup.Create(ITemplateGroup.Face.Bottom);
         grp.Layers = bottomLayer.GetLayers();
-        groups.Add(new AdSecRebarGroupGoo(grp, CodeName(bottomLayer)));
+        groups.Add(new AdSecRebarGroupGoo(grp, CodeDescription(bottomLayer)));
       }
     }
 
@@ -240,7 +240,7 @@ namespace AdSecGH.Components {
         var rightLayer = this.GetLayers(da, 2);
         var grp = ITemplateGroup.Create(ITemplateGroup.Face.RightSide);
         grp.Layers = rightLayer.GetLayers();
-        groups.Add(new AdSecRebarGroupGoo(grp, CodeName(rightLayer)));
+        groups.Add(new AdSecRebarGroupGoo(grp, CodeDescription(rightLayer)));
       }
     }
 
@@ -250,7 +250,7 @@ namespace AdSecGH.Components {
         var leftLayer = this.GetLayers(da, 1);
         var grp = ITemplateGroup.Create(ITemplateGroup.Face.LeftSide);
         grp.Layers = leftLayer.GetLayers();
-        groups.Add(new AdSecRebarGroupGoo(grp, CodeName(leftLayer)));
+        groups.Add(new AdSecRebarGroupGoo(grp, CodeDescription(leftLayer)));
       }
     }
 
@@ -260,12 +260,12 @@ namespace AdSecGH.Components {
         var topLayer = this.GetLayers(da, 0);
         var grp = ITemplateGroup.Create(ITemplateGroup.Face.Top);
         grp.Layers = topLayer.GetLayers();
-        groups.Add(new AdSecRebarGroupGoo(grp, CodeName(topLayer)));
+        groups.Add(new AdSecRebarGroupGoo(grp, CodeDescription(topLayer)));
       }
     }
 
-    private string CodeName(IList<BarLayer> layers) {
-      return layers.Count > 0 ? layers.First().CodeDescription : string.Empty;
+    private static string CodeDescription(IList<BarLayer> layers) {
+      return layers.Count > 0 ? layers[0].CodeDescription : string.Empty;
     }
 
     protected override void UpdateUIFromSelectedItems() {

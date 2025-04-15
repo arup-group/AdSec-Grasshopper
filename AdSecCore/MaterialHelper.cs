@@ -127,11 +127,11 @@ namespace AdSecGHCore {
         throw new ArgumentException($"Section material can not be of rebar type. Select either concrete, steel or FRP");
       }
       if (groups != null) {
-        foreach (var group in groups) {
-          if (!IsMaterialRebar(group.CodeDescription)) {
+        foreach (var description in groups.Select(x => x.CodeDescription)) {
+          if (!IsMaterialRebar(description)) {
             throw new ArgumentException($"Rebar material is not valid. Select either Rebar or Tendon");
           }
-          string rebarMaterialCode = MaterialDesignCodeName(group.CodeDescription);
+          string rebarMaterialCode = MaterialDesignCodeName(description);
           if (!concreteSectionMaterialCode.Equals(rebarMaterialCode)) {
             throw new ArgumentException($"Rebar material and concrete design code are not consistent");
           }
