@@ -123,7 +123,7 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess da) {
       // 0 rebar input
-      var rebar = this.GetAdSecRebarBundleGoo(da, 0);
+      AdSecRebarBundleGoo rebar = this.GetAdSecRebarBundleGoo(da, 0);
 
       switch (_mode) {
         case FoldMode.Distance:

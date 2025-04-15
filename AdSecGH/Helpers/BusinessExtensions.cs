@@ -54,6 +54,10 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(RebarGroupParameter), ParamGenericObject
         }, {
+          typeof(RebarLayerParameter), ParamGenericObject
+        }, {
+          typeof(RebarBundleParameter), ParamGenericObject
+        }, {
           typeof(ProfileParameter), ParamGenericObject
         }, {
           typeof(DoubleParameter), ParamNumber
@@ -126,7 +130,10 @@ namespace Oasys.GH.Helpers {
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
         { typeof(SubComponentParameter), a => new AdSecSubComponentGoo((a as SubComponentParameter)?.Value) },
-        { typeof(RebarGroupParameter), a => (a as RebarGroupParameter).Value },
+        { typeof(RebarGroupParameter), a => {
+            return (a as RebarGroupParameter).Value.Select(x=> new AdSecRebarGroupGoo(x)).ToList();
+          }
+        },
         { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
           typeof(LoadSurfaceParameter),
           a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
@@ -164,15 +171,15 @@ namespace Oasys.GH.Helpers {
             return materials?.ToList();
           }
         },
-        { typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value },
-        { typeof(GeometryParameter), a => {
+        { typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value }, {
+          typeof(GeometryParameter), a => {
             var value = (a as GeometryParameter).Value;
             var sectionDesign = value as SectionDesign;
             var sectionGoo = new AdSecSectionGoo(new AdSecSection(sectionDesign));
             var curves = sectionGoo._drawInstructions.Select(x => {
-            GH_Curve curve = null;
-            GH_Convert.ToGHCurve(x.Geometry, GH_Conversion.Both, ref curve);
-            return curve;
+              GH_Curve curve = null;
+              GH_Convert.ToGHCurve(x.Geometry, GH_Conversion.Both, ref curve);
+              return curve;
             }).ToList();
             return curves;
           }
@@ -251,6 +258,11 @@ namespace Oasys.GH.Helpers {
           typeof(AdSecSectionParameter), goo => {
             dynamic gooDynamic = goo;
             return new AdSecSectionGoo(gooDynamic);
+          }
+        }, {
+          typeof(RebarLayerParameter), goo => {
+            var gooDynamic = goo as List<object>;
+            return gooDynamic.Select(x => (x as AdSecRebarLayerGoo).Value).ToArray();
           }
         }, {
           typeof(RebarGroupParameter), goo => {
@@ -400,7 +412,7 @@ namespace Oasys.GH.Helpers {
               valueBasedParameter.Value = newValue;
             } else {
               try {
-                valueBasedParameter.Value = inputs.ToArray();
+                valueBasedParameter.Value = inputs.Select(x => ((dynamic)x).Value).ToArray();
               } catch (RuntimeBinderException) {
                 component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
                 return;
@@ -435,12 +447,19 @@ namespace Oasys.GH.Helpers {
       }
     }
 
-    public static void PopulateInputParams(this IFunction function, GH_Component component) {
-      RegisterParams(function.GetAllInputAttributes(), param => component.Params.RegisterInputParam(param));
+    public static void PopulateInputParams(
+      this IFunction function, GH_Component component, Dictionary<string, IGH_Param> previous = null) {
+      RegisterParams(function.GetAllInputAttributes(), param => component.Params.RegisterInputParam(param), previous);
     }
 
-    private static void RegisterParams(Attribute[] attributesSelector, Action<IGH_Param> action) {
+    private static void RegisterParams(
+      Attribute[] attributesSelector, Action<IGH_Param> action, Dictionary<string, IGH_Param> previous = null) {
       foreach (var attribute in attributesSelector.Where(x => ToGhParam.ContainsKey(x.GetType()))) {
+        if (previous != null && previous.TryGetValue(attribute.Name, out var value)) {
+          action(value);
+          continue;
+        }
+
         var func = ToGhParam[attribute.GetType()];
         var param = func(attribute);
         action(param);
