@@ -3,14 +3,17 @@ using AdSecCore.Functions;
 
 using AdSecGH.Parameters;
 
+using AdSecGHCore;
+
 using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.StandardMaterials;
 
 namespace AdSecCoreTests.Functions {
   public class CreateSectionFunctionTests {
 
     readonly CreateSectionFunction function;
-
+    readonly IReinforcement rebarGrade = Reinforcement.Steel.IS456.Edition_2000.S415;
     public CreateSectionFunctionTests() {
       function = new CreateSectionFunction();
 
@@ -46,8 +49,9 @@ namespace AdSecCoreTests.Functions {
       };
       var singleBars = new BuilderSingleBar().AtPosition(Geometry.Zero()).WithSize(2).CreateSingleBar()
        .AtPosition(Geometry.Zero()).Build();
+
       var rebarOriginal = new List<AdSecRebarGroup> {
-        new AdSecRebarGroup(singleBars, string.Empty),
+        new AdSecRebarGroup(singleBars, MaterialHelper.FindPath(rebarGrade)),
       };
       function.RebarGroup.Value = rebarOriginal.ToArray();
       function.Compute();
