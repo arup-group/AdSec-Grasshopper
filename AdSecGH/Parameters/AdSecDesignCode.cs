@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using AdSecGH.Helpers;
+
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 
@@ -44,6 +46,7 @@ namespace AdSecGH.Parameters {
       if (this == null) {
         return null;
       }
+
       var dup = (AdSecDesignCode)MemberwiseClone();
       return dup;
     }
@@ -54,7 +57,7 @@ namespace AdSecGH.Parameters {
 
     private bool CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false) {
       // Get all DesignCodes in DLL under namespace
-      Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+      Dictionary<string, Type> designCodeKVP = ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
       // Loop through DesignCodes types to find the DesignCode type matching our input list of levels
       string designcodeName = "";
@@ -65,7 +68,7 @@ namespace AdSecGH.Parameters {
         if (typ == null) {
           return false;
         }
-        designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
+        designCodeKVP = ReflectionHelper.ReflectNestedTypes(typ);
       }
       if (designCodeReflectedLevels.Count == 1) {
         designcodeName = designCodeReflectedLevels[0];
@@ -78,7 +81,8 @@ namespace AdSecGH.Parameters {
       // we need to find the right type Interface under Oasys.AdSec.IAdsec in order to cast to IDesignCode
       // the string to search for depends on where we call this function from, if we come from an IMaterial type
       // we can simply use the full name but if from IDesignCode we need to add the name of the code with a +
-      string searchFor = fromDesignCode ? $"{typ.FullName}+{designCodeReflectedLevels.Last()}" : typ.FullName;
+      string searchFor = fromDesignCode ?
+        $"{typ?.FullName}+{designCodeReflectedLevels[designCodeReflectedLevels.Count - 1]}" : typ?.FullName;
 
       // loop through all types in Oasys.AdSec.IAdsec and cast to IDesignCode if match with above string
       foreach (Type type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes()) {

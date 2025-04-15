@@ -1,12 +1,8 @@
-﻿using System;
-
-using Grasshopper.Kernel.Types;
+﻿using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec.Reinforcement.Layers;
 
 using OasysGH.Units;
-
-using OasysUnits;
 
 namespace AdSecGH.Parameters {
   public class AdSecRebarLayerGoo : GH_Goo<ILayer> {
@@ -23,25 +19,25 @@ namespace AdSecGH.Parameters {
 
     public override string ToString() {
       string bar = "";
-      Length dia = Value.BarBundle.Diameter.ToUnit(DefaultUnits.LengthUnitGeometry);
-      bar += $"Ø{dia}";
+      var diameter = Value.BarBundle.Diameter.ToUnit(DefaultUnits.LengthUnitGeometry);
+      bar += $"Ø{diameter}";
       if (Value.BarBundle.CountPerBundle > 1) {
         bar += $", Bundle ({Value.BarBundle.CountPerBundle})";
       }
 
-      string str = "";
-      try {
-        var byBarCount = (ILayerByBarCount)Value;
-        str = $"{byBarCount.Count}No. {bar}";
-      } catch (Exception) {
-        try {
-          var byBarPitch = (ILayerByBarPitch)Value;
-          Length spacing = byBarPitch.Pitch.ToUnit(DefaultUnits.LengthUnitGeometry);
-          str = $"{bar} bars / {spacing}";
-        } catch (Exception) {
-        }
+      string text = string.Empty;
+      switch (Value) {
+        case ILayerByBarCount byBarCount:
+          text = $"{byBarCount.Count}No. {bar}";
+          break;
+        case ILayerByBarPitch byBarPitch: {
+            var spacing = byBarPitch.Pitch.ToUnit(DefaultUnits.LengthUnitGeometry);
+            text = $"{bar} bars / {spacing}";
+            break;
+          }
       }
-      return $"AdSec {TypeName} {{{str}}}";
+
+      return $"AdSec {TypeName} {{{text}}}";
     }
   }
 }

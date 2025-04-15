@@ -176,7 +176,7 @@ namespace Oasys.GH.Helpers {
             var value = (a as GeometryParameter).Value;
             var sectionDesign = value as SectionDesign;
             var sectionGoo = new AdSecSectionGoo(new AdSecSection(sectionDesign));
-            var curves = sectionGoo._drawInstructions.Select(x => {
+            var curves = sectionGoo.DrawInstructionsList.Select(x => {
               GH_Curve curve = null;
               GH_Convert.ToGHCurve(x.Geometry, GH_Conversion.Both, ref curve);
               return curve;

@@ -1,7 +1,5 @@
 ﻿using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
-
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
@@ -22,7 +20,7 @@ namespace AdSecGH.Parameters {
       Value = sectionSolutionParameter;
       m_section = new AdSecSection(sectionSolutionParameter.SectionDesign);
       m_plane = m_section.LocalPlane;
-      ProfileEdge = m_section.m_profileEdge;
+      ProfileEdge = m_section._profileEdge;
     }
 
     public AdSecSolutionGoo(ISolution solution, AdSecSection section) {
@@ -32,12 +30,12 @@ namespace AdSecGH.Parameters {
           DesignCode = new DesignCode() {
             IDesignCode = section.DesignCode,
             DesignCodeName = section._codeName,
-          }
-        }
+          },
+        },
       };
       m_section = section;
       m_plane = m_section.LocalPlane;
-      ProfileEdge = m_section.m_profileEdge;
+      ProfileEdge = m_section._profileEdge;
     }
 
     public override IGH_Goo Duplicate() {
