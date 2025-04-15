@@ -20,7 +20,7 @@ namespace AdSecGH.Parameters {
     public AdSecDesignCodeGoo(AdSecDesignCode item) : base(item) {
     }
 
-    public AdSecDesignCodeGoo(DesignCode designCode) : base(new AdSecDesignCode(designCode.IDesignCode, designCode.DesignCodeName)) {
+    public AdSecDesignCodeGoo(IDesignCode designCode) : base(new AdSecDesignCode(designCode)) {
 
     }
 

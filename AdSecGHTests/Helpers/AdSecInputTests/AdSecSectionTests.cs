@@ -50,7 +50,7 @@ namespace AdSecGHTests.Helpers {
         new WebConstant(thickness)));
       var section = ISection.Create(profile, Concrete.ACI318.Edition_2002.Metric.MPa_20);
       var input = new AdSecSectionGoo(
-        new AdSecSection(section, new AdSecDesignCode().DesignCode, "", "", Plane.WorldXY));
+        new AdSecSection(section, new AdSecDesignCode().DesignCode, Plane.WorldXY));
 
       var objwrap = new GH_ObjectWrapper(input);
       bool castSuccessful = AdSecInput.TryCastToAdSecSection(objwrap, ref _section);
@@ -67,7 +67,7 @@ namespace AdSecGHTests.Helpers {
         new WebConstant(thickness)));
       var section = ISection.Create(profile, Concrete.ACI318.Edition_2002.Metric.MPa_20);
       var input = new AdSecSubComponentGoo(section, Plane.WorldXY, IPoint.Create(length, length),
-        new AdSecDesignCode().DesignCode, "", "");
+        new AdSecDesignCode().DesignCode);
 
       var objwrap = new GH_ObjectWrapper(input);
       bool castSuccessful = AdSecInput.TryCastToAdSecSection(objwrap, ref _section);

@@ -91,7 +91,7 @@ namespace AdSecGH.Parameters {
         if (Value == null) {
           target = default;
         } else {
-          target = (Q)(object)new AdSecSection(Value.Section, Value.DesignCode, Value._codeName, Value._materialName,
+          target = (Q)(object)new AdSecSection(Value.Section, Value.DesignCode,
             Value.LocalPlane);
         }
 

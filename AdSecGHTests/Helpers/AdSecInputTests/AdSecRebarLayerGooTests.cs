@@ -33,7 +33,7 @@ namespace AdSecGHTests.Helpers {
     public void TryCastToAdSecRebarLayerGooReturnsRebarLayerGoo() {
       var topReinforcementLayer = ILayerByBarCount.Create(2,
         IBarBundle.Create(Reinforcement.Steel.IS456.Edition_2000.S415, Length.FromMillimeters(20)));
-      var adSecRebarLayerGoo = new AdSecRebarLayerGoo(topReinforcementLayer);
+      var adSecRebarLayerGoo = new AdSecRebarLayerGoo(topReinforcementLayer, string.Empty);
 
       var objwrap = new GH_ObjectWrapper(adSecRebarLayerGoo);
       bool castSuccessful = AdSecInput.TryCastToAdSecRebarLayerGoo(objwrap, ref _layerGoo);

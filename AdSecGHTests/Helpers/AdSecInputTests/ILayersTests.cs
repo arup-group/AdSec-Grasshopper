@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
@@ -16,17 +18,17 @@ using Xunit;
 namespace AdSecGHTests.Helpers {
   [Collection("GrasshopperFixture collection")]
   public class AdSecInputTests_ILayersTests {
-    private Oasys.Collections.IList<ILayer> _layers;
-    private List<int> invalidIds;
+    private readonly IList<BarLayer> _layers;
+    private readonly List<int> invalidIds;
 
     public AdSecInputTests_ILayersTests() {
-      _layers = Oasys.Collections.IList<ILayer>.Create();
+      _layers = new List<BarLayer>();
       invalidIds = new List<int>();
     }
 
     [Fact]
     public void TryCastToILayersReturnsFalseWhenInvalidIdsListIsNullInitialised() {
-      bool castSuccessful = AdSecInput.TryCastToILayers(null, _layers, null);
+      bool castSuccessful = AdSecInput.TryCastToLayers(null, _layers, null);
 
       Assert.False(castSuccessful);
       Assert.Empty(_layers);
@@ -35,7 +37,7 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToILayersReturnsFalseWhenNull() {
-      bool castSuccessful = AdSecInput.TryCastToILayers(null, _layers, invalidIds);
+      bool castSuccessful = AdSecInput.TryCastToLayers(null, _layers, invalidIds);
 
       Assert.False(castSuccessful);
       Assert.Empty(_layers);
@@ -45,7 +47,7 @@ namespace AdSecGHTests.Helpers {
     [Fact]
     public void TryCastToILayersReturnsFalseWhenEmptySections() {
       var objectWrappers = new List<GH_ObjectWrapper>();
-      bool castSuccessful = AdSecInput.TryCastToILayers(objectWrappers, _layers, invalidIds);
+      bool castSuccessful = AdSecInput.TryCastToLayers(objectWrappers, _layers, invalidIds);
 
       Assert.False(castSuccessful);
       Assert.Empty(_layers);
@@ -58,7 +60,7 @@ namespace AdSecGHTests.Helpers {
       var objectWrappers = new List<GH_ObjectWrapper>() {
         new GH_ObjectWrapper(layer),
       };
-      bool castSuccessful = AdSecInput.TryCastToILayers(objectWrappers, _layers, invalidIds);
+      bool castSuccessful = AdSecInput.TryCastToLayers(objectWrappers, _layers, invalidIds);
 
       Assert.False(castSuccessful);
       Assert.Empty(_layers);
@@ -72,7 +74,7 @@ namespace AdSecGHTests.Helpers {
       var objectWrappers = new List<GH_ObjectWrapper>() {
         objectWrapper,
       };
-      bool castSuccessful = AdSecInput.TryCastToILayers(objectWrappers, _layers, invalidIds);
+      bool castSuccessful = AdSecInput.TryCastToLayers(objectWrappers, _layers, invalidIds);
 
       Assert.False(castSuccessful);
       Assert.Empty(_layers);
@@ -82,12 +84,12 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToILayersReturnsFalseWhenSecondItemIncorrect() {
-      var layer = GetLayer();
+      var layer = new BarLayer() { Layer = GetLayer() };
       var objectWrappers = new List<GH_ObjectWrapper>() {
         new GH_ObjectWrapper(layer),
         new GH_ObjectWrapper(null),
       };
-      bool castSuccessful = AdSecInput.TryCastToILayers(objectWrappers, _layers, invalidIds);
+      bool castSuccessful = AdSecInput.TryCastToLayers(objectWrappers, _layers, invalidIds);
 
       Assert.False(castSuccessful);
       Assert.Single(_layers);
@@ -98,12 +100,12 @@ namespace AdSecGHTests.Helpers {
     [Fact]
     public void TryCastToILayersReturnsCorrectDataFromRebarLayerGoo() {
       var layer = GetLayer();
-      var input = new AdSecRebarLayerGoo(layer);
+      var input = new AdSecRebarLayerGoo(layer, string.Empty);
 
       var objwrap = new List<GH_ObjectWrapper>() {
         new GH_ObjectWrapper(input),
       };
-      bool castSuccessful = AdSecInput.TryCastToILayers(objwrap, _layers, invalidIds);
+      bool castSuccessful = AdSecInput.TryCastToLayers(objwrap, _layers, invalidIds);
 
       Assert.True(castSuccessful);
       Assert.NotNull(_layers);
@@ -112,12 +114,12 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToILayersReturnsCorrectDataFromILayer() {
-      var input = GetLayer();
+      var input = new BarLayer() { Layer = GetLayer() };
 
       var objwrap = new List<GH_ObjectWrapper>() {
         new GH_ObjectWrapper(input),
       };
-      bool castSuccessful = AdSecInput.TryCastToILayers(objwrap, _layers, invalidIds);
+      bool castSuccessful = AdSecInput.TryCastToLayers(objwrap, _layers, invalidIds);
 
       Assert.True(castSuccessful);
       Assert.NotNull(_layers);

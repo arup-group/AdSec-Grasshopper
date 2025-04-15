@@ -1,5 +1,7 @@
 ﻿using System;
 
+using AdSecCore.Functions;
+
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec.Reinforcement.Layers;
@@ -9,39 +11,41 @@ using OasysGH.Units;
 using OasysUnits;
 
 namespace AdSecGH.Parameters {
-  public class AdSecRebarLayerGoo : GH_Goo<ILayer> {
+  public class AdSecRebarLayerGoo : GH_Goo<BarLayer> {
     public override bool IsValid => true;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Rebar Spacing";
 
-    public AdSecRebarLayerGoo(ILayer layer) : base(layer) {
+    public AdSecRebarLayerGoo(ILayer layer, string codeDescription) {
+      Value = new BarLayer {
+        Layer = layer,
+        CodeDescription = codeDescription,
+      };
     }
 
     public override IGH_Goo Duplicate() {
-      return new AdSecRebarLayerGoo(Value);
+      return new AdSecRebarLayerGoo(Value.Layer, Value.CodeDescription);
     }
 
     public override string ToString() {
-      string bar = "";
-      Length dia = Value.BarBundle.Diameter.ToUnit(DefaultUnits.LengthUnitGeometry);
+      string bar = string.Empty;
+      Length dia = Value.Layer.BarBundle.Diameter.ToUnit(DefaultUnits.LengthUnitGeometry);
       bar += $"Ø{dia}";
-      if (Value.BarBundle.CountPerBundle > 1) {
-        bar += $", Bundle ({Value.BarBundle.CountPerBundle})";
+      if (Value.Layer.BarBundle.CountPerBundle > 1) {
+        bar += $", Bundle ({Value.Layer.BarBundle.CountPerBundle})";
       }
-
-      string str = "";
-      try {
-        var byBarCount = (ILayerByBarCount)Value;
-        str = $"{byBarCount.Count}No. {bar}";
-      } catch (Exception) {
-        try {
-          var byBarPitch = (ILayerByBarPitch)Value;
+      string layerInfo = string.Empty;
+      switch (Value.Layer) {
+        case ILayerByBarCount layerByCount:
+          layerInfo = $"{layerByCount.Count}No. {bar}";
+          break;
+        default:
+          var byBarPitch = (ILayerByBarPitch)Value.Layer;
           Length spacing = byBarPitch.Pitch.ToUnit(DefaultUnits.LengthUnitGeometry);
-          str = $"{bar} bars / {spacing}";
-        } catch (Exception) {
-        }
+          layerInfo = $"{bar} bars / {spacing}";
+          break;
       }
-      return $"AdSec {TypeName} {{{str}}}";
+      return $"AdSec {TypeName} {{{layerInfo}}}";
     }
   }
 }

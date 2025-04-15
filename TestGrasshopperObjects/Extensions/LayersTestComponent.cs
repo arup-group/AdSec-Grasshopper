@@ -24,7 +24,7 @@ namespace TestGrasshopperObjects.Extensions {
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {
-      DA.SetData(0, this.GetILayers(DA, 0, Optional));
+      DA.SetData(0, this.GetLayers(DA, 0, Optional));
     }
   }
 }

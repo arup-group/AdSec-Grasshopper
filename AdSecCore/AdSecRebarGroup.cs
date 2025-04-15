@@ -1,31 +1,46 @@
-﻿using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Groups;
+﻿using System.Xml.Linq;
 
+using AdSecCore.Functions;
+
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Groups;
 namespace AdSecGH.Parameters {
   public class AdSecRebarGroup {
-
+    private readonly RebarGroup _rebarGroup;
     public AdSecRebarGroup() { }
 
     public AdSecRebarGroup(AdSecRebarGroup rebarGroup) {
-      Group = rebarGroup.Group;
+      _rebarGroup = rebarGroup._rebarGroup;
       if (rebarGroup.Cover != null) {
         Cover = ICover.Create(rebarGroup.Cover.UniformCover);
       }
     }
 
-    public AdSecRebarGroup(IGroup group) {
-      Group = group;
+    public AdSecRebarGroup(RebarGroup group) {
+      _rebarGroup = group;
+    }
+
+    public AdSecRebarGroup(IGroup group, string codeDescription) {
+      _rebarGroup = new RebarGroup() { Group = group, CodeDescription = codeDescription };
     }
 
     public ICover Cover { get; set; }
-    public IGroup Group { get; set; }
-    public bool IsValid {
-      get {
-        if (Group == null) {
-          return false;
-        }
 
-        return true;
+    public string CodeDescription {
+      get {
+        if (_rebarGroup == null) {
+          return string.Empty;
+        }
+        return _rebarGroup.CodeDescription;
+      }
+    }
+
+    public IGroup Group {
+      get {
+        if (_rebarGroup == null) {
+          return null;
+        }
+        return _rebarGroup.Group;
       }
     }
 

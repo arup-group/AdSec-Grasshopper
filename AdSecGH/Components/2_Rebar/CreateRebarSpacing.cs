@@ -127,8 +127,8 @@ namespace AdSecGH.Components {
 
       switch (_mode) {
         case FoldMode.Distance:
-          var bundleD = new AdSecRebarLayerGoo(ILayerByBarPitch.Create(rebar.Value,
-            (Length)Input.UnitNumber(this, da, 1, _lengthUnit)));
+          var bundleD = new AdSecRebarLayerGoo(ILayerByBarPitch.Create(rebar.Value.Bundle,
+            (Length)Input.UnitNumber(this, da, 1, _lengthUnit)), rebar.Value.CodeDescription);
           da.SetData(0, bundleD);
           break;
 
@@ -136,7 +136,7 @@ namespace AdSecGH.Components {
           int count = 1;
           da.GetData(1, ref count);
 
-          var bundleC = new AdSecRebarLayerGoo(ILayerByBarCount.Create(count, rebar.Value));
+          var bundleC = new AdSecRebarLayerGoo(ILayerByBarCount.Create(count, rebar.Value.Bundle), rebar.Value.CodeDescription);
           da.SetData(0, bundleC);
           break;
       }

@@ -119,8 +119,7 @@ namespace AdSecGHTests.Helpers {
     public void TryCastToAdSecSubComponentsReturnsCorrectDataFromAdSecSubComponentGoo() {
       var point = IPoint.Create(new Length(1, LengthUnit.Meter), new Length(2, LengthUnit.Meter));
       var subComponent = ISubComponent.Create(GetAdSecSectionGoo().Value.Section, point);
-      var input = new AdSecSubComponentGoo(subComponent, Plane.WorldXY, new AdSecDesignCode().DesignCode, "test",
-        string.Empty);
+      var input = new AdSecSubComponentGoo(subComponent, Plane.WorldXY, new AdSecDesignCode().DesignCode);
 
       var objwrap = new List<GH_ObjectWrapper>() {
         new GH_ObjectWrapper(input),
@@ -139,8 +138,8 @@ namespace AdSecGHTests.Helpers {
       var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(thickness, length),
         new WebConstant(thickness)));
       var section = ISection.Create(profile, Concrete.ACI318.Edition_2002.Metric.MPa_20);
-      var designCode = new AdSecDesignCode(ACI318.Edition_2002.Metric, "test").DesignCode;
-      var adSecSection = new AdSecSection(section, designCode, "", "", Plane.WorldXY);
+      var designCode = new AdSecDesignCode(ACI318.Edition_2002.Metric).DesignCode;
+      var adSecSection = new AdSecSection(section, designCode, Plane.WorldXY);
       var input = new AdSecSectionGoo(adSecSection);
 
       var objwrap = new List<GH_ObjectWrapper>() {
@@ -160,7 +159,7 @@ namespace AdSecGHTests.Helpers {
       var material = Steel.ASTM.A242_46;
       var section = ISection.Create(profile, material);
       var designCode = new AdSecDesignCode().DesignCode;
-      return new AdSecSectionGoo(new AdSecSection(section, designCode, "", "", Plane.WorldXY));
+      return new AdSecSectionGoo(new AdSecSection(section, designCode, Plane.WorldXY));
     }
   }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 
 using AdSecCore;
+using AdSecCore.Functions;
 
 using AdSecGH.Parameters;
 
@@ -178,21 +179,28 @@ namespace AdSecGH.Helpers {
       return calculationParameters;
     }
 
-    public static Oasys.Collections.IList<ILayer> GetILayers(
+    public static Oasys.Collections.IList<ILayer> GetLayers(this IList<BarLayer> barLayers) {
+      var layers = Oasys.Collections.IList<ILayer>.Create();
+      foreach (var barLayer in barLayers) {
+        layers.Add(barLayer.Layer);
+      }
+      return layers;
+    }
+
+    public static IList<BarLayer> GetLayers(
       this GH_Component owner, IGH_DataAccess DA, int inputId, bool isOptional = false) {
       var inputData = new List<GH_ObjectWrapper>();
 
       DA.GetDataList(inputId, inputData);
       bool isDataAvailable = inputData.TrueForAll(item => item != null);
-      var layers = Oasys.Collections.IList<ILayer>.Create();
+      var layers = new List<BarLayer>();
       var invalidIds = new List<int>();
 
       if (!isDataAvailable && !isOptional) {
         owner.Params.Input[inputId].FailedToCollectDataWarning();
-      } else if (isDataAvailable && !AdSecInput.TryCastToILayers(inputData, layers, invalidIds)) {
+      } else if (isDataAvailable && !AdSecInput.TryCastToLayers(inputData, layers, invalidIds)) {
         invalidIds.ForEach(id => owner.Params.Input[inputId].ConvertFromToError($"(item {id})", "RebarLayer"));
       }
-
       return layers.Any() ? layers : null;
     }
 

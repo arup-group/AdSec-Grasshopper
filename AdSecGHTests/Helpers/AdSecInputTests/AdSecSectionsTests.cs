@@ -131,7 +131,7 @@ namespace AdSecGHTests.Helpers {
       var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(thickness, length),
         new WebConstant(thickness)));
       var section = ISection.Create(profile, Concrete.ACI318.Edition_2002.Metric.MPa_20);
-      var input = new AdSecSection(section, new AdSecDesignCode().DesignCode, "", "", Plane.WorldXY);
+      var input = new AdSecSection(section, new AdSecDesignCode().DesignCode, Plane.WorldXY);
       return input;
     }
   }

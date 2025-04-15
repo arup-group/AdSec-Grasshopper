@@ -22,9 +22,7 @@ namespace AdSecGHCore {
       var section = new SectionBuilder().WithProfile(ProfileBuilder.GetIBeam()).WithMaterial(iBeamMat).Build();
       var sectionDesign = new SectionDesign {
         Section = section,
-        DesignCode = new DesignCode { IDesignCode = designCode, },
-        MaterialName = "AS1163_C250",
-        CodeName = "AS4100",
+        DesignCode = designCode,
         LocalPlane = OasysPlane.PlaneYZ,
       };
       return sectionDesign;
@@ -42,9 +40,7 @@ namespace AdSecGHCore {
         }).WithReinforcementGroup(new BuilderLineGroup().Build()).Build();
       var sectionDesign = new SectionDesign {
         Section = section,
-        DesignCode = new DesignCode { IDesignCode = designCode, },
-        MaterialName = "AS1163_C250",
-        CodeName = "IS456",
+        DesignCode = designCode,
         LocalPlane = OasysPlane.PlaneYZ,
       };
       return sectionDesign;

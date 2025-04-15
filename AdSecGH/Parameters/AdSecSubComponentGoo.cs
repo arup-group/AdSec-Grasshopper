@@ -45,32 +45,32 @@ namespace AdSecGH.Parameters {
       _offset = subComponent.ISubComponent.Offset;
       var sectionDesign = subComponent.SectionDesign;
       _plane = sectionDesign.LocalPlane.ToGh();
-      _section = new AdSecSection(sectionDesign.Section, sectionDesign.DesignCode.IDesignCode, sectionDesign.MaterialName, sectionDesign.CodeName, _plane, _offset);
+      _section = new AdSecSection(sectionDesign.Section, sectionDesign.DesignCode, _plane, _offset);
     }
 
-    public AdSecSubComponentGoo(ISubComponent subComponent, Plane local, IDesignCode code, string codeName, string materialName) : base(subComponent) {
+    public AdSecSubComponentGoo(ISubComponent subComponent, Plane local, IDesignCode code) : base(subComponent) {
       _offset = subComponent.Offset;
-      _section = new AdSecSection(subComponent.Section, code, codeName, materialName, local, _offset);
+      _section = new AdSecSection(subComponent.Section, code, local, _offset);
       _plane = local;
     }
 
-    public AdSecSubComponentGoo(ISection section, Plane local, IPoint point, IDesignCode code, string codeName, string materialName) {
+    public AdSecSubComponentGoo(ISection section, Plane local, IPoint point, IDesignCode code) {
       m_value = ISubComponent.Create(section, point);
       _offset = point;
-      _section = new AdSecSection(section, code, codeName, materialName, local, _offset);
+      _section = new AdSecSection(section, code, local, _offset);
       _plane = local;
       // local axis
-      if (_plane != null) {
-        if (_plane != Plane.WorldXY && local != Plane.WorldYZ && local != Plane.WorldZX) {
-          Area area = _section.Section.Profile.Area();
-          double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-          var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-          _previewXaxis = new Line(local.Origin, local.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
-          _previewYaxis = new Line(local.Origin, local.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
-          _previewZaxis = new Line(local.Origin, local.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
-        }
+
+      if (_plane != Plane.WorldXY && local != Plane.WorldYZ && local != Plane.WorldZX) {
+        Area area = _section.Section.Profile.Area();
+        double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
+        var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
+        _previewXaxis = new Line(local.Origin, local.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
+        _previewYaxis = new Line(local.Origin, local.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
+        _previewZaxis = new Line(local.Origin, local.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
       }
     }
+
 
     public override bool CastFrom(object source) {
       if (source == null) {
@@ -174,7 +174,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecSubComponentGoo(Value, _plane, _section.DesignCode, _section._codeName, _section._materialName);
+      return new AdSecSubComponentGoo(Value, _plane, _section.DesignCode);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {

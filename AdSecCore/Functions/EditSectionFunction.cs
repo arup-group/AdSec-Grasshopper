@@ -5,6 +5,7 @@ using AdSecCore.Parameters;
 
 using AdSecGH.Parameters;
 
+using AdSecGHCore;
 using AdSecGHCore.Constants;
 
 namespace AdSecCore.Functions {
@@ -64,12 +65,12 @@ namespace AdSecCore.Functions {
 
       MaterialOut.Value = Material.Value ?? MaterialDesign.From(Section.Value);
 
-      DesignCodeOut.Value = DesignCode.Value ?? DesignCodeParameter.From(Section.Value);
+      DesignCodeOut.Value = DesignCode.Value ?? Section.Value.DesignCode;
 
       MaterialOut.Value.DesignCode = DesignCodeOut.Value; // The material needs the new DesignCode
 
       RebarGroupOut.Value = RebarGroup.Value ?? Section.Value.Section.ReinforcementGroups
-       .Select(x => new AdSecRebarGroup(x)).ToArray();
+       .Select(x => new AdSecRebarGroup(new RebarGroup() { Group = x })).ToArray();
       foreach (var t in RebarGroupOut.Value) {
         t.Cover = Section.Value.Section.Cover;
       }
@@ -84,8 +85,6 @@ namespace AdSecCore.Functions {
         Section = section,
         DesignCode = DesignCodeOut.Value,
         LocalPlane = Section.Value.LocalPlane,
-        CodeName = DesignCodeOut.Value.DesignCodeName,
-        MaterialName = MaterialOut.Value.GradeName,
       };
 
       Geometry.Value = SectionOut.Value;

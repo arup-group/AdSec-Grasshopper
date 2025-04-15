@@ -31,7 +31,7 @@ namespace AdSecGHTests.Components {
       var profile = new ProfileBuilder().WidthDepth(1).WithWidth(2).Build();
       var profileDesign = new ProfileDesign { Profile = profile, LocalPlane = OasysPlane.PlaneYZ, };
       component.SetInputParamAt(0, new AdSecProfileGoo(profileDesign));
-      var adSecMaterial = new AdSecMaterialGoo(new MaterialDesign { Material = SectionMat, DesignCode = new DesignCode { IDesignCode = DesignCode, DesignCodeName = null, }, });
+      var adSecMaterial = new AdSecMaterialGoo(new MaterialDesign { Material = SectionMat, DesignCode = DesignCode });
       component.SetInputParamAt(1, adSecMaterial);
     }
 
@@ -56,7 +56,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveOutputWithReinforcementGroups() {
-      var reinforcementGroupGoo = new AdSecRebarGroupGoo(new BuilderLineGroup().Build());
+      var reinforcementGroupGoo = new AdSecRebarGroupGoo(new BuilderLineGroup().Build(), string.Empty);
       component.SetInputParamAt(2, reinforcementGroupGoo);
       ComponentTesting.ComputeOutputs(component);
       Assert.NotNull(component.GetOutputParamAt(0));

@@ -110,7 +110,7 @@ namespace AdSecGHTests.Helpers.Extensions {
       var material = Steel.ASTM.A242_46;
       var section = ISection.Create(profile, material);
       var designCode = new AdSecDesignCode().DesignCode;
-      return new AdSecSectionGoo(new AdSecSection(section, designCode, "", "", Plane.WorldXY));
+      return new AdSecSectionGoo(new AdSecSection(section, designCode, Plane.WorldXY));
     }
   }
 }

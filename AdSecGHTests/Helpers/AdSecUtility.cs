@@ -35,7 +35,7 @@ namespace AdSecGHTests.Helpers {
     }
 
     public static AdSecSection SectionObject() {
-      return new AdSecSection(CreateSTDRectangularSection(), designCode, "", "", Plane.WorldXY);
+      return new AdSecSection(CreateSTDRectangularSection(), designCode, Plane.WorldXY);
     }
 
     public static GH_Component AnalyzeComponent() {

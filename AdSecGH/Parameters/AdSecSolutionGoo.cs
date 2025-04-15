@@ -29,10 +29,7 @@ namespace AdSecGH.Parameters {
       Value = new SectionSolution() {
         Solution = solution, SectionDesign = new SectionDesign() {
           Section = section.Section,
-          DesignCode = new DesignCode() {
-            IDesignCode = section.DesignCode,
-            DesignCodeName = section._codeName,
-          }
+          DesignCode = section.DesignCode,
         }
       };
       m_section = section;

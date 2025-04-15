@@ -43,7 +43,7 @@ namespace AdSecGHTests.Helpers {
       var bundle = IBarBundle.Create(IReinforcement.Create(tensionCompressionCurve, tensionCompressionCurve), length,
         1);
 
-      var adSecRebarBundleGoo = new AdSecRebarBundleGoo(bundle);
+      var adSecRebarBundleGoo = new AdSecRebarBundleGoo(bundle, string.Empty);
 
       var objwrap = new GH_ObjectWrapper(adSecRebarBundleGoo);
       bool castSuccessful = AdSecInput.TryCastToAdSecRebarBundleGoo(objwrap, ref _bundleGoo, ref showRemark);
@@ -58,7 +58,7 @@ namespace AdSecGHTests.Helpers {
     public void TryCastToAdSecRebarBundleGooReturnsRebarBundleGooFromAdSecRebarLayerGoo() {
       var topReinforcementLayer = ILayerByBarCount.Create(2,
         IBarBundle.Create(Reinforcement.Steel.IS456.Edition_2000.S415, Length.FromMillimeters(20)));
-      var adSecRebarLayerGoo = new AdSecRebarLayerGoo(topReinforcementLayer);
+      var adSecRebarLayerGoo = new AdSecRebarLayerGoo(topReinforcementLayer, string.Empty);
 
       var objwrap = new GH_ObjectWrapper(adSecRebarLayerGoo);
       bool castSuccessful = AdSecInput.TryCastToAdSecRebarBundleGoo(objwrap, ref _bundleGoo, ref showRemark);

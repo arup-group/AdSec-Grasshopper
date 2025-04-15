@@ -104,7 +104,7 @@ namespace AdSecGHTests.Helpers.Extensions {
       var material = Steel.ASTM.A242_46;
       var section = ISection.Create(profile, material);
       var designCode = new AdSecDesignCode().DesignCode;
-      var input = new AdSecSectionGoo(new AdSecSection(section, designCode, "", "", Plane.WorldXY));
+      var input = new AdSecSectionGoo(new AdSecSection(section, designCode, Plane.WorldXY));
       ComponentTestHelper.SetInput(_component, input);
 
       object result = ComponentTestHelper.GetOutput(_component);

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Parameters;
 
 using Oasys.AdSec;
@@ -204,7 +206,7 @@ namespace AdSecCore.Builders {
         singleBars.Positions.Add(IPoint.Create(y, z));
       }
 
-      adSecRebarGroup.Group = singleBars;
+      adSecRebarGroup = new AdSecRebarGroup(new RebarGroup() { Group = singleBars });
       return adSecRebarGroup;
     }
 

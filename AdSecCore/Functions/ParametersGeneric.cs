@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 
 using AdSecGH.Parameters;
 
@@ -7,6 +8,10 @@ using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Mesh;
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Layers;
+using Oasys.Collections;
 using Oasys.Profiles;
 
 using OasysUnits;
@@ -14,9 +19,7 @@ using OasysUnits;
 namespace AdSecCore.Functions {
   public class SectionDesign {
     public ISection Section { get; set; }
-    public DesignCode DesignCode { get; set; }
-    public string CodeName { get; set; }
-    public string MaterialName { get; set; }
+    public IDesignCode DesignCode { get; set; }
     public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
   }
 
@@ -109,34 +112,42 @@ namespace AdSecCore.Functions {
 
   public class MaterialDesign {
     public IMaterial Material { get; set; }
-    public DesignCode DesignCode { get; set; }
+    public IDesignCode DesignCode { get; set; }
     public string GradeName { get; set; }
 
     public static MaterialDesign From(SectionDesign sectionValue) {
       return new MaterialDesign {
         Material = sectionValue.Section.Material,
-        DesignCode = DesignCodeParameter.From(sectionValue),
-        GradeName = sectionValue.MaterialName,
+        DesignCode = sectionValue.DesignCode,
+        // GradeName = sectionValue.MaterialName,
       };
     }
   }
 
   public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
-
-  public class DesignCodeParameter : ParameterAttribute<DesignCode> {
-    public static DesignCode From(SectionDesign section) {
-      return new DesignCode {
-        IDesignCode = section.DesignCode.IDesignCode,
-        DesignCodeName = section.DesignCode.DesignCodeName,
-      };
-    }
-  }
-
-  public class DesignCode {
-    public IDesignCode IDesignCode { get; set; }
-    public string DesignCodeName { get; set; }
-  }
+  public class DesignCodeParameter : ParameterAttribute<IDesignCode> { }
 
   public class GeometryParameter : ParameterAttribute<object> { }
   public class NeutralLineParameter : ParameterAttribute<NeutralAxis> { }
+
+  public class CodeInfo {
+    public string CodeDescription { get; set; } = string.Empty;
+  }
+
+  public class RebarGroup : CodeInfo {
+    public IGroup Group { get; set; }
+  }
+
+  public class BarBundle : CodeInfo {
+    public IBarBundle Bundle { get; set; }
+  }
+
+  public class BarLayer : CodeInfo {
+    public ILayer Layer { get; set; }
+  }
+
+
+
+
+
 }

@@ -22,7 +22,7 @@ namespace AdSecGH.Parameters {
       Material = new AdSecMaterial() {
         Material = Value?.Material,
         DesignCode = new AdSecDesignCode() {
-          DesignCode = Value?.DesignCode?.IDesignCode,
+          DesignCode = Value?.DesignCode,
         },
         GradeName = Value?.GradeName,
       };

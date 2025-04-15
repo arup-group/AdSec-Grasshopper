@@ -79,8 +79,8 @@ namespace AdSecGHTests.Parameters {
       var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(thickness, length),
         new WebConstant(thickness)));
       var section = ISection.Create(profile, Concrete.ACI318.Edition_2002.Metric.MPa_20);
-      var designCode = new AdSecDesignCode(ACI318.Edition_2002.Metric, "test");
-      var adSecSection = new AdSecSection(section, designCode.DesignCode, "", "", Plane.WorldXY);
+      var designCode = new AdSecDesignCode(ACI318.Edition_2002.Metric);
+      var adSecSection = new AdSecSection(section, designCode.DesignCode, Plane.WorldXY);
       var adSec = IAdSec.Create(adSecSection.DesignCode);
       var solution = adSec.Analyse(adSecSection.Section);
       var solutionBuilder = new SolutionBuilder().Build();
@@ -106,17 +106,17 @@ namespace AdSecGHTests.Parameters {
       InstanceOfGoos.Add(new AdSecProfileWebGoo(IWebConstant.Create(thickness)));
       var barBundle
         = IBarBundle.Create(IReinforcement.Create(tensionCompressionCurve, tensionCompressionCurve), length);
-      InstanceOfGoos.Add(new AdSecRebarBundleGoo(barBundle));
+      InstanceOfGoos.Add(new AdSecRebarBundleGoo(barBundle, string.Empty));
       InstanceOfGoos.Add(new AdSecRebarGroupGoo(new AdSecRebarGroup(ICircleGroup.Create(IPoint.Create(length, length),
-        length, Angle.Zero, ILayerByBarCount.Create(1, barBundle)))));
-      InstanceOfGoos.Add(new AdSecRebarLayerGoo(ILayerByBarCount.Create(1, barBundle)));
+        length, Angle.Zero, ILayerByBarCount.Create(1, barBundle)), string.Empty)));
+      InstanceOfGoos.Add(new AdSecRebarLayerGoo(ILayerByBarCount.Create(1, barBundle), string.Empty));
       InstanceOfGoos.Add(new AdSecSectionGoo(adSecSection));
       InstanceOfGoos.Add(new AdSecSolutionGoo(solution, adSecSection));
       InstanceOfGoos.Add(new AdSecStressStrainCurveGoo(new PolylineCurve(), curve,
         AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, new List<Point3d>()));
       InstanceOfGoos.Add(new AdSecStressStrainPointGoo(stressStrainPoint));
       InstanceOfGoos.Add(new AdSecSubComponentGoo(section, Plane.WorldXY, IPoint.Create(length, length),
-        designCode.DesignCode, "test", "test1"));
+        designCode.DesignCode));
       InstanceOfGoos.Add(new AdSecNeutralAxisGoo(new NeutralAxis() { Angle = 0, Offset = length, Solution = solutionBuilder }));
     }
 

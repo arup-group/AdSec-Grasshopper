@@ -90,7 +90,7 @@ namespace AdSecGHTests.Helpers.Extensions {
     public void ReturnsILayerWhenDataCorrect() {
       var layer = ILayerByBarCount.Create(2,
         IBarBundle.Create(Reinforcement.Steel.IS456.Edition_2000.S415, Length.FromMillimeters(1)));
-      var input = new AdSecRebarLayerGoo(layer);
+      var input = new AdSecRebarLayerGoo(layer, string.Empty);
       ComponentTestHelper.SetInput(_component, input);
 
       object result = ComponentTestHelper.GetOutput(_component);

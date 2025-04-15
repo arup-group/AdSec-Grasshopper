@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using AdSecCore.Builders;
+using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
@@ -107,7 +108,7 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToAdSecRebarGroupsReturnsCorrectDataFromIGroup() {
-      var rebarGroup = new BuilderSingleBar().Build();
+      var rebarGroup = new RebarGroup() { Group = new BuilderSingleBar().Build() };
 
       var objwrap = new List<GH_ObjectWrapper> {
         new GH_ObjectWrapper(rebarGroup),

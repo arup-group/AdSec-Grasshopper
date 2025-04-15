@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -148,7 +150,6 @@ namespace AdSecGH.Components {
 
     protected override void SolveInternal(IGH_DataAccess da) {
       var groups = new List<AdSecRebarGroupGoo>();
-
       // cover
       var covers = this.GetCovers(da, Params.Input.Count - 1, _lengthUnit);
 
@@ -162,33 +163,10 @@ namespace AdSecGH.Components {
             return;
           }
 
-          // top
-          if (Params.Input[0].SourceCount != 0) {
-            var grp = ITemplateGroup.Create(ITemplateGroup.Face.Top);
-            grp.Layers = this.GetILayers(da, 0);
-            groups.Add(new AdSecRebarGroupGoo(grp));
-          }
-
-          // left
-          if (Params.Input[1].SourceCount != 0) {
-            var grp = ITemplateGroup.Create(ITemplateGroup.Face.LeftSide);
-            grp.Layers = this.GetILayers(da, 1);
-            groups.Add(new AdSecRebarGroupGoo(grp));
-          }
-
-          // right
-          if (Params.Input[2].SourceCount != 0) {
-            var grp = ITemplateGroup.Create(ITemplateGroup.Face.RightSide);
-            grp.Layers = this.GetILayers(da, 2);
-            groups.Add(new AdSecRebarGroupGoo(grp));
-          }
-
-          // bottom
-          if (Params.Input[3].SourceCount != 0) {
-            var grp = ITemplateGroup.Create(ITemplateGroup.Face.Bottom);
-            grp.Layers = this.GetILayers(da, 3);
-            groups.Add(new AdSecRebarGroupGoo(grp));
-          }
+          AddTopRebars(da, groups);
+          AddLeftRebars(da, groups);
+          AddRightRebars(da, groups);
+          AddBottomRebars(da, groups);
 
           break;
 
@@ -200,12 +178,7 @@ namespace AdSecGH.Components {
             return;
           }
 
-          // top
-          if (Params.Input[0].SourceCount != 0) {
-            var grp = IPerimeterGroup.Create();
-            grp.Layers = this.GetILayers(da, 0);
-            groups.Add(new AdSecRebarGroupGoo(grp));
-          }
+          AddPerimeterRebars(da, groups);
 
           break;
 
@@ -217,11 +190,7 @@ namespace AdSecGH.Components {
             return;
           }
 
-          // top
-          if (Params.Input[0].SourceCount != 0) {
-            var grp = ILinkGroup.Create(this.GetAdSecRebarBundleGoo(da, 0).Value);
-            groups.Add(new AdSecRebarGroupGoo(grp));
-          }
+          AddLinkRebars(da, groups);
 
           break;
       }
@@ -236,6 +205,67 @@ namespace AdSecGH.Components {
 
       // set output
       da.SetDataList(0, groups);
+    }
+
+    private void AddLinkRebars(IGH_DataAccess da, List<AdSecRebarGroupGoo> groups) {
+      if (Params.Input[0].SourceCount != 0) {
+        var barBundle = this.GetAdSecRebarBundleGoo(da, 0).Value;
+        var grp = ILinkGroup.Create(barBundle.Bundle);
+        groups.Add(new AdSecRebarGroupGoo(grp, barBundle.CodeDescription));
+      }
+    }
+
+    private void AddPerimeterRebars(IGH_DataAccess da, List<AdSecRebarGroupGoo> groups) {
+      if (Params.Input[0].SourceCount != 0) {
+        var perimeterLayer = this.GetLayers(da, 0);
+        var grp = IPerimeterGroup.Create();
+        grp.Layers = perimeterLayer.GetLayers();
+        groups.Add(new AdSecRebarGroupGoo(grp, CodeName(perimeterLayer)));
+      }
+    }
+
+    private void AddBottomRebars(IGH_DataAccess da, List<AdSecRebarGroupGoo> groups) {
+      // bottom
+      if (Params.Input[3].SourceCount != 0) {
+        var bottomLayer = this.GetLayers(da, 2);
+        var grp = ITemplateGroup.Create(ITemplateGroup.Face.Bottom);
+        grp.Layers = bottomLayer.GetLayers();
+        groups.Add(new AdSecRebarGroupGoo(grp, CodeName(bottomLayer)));
+      }
+    }
+
+    private void AddRightRebars(IGH_DataAccess da, List<AdSecRebarGroupGoo> groups) {
+      // right
+      if (Params.Input[2].SourceCount != 0) {
+        var rightLayer = this.GetLayers(da, 2);
+        var grp = ITemplateGroup.Create(ITemplateGroup.Face.RightSide);
+        grp.Layers = rightLayer.GetLayers();
+        groups.Add(new AdSecRebarGroupGoo(grp, CodeName(rightLayer)));
+      }
+    }
+
+    private void AddLeftRebars(IGH_DataAccess da, List<AdSecRebarGroupGoo> groups) {
+      // left
+      if (Params.Input[1].SourceCount != 0) {
+        var leftLayer = this.GetLayers(da, 1);
+        var grp = ITemplateGroup.Create(ITemplateGroup.Face.LeftSide);
+        grp.Layers = leftLayer.GetLayers();
+        groups.Add(new AdSecRebarGroupGoo(grp, CodeName(leftLayer)));
+      }
+    }
+
+    private void AddTopRebars(IGH_DataAccess da, List<AdSecRebarGroupGoo> groups) {
+      // top
+      if (Params.Input[0].SourceCount != 0) {
+        var topLayer = this.GetLayers(da, 0);
+        var grp = ITemplateGroup.Create(ITemplateGroup.Face.Top);
+        grp.Layers = topLayer.GetLayers();
+        groups.Add(new AdSecRebarGroupGoo(grp, CodeName(topLayer)));
+      }
+    }
+
+    private string CodeName(IList<BarLayer> layers) {
+      return layers.Count > 0 ? layers.First().CodeDescription : string.Empty;
     }
 
     protected override void UpdateUIFromSelectedItems() {

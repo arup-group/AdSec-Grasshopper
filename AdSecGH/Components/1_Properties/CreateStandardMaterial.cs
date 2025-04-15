@@ -16,6 +16,8 @@ using AdSecGHCore.Constants;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
+using Oasys.AdSec.DesignCode;
+
 using OasysGH;
 using OasysGH.Components;
 
@@ -206,7 +208,6 @@ namespace AdSecGH.Components {
       _selectedItems.Add(materialTypes[0]);
 
       if (_dropDownItems.Count == 1) {
-        //Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
         var designCodeKVP = ReflectionHelper.StandardCodes(AdSecMaterial.AdSecMaterialType.Concrete);
         _dropDownItems.Add(designCodeKVP.Keys.ToList());
         // select default code to EN1992
@@ -282,10 +283,7 @@ namespace AdSecGH.Components {
 
             var materialDesign = new MaterialDesign() {
               Material = material.Material,
-              DesignCode = new DesignCode() {
-                IDesignCode = material.DesignCode.DesignCode,
-                DesignCodeName = material.DesignCode.DesignCodeName
-              }
+              DesignCode = material.DesignCode.DesignCode,
             };
             if (search.ToLower() == "all") {
               filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
@@ -322,13 +320,12 @@ namespace AdSecGH.Components {
       var adSecMaterial = new AdSecMaterial(selectedMaterial);
       var updatedDesignMaterial = new MaterialDesign() {
         Material = adSecMaterial.Material,
-        DesignCode = new DesignCode() {
-          IDesignCode = adSecMaterial.DesignCode == null ? null : adSecMaterial.DesignCode.DesignCode,
-          DesignCodeName = adSecMaterial.DesignCode == null ? null : adSecMaterial.DesignCode.DesignCodeName
-        },
+        DesignCode = adSecMaterial.DesignCode.DesignCode,
         GradeName = selectedMaterial.Name,
       };
-
+      if (updatedDesignMaterial.DesignCode == null) {
+        updatedDesignMaterial.DesignCode = EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014;
+      }
       DA.SetData(0, new AdSecMaterialGoo(updatedDesignMaterial));
     }
 

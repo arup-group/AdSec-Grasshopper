@@ -99,8 +99,8 @@ namespace AdSecGHTests.Helpers.Extensions {
       var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(thickness, length),
         new WebConstant(thickness)));
       var section = ISection.Create(profile, Concrete.ACI318.Edition_2002.Metric.MPa_20);
-      var designCode = new AdSecDesignCode(ACI318.Edition_2002.Metric, "test").DesignCode;
-      var adSecSection = new AdSecSection(section, designCode, "", "", Plane.WorldXY);
+      var designCode = new AdSecDesignCode(ACI318.Edition_2002.Metric).DesignCode;
+      var adSecSection = new AdSecSection(section, designCode, Plane.WorldXY);
 
       var adSec = IAdSec.Create(adSecSection.DesignCode);
       var solution = adSec.Analyse(adSecSection.Section);

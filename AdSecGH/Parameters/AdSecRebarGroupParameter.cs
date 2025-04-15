@@ -30,6 +30,7 @@ namespace AdSecGH.Parameters {
     }
 
     protected override ToolStripMenuItem Menu_CustomSingleValueItem() {
+      base.Menu_CustomSingleValueItem();
       var item = new ToolStripMenuItem {
         Text = "Not available",
         Visible = false,

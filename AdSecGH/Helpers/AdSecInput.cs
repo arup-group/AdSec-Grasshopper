@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Parameters;
 
 using GH_IO.Types;
@@ -84,7 +86,7 @@ namespace AdSecGH.Helpers {
       if (ghType.Value is AdSecRebarBundleGoo goo) {
         rebarBundleGoo = goo;
       } else if (ghType.Value is AdSecRebarLayerGoo spacing) {
-        rebarBundleGoo = new AdSecRebarBundleGoo(spacing.Value.BarBundle);
+        rebarBundleGoo = new AdSecRebarBundleGoo(spacing.Value.Layer.BarBundle, spacing.Value.CodeDescription);
         showRemark = true;
       } else {
         castSuccessful = false;
@@ -219,15 +221,15 @@ namespace AdSecGH.Helpers {
       return true;
     }
 
-    public static bool TryCastToILayers(List<GH_ObjectWrapper> ghTypes, IList<ILayer> iLayers, List<int> invalidIds) {
+    public static bool TryCastToLayers(List<GH_ObjectWrapper> ghTypes, IList<BarLayer> iLayers, List<int> invalidIds) {
       invalidIds = invalidIds ?? new List<int>();
-      ILayer layer = null;
+      BarLayer layer = null;
       if (ghTypes == null || ghTypes.Count == 0) {
         return false;
       }
 
       for (int i = 0; i < ghTypes.Count; i++) {
-        if (TryCastToILayer(ghTypes[i], ref layer)) {
+        if (TryCastToLayer(ghTypes[i], ref layer)) {
           iLayers.Add(layer);
         } else {
           invalidIds.Add(i);
@@ -237,9 +239,9 @@ namespace AdSecGH.Helpers {
       return !invalidIds.Any();
     }
 
-    public static bool TryCastToILayer(GH_ObjectWrapper objectWrapper, ref ILayer iLayer) {
+    public static bool TryCastToLayer(GH_ObjectWrapper objectWrapper, ref BarLayer iLayer) {
       switch (objectWrapper.Value) {
-        case ILayer layer:
+        case BarLayer layer:
           iLayer = layer;
           break;
         case AdSecRebarLayerGoo rebarGoo:
@@ -269,7 +271,7 @@ namespace AdSecGH.Helpers {
       }
 
       for (int i = 0; i < ghTypes.Count; i++) {
-        if (ghTypes[i].Value is IGroup group) {
+        if (ghTypes[i].Value is RebarGroup group) {
           rebarGroups.Add(new AdSecRebarGroup(group));
         } else if (TryCastToAdSecRebarGroupGoo(ghTypes[i], ref rebarGroup)) {
           rebarGroups.Add(rebarGroup.Value);

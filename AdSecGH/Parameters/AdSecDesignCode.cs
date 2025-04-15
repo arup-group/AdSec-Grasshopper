@@ -25,9 +25,8 @@ namespace AdSecGH.Parameters {
     public AdSecDesignCode() {
     }
 
-    public AdSecDesignCode(IDesignCode designCode, string designCodeName) {
+    public AdSecDesignCode(IDesignCode designCode) {
       DesignCode = designCode;
-      DesignCodeName = designCodeName;
     }
 
     internal AdSecDesignCode(FieldInfo fieldDesignCode) {

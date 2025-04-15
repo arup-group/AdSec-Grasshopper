@@ -25,8 +25,6 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
   public class AdSecSection {
-    internal string _codeName;
-    internal string _materialName;
     internal List<Brep> _subProfiles;
     internal List<Curve> m_linkEdges = new List<Curve>();
     // cache for preview
@@ -46,35 +44,22 @@ namespace AdSecGH.Parameters {
 
     public AdSecSection(SectionDesign sectionDesign) {
       Section = sectionDesign.Section;
-      DesignCode = sectionDesign.DesignCode.IDesignCode;
-      _codeName = sectionDesign.DesignCode.DesignCodeName;
-      _materialName = sectionDesign.MaterialName;
+      DesignCode = sectionDesign.DesignCode;
       LocalPlane = sectionDesign.LocalPlane.ToGh();
-      SetDefaultDesignCode();
       CreatePreview(ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour, ref m_rebars,
         ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref _subProfiles, ref m_subEdges, ref m_subVoidEdges,
         ref m_subColours);
     }
 
     public AdSecSection(
-      ISection section, IDesignCode code, string codeName, string materialName, Plane local,
+      ISection section, IDesignCode code, Plane local,
       IPoint subComponentOffset = null) {
-      _materialName = materialName;
       Section = section;
       DesignCode = code;
-      _codeName = codeName;
       LocalPlane = local;
-      SetDefaultDesignCode();
       CreatePreview(ref m_profile, ref m_profileEdge, ref m_profileVoidEdges, ref m_profileColour, ref m_rebars,
         ref m_rebarEdges, ref m_linkEdges, ref m_rebarColours, ref _subProfiles, ref m_subEdges, ref m_subVoidEdges,
         ref m_subColours, subComponentOffset);
-    }
-
-    private void SetDefaultDesignCode() {
-      if (DesignCode == null) {
-        DesignCode = EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014;
-        _codeName = "EN1992 Part1_1 Edition_2004 NationalAnnex GB Edition_2014";
-      }
     }
 
     public IDesignCode DesignCode { get; set; }
@@ -363,47 +348,6 @@ namespace AdSecGH.Parameters {
         offset2[0],
       });
       //linkEdges.Add(centreline);
-    }
-
-    private Tuple<Oasys.Collections.IList<IGroup>, ICover> CreateReinforcementGroupsWithMaxCover(
-      List<AdSecRebarGroup> reinforcement) {
-      var groups = Oasys.Collections.IList<IGroup>.Create();
-      ICover cover = null;
-      foreach (var grp in reinforcement) {
-        // add group to list of groups
-        groups.Add(grp.Group);
-
-        // check if cover of group is bigger than any previous ones
-        try {
-          var link = (ILinkGroup)grp.Group;
-          if (grp.Cover != null) {
-            if (cover == null || grp.Cover.UniformCover > cover.UniformCover) {
-              cover = grp.Cover;
-            }
-          }
-        } catch (Exception) {
-          try {
-            var link = (IPerimeterGroup)grp.Group;
-            if (grp.Cover != null) {
-              if (cover == null || grp.Cover.UniformCover > cover.UniformCover) {
-                cover = grp.Cover;
-              }
-            }
-          } catch (Exception) {
-            try {
-              var template = (ITemplateGroup)grp.Group;
-              if (grp.Cover != null) {
-                if (cover == null || grp.Cover.UniformCover > cover.UniformCover) {
-                  cover = grp.Cover;
-                }
-              }
-            } catch (Exception) { }
-          }
-          // not a link group, so we don't set section's cover
-        }
-      }
-
-      return new Tuple<Oasys.Collections.IList<IGroup>, ICover>(groups, cover);
     }
   }
 }

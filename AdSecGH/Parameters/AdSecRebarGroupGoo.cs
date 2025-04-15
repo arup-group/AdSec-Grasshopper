@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 
+using AdSecCore.Functions;
+
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec.Reinforcement;
@@ -24,8 +26,8 @@ namespace AdSecGH.Parameters {
     public AdSecRebarGroupGoo() {
     }
 
-    public AdSecRebarGroupGoo(IGroup group) {
-      Value = new AdSecRebarGroup(group);
+    public AdSecRebarGroupGoo(IGroup group, string codeDescription) {
+      Value = new AdSecRebarGroup(new RebarGroup() { Group = group, CodeDescription = codeDescription });
     }
 
     public AdSecRebarGroupGoo(AdSecRebarGroup goo) {

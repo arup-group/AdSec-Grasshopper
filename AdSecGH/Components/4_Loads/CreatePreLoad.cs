@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -24,7 +26,6 @@ using OasysGH.Units.Helpers;
 
 using OasysUnits;
 using OasysUnits.Units;
-
 namespace AdSecGH.Components {
   /// <summary>
   ///   Component to create a new Stress Strain Point
@@ -183,7 +184,7 @@ namespace AdSecGH.Components {
 
       var longitudinal = (ILongitudinalGroup)rebar.Value.Group;
       longitudinal.Preload = load;
-      var out_rebar = new AdSecRebarGroupGoo(longitudinal);
+      var out_rebar = new AdSecRebarGroupGoo(longitudinal, rebar.Value.CodeDescription);
       if (rebar.Cover != null) {
         out_rebar.Cover = ICover.Create(rebar.Cover.UniformCover);
       }

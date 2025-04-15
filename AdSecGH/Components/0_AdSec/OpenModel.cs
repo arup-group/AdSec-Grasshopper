@@ -141,7 +141,7 @@ namespace AdSecGH.Components {
       for (int i = 0; i < jsonParser.Sections.Count; i++) {
         var section = jsonParser.Sections[i];
         var pln = i > planes.Count - 1 ? planes.Last() : planes[i];
-        sections.Add(new AdSecSectionGoo(new AdSecSection(section, code.DesignCode, code.DesignCodeName, "", pln)));
+        sections.Add(new AdSecSectionGoo(new AdSecSection(section, code.DesignCode, pln)));
       }
 
       if (sections.Count == 0) {

@@ -7,6 +7,7 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
+using AdSecGHCore;
 using AdSecGHCore.Constants;
 
 using Grasshopper.Kernel;
@@ -95,11 +96,11 @@ namespace AdSecGH.Components {
     protected override void SolveInternal(IGH_DataAccess DA) {
       // 0 material input
       var material = this.GetAdSecMaterial(DA, 0);
-
+      var codeDescription = MaterialHelper.FindPath(material.Material);
       switch (_mode) {
         case FoldMode.Single:
           var rebar = new AdSecRebarBundleGoo(IBarBundle.Create((IReinforcement)material.Material,
-            (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
+            (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)), codeDescription);
           DA.SetData(0, rebar);
           break;
 
@@ -108,7 +109,7 @@ namespace AdSecGH.Components {
           DA.GetData(2, ref count);
 
           var bundle = new AdSecRebarBundleGoo(IBarBundle.Create((IReinforcement)material.Material,
-            (Length)Input.UnitNumber(this, DA, 1, _lengthUnit), count));
+            (Length)Input.UnitNumber(this, DA, 1, _lengthUnit), count), codeDescription);
 
           DA.SetData(0, bundle);
           break;

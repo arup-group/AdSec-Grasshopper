@@ -19,9 +19,7 @@ namespace AdSecCoreTests.Functions {
       };
       function.Material.Value = new MaterialDesign() {
         Material = Concrete.IS456.Edition_2000.M10,
-        DesignCode = new DesignCode() {
-          IDesignCode = IS456.Edition_2000,
-        },
+        DesignCode = IS456.Edition_2000,
       };
     }
 
@@ -49,9 +47,7 @@ namespace AdSecCoreTests.Functions {
       var singleBars = new BuilderSingleBar().AtPosition(Geometry.Zero()).WithSize(2).CreateSingleBar()
        .AtPosition(Geometry.Zero()).Build();
       var rebarOriginal = new List<AdSecRebarGroup> {
-        new() {
-          Group = singleBars,
-        },
+        new AdSecRebarGroup(singleBars, string.Empty),
       };
       function.RebarGroup.Value = rebarOriginal.ToArray();
       function.Compute();

@@ -17,9 +17,7 @@ namespace AdSecCoreTests.Builder {
       var singleBars = new BuilderSingleBar().AtPosition(Geometry.Zero()).WithSize(2).CreateSingleBar()
        .AtPosition(Geometry.Zero()).Build();
       var rebarOriginal = new List<AdSecRebarGroup> {
-        new() {
-          Group = singleBars,
-        },
+        new AdSecRebarGroup(singleBars, string.Empty),
       };
 
       var sectionBuilder = new SectionBuilder();
@@ -40,9 +38,7 @@ namespace AdSecCoreTests.Builder {
 
       var lineBars = new BuilderLineGroup().Build();
       var rebarOriginal = new List<AdSecRebarGroup> {
-        new() {
-          Group = lineBars,
-        },
+         new AdSecRebarGroup(lineBars, string.Empty),
       };
 
       var sectionBuilder = new SectionBuilder();

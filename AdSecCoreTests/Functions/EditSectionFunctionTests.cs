@@ -93,19 +93,15 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ShouldUpdateDesignCode() {
       var newCode = AS3600.Edition_2001;
-      function.DesignCode.Value = new DesignCode {
-        IDesignCode = newCode,
-      };
+      function.DesignCode.Value = newCode;
       function.Compute();
-      Assert.Equal(newCode, function.DesignCodeOut.Value.IDesignCode);
-      Assert.Equal(newCode, function.MaterialOut.Value.DesignCode.IDesignCode);
+      Assert.Equal(newCode, function.DesignCodeOut.Value);
+      Assert.Equal(newCode, function.MaterialOut.Value.DesignCode);
     }
 
     [Fact]
     public void ShouldUpdateRebarGroup() {
-      var adSecRebarGroup = new AdSecRebarGroup {
-        Group = new BuilderLineGroup().Build(),
-      };
+      var adSecRebarGroup = new AdSecRebarGroup(new BuilderLineGroup().Build(), string.Empty);
       function.RebarGroup.Value = new[] {
         adSecRebarGroup,
       };
