@@ -2,10 +2,13 @@
 using System.Drawing;
 using System.Linq;
 
+using AdSecGH.UI;
+
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
+using Oasys.Collections;
 using Oasys.Profiles;
 
 using OasysGH.Units;
@@ -20,24 +23,25 @@ namespace AdSecGH.Parameters {
     public IPoint AdSecPoint { get; private set; }
     public override BoundingBox Boundingbox {
       get {
-        if (Value == null) { return BoundingBox.Empty; }
-        var pt1 = new Point3d(Value);
-        pt1.Z += 0.25;
-        var pt2 = new Point3d(Value);
-        pt2.Z += -0.25;
-        var ln = new Line(pt1, pt2);
-        var crv = new LineCurve(ln);
-        return crv.GetBoundingBox(false);
+        if (Value == null) {
+          return BoundingBox.Empty;
+        }
+
+        var point1 = new Point3d(Value);
+        point1.Z += 0.25;
+        var point2 = new Point3d(Value);
+        point2.Z += -0.25;
+        var line = new Line(point1, point2);
+        var lineCurve = new LineCurve(line);
+        return lineCurve.GetBoundingBox(false);
       }
     }
-    public BoundingBox ClippingBox => Boundingbox;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Vertex";
 
     public AdSecPointGoo(Point3d point) : base(point) {
       m_value = point;
-      AdSecPoint = IPoint.Create(
-        new Length(m_value.Y, DefaultUnits.LengthUnitGeometry),
+      AdSecPoint = IPoint.Create(new Length(m_value.Y, DefaultUnits.LengthUnitGeometry),
         new Length(m_value.Z, DefaultUnits.LengthUnitGeometry));
     }
 
@@ -48,28 +52,34 @@ namespace AdSecGH.Parameters {
 
     public AdSecPointGoo(IPoint adsecPoint) {
       AdSecPoint = adsecPoint;
-      m_value = new Point3d(
-        0,
-        AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
+      m_value = new Point3d(0, AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
         AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
     }
 
     public AdSecPointGoo(Length y, Length z) {
       AdSecPoint = IPoint.Create(y, z);
-      m_value = new Point3d(
-        0,
-        AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
+      m_value = new Point3d(0, AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
         AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
     }
 
+    public BoundingBox ClippingBox => Boundingbox;
+
+    public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
+
+    public void DrawViewportWires(GH_PreviewWireArgs args) {
+      if (args.Color == Instances.Settings.GetValue("DefaultPreviewColour", Color.White)) {
+        args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 3, Colour.OasysBlue);
+      } else {
+        args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 5, Colour.OasysYellow);
+      }
+    }
+
     public static IPoint CreateFromPoint3d(Point3d point, Plane plane) {
-      // transform to local plane
       var mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, plane);
-      var trans = new Point3d(point);
-      trans.Transform(mapToLocal);
-      return IPoint.Create(
-          new Length(trans.Y, DefaultUnits.LengthUnitGeometry),
-          new Length(trans.Z, DefaultUnits.LengthUnitGeometry));
+      var transformation = new Point3d(point);
+      transformation.Transform(mapToLocal);
+      return IPoint.Create(new Length(transformation.Y, DefaultUnits.LengthUnitGeometry),
+        new Length(transformation.Z, DefaultUnits.LengthUnitGeometry));
     }
 
     public override bool CastFrom(object source) {
@@ -78,31 +88,31 @@ namespace AdSecGH.Parameters {
       }
 
       if (source is Point3d d) {
-        var temp = new AdSecPointGoo(d);
-        m_value = temp.Value;
-        AdSecPoint = temp.AdSecPoint;
+        var adSecPointGoo = new AdSecPointGoo(d);
+        m_value = adSecPointGoo.Value;
+        AdSecPoint = adSecPointGoo.AdSecPoint;
         return true;
       }
 
       if (source is IPoint point) {
-        var temp = new AdSecPointGoo(point);
-        m_value = temp.Value;
-        AdSecPoint = temp.AdSecPoint;
+        var adSecPointGoo = new AdSecPointGoo(point);
+        m_value = adSecPointGoo.Value;
+        AdSecPoint = adSecPointGoo.AdSecPoint;
         return true;
       }
 
       if (source is GH_Point ptGoo) {
-        var temp = new AdSecPointGoo(ptGoo.Value);
-        m_value = temp.Value;
-        AdSecPoint = temp.AdSecPoint;
+        var adSecPointGoo = new AdSecPointGoo(ptGoo.Value);
+        m_value = adSecPointGoo.Value;
+        AdSecPoint = adSecPointGoo.AdSecPoint;
         return true;
       }
 
-      var pt = new Point3d();
-      if (GH_Convert.ToPoint3d(source, ref pt, GH_Conversion.Both)) {
-        var temp = new AdSecPointGoo(pt);
-        m_value = temp.Value;
-        AdSecPoint = temp.AdSecPoint;
+      var point3d = new Point3d();
+      if (GH_Convert.ToPoint3d(source, ref point3d, GH_Conversion.Both)) {
+        var adSecPointGoo = new AdSecPointGoo(point3d);
+        m_value = adSecPointGoo.Value;
+        AdSecPoint = adSecPointGoo.AdSecPoint;
         return true;
       }
 
@@ -126,9 +136,8 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(IPoint))) {
-        target = (Q)(object)IPoint.Create(
-            new Length(Value.X, DefaultUnits.LengthUnitGeometry),
-            new Length(Value.Y, DefaultUnits.LengthUnitGeometry));
+        target = (Q)(object)IPoint.Create(new Length(Value.X, DefaultUnits.LengthUnitGeometry),
+          new Length(Value.Y, DefaultUnits.LengthUnitGeometry));
         return true;
       }
 
@@ -136,29 +145,20 @@ namespace AdSecGH.Parameters {
       return false;
     }
 
-    public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
-    }
-
-    public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (args.Color == Instances.Settings.GetValue("DefaultPreviewColour", Color.White)) {
-        //Grasshopper.Instances.Settings.GetValue("DefaultPreviewColour", System.Drawing.Color.White)) // not selected
-        args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 3, UI.Colour.OasysBlue);
-      } else {
-        args.Pipeline.DrawPoint(Value, PointStyle.RoundControlPoint, 5, UI.Colour.OasysYellow);
-      }
-    }
-
     public override IGH_GeometricGoo DuplicateGeometry() {
       return new AdSecPointGoo(new Point3d(Value));
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null) { return BoundingBox.Empty; }
-      var pt = new Point3d(Value);
-      pt.Z += 0.001;
-      var ln = new Line(Value, pt);
-      var crv = new LineCurve(ln);
-      return crv.GetBoundingBox(xform);
+      if (Value == null) {
+        return BoundingBox.Empty;
+      }
+
+      var point3d = new Point3d(Value);
+      point3d.Z += 0.001;
+      var line = new Line(Value, point3d);
+      var lineCurve = new LineCurve(line);
+      return lineCurve.GetBoundingBox(xform);
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
@@ -176,38 +176,38 @@ namespace AdSecGH.Parameters {
       return null;
     }
 
-    internal static Oasys.Collections.IList<IPoint> PtsFromPolyline(Polyline curve) {
-      Plane.FitPlaneToPoints(curve.ToList(), out Plane plane);
+    internal static IList<IPoint> PtsFromPolyline(Polyline curve) {
+      Plane.FitPlaneToPoints(curve.ToList(), out var plane);
       var mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
 
-      var pts = Oasys.Collections.IList<IPoint>.Create();
-      IPoint pt = null;
+      var points = IList<IPoint>.Create();
+      IPoint point = null;
       for (int j = 0; j < curve.Count; j++) {
-        Point3d point3d = curve[j];
+        var point3d = curve[j];
         point3d.Transform(mapToLocal);
-        pt = IPoint.Create(
-          new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
+        point = IPoint.Create(new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
           new Length(point3d.Y, DefaultUnits.LengthUnitGeometry));
-        pts.Add(pt);
+        points.Add(point);
       }
-      return pts;
+
+      return points;
     }
 
-    internal static Oasys.Collections.IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve) {
-      curve.TryGetPolyline(out Polyline temp_crv);
-      Plane.FitPlaneToPoints(temp_crv.ToList(), out Plane plane);
+    internal static IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve) {
+      curve.TryGetPolyline(out var tempCurve);
+      Plane.FitPlaneToPoints(tempCurve.ToList(), out var plane);
       var mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
 
-      var pts = Oasys.Collections.IList<IPoint>.Create();
+      var points = IList<IPoint>.Create();
       for (int j = 0; j < curve.PointCount; j++) {
-        Point3d point3d = curve.Point(j);
+        var point3d = curve.Point(j);
         point3d.Transform(mapToLocal);
-        var pt = IPoint.Create(
-          new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
+        var point = IPoint.Create(new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
           new Length(point3d.Y, DefaultUnits.LengthUnitGeometry));
-        pts.Add(pt);
+        points.Add(point);
       }
-      return pts;
+
+      return points;
     }
   }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+using AdSecGH.Helpers;
 using AdSecGH.Properties;
 
 using AdSecGHCore.Constants;
@@ -22,19 +23,11 @@ namespace AdSecGH.Parameters {
     protected override Bitmap Icon => Resources.RebarGroupParam;
 
     protected override ToolStripMenuItem Menu_CustomMultiValueItem() {
-      var item = new ToolStripMenuItem {
-        Text = "Not available",
-        Visible = false,
-      };
-      return item;
+      return ToolStripMenuHelper.CreateInvisibleMenuItem();
     }
 
     protected override ToolStripMenuItem Menu_CustomSingleValueItem() {
-      var item = new ToolStripMenuItem {
-        Text = "Not available",
-        Visible = false,
-      };
-      return item;
+      return ToolStripMenuHelper.CreateInvisibleMenuItem();
     }
 
     protected override GH_GetterResult Prompt_Plural(ref List<AdSecRebarGroupGoo> values) {

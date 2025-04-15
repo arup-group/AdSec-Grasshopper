@@ -51,26 +51,22 @@ namespace AdSecGH.Components {
 
       Enum.TryParse(_selectedItems[0], out _type);
 
-      // set bool if selection is concrete
-      if (_selectedItems[i] == AdSecMaterial.AdSecMaterialType.Concrete.ToString()) {
-        _isConcrete = true;
-      } else {
-        _isConcrete = false;
-      }
+      _isConcrete = _selectedItems[i] == AdSecMaterial.AdSecMaterialType.Concrete.ToString();
 
-      // update input params
       ChangeMode();
       base.UpdateUI();
     }
 
     public override void VariableParameterMaintenance() {
-      if (_isConcrete) {
-        Params.Input[5].Name = "Yield PointCrack Calc Params";
-        Params.Input[5].NickName = "CCP";
-        Params.Input[5].Description = "[Optional] Material's Crack Calculation Parameters";
-        Params.Input[5].Access = GH_ParamAccess.item;
-        Params.Input[5].Optional = true;
+      if (!_isConcrete) {
+        return;
       }
+
+      Params.Input[5].Name = "Yield PointCrack Calc Params";
+      Params.Input[5].NickName = "CCP";
+      Params.Input[5].Description = "[Optional] Material's Crack Calculation Parameters";
+      Params.Input[5].Access = GH_ParamAccess.item;
+      Params.Input[5].Optional = true;
     }
 
     public override bool Write(GH_IWriter writer) {
@@ -166,11 +162,8 @@ namespace AdSecGH.Components {
       // create api material based on type
       switch (_type) {
         case AdSecMaterial.AdSecMaterialType.Concrete:
-          if (concreteCrack == null) {
-            material.Material = IConcrete.Create(ulsTC, slsTC);
-          } else {
-            material.Material = IConcrete.Create(ulsTC, slsTC, concreteCrack);
-          }
+          material.Material = concreteCrack == null ? IConcrete.Create(ulsTC, slsTC) :
+            (IMaterial)IConcrete.Create(ulsTC, slsTC, concreteCrack);
 
           break;
 
@@ -179,9 +172,6 @@ namespace AdSecGH.Components {
           break;
 
         case AdSecMaterial.AdSecMaterialType.Rebar:
-          material.Material = IReinforcement.Create(ulsTC, slsTC);
-          break;
-
         case AdSecMaterial.AdSecMaterialType.Tendon:
           material.Material = IReinforcement.Create(ulsTC, slsTC);
           break;
@@ -204,10 +194,7 @@ namespace AdSecGH.Components {
     }
 
     protected override void UpdateUIFromSelectedItems() {
-      // cast selection to material type enum
       Enum.TryParse(_selectedItems[0], out _type);
-
-      // don´t know if this needs to happen before ChangeMode()
       CreateAttributes();
 
       ChangeMode();

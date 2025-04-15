@@ -41,9 +41,8 @@ namespace AdSecGH.Components {
     }
 
     public override void VariableParameterMaintenance() {
-      string angleAbbreviation = Angle.GetAbbreviation(_angleUnit);
       IQuantity quantityAngle = new Angle(0, _angleUnit);
-      angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
+      string angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
       Params.Input[1].Name = $"Rotation [{angleAbbreviation}]";
     }
 

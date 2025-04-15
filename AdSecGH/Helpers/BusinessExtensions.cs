@@ -164,15 +164,15 @@ namespace Oasys.GH.Helpers {
             return materials?.ToList();
           }
         },
-        { typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value },
-        { typeof(GeometryParameter), a => {
-            var value = (a as GeometryParameter).Value;
+        { typeof(IntegerArrayParameter), a => (a as IntegerArrayParameter).Value }, {
+          typeof(GeometryParameter), a => {
+            object value = (a as GeometryParameter).Value;
             var sectionDesign = value as SectionDesign;
             var sectionGoo = new AdSecSectionGoo(new AdSecSection(sectionDesign));
-            var curves = sectionGoo._drawInstructions.Select(x => {
-            GH_Curve curve = null;
-            GH_Convert.ToGHCurve(x.Geometry, GH_Conversion.Both, ref curve);
-            return curve;
+            var curves = sectionGoo.DrawInstructionsList.Select(x => {
+              GH_Curve curve = null;
+              GH_Convert.ToGHCurve(x.Geometry, GH_Conversion.Both, ref curve);
+              return curve;
             }).ToList();
             return curves;
           }

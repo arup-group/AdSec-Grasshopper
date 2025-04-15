@@ -32,16 +32,13 @@ namespace AdSecGH.Components {
 
     public SaveSvg() : base("Section SVG", "SVG", "Creates a SVG file from an AdSec Section", CategoryName.Name(),
       SubCategoryName.Cat0()) {
-      Hidden = true; // sets the initial state of the component to hidden
+      Hidden = true;
     }
 
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("baf1ad7d-efca-4851-a6a3-21a65471a041");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.SVG;
-
-    // This region handles input and output parameters
 
     public override void CreateAttributes() {
       m_attributes = new ThreeButtonComponentAttributes(this, "Save", "Save As", "Open SVG", SaveFile, SaveAsFile,
@@ -76,18 +73,14 @@ namespace AdSecGH.Components {
       }
 
       _fileName = fdi.FileName;
-      // write to file
       File.WriteAllText(_fileName, imageSVG);
 
       _canOpen = true;
 
-      //add panel input with string
-      //delete existing inputs if any
       while (Params.Input[2].Sources.Count > 0) {
         Instances.ActiveCanvas.Document.RemoveObject(Params.Input[2].Sources[0], false);
       }
 
-      //instantiate  new panel
       var panel = new GH_Panel();
       panel.CreateAttributes();
 
@@ -95,14 +88,12 @@ namespace AdSecGH.Components {
         = new PointF(Attributes.DocObject.Attributes.Bounds.Left - panel.Attributes.Bounds.Width - 40,
           Attributes.DocObject.Attributes.Bounds.Bottom - panel.Attributes.Bounds.Height);
 
-      //populate value list with our own data
       panel.UserText = _fileName;
 
       //Until now, the panel is a hypothetical object.
       // This command makes it 'real' and adds it to the canvas.
       Instances.ActiveCanvas.Document.AddObject(panel, false);
 
-      //Connect the new slider to this component
       Params.Input[2].AddSource(panel);
       Params.OnParametersChanged();
       ExpireSolution(true);

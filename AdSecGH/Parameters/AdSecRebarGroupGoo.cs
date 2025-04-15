@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 
+using AdSecCore;
+
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec.Reinforcement;
@@ -21,41 +23,28 @@ namespace AdSecGH.Parameters {
       set => Value.Cover = value;
     }
 
-    public AdSecRebarGroupGoo() {
-    }
+    public AdSecRebarGroupGoo() { }
 
     public AdSecRebarGroupGoo(IGroup group) {
       Value = new AdSecRebarGroup(group);
     }
 
     public AdSecRebarGroupGoo(AdSecRebarGroup goo) {
-      if (goo == null) {
-        goo = new AdSecRebarGroup();
-      }
-      Value = goo;
+      Value = goo ?? new AdSecRebarGroup();
     }
 
     public override bool CastFrom(object source) {
-      if (source == null) {
+      if (!(source is AdSecRebarGroup group)) {
         return false;
       }
 
-      //Cast from own type
-      if (typeof(AdSecRebarGroup).IsAssignableFrom(source.GetType())) {
-        Value = (AdSecRebarGroup)source;
-        return true;
-      }
-
-      return false;
+      Value = group;
+      return true;
     }
 
     public override bool CastTo<Q>(ref Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecRebarGroup))) {
-        if (Value == null) {
-          target = default;
-        } else {
-          target = (Q)(object)Value.Duplicate();
-        }
+        target = Value == null ? default : (Q)(object)Value.Duplicate();
         return true;
       }
 
@@ -68,176 +57,96 @@ namespace AdSecGH.Parameters {
       if (Value.Cover != null) {
         dup.Value.Cover = ICover.Create(Value.Cover.UniformCover);
       }
+
       return dup;
     }
 
-    //public AdSecRebarGroupGoo Duplicate()
-    //{
-    //    AdSecRebarGroupGoo dup;
-    //    ICover cover;
-    //    try
-    //    {
-    //        // try longitudinal group first
-    //        ILongitudinalGroup longitudinal = (ILongitudinalGroup)Value;
-
-    //        try
-    //        {
-    //            ITemplateGroup temp = (ITemplateGroup)Value;
-
-    //            dup = new AdSecRebarGroupGoo(new ITemplateGroup.)
-    //        }
-    //        catch (Exception)
-    //        {
-    //            try
-    //            {
-    //                IPerimeterGroup perimeter = (IPerimeterGroup)Value;
-    //                m_ToString = "Perimeter Group, " + m_cover.UniformCover.ToUnit(DocumentDefaultUnits.LengthUnitGeometry) + " cover";
-    //            }
-    //            catch (Exception)
-    //            {
-    //                try
-    //                {
-    //                    IArcGroup arc = (IArcGroup)Value;
-    //                    m_ToString = "Arc Type Layout";
-    //                }
-    //                catch (Exception)
-    //                {
-    //                    try
-    //                    {
-    //                        ICircleGroup cir = (ICircleGroup)Value;
-    //                        m_ToString = "Circle Type Layout";
-    //                    }
-    //                    catch (Exception)
-    //                    {
-    //                        try
-    //                        {
-    //                            ILineGroup lin = (ILineGroup)Value;
-    //                            m_ToString = "Line Type Layout";
-    //                        }
-    //                        catch (Exception)
-    //                        {
-    //                            try
-    //                            {
-    //                                ISingleBars sin = (ISingleBars)Value;
-    //                                m_ToString = "SingleBars Type Layout";
-    //                            }
-    //                            catch (Exception)
-    //                            {
-    //                            }
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-
-    //        // get any preload
-    //        if (longitudinal.Preload != null)
-    //        {
-    //            try
-    //            {
-    //                IPreForce force = (IPreForce)longitudinal.Preload;
-
-    //            }
-    //            catch (Exception)
-    //            {
-    //                try
-    //                {
-    //                    IPreStress stress = (IPreStress)longitudinal.Preload;
-
-    //                }
-    //                catch (Exception)
-    //                {
-    //                    IPreStrain strain = (IPreStrain)longitudinal.Preload;
-
-    //                }
-    //            }
-    //        }
-    //    }
-    //    catch (Exception)
-    //    {
-    //        try
-    //        {
-    //            ILinkGroup link = (ILinkGroup)Value;
-    //            m_ToString = "Link, " + m_cover.UniformCover.ToUnit(DocumentDefaultUnits.LengthUnitGeometry) + " cover";
-    //        }
-    //        catch (Exception)
-    //        {
-    //        }
-
-    //    }
-    //}
     public override string ToString() {
-      string m_ToString = "";
-      string m_preLoad = "";
-      try {
-        // try longitudinal group first
-        var longitudinal = (ILongitudinalGroup)Value.Group;
+      var doubleComparer = new DoubleComparer();
+      string toString = string.Empty;
+      string preLoad = string.Empty;
+      switch (Value.Group) {
+        case ILongitudinalGroup longitudinal: {
+            if (longitudinal.Preload != null) {
+              preLoad = GetPreLoad(longitudinal, doubleComparer, preLoad);
+            }
 
-        // get any preload
-        if (longitudinal.Preload != null) {
-          try {
-            var force = (IPreForce)longitudinal.Preload;
-            if (force.Force.Value != 0) {
-              IQuantity quantityForce = new Force(0, DefaultUnits.ForceUnit);
-              string unitforceAbbreviation = string.Concat(quantityForce.ToString().Where(char.IsLetter));
-              m_preLoad = $", {Math.Round(force.Force.As(DefaultUnits.ForceUnit), 4)}{unitforceAbbreviation} prestress";
-            }
-          } catch (Exception) {
-            try {
-              var stress = (IPreStress)longitudinal.Preload;
-              if (stress.Stress.Value != 0) {
-                IQuantity quantityStress = new Pressure(0, DefaultUnits.StressUnitResult);
-                string unitstressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
-                m_preLoad = $", {Math.Round(stress.Stress.As(DefaultUnits.StressUnitResult), 4)}{unitstressAbbreviation} prestress";
-              }
-            } catch (Exception) {
-              var strain = (IPreStrain)longitudinal.Preload;
-              if (strain.Strain.Value != 0) {
-                string unitstrainAbbreviation = Strain.GetAbbreviation(DefaultUnits.MaterialStrainUnit);
-                m_preLoad = $", {Math.Round(strain.Strain.As(DefaultUnits.MaterialStrainUnit), 4)}{unitstrainAbbreviation} prestress";
-              }
-            }
-          }
-        }
+            toString = GetGroupDescription();
 
-        try {
-          var temp = (ITemplateGroup)Value.Group;
-          m_ToString = $"Template Group, {Value.Cover.UniformCover.ToUnit(DefaultUnits.LengthUnitGeometry)} cover";
-        } catch (Exception) {
-          try {
-            var perimeter = (IPerimeterGroup)Value.Group;
-            m_ToString = $"Perimeter Group, {Value.Cover.UniformCover.ToUnit(DefaultUnits.LengthUnitGeometry)} cover";
-          } catch (Exception) {
-            try {
-              var arc = (IArcGroup)Value.Group;
-              m_ToString = "Arc Type Layout";
-            } catch (Exception) {
-              try {
-                var cir = (ICircleGroup)Value.Group;
-                m_ToString = "Circle Type Layout";
-              } catch (Exception) {
-                try {
-                  var lin = (ILineGroup)Value.Group;
-                  m_ToString = "Line Type Layout";
-                } catch (Exception) {
-                  try {
-                    var sin = (ISingleBars)Value.Group;
-                    m_ToString = "SingleBars Type Layout";
-                  } catch (Exception) {
-                  }
-                }
-              }
-            }
+            break;
           }
-        }
-      } catch (Exception) {
-        try {
-          var link = (ILinkGroup)Value.Group;
-          m_ToString = $"Link, {Value.Cover.UniformCover.ToUnit(DefaultUnits.LengthUnitGeometry)} cover";
-        } catch (Exception) {
-        }
+
+        case ILinkGroup _:
+          toString = $"Link, {Value.Cover.UniformCover.ToUnit(DefaultUnits.LengthUnitGeometry)} cover";
+          break;
       }
-      return $"AdSec {TypeName} {{{m_ToString}{m_preLoad}}}";
+
+      return $"AdSec {TypeName} {{{toString}{preLoad}}}";
+    }
+
+    private string GetGroupDescription() {
+      string toString;
+      switch (Value.Group) {
+        case ITemplateGroup _:
+          toString = $"Template Group, {Value.Cover.UniformCover.ToUnit(DefaultUnits.LengthUnitGeometry)} cover";
+          break;
+        case IPerimeterGroup _:
+          toString = $"Perimeter Group, {Value.Cover.UniformCover.ToUnit(DefaultUnits.LengthUnitGeometry)} cover";
+          break;
+        case IArcGroup _:
+          toString = "Arc Type Layout";
+          break;
+        case ICircleGroup _:
+          toString = "Circle Type Layout";
+          break;
+        case ILineGroup _:
+          toString = "Line Type Layout";
+          break;
+        case ISingleBars _:
+          toString = "SingleBars Type Layout";
+          break;
+        default:
+          toString = $"Type: {Value?.Group.GetType()} not supported!";
+          break;
+      }
+
+      return toString;
+    }
+
+    private static string GetPreLoad(ILongitudinalGroup longitudinal, DoubleComparer doubleComparer, string preLoad) {
+      switch (longitudinal.Preload) {
+        case IPreForce force when doubleComparer.Equals(force.Force.Value, 0): {
+            preLoad = GetForcePreLoad(force);
+            break;
+          }
+        case IPreStress stress when doubleComparer.Equals(stress.Stress.Value, 0): {
+            preLoad = GetStressPreLoad(stress);
+            break;
+          }
+        case IPreStrain strain when doubleComparer.Equals(strain.Strain.Value, 0): {
+            preLoad = GetStrainPreLoad(strain);
+            break;
+          }
+      }
+
+      return preLoad;
+    }
+
+    private static string GetStrainPreLoad(IPreStrain strain) {
+      string unitstrainAbbreviation = Strain.GetAbbreviation(DefaultUnits.MaterialStrainUnit);
+      return $", {Math.Round(strain.Strain.As(DefaultUnits.MaterialStrainUnit), 4)}{unitstrainAbbreviation} prestress";
+    }
+
+    private static string GetStressPreLoad(IPreStress stress) {
+      IQuantity quantityStress = new Pressure(0, DefaultUnits.StressUnitResult);
+      string unitstressAbbreviation = string.Concat(quantityStress.ToString().Where(char.IsLetter));
+      return $", {Math.Round(stress.Stress.As(DefaultUnits.StressUnitResult), 4)}{unitstressAbbreviation} prestress";
+    }
+
+    private static string GetForcePreLoad(IPreForce force) {
+      IQuantity quantityForce = new Force(0, DefaultUnits.ForceUnit);
+      string unitforceAbbreviation = string.Concat(quantityForce.ToString().Where(char.IsLetter));
+      return $", {Math.Round(force.Force.As(DefaultUnits.ForceUnit), 4)}{unitforceAbbreviation} prestress";
     }
   }
 }
