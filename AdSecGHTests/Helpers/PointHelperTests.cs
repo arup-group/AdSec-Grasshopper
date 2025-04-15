@@ -5,6 +5,7 @@ using Rhino.Geometry;
 using Xunit;
 
 namespace AdSecGHTests.Helpers {
+  [Collection("GrasshopperFixture collection")]
   public class PointHelperTests {
     [Fact]
     public void GetPointBoundingBox_ShouldReturnCorrectBoundingBox_ForOriginPoint() {
