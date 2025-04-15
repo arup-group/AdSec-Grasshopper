@@ -181,9 +181,11 @@ namespace AdSecGH.Parameters {
       }
 
       // local axis
-      args.Pipeline.DrawLine(_previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
-      args.Pipeline.DrawLine(_previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
-      args.Pipeline.DrawLine(_previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
+      if (_previewXaxis != null) {
+        args.Pipeline.DrawLine(_previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
+        args.Pipeline.DrawLine(_previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
+        args.Pipeline.DrawLine(_previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
+      }
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {

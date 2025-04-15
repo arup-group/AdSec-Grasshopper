@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 
+using AdSecGH.Helpers;
 using AdSecGH.UI;
 
 using Grasshopper.Kernel;
@@ -22,15 +23,10 @@ namespace AdSecGH.Parameters {
           return BoundingBox.Empty;
         }
 
-        var point1 = new Point3d(Value);
-        point1.Z += 0.25;
-        var point2 = new Point3d(Value);
-        point2.Z += -0.25;
-        var line = new Line(point1, point2);
-        var curve = new LineCurve(line);
-        return curve.GetBoundingBox(false);
+        return PointHelper.GetPointBoundingBox(Value);
       }
     }
+
     public BoundingBox ClippingBox => Boundingbox;
     public IStressStrainPoint StressStrainPoint { get; private set; }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";

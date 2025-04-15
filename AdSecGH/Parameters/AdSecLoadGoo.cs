@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 
+using AdSecGH.Helpers;
 using AdSecGH.UI;
 
 using Grasshopper;
@@ -32,13 +33,7 @@ namespace AdSecGH.Parameters {
           return BoundingBox.Empty;
         }
 
-        var point1 = new Point3d(_point);
-        point1.Z += 0.25;
-        var point2 = new Point3d(_point);
-        point2.Z += -0.25;
-        var line = new Line(point1, point2);
-        var lineCurve = new LineCurve(line);
-        return lineCurve.GetBoundingBox(false);
+        return PointHelper.GetPointBoundingBox(_point);
       }
     }
     public override bool IsValid => true;
