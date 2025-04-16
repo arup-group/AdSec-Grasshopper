@@ -133,14 +133,13 @@ namespace AdSecGH.Parameters {
       // try cast using GH_Convert, if that doesnt work we are doomed
       Curve curve = null;
       if (!GH_Convert.ToCurve(source, ref curve, GH_Conversion.Both) || !curve.TryGetPolyline(out var poly)) {
-        return true;
+        return false;
       }
 
       var adSecProfileGoo = new AdSecProfileGoo(poly, DefaultUnits.LengthUnitGeometry);
       m_value = adSecProfileGoo.m_value;
       Profile = adSecProfileGoo.Profile;
       VoidEdges = adSecProfileGoo.VoidEdges;
-
       return true;
     }
 
