@@ -87,5 +87,12 @@ namespace AdSecGHTests.Functions {
       Assert.Contains("[Pa]", _component.UlsStressOutput.Name);
       Assert.Contains("[Pa]", _component.SlsStressOutput.Name);
     }
+
+    [Fact]
+    public void ShouldNotComputeIfLoadTypeIsNotCorrect() {
+      _component.LoadInput.Value = 5;
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
   }
 }
