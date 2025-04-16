@@ -44,9 +44,9 @@ namespace AdSecGH.UI
             tableLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(logoPictureBox)).BeginInit();
             SuspendLayout();
-            // 
+            //
             // tableLayoutPanel
-            // 
+            //
             tableLayoutPanel.ColumnCount = 3;
             tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32.66939F));
             tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.4964F));
@@ -73,9 +73,9 @@ namespace AdSecGH.UI
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
             tableLayoutPanel.Size = new System.Drawing.Size(417, 163);
             tableLayoutPanel.TabIndex = 0;
-            // 
+            //
             // logoPictureBox
-            // 
+            //
             logoPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             logoPictureBox.Image = global::AdSecGH.Properties.Resources.AdSecLogo128;
             logoPictureBox.Location = new System.Drawing.Point(3, 3);
@@ -84,9 +84,9 @@ namespace AdSecGH.UI
             logoPictureBox.Size = new System.Drawing.Size(130, 129);
             logoPictureBox.TabIndex = 12;
             logoPictureBox.TabStop = false;
-            // 
+            //
             // labelProductName
-            // 
+            //
             tableLayoutPanel.SetColumnSpan(labelProductName, 2);
             labelProductName.Dock = System.Windows.Forms.DockStyle.Fill;
             labelProductName.Location = new System.Drawing.Point(142, 0);
@@ -97,10 +97,9 @@ namespace AdSecGH.UI
             labelProductName.TabIndex = 19;
             labelProductName.Text = "AdSec Grasshopper Plugin";
             labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            labelProductName.Click += new System.EventHandler(labelProductName_Click);
-            // 
+            //
             // labelVersion
-            // 
+            //
             labelVersion.Dock = System.Windows.Forms.DockStyle.Fill;
             labelVersion.Location = new System.Drawing.Point(142, 27);
             labelVersion.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
@@ -110,10 +109,9 @@ namespace AdSecGH.UI
             labelVersion.TabIndex = 0;
             labelVersion.Text = "Plugin Version";
             labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            labelVersion.Click += new System.EventHandler(labelVersion_Click);
-            // 
+            //
             // labelApiVersion
-            // 
+            //
             tableLayoutPanel.SetColumnSpan(labelApiVersion, 2);
             labelApiVersion.Dock = System.Windows.Forms.DockStyle.Fill;
             labelApiVersion.Location = new System.Drawing.Point(142, 54);
@@ -124,10 +122,9 @@ namespace AdSecGH.UI
             labelApiVersion.TabIndex = 21;
             labelApiVersion.Text = "API Version";
             labelApiVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            labelApiVersion.Click += new System.EventHandler(labelApiVersion_Click);
-            // 
+            //
             // labelCompanyName
-            // 
+            //
             tableLayoutPanel.SetColumnSpan(labelCompanyName, 2);
             labelCompanyName.Dock = System.Windows.Forms.DockStyle.Fill;
             labelCompanyName.Location = new System.Drawing.Point(142, 81);
@@ -138,9 +135,9 @@ namespace AdSecGH.UI
             labelCompanyName.TabIndex = 22;
             labelCompanyName.Text = "Company";
             labelCompanyName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
+            //
             // okButton
-            // 
+            //
             okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             okButton.Location = new System.Drawing.Point(339, 139);
@@ -149,9 +146,9 @@ namespace AdSecGH.UI
             okButton.TabIndex = 24;
             okButton.Text = "&OK";
             okButton.Click += new System.EventHandler(okButton_Click);
-            // 
+            //
             // labelContact
-            // 
+            //
             labelContact.Location = new System.Drawing.Point(142, 108);
             labelContact.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
             labelContact.Name = "labelContact";
@@ -159,9 +156,9 @@ namespace AdSecGH.UI
             labelContact.TabIndex = 22;
             labelContact.Text = "Contact and support:";
             labelContact.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
+            //
             // linkWebsite
-            // 
+            //
             linkWebsite.Anchor = System.Windows.Forms.AnchorStyles.Left;
             linkWebsite.AutoSize = true;
             tableLayoutPanel.SetColumnSpan(linkWebsite, 2);
@@ -173,9 +170,9 @@ namespace AdSecGH.UI
             linkWebsite.TabStop = true;
             linkWebsite.Text = "www.oasys-software.com";
             linkWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(linkLabel1_LinkClicked);
-            // 
+            //
             // linkEmail
-            // 
+            //
             linkEmail.Location = new System.Drawing.Point(264, 108);
             linkEmail.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
             linkEmail.Name = "linkEmail";
@@ -185,9 +182,9 @@ namespace AdSecGH.UI
             linkEmail.Text = "oasys@arup.com";
             linkEmail.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             linkEmail.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(linkEmail_LinkClicked);
-            // 
+            //
             // Check
-            // 
+            //
             Check.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             Check.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             Check.Location = new System.Drawing.Point(302, 30);
@@ -197,15 +194,15 @@ namespace AdSecGH.UI
             Check.Text = "&Check for Updates";
             Check.UseVisualStyleBackColor = true;
             Check.Click += new System.EventHandler(button1_Click);
-            // 
+            //
             // imageList1
-            // 
+            //
             imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
             imageList1.ImageSize = new System.Drawing.Size(16, 16);
             imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            // 
+            //
             // AboutAdSecBox
-            // 
+            //
             AcceptButton = okButton;
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -220,7 +217,6 @@ namespace AdSecGH.UI
             ShowInTaskbar = false;
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "About AdSec";
-            Load += new System.EventHandler(AboutBox_Load);
             tableLayoutPanel.ResumeLayout(false);
             tableLayoutPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(logoPictureBox)).EndInit();
