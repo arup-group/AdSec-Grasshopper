@@ -2,6 +2,7 @@
 using AdSecCore.Builders;
 using AdSecCore.Functions;
 
+using AdSecGH;
 using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
@@ -62,6 +63,11 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldHaveIconReferenced() {
       Assert.True(_component.MatchesExpectedIcon(Resources.StressStrainRebar));
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
     }
 
   }
