@@ -6,6 +6,7 @@ using AdSecCore.Functions;
 using Oasys.AdSec;
 
 using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecCoreTests.Functions {
   public class SlsResultFunctionTest {
@@ -52,15 +53,17 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShoulHaveValidDeformationDescription() {
-      _component.DeformationDescription();
+      _component.StrainUnitResult = StrainUnit.MicroStrain;
+      _component.StressUnitResult = PressureUnit.Pascal;
+      _component.UpdateOutputParameter();
       var description = _component.DeformationOutput.Description;
-      Assert.Contains("[εm⁻¹]", description);
-      Assert.Contains("[εm⁻¹]", description);
+      Assert.Contains("[µε]", description);
+      Assert.Contains("[Pam⁻¹]", description);
     }
 
     [Fact]
     public void ShouldHaveValidSecantStiffnessDescription() {
-      _component.SecantStiffnessDescription();
+      _component.UpdateOutputParameter();
       var description = _component.SecantStiffnessOutput.Description;
       Assert.Contains("[N]", description);
       Assert.Contains("[N·m²]", description);
@@ -69,7 +72,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveValidUncrackedMomentRangesDescription() {
-      _component.MomentRangesDescription();
+      _component.UpdateOutputParameter();
       Assert.Contains("[N·m]", _component.UncrackedMomentRangesOutput.Description);
     }
 
