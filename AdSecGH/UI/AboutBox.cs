@@ -18,7 +18,7 @@ namespace AdSecGH.UI {
 
     private const string productName = "AdSecGH";
     private const string productLabelText = "AdSec Grasshopper Plugin";
-    private const string oasysHtml = @"www.oasys-software.com";
+    private const string oasysUrl = @"www.oasys-software.com";
     private const string oasysMail = @"oasys@arup.com";
     private const string supportText = "Contact and support:";
     private readonly string title = $"About {productName}";
@@ -39,7 +39,7 @@ namespace AdSecGH.UI {
       labelVersion.Text = versionText;
       labelApiVersion.Text = apiVersionText;
       labelCompanyName.Text = AssemblyCompany;
-      linkWebsite.Text = oasysHtml;
+      linkWebsite.Text = oasysUrl;
       labelContact.Text = supportText;
       linkEmail.Text = oasysMail;
     }
@@ -55,7 +55,7 @@ namespace AdSecGH.UI {
     }
 
     private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-      Process.Start($@"https://{oasysHtml}");
+      Process.Start($@"https://{oasysUrl}");
     }
 
     private void okButton_Click(object sender, EventArgs e) {
