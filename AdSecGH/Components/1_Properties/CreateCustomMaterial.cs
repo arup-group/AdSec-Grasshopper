@@ -27,7 +27,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateCustomMaterial : GH_OasysDropDownComponent {
-    private bool _isConcrete = true;
+    private bool isConcrete = true;
     private AdSecMaterial.AdSecMaterialType _type = AdSecMaterial.AdSecMaterialType.Concrete;
 
     public CreateCustomMaterial() : base("Custom Material", "CustomMaterial", "Create a custom AdSec Material",
@@ -42,7 +42,7 @@ namespace AdSecGH.Components {
     protected override Bitmap Icon => Resources.CreateCustomMaterial;
 
     public override bool Read(GH_IReader reader) {
-      _isConcrete = reader.GetBoolean("isConcrete");
+      isConcrete = reader.GetBoolean("isConcrete");
       return base.Read(reader);
     }
 
@@ -51,14 +51,14 @@ namespace AdSecGH.Components {
 
       Enum.TryParse(_selectedItems[0], out _type);
 
-      _isConcrete = _selectedItems[i] == AdSecMaterial.AdSecMaterialType.Concrete.ToString();
+      isConcrete = _selectedItems[i] == AdSecMaterial.AdSecMaterialType.Concrete.ToString();
 
       ChangeMode();
       base.UpdateUI();
     }
 
     public override void VariableParameterMaintenance() {
-      if (!_isConcrete) {
+      if (!isConcrete) {
         return;
       }
 
@@ -70,7 +70,7 @@ namespace AdSecGH.Components {
     }
 
     public override bool Write(GH_IWriter writer) {
-      writer.SetBoolean("isConcrete", _isConcrete);
+      writer.SetBoolean("isConcrete", isConcrete);
       return base.Write(writer);
     }
 
@@ -125,7 +125,7 @@ namespace AdSecGH.Components {
 
       // 5 Cracked params
       IConcreteCrackCalculationParameters concreteCrack = null;
-      if (_isConcrete) {
+      if (isConcrete) {
         concreteCrack = this.GetIConcreteCrackCalculationParameters(DA, 5);
       }
 
@@ -203,13 +203,13 @@ namespace AdSecGH.Components {
     }
 
     private void ChangeMode() {
-      if ((_isConcrete && Params.Input.Count == 6) || (!_isConcrete && Params.Input.Count == 5)) {
+      if ((isConcrete && Params.Input.Count == 6) || (!isConcrete && Params.Input.Count == 5)) {
         return;
       }
 
       RecordUndoEvent("Changed dropdown");
 
-      if (_isConcrete) {
+      if (isConcrete) {
         Params.RegisterInputParam(new Param_GenericObject());
       } else {
         Params.UnregisterInputParameter(Params.Input[5], true);
