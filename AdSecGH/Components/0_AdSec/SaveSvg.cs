@@ -68,15 +68,15 @@ namespace AdSecGH.Components {
     }
 
     public void SaveAsFile() {
-      var fdi = new SaveFileDialog {
+      var saveFileDialog = new SaveFileDialog {
         Filter = "SVG File (*.svg)|*.svg|All files (*.*)|*.*",
       };
-      bool res = fdi.ShowSaveDialog();
+      bool res = saveFileDialog.ShowSaveDialog();
       if (!res) {
         return;
       }
 
-      _fileName = fdi.FileName;
+      _fileName = saveFileDialog.FileName;
       File.WriteAllText(_fileName, imageSVG);
 
       _canOpen = true;
