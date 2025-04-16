@@ -42,15 +42,12 @@ namespace AdSecGH.Parameters {
     public AdSecCrackGoo(CrackLoad crackLoad) : base(crackLoad) {
       var plane = Value.Plane.ToGh();
       // create point from crack position in global axis
-      var point = new Point3d(
-          m_value.Load.Position.Y.Value,
-          m_value.Load.Position.Z.Value,
-          0);
+      var point3d = new Point3d(m_value.Load.Position.Y.Value, m_value.Load.Position.Z.Value, 0);
 
       // remap to local coordinate system
       var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
-      point.Transform(mapFromLocal);
-      this.point = point;
+      point3d.Transform(mapFromLocal);
+      point = point3d;
 
       // move starting point of line by half the width
       var halfCrack = new Vector3d(plane.ZAxis);
