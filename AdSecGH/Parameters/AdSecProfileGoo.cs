@@ -107,15 +107,15 @@ namespace AdSecGH.Parameters {
       if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
         args.Pipeline.DrawPolyline(Polyline, Colour.OasysBlue, 2);
         if (VoidEdges != null) {
-          foreach (var crv in VoidEdges) {
-            args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
+          foreach (var polyline in VoidEdges) {
+            args.Pipeline.DrawPolyline(polyline, Colour.OasysBlue, 1);
           }
         }
       } else {
         args.Pipeline.DrawPolyline(Polyline, Colour.OasysYellow, 3);
         if (VoidEdges != null) {
-          foreach (var crv in VoidEdges) {
-            args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
+          foreach (var polyline in VoidEdges) {
+            args.Pipeline.DrawPolyline(polyline, Colour.OasysYellow, 2);
           }
         }
       }

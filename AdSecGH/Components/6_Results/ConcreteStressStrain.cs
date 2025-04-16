@@ -91,7 +91,7 @@ namespace AdSecGH.Components {
       DA.SetData(0, outStrainULS);
 
       // ULS stress in concrete material from strain
-      var stressULS = solution.m_section.Section.Material.Strength.StressAt(strainULS);
+      var stressULS = solution.section.Section.Material.Strength.StressAt(strainULS);
       var outStressULS = new GH_UnitNumber(stressULS.ToUnit(DefaultUnits.StressUnitResult));
       DA.SetData(1, outStressULS);
 
@@ -101,7 +101,7 @@ namespace AdSecGH.Components {
       DA.SetData(2, outStrainSLS);
 
       // SLS stress in concrete material from strain
-      var stressSLS = solution.m_section.Section.Material.Serviceability.StressAt(strainSLS);
+      var stressSLS = solution.section.Section.Material.Serviceability.StressAt(strainSLS);
       var outStressSLS = new GH_UnitNumber(stressSLS.ToUnit(DefaultUnits.StressUnitResult));
 
       DA.SetData(3, outStressSLS);
