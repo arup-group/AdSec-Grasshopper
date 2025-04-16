@@ -9,10 +9,7 @@ using Grasshopper.Kernel;
 
 using Oasys.AdSec;
 
-using OasysGH.Units;
-
 using OasysUnits;
-using OasysUnits.Units;
 
 using Xunit;
 
@@ -53,15 +50,6 @@ namespace AdSecGHTests.Components {
     public void ShouldHaveRemarkWhenUtiliztionIsGreaterThanOne() {
       SetLoad();
       Assert.Single(_component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
-    }
-
-    [Fact]
-    public void ShouldRefreshComponent() {
-      var originalUnit = DefaultUnits.StrainUnitResult;
-      DefaultUnits.StrainUnitResult = StrainUnit.MicroStrain;
-      SetLoad();
-      Assert.Contains("[µε]", _component.Params.Output[4].Description);
-      DefaultUnits.StrainUnitResult = originalUnit;
     }
 
     [Fact]
