@@ -61,22 +61,22 @@ namespace Oasys.GH.Helpers {
     }
 
     public void UpdateUnit() {
-      if (!(BusinessComponent is Function function)) {
-        return;
+      if (BusinessComponent is Function function) {
+        function.MomentUnit = DefaultUnits.MomentUnit;
+        function.LengthUnit = DefaultUnits.LengthUnitGeometry;
+        function.StrainUnitResult = DefaultUnits.StrainUnitResult;
+        function.StressUnitResult = DefaultUnits.StressUnitResult;
+        function.CurvatureUnit = DefaultUnits.CurvatureUnit;
+        function.LengthUnitResult = DefaultUnits.LengthUnitResult;
+        function.AxialStiffnessUnit = DefaultUnits.AxialStiffnessUnit;
+        function.BendingStiffnessUnit = DefaultUnits.BendingStiffnessUnit;
       }
-
-      function.MomentUnit = DefaultUnits.MomentUnit;
-      function.LengthUnit = DefaultUnits.LengthUnitGeometry;
-      function.StrainUnitResult = DefaultUnits.StrainUnitResult;
-      function.CurvatureUnit = DefaultUnits.CurvatureUnit;
-      function.LengthUnitResult = DefaultUnits.LengthUnitResult;
-      function.AxialStiffnessUnit = DefaultUnits.AxialStiffnessUnit;
-      function.BendingStiffnessUnit = DefaultUnits.BendingStiffnessUnit;
     }
 
     public void RefreshOutputParameter(Attribute[] attributes) {
       for (int id = 0; id < attributes.Length; id++) {
         Params.Output[id].Description = attributes[id].Description;
+        Params.Output[id].Name = attributes[id].Name;
       }
     }
   }
