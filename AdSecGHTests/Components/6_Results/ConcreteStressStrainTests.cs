@@ -2,9 +2,12 @@
 using AdSecCore.Builders;
 using AdSecCore.Functions;
 
+using AdSecGH.Properties;
+
 using AdSecGHTests.Helpers;
 
 using Oasys.AdSec;
+using Oasys.GH.Helpers;
 using Oasys.Profiles;
 
 using OasysUnits;
@@ -55,5 +58,11 @@ namespace AdSecGHTests.Components {
       Assert.NotNull(ComponentTestHelper.GetOutput(_component, 2));
       Assert.NotNull(ComponentTestHelper.GetOutput(_component, 3));
     }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(_component.MatchesExpectedIcon(Resources.StressStrainRebar));
+    }
+
   }
 }
