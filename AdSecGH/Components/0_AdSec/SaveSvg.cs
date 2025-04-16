@@ -50,11 +50,15 @@ namespace AdSecGH.Components {
         return;
       }
 
-      if (_canOpen) {
-        Process.Start(_fileName);
-      } else {
-        File.WriteAllText(_fileName, imageSVG);
-        _canOpen = true;
+      try {
+        if (_canOpen) {
+          Process.Start(_fileName);
+        } else {
+          File.WriteAllText(_fileName, imageSVG);
+          _canOpen = true;
+        }
+      } catch {
+        throw new FileNotFoundException($"Cannot open a file {_fileName}");
       }
     }
 
