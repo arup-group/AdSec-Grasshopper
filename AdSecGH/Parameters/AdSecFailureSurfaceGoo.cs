@@ -18,14 +18,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
   public class AdSecFailureSurfaceGoo : GH_GeometricGoo<Mesh>, IGH_PreviewData {
-    public override BoundingBox Boundingbox {
-      get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
-        return Value.GetBoundingBox(false);
-      }
-    }
+    public override BoundingBox Boundingbox => Value == null ? BoundingBox.Empty : Value.GetBoundingBox(false);
     public BoundingBox ClippingBox => Boundingbox;
     public ILoadSurface FailureSurface { get; }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
@@ -49,6 +42,7 @@ namespace AdSecGH.Parameters {
       if (mesh == null) {
         m_value = MeshFromILoadSurface(loadsurface, local);
       }
+
       FailureSurface = loadsurface;
       m_plane = local;
       UpdatePreview();
@@ -95,8 +89,9 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
-      Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      if (args.Material.Diffuse.R == defaultCol.R && args.Material.Diffuse.G == defaultCol.G && args.Material.Diffuse.B == defaultCol.B) {
+      var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      if (args.Material.Diffuse.R == defaultColor.R && args.Material.Diffuse.G == defaultColor.G
+        && args.Material.Diffuse.B == defaultColor.B) {
         // not selected
         args.Pipeline.DrawMeshShaded(Value, Colour.FailureNormal);
       } else {
@@ -105,16 +100,19 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (!Value.IsValid) { return; }
+      if (!Value.IsValid) {
+        return;
+      }
+
       args.Pipeline.DrawMeshWires(Value, Colour.UILightGrey, 1);
       // local axis
       if (previewPosXaxis != null) {
-        args.Pipeline.DrawArrow(previewPosXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5);//red
-        args.Pipeline.DrawArrow(previewPosYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5);//green
-        args.Pipeline.DrawArrow(previewPosZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5);//blue
-        args.Pipeline.DrawArrow(previewNegXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5);//red
-        args.Pipeline.DrawArrow(previewNegYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5);//green
-        args.Pipeline.DrawArrow(previewNegZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5);//blue
+        args.Pipeline.DrawArrow(previewPosXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5); //red
+        args.Pipeline.DrawArrow(previewPosYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5); //green
+        args.Pipeline.DrawArrow(previewPosZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5); //blue
+        args.Pipeline.DrawArrow(previewNegXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5); //red
+        args.Pipeline.DrawArrow(previewNegYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5); //green
+        args.Pipeline.DrawArrow(previewNegZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5); //blue
         args.Pipeline.Draw3dText(posN, Color.FromArgb(255, 244, 96, 96));
         args.Pipeline.Draw3dText(negN, Color.FromArgb(255, 244, 96, 96));
         args.Pipeline.Draw3dText(posMyy, Color.FromArgb(255, 96, 244, 96));
@@ -132,6 +130,7 @@ namespace AdSecGH.Parameters {
       if (Value == null) {
         return BoundingBox.Empty;
       }
+
       return Value.GetBoundingBox(xform);
     }
 
@@ -139,11 +138,12 @@ namespace AdSecGH.Parameters {
       if (Value == null) {
         return null;
       }
-      Mesh m = Value.DuplicateMesh();
-      xmorph.Morph(m);
+
+      var mesh = Value.DuplicateMesh();
+      xmorph.Morph(mesh);
       var local = new Plane(m_plane);
       xmorph.Morph(ref local);
-      return new AdSecFailureSurfaceGoo(FailureSurface, local, m);
+      return new AdSecFailureSurfaceGoo(FailureSurface, local, mesh);
     }
 
     public override string ToString() {
@@ -155,33 +155,27 @@ namespace AdSecGH.Parameters {
       if (Value == null) {
         return null;
       }
-      Mesh m = Value.DuplicateMesh();
-      m.Transform(xform);
+
+      var mesh = Value.DuplicateMesh();
+      mesh.Transform(xform);
       var local = new Plane(m_plane);
       local.Transform(xform);
-      return new AdSecFailureSurfaceGoo(FailureSurface, local, m);
+      return new AdSecFailureSurfaceGoo(FailureSurface, local, mesh);
     }
 
     internal Mesh MeshFromILoadSurface(ILoadSurface loadsurface, Plane local) {
       var outMesh = new Mesh();
 
-      outMesh.Vertices.AddVertices(
-          loadsurface.Vertices.Select(pt => new Point3d(
-              pt.X.As(DefaultUnits.ForceUnit),
-              pt.ZZ.As(DefaultUnits.MomentUnit),
-              pt.YY.As(DefaultUnits.MomentUnit)
-              )));
+      outMesh.Vertices.AddVertices(loadsurface.Vertices.Select(load => new Point3d(load.X.As(DefaultUnits.ForceUnit),
+        load.ZZ.As(DefaultUnits.MomentUnit), load.YY.As(DefaultUnits.MomentUnit))));
 
-      outMesh.Faces.AddFaces(
-          loadsurface.Faces.Select(face => new MeshFace(
-              face.Vertex1, face.Vertex2, face.Vertex3)));
+      outMesh.Faces.AddFaces(loadsurface.Faces.Select(face => new MeshFace(face.Vertex1, face.Vertex2, face.Vertex3)));
 
       // transform to local plane
       var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
 
       bbox = outMesh.GetBoundingBox(false);
       bbox.Transform(Rhino.Geometry.Transform.Scale(new Point3d(0, 0, 0), 1.05));
-      //bbox.Transform(mapFromLocal);
       outMesh.Transform(mapFromLocal);
 
       return outMesh;
@@ -190,8 +184,6 @@ namespace AdSecGH.Parameters {
     private void UpdatePreview() {
       // local axis
       if (m_plane != null) {
-        var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, m_plane);
-
         double maxN = bbox.PointAt(1, 0.5, 0.5).X;
         double minN = bbox.PointAt(0, 0.5, 0.5).X;
 
@@ -201,7 +193,6 @@ namespace AdSecGH.Parameters {
         double maxMzz = bbox.PointAt(0.5, 1, 0.5).Y;
         double minMzz = bbox.PointAt(0.5, 0, 0.5).Y;
 
-        //Length length = new Length(pythogoras * 0.15, LengthUnit.Meter);
         previewPosXaxis = new Line(m_plane.Origin, m_plane.ZAxis, maxN);
         previewPosYaxis = new Line(m_plane.Origin, m_plane.YAxis, maxMyy);
         previewPosZaxis = new Line(m_plane.Origin, m_plane.XAxis, maxMzz);
@@ -209,54 +200,56 @@ namespace AdSecGH.Parameters {
         previewNegYaxis = new Line(m_plane.Origin, m_plane.YAxis, minMyy);
         previewNegZaxis = new Line(m_plane.Origin, m_plane.XAxis, minMzz);
 
-        double size = Math.Max(Math.Max(Math.Max(Math.Max(Math.Max(Math.Abs(maxN), Math.Abs(minN)), Math.Abs(maxMyy)), Math.Abs(minMyy)), Math.Abs(maxMzz)), Math.Abs(minMzz));
+        double size = Math.Max(
+          Math.Max(Math.Max(Math.Max(Math.Max(Math.Abs(maxN), Math.Abs(minN)), Math.Abs(maxMyy)), Math.Abs(minMyy)),
+            Math.Abs(maxMzz)), Math.Abs(minMzz));
         size /= 50;
         var plnPosN = new Plane(m_plane) {
-          Origin = previewPosXaxis.PointAt(1.05)
+          Origin = previewPosXaxis.PointAt(1.05),
         };
         posN = new Text3d("Tension", plnPosN, size) {
           HorizontalAlignment = TextHorizontalAlignment.Center,
-          VerticalAlignment = TextVerticalAlignment.Bottom
+          VerticalAlignment = TextVerticalAlignment.Bottom,
         };
 
         var plnNegN = new Plane(m_plane) {
-          Origin = previewNegXaxis.PointAt(1.05)
+          Origin = previewNegXaxis.PointAt(1.05),
         };
         negN = new Text3d("Compression", plnNegN, size) {
           HorizontalAlignment = TextHorizontalAlignment.Center,
-          VerticalAlignment = TextVerticalAlignment.Bottom
+          VerticalAlignment = TextVerticalAlignment.Bottom,
         };
 
         var plnPosMyy = new Plane(m_plane) {
-          Origin = previewPosYaxis.PointAt(1.05)
+          Origin = previewPosYaxis.PointAt(1.05),
         };
         posMyy = new Text3d("+Myy", plnPosMyy, size) {
           HorizontalAlignment = TextHorizontalAlignment.Center,
-          VerticalAlignment = TextVerticalAlignment.Bottom
+          VerticalAlignment = TextVerticalAlignment.Bottom,
         };
 
         var plnNegMyy = new Plane(m_plane) {
-          Origin = previewNegYaxis.PointAt(1.05)
+          Origin = previewNegYaxis.PointAt(1.05),
         };
         negMyy = new Text3d("-Myy", plnNegMyy, size) {
           HorizontalAlignment = TextHorizontalAlignment.Center,
-          VerticalAlignment = TextVerticalAlignment.Top
+          VerticalAlignment = TextVerticalAlignment.Top,
         };
 
         var plnPosMzz = new Plane(m_plane) {
-          Origin = previewPosZaxis.PointAt(1.05)
+          Origin = previewPosZaxis.PointAt(1.05),
         };
         posMzz = new Text3d("+Mzz", plnPosMzz, size) {
           HorizontalAlignment = TextHorizontalAlignment.Left,
-          VerticalAlignment = TextVerticalAlignment.Middle
+          VerticalAlignment = TextVerticalAlignment.Middle,
         };
 
         var plnNegMzz = new Plane(m_plane) {
-          Origin = previewNegZaxis.PointAt(1.05)
+          Origin = previewNegZaxis.PointAt(1.05),
         };
         negMzz = new Text3d("-Mzz", plnNegMzz, size) {
           HorizontalAlignment = TextHorizontalAlignment.Right,
-          VerticalAlignment = TextVerticalAlignment.Middle
+          VerticalAlignment = TextVerticalAlignment.Middle,
         };
       }
     }

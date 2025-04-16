@@ -2,6 +2,8 @@
 
 using AdSecCore.Functions;
 
+using GH_IO.Serialization;
+
 using Grasshopper.Kernel;
 
 using OasysGH;
@@ -18,6 +20,7 @@ namespace Oasys.GH.Helpers {
     protected ComponentAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
       BusinessComponent.UpdateProperties(this);
     }
+
 
     public override OasysPluginInfo PluginInfo { get; } = AdSecGH.PluginInfo.Instance;
     public void SetDefaultValues() { BusinessComponent.SetDefaultValues(this); }
