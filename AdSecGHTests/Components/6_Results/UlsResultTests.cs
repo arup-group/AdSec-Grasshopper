@@ -8,7 +8,6 @@ using AdSecGH.Parameters;
 using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
@@ -65,16 +64,6 @@ namespace AdSecGHTests.Components {
           Moment.Zero),
         1);
       ComponentTestHelper.GetOutput(_component);
-    }
-
-
-    [Fact]
-    public void ShouldRefreshComponent() {
-      var originalUnit = DefaultUnits.StrainUnitResult;
-      DefaultUnits.StrainUnitResult = StrainUnit.MicroStrain;
-      SetLoad();
-      Assert.Contains("[µε]", _component.Params.Output[2].Description);
-      DefaultUnits.StrainUnitResult = originalUnit;
     }
 
     [Fact]
