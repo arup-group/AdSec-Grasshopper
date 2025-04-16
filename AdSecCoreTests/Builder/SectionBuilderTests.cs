@@ -8,6 +8,7 @@ using Oasys.AdSec.Reinforcement.Groups;
 using OasysUnits.Units;
 
 namespace AdSecCoreTests.Builder {
+
   public class SectionBuilderTests {
 
     [Fact]

@@ -96,21 +96,51 @@ namespace AdSecGH.Parameters {
       UpdatePreview();
     }
 
+    public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
+
+    public void DrawViewportWires(GH_PreviewWireArgs args) {
+      if (Value == null) {
+        return;
+      }
+
+      var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
+        args.Pipeline.DrawPolyline(Polyline, Colour.OasysBlue, 2);
+        if (VoidEdges != null) {
+          foreach (var crv in VoidEdges) {
+            args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
+          }
+        }
+      } else {
+        args.Pipeline.DrawPolyline(Polyline, Colour.OasysYellow, 3);
+        if (VoidEdges != null) {
+          foreach (var crv in VoidEdges) {
+            args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
+          }
+        }
+      }
+
+      args.Pipeline.DrawLine(previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
+      args.Pipeline.DrawLine(previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
+      args.Pipeline.DrawLine(previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
+    }
+
     public override bool CastFrom(object source) {
       if (source == null) {
         return false;
       }
 
       // try cast using GH_Convert, if that doesnt work we are doomed
-      Curve crv = null;
-      if (!GH_Convert.ToCurve(source, ref crv, GH_Conversion.Both) || !crv.TryGetPolyline(out var poly)) {
-        return false;
+      Curve curve = null;
+      if (!GH_Convert.ToCurve(source, ref curve, GH_Conversion.Both) || !curve.TryGetPolyline(out var poly)) {
+        return true;
       }
 
-      var temp = new AdSecProfileGoo(poly, DefaultUnits.LengthUnitGeometry);
-      m_value = temp.m_value;
-      Profile = temp.Profile;
-      VoidEdges = temp.VoidEdges;
+      var adSecProfileGoo = new AdSecProfileGoo(poly, DefaultUnits.LengthUnitGeometry);
+      m_value = adSecProfileGoo.m_value;
+      Profile = adSecProfileGoo.Profile;
+      VoidEdges = adSecProfileGoo.VoidEdges;
+
       return true;
     }
 
@@ -135,119 +165,89 @@ namespace AdSecGH.Parameters {
     }
 
     public IProfile Clone() {
-      IProfile dup = null;
+      IProfile duplicated = null;
 
       if (Profile.GetType().ToString().Equals($"{typeof(IAngleProfile)}_Implementation")) {
         var angle = (IAngleProfile)Profile;
-        dup = IAngleProfile.Create(angle.Depth, angle.Flange, angle.Web);
+        duplicated = IAngleProfile.Create(angle.Depth, angle.Flange, angle.Web);
       } else if (Profile.GetType().ToString().Equals($"{typeof(ICatalogueProfile)}_Implementation")) {
-        dup = ICatalogueProfile.Create(Profile.Description());
+        duplicated = ICatalogueProfile.Create(Profile.Description());
       } else if (Profile.GetType().ToString().Equals($"{typeof(IChannelProfile)}_Implementation")) {
         var channel = (IChannelProfile)Profile;
-        dup = IChannelProfile.Create(channel.Depth, channel.Flanges, channel.Web);
+        duplicated = IChannelProfile.Create(channel.Depth, channel.Flanges, channel.Web);
       } else if (Profile.GetType().ToString().Equals($"{typeof(ICircleHollowProfile)}_Implementation")) {
         var circleHollow = (ICircleHollowProfile)Profile;
-        dup = ICircleHollowProfile.Create(circleHollow.Diameter, circleHollow.WallThickness);
+        duplicated = ICircleHollowProfile.Create(circleHollow.Diameter, circleHollow.WallThickness);
       } else if (Profile.GetType().ToString().Equals($"{typeof(ICircleProfile)}_Implementation")) {
         var circle = (ICircleProfile)Profile;
-        dup = ICircleProfile.Create(circle.Diameter);
+        duplicated = ICircleProfile.Create(circle.Diameter);
       } else if (Profile.GetType().ToString().Equals($"{typeof(ICruciformSymmetricalProfile)}_Implementation")) {
         var cruciformSymmetrical = (ICruciformSymmetricalProfile)Profile;
-        dup = ICruciformSymmetricalProfile.Create(cruciformSymmetrical.Depth, cruciformSymmetrical.Flange,
+        duplicated = ICruciformSymmetricalProfile.Create(cruciformSymmetrical.Depth, cruciformSymmetrical.Flange,
           cruciformSymmetrical.Web);
       } else if (Profile.GetType().ToString().Equals($"{typeof(IEllipseHollowProfile)}_Implementation")) {
         var ellipseHollow = (IEllipseHollowProfile)Profile;
-        dup = IEllipseHollowProfile.Create(ellipseHollow.Depth, ellipseHollow.Width, ellipseHollow.WallThickness);
+        duplicated = IEllipseHollowProfile.Create(ellipseHollow.Depth, ellipseHollow.Width,
+          ellipseHollow.WallThickness);
       } else if (Profile.GetType().ToString().Equals($"{typeof(IEllipseProfile)}_Implementation")) {
         var ellipse = (IEllipseProfile)Profile;
-        dup = IEllipseProfile.Create(ellipse.Depth, ellipse.Width);
+        duplicated = IEllipseProfile.Create(ellipse.Depth, ellipse.Width);
       } else if (Profile.GetType().ToString().Equals($"{typeof(IGeneralCProfile)}_Implementation")) {
         var generalC = (IGeneralCProfile)Profile;
-        dup = IGeneralCProfile.Create(generalC.Depth, generalC.FlangeWidth, generalC.Lip, generalC.Thickness);
+        duplicated = IGeneralCProfile.Create(generalC.Depth, generalC.FlangeWidth, generalC.Lip, generalC.Thickness);
       } else if (Profile.GetType().ToString().Equals($"{typeof(IGeneralZProfile)}_Implementation")) {
         var generalZ = (IGeneralZProfile)Profile;
-        dup = IGeneralZProfile.Create(generalZ.Depth, generalZ.TopFlangeWidth, generalZ.BottomFlangeWidth,
+        duplicated = IGeneralZProfile.Create(generalZ.Depth, generalZ.TopFlangeWidth, generalZ.BottomFlangeWidth,
           generalZ.TopLip, generalZ.BottomLip, generalZ.Thickness);
       } else if (Profile.GetType().ToString().Equals($"{typeof(IIBeamAsymmetricalProfile)}_Implementation")) {
         var iBeamAsymmetrical = (IIBeamAsymmetricalProfile)Profile;
-        dup = IIBeamAsymmetricalProfile.Create(iBeamAsymmetrical.Depth, iBeamAsymmetrical.TopFlange,
+        duplicated = IIBeamAsymmetricalProfile.Create(iBeamAsymmetrical.Depth, iBeamAsymmetrical.TopFlange,
           iBeamAsymmetrical.BottomFlange, iBeamAsymmetrical.Web);
       } else if (Profile.GetType().ToString().Equals($"{typeof(IIBeamCellularProfile)}_Implementation")) {
         var iBeamCellular = (IIBeamCellularProfile)Profile;
-        dup = IIBeamCellularProfile.Create(iBeamCellular.Depth, iBeamCellular.Flanges, iBeamCellular.Web,
+        duplicated = IIBeamCellularProfile.Create(iBeamCellular.Depth, iBeamCellular.Flanges, iBeamCellular.Web,
           iBeamCellular.WebOpening);
       } else if (Profile.GetType().ToString().Equals($"{typeof(IIBeamSymmetricalProfile)}_Implementation")) {
         var iBeamSymmetrical = (IIBeamSymmetricalProfile)Profile;
-        dup = IIBeamSymmetricalProfile.Create(iBeamSymmetrical.Depth, iBeamSymmetrical.Flanges, iBeamSymmetrical.Web);
+        duplicated = IIBeamSymmetricalProfile.Create(iBeamSymmetrical.Depth, iBeamSymmetrical.Flanges,
+          iBeamSymmetrical.Web);
       } else if (Profile.GetType().ToString().Equals($"{typeof(IRectangleHollowProfile)}_Implementation")) {
         var rectangleHollow = (IRectangleHollowProfile)Profile;
-        dup = IRectangleHollowProfile.Create(rectangleHollow.Depth, rectangleHollow.Flanges, rectangleHollow.Webs);
+        duplicated = IRectangleHollowProfile.Create(rectangleHollow.Depth, rectangleHollow.Flanges,
+          rectangleHollow.Webs);
       } else if (Profile.GetType().ToString().Equals($"{typeof(IRectangleProfile)}_Implementation")) {
         var rectangle = (IRectangleProfile)Profile;
-        dup = IRectangleProfile.Create(rectangle.Depth, rectangle.Width);
+        duplicated = IRectangleProfile.Create(rectangle.Depth, rectangle.Width);
       } else if (Profile.GetType().ToString().Equals($"{typeof(IRectoEllipseProfile)}_Implementation")) {
         var rectoEllipse = (IRectoEllipseProfile)Profile;
-        dup = IRectoEllipseProfile.Create(rectoEllipse.Depth, rectoEllipse.DepthFlat, rectoEllipse.Width,
+        duplicated = IRectoEllipseProfile.Create(rectoEllipse.Depth, rectoEllipse.DepthFlat, rectoEllipse.Width,
           rectoEllipse.WidthFlat);
       } else if (Profile.GetType().ToString().Equals($"{typeof(ISecantPileProfile)}_Implementation")) {
         var secantPile = (ISecantPileProfile)Profile;
-        dup = ISecantPileProfile.Create(secantPile.Diameter, secantPile.PileCentres, secantPile.PileCount,
+        duplicated = ISecantPileProfile.Create(secantPile.Diameter, secantPile.PileCentres, secantPile.PileCount,
           secantPile.IsWallNotSection);
       } else if (Profile.GetType().ToString().Equals($"{typeof(ISheetPileProfile)}_Implementation")) {
         var sheetPile = (ISheetPileProfile)Profile;
-        dup = ISheetPileProfile.Create(sheetPile.Depth, sheetPile.Width, sheetPile.TopFlangeWidth,
+        duplicated = ISheetPileProfile.Create(sheetPile.Depth, sheetPile.Width, sheetPile.TopFlangeWidth,
           sheetPile.BottomFlangeWidth, sheetPile.FlangeThickness, sheetPile.WebThickness);
       } else if (Profile.GetType().ToString().Equals($"{typeof(IStadiumProfile)}_Implementation")) {
         var stadium = (IStadiumProfile)Profile;
-        dup = IStadiumProfile.Create(stadium.Depth, stadium.Width);
+        duplicated = IStadiumProfile.Create(stadium.Depth, stadium.Width);
       } else if (Profile.GetType().ToString().Equals($"{typeof(ITrapezoidProfile)}_Implementation")) {
         var trapezoid = (ITrapezoidProfile)Profile;
-        dup = ITrapezoidProfile.Create(trapezoid.Depth, trapezoid.TopWidth, trapezoid.BottomWidth);
+        duplicated = ITrapezoidProfile.Create(trapezoid.Depth, trapezoid.TopWidth, trapezoid.BottomWidth);
       } else if (Profile.GetType().ToString().Equals($"{typeof(ITSectionProfile)}_Implementation")) {
         var tSection = (ITSectionProfile)Profile;
-        dup = ITSectionProfile.Create(tSection.Depth, tSection.Flange, tSection.Web);
+        duplicated = ITSectionProfile.Create(tSection.Depth, tSection.Flange, tSection.Web);
       } else {
-        dup = IPerimeterProfile.Create(Profile);
+        duplicated = IPerimeterProfile.Create(Profile);
       }
 
-      dup.IsReflectedY = Profile.IsReflectedY;
-      dup.IsReflectedZ = Profile.IsReflectedZ;
-      dup.Rotation = Profile.Rotation;
+      duplicated.IsReflectedY = Profile.IsReflectedY;
+      duplicated.IsReflectedZ = Profile.IsReflectedZ;
+      duplicated.Rotation = Profile.Rotation;
 
-      return dup;
-    }
-
-    public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
-
-    public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (Value == null) {
-        return;
-      }
-
-      var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
-      {
-        args.Pipeline.DrawPolyline(Polyline, Colour.OasysBlue, 2);
-        if (VoidEdges != null) {
-          foreach (var crv in VoidEdges) {
-            args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
-          }
-        }
-      } else // selected
-      {
-        args.Pipeline.DrawPolyline(Polyline, Colour.OasysYellow, 3);
-        if (VoidEdges != null) {
-          foreach (var crv in VoidEdges) {
-            args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
-          }
-        }
-      }
-
-      if (previewXaxis != null) {
-        args.Pipeline.DrawLine(previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
-        args.Pipeline.DrawLine(previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
-        args.Pipeline.DrawLine(previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
-      }
+      return duplicated;
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
@@ -283,7 +283,8 @@ namespace AdSecGH.Parameters {
       var solid = perimeterProfile.SolidPolygon;
       var rhinoEdgePoints = PtsFromAdSecPolygon(solid, local);
 
-      var rhinoVoidPoints = perimeterProfile.VoidPolygons.Select(vpol => PtsFromAdSecPolygon(vpol, local)).ToList();
+      var rhinoVoidPoints
+        = perimeterProfile.VoidPolygons.Select(polygon => PtsFromAdSecPolygon(polygon, local)).ToList();
       return new Tuple<List<Point3d>, List<List<Point3d>>>(rhinoEdgePoints, rhinoVoidPoints);
     }
 
@@ -296,10 +297,10 @@ namespace AdSecGH.Parameters {
     internal static Tuple<Polyline, List<Polyline>> PolylinesFromAdSecProfile(IProfile profile, Plane local) {
       var perimeter = IPerimeterProfile.Create(profile);
 
-      var pts = PointsFromAdSecPermiter(perimeter, local);
+      var pointsFromAdSecPermiter = PointsFromAdSecPermiter(perimeter, local);
 
-      var solid = new Polyline(pts.Item1);
-      var voids = pts.Item2.Select(plvoid => new Polyline(plvoid)).ToList();
+      var solid = new Polyline(pointsFromAdSecPermiter.Item1);
+      var voids = pointsFromAdSecPermiter.Item2.Select(point3ds => new Polyline(point3ds)).ToList();
       return new Tuple<Polyline, List<Polyline>>(solid, voids);
     }
 
@@ -308,14 +309,14 @@ namespace AdSecGH.Parameters {
         return null;
       }
 
-      // transform to local plane
       var maptToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
       var rhinoPoints = new List<Point3d>();
 
-      foreach (var apt in polygon.Points) {
-        var pt = new Point3d(0, apt.Y.As(DefaultUnits.LengthUnitGeometry), apt.Z.As(DefaultUnits.LengthUnitGeometry));
-        pt.Transform(maptToLocal);
-        rhinoPoints.Add(pt);
+      foreach (var point in polygon.Points) {
+        var point3d = new Point3d(0, point.Y.As(DefaultUnits.LengthUnitGeometry),
+          point.Z.As(DefaultUnits.LengthUnitGeometry));
+        point3d.Transform(maptToLocal);
+        rhinoPoints.Add(point3d);
       }
 
       // add first point to end of list for closed polyline
@@ -353,15 +354,16 @@ namespace AdSecGH.Parameters {
     }
 
     private void UpdatePreview() {
-      // local axis
-      if (_plane != null && _plane != Plane.WorldXY && _plane != Plane.WorldYZ && _plane != Plane.WorldZX) {
-        var area = Profile.Area();
-        double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-        var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-        previewXaxis = new Line(_plane.Origin, _plane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
-        previewYaxis = new Line(_plane.Origin, _plane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
-        previewZaxis = new Line(_plane.Origin, _plane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      if (_plane == null || _plane == Plane.WorldXY || _plane == Plane.WorldYZ || _plane == Plane.WorldZX) {
+        return;
       }
+
+      var area = Profile.Area();
+      double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
+      var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
+      previewXaxis = new Line(_plane.Origin, _plane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      previewYaxis = new Line(_plane.Origin, _plane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      previewZaxis = new Line(_plane.Origin, _plane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
     }
   }
 }

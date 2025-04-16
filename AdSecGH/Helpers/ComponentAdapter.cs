@@ -20,6 +20,7 @@ namespace Oasys.GH.Helpers {
       BusinessComponent.UpdateProperties(this);
     }
 
+
     public override OasysPluginInfo PluginInfo { get; } = AdSecGH.PluginInfo.Instance;
     public void SetDefaultValues() { BusinessComponent.SetDefaultValues(this); }
 

@@ -106,18 +106,20 @@ namespace AdSecGH.Parameters {
 
       args.Pipeline.DrawMeshWires(Value, Colour.UILightGrey, 1);
       // local axis
-      args.Pipeline.DrawArrow(previewPosXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5); //red
-      args.Pipeline.DrawArrow(previewPosYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5); //green
-      args.Pipeline.DrawArrow(previewPosZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5); //blue
-      args.Pipeline.DrawArrow(previewNegXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5); //red
-      args.Pipeline.DrawArrow(previewNegYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5); //green
-      args.Pipeline.DrawArrow(previewNegZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5); //blue
-      args.Pipeline.Draw3dText(posN, Color.FromArgb(255, 244, 96, 96));
-      args.Pipeline.Draw3dText(negN, Color.FromArgb(255, 244, 96, 96));
-      args.Pipeline.Draw3dText(posMyy, Color.FromArgb(255, 96, 244, 96));
-      args.Pipeline.Draw3dText(negMyy, Color.FromArgb(255, 96, 244, 96));
-      args.Pipeline.Draw3dText(posMzz, Color.FromArgb(255, 96, 96, 234));
-      args.Pipeline.Draw3dText(negMzz, Color.FromArgb(255, 96, 96, 234));
+      if (previewPosXaxis != null) {
+        args.Pipeline.DrawArrow(previewPosXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5); //red
+        args.Pipeline.DrawArrow(previewPosYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5); //green
+        args.Pipeline.DrawArrow(previewPosZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5); //blue
+        args.Pipeline.DrawArrow(previewNegXaxis, Color.FromArgb(255, 244, 96, 96), 15, 5); //red
+        args.Pipeline.DrawArrow(previewNegYaxis, Color.FromArgb(255, 96, 244, 96), 15, 5); //green
+        args.Pipeline.DrawArrow(previewNegZaxis, Color.FromArgb(255, 96, 96, 234), 15, 5); //blue
+        args.Pipeline.Draw3dText(posN, Color.FromArgb(255, 244, 96, 96));
+        args.Pipeline.Draw3dText(negN, Color.FromArgb(255, 244, 96, 96));
+        args.Pipeline.Draw3dText(posMyy, Color.FromArgb(255, 96, 244, 96));
+        args.Pipeline.Draw3dText(negMyy, Color.FromArgb(255, 96, 244, 96));
+        args.Pipeline.Draw3dText(posMzz, Color.FromArgb(255, 96, 96, 234));
+        args.Pipeline.Draw3dText(negMzz, Color.FromArgb(255, 96, 96, 234));
+      }
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
@@ -181,73 +183,75 @@ namespace AdSecGH.Parameters {
 
     private void UpdatePreview() {
       // local axis
-      double maxN = bbox.PointAt(1, 0.5, 0.5).X;
-      double minN = bbox.PointAt(0, 0.5, 0.5).X;
+      if (m_plane != null) {
+        double maxN = bbox.PointAt(1, 0.5, 0.5).X;
+        double minN = bbox.PointAt(0, 0.5, 0.5).X;
 
-      double maxMyy = bbox.PointAt(0.5, 0.5, 1).Z;
-      double minMyy = bbox.PointAt(0.5, 0.5, 0).Z;
+        double maxMyy = bbox.PointAt(0.5, 0.5, 1).Z;
+        double minMyy = bbox.PointAt(0.5, 0.5, 0).Z;
 
-      double maxMzz = bbox.PointAt(0.5, 1, 0.5).Y;
-      double minMzz = bbox.PointAt(0.5, 0, 0.5).Y;
+        double maxMzz = bbox.PointAt(0.5, 1, 0.5).Y;
+        double minMzz = bbox.PointAt(0.5, 0, 0.5).Y;
 
-      previewPosXaxis = new Line(m_plane.Origin, m_plane.ZAxis, maxN);
-      previewPosYaxis = new Line(m_plane.Origin, m_plane.YAxis, maxMyy);
-      previewPosZaxis = new Line(m_plane.Origin, m_plane.XAxis, maxMzz);
-      previewNegXaxis = new Line(m_plane.Origin, m_plane.ZAxis, minN);
-      previewNegYaxis = new Line(m_plane.Origin, m_plane.YAxis, minMyy);
-      previewNegZaxis = new Line(m_plane.Origin, m_plane.XAxis, minMzz);
+        previewPosXaxis = new Line(m_plane.Origin, m_plane.ZAxis, maxN);
+        previewPosYaxis = new Line(m_plane.Origin, m_plane.YAxis, maxMyy);
+        previewPosZaxis = new Line(m_plane.Origin, m_plane.XAxis, maxMzz);
+        previewNegXaxis = new Line(m_plane.Origin, m_plane.ZAxis, minN);
+        previewNegYaxis = new Line(m_plane.Origin, m_plane.YAxis, minMyy);
+        previewNegZaxis = new Line(m_plane.Origin, m_plane.XAxis, minMzz);
 
-      double size = Math.Max(
-        Math.Max(Math.Max(Math.Max(Math.Max(Math.Abs(maxN), Math.Abs(minN)), Math.Abs(maxMyy)), Math.Abs(minMyy)),
-          Math.Abs(maxMzz)), Math.Abs(minMzz));
-      size /= 50;
-      var plnPosN = new Plane(m_plane) {
-        Origin = previewPosXaxis.PointAt(1.05),
-      };
-      posN = new Text3d("Tension", plnPosN, size) {
-        HorizontalAlignment = TextHorizontalAlignment.Center,
-        VerticalAlignment = TextVerticalAlignment.Bottom,
-      };
+        double size = Math.Max(
+          Math.Max(Math.Max(Math.Max(Math.Max(Math.Abs(maxN), Math.Abs(minN)), Math.Abs(maxMyy)), Math.Abs(minMyy)),
+            Math.Abs(maxMzz)), Math.Abs(minMzz));
+        size /= 50;
+        var plnPosN = new Plane(m_plane) {
+          Origin = previewPosXaxis.PointAt(1.05),
+        };
+        posN = new Text3d("Tension", plnPosN, size) {
+          HorizontalAlignment = TextHorizontalAlignment.Center,
+          VerticalAlignment = TextVerticalAlignment.Bottom,
+        };
 
-      var plnNegN = new Plane(m_plane) {
-        Origin = previewNegXaxis.PointAt(1.05),
-      };
-      negN = new Text3d("Compression", plnNegN, size) {
-        HorizontalAlignment = TextHorizontalAlignment.Center,
-        VerticalAlignment = TextVerticalAlignment.Bottom,
-      };
+        var plnNegN = new Plane(m_plane) {
+          Origin = previewNegXaxis.PointAt(1.05),
+        };
+        negN = new Text3d("Compression", plnNegN, size) {
+          HorizontalAlignment = TextHorizontalAlignment.Center,
+          VerticalAlignment = TextVerticalAlignment.Bottom,
+        };
 
-      var plnPosMyy = new Plane(m_plane) {
-        Origin = previewPosYaxis.PointAt(1.05),
-      };
-      posMyy = new Text3d("+Myy", plnPosMyy, size) {
-        HorizontalAlignment = TextHorizontalAlignment.Center,
-        VerticalAlignment = TextVerticalAlignment.Bottom,
-      };
+        var plnPosMyy = new Plane(m_plane) {
+          Origin = previewPosYaxis.PointAt(1.05),
+        };
+        posMyy = new Text3d("+Myy", plnPosMyy, size) {
+          HorizontalAlignment = TextHorizontalAlignment.Center,
+          VerticalAlignment = TextVerticalAlignment.Bottom,
+        };
 
-      var plnNegMyy = new Plane(m_plane) {
-        Origin = previewNegYaxis.PointAt(1.05),
-      };
-      negMyy = new Text3d("-Myy", plnNegMyy, size) {
-        HorizontalAlignment = TextHorizontalAlignment.Center,
-        VerticalAlignment = TextVerticalAlignment.Top,
-      };
+        var plnNegMyy = new Plane(m_plane) {
+          Origin = previewNegYaxis.PointAt(1.05),
+        };
+        negMyy = new Text3d("-Myy", plnNegMyy, size) {
+          HorizontalAlignment = TextHorizontalAlignment.Center,
+          VerticalAlignment = TextVerticalAlignment.Top,
+        };
 
-      var plnPosMzz = new Plane(m_plane) {
-        Origin = previewPosZaxis.PointAt(1.05),
-      };
-      posMzz = new Text3d("+Mzz", plnPosMzz, size) {
-        HorizontalAlignment = TextHorizontalAlignment.Left,
-        VerticalAlignment = TextVerticalAlignment.Middle,
-      };
+        var plnPosMzz = new Plane(m_plane) {
+          Origin = previewPosZaxis.PointAt(1.05),
+        };
+        posMzz = new Text3d("+Mzz", plnPosMzz, size) {
+          HorizontalAlignment = TextHorizontalAlignment.Left,
+          VerticalAlignment = TextVerticalAlignment.Middle,
+        };
 
-      var plnNegMzz = new Plane(m_plane) {
-        Origin = previewNegZaxis.PointAt(1.05),
-      };
-      negMzz = new Text3d("-Mzz", plnNegMzz, size) {
-        HorizontalAlignment = TextHorizontalAlignment.Right,
-        VerticalAlignment = TextVerticalAlignment.Middle,
-      };
+        var plnNegMzz = new Plane(m_plane) {
+          Origin = previewNegZaxis.PointAt(1.05),
+        };
+        negMzz = new Text3d("-Mzz", plnNegMzz, size) {
+          HorizontalAlignment = TextHorizontalAlignment.Right,
+          VerticalAlignment = TextVerticalAlignment.Middle,
+        };
+      }
     }
   }
 }

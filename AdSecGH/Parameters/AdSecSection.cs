@@ -24,6 +24,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
   public class AdSecSection {
+    private const double tolerance = 0.001;
     internal string _codeName;
     internal string _materialName;
     internal List<Brep> _subProfiles;
@@ -215,8 +216,8 @@ namespace AdSecGH.Parameters {
           rebarEdges.AddRange(baredges);
 
           string rebmatrebarMaterialString = singleBars.BarBundle.Material.ToString();
-          rebmatrebarMaterialString = rebmatrebarMaterialString.Replace("Oasys.AdSec.Materials.I", "");
-          rebmatrebarMaterialString = rebmatrebarMaterialString.Replace("_Implementation", "");
+          rebmatrebarMaterialString = rebmatrebarMaterialString.Replace("Oasys.AdSec.Materials.I", string.Empty);
+          rebmatrebarMaterialString = rebmatrebarMaterialString.Replace("_Implementation", string.Empty);
           Enum.TryParse(rebmatrebarMaterialString, out AdSecMaterial.AdSecMaterialType rebarType);
           var rebarColour = Colour.Reinforcement;
           switch (rebarType) {
@@ -258,7 +259,7 @@ namespace AdSecGH.Parameters {
         profile.Polyline.ToPolylineCurve(),
       };
       curves.AddRange(profile.VoidEdges.Select(x => x.ToPolylineCurve()));
-      return Brep.CreatePlanarBreps(curves, 0.001)[0]; //TODO: use OasysUnits tolerance
+      return Brep.CreatePlanarBreps(curves, tolerance)[0]; //TODO: use OasysUnits tolerance
     }
 
     private List<Brep> CreateBrepsFromSingleRebar(
@@ -276,7 +277,7 @@ namespace AdSecGH.Parameters {
         var curves = new List<Curve> {
           edgeCurve.ToNurbsCurve(),
         };
-        rebarBreps.Add(Brep.CreatePlanarBreps(curves, 0.001)[0]); //TODO: use OasysUnits tolerance
+        rebarBreps.Add(Brep.CreatePlanarBreps(curves, tolerance)[0]); //TODO: use OasysUnits tolerance
       }
 
       return rebarBreps;
@@ -317,8 +318,8 @@ namespace AdSecGH.Parameters {
       }
 
       double barDiameter = linkGroup.BarBundle.Diameter.As(DefaultUnits.LengthUnitGeometry);
-      var offset1 = centreLine.Offset(local, barDiameter / 2, 0.001, CurveOffsetCornerStyle.Sharp);
-      var offset2 = centreLine.Offset(local, barDiameter / 2 * -1, 0.001, CurveOffsetCornerStyle.Sharp);
+      var offset1 = centreLine.Offset(local, barDiameter / 2, tolerance, CurveOffsetCornerStyle.Sharp);
+      var offset2 = centreLine.Offset(local, barDiameter / 2 * -1, tolerance, CurveOffsetCornerStyle.Sharp);
 
       if (linkEdges == null) {
         linkEdges = new List<Curve>();
