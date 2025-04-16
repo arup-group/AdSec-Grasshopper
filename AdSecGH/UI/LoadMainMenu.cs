@@ -10,9 +10,11 @@ using Grasshopper.GUI.Canvas;
 
 namespace AdSecGH.Graphics.Menu {
   public static class MenuLoad {
+    private const string OasysText = "Oasys";
+
     internal static void OnStartup(GH_Canvas canvas) {
-      var oasysMenu = new ToolStripMenuItem("Oasys") {
-        Name = "Oasys",
+      var oasysMenu = new ToolStripMenuItem(OasysText) {
+        Name = OasysText,
       };
 
       PopulateSub(oasysMenu);
@@ -24,11 +26,11 @@ namespace AdSecGH.Graphics.Menu {
         Thread.Sleep(321);
       }
 
-      if (!editor.MainMenuStrip.Items.ContainsKey("Oasys")) {
+      if (!editor.MainMenuStrip.Items.ContainsKey(OasysText)) {
         editor.MainMenuStrip.Items.Add(oasysMenu);
       } else {
 #pragma warning disable S3998 // Threads should not lock on objects with weak identity
-        oasysMenu = (ToolStripMenuItem)editor.MainMenuStrip.Items["Oasys"];
+        oasysMenu = (ToolStripMenuItem)editor.MainMenuStrip.Items[OasysText];
         lock (oasysMenu) {
           oasysMenu.DropDown.Items.Add(new ToolStripSeparator());
           PopulateSub(oasysMenu);
