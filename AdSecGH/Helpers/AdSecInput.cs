@@ -104,7 +104,7 @@ namespace AdSecGH.Helpers {
       if (ghType?.Value is AdSecSectionGoo sectionGoo) {
         section = sectionGoo.Value;
       } else if (ghType?.Value is AdSecSubComponentGoo subComponentGoo) {
-        section = subComponentGoo._section;
+        section = subComponentGoo.section;
       } else {
         castSuccessful = false;
       }
