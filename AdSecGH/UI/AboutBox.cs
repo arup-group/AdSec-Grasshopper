@@ -55,7 +55,7 @@ namespace AdSecGH.UI {
     }
 
     private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-      Process.Start($@"http://{oasysHtml}");
+      Process.Start($@"https://{oasysHtml}");
     }
 
     private void okButton_Click(object sender, EventArgs e) {
