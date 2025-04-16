@@ -79,7 +79,7 @@ namespace AdSecGH.Components {
             if (_selectedItems.Count - 1 < level) {
               _selectedItems.Add(designCodeKVP.Keys.First());
               // and set the next search item to this
-              typeString = _selectedItems.Last();
+              typeString = _selectedItems[_selectedItems.Count - 1];
             } else {
               typeString = _selectedItems[level];
             }
@@ -123,13 +123,7 @@ namespace AdSecGH.Components {
 
       var designCodeGroups = ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode").Keys.ToList();
 
-      var tempList = new List<string>();
-      foreach (string dc in designCodeGroups) {
-        if (!dc.StartsWith("IDesignCode")) {
-          tempList.Add(dc);
-        }
-      }
-
+      var tempList = designCodeGroups.Where(dc => !dc.StartsWith("IDesignCode")).ToList();
       designCodeGroups = tempList;
 
       _selectedItems.Add(designCodeGroups[4]);
@@ -139,7 +133,7 @@ namespace AdSecGH.Components {
         var designCodeKVP = ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
 
         // create string for selected item to use for type search while drilling
-        string typeString = _selectedItems.Last();
+        string typeString = _selectedItems[_selectedItems.Count - 1];
         bool drill = true;
         while (drill) {
           // get the type of the most recent selected from level above
@@ -155,7 +149,7 @@ namespace AdSecGH.Components {
             // with first item being the selected
             _selectedItems.Add(designCodeKVP.Keys.First());
             // and set the next search item to this
-            typeString = _selectedItems.Last();
+            typeString = _selectedItems[_selectedItems.Count - 1];
           } else if (designCodeKVP.Count == 1) {
             // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
             typeString = designCodeKVP.Keys.First();

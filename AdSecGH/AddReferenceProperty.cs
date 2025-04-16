@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Text;
 
 using AdSecGH.Graphics.Menu;
 using AdSecGH.Properties;
@@ -22,15 +23,7 @@ namespace AdSecGH {
 #pragma warning restore S1104 // Fields should not have public accessibility
 #pragma warning restore S2223 // Non-constant static fields should not be visible
     private static string _pluginPath;
-    public static string PluginPath {
-      get {
-        if (_pluginPath == null) {
-          _pluginPath = TryFindPluginPath("AdSec.gha");
-        }
-
-        return _pluginPath;
-      }
-    }
+    public static string PluginPath => _pluginPath ?? TryFindPluginPath("AdSec.gha");
 
     /// <summary>
     ///   This method finds the location of the AdSec plugin and add's the path to the system environment to load referenced
@@ -91,44 +84,50 @@ namespace AdSecGH {
       path = Path.Combine(path, "McNeel", "Rhinoceros", "Packages", $"{RhinoApp.ExeVersion}.0",
         AdSecGHInfo.ProductName);
 
-      if (!File.Exists(Path.Combine(path, keyword))) // if no plugin file is found there continue search
+      if (File.Exists(Path.Combine(path, keyword))) // if no plugin file is found there continue search
       {
-        // search grasshopper libraries folder
-        string sDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Grasshopper",
-          "Libraries");
-
-        string[] files = Directory.GetFiles(sDir, keyword, SearchOption.AllDirectories);
-        if (files.Length > 0) {
-          path = files[0].Replace(keyword, string.Empty);
-        }
-
-        if (!File.Exists(Path.Combine(path, keyword))) // if no plugin file is found there continue search
-        {
-          // look in all the other Grasshopper assembly (plugin) folders
-          foreach (var pluginFolder in Folders.AssemblyFolders) {
-            files = Directory.GetFiles(pluginFolder.Folder, keyword, SearchOption.AllDirectories);
-            if (files.Length > 0) {
-              path = files[0].Replace(keyword, string.Empty);
-              return Path.GetDirectoryName(path);
-            }
-          }
-
-          string message
-            = $"Error loading the file {keyword} from any Grasshopper plugin folders - check if the file exist.{Environment.NewLine}The plugin cannot be loaded.{Environment.NewLine}Folders (including subfolder) that was searched:{Environment.NewLine}{sDir}";
-          foreach (var pluginFolder in Folders.AssemblyFolders) {
-            message += Environment.NewLine + pluginFolder.Folder;
-          }
-
-          var exception = new Exception(message);
-          var gH_LoadingException
-            = new GH_LoadingException($"{AdSecGHInfo.ProductName}: {keyword} loading failed", exception);
-          Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
-          PostHog.PluginLoaded(PluginInfo.Instance, message);
-          return "";
-        }
+        return Path.GetDirectoryName(path);
       }
 
-      return Path.GetDirectoryName(path);
+      // search grasshopper libraries folder
+      string sDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Grasshopper",
+        "Libraries");
+
+      string[] files = Directory.GetFiles(sDir, keyword, SearchOption.AllDirectories);
+      if (files.Length > 0) {
+        path = files[0].Replace(keyword, string.Empty);
+      }
+
+      if (File.Exists(Path.Combine(path, keyword))) // if no plugin file is found there continue search
+      {
+        return Path.GetDirectoryName(path);
+      }
+
+      // look in all the other Grasshopper assembly (plugin) folders
+      foreach (var pluginFolder in Folders.AssemblyFolders) {
+        files = Directory.GetFiles(pluginFolder.Folder, keyword, SearchOption.AllDirectories);
+        if (files.Length == 0) {
+          continue;
+        }
+
+        path = files[0].Replace(keyword, string.Empty);
+        return Path.GetDirectoryName(path);
+      }
+
+      string message
+        = $"Error loading the file {keyword} from any Grasshopper plugin folders - check if the file exist.{Environment.NewLine}The plugin cannot be loaded.{Environment.NewLine}Folders (including subfolder) that was searched:{Environment.NewLine}{sDir}";
+      var stringBuilder = new StringBuilder(message);
+      foreach (var pluginFolder in Folders.AssemblyFolders) {
+        stringBuilder.AppendLine(pluginFolder.Folder);
+      }
+
+      message = stringBuilder.ToString();
+      var exception = new Exception(message);
+      var gH_LoadingException
+        = new GH_LoadingException($"{AdSecGHInfo.ProductName}: {keyword} loading failed", exception);
+      Instances.ComponentServer.LoadingExceptions.Add(gH_LoadingException);
+      PostHog.PluginLoaded(PluginInfo.Instance, message);
+      return "";
     }
   }
 }

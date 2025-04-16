@@ -55,12 +55,8 @@ namespace AdSecGH.Components {
       _dropDownItems = new List<List<string>>();
       _selectedItems = new List<string>();
 
-      // length
       _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
       _selectedItems.Add(Length.GetAbbreviation(_lengthUnit));
-
-      IQuantity quantity = new Length(0, _lengthUnit);
-
       _isInitialised = true;
     }
 
