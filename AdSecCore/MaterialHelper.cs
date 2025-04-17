@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.StandardMaterials;
 
@@ -12,7 +13,7 @@ namespace AdSecGHCore {
 
     private static Dictionary<string, object> Materials = new Dictionary<string, object>();
     private static readonly Type[] materialTypes = {
-      typeof(IReinforcement), typeof(IConcrete),
+      typeof(IReinforcement), typeof(IConcrete),typeof(IDesignCode),
       typeof(ISteel), typeof(Reinforcement.Tendon)
     };
 
@@ -54,6 +55,36 @@ namespace AdSecGHCore {
 
         dictionary.Add($"{type.FullName}.{field.Name}", value);
       }
+    }
+
+    public static string DesignCodeName(IDesignCode code) {
+      if (code == null) {
+        return string.Empty;
+      }
+
+      string path = FindPath(code);
+      if (string.IsNullOrEmpty(path)) {
+        return string.Empty;
+      }
+
+      // Remove prefix
+      const string prefix = "Oasys.AdSec.DesignCode.";
+      if (path.StartsWith(prefix)) {
+        path = path.Substring(prefix.Length);
+      }
+
+      // Build code name
+      var builder = new System.Text.StringBuilder();
+      var parts = path.Split('.');
+
+      for (int i = 0; i < parts.Length; i++) {
+        if (i > 0) {
+          builder.Append('+');
+        }
+        builder.Append(parts[i]);
+      }
+
+      return builder.ToString();
     }
   }
 }
