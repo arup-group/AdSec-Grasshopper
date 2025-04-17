@@ -14,7 +14,7 @@ namespace AdSecGH.Graphics.Menu {
 
     internal static void OnStartup(GH_Canvas canvas) {
       oasysMenu = new ToolStripMenuItem("Oasys") {
-        Name = "Oasys"
+        Name = "Oasys",
       };
 
       PopulateSub(oasysMenu);
