@@ -113,7 +113,7 @@ namespace AdSecGH.Components {
               }
 
               // and set the next search item to this
-              typeString = _selectedItems.Last();
+              typeString = _selectedItems[_selectedItems.Count - 1];
             } else {
               typeString = _selectedItems[level];
             }

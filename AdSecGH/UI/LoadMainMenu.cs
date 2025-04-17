@@ -9,12 +9,12 @@ using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 
 namespace AdSecGH.Graphics.Menu {
-  public class MenuLoad {
-    private static ToolStripMenuItem oasysMenu;
+  public static class MenuLoad {
+    private const string OasysText = "Oasys";
 
     internal static void OnStartup(GH_Canvas canvas) {
-      oasysMenu = new ToolStripMenuItem("Oasys") {
-        Name = "Oasys",
+      var oasysMenu = new ToolStripMenuItem(OasysText) {
+        Name = OasysText,
       };
 
       PopulateSub(oasysMenu);
@@ -26,26 +26,22 @@ namespace AdSecGH.Graphics.Menu {
         Thread.Sleep(321);
       }
 
-      if (!editor.MainMenuStrip.Items.ContainsKey("Oasys")) {
+      if (!editor.MainMenuStrip.Items.ContainsKey(OasysText)) {
         editor.MainMenuStrip.Items.Add(oasysMenu);
       } else {
-#pragma warning disable S2445 // Blocks should be synchronized on read-only fields
 #pragma warning disable S3998 // Threads should not lock on objects with weak identity
-        oasysMenu = (ToolStripMenuItem)editor.MainMenuStrip.Items["Oasys"];
-#pragma warning disable S2445 // Blocks should be synchronized on read-only fields
-#pragma warning disable S3998 // Threads should not lock on objects with weak identity
+        oasysMenu = (ToolStripMenuItem)editor.MainMenuStrip.Items[OasysText];
         lock (oasysMenu) {
           oasysMenu.DropDown.Items.Add(new ToolStripSeparator());
           PopulateSub(oasysMenu);
         }
 #pragma warning restore S3998 // Threads should not lock on objects with weak identity
-#pragma warning restore S2445 // Blocks should be synchronized on read-only fields
       }
 
       Instances.CanvasCreated -= OnStartup;
     }
 
-    private static void PopulateSub(ToolStripMenuItem menuItem) {
+    private static void PopulateSub(ToolStripDropDownItem menuItem) {
       // add info
       menuItem.DropDown.Items.Add("AdSecGH Info", Resources.AdSecInfo, (s, a) => {
         var aboutBox = new AboutBox();

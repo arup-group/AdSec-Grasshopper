@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 
 using AdSecCore.Functions;
 
@@ -8,7 +7,6 @@ using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
 
 using Oasys.GH.Helpers;
 
