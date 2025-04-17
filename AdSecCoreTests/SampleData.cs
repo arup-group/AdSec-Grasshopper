@@ -11,7 +11,7 @@ namespace AdSecGHCore {
   public static class SampleData {
 
     private static readonly ISteel _defaultSteelBeam = Steel.AS4100.Edition_1998.AS1163_C250;
-    public static IConcrete _defaultConcrete = Concrete.IS456.Edition_2000.M10;
+    public static IConcrete _defaultConcrete = Concrete.AS3600.Edition_2001.MPA20;
     private static readonly IDesignCode _defaultDesignCode = IS456.Edition_2000;
 
     public static SectionDesign GetSectionDesign(IDesignCode? designCode = null, ISteel? iBeamMat = null) {
