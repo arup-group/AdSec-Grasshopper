@@ -185,30 +185,58 @@ namespace AdSecGH.Helpers {
       var json = new JsonConverter(sections[0].DesignCode);
       for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
 
-        var adSecload = Oasys.Collections.IList<ILoad>.Create();
-        var adSecDeformation = Oasys.Collections.IList<IDeformation>.Create();
-        if (loads.ContainsKey(sectionId)) {
-
-          foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecLoadGoo))) {
-            adSecload.Add(((AdSecLoadGoo)item).Value);
-          }
-
-          foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecDeformationGoo))) {
-            adSecDeformation.Add(((AdSecDeformationGoo)item).Value);
-          }
-        }
+        PopulateLoadAndDeformationLists(loads, sectionId, out var adSecload, out var adSecDeformation);
 
         if (adSecload.Any() && adSecDeformation.Any()) {
           throw new ArgumentException("Only either deformation or load can be specified to a section.");
         }
-
-        if (adSecload.Any()) {
-          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecload));
-        } else {
-          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecDeformation));
+        try {
+          if (adSecload.Any()) {
+            jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecload));
+          } else {
+            jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecDeformation));
+          }
+        } catch (Exception exception) {
+          ParseJsonException(exception);
         }
       }
       return jsonStrings;
+    }
+
+    private static void PopulateLoadAndDeformationLists(Dictionary<int, List<object>> loads, int sectionId, out Oasys.Collections.IList<ILoad> adSecload, out Oasys.Collections.IList<IDeformation> adSecDeformation) {
+      adSecload = Oasys.Collections.IList<ILoad>.Create();
+      adSecDeformation = Oasys.Collections.IList<IDeformation>.Create();
+
+      if (loads.ContainsKey(sectionId)) {
+
+        foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecLoadGoo))) {
+          adSecload.Add(((AdSecLoadGoo)item).Value);
+        }
+
+        foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecDeformationGoo))) {
+          adSecDeformation.Add(((AdSecDeformationGoo)item).Value);
+        }
+      }
+    }
+
+    private static void ParseJsonException(Exception exception) {
+      var exceptionMessage = string.Empty;
+      foreach (var value in exception.InnerException.Data.Values) {
+        Type type = value.GetType();
+        if (value is IEnumerable<string> messages) {
+          foreach (var message in messages) {
+            exceptionMessage += message + "\n";
+          }
+        }
+        if (exceptionMessage.Contains("definition is not a standard")) {
+          exceptionMessage = $"{exceptionMessage}. AdSec file cannot be created if the material used in the section is inconsistent with the selected design code.\n";
+        }
+      }
+      if (!string.IsNullOrEmpty(exceptionMessage)) {
+        throw new InvalidOperationException(exceptionMessage);
+      } else {
+        throw exception;
+      }
     }
 
     internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
