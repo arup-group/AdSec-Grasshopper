@@ -72,35 +72,32 @@ namespace AdSecGH.Parameters {
         return false;
       }
 
-      if (source is Point3d) {
-        var point = (Point3d)source;
-        var load = ILoad.Create(new Force(point.X, DefaultUnits.ForceUnit),
-          new Moment(point.Y, DefaultUnits.MomentUnit), new Moment(point.Z, DefaultUnits.MomentUnit));
-        var adSecLoadGoo = new AdSecLoadGoo(load);
-        Value = adSecLoadGoo.Value;
-        return true;
+      Point3d point;
+      switch (source) {
+        case Point3d pt:
+          point = pt;
+          break;
+        case GH_Point ghPt:
+          point = ghPt.Value;
+          break;
+        default:
+          point = new Point3d();
+          if (!GH_Convert.ToPoint3d(source, ref point, GH_Conversion.Both)) {
+            return false;
+          }
+
+          break;
       }
 
-      if (source is GH_Point ptGoo) {
-        var point = ptGoo.Value;
-        var load = ILoad.Create(new Force(point.X, DefaultUnits.ForceUnit),
-          new Moment(point.Y, DefaultUnits.MomentUnit), new Moment(point.Z, DefaultUnits.MomentUnit));
-        var adSecLoadGoo = new AdSecLoadGoo(load);
-        Value = adSecLoadGoo.Value;
-        return true;
-      }
+      return SetLoadFromPoint(point);
+    }
 
-      var point3d = new Point3d();
-      if (GH_Convert.ToPoint3d(source, ref point3d, GH_Conversion.Both)) {
-        var point = point3d;
-        var load = ILoad.Create(new Force(point.X, DefaultUnits.ForceUnit),
-          new Moment(point.Y, DefaultUnits.MomentUnit), new Moment(point.Z, DefaultUnits.MomentUnit));
-        var adSecLoadGoo = new AdSecLoadGoo(load);
-        Value = adSecLoadGoo.Value;
-        return true;
-      }
+    private bool SetLoadFromPoint(Point3d point) {
+      var load = ILoad.Create(new Force(point.X, DefaultUnits.ForceUnit), new Moment(point.Y, DefaultUnits.MomentUnit),
+        new Moment(point.Z, DefaultUnits.MomentUnit));
 
-      return false;
+      Value = new AdSecLoadGoo(load).Value;
+      return true;
     }
 
     public override bool CastTo<Q>(out Q target) {
@@ -120,7 +117,7 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(ILoad))) {
-        target = (Q)(object)ILoad.Create(Value.X, Value.YY, Value.ZZ);
+        target = (Q)ILoad.Create(Value.X, Value.YY, Value.ZZ);
         return true;
       }
 

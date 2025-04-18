@@ -14,7 +14,7 @@ namespace AdSecGH.Parameters {
   public class AdSecMaterialParameter : GH_PersistentParam<AdSecMaterialGoo> {
 
     public AdSecMaterialParameter() : base(new GH_InstanceDescription("Material", "Mat", "AdSec Material Parameter",
-      CategoryName.Name(), SubCategoryName.Cat9())) { }
+      CategoryName.Name(), SubCategoryName.Cat8())) { }
 
     public override Guid ComponentGuid => new Guid("cf5636e2-628d-4794-ab29-97f83002db34");
     public override GH_Exposure Exposure => GH_Exposure.primary | GH_Exposure.obscure;

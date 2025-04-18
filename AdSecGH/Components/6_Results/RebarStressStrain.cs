@@ -141,12 +141,12 @@ namespace AdSecGH.Components {
 
     private static ISection FlatSection(AdSecSolutionGoo solution) {
       ISection flat;
-      if (solution.m_section.DesignCode != null) {
-        var adSec = IAdSec.Create(solution.m_section.DesignCode);
-        flat = adSec.Flatten(solution.m_section.Section);
+      if (solution.section.DesignCode != null) {
+        var adSec = IAdSec.Create(solution.section.DesignCode);
+        flat = adSec.Flatten(solution.section.Section);
       } else {
-        var prof = IPerimeterProfile.Create(solution.m_section.Section.Profile);
-        flat = ISection.Create(prof, solution.m_section.Section.Material);
+        var prof = IPerimeterProfile.Create(solution.section.Section.Profile);
+        flat = ISection.Create(prof, solution.section.Section.Material);
       }
 
       return flat;

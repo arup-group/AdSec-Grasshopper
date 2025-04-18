@@ -23,15 +23,8 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
   public class AdSecProfileGoo : GH_GeometricGoo<ProfileDesign>, IGH_PreviewData {
-    public override BoundingBox Boundingbox {
-      get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
-
-        return Polyline.BoundingBox;
-      }
-    }
+    public override BoundingBox Boundingbox => Value == null ? BoundingBox.Empty : Polyline.BoundingBox;
+    public BoundingBox ClippingBox => Boundingbox;
     public bool IsReflectedY {
       get => Profile.IsReflectedY;
       set {
@@ -59,10 +52,10 @@ namespace AdSecGH.Parameters {
     public override string TypeName => "Profile";
     public List<Polyline> VoidEdges { get; private set; }
     public Polyline Polyline { get; private set; }
-    private Plane _plane = Plane.WorldYZ;
-    private Line _previewXaxis;
-    private Line _previewYaxis;
-    private Line _previewZaxis;
+    private Plane _plane;
+    private Line previewXaxis;
+    private Line previewYaxis;
+    private Line previewZaxis;
 
     public AdSecProfileGoo(ProfileDesign profileDesign) : base(profileDesign) {
       Profile = profileDesign.Profile;
@@ -103,33 +96,33 @@ namespace AdSecGH.Parameters {
       UpdatePreview();
     }
 
-    public BoundingBox ClippingBox => Boundingbox;
-
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (Value != null) {
-        var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-        if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
-          args.Pipeline.DrawPolyline(Polyline, Colour.OasysBlue, 2);
-          if (VoidEdges != null) {
-            foreach (var crv in VoidEdges) {
-              args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
-            }
-          }
-        } else {
-          args.Pipeline.DrawPolyline(Polyline, Colour.OasysYellow, 3);
-          if (VoidEdges != null) {
-            foreach (var crv in VoidEdges) {
-              args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
-            }
+      if (Value == null) {
+        return;
+      }
+
+      var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
+        args.Pipeline.DrawPolyline(Polyline, Colour.OasysBlue, 2);
+        if (VoidEdges != null) {
+          foreach (var polyline in VoidEdges) {
+            args.Pipeline.DrawPolyline(polyline, Colour.OasysBlue, 1);
           }
         }
-
-        args.Pipeline.DrawLine(_previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
-        args.Pipeline.DrawLine(_previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
-        args.Pipeline.DrawLine(_previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
+      } else {
+        args.Pipeline.DrawPolyline(Polyline, Colour.OasysYellow, 3);
+        if (VoidEdges != null) {
+          foreach (var polyline in VoidEdges) {
+            args.Pipeline.DrawPolyline(polyline, Colour.OasysYellow, 2);
+          }
+        }
       }
+
+      args.Pipeline.DrawLine(previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
+      args.Pipeline.DrawLine(previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
+      args.Pipeline.DrawLine(previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
     }
 
     public override bool CastFrom(object source) {
@@ -139,17 +132,15 @@ namespace AdSecGH.Parameters {
 
       // try cast using GH_Convert, if that doesnt work we are doomed
       Curve curve = null;
-      if (GH_Convert.ToCurve(source, ref curve, GH_Conversion.Both)) {
-        if (curve.TryGetPolyline(out var poly)) {
-          var adSecProfileGoo = new AdSecProfileGoo(poly, DefaultUnits.LengthUnitGeometry);
-          m_value = adSecProfileGoo.m_value;
-          Profile = adSecProfileGoo.Profile;
-          VoidEdges = adSecProfileGoo.VoidEdges;
-          return true;
-        }
+      if (!GH_Convert.ToCurve(source, ref curve, GH_Conversion.Both) || !curve.TryGetPolyline(out var poly)) {
+        return false;
       }
 
-      return false;
+      var adSecProfileGoo = new AdSecProfileGoo(poly, DefaultUnits.LengthUnitGeometry);
+      m_value = adSecProfileGoo.m_value;
+      Profile = adSecProfileGoo.Profile;
+      VoidEdges = adSecProfileGoo.VoidEdges;
+      return true;
     }
 
     public override bool CastTo<Q>(out Q target) {
@@ -289,10 +280,11 @@ namespace AdSecGH.Parameters {
       }
 
       var solid = perimeterProfile.SolidPolygon;
-      var edgePoints = PtsFromAdSecPolygon(solid, local);
+      var rhinoEdgePoints = PtsFromAdSecPolygon(solid, local);
 
-      var voidPoints = perimeterProfile.VoidPolygons.Select(polygon => PtsFromAdSecPolygon(polygon, local)).ToList();
-      return new Tuple<List<Point3d>, List<List<Point3d>>>(edgePoints, voidPoints);
+      var rhinoVoidPoints
+        = perimeterProfile.VoidPolygons.Select(polygon => PtsFromAdSecPolygon(polygon, local)).ToList();
+      return new Tuple<List<Point3d>, List<List<Point3d>>>(rhinoEdgePoints, rhinoVoidPoints);
     }
 
     internal static IPolygon PolygonFromRhinoPolyline(Polyline polyline, LengthUnit lengthUnit, Plane local) {
@@ -317,20 +309,19 @@ namespace AdSecGH.Parameters {
       }
 
       var maptToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
-
-      var rhPts = new List<Point3d>();
+      var rhinoPoints = new List<Point3d>();
 
       foreach (var point in polygon.Points) {
         var point3d = new Point3d(0, point.Y.As(DefaultUnits.LengthUnitGeometry),
           point.Z.As(DefaultUnits.LengthUnitGeometry));
         point3d.Transform(maptToLocal);
-        rhPts.Add(point3d);
+        rhinoPoints.Add(point3d);
       }
 
       // add first point to end of list for closed polyline
-      rhPts.Add(rhPts[0]);
+      rhinoPoints.Add(rhinoPoints[0]);
 
-      return rhPts;
+      return rhinoPoints;
     }
 
     internal static Oasys.Collections.IList<IPoint> PtsFromRhinoPolyline(
@@ -362,16 +353,16 @@ namespace AdSecGH.Parameters {
     }
 
     private void UpdatePreview() {
-      if (_plane == Plane.WorldXY || _plane == Plane.WorldYZ || _plane == Plane.WorldZX) {
+      if (_plane == null || _plane == Plane.WorldXY || _plane == Plane.WorldYZ || _plane == Plane.WorldZX) {
         return;
       }
 
       var area = Profile.Area();
       double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
       var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-      _previewXaxis = new Line(_plane.Origin, _plane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
-      _previewYaxis = new Line(_plane.Origin, _plane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
-      _previewZaxis = new Line(_plane.Origin, _plane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      previewXaxis = new Line(_plane.Origin, _plane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      previewYaxis = new Line(_plane.Origin, _plane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      previewZaxis = new Line(_plane.Origin, _plane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
     }
   }
 }

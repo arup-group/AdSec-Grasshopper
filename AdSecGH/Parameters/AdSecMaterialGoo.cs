@@ -5,11 +5,9 @@ using Grasshopper.Kernel.Types;
 using OasysGH;
 using OasysGH.Parameters;
 
-using Rhino.Render.ChangeQueue;
-
 namespace AdSecGH.Parameters {
   /// <summary>
-  /// Goo wrapper class, makes sure this can be used in Grasshopper.
+  ///   Goo wrapper class, makes sure this can be used in Grasshopper.
   /// </summary>
   public class AdSecMaterialGoo : GH_OasysGoo<MaterialDesign> {
     public static string Description => "AdSec Material Parameter";

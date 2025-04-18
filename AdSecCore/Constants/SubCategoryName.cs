@@ -8,40 +8,62 @@
   /// </summary>
   public static class SubCategoryName {
 
+    private static readonly string[] categories = {
+      "File",
+      "Material",
+      "Profile",
+      "Rebar",
+      "Section",
+      "Loads",
+      "Solution",
+      "Results",
+      "Params",
+    };
+
+    private static string Pad(int index) {
+      // Last category without space
+      if (index == categories.Length - 1) {
+        return categories[index];
+      }
+
+      int padding = categories.Length - index;
+      return $"{new string(' ', padding)}{categories[index]}";
+    }
+
     public static string Cat0() {
-      return $"{new string(' ', 8)}File";
+      return Pad(0);
     }
 
     public static string Cat1() {
-      return $"{new string(' ', 7)}Material";
+      return Pad(1);
     }
 
     public static string Cat2() {
-      return $"{new string(' ', 6)}Profile";
+      return Pad(2);
     }
 
     public static string Cat3() {
-      return $"{new string(' ', 5)}Rebar";
+      return Pad(3);
     }
 
     public static string Cat4() {
-      return $"{new string(' ', 4)}Section";
+      return Pad(4);
     }
 
     public static string Cat5() {
-      return $"{new string(' ', 3)}Loads";
+      return Pad(5);
     }
 
     public static string Cat6() {
-      return $"{new string(' ', 2)}Solution";
+      return Pad(6);
     }
 
     public static string Cat7() {
-      return $"{new string(' ', 1)}Results";
+      return Pad(7);
     }
 
-    public static string Cat9() {
-      return "Params";
+    public static string Cat8() {
+      return Pad(8);
     }
   }
 }
