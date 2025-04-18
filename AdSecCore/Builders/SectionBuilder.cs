@@ -25,8 +25,8 @@ namespace AdSecCore.Builders {
     private IProfile _profile;
     private List<ISubComponent> _subComponents = new List<ISubComponent>();
     private SectionType sectionType;
-    private double _width { get; set; }
-    private double _depth { get; set; }
+    private double Width { get; set; }
+    private double Depth { get; set; }
 
     public ISection Build() {
       var profileBuilder = new ProfileBuilder();
@@ -73,9 +73,15 @@ namespace AdSecCore.Builders {
 
       IProfile profile = null;
       switch (sectionType) {
-        case SectionType.Square: profile = profileBuilder.WidthDepth(_width).WithWidth(_width).Build(); break;
-        case SectionType.Rectangular: profile = profileBuilder.WidthDepth(_depth).WithWidth(_width).Build(); break;
-        case SectionType.Perimeter: profile = SimplePerimeterProfile(_width, _depth); break;
+        case SectionType.Square:
+          profile = profileBuilder.WidthDepth(Width).WithWidth(Width).Build();
+          break;
+        case SectionType.Rectangular:
+          profile = profileBuilder.WidthDepth(Depth).WithWidth(Width).Build();
+          break;
+        case SectionType.Perimeter:
+          profile = SimplePerimeterProfile(Width, Depth);
+          break;
       }
 
       return profile;
@@ -134,12 +140,12 @@ namespace AdSecCore.Builders {
     }
 
     public SectionBuilder WithWidth(double width) {
-      _width = width;
+      Width = width;
       return this;
     }
 
     public SectionBuilder WithHeight(double height) {
-      _depth = height;
+      Depth = height;
       return this;
     }
 

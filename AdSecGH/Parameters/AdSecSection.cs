@@ -222,9 +222,6 @@ namespace AdSecGH.Parameters {
           var rebarColour = Colour.Reinforcement;
           switch (rebarType) {
             case AdSecMaterial.AdSecMaterialType.Rebar:
-              rebarColour = Colour.Reinforcement;
-              break;
-
             case AdSecMaterial.AdSecMaterialType.FRP:
             case AdSecMaterial.AdSecMaterialType.Tendon:
               rebarColour = Colour.Reinforcement;

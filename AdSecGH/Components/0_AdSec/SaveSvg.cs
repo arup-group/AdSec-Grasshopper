@@ -32,16 +32,13 @@ namespace AdSecGH.Components {
 
     public SaveSvg() : base("Section SVG", "SVG", "Creates a SVG file from an AdSec Section", CategoryName.Name(),
       SubCategoryName.Cat0()) {
-      Hidden = true; // sets the initial state of the component to hidden
+      Hidden = true;
     }
 
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("baf1ad7d-efca-4851-a6a3-21a65471a041");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.SVG;
-
-    // This region handles input and output parameters
 
     public override void CreateAttributes() {
       m_attributes = new ThreeButtonComponentAttributes(this, "Save", "Save As", "Open SVG", SaveFile, SaveAsFile,
@@ -49,15 +46,19 @@ namespace AdSecGH.Components {
     }
 
     public void OpenSVGexe() {
-      if (_fileName != null) {
-        if (_fileName != "") {
-          if (_canOpen) {
-            Process.Start(_fileName);
-          } else {
-            File.WriteAllText(_fileName, imageSVG);
-            _canOpen = true;
-          }
+      if (string.IsNullOrEmpty(_fileName)) {
+        return;
+      }
+
+      try {
+        if (_canOpen) {
+          Process.Start(_fileName);
+        } else {
+          File.WriteAllText(_fileName, imageSVG);
+          _canOpen = true;
         }
+      } catch {
+        throw new FileNotFoundException($"Cannot open a file {_fileName}");
       }
     }
 
@@ -67,51 +68,45 @@ namespace AdSecGH.Components {
     }
 
     public void SaveAsFile() {
-      var fdi = new SaveFileDialog {
+      var saveFileDialog = new SaveFileDialog {
         Filter = "SVG File (*.svg)|*.svg|All files (*.*)|*.*",
       };
-      bool res = fdi.ShowSaveDialog();
-      if (res) // == DialogResult.OK)
-      {
-        _fileName = fdi.FileName;
-        // write to file
-        File.WriteAllText(_fileName, imageSVG);
-
-        _canOpen = true;
-
-        //add panel input with string
-        //delete existing inputs if any
-        while (Params.Input[2].Sources.Count > 0) {
-          Instances.ActiveCanvas.Document.RemoveObject(Params.Input[2].Sources[0], false);
-        }
-
-        //instantiate  new panel
-        var panel = new GH_Panel();
-        panel.CreateAttributes();
-
-        panel.Attributes.Pivot
-          = new PointF(Attributes.DocObject.Attributes.Bounds.Left - panel.Attributes.Bounds.Width - 40,
-            Attributes.DocObject.Attributes.Bounds.Bottom - panel.Attributes.Bounds.Height);
-
-        //populate value list with our own data
-        panel.UserText = _fileName;
-
-        //Until now, the panel is a hypothetical object.
-        // This command makes it 'real' and adds it to the canvas.
-        Instances.ActiveCanvas.Document.AddObject(panel, false);
-
-        //Connect the new slider to this component
-        Params.Input[2].AddSource(panel);
-        Params.OnParametersChanged();
-        ExpireSolution(true);
+      bool res = saveFileDialog.ShowSaveDialog();
+      if (!res) {
+        return;
       }
+
+      _fileName = saveFileDialog.FileName;
+      File.WriteAllText(_fileName, imageSVG);
+
+      _canOpen = true;
+
+      while (Params.Input[2].Sources.Count > 0) {
+        Instances.ActiveCanvas.Document.RemoveObject(Params.Input[2].Sources[0], false);
+      }
+
+      var panel = new GH_Panel();
+      panel.CreateAttributes();
+
+      panel.Attributes.Pivot
+        = new PointF(Attributes.DocObject.Attributes.Bounds.Left - panel.Attributes.Bounds.Width - 40,
+          Attributes.DocObject.Attributes.Bounds.Bottom - panel.Attributes.Bounds.Height);
+
+      panel.UserText = _fileName;
+
+      //Until now, the panel is a hypothetical object.
+      // This command makes it 'real' and adds it to the canvas.
+      Instances.ActiveCanvas.Document.AddObject(panel, false);
+
+      Params.Input[2].AddSource(panel);
+      Params.OnParametersChanged();
+      ExpireSolution(true);
     }
 
     public void SaveFile() {
       if (string.IsNullOrEmpty(_fileName)) {
         SaveAsFile();
       } else {
-        // write to file
         File.WriteAllText(_fileName, imageSVG);
         _canOpen = true;
       }
@@ -151,7 +146,6 @@ namespace AdSecGH.Components {
         return;
       }
 
-      // create a flattened section
       ISection flat = null;
       if (section.DesignCode != null) {
         var adSec = IAdSec.Create(section.DesignCode);
@@ -161,40 +155,29 @@ namespace AdSecGH.Components {
         flat = ISection.Create(prof, section.Section.Material);
       }
 
-      // construct image converter
       var sectionImageBuilder = new SectionImageBuilder(flat);
-
-      // create svg string
       imageSVG = sectionImageBuilder.Svg();
 
-      // replace colours:
-      string concrete = "#CDCDCD";
-      string steel = "#0061A0";
-      string rebar = "#2D2D2D";
-      string link = "#969696";
+      const string concrete = "#CDCDCD";
+      const string steel = "#0061A0";
+      const string rebar = "#2D2D2D";
+      const string link = "#969696";
 
       imageSVG = imageSVG.Replace("#84D0FF", steel);
       imageSVG = imageSVG.Replace("#ABABAB", rebar);
       imageSVG = imageSVG.Replace("#CDCDCD", link);
       imageSVG = imageSVG.Replace("#8EFB8E", concrete);
 
-      // filepath
       string pathString = "";
-      if (DA.GetData(2, ref pathString)) {
-        if (_fileName != pathString) {
-          _fileName = pathString;
-          _canOpen = false;
-        }
+      if (DA.GetData(2, ref pathString) && _fileName != pathString) {
+        _fileName = pathString;
+        _canOpen = false;
       }
 
-      // input save bool
       bool save = false;
-      if (DA.GetData(1, ref save)) {
-        if (save) {
-          // write to file
-          File.WriteAllText(_fileName, imageSVG);
-          _canOpen = true;
-        }
+      if (DA.GetData(1, ref save) && save) {
+        File.WriteAllText(_fileName, imageSVG);
+        _canOpen = true;
       }
 
       DA.SetData(0, imageSVG);

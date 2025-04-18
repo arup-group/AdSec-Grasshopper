@@ -12,12 +12,9 @@ using Grasshopper.Kernel;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Units;
 using OasysGH.Units.Helpers;
 
 using OasysUnits.Units;
-
-using Rhino.Runtime;
 
 namespace AdSecGH.Components {
   public class CreateReinforcementGroup : DropdownAdapter<RebarGroupFunction> {

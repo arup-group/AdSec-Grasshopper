@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 
 using AdSecGH.Parameters;
-
-using GH_IO.Types;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
@@ -22,8 +19,6 @@ using OasysGH.Parameters;
 using OasysUnits;
 
 using Rhino.Geometry;
-
-using static System.Collections.Specialized.BitVector32;
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
@@ -109,7 +104,7 @@ namespace AdSecGH.Helpers {
       if (ghType?.Value is AdSecSectionGoo sectionGoo) {
         section = sectionGoo.Value;
       } else if (ghType?.Value is AdSecSubComponentGoo subComponentGoo) {
-        section = subComponentGoo._section;
+        section = subComponentGoo.section;
       } else {
         castSuccessful = false;
       }
@@ -377,11 +372,12 @@ namespace AdSecGH.Helpers {
           return false;
         }
       }
+
       return points?.Count > 0;
     }
 
     public static bool TryCastToLoads(
-     GH_Structure<IGH_Goo> ghTypes, ref Dictionary<int, List<object>> loads, out int path, out int index) {
+      GH_Structure<IGH_Goo> ghTypes, ref Dictionary<int, List<object>> loads, out int path, out int index) {
       index = 0;
       for (path = 0; path < ghTypes.Branches.Count; path++) {
         var sectionLoads = new List<object>();
@@ -392,8 +388,10 @@ namespace AdSecGH.Helpers {
             return false;
           }
         }
+
         loads.Add(path, sectionLoads);
       }
+
       return true;
     }
 
@@ -402,6 +400,7 @@ namespace AdSecGH.Helpers {
       if (load == null) {
         return false;
       }
+
       switch (load) {
         case AdSecDeformationGoo deformationGoo:
           sectionLoad = deformationGoo;
@@ -411,6 +410,7 @@ namespace AdSecGH.Helpers {
           break;
         default: return false;
       }
+
       return true;
     }
   }
