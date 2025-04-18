@@ -115,7 +115,7 @@ namespace AdSecGH.Parameters {
       ref DisplayMaterial profileColour, ref List<Brep> rebars, ref List<Circle> rebarEdges, ref List<Curve> linkEdges,
       ref List<DisplayMaterial> rebarColours, ref List<Brep> subProfiles, ref List<Polyline> subEdges,
       ref List<List<Polyline>> subVoidEdges, ref List<DisplayMaterial> subColours, IPoint offset = null) {
-      ISection flat = null;
+      ISection flat;
       if (DesignCode != null) {
         var adSec = IAdSec.Create(DesignCode);
         flat = adSec.Flatten(Section);
@@ -254,7 +254,7 @@ namespace AdSecGH.Parameters {
       previewZaxis = new Line(LocalPlane.Origin, LocalPlane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
     }
 
-    private Brep CreateBrepFromProfile(AdSecProfileGoo profile) {
+    private static Brep CreateBrepFromProfile(AdSecProfileGoo profile) {
       var curves = new List<Curve> {
         profile.Polyline.ToPolylineCurve(),
       };
@@ -262,7 +262,7 @@ namespace AdSecGH.Parameters {
       return Brep.CreatePlanarBreps(curves, tolerance)[0]; //TODO: use OasysUnits tolerance
     }
 
-    private List<Brep> CreateBrepsFromSingleRebar(
+    private static List<Brep> CreateBrepsFromSingleRebar(
       ISingleBars bars, Vector3d offset, ref List<Circle> edgeCurves, Plane local) {
       var mapToLocal = Transform.PlaneToPlane(Plane.WorldYZ, local);
       var rebarBreps = new List<Brep>();
@@ -283,7 +283,8 @@ namespace AdSecGH.Parameters {
       return rebarBreps;
     }
 
-    private void CreateCurvesFromLinkGroup(IPerimeterLinkGroup linkGroup, ref List<Curve> linkEdges, Plane local) {
+    private static void CreateCurvesFromLinkGroup(
+      IPerimeterLinkGroup linkGroup, ref List<Curve> linkEdges, Plane local) {
       var mapToLocal = Transform.PlaneToPlane(Plane.WorldYZ, local);
       var startPoint = new Point3d(0, linkGroup.LinkPath.StartPoint.Y.As(DefaultUnits.LengthUnitGeometry),
         linkGroup.LinkPath.StartPoint.Z.As(DefaultUnits.LengthUnitGeometry));
@@ -331,7 +332,7 @@ namespace AdSecGH.Parameters {
       });
     }
 
-    private Tuple<Oasys.Collections.IList<IGroup>, ICover> CreateReinforcementGroupsWithMaxCover(
+    private static Tuple<Oasys.Collections.IList<IGroup>, ICover> CreateReinforcementGroupsWithMaxCover(
       List<AdSecRebarGroup> reinforcements) {
       var groups = Oasys.Collections.IList<IGroup>.Create();
       ICover cover = null;

@@ -33,7 +33,14 @@ namespace AdSecGH.Parameters {
     }
 
     internal AdSecDesignCode(FieldInfo fieldDesignCode) {
-      string designCodeReflectedLevels = fieldDesignCode.DeclaringType.FullName.Replace("Oasys.AdSec.DesignCode.", "");
+      string designCodeReflectedLevels
+        = fieldDesignCode?.DeclaringType?.FullName?.Replace("Oasys.AdSec.DesignCode.", "");
+      if (designCodeReflectedLevels == null) {
+        const string Message
+          = "Unable to retrieve the full type name from the provided FieldInfo. Ensure that the FieldInfo belongs to a valid type within the 'Oasys.AdSec.DesignCode' namespace.";
+        throw new ArgumentNullException(nameof(fieldDesignCode), Message);
+      }
+
       var designCodeLevelsSplit = designCodeReflectedLevels.Split('+').ToList();
       CreateFromReflectedLevels(designCodeLevelsSplit, true);
     }
@@ -81,14 +88,14 @@ namespace AdSecGH.Parameters {
       // we need to find the right type Interface under Oasys.AdSec.IAdsec in order to cast to IDesignCode
       // the string to search for depends on where we call this function from, if we come from an IMaterial type
       // we can simply use the full name but if from IDesignCode we need to add the name of the code with a +
-      string searchFor = fromDesignCode ?
-        $"{designCodeType.FullName}+{designCodeReflectedLevels[designCodeReflectedLevels.Count - 1]}" :
+      string lastDesignCodeLevelItem = designCodeReflectedLevels[designCodeReflectedLevels.Count - 1];
+      string searchFor = fromDesignCode ? $"{designCodeType.FullName}+{lastDesignCodeLevelItem}" :
         designCodeType.FullName;
 
       FindDesignCode(searchFor);
 
       if (DesignCode != null) {
-        DesignCodeName = $"{designcodeName.TrimEnd(' ')} {designCodeReflectedLevels.Last()}";
+        DesignCodeName = $"{designcodeName.TrimEnd(' ')} {lastDesignCodeLevelItem}";
       }
     }
 

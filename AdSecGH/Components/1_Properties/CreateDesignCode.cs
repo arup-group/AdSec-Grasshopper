@@ -17,20 +17,13 @@ using OasysGH.Components;
 
 namespace AdSecGH.Components {
   public class CreateDesignCode : GH_OasysDropDownComponent {
-    private Dictionary<string, FieldInfo> _designCodes;
-
-    public CreateDesignCode() : base($"Create{AdSecDesignCodeGoo.Name.Replace(" ", string.Empty)}",
-      AdSecDesignCodeGoo.Name.Replace(" ", string.Empty), $"Create a {AdSecDesignCodeGoo.Description}",
-      CategoryName.Name(), SubCategoryName.Cat1()) {
-      Hidden = true; // sets the initial state of the component to hidden
-    }
+    private const string _excludeKey = "National";
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("bbad3d3b-f585-474b-8cc6-76fd375819de");
     public override GH_Exposure Exposure => GH_Exposure.septenary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.CreateDesignCode;
-    private const string _excludeKey = "National";
     private readonly IDictionary<string, string> _prefixMappings = new Dictionary<string, string> {
       { "Edition", "Edition" },
       { "Part", "Part" },
@@ -38,6 +31,13 @@ namespace AdSecGH.Components {
       { "US", "Unit" },
       { _excludeKey, "National Annex" },
     };
+    private Dictionary<string, FieldInfo> _designCodes;
+
+    public CreateDesignCode() : base($"Create{AdSecDesignCodeGoo.Name.Replace(" ", string.Empty)}",
+      AdSecDesignCodeGoo.Name.Replace(" ", string.Empty), $"Create a {AdSecDesignCodeGoo.Description}",
+      CategoryName.Name(), SubCategoryName.Cat1()) {
+      Hidden = true; // sets the initial state of the component to hidden
+    }
 
     public override void SetSelected(int i, int j) {
       // change selected item
