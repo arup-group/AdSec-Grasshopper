@@ -23,7 +23,17 @@ namespace AdSecGH {
 #pragma warning restore S1104 // Fields should not have public accessibility
 #pragma warning restore S2223 // Non-constant static fields should not be visible
     private static string _pluginPath;
-    public static string PluginPath => _pluginPath ?? TryFindPluginPath("AdSec.gha");
+
+    public static string PluginPath {
+      get {
+        if (_pluginPath != null) {
+          return _pluginPath;
+        }
+
+        _pluginPath = TryFindPluginPath("AdSec.gha");
+        return _pluginPath;
+      }
+    }
 
     /// <summary>
     ///   This method finds the location of the AdSec plugin and add's the path to the system environment to load referenced
