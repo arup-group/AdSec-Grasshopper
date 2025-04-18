@@ -107,8 +107,6 @@ namespace AdSecCore.Functions {
           Uls = SolutionInput.Value.Solution.Strength.Check(def);
           Sls = SolutionInput.Value.Serviceability.Check(def);
           break;
-        default:
-          break;
       }
     }
     private void ProcessOutput() {
