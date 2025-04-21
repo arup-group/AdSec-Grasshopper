@@ -211,23 +211,27 @@ namespace AdSecGH.Helpers {
     }
 
     private static void ParseJsonException(Exception exception) {
-      var exceptionMessage = exception.Message;
-      var innerException = exception.InnerException;
-      if (innerException != null) {
-        exceptionMessage = string.Empty;
+      var messageBuilder = new StringBuilder();
+
+      if (exception.InnerException != null) {
         foreach (var value in exception.InnerException.Data.Values) {
-          Type type = value.GetType();
           if (value is IEnumerable<string> messages) {
             foreach (var message in messages) {
-              exceptionMessage += message + "\n";
+              messageBuilder.AppendLine(message);
             }
           }
         }
+      } else {
+        messageBuilder.Append(exception.Message);
       }
+
+      string exceptionMessage = messageBuilder.ToString();
+
       if (exceptionMessage.Contains("definition is not a standard")) {
-        exceptionMessage = $"{exceptionMessage} The AdSec file cannot be created if the section material and rebar grade are not consistent with the design code..\n";
+        messageBuilder.AppendLine(" The AdSec file cannot be created if the section material and rebar grade are not consistent with the design code.");
       }
-      throw new InvalidOperationException(exceptionMessage);
+
+      throw new InvalidOperationException(messageBuilder.ToString());
     }
 
     internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {

@@ -127,7 +127,7 @@ namespace AdSecGH.Components {
               }
 
               // and set the next search item to this
-              typeString = _selectedItems.Last();
+              typeString = _selectedItems[_selectedItems.Count - 1];
             } else {
               typeString = _selectedItems[level];
             }
@@ -327,7 +327,7 @@ namespace AdSecGH.Components {
       DA.SetData(0, new AdSecMaterialGoo(updatedDesignMaterial));
     }
 
-    private DesignCode GetDesignCode(AdSecMaterial material) {
+    private static DesignCode GetDesignCode(AdSecMaterial material) {
       var designCode = new DesignCode();
       if (material.DesignCode.DesignCode != null) {
         designCode.IDesignCode = material.DesignCode.DesignCode;
