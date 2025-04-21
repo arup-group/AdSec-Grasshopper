@@ -25,9 +25,10 @@ using OasysGH.Components;
 namespace AdSecGH.Components {
   public class CreateStandardMaterial : GH_OasysDropDownComponent {
     private Dictionary<string, FieldInfo> _materials;
-    private static string designCode = "Design Code";
+    private static string designCodeString = "Design Code";
+    private static string euroCodeString = "EN1992";
     public CreateStandardMaterial() : base("Standard Material", "Material",
-      $"Create a new AdSec {designCode} based standard material", CategoryName.Name(), SubCategoryName.Cat1()) {
+      $"Create a new AdSec {designCodeString} based standard material", CategoryName.Name(), SubCategoryName.Cat1()) {
       Hidden = true; // sets the initial state of the component to hidden
     }
 
@@ -36,7 +37,7 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.StandardMaterial;
-    private static string euroCode = "EN1992";
+
     private readonly IDictionary<string, string> _prefixMappings = new Dictionary<string, string> {
       { "Edition", "Edition" },
       { "Metric", "Unit" },
@@ -77,12 +78,12 @@ namespace AdSecGH.Components {
     }
 
     private static string GetNextSelection(int level, IEnumerable<string> availableChoices, string prevSelectedCode, string prevSelectedNA) {
-      if (level == 2 && prevSelectedCode.StartsWith(euroCode)) {
+      if (level == 2 && prevSelectedCode.StartsWith(euroCodeString)) {
         return availableChoices.FirstOrDefault(code => code.Equals(prevSelectedNA)) ?? availableChoices.First();
       }
 
-      if (level == 1 && prevSelectedCode.StartsWith(euroCode)) {
-        return availableChoices.FirstOrDefault(code => code.StartsWith(euroCode)) ?? availableChoices.First();
+      if (level == 1 && prevSelectedCode.StartsWith(euroCodeString)) {
+        return availableChoices.FirstOrDefault(code => code.StartsWith(euroCodeString)) ?? availableChoices.First();
       }
 
       return availableChoices.First();
@@ -101,13 +102,13 @@ namespace AdSecGH.Components {
     }
 
     private string GetDefaultMaterialGrade() {
-      if (_selectedItems[1].StartsWith(euroCode)) {
+      if (_selectedItems[1].StartsWith(euroCodeString)) {
         if (_materials.Keys.Count > 4) {
           return _materials.Keys.ElementAt(4); // C37
         }
         return _materials.Keys.Count == 3 ? _materials.Keys.ElementAt(1) : _materials.Keys.First(); // B500B
       }
-      if (_selectedItems[1].StartsWith(euroCode)) {
+      if (_selectedItems[1].StartsWith(euroCodeString)) {
         return _materials.Keys.ElementAt(2); // S355
       }
       return _materials.Keys.First();
@@ -147,8 +148,8 @@ namespace AdSecGH.Components {
     }
 
     private static string GetInitialCodeSelection(IEnumerable<string> codes, string prevSelectedCode) {
-      if (prevSelectedCode.StartsWith(euroCode)) {
-        return codes.FirstOrDefault(code => code.StartsWith(euroCode)) ?? codes.First();
+      if (prevSelectedCode.StartsWith(euroCodeString)) {
+        return codes.FirstOrDefault(code => code.StartsWith(euroCodeString)) ?? codes.First();
       }
       return codes.Contains(prevSelectedCode) ? prevSelectedCode : codes.First();
     }
@@ -168,7 +169,7 @@ namespace AdSecGH.Components {
     protected override void InitialiseDropdowns() {
       _spacerDescriptions = new List<string>(new[] {
         "Material Type",
-        designCode,
+        designCodeString,
         "National Annex",
         "Edition",
         "Grade",
@@ -367,16 +368,16 @@ namespace AdSecGH.Components {
       string result = _prefixMappings.Where(mapping => typeString.StartsWith(mapping.Key))
        .Select(mapping => mapping.Value).FirstOrDefault();
 
-      return string.IsNullOrEmpty(result) ? designCode : result;
+      return string.IsNullOrEmpty(result) ? designCodeString : result;
     }
 
     private void UpdateUIDescriptions(string codeType) {
-      if (codeType.StartsWith(euroCode)) {
-        _spacerDescriptions[1] = designCode;
+      if (codeType.StartsWith(euroCodeString)) {
+        _spacerDescriptions[1] = designCodeString;
         _spacerDescriptions[2] = "National Annex";
       } else {
         _spacerDescriptions[1] = "Code Group";
-        _spacerDescriptions[2] = designCode;
+        _spacerDescriptions[2] = designCodeString;
       }
     }
   }
