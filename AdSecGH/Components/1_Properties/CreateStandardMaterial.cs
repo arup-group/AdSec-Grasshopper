@@ -36,6 +36,7 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.StandardMaterial;
+    private static string euroCode = "EN1992";
     private readonly IDictionary<string, string> _prefixMappings = new Dictionary<string, string> {
       { "Edition", "Edition" },
       { "Metric", "Unit" },
@@ -75,19 +76,13 @@ namespace AdSecGH.Components {
       }
     }
 
-    private string GetNextSelection(int level, IEnumerable<string> availableChoices, string prevSelectedCode, string prevSelectedNA) {
-      if (level == 2 && prevSelectedCode.StartsWith("EN1992")) {
-        foreach (string code in availableChoices) {
-          if (code.Equals(prevSelectedNA)) {
-            return code;
-          }
-        }
-      } else if (level == 1 && prevSelectedCode.StartsWith("EN199")) {
-        foreach (string code in availableChoices) {
-          if (code.StartsWith("EN199")) {
-            return code;
-          }
-        }
+    private static string GetNextSelection(int level, IEnumerable<string> availableChoices, string prevSelectedCode, string prevSelectedNA) {
+      if (level == 2 && prevSelectedCode.StartsWith(euroCode)) {
+        return availableChoices.FirstOrDefault(code => code.Equals(prevSelectedNA)) ?? availableChoices.First();
+      }
+
+      if (level == 1 && prevSelectedCode.StartsWith(euroCode)) {
+        return availableChoices.FirstOrDefault(code => code.StartsWith(euroCode)) ?? availableChoices.First();
       }
 
       return availableChoices.First();
@@ -106,13 +101,13 @@ namespace AdSecGH.Components {
     }
 
     private string GetDefaultMaterialGrade() {
-      if (_selectedItems[1].StartsWith("EN1992")) {
+      if (_selectedItems[1].StartsWith(euroCode)) {
         if (_materials.Keys.Count > 4) {
           return _materials.Keys.ElementAt(4); // C37
         }
         return _materials.Keys.Count == 3 ? _materials.Keys.ElementAt(1) : _materials.Keys.First(); // B500B
       }
-      if (_selectedItems[1].StartsWith("EN1993")) {
+      if (_selectedItems[1].StartsWith(euroCode)) {
         return _materials.Keys.ElementAt(2); // S355
       }
       return _materials.Keys.First();
@@ -151,9 +146,9 @@ namespace AdSecGH.Components {
       }
     }
 
-    private string GetInitialCodeSelection(IEnumerable<string> codes, string prevSelectedCode) {
-      if (prevSelectedCode.StartsWith("EN199")) {
-        return codes.FirstOrDefault(code => code.StartsWith("EN199")) ?? codes.First();
+    private static string GetInitialCodeSelection(IEnumerable<string> codes, string prevSelectedCode) {
+      if (prevSelectedCode.StartsWith(euroCode)) {
+        return codes.FirstOrDefault(code => code.StartsWith(euroCode)) ?? codes.First();
       }
       return codes.Contains(prevSelectedCode) ? prevSelectedCode : codes.First();
     }
@@ -376,7 +371,7 @@ namespace AdSecGH.Components {
     }
 
     private void UpdateUIDescriptions(string codeType) {
-      if (codeType.StartsWith("EN1992")) {
+      if (codeType.StartsWith(euroCode)) {
         _spacerDescriptions[1] = "Design Code";
         _spacerDescriptions[2] = "National Annex";
       } else {
