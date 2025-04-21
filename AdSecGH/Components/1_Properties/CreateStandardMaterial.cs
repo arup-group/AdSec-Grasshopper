@@ -25,9 +25,9 @@ using OasysGH.Components;
 namespace AdSecGH.Components {
   public class CreateStandardMaterial : GH_OasysDropDownComponent {
     private Dictionary<string, FieldInfo> _materials;
-
+    private static string designCode = "Design Code";
     public CreateStandardMaterial() : base("Standard Material", "Material",
-      "Create a new AdSec Design Code based standard material", CategoryName.Name(), SubCategoryName.Cat1()) {
+      $"Create a new AdSec {designCode} based standard material", CategoryName.Name(), SubCategoryName.Cat1()) {
       Hidden = true; // sets the initial state of the component to hidden
     }
 
@@ -168,7 +168,7 @@ namespace AdSecGH.Components {
     protected override void InitialiseDropdowns() {
       _spacerDescriptions = new List<string>(new[] {
         "Material Type",
-        "Design Code",
+        designCode,
         "National Annex",
         "Edition",
         "Grade",
@@ -367,16 +367,16 @@ namespace AdSecGH.Components {
       string result = _prefixMappings.Where(mapping => typeString.StartsWith(mapping.Key))
        .Select(mapping => mapping.Value).FirstOrDefault();
 
-      return string.IsNullOrEmpty(result) ? "Design Code" : result;
+      return string.IsNullOrEmpty(result) ? designCode : result;
     }
 
     private void UpdateUIDescriptions(string codeType) {
       if (codeType.StartsWith(euroCode)) {
-        _spacerDescriptions[1] = "Design Code";
+        _spacerDescriptions[1] = designCode;
         _spacerDescriptions[2] = "National Annex";
       } else {
         _spacerDescriptions[1] = "Code Group";
-        _spacerDescriptions[2] = "Design Code";
+        _spacerDescriptions[2] = designCode;
       }
     }
   }
