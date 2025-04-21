@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -85,6 +86,16 @@ namespace AdSecGHCore {
       }
 
       return builder.ToString();
+    }
+
+    // Add this helper method to the class
+    public static string ReplaceWithTimeout(string input, string pattern, string replacement, int timeoutMs = 1000) {
+      try {
+        var regex = new Regex(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(timeoutMs));
+        return regex.Replace(input, replacement);
+      } catch (RegexMatchTimeoutException) {
+        throw new RegexMatchTimeoutException($"Regex operation timed out after {timeoutMs}ms");
+      }
     }
   }
 }

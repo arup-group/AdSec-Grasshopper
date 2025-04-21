@@ -23,6 +23,10 @@ namespace AdSecGH.Helpers {
     }
 
     internal static Dictionary<string, FieldInfo> ReflectFields(Type type) {
+      var materials = new Dictionary<string, FieldInfo>();
+      if (type == null) {
+        return materials;
+      }
       var fields = type.GetFields().ToList();
 
       var types = type.GetInterfaces();
@@ -30,7 +34,6 @@ namespace AdSecGH.Helpers {
         fields.AddRange(baseType.GetFields());
       }
 
-      var materials = new Dictionary<string, FieldInfo>();
       foreach (var field in fields) {
         materials.Add(field.Name, field);
       }
