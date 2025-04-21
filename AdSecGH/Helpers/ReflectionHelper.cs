@@ -40,6 +40,9 @@ namespace AdSecGH.Helpers {
 
     internal static Dictionary<string, Type> ReflectNestedTypes(Type type) {
       var dict = new Dictionary<string, Type>();
+      if (type == null) {
+        return dict;
+      }
       var members = type.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
       foreach (var member in members) {
         dict.Add(member.Name, (Type)member);
@@ -69,7 +72,7 @@ namespace AdSecGH.Helpers {
         case AdSecMaterial.AdSecMaterialType.Tendon: return ReflectNestedTypes(typeof(Reinforcement.Tendon));
       }
 
-      return null;
+      return new Dictionary<string, Type>();
     }
   }
 }

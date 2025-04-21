@@ -1,23 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 
 using AdSecGH.Parameters;
 
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
-using Grasshopper.Kernel.Types;
-
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
-using Oasys.Collections;
-
-using OasysUnits;
 
 using Rhino.UI;
 
@@ -182,23 +173,23 @@ namespace AdSecGH.Helpers {
 
     internal static List<string> SectionJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
       var jsonStrings = new List<string>();
-      var json = new JsonConverter(sections[0].DesignCode);
-      for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
+      try {
+        var json = new JsonConverter(sections[0].DesignCode);
+        for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
 
-        PopulateLoadAndDeformationLists(loads, sectionId, out var adSecload, out var adSecDeformation);
+          PopulateLoadAndDeformationLists(loads, sectionId, out var adSecload, out var adSecDeformation);
 
-        if (adSecload.Any() && adSecDeformation.Any()) {
-          throw new ArgumentException("Only either deformation or load can be specified to a section.");
-        }
-        try {
+          if (adSecload.Any() && adSecDeformation.Any()) {
+            throw new ArgumentException("Only either deformation or load can be specified to a section.");
+          }
           if (adSecload.Any()) {
             jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecload));
           } else {
             jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecDeformation));
           }
-        } catch (Exception exception) {
-          ParseJsonException(exception);
         }
+      } catch (Exception exception) {
+        ParseJsonException(exception);
       }
       return jsonStrings;
     }
@@ -220,23 +211,23 @@ namespace AdSecGH.Helpers {
     }
 
     private static void ParseJsonException(Exception exception) {
-      var exceptionMessage = string.Empty;
-      foreach (var value in exception.InnerException.Data.Values) {
-        Type type = value.GetType();
-        if (value is IEnumerable<string> messages) {
-          foreach (var message in messages) {
-            exceptionMessage += message + "\n";
+      var exceptionMessage = exception.Message;
+      var innerException = exception.InnerException;
+      if (innerException != null) {
+        exceptionMessage = string.Empty;
+        foreach (var value in exception.InnerException.Data.Values) {
+          Type type = value.GetType();
+          if (value is IEnumerable<string> messages) {
+            foreach (var message in messages) {
+              exceptionMessage += message + "\n";
+            }
           }
         }
-        if (exceptionMessage.Contains("definition is not a standard")) {
-          exceptionMessage = $"{exceptionMessage}. AdSec file cannot be created if the material used in the section is inconsistent with the selected design code.\n";
-        }
       }
-      if (!string.IsNullOrEmpty(exceptionMessage)) {
-        throw new InvalidOperationException(exceptionMessage);
-      } else {
-        throw exception;
+      if (exceptionMessage.Contains("definition is not a standard")) {
+        exceptionMessage = $"{exceptionMessage} The AdSec file cannot be created if the section material and rebar grade are not consistent with the design code..\n";
       }
+      throw new InvalidOperationException(exceptionMessage);
     }
 
     internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {

@@ -14,6 +14,8 @@ using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.StandardMaterials;
 
 using OasysUnits;
 
@@ -217,6 +219,25 @@ namespace AdSecGHTests.Components.AdSec {
     public void CombineJSonStringsWillBeNullIfListIsNull() {
       string jsonString = AdSecFile.CombineJSonStrings(null);
       Assert.Null(jsonString);
+    }
+
+    [Fact]
+    public void ModelCanNotBeSavedIfRebarAndConcreteMaterialAreNotConsistent() {
+      var concreteMaterial = Concrete.AS3600.Edition_2018.MPA40;
+      var rebarMaterial = Reinforcement.Steel.IS456.Edition_2000.S415;
+      var designCode = AS3600.Edition_2018;
+      var loads = new Dictionary<int, List<object>>();
+      var section = AdSecUtility.SectionObject(designCode, concreteMaterial, rebarMaterial);
+      Assert.Throws<InvalidOperationException>(() => AdSecFile.ModelJson(new List<AdSecSection> { section }, loads));
+    }
+
+    [Fact]
+    public void SavingToJsonShouldThrowExceptionIfDesignCodeIsNotassigned() {
+      var concreteMaterial = Concrete.AS3600.Edition_2018.MPA40;
+      var rebarMaterial = Reinforcement.Steel.IS456.Edition_2000.S415;
+      var loads = new Dictionary<int, List<object>>();
+      var section = AdSecUtility.SectionObject(null, concreteMaterial, rebarMaterial);
+      Assert.Throws<InvalidOperationException>(() => AdSecFile.ModelJson(new List<AdSecSection> { section }, loads));
     }
   }
 }
