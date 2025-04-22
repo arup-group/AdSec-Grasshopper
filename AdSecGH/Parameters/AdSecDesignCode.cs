@@ -33,7 +33,14 @@ namespace AdSecGH.Parameters {
     }
 
     internal AdSecDesignCode(FieldInfo fieldDesignCode) {
-      string designCodeReflectedLevels = fieldDesignCode.DeclaringType.FullName.Replace("Oasys.AdSec.DesignCode.", "");
+      string designCodeReflectedLevels
+        = fieldDesignCode?.DeclaringType?.FullName?.Replace("Oasys.AdSec.DesignCode.", "");
+      if (designCodeReflectedLevels == null) {
+        const string Message
+          = "Unable to retrieve the full type name from the provided FieldInfo. Ensure that the FieldInfo belongs to a valid type within the 'Oasys.AdSec.DesignCode' namespace.";
+        throw new ArgumentNullException(nameof(fieldDesignCode), Message);
+      }
+
       var designCodeLevelsSplit = designCodeReflectedLevels.Split('+').ToList();
       CreateFromReflectedLevels(designCodeLevelsSplit, true);
     }
@@ -89,21 +96,21 @@ namespace AdSecGH.Parameters {
       // Get all DesignCodes in DLL under namespace
       Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
       // Loop through DesignCodes types to find the DesignCode type matching our input list of levels
-      Type typ = null;
+      Type designCodeType = null;
       for (int i = 0; i < designCodeReflectedLevels.Count - 1; i++) {
-        designCodeKVP.TryGetValue(designCodeReflectedLevels[i], out typ);
-        if (typ == null) {
+        designCodeKVP.TryGetValue(designCodeReflectedLevels[i], out designCodeType);
+        if (designCodeType == null) {
           return null;
         }
-        designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(typ);
+        designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(designCodeType);
       }
       if (designCodeReflectedLevels.Count == 1) {
-        designCodeKVP.TryGetValue(designCodeReflectedLevels[0], out typ);
-        if (typ == null) {
+        designCodeKVP.TryGetValue(designCodeReflectedLevels[0], out designCodeType);
+        if (designCodeType == null) {
           return null;
         }
       }
-      return typ;
+      return designCodeType;
     }
   }
 }

@@ -26,31 +26,28 @@ namespace AdSecGH.Parameters {
           return BoundingBox.Empty;
         }
 
-        if (m_line == null) {
+        if (line == null) {
           return BoundingBox.Empty;
         }
 
-        var crv = new LineCurve(m_line);
+        var crv = new LineCurve(line);
         return crv.GetBoundingBox(false);
       }
     }
     public override BoundingBox ClippingBox => Boundingbox;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    private Line m_line;
-    private Point3d m_point;
+    private readonly Line line;
+    private Point3d point;
 
     public AdSecCrackGoo(CrackLoad crackLoad) : base(crackLoad) {
       var plane = Value.Plane.ToGh();
       // create point from crack position in global axis
-      var point = new Point3d(
-          m_value.Load.Position.Y.Value,
-          m_value.Load.Position.Z.Value,
-          0);
+      var point3d = new Point3d(m_value.Load.Position.Y.Value, m_value.Load.Position.Z.Value, 0);
 
       // remap to local coordinate system
       var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
-      point.Transform(mapFromLocal);
-      m_point = point;
+      point3d.Transform(mapFromLocal);
+      point = point3d;
 
       // move starting point of line by half the width
       var halfCrack = new Vector3d(plane.ZAxis);
@@ -61,7 +58,7 @@ namespace AdSecGH.Parameters {
           halfCrack.Z * m_value.Load.Width.Value / 2);
 
       var move = Rhino.Geometry.Transform.Translation(halfCrack);
-      var crackStart = new Point3d(m_point);
+      var crackStart = new Point3d(this.point);
       crackStart.Transform(move);
 
       // create line in opposite direction from move point
@@ -72,7 +69,7 @@ namespace AdSecGH.Parameters {
           crackWidth.Y * m_value.Load.Width.Value * -1,
           crackWidth.Z * m_value.Load.Width.Value * -1);
 
-      m_line = new Line(crackStart, crackWidth);
+      line = new Line(crackStart, crackWidth);
     }
     public override bool CastFrom(object source) {
       if (source == null) {
@@ -88,32 +85,32 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(Point3d))) {
-        target = (Q)(object)m_point;
+        target = (Q)(object)point;
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Point))) {
-        target = (Q)(object)new GH_Point(m_point);
+        target = (Q)(object)new GH_Point(point);
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(Vector3d))) {
-        target = (Q)(object)new Vector3d(Value.Load.Width.Value, m_point.Y, m_point.Z);
+        target = (Q)(object)new Vector3d(Value.Load.Width.Value, point.Y, point.Z);
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Vector))) {
-        target = (Q)(object)new GH_Vector(new Vector3d(Value.Load.Width.Value, m_point.Y, m_point.Z));
+        target = (Q)(object)new GH_Vector(new Vector3d(Value.Load.Width.Value, point.Y, point.Z));
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(Line))) {
-        target = (Q)(object)m_line;
+        target = (Q)(object)line;
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Line))) {
-        target = (Q)(object)new GH_Line(m_line);
+        target = (Q)(object)new GH_Line(line);
         return true;
       }
 
@@ -135,14 +132,16 @@ namespace AdSecGH.Parameters {
     }
 
     public override void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (m_point.IsValid) {
-        Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-        if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) {
-          // not selected
-          args.Pipeline.DrawLine(m_line, Colour.OasysBlue, 5);
-        } else {
-          args.Pipeline.DrawLine(m_line, Colour.OasysYellow, 7);
-        }
+      if (!point.IsValid) {
+        return;
+      }
+
+      var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
+        // not selected
+        args.Pipeline.DrawLine(line, Colour.OasysBlue, 5);
+      } else {
+        args.Pipeline.DrawLine(line, Colour.OasysYellow, 7);
       }
     }
 
@@ -160,11 +159,11 @@ namespace AdSecGH.Parameters {
         return BoundingBox.Empty;
       }
 
-      if (m_point == null) {
+      if (point == null) {
         return BoundingBox.Empty;
       }
 
-      var crv = new LineCurve(m_line);
+      var crv = new LineCurve(line);
       return crv.GetBoundingBox(xform);
     }
 

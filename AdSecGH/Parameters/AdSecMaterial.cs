@@ -19,15 +19,7 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecDesignCode DesignCode { get; set; }
-    public string DesignCodeName {
-      get {
-        if (DesignCode == null) {
-          return null;
-        }
-
-        return DesignCode.DesignCodeName;
-      }
-    }
+    public string DesignCodeName => DesignCode?.DesignCodeName;
     public string GradeName { get; set; }
     public bool IsValid => Material != null;
     public IMaterial Material { get; set; }
@@ -58,14 +50,13 @@ namespace AdSecGH.Parameters {
       var slsTensionCompression
         = ITensionCompressionCurve.Create(slsTensionCurve.StressStrainCurve, slsComprssionCurve.StressStrainCurve);
 
+      //Create methods throws exception when material is not of the correct type, so cannot use if's here
       try {
         var concrete = (IConcrete)material;
-        if (concrete.ConcreteCrackCalculationParameters == null) {
-          Material = IConcrete.Create(ulsTensionCompression, slsTensionCompression);
-        } else {
-          Material = IConcrete.Create(ulsTensionCompression, slsTensionCompression,
+        Material = concrete.ConcreteCrackCalculationParameters == null ?
+          IConcrete.Create(ulsTensionCompression, slsTensionCompression) :
+          (IMaterial)IConcrete.Create(ulsTensionCompression, slsTensionCompression,
             concrete.ConcreteCrackCalculationParameters);
-        }
 
         Type = AdSecMaterialType.Concrete;
       } catch (Exception) {
@@ -93,16 +84,15 @@ namespace AdSecGH.Parameters {
       GradeName = fieldGrade.Name;
 
       string designCodeReflectedLevels
-        = fieldGrade.DeclaringType.FullName.Replace("Oasys.AdSec.StandardMaterials.", "");
-      var designCodeLevelsSplit = designCodeReflectedLevels.Split('+').ToList();
+        = fieldGrade.DeclaringType?.FullName?.Replace("Oasys.AdSec.StandardMaterials.", "");
+      var designCodeLevelsSplit = designCodeReflectedLevels?.Split('+').ToList();
+      if (designCodeLevelsSplit == null || !designCodeLevelsSplit.Any()) {
+        const string message = "Cannot find specified material in standard material list";
+        throw new ArgumentOutOfRangeException(nameof(fieldGrade), message);
+      }
 
       if (designCodeLevelsSplit[0].StartsWith("Reinforcement")) {
-        if (designCodeLevelsSplit[1].StartsWith("Steel")) {
-          Type = AdSecMaterialType.Rebar;
-        } else {
-          Type = AdSecMaterialType.Tendon;
-        }
-
+        Type = designCodeLevelsSplit[1].StartsWith("Steel") ? AdSecMaterialType.Rebar : AdSecMaterialType.Tendon;
         designCodeLevelsSplit.RemoveRange(0, 2);
       } else {
         Enum.TryParse(designCodeLevelsSplit[0], out AdSecMaterialType type);
@@ -129,10 +119,8 @@ namespace AdSecGH.Parameters {
       }
 
       string code = "";
-      if (DesignCode != null) {
-        if (DesignCode.DesignCodeName != null) {
-          code = $" to {DesignCodeName.Replace("  ", " ")}";
-        }
+      if (DesignCode?.DesignCodeName != null) {
+        code = $" to {DesignCodeName.Replace("  ", " ")}";
       }
 
       return grade + TypeName.Replace("  ", " ") + code;
