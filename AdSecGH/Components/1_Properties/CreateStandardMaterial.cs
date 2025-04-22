@@ -55,16 +55,11 @@ namespace AdSecGH.Components {
       _selectedItems[i] = _dropDownItems[i][j];
 
       if (_selectedItems.Count - 1 != i) {
-        while (_dropDownItems.Count > 1) {
-          _dropDownItems.RemoveAt(1);
-        }
-
         string prevSelectedCode = _selectedItems[1];
         string prevSelectedNA = _selectedItems[2];
 
-        while (_selectedItems.Count > i + 1) {
-          _selectedItems.RemoveAt(i + 1);
-        }
+        ClearDropDownItems();
+        ClearSelectedItems(i);
 
         Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
         var designCodeKVP = ReflectionHelper.StandardCodes(materialType);
@@ -82,13 +77,7 @@ namespace AdSecGH.Components {
           }
         }
 
-        if (_selectedItems[1].StartsWith(en1992)) {
-          _spacerDescriptions[1] = designCodeName;
-          _spacerDescriptions[2] = nationalAnnexName;
-        } else {
-          _spacerDescriptions[1] = codeGroupName;
-          _spacerDescriptions[2] = designCodeName;
-        }
+        SetSpacerDescriptions();
 
         // create string for selected item to use for type search while drilling
         int level = 1;
@@ -166,6 +155,18 @@ namespace AdSecGH.Components {
       }
 
       base.UpdateUI();
+    }
+
+    private void ClearSelectedItems(int i) {
+      while (_selectedItems.Count > i + 1) {
+        _selectedItems.RemoveAt(i + 1);
+      }
+    }
+
+    private void ClearDropDownItems() {
+      while (_dropDownItems.Count > 1) {
+        _dropDownItems.RemoveAt(1);
+      }
     }
 
     public override void VariableParameterMaintenance() {
@@ -325,13 +326,7 @@ namespace AdSecGH.Components {
       Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
       var designCodeKVP = ReflectionHelper.StandardCodes(materialType);
 
-      if (_selectedItems[1].StartsWith(en1992)) {
-        _spacerDescriptions[1] = designCodeName;
-        _spacerDescriptions[2] = nationalAnnexName;
-      } else {
-        _spacerDescriptions[1] = codeGroupName;
-        _spacerDescriptions[2] = designCodeName;
-      }
+      SetSpacerDescriptions();
 
       int level = 1;
       string typeString = _selectedItems[level];
@@ -361,6 +356,16 @@ namespace AdSecGH.Components {
       }
 
       base.UpdateUIFromSelectedItems();
+    }
+
+    private void SetSpacerDescriptions() {
+      if (_selectedItems[1].StartsWith(en1992)) {
+        _spacerDescriptions[1] = designCodeName;
+        _spacerDescriptions[2] = nationalAnnexName;
+      } else {
+        _spacerDescriptions[1] = codeGroupName;
+        _spacerDescriptions[2] = designCodeName;
+      }
     }
 
     private string GetDescription(string typeString) {
