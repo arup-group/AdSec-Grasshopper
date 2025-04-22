@@ -19,7 +19,7 @@ namespace AdSecGH.Parameters {
     IGH_BakeAwareObject {
 
     public AdSecSectionParameter() : base(new GH_InstanceDescription("Section", "Sec",
-      "Maintains a collection of AdSec Section data.", CategoryName.Name(), SubCategoryName.Cat9())) { }
+      "Maintains a collection of AdSec Section data.", CategoryName.Name(), SubCategoryName.Cat8())) { }
 
     public override Guid ComponentGuid => new Guid("fa647c2d-4767-49f1-a574-32bf66a66568");
     public override GH_Exposure Exposure => GH_Exposure.primary;

@@ -7,9 +7,5 @@ namespace AdSecGHAdapter {
         default: return null;
       }
     }
-
-    public static bool IsPresent() {
-      return false;
-    }
   }
 }

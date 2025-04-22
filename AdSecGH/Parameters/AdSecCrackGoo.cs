@@ -132,14 +132,16 @@ namespace AdSecGH.Parameters {
     }
 
     public override void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (point.IsValid) {
-        var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-        if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) {
-          // not selected
-          args.Pipeline.DrawLine(line, Colour.OasysBlue, 5);
-        } else {
-          args.Pipeline.DrawLine(line, Colour.OasysYellow, 7);
-        }
+      if (!point.IsValid) {
+        return;
+      }
+
+      var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
+        // not selected
+        args.Pipeline.DrawLine(line, Colour.OasysBlue, 5);
+      } else {
+        args.Pipeline.DrawLine(line, Colour.OasysYellow, 7);
       }
     }
 

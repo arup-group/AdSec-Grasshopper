@@ -27,8 +27,20 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.StandardMaterial;
+
+    private const string en199 = "EN199";
+    private const string en1992 = "EN1992";
+    private const string en1993 = "EN1993";
+    private const string designCodeName = "Design Code";
+    private const string nationalAnnexName = "National Annex";
+    private const string codeGroupName = "Code Group";
+    private const string noMaterialText = "No material";
+    private const string materialTypeText = "Material Type";
+    private const string EditionText = "Edition";
+    private const string gradeText = "Grade";
+    private const string allSearchText = "all";
     private readonly IDictionary<string, string> _prefixMappings = new Dictionary<string, string> {
-      { "Edition", "Edition" },
+      { EditionText, EditionText },
       { "Metric", "Unit" },
       { "US", "Unit" },
     };
@@ -43,27 +55,20 @@ namespace AdSecGH.Components {
       _selectedItems[i] = _dropDownItems[i][j];
 
       if (_selectedItems.Count - 1 != i) {
-        while (_dropDownItems.Count > 1) {
-          _dropDownItems.RemoveAt(1);
-        }
-
         string prevSelectedCode = _selectedItems[1];
         string prevSelectedNA = _selectedItems[2];
 
-        while (_selectedItems.Count > i + 1) {
-          _selectedItems.RemoveAt(i + 1);
-        }
+        ClearDropDownItems();
+        ClearSelectedItems(i);
 
         Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
         var designCodeKVP = ReflectionHelper.StandardCodes(materialType);
         _dropDownItems.Add(designCodeKVP.Keys.ToList());
         if (_selectedItems.Count == 1) {
-          if (prevSelectedCode.StartsWith("EN199")) {
-            foreach (string code in _dropDownItems[1]) {
-              if (code.StartsWith("EN199")) {
-                _selectedItems.Add(code);
-                break;
-              }
+          if (prevSelectedCode.StartsWith(en199)) {
+            string matchingCode = _dropDownItems[1].FirstOrDefault(code => code.StartsWith(en199));
+            if (matchingCode != null) {
+              _selectedItems.Add(matchingCode);
             }
           } else if (_dropDownItems[1].Contains(prevSelectedCode)) {
             _selectedItems.Add(prevSelectedCode);
@@ -72,13 +77,7 @@ namespace AdSecGH.Components {
           }
         }
 
-        if (_selectedItems[1].StartsWith("EN1992")) {
-          _spacerDescriptions[1] = "Design Code";
-          _spacerDescriptions[2] = "National Annex";
-        } else {
-          _spacerDescriptions[1] = "Code Group";
-          _spacerDescriptions[2] = "Design Code";
-        }
+        SetSpacerDescriptions();
 
         // create string for selected item to use for type search while drilling
         int level = 1;
@@ -98,12 +97,10 @@ namespace AdSecGH.Components {
             // with first item being the selected
             if (_selectedItems.Count - 1 < level) {
               if (level == 2) {
-                if (prevSelectedCode.StartsWith("EN1992")) {
-                  foreach (string code in _dropDownItems[2]) {
-                    if (code.Equals(prevSelectedNA)) {
-                      _selectedItems.Add(code);
-                      break;
-                    }
+                if (prevSelectedCode.StartsWith(en1992)) {
+                  string matchingCode = _dropDownItems[2].FirstOrDefault(code => code.Equals(prevSelectedNA));
+                  if (matchingCode != null) {
+                    _selectedItems.Add(matchingCode);
                   }
                 } else {
                   _selectedItems.Add(designCodeKVP.Keys.First());
@@ -128,14 +125,14 @@ namespace AdSecGH.Components {
             _materials = ReflectionHelper.ReflectFields(typ);
             if (_materials.Count == 0) {
               _dropDownItems.Add(new List<string> {
-                "No material",
+                noMaterialText,
               });
-              _selectedItems.Add("No material");
+              _selectedItems.Add(noMaterialText);
             } else {
               // if kvp has values we add them to create a new dropdown list
               _dropDownItems.Add(_materials.Keys.ToList());
               // with first item being the selected
-              if (_selectedItems[1].StartsWith("EN1992")) {
+              if (_selectedItems[1].StartsWith(en1992)) {
                 if (_materials.Keys.Count > 4) {
                   _selectedItems.Add(_materials.Keys.ElementAt(4)); // C37
                 } else if (_materials.Keys.Count == 3) {
@@ -143,7 +140,7 @@ namespace AdSecGH.Components {
                 } else {
                   _selectedItems.Add(_materials.Keys.First());
                 }
-              } else if (_selectedItems[1].StartsWith("EN1993")) {
+              } else if (_selectedItems[1].StartsWith(en1993)) {
                 _selectedItems.Add(_materials.Keys.ElementAt(2)); // S355
               } else {
                 _selectedItems.Add(_materials.Keys.First());
@@ -152,7 +149,7 @@ namespace AdSecGH.Components {
 
             drill = false;
 
-            _spacerDescriptions[_selectedItems.Count - 1] = "Grade";
+            _spacerDescriptions[_selectedItems.Count - 1] = gradeText;
           }
         }
       }
@@ -160,25 +157,39 @@ namespace AdSecGH.Components {
       base.UpdateUI();
     }
 
-    public override void VariableParameterMaintenance() {
-      if (Params.Input.Count == 0) {
-        Params.RegisterInputParam(new Param_String());
-        Params.Input[0].NickName = "S";
-        Params.Input[0].Name = "Search";
-        Params.Input[0].Description
-          = $"[Optional] Search for Grade {Environment.NewLine}Note: input 'all' to list all grades from the selected code";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = true;
+    private void ClearSelectedItems(int i) {
+      while (_selectedItems.Count > i + 1) {
+        _selectedItems.RemoveAt(i + 1);
       }
+    }
+
+    private void ClearDropDownItems() {
+      while (_dropDownItems.Count > 1) {
+        _dropDownItems.RemoveAt(1);
+      }
+    }
+
+    public override void VariableParameterMaintenance() {
+      if (Params.Input.Count != 0) {
+        return;
+      }
+
+      Params.RegisterInputParam(new Param_String());
+      Params.Input[0].NickName = "S";
+      Params.Input[0].Name = "Search";
+      Params.Input[0].Description
+        = $"[Optional] Search for Grade {Environment.NewLine}Note: input 'all' to list all grades from the selected code";
+      Params.Input[0].Access = GH_ParamAccess.item;
+      Params.Input[0].Optional = true;
     }
 
     protected override void InitialiseDropdowns() {
       _spacerDescriptions = new List<string>(new[] {
-        "Material Type",
-        "Design Code",
-        "National Annex",
-        "Edition",
-        "Grade",
+        materialTypeText,
+        designCodeName,
+        nationalAnnexName,
+        EditionText,
+        gradeText,
         "Another other",
         "This is so deep",
       });
@@ -211,14 +222,10 @@ namespace AdSecGH.Components {
             // if kvp has >1 values we add them to create a new dropdown list
             _dropDownItems.Add(designCodeKVP.Keys.ToList());
             // with first item being the selected
-            if (level == 2) {
-              _selectedItems.Add(designCodeKVP.Keys.ElementAt(6));
-            } else {
-              _selectedItems.Add(designCodeKVP.Keys.First());
-            }
+            _selectedItems.Add(level == 2 ? designCodeKVP.Keys.ElementAt(6) : designCodeKVP.Keys.First());
 
             // and set the next search item to this
-            typeString = _selectedItems.Last();
+            typeString = _selectedItems[_selectedItems.Count - 1];
           } else if (designCodeKVP.Count == 1) {
             // if kvp is = 1 then we do not need to create dropdown list, but keep drilling
             typeString = designCodeKVP.Keys.First();
@@ -257,37 +264,41 @@ namespace AdSecGH.Components {
           var materialsList = _materials.Keys.ToList();
           var filteredMaterials = new List<AdSecMaterialGoo>();
 
-          for (int i = 0; i < materialsList.Count; i++) {
-            var material = new AdSecMaterial(_materials[materialsList[i]]);
+          foreach (string material in materialsList) {
+            var adsecMaterial = new AdSecMaterial(_materials[material]);
 
             var materialDesign = new MaterialDesign() {
-              Material = material.Material,
+              Material = adsecMaterial.Material,
               DesignCode = new DesignCode() {
-                IDesignCode = material.DesignCode.DesignCode,
-                DesignCodeName = material.DesignCode.DesignCodeName,
+                IDesignCode = adsecMaterial.DesignCode.DesignCode,
+                DesignCodeName = adsecMaterial.DesignCode.DesignCodeName,
               },
             };
-            if (search.ToLower() == "all") {
+            if (search.ToLower() == allSearchText) {
               filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
-              _selectedItems[_selectedItems.Count - 1] = "all";
+              _selectedItems[_selectedItems.Count - 1] = allSearchText;
             } else {
-              if (materialsList[i].ToLower().Contains(search)) {
+              if (material.ToLower().Contains(search)) {
                 filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
-                _selectedItems[_selectedItems.Count - 1] = materialsList[i];
+                _selectedItems[_selectedItems.Count - 1] = material;
               }
 
-              if (!search.Any(char.IsDigit)) {
-                string materialName = materialsList[i];
-                materialName = Regex.Replace(materialName, "[0-9]", string.Empty, RegexOptions.None,
-                  TimeSpan.FromSeconds(2));
-                materialName = materialName.Replace(".", string.Empty);
-                materialName = materialName.Replace("-", string.Empty);
-                materialName = materialName.ToLower();
-                if (materialName.Contains(search)) {
-                  filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
-                  _selectedItems[_selectedItems.Count - 1] = materialsList[i];
-                }
+              if (search.Any(char.IsDigit)) {
+                continue;
               }
+
+              string materialName = material;
+              materialName = Regex.Replace(materialName, "[0-9]", string.Empty, RegexOptions.None,
+                TimeSpan.FromSeconds(2));
+              materialName = materialName.Replace(".", string.Empty);
+              materialName = materialName.Replace("-", string.Empty);
+              materialName = materialName.ToLower();
+              if (!materialName.Contains(search)) {
+                continue;
+              }
+
+              filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
+              _selectedItems[_selectedItems.Count - 1] = material;
             }
           }
 
@@ -296,7 +307,7 @@ namespace AdSecGH.Components {
         }
       }
 
-      var selectedMaterial = _materials[_selectedItems.Last()];
+      var selectedMaterial = _materials[_selectedItems[_selectedItems.Count - 1]];
 
       var adSecMaterial = new AdSecMaterial(selectedMaterial);
       var materialDesign2 = new MaterialDesign() {
@@ -315,13 +326,7 @@ namespace AdSecGH.Components {
       Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
       var designCodeKVP = ReflectionHelper.StandardCodes(materialType);
 
-      if (_selectedItems[1].StartsWith("EN1992")) {
-        _spacerDescriptions[1] = "Design Code";
-        _spacerDescriptions[2] = "National Annex";
-      } else {
-        _spacerDescriptions[1] = "Code Group";
-        _spacerDescriptions[2] = "Design Code";
-      }
+      SetSpacerDescriptions();
 
       int level = 1;
       string typeString = _selectedItems[level];
@@ -346,18 +351,28 @@ namespace AdSecGH.Components {
 
           drill = false;
 
-          _spacerDescriptions[_selectedItems.Count - 1] = "Grade";
+          _spacerDescriptions[_selectedItems.Count - 1] = gradeText;
         }
       }
 
       base.UpdateUIFromSelectedItems();
     }
 
+    private void SetSpacerDescriptions() {
+      if (_selectedItems[1].StartsWith(en1992)) {
+        _spacerDescriptions[1] = designCodeName;
+        _spacerDescriptions[2] = nationalAnnexName;
+      } else {
+        _spacerDescriptions[1] = codeGroupName;
+        _spacerDescriptions[2] = designCodeName;
+      }
+    }
+
     private string GetDescription(string typeString) {
       string result = _prefixMappings.Where(mapping => typeString.StartsWith(mapping.Key))
        .Select(mapping => mapping.Value).FirstOrDefault();
 
-      return string.IsNullOrEmpty(result) ? "Design Code" : result;
+      return string.IsNullOrEmpty(result) ? designCodeName : result;
     }
   }
 }

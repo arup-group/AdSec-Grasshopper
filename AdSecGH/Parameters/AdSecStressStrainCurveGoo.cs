@@ -41,7 +41,7 @@ namespace AdSecGH.Parameters {
     }
     public override BoundingBox Boundingbox => Value == null ? BoundingBox.Empty : Value.GetBoundingBox(false);
     public BoundingBox ClippingBox => Boundingbox;
-    public List<Point3d> ControlPoints { get; } = new List<Point3d>();
+    public List<Point3d> ControlPoints { get; }
 
     public Oasys.Collections.IList<IStressStrainPoint> GetIStressStrainPoints() {
       try {
@@ -140,7 +140,7 @@ namespace AdSecGH.Parameters {
 
     internal static Tuple<Curve, List<Point3d>> Create(IStressStrainCurve stressStrainCurve, StressStrainCurveType type, bool isCompression) {
       int direction = isCompression ? 1 : -1;
-      Curve curveOut = null;
+      Curve curveOut;
       var point3ds = new List<Point3d>();
       switch (type) {
         case StressStrainCurveType.Bilinear: {
@@ -199,7 +199,6 @@ namespace AdSecGH.Parameters {
 
     internal static Tuple<Curve, List<Point3d>> CreateFromCode(IStressStrainCurve stressStrainCurve, bool isCompression) {
       int direction = isCompression ? 1 : -1;
-      Curve curveOut = null;
       var point3ds = new List<Point3d>();
 
       double maxStrain = stressStrainCurve.FailureStrain.As(DefaultUnits.StrainUnitResult);
@@ -211,7 +210,7 @@ namespace AdSecGH.Parameters {
           stress.As(DefaultUnits.StressUnitResult) * direction, 0));
       }
 
-      curveOut = new Polyline(polypoints).ToPolylineCurve();
+      var curveOut = new Polyline(polypoints).ToPolylineCurve();
       point3ds.Add(polypoints[0]);
       point3ds.Add(polypoints[polypoints.Count - 1]);
 
