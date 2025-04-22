@@ -173,23 +173,28 @@ namespace AdSecGH.Helpers {
 
     internal static List<string> SectionJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
       var jsonStrings = new List<string>();
-      try {
-        var json = new JsonConverter(sections[0].DesignCode);
-        for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
 
-          PopulateLoadAndDeformationLists(loads, sectionId, out var adSecload, out var adSecDeformation);
+      if (sections[0].DesignCode == null) {
+        throw new ArgumentException("Section design code is null");
+      }
 
-          if (adSecload.Any() && adSecDeformation.Any()) {
-            throw new ArgumentException("Only either deformation or load can be specified to a section.");
-          }
+      var json = new JsonConverter(sections[0].DesignCode);
+      for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
+
+        PopulateLoadAndDeformationLists(loads, sectionId, out var adSecload, out var adSecDeformation);
+
+        if (adSecload.Any() && adSecDeformation.Any()) {
+          throw new ArgumentException("Only either deformation or load can be specified to a section.");
+        }
+        try {
           if (adSecload.Any()) {
             jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecload));
           } else {
             jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecDeformation));
           }
+        } catch (System.Reflection.TargetInvocationException exception) {
+          ParseJsonException(exception);
         }
-      } catch (Exception exception) {
-        ParseJsonException(exception);
       }
       return jsonStrings;
     }
@@ -212,7 +217,7 @@ namespace AdSecGH.Helpers {
 
     private static void ParseJsonException(Exception exception) {
       var messageBuilder = new StringBuilder();
-
+      messageBuilder.Append(exception.Message);
       if (exception.InnerException != null) {
         foreach (var value in exception.InnerException.Data.Values) {
           if (value is IEnumerable<string> messages) {
@@ -221,10 +226,7 @@ namespace AdSecGH.Helpers {
             }
           }
         }
-      } else {
-        messageBuilder.Append(exception.Message);
       }
-
       string exceptionMessage = messageBuilder.ToString();
 
       if (exceptionMessage.Contains("definition is not a standard")) {

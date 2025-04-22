@@ -237,7 +237,7 @@ namespace AdSecGHTests.Components.AdSec {
       var rebarMaterial = Reinforcement.Steel.IS456.Edition_2000.S415;
       var loads = new Dictionary<int, List<object>>();
       var section = AdSecUtility.SectionObject(null, concreteMaterial, rebarMaterial);
-      Assert.Throws<InvalidOperationException>(() => AdSecFile.ModelJson(new List<AdSecSection> { section }, loads));
+      Assert.Throws<ArgumentException>(() => AdSecFile.ModelJson(new List<AdSecSection> { section }, loads));
     }
   }
 }

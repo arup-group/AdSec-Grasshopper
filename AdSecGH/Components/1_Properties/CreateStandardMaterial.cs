@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 using AdSecCore.Functions;
 
@@ -21,6 +20,8 @@ using Oasys.AdSec.DesignCode;
 
 using OasysGH;
 using OasysGH.Components;
+
+using OasysUnits;
 
 namespace AdSecGH.Components {
   public class CreateStandardMaterial : GH_OasysDropDownComponent {
@@ -59,13 +60,9 @@ namespace AdSecGH.Components {
           level++;
           _dropDownItems.Add(designCodeKVP.Keys.ToList());
 
-          if (_selectedItems.Count - 1 < level) {
-            string nextSelection = GetNextSelection(level, designCodeKVP.Keys, prevSelectedCode, prevSelectedNA);
-            _selectedItems.Add(nextSelection);
-            typeString = nextSelection;
-          } else {
-            typeString = _selectedItems[level];
-          }
+          typeString = _selectedItems.Count - 1 < level
+            ? GetNextSelection(level, designCodeKVP.Keys, prevSelectedCode, prevSelectedNA)
+            : _selectedItems[level];
 
           _spacerDescriptions[level] = GetDescription(typeString);
         } else if (designCodeKVP.Count == 1) {
@@ -77,16 +74,21 @@ namespace AdSecGH.Components {
       }
     }
 
-    private static string GetNextSelection(int level, IEnumerable<string> availableChoices, string prevSelectedCode, string prevSelectedNA) {
-      if (level == 2 && prevSelectedCode.StartsWith(euroCodeString)) {
-        return availableChoices.FirstOrDefault(code => code.Equals(prevSelectedNA)) ?? availableChoices.First();
+    private string GetNextSelection(int level, IEnumerable<string> availableChoices, string prevSelectedCode, string prevSelectedNA) {
+      // Try to maintain previous National Annex selection for Eurocode
+      const int nationalAnnexLevel = 2;
+      if (level == nationalAnnexLevel && prevSelectedCode.StartsWith(euroCodeString)) {
+        var matchingNA = availableChoices.FirstOrDefault(code => code.Equals(prevSelectedNA));
+        if (matchingNA != null) {
+          _selectedItems.Add(matchingNA);
+          return matchingNA;
+        }
       }
 
-      if (level == 1 && prevSelectedCode.StartsWith(euroCodeString)) {
-        return availableChoices.FirstOrDefault(code => code.StartsWith(euroCodeString)) ?? availableChoices.First();
-      }
-
-      return availableChoices.First();
+      // Default to first available choice
+      var defaultSelection = availableChoices.First();
+      _selectedItems.Add(defaultSelection);
+      return defaultSelection;
     }
 
     private void ProcessMaterialFields(Type typ) {
@@ -118,10 +120,9 @@ namespace AdSecGH.Components {
       _selectedItems[i] = _dropDownItems[i][j];
 
       if (_selectedItems.Count - 1 != i) {
+        string prevSelectedCode = _selectedItems[1];
+        string prevSelectedNA = _selectedItems[2];
         ResetDropdowns(i);
-
-        string prevSelectedCode = _selectedItems.Count > 1 ? _selectedItems[1] : "";
-        string prevSelectedNA = _selectedItems.Count > 2 ? _selectedItems[2] : "";
 
         Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
         var designCodeKVP = ReflectionHelper.StandardCodes(materialType);
@@ -293,8 +294,6 @@ namespace AdSecGH.Components {
           return;
         }
       }
-
-
 
       // update selected material
       var selectedMaterial = _materials[_selectedItems[_selectedItems.Count - 1]];

@@ -24,9 +24,7 @@ namespace AdSecGH.Helpers {
 
     internal static Dictionary<string, FieldInfo> ReflectFields(Type type) {
       var materials = new Dictionary<string, FieldInfo>();
-      if (type == null) {
-        return materials;
-      }
+
       var fields = type.GetFields().ToList();
 
       var types = type.GetInterfaces();
@@ -43,9 +41,7 @@ namespace AdSecGH.Helpers {
 
     internal static Dictionary<string, Type> ReflectNestedTypes(Type type) {
       var dict = new Dictionary<string, Type>();
-      if (type == null) {
-        return dict;
-      }
+
       var members = type.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
       foreach (var member in members) {
         dict.Add(member.Name, (Type)member);
