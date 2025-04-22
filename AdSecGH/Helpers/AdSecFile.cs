@@ -12,7 +12,6 @@ using Oasys.AdSec.IO.Serialization;
 
 using Rhino.UI;
 
-using static System.Collections.Specialized.BitVector32;
 namespace AdSecGH.Helpers {
   internal class AdSecFile {
     private AdSecFile() { }
