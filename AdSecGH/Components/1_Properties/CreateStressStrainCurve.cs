@@ -27,6 +27,7 @@ namespace AdSecGH.Components {
   public class CreateStressStrainCurve : GH_OasysDropDownComponent {
     private const string helpLink
       = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Materials.StressStrainCurves.html";
+    private const string RepresentingText = "AdSec Stress Strain Point representing the ";
 
     public override Guid ComponentGuid => new Guid("b2ddf545-2a4c-45ac-ba1c-cb0f3da5b37f");
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
@@ -129,133 +130,77 @@ namespace AdSecGH.Components {
       string unitStressAbbreviation = Pressure.GetAbbreviation(_stressUnit);
       string unitStrainAbbreviation = Strain.GetAbbreviation(_strainUnit);
 
-      if (_mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear) {
-        Params.Input[0].Name = "Yield Point";
-        Params.Input[0].NickName = "SPy";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Yield Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
+      const string FailurePointText = "Failure Point";
+      const string FibModelCodeText = "FIB model code";
+      const string ManderModelText = "Mander model";
+      const string ManderConfinedModelText = "Mander Confined Model";
+      const string YieldPointText = "Yield Point";
 
-        Params.Input[1].Name = "Failure Point";
-        Params.Input[1].NickName = "SPu";
-        Params.Input[1].Description = "AdSec Stress Strain Point representing the Failure Point";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
-      } else if (_mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit) {
-        Params.Input[0].Name = "StressStrainPts";
-        Params.Input[0].NickName = "SPs";
-        Params.Input[0].Description = "AdSec Stress Strain Points representing the StressStrainCurve as a Polyline";
-        Params.Input[0].Access = GH_ParamAccess.list;
-        Params.Input[0].Optional = false;
-      } else if (_mode == AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode) {
-        Params.Input[0].Name = "Peak Point";
-        Params.Input[0].NickName = "SPt";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the FIB model's Peak Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
-
-        Params.Input[1].Name = $"Initial Modus [{unitStressAbbreviation}]";
-        Params.Input[1].NickName = "Ei";
-        Params.Input[1].Description = "Initial Moduls from FIB model code";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
-
-        Params.Input[2].Name = $"Failure Strain [{unitStrainAbbreviation}]";
-        Params.Input[2].NickName = "εu";
-        Params.Input[2].Description = "Failure strain from FIB model code";
-        Params.Input[2].Access = GH_ParamAccess.item;
-        Params.Input[2].Optional = false;
-      } else if (_mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Linear) {
-        Params.Input[0].Name = "Failure Point";
-        Params.Input[0].NickName = "SPu";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Failure Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
-      } else if (_mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined) {
-        Params.Input[0].Name = $"Unconfined Strength [{unitStressAbbreviation}]";
-        Params.Input[0].NickName = "σU";
-        Params.Input[0].Description = "Unconfined strength for Mander Confined Model";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
-
-        Params.Input[1].Name = $"Confined Strength [{unitStressAbbreviation}]";
-        Params.Input[1].NickName = "σC";
-        Params.Input[1].Description = "Confined strength for Mander Confined Model";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
-
-        Params.Input[2].Name = $"Initial Modus [{unitStressAbbreviation}]";
-        Params.Input[2].NickName = "Ei";
-        Params.Input[2].Description = "Initial Moduls for Mander Confined Model";
-        Params.Input[2].Access = GH_ParamAccess.item;
-        Params.Input[2].Optional = false;
-
-        Params.Input[3].Name = $"Failure Strain [{unitStrainAbbreviation}]";
-        Params.Input[3].NickName = "εu";
-        Params.Input[3].Description = "Failure strain for Mander Confined Model";
-        Params.Input[3].Access = GH_ParamAccess.item;
-        Params.Input[3].Optional = false;
-      } else if (_mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Mander) {
-        Params.Input[0].Name = "Peak Point";
-        Params.Input[0].NickName = "SPt";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Mander model's Peak Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
-
-        Params.Input[1].Name = $"Initial Modus [{unitStressAbbreviation}]";
-        Params.Input[1].NickName = "Ei";
-        Params.Input[1].Description = "Initial Moduls for Mander model";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
-
-        Params.Input[2].Name = $"Failure Strain [{unitStrainAbbreviation}]";
-        Params.Input[2].NickName = "εu";
-        Params.Input[2].Description = "Failure strain for Mander model";
-        Params.Input[2].Access = GH_ParamAccess.item;
-        Params.Input[2].Optional = false;
-      } else if (_mode == AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle) {
-        Params.Input[0].Name = "Yield Point";
-        Params.Input[0].NickName = "SPy";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Yield Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
-
-        Params.Input[1].Name = $"Failure Strain [{unitStrainAbbreviation}]";
-        Params.Input[1].NickName = "εu";
-        Params.Input[1].Description = "Failure strain from FIB model code";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
-      } else if (_mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Park) {
-        Params.Input[0].Name = "Yield Point";
-        Params.Input[0].NickName = "SPy";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Yield Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
-      } else if (_mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics) {
-        Params.Input[0].Name = "Peak Point";
-        Params.Input[0].NickName = "SPt";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Peak Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
-
-        Params.Input[1].Name = $"Failure Strain [{unitStrainAbbreviation}]";
-        Params.Input[1].NickName = "εu";
-        Params.Input[1].Description = "Failure strain from Popovic model";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
-      } else if (_mode == AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular) {
-        Params.Input[0].Name = "Yield Point";
-        Params.Input[0].NickName = "SPy";
-        Params.Input[0].Description = "AdSec Stress Strain Point representing the Yield Point";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
-
-        Params.Input[1].Name = $"Failure Strain [{unitStrainAbbreviation}]";
-        Params.Input[1].NickName = "εu";
-        Params.Input[1].Description = "Failure strain";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
+      switch (_mode) {
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear:
+          UpdatePointInput(0, YieldPointText, "SPy");
+          UpdatePointInput(1, FailurePointText, "SPu");
+          break;
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit:
+          Params.Input[0]
+           .UpdateListInput("StressStrainPts", "SPs", $"{RepresentingText}StressStrainCurve as a Polyline");
+          break;
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
+          UpdatePeakPointInput(0, "FIB model");
+          UpdateInitialModusInput(1, unitStressAbbreviation, FibModelCodeText);
+          UpdateFailureStrainInput(2, unitStrainAbbreviation, FibModelCodeText);
+          break;
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
+          UpdatePointInput(0, FailurePointText, "SPu");
+          break;
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
+          UpdateStrengthInput(0, "Unconfined", unitStressAbbreviation, ManderConfinedModelText, "σU");
+          UpdateStrengthInput(1, "Confined", unitStressAbbreviation, ManderConfinedModelText, "σC");
+          UpdateInitialModusInput(2, unitStressAbbreviation, ManderConfinedModelText);
+          UpdateFailureStrainInput(3, unitStrainAbbreviation, ManderConfinedModelText);
+          break;
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
+          UpdatePeakPointInput(0, ManderModelText);
+          UpdateInitialModusInput(1, unitStressAbbreviation, ManderModelText);
+          UpdateFailureStrainInput(2, unitStrainAbbreviation, ManderModelText);
+          break;
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
+          UpdatePointInput(0, YieldPointText, "SPy");
+          UpdateFailureStrainInput(1, unitStrainAbbreviation, FibModelCodeText);
+          break;
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
+          UpdatePointInput(0, YieldPointText, "SPy");
+          break;
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics:
+          Params.Input[0].UpdateItemInput("Peak Point", "SPt", $"{RepresentingText}Peak Point");
+          Params.Input[1].UpdateItemInput($"Failure Strain [{unitStrainAbbreviation}]", "εu",
+            "Failure strain from Popovic model");
+          break;
+        case AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
+          UpdatePointInput(0, YieldPointText, "SPy");
+          Params.Input[1].UpdateItemInput($"Failure Strain [{unitStrainAbbreviation}]", "εu", "Failure strain");
+          break;
       }
+    }
+
+    private void UpdatePointInput(int index, string name, string nickname) {
+      Params.Input[index].UpdateItemInput(name, nickname, $"{RepresentingText}{name}");
+    }
+
+    private void UpdatePeakPointInput(int index, string model) {
+      Params.Input[index].UpdateItemInput("Peak Point", "SPt", $"{RepresentingText}{model}'s Peak Point");
+    }
+
+    private void UpdateInitialModusInput(int index, string unit, string modelText) {
+      Params.Input[index].UpdateItemInput($"Initial Modus [{unit}]", "Ei", $"Initial Moduls from {modelText}");
+    }
+
+    private void UpdateFailureStrainInput(int index, string unit, string modelText) {
+      Params.Input[index].UpdateItemInput($"Failure Strain [{unit}]", "εu", $"Failure strain from {modelText}");
+    }
+
+    private void UpdateStrengthInput(int index, string type, string unit, string modelText, string nick) {
+      Params.Input[index].UpdateItemInput($"{type} Strength [{unit}]", nick, $"{type} strength for {modelText}");
     }
 
     protected override string HtmlHelp_Source() {

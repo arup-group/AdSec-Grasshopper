@@ -25,6 +25,20 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateReinforcementLayout : GH_OasysDropDownComponent {
+
+    private enum FoldMode {
+      Line,
+      SingleBars,
+      Circle,
+      Arc,
+    }
+
+    private const string PositiveAngleIsConsideredAntiClockwise = "Positive angle is considered anti-clockwise.";
+
+    public override Guid ComponentGuid => new Guid("1250f456-de99-4834-8d7f-4019cc0c70ba");
+    public override GH_Exposure Exposure => GH_Exposure.secondary;
+    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
+    protected override Bitmap Icon => Resources.RebarLayout;
     private AngleUnit _angleUnit = AngleUnit.Radian;
     private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
     private FoldMode _mode = FoldMode.Line;
@@ -33,11 +47,6 @@ namespace AdSecGH.Components {
       "Create a Reinforcement Layout for an AdSec Section", CategoryName.Name(), SubCategoryName.Cat3()) {
       Hidden = false;
     }
-
-    public override Guid ComponentGuid => new Guid("1250f456-de99-4834-8d7f-4019cc0c70ba");
-    public override GH_Exposure Exposure => GH_Exposure.secondary;
-    public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.RebarLayout;
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
@@ -87,97 +96,56 @@ namespace AdSecGH.Components {
     public override void VariableParameterMaintenance() {
       string angleUnitAbbreviation = Angle.GetAbbreviation(_angleUnit);
       string lengthUnitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      if (_mode == FoldMode.Line) {
-        Params.Input[0].Name = "Spaced Rebars";
-        Params.Input[0].NickName = "RbS";
-        Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
 
-        Params.Input[1].Name = "Position 1";
-        Params.Input[1].NickName = "Vx1";
-        Params.Input[1].Description = "First bar position";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
-
-        Params.Input[2].Name = "Position 2";
-        Params.Input[2].NickName = "Vx2";
-        Params.Input[2].Description = "Last bar position";
-        Params.Input[2].Access = GH_ParamAccess.item;
-        Params.Input[2].Optional = false;
+      switch (_mode) {
+        case FoldMode.Line:
+          UpdateSpacedRebarInput();
+          Params.Input[1].UpdateItemInput("Position 1", "Vx1", "First bar position");
+          Params.Input[2].UpdateItemInput("Position 2", "Vx2", "Last bar position");
+          break;
+        case FoldMode.SingleBars:
+          Params.Input[0].UpdateItemInput("Rebar", "Rb", "AdSec Rebar (single or bundle)");
+          Params.Input[1].UpdateListInput("Position(s)", "Vxs", "List of bar positions");
+          break;
+        case FoldMode.Circle:
+          UpdateSpacedRebarInput();
+          UpdateCenterInput();
+          UpdateRadiusInput(lengthUnitAbbreviation);
+          UpdateStartAngleInput(angleUnitAbbreviation);
+          break;
+        case FoldMode.Arc:
+          UpdateSpacedRebarInput();
+          UpdateCenterInput();
+          UpdateRadiusInput(lengthUnitAbbreviation);
+          UpdateStartAngleInput(angleUnitAbbreviation);
+          Params.Input[4].UpdateItemInput($"SweepAngle [{angleUnitAbbreviation}]", "e°",
+            $"The angle (in {angleUnitAbbreviation}) sweeped by the arc from its start angle. {PositiveAngleIsConsideredAntiClockwise} Default is π/2",
+            true);
+          break;
       }
+    }
 
-      if (_mode == FoldMode.SingleBars) {
-        Params.Input[0].Name = "Rebar";
-        Params.Input[0].NickName = "Rb";
-        Params.Input[0].Description = "AdSec Rebar (single or bundle)";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
+    private void UpdateSpacedRebarInput(int index = 0) {
+      const string SpacedRebarsName = "Spaced Rebars";
+      const string SpacedRebarsNick = "RbS";
+      const string SpacedRebarsDesc = "AdSec Rebars Spaced in a Layer";
+      Params.Input[index].UpdateItemInput(SpacedRebarsName, SpacedRebarsNick, SpacedRebarsDesc);
+    }
 
-        Params.Input[1].Name = "Position(s)";
-        Params.Input[1].NickName = "Vxs";
-        Params.Input[1].Description = "List of bar positions";
-        Params.Input[1].Access = GH_ParamAccess.list;
-        Params.Input[1].Optional = false;
-      }
+    private void UpdateCenterInput(int index = 1) {
+      const string CentreDesc = "Vertex Point representing the centre of the circle";
+      Params.Input[index].UpdateItemInput("Centre", "CVx", CentreDesc, true);
+    }
 
-      if (_mode == FoldMode.Circle) {
-        Params.Input[0].Name = "Spaced Rebars";
-        Params.Input[0].NickName = "RbS";
-        Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
+    private void UpdateRadiusInput(string lengthUnitAbbreviation, int index = 2) {
+      const string RadiusDesc = "Distance representing the radius of the circle";
+      Params.Input[index].UpdateItemInput($"Radius [{lengthUnitAbbreviation}]", "r", RadiusDesc);
+    }
 
-        Params.Input[1].Name = "Centre";
-        Params.Input[1].NickName = "CVx";
-        Params.Input[1].Description = "Vertex Point representing the centre of the circle";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = true;
-
-        Params.Input[2].Name = $"Radius [{lengthUnitAbbreviation}]";
-        Params.Input[2].NickName = "r";
-        Params.Input[2].Description = "Distance representing the radius of the circle";
-        Params.Input[2].Access = GH_ParamAccess.item;
-        Params.Input[2].Optional = false;
-
-        Params.Input[3].Name = $"StartAngle [{angleUnitAbbreviation}]";
-        Params.Input[3].NickName = "s°";
-        Params.Input[3].Description = $"[Optional] The starting angle (in {angleUnitAbbreviation}) of the circle. Positive angle is considered anti-clockwise. Default is 0";
-        Params.Input[3].Access = GH_ParamAccess.item;
-        Params.Input[3].Optional = true;
-      }
-
-      if (_mode == FoldMode.Arc) {
-        Params.Input[0].Name = "Spaced Rebars";
-        Params.Input[0].NickName = "RbS";
-        Params.Input[0].Description = "AdSec Rebars Spaced in a Layer";
-        Params.Input[0].Access = GH_ParamAccess.item;
-        Params.Input[0].Optional = false;
-
-        Params.Input[1].Name = "Centre";
-        Params.Input[1].NickName = "CVx";
-        Params.Input[1].Description = "Vertex Point representing the centre of the circle";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = true;
-
-        Params.Input[2].Name = $"Radius [{lengthUnitAbbreviation}]";
-        Params.Input[2].NickName = "r";
-        Params.Input[2].Description = "Distance representing the radius of the circle";
-        Params.Input[2].Access = GH_ParamAccess.item;
-        Params.Input[2].Optional = false;
-
-        Params.Input[3].Name = $"StartAngle [{angleUnitAbbreviation}]";
-        Params.Input[3].NickName = "s°";
-        Params.Input[3].Description = $"[Optional] The starting angle (in {angleUnitAbbreviation})) of the circle. Positive angle is considered anti-clockwise. Default is 0";
-        Params.Input[3].Access = GH_ParamAccess.item;
-        Params.Input[3].Optional = true;
-
-        Params.Input[4].Name = $"SweepAngle [{angleUnitAbbreviation}]";
-        Params.Input[4].NickName = "e°";
-        Params.Input[4].Description = $"The angle (in {angleUnitAbbreviation}) sweeped by the arc from its start angle. Positive angle is considered anti-clockwise. Default is π/2";
-        Params.Input[4].Access = GH_ParamAccess.item;
-        Params.Input[4].Optional = true;
-      }
+    private void UpdateStartAngleInput(string angleUnitAbbreviation, int index = 3) {
+      Params.Input[index].UpdateItemInput($"StartAngle [{angleUnitAbbreviation}]", "s°",
+        $"[Optional] The starting angle (in {angleUnitAbbreviation}) of the circle. {PositiveAngleIsConsideredAntiClockwise} Default is 0",
+        true);
     }
 
     protected override void InitialiseDropdowns() {
@@ -285,13 +253,6 @@ namespace AdSecGH.Components {
           Params.RegisterInputParam(new Param_GenericObject());
           break;
       }
-    }
-
-    private enum FoldMode {
-      Line,
-      SingleBars,
-      Circle,
-      Arc,
     }
   }
 }
