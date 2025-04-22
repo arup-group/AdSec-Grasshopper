@@ -18,8 +18,8 @@ namespace AdSecGH.Parameters {
 
     public override Guid ComponentGuid => new Guid("6d656276-61f6-47ce-81bc-9fabdd39edc2");
     public override GH_Exposure Exposure => GH_Exposure.primary | GH_Exposure.obscure;
-    public bool Hidden => true;
-    public bool IsPreviewCapable => false;
+    public static bool Hidden => true;
+    public static bool IsPreviewCapable => false;
 
     protected override Bitmap Icon => Resources.DesignCodeParameter;
 
