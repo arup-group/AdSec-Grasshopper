@@ -11,16 +11,16 @@ namespace AdSecGH.Parameters {
     public override bool IsValid => true;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Results";
-    internal Plane LocalPlane => m_plane;
+    internal Plane LocalPlane => plane;
     internal Polyline ProfileEdge { get; }
-    internal AdSecSection m_section;
-    private Plane m_plane;
+    internal AdSecSection section;
+    private readonly Plane plane;
 
     public AdSecSolutionGoo(SectionSolution sectionSolutionParameter) {
       Value = sectionSolutionParameter;
-      m_section = new AdSecSection(sectionSolutionParameter.SectionDesign);
-      m_plane = m_section.LocalPlane;
-      ProfileEdge = m_section._profileEdge;
+      section = new AdSecSection(sectionSolutionParameter.SectionDesign);
+      plane = section.LocalPlane;
+      ProfileEdge = section._profileEdge;
     }
 
     public AdSecSolutionGoo(ISolution solution, AdSecSection section) {
@@ -33,9 +33,9 @@ namespace AdSecGH.Parameters {
           },
         },
       };
-      m_section = section;
-      m_plane = m_section.LocalPlane;
-      ProfileEdge = m_section._profileEdge;
+      this.section = section;
+      plane = this.section.LocalPlane;
+      ProfileEdge = this.section._profileEdge;
     }
 
     public override IGH_Goo Duplicate() {

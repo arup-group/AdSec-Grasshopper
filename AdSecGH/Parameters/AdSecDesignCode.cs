@@ -55,49 +55,56 @@ namespace AdSecGH.Parameters {
       return (string.IsNullOrEmpty(DesignCodeName) ? DesignCode?.ToString() : DesignCodeName.Replace("  ", " ")) ?? string.Empty;
     }
 
-    private bool CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false) {
-      // Get all DesignCodes in DLL under namespace
-      Dictionary<string, Type> designCodeKVP = ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
-
-      // Loop through DesignCodes types to find the DesignCode type matching our input list of levels
+    private void CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false) {
+      var designCodeKVP = ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
       string designcodeName = "";
-      Type typ = null;
+      Type designCodeType = null;
       for (int i = 0; i < designCodeReflectedLevels.Count - 1; i++) {
         designcodeName = $"{designcodeName}{designCodeReflectedLevels[i]} ";
-        designCodeKVP.TryGetValue(designCodeReflectedLevels[i], out typ);
-        if (typ == null) {
-          return false;
+        designCodeKVP.TryGetValue(designCodeReflectedLevels[i], out designCodeType);
+        if (designCodeType == null) {
+          return;
         }
-        designCodeKVP = ReflectionHelper.ReflectNestedTypes(typ);
+
+        designCodeKVP = ReflectionHelper.ReflectNestedTypes(designCodeType);
       }
+
       if (designCodeReflectedLevels.Count == 1) {
         designcodeName = designCodeReflectedLevels[0];
-        designCodeKVP.TryGetValue(designCodeReflectedLevels[0], out typ);
-        if (typ == null) {
-          return false;
-        }
+        designCodeKVP.TryGetValue(designCodeReflectedLevels[0], out designCodeType);
+      }
+
+      if (designCodeType == null) {
+        return;
       }
 
       // we need to find the right type Interface under Oasys.AdSec.IAdsec in order to cast to IDesignCode
       // the string to search for depends on where we call this function from, if we come from an IMaterial type
       // we can simply use the full name but if from IDesignCode we need to add the name of the code with a +
       string searchFor = fromDesignCode ?
-        $"{typ?.FullName}+{designCodeReflectedLevels[designCodeReflectedLevels.Count - 1]}" : typ?.FullName;
+        $"{designCodeType.FullName}+{designCodeReflectedLevels[designCodeReflectedLevels.Count - 1]}" :
+        designCodeType.FullName;
 
-      // loop through all types in Oasys.AdSec.IAdsec and cast to IDesignCode if match with above string
-      foreach (Type type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes()) {
-        if (type.IsInterface && type.Namespace == "Oasys.AdSec.DesignCode") {
-          foreach (FieldInfo field in type.GetFields()) {
-            if (field.DeclaringType.FullName == searchFor) {
-              DesignCode = (IDesignCode)field.GetValue(null);
-            }
+      FindDesignCode(searchFor);
+
+      if (DesignCode != null) {
+        DesignCodeName = $"{designcodeName.TrimEnd(' ')} {designCodeReflectedLevels.Last()}";
+      }
+    }
+
+    private void FindDesignCode(string searchFor) {
+      var interfaceTypes = Assembly.GetAssembly(typeof(IAdSec)).GetTypes()
+       .Where(t => t.IsInterface && t.Namespace == "Oasys.AdSec.DesignCode");
+
+      foreach (var type in interfaceTypes) {
+        foreach (var field in type.GetFields()) {
+          if ((field.DeclaringType?.FullName) != searchFor) {
+            continue;
           }
+          DesignCode = field.GetValue(null) as IDesignCode;
+          return;
         }
       }
-
-      if (DesignCode == null) { return false; }
-      DesignCodeName = $"{designcodeName.TrimEnd(' ')} {designCodeReflectedLevels.Last()}";
-      return true;
     }
   }
 }

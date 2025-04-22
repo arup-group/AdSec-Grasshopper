@@ -7,11 +7,10 @@ using Rhino.Display;
 
 namespace AdSecGH.UI {
   /// <summary>
-  /// Colour class holding the main colours used in colour scheme.
-  /// Make calls to this class to be able to easy update colours.
-  ///
+  ///   Colour class holding the main colours used in colour scheme.
+  ///   Make calls to this class to be able to easy update colours.
   /// </summary>
-  public class Colour {
+  public static class Colour {
     public static Brush AnnotationTextBright => Brushes.White;
     public static Brush AnnotationTextDark => Brushes.Black;
     public static Color ArupRed => Color.FromArgb(255, 230, 30, 40);

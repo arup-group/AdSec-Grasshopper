@@ -27,7 +27,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateCustomMaterial : GH_OasysDropDownComponent {
-    private bool _isConcrete = true;
+    private bool isConcrete = true;
     private AdSecMaterial.AdSecMaterialType _type = AdSecMaterial.AdSecMaterialType.Concrete;
 
     public CreateCustomMaterial() : base("Custom Material", "CustomMaterial", "Create a custom AdSec Material",
@@ -42,7 +42,7 @@ namespace AdSecGH.Components {
     protected override Bitmap Icon => Resources.CreateCustomMaterial;
 
     public override bool Read(GH_IReader reader) {
-      _isConcrete = reader.GetBoolean("isConcrete");
+      isConcrete = reader.GetBoolean("isConcrete");
       return base.Read(reader);
     }
 
@@ -51,30 +51,26 @@ namespace AdSecGH.Components {
 
       Enum.TryParse(_selectedItems[0], out _type);
 
-      // set bool if selection is concrete
-      if (_selectedItems[i] == AdSecMaterial.AdSecMaterialType.Concrete.ToString()) {
-        _isConcrete = true;
-      } else {
-        _isConcrete = false;
-      }
+      isConcrete = _selectedItems[i] == AdSecMaterial.AdSecMaterialType.Concrete.ToString();
 
-      // update input params
       ChangeMode();
       base.UpdateUI();
     }
 
     public override void VariableParameterMaintenance() {
-      if (_isConcrete) {
-        Params.Input[5].Name = "Yield PointCrack Calc Params";
-        Params.Input[5].NickName = "CCP";
-        Params.Input[5].Description = "[Optional] Material's Crack Calculation Parameters";
-        Params.Input[5].Access = GH_ParamAccess.item;
-        Params.Input[5].Optional = true;
+      if (!isConcrete) {
+        return;
       }
+
+      Params.Input[5].Name = "Yield PointCrack Calc Params";
+      Params.Input[5].NickName = "CCP";
+      Params.Input[5].Description = "[Optional] Material's Crack Calculation Parameters";
+      Params.Input[5].Access = GH_ParamAccess.item;
+      Params.Input[5].Optional = true;
     }
 
     public override bool Write(GH_IWriter writer) {
-      writer.SetBoolean("isConcrete", _isConcrete);
+      writer.SetBoolean("isConcrete", isConcrete);
       return base.Write(writer);
     }
 
@@ -129,7 +125,7 @@ namespace AdSecGH.Components {
 
       // 5 Cracked params
       IConcreteCrackCalculationParameters concreteCrack = null;
-      if (_isConcrete) {
+      if (isConcrete) {
         concreteCrack = this.GetIConcreteCrackCalculationParameters(DA, 5);
       }
 
@@ -166,11 +162,8 @@ namespace AdSecGH.Components {
       // create api material based on type
       switch (_type) {
         case AdSecMaterial.AdSecMaterialType.Concrete:
-          if (concreteCrack == null) {
-            material.Material = IConcrete.Create(ulsTC, slsTC);
-          } else {
-            material.Material = IConcrete.Create(ulsTC, slsTC, concreteCrack);
-          }
+          material.Material = concreteCrack == null ? IConcrete.Create(ulsTC, slsTC) :
+            (IMaterial)IConcrete.Create(ulsTC, slsTC, concreteCrack);
 
           break;
 
@@ -179,9 +172,6 @@ namespace AdSecGH.Components {
           break;
 
         case AdSecMaterial.AdSecMaterialType.Rebar:
-          material.Material = IReinforcement.Create(ulsTC, slsTC);
-          break;
-
         case AdSecMaterial.AdSecMaterialType.Tendon:
           material.Material = IReinforcement.Create(ulsTC, slsTC);
           break;
@@ -204,10 +194,7 @@ namespace AdSecGH.Components {
     }
 
     protected override void UpdateUIFromSelectedItems() {
-      // cast selection to material type enum
       Enum.TryParse(_selectedItems[0], out _type);
-
-      // don´t know if this needs to happen before ChangeMode()
       CreateAttributes();
 
       ChangeMode();
@@ -216,22 +203,13 @@ namespace AdSecGH.Components {
     }
 
     private void ChangeMode() {
-      if (_isConcrete) {
-        if (Params.Input.Count == 6) {
-          return;
-        }
-      }
-
-      if (!_isConcrete) {
-        if (Params.Input.Count == 5) {
-          return;
-        }
+      if ((isConcrete && Params.Input.Count == 6) || (!isConcrete && Params.Input.Count == 5)) {
+        return;
       }
 
       RecordUndoEvent("Changed dropdown");
 
-      // change number of input parameters
-      if (_isConcrete) {
+      if (isConcrete) {
         Params.RegisterInputParam(new Param_GenericObject());
       } else {
         Params.UnregisterInputParameter(Params.Input[5], true);
