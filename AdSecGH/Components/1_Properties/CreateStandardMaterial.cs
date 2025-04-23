@@ -26,7 +26,7 @@ namespace AdSecGH.Components {
   public class CreateStandardMaterial : GH_OasysDropDownComponent {
     private Dictionary<string, FieldInfo> _materials;
     private const string _designCodeText = "Design Code";
-    private const string _euroCodeText = "EN1992";
+    private const string _euroCodeText = "EN199";
     private const string _allSearchText = "all";
     private const string _nationalAnnexText = "National Annex";
     private const string _noMaterialText = "No material";
@@ -109,14 +109,17 @@ namespace AdSecGH.Components {
     }
 
     private string GetDefaultMaterialGrade() {
+      Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
       if (_selectedItems[1].StartsWith(_euroCodeText)) {
+
+        if (materialType == AdSecMaterial.AdSecMaterialType.Steel) {
+          return _materials.Keys.ElementAt(2); // S355
+        }
+
         if (_materials.Keys.Count > 4) {
           return _materials.Keys.ElementAt(4); // C37
         }
         return _materials.Keys.Count == 3 ? _materials.Keys.ElementAt(1) : _materials.Keys.First(); // B500B
-      }
-      if (_selectedItems[1].StartsWith(_euroCodeText)) {
-        return _materials.Keys.ElementAt(2); // S355
       }
       return _materials.Keys.First();
     }
@@ -254,8 +257,6 @@ namespace AdSecGH.Components {
       pManager.AddGenericParameter("Material", "Mat", "AdSec Material", GH_ParamAccess.list);
     }
 
-
-
     protected override void SolveInternal(IGH_DataAccess DA) {
       string search = string.Empty;
       if (DA.GetData(0, ref search)) {
@@ -273,10 +274,12 @@ namespace AdSecGH.Components {
               DesignCode = GetDesignCode(material),
             };
             if (search.ToLower() == _allSearchText) {
+              materialDesign.GradeName = materialsList[i];
               filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
               _selectedItems[_selectedItems.Count - 1] = _allSearchText;
             } else {
               if (materialsList[i].ToLower().Contains(search)) {
+                materialDesign.GradeName = materialsList[i];
                 filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
                 _selectedItems[_selectedItems.Count - 1] = materialsList[i];
               }
@@ -288,6 +291,7 @@ namespace AdSecGH.Components {
                 test = test.Replace("-", string.Empty);
                 test = test.ToLower();
                 if (test.Contains(search)) {
+                  materialDesign.GradeName = materialsList[i];
                   filteredMaterials.Add(new AdSecMaterialGoo(materialDesign));
                   _selectedItems[_selectedItems.Count - 1] = materialsList[i];
                 }
