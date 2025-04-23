@@ -12,7 +12,7 @@ namespace AdSecCore.Builders {
 
   public class BuilderSingleBar : IBuilder<ISingleBars> {
     private readonly IReinforcement defaultMaterial = Reinforcement.Steel.IS456.Edition_2000.S415;
-    private readonly List<IPoint> positions = new List<IPoint>();
+    private readonly List<IPoint> positions = new();
     private IReinforcement material;
     private ISingleBars group;
     private GroupType groupType;
