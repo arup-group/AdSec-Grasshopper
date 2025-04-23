@@ -25,7 +25,6 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateReinforcementLayout : GH_OasysDropDownComponent {
-
     private enum FoldMode {
       Line,
       SingleBars,
@@ -126,20 +125,20 @@ namespace AdSecGH.Components {
     }
 
     private void UpdateSpacedRebarInput(int index = 0) {
-      const string SpacedRebarsName = "Spaced Rebars";
-      const string SpacedRebarsNick = "RbS";
-      const string SpacedRebarsDesc = "AdSec Rebars Spaced in a Layer";
-      Params.Input[index].UpdateItemInput(SpacedRebarsName, SpacedRebarsNick, SpacedRebarsDesc);
+      const string spacedRebarsName = "Spaced Rebars";
+      const string spacedRebarsNick = "RbS";
+      const string spacedRebarsDesc = "AdSec Rebars Spaced in a Layer";
+      Params.Input[index].UpdateItemInput(spacedRebarsName, spacedRebarsNick, spacedRebarsDesc);
     }
 
     private void UpdateCenterInput(int index = 1) {
-      const string CentreDesc = "Vertex Point representing the centre of the circle";
-      Params.Input[index].UpdateItemInput("Centre", "CVx", CentreDesc, true);
+      const string centreDesc = "Vertex Point representing the centre of the circle";
+      Params.Input[index].UpdateItemInput("Centre", "CVx", centreDesc, true);
     }
 
     private void UpdateRadiusInput(string lengthUnitAbbreviation, int index = 2) {
-      const string RadiusDesc = "Distance representing the radius of the circle";
-      Params.Input[index].UpdateItemInput($"Radius [{lengthUnitAbbreviation}]", "r", RadiusDesc);
+      const string radiusDesc = "Distance representing the radius of the circle";
+      Params.Input[index].UpdateItemInput($"Radius [{lengthUnitAbbreviation}]", "r", radiusDesc);
     }
 
     private void UpdateStartAngleInput(string angleUnitAbbreviation, int index = 3) {

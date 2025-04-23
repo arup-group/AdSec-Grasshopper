@@ -25,9 +25,9 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateStressStrainCurve : GH_OasysDropDownComponent {
-    private const string helpLink
+    private const string _helpLink
       = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.AdSec.Materials.StressStrainCurves.html";
-    private const string RepresentingText = "AdSec Stress Strain Point representing the ";
+    private const string _representingText = "AdSec Stress Strain Point representing the ";
 
     public override Guid ComponentGuid => new Guid("b2ddf545-2a4c-45ac-ba1c-cb0f3da5b37f");
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
@@ -130,65 +130,65 @@ namespace AdSecGH.Components {
       string unitStressAbbreviation = Pressure.GetAbbreviation(_stressUnit);
       string unitStrainAbbreviation = Strain.GetAbbreviation(_strainUnit);
 
-      const string FailurePointText = "Failure Point";
-      const string FibModelCodeText = "FIB model code";
-      const string ManderModelText = "Mander model";
-      const string ManderConfinedModelText = "Mander Confined Model";
-      const string YieldPointText = "Yield Point";
+      const string failurePointText = "Failure Point";
+      const string fibModelCodeText = "FIB model code";
+      const string manderModelText = "Mander model";
+      const string manderConfinedModelText = "Mander Confined Model";
+      const string yieldPointText = "Yield Point";
 
       switch (_mode) {
         case AdSecStressStrainCurveGoo.StressStrainCurveType.Bilinear:
-          UpdatePointInput(0, YieldPointText, "SPy");
-          UpdatePointInput(1, FailurePointText, "SPu");
+          UpdatePointInput(0, yieldPointText, "SPy");
+          UpdatePointInput(1, failurePointText, "SPu");
           break;
         case AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit:
-          Params.Input[0]
-           .UpdateListInput("StressStrainPts", "SPs", $"{RepresentingText}StressStrainCurve as a Polyline");
+          Params.Input[0].UpdateListInput("StressStrainPts", "SPs",
+            $"{_representingText}StressStrainCurve as a Polyline");
           break;
         case AdSecStressStrainCurveGoo.StressStrainCurveType.FibModelCode:
           UpdatePeakPointInput(0, "FIB model");
-          UpdateInitialModusInput(1, unitStressAbbreviation, FibModelCodeText);
-          UpdateFailureStrainInput(2, unitStrainAbbreviation, FibModelCodeText);
+          UpdateInitialModusInput(1, unitStressAbbreviation, fibModelCodeText);
+          UpdateFailureStrainInput(2, unitStrainAbbreviation, fibModelCodeText);
           break;
         case AdSecStressStrainCurveGoo.StressStrainCurveType.Linear:
-          UpdatePointInput(0, FailurePointText, "SPu");
+          UpdatePointInput(0, failurePointText, "SPu");
           break;
         case AdSecStressStrainCurveGoo.StressStrainCurveType.ManderConfined:
-          UpdateStrengthInput(0, "Unconfined", unitStressAbbreviation, ManderConfinedModelText, "σU");
-          UpdateStrengthInput(1, "Confined", unitStressAbbreviation, ManderConfinedModelText, "σC");
-          UpdateInitialModusInput(2, unitStressAbbreviation, ManderConfinedModelText);
-          UpdateFailureStrainInput(3, unitStrainAbbreviation, ManderConfinedModelText);
+          UpdateStrengthInput(0, "Unconfined", unitStressAbbreviation, manderConfinedModelText, "σU");
+          UpdateStrengthInput(1, "Confined", unitStressAbbreviation, manderConfinedModelText, "σC");
+          UpdateInitialModusInput(2, unitStressAbbreviation, manderConfinedModelText);
+          UpdateFailureStrainInput(3, unitStrainAbbreviation, manderConfinedModelText);
           break;
         case AdSecStressStrainCurveGoo.StressStrainCurveType.Mander:
-          UpdatePeakPointInput(0, ManderModelText);
-          UpdateInitialModusInput(1, unitStressAbbreviation, ManderModelText);
-          UpdateFailureStrainInput(2, unitStrainAbbreviation, ManderModelText);
+          UpdatePeakPointInput(0, manderModelText);
+          UpdateInitialModusInput(1, unitStressAbbreviation, manderModelText);
+          UpdateFailureStrainInput(2, unitStrainAbbreviation, manderModelText);
           break;
         case AdSecStressStrainCurveGoo.StressStrainCurveType.ParabolaRectangle:
-          UpdatePointInput(0, YieldPointText, "SPy");
-          UpdateFailureStrainInput(1, unitStrainAbbreviation, FibModelCodeText);
+          UpdatePointInput(0, yieldPointText, "SPy");
+          UpdateFailureStrainInput(1, unitStrainAbbreviation, fibModelCodeText);
           break;
         case AdSecStressStrainCurveGoo.StressStrainCurveType.Park:
-          UpdatePointInput(0, YieldPointText, "SPy");
+          UpdatePointInput(0, yieldPointText, "SPy");
           break;
         case AdSecStressStrainCurveGoo.StressStrainCurveType.Popovics:
-          Params.Input[0].UpdateItemInput("Peak Point", "SPt", $"{RepresentingText}Peak Point");
+          Params.Input[0].UpdateItemInput("Peak Point", "SPt", $"{_representingText}Peak Point");
           Params.Input[1].UpdateItemInput($"Failure Strain [{unitStrainAbbreviation}]", "εu",
             "Failure strain from Popovic model");
           break;
         case AdSecStressStrainCurveGoo.StressStrainCurveType.Rectangular:
-          UpdatePointInput(0, YieldPointText, "SPy");
+          UpdatePointInput(0, yieldPointText, "SPy");
           Params.Input[1].UpdateItemInput($"Failure Strain [{unitStrainAbbreviation}]", "εu", "Failure strain");
           break;
       }
     }
 
     private void UpdatePointInput(int index, string name, string nickname) {
-      Params.Input[index].UpdateItemInput(name, nickname, $"{RepresentingText}{name}");
+      Params.Input[index].UpdateItemInput(name, nickname, $"{_representingText}{name}");
     }
 
     private void UpdatePeakPointInput(int index, string model) {
-      Params.Input[index].UpdateItemInput("Peak Point", "SPt", $"{RepresentingText}{model}'s Peak Point");
+      Params.Input[index].UpdateItemInput("Peak Point", "SPt", $"{_representingText}{model}'s Peak Point");
     }
 
     private void UpdateInitialModusInput(int index, string unit, string modelText) {
@@ -204,7 +204,7 @@ namespace AdSecGH.Components {
     }
 
     protected override string HtmlHelp_Source() {
-      return helpLink;
+      return _helpLink;
     }
 
     protected override void InitialiseDropdowns() {

@@ -30,9 +30,9 @@ namespace AdSecGH.Components {
   ///   Component to create a new Stress Strain Point
   /// </summary>
   public class CreatePreLoad : GH_OasysDropDownComponent {
-    private const string SelectedForceUnit = "Force";
-    private const string SelectedStrainUnit = "Strain";
-    private const string SelectedStressUnit = "Stress";
+    private const string _selectedForceUnit = "Force";
+    private const string _selectedStrainUnit = "Strain";
+    private const string _selectedStressUnit = "Stress";
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("cbab2b12-2a01-4f05-ba24-2c79827c7415");
@@ -60,32 +60,32 @@ namespace AdSecGH.Components {
       _selectedItems[i] = _dropDownItems[i][j];
       if (i == 0) {
         switch (_selectedItems[0]) {
-          case SelectedForceUnit:
+          case _selectedForceUnit:
             _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
             _selectedItems[0] = _forceUnit.ToString();
             break;
 
-          case SelectedStrainUnit:
+          case _selectedStrainUnit:
             _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
             _selectedItems[0] = _strainUnit.ToString();
             break;
 
-          case SelectedStressUnit:
+          case _selectedStressUnit:
             _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
             _selectedItems[0] = _stressUnit.ToString();
             break;
         }
       } else {
         switch (_selectedItems[0]) {
-          case SelectedForceUnit:
+          case _selectedForceUnit:
             _forceUnit = (ForceUnit)Enum.Parse(typeof(ForceUnit), _selectedItems[i]);
             break;
 
-          case SelectedStrainUnit:
+          case _selectedStrainUnit:
             _strainUnit = (StrainUnit)Enum.Parse(typeof(StrainUnit), _selectedItems[i]);
             break;
 
-          case SelectedStressUnit:
+          case _selectedStressUnit:
             _stressUnit = (PressureUnit)Enum.Parse(typeof(PressureUnit), _selectedItems[i]);
             break;
         }
@@ -100,18 +100,18 @@ namespace AdSecGH.Components {
       string stressUnitAbbreviation = Pressure.GetAbbreviation(_stressUnit);
 
       switch (_selectedItems[0]) {
-        case SelectedForceUnit:
-          Params.Input[1].Name = $"{SelectedForceUnit} [{forceUnitAbbreviation}]";
+        case _selectedForceUnit:
+          Params.Input[1].Name = $"{_selectedForceUnit} [{forceUnitAbbreviation}]";
           Params.Input[1].NickName = "P";
           break;
 
-        case SelectedStrainUnit:
-          Params.Input[1].Name = $"{SelectedStrainUnit} [{strainUnitAbbreviation}]";
+        case _selectedStrainUnit:
+          Params.Input[1].Name = $"{_selectedStrainUnit} [{strainUnitAbbreviation}]";
           Params.Input[1].NickName = "ε";
           break;
 
-        case SelectedStressUnit:
-          Params.Input[1].Name = $"{SelectedStressUnit} [{stressUnitAbbreviation}]";
+        case _selectedStressUnit:
+          Params.Input[1].Name = $"{_selectedStressUnit} [{stressUnitAbbreviation}]";
           Params.Input[1].NickName = "σ";
           break;
       }
@@ -126,9 +126,9 @@ namespace AdSecGH.Components {
 
     protected override void InitialiseDropdowns() {
       _spacerDescriptions = new List<string> {
-        SelectedForceUnit,
-        SelectedStrainUnit,
-        SelectedStressUnit,
+        _selectedForceUnit,
+        _selectedStrainUnit,
+        _selectedStressUnit,
       };
 
       _dropDownItems = new List<List<string>>();
@@ -163,15 +163,15 @@ namespace AdSecGH.Components {
       IPreload load = null;
       // Create new load
       switch (_selectedItems[0]) {
-        case SelectedForceUnit:
+        case _selectedForceUnit:
           load = IPreForce.Create((Force)Input.UnitNumber(this, DA, 1, _forceUnit));
           break;
 
-        case SelectedStrainUnit:
+        case _selectedStrainUnit:
           load = IPreStrain.Create((Strain)Input.UnitNumber(this, DA, 1, _strainUnit));
           break;
 
-        case SelectedStressUnit:
+        case _selectedStressUnit:
           load = IPreStress.Create((Pressure)Input.UnitNumber(this, DA, 1, _stressUnit));
           break;
       }

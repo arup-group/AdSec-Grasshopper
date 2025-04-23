@@ -17,8 +17,8 @@ using OasysGH.Components;
 
 namespace AdSecGH.Components {
   public class CreateDesignCode : GH_OasysDropDownComponent {
-    private const string ExcludeKey = "National";
-    private const string DesignCodeNamespaceToReflect = "Oasys.AdSec.DesignCode";
+    private const string _excludeKey = "National";
+    private const string _designCodeNamespaceToReflect = "Oasys.AdSec.DesignCode";
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("bbad3d3b-f585-474b-8cc6-76fd375819de");
@@ -30,7 +30,7 @@ namespace AdSecGH.Components {
       { "Part", "Part" },
       { "Metric", "Unit" },
       { "US", "Unit" },
-      { ExcludeKey, "National Annex" },
+      { _excludeKey, "National Annex" },
     };
     private Dictionary<string, FieldInfo> _designCodes;
 
@@ -56,7 +56,7 @@ namespace AdSecGH.Components {
         }
 
         // get list of standard codes for the selected material
-        var designCodeKVP = ReflectionHelper.ReflectAdSecNamespace(DesignCodeNamespaceToReflect);
+        var designCodeKVP = ReflectionHelper.ReflectAdSecNamespace(_designCodeNamespaceToReflect);
 
         // create string for selected item to use for type search while drilling
         int level = 0;
@@ -100,7 +100,7 @@ namespace AdSecGH.Components {
             // stop drilling
             drill = false;
 
-            _spacerDescriptions[_selectedItems.Count - 1] = GetDescription(typeString, ExcludeKey);
+            _spacerDescriptions[_selectedItems.Count - 1] = GetDescription(typeString, _excludeKey);
           }
         }
       }
@@ -122,7 +122,7 @@ namespace AdSecGH.Components {
       _dropDownItems = new List<List<string>>();
       _selectedItems = new List<string>();
 
-      var designCodeGroups = ReflectionHelper.ReflectAdSecNamespace(DesignCodeNamespaceToReflect).Keys.ToList();
+      var designCodeGroups = ReflectionHelper.ReflectAdSecNamespace(_designCodeNamespaceToReflect).Keys.ToList();
 
       var tempList = designCodeGroups.Where(dc => !dc.StartsWith("IDesignCode")).ToList();
       designCodeGroups = tempList;
@@ -131,7 +131,7 @@ namespace AdSecGH.Components {
       _dropDownItems.Add(designCodeGroups);
 
       if (_dropDownItems.Count == 1) {
-        var designCodeKVP = ReflectionHelper.ReflectAdSecNamespace(DesignCodeNamespaceToReflect);
+        var designCodeKVP = ReflectionHelper.ReflectAdSecNamespace(_designCodeNamespaceToReflect);
 
         // create string for selected item to use for type search while drilling
         string typeString = _selectedItems[_selectedItems.Count - 1];
@@ -189,7 +189,7 @@ namespace AdSecGH.Components {
 
     protected override void UpdateUIFromSelectedItems() {
       // get list of standard codes for the selected material
-      var designCodeKVP = ReflectionHelper.ReflectAdSecNamespace(DesignCodeNamespaceToReflect);
+      var designCodeKVP = ReflectionHelper.ReflectAdSecNamespace(_designCodeNamespaceToReflect);
 
       // create string for selected item to use for type search while drilling
       int level = 0;
@@ -217,7 +217,7 @@ namespace AdSecGH.Components {
           // stop drilling
           drill = false;
 
-          _spacerDescriptions[_selectedItems.Count - 1] = GetDescription(typeString, ExcludeKey);
+          _spacerDescriptions[_selectedItems.Count - 1] = GetDescription(typeString, _excludeKey);
         }
       }
 
