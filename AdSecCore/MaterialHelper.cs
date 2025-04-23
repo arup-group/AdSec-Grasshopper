@@ -12,7 +12,7 @@ namespace AdSecGHCore {
 
   public static class MaterialHelper {
 
-    private static Dictionary<string, object> Materials = new Dictionary<string, object>();
+    private static Dictionary<string, object> Materials = new();
     private static readonly Type[] materialTypes = {
       typeof(IReinforcement), typeof(IConcrete),typeof(IDesignCode),
       typeof(ISteel), typeof(Reinforcement.Tendon)
