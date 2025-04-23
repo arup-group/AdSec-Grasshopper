@@ -4,8 +4,11 @@ using AdSecGH;
 using AdSecGH.Components;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
+
+using Oasys.GH.Helpers;
 
 using Xunit;
 
@@ -167,6 +170,16 @@ namespace AdSecGHTests.Components.Properties {
     public void ShouldReturnNullForMissingValues(int materialType, int expectedSize) {
       var designCodes = ReflectionHelper.StandardCodes((AdSecMaterial.AdSecMaterialType)materialType);
       Assert.Equal(expectedSize, designCodes.Count);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(_component.MatchesExpectedIcon(Resources.StandardMaterial));
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
     }
   }
 }
