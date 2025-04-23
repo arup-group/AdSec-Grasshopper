@@ -174,7 +174,7 @@ namespace AdSecGH.Helpers {
       var jsonStrings = new List<string>();
 
       if (sections[0].DesignCode == null) {
-        throw new ArgumentException("Section design code is null");
+        throw new ArgumentException("AdSec design code is null");
       }
 
       var json = new JsonConverter(sections[0].DesignCode);
