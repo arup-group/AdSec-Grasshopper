@@ -224,7 +224,7 @@ namespace AdSecGHTests.Components.AdSec {
     }
 
     [Fact]
-    public void ModelCanNotBeSavedIfRebarAndConcreteMaterialAreNotConsistent() {
+    public void ModelJsonThrowExceptionWhenRebarAndConcreteMaterialAreNotConsistent() {
       var concreteMaterial = Concrete.AS3600.Edition_2018.MPA40;
       var rebarMaterial = Reinforcement.Steel.IS456.Edition_2000.S415;
       var designCode = AS3600.Edition_2018;
@@ -235,7 +235,7 @@ namespace AdSecGHTests.Components.AdSec {
     }
 
     [Fact]
-    public void SavingToJsonShouldThrowExceptionIfDesignCodeIsNotassigned() {
+    public void ModelJsonThrowExceptionIfDesignCodeIsNotassigned() {
       var concreteMaterial = Concrete.AS3600.Edition_2018.MPA40;
       var rebarMaterial = Reinforcement.Steel.IS456.Edition_2000.S415;
       var loads = new Dictionary<int, List<object>>();

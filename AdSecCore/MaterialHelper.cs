@@ -75,7 +75,7 @@ namespace AdSecGHCore {
       }
 
       // Build code name
- return string.Join("+", path.Split('.'));
+      return string.Join("+", path.Split('.'));
 
       return builder.ToString();
     }
