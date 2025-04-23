@@ -1,6 +1,11 @@
-﻿using AdSecGH.Components;
+﻿using System.Reflection;
+
+using AdSecGH;
+using AdSecGH.Components;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
+
+using AdSecGHTests.Helpers;
 
 using Xunit;
 
@@ -10,6 +15,9 @@ namespace AdSecGHTests.Components.Properties {
     private readonly CreateStandardMaterial _component;
 
     public CreateStandardMaterialTests() {
+      if (AddReferencePriority.AdSecAPI == null) {
+        AddReferencePriority.AdSecAPI = Assembly.Load("AdSec_API.dll");
+      }
       _component = new CreateStandardMaterial();
     }
 
@@ -20,8 +28,20 @@ namespace AdSecGHTests.Components.Properties {
       _component.SetSelected(0, 1);
     }
 
+    private void SetSteel() {
+      _component.SetSelected(0, 3);
+    }
+
     private void SetEuropeanCode() {
       _component.SetSelected(1, 4);
+    }
+
+    private void SetEuropeanSteelCode() {
+      _component.SetSelected(1, 1);
+    }
+
+    private void SetBritishSteelCode() {
+      _component.SetSelected(1, 0);
     }
 
     private void SetNationalAnnex(int nationalAnnex) {
@@ -75,6 +95,30 @@ namespace AdSecGHTests.Components.Properties {
       Assert.Equal(15, concreteGrades.Count);
     }
 
+    [Fact]
+    public void SearchIsGivingExpectedResultForSpecificKey() {
+      SetConcrete();
+      ComponentTestHelper.SetInput(_component, "C32");
+      var material = (AdSecMaterialGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal("C32_40", material.Material.GradeName);
+    }
+
+    [Fact]
+    public void SearchIsGivingExpectedResultForAll() {
+      SetConcrete();
+      ComponentTestHelper.SetInput(_component, "all");
+      var material = (AdSecMaterialGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal("C12_15", material.Material.GradeName);
+    }
+
+    [Fact]
+    public void SearchIsGivingExpectedResultForMatchingCharacter() {
+      SetRebar();
+      ComponentTestHelper.SetInput(_component, "sb");
+      var material = (AdSecMaterialGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal("S500B", material.Material.GradeName);
+    }
+
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
@@ -96,6 +140,22 @@ namespace AdSecGHTests.Components.Properties {
       SetNationalAnnex(nationalAnnex);
       var rebarGrades = _component.DropDownItems[_component.DropDownItems.Count - 1];
       Assert.Equal(3, rebarGrades.Count);
+    }
+
+    [Fact]
+    public void EN1992SteelMaterialsAreExpected() {
+      SetSteel();
+      SetEuropeanSteelCode();
+      var steelGrades = _component.DropDownItems[_component.DropDownItems.Count - 1];
+      Assert.Equal(4, steelGrades.Count);
+    }
+
+    [Fact]
+    public void BritishSteelMaterialsAreExpected() {
+      SetSteel();
+      SetBritishSteelCode();
+      var steelGrades = _component.DropDownItems[_component.DropDownItems.Count - 1];
+      Assert.Equal(5, steelGrades.Count);
     }
 
     [Theory]
