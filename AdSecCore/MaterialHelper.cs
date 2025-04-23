@@ -70,9 +70,7 @@ namespace AdSecGHCore {
 
       // Remove prefix
       const string prefix = "Oasys.AdSec.DesignCode.";
-      if (path.StartsWith(prefix)) {
-        path = path.Substring(prefix.Length);
-      }
+      path = path.StartsWith(prefix) ? path.Replace(prefix, string.Empty) : path;
 
       // Build code name
       return string.Join("+", path.Split('.'));
