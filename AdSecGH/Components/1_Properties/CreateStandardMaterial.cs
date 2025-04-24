@@ -156,11 +156,8 @@ namespace AdSecGH.Components {
       }
     }
 
-    private static string GetInitialCodeSelection(IEnumerable<string> codes, string prevSelectedCode) {
-      if (prevSelectedCode.StartsWith(_euroCodeText)) {
-        return codes.FirstOrDefault(code => code.StartsWith(_euroCodeText)) ?? codes.First();
-      }
-      return codes.Contains(prevSelectedCode) ? prevSelectedCode : codes.First();
+    public static string GetInitialCodeSelection(IEnumerable<string> codes, string prevSelectedCode) {
+      return codes.FirstOrDefault(code => code.StartsWith(prevSelectedCode)) ?? codes.First();
     }
 
     public override void VariableParameterMaintenance() {
@@ -318,7 +315,7 @@ namespace AdSecGH.Components {
       DA.SetData(0, new AdSecMaterialGoo(updatedDesignMaterial));
     }
 
-    private static DesignCode GetDesignCode(AdSecMaterial material) {
+    public static DesignCode GetDesignCode(AdSecMaterial material) {
       var designCode = new DesignCode();
       if (material.DesignCode.DesignCode != null) {
         designCode.IDesignCode = material.DesignCode.DesignCode;
