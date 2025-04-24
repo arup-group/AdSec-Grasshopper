@@ -69,7 +69,7 @@ namespace AdSecGH.Helpers {
         case AdSecMaterial.AdSecMaterialType.Tendon: return ReflectNestedTypes(typeof(Reinforcement.Tendon));
       }
 
-      return null;
+      return new Dictionary<string, Type>();
     }
   }
 }
