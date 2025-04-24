@@ -21,7 +21,7 @@ namespace AdSecCoreTests {
     public FlattenRebarTests() {
       ContextUnits.Instance.SetDefaultUnits();
       operation = new FlattenRebarFunction();
-      singleBars = new BuilderSingleBar().WithSize(rebarSize).CreateSingleBar().AtPosition(Geometry.Zero()).Build();
+      singleBars = new BuilderSingleBar().WithSize(rebarSize).AtPosition(Geometry.Zero()).Build();
       var section = new SectionBuilder().WithWidth(SectionSize).CreateSquareSection().WithReinforcementGroup(singleBars)
        .Build();
       operation.Section.Value = new SectionDesign {

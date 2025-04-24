@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 
 using AdSecCore;
 using AdSecCore.Builders;
 
+using AdSecGH;
 using AdSecGH.Components;
 using AdSecGH.Parameters;
 
@@ -10,6 +12,7 @@ using Grasshopper.Kernel;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.GH.Helpers;
 
@@ -23,19 +26,23 @@ namespace AdSecGHTests.Helpers {
 
     private AdSecUtility() { }
 
-    public static ISection CreateSTDRectangularSection() {
-      var topRight = new BuilderSingleBar().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(13, 28)).Build();
-      var BottomRight = new BuilderSingleBar().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(13, -28))
+    public static ISection CreateSTDRectangularSection(IConcrete concreteMaterial = null, IReinforcement rebarMaterial = null) {
+      var topRight = new BuilderSingleBar().WithMaterial(rebarMaterial).WithSize(2).AtPosition(Geometry.Position(13, 28)).Build();
+      var BottomRight = new BuilderSingleBar().WithMaterial(rebarMaterial).WithSize(2).AtPosition(Geometry.Position(13, -28))
        .Build();
-      var topLeft = new BuilderSingleBar().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(-13, 28)).Build();
-      var BottomLeft = new BuilderSingleBar().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(-13, -28))
+      var topLeft = new BuilderSingleBar().WithMaterial(rebarMaterial).WithSize(2).AtPosition(Geometry.Position(-13, 28)).Build();
+      var BottomLeft = new BuilderSingleBar().WithMaterial(rebarMaterial).WithSize(2).AtPosition(Geometry.Position(-13, -28))
        .Build();
-      return new SectionBuilder().WithWidth(30).WithHeight(60).CreateRectangularSection()
+      return new SectionBuilder().WithMaterial(concreteMaterial).WithWidth(30).WithHeight(60).CreateRectangularSection()
        .WithReinforcementGroups(new List<IGroup> { topRight, BottomRight, topLeft, BottomLeft, }).Build();
     }
 
     public static AdSecSection SectionObject() {
       return new AdSecSection(CreateSTDRectangularSection(), designCode, "", "", Plane.WorldXY);
+    }
+
+    public static AdSecSection SectionObject(IDesignCode code, IConcrete concreteMaterial, IReinforcement rebarMaterial) {
+      return new AdSecSection(CreateSTDRectangularSection(), code, "", "", Plane.WorldXY);
     }
 
     public static GH_Component AnalyzeComponent() {
@@ -53,6 +60,12 @@ namespace AdSecGHTests.Helpers {
       return comparer.Equals(expected.Min.X, actual.Min.X) && comparer.Equals(expected.Min.Y, actual.Min.Y)
         && comparer.Equals(expected.Max.X, actual.Max.X) && comparer.Equals(expected.Max.X, actual.Max.X);
     }
+
+    public static void LoadAdSecAPI() {
+      if (AddReferencePriority.AdSecAPI == null) {
+        AddReferencePriority.AdSecAPI = Assembly.Load("AdSec_API.dll");
+      }
+    }
   }
 
   [Collection("GrasshopperFixture collection")]
@@ -63,6 +76,12 @@ namespace AdSecGHTests.Helpers {
       string expectedProfileDescription = "STD R(m) 0.6 0.3";
       string actualProfileDescription = section.Profile.Description();
       Assert.Equal(expectedProfileDescription, actualProfileDescription);
+    }
+
+    [Fact]
+    public void LoadAdSecAPITest() {
+      AdSecUtility.LoadAdSecAPI();
+      Assert.NotNull(AddReferencePriority.AdSecAPI);
     }
   }
 }

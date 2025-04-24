@@ -27,9 +27,9 @@ namespace AdSecCore.Builders {
     }
 
     private static ISection CreateRectangularSection() {
-      var BottomRight = new BuilderSingleBar().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(13, -28))
+      var BottomRight = new BuilderSingleBar().WithSize(2).AtPosition(Geometry.Position(13, -28))
        .Build();
-      var BottomLeft = new BuilderSingleBar().WithSize(2).CreateSingleBar().AtPosition(Geometry.Position(-13, -28))
+      var BottomLeft = new BuilderSingleBar().WithSize(2).AtPosition(Geometry.Position(-13, -28))
        .Build();
       return new SectionBuilder().WithWidth(30).WithHeight(60).CreateRectangularSection()
        .WithReinforcementGroups(new List<IGroup> { BottomLeft, BottomRight, }).Build();
