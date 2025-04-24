@@ -14,24 +14,15 @@ namespace AdSecCore.Builders {
     private readonly IReinforcement defaultMaterial = Reinforcement.Steel.IS456.Edition_2000.S415;
     private readonly List<IPoint> positions = new List<IPoint>();
     private IReinforcement material;
-    private ISingleBars group;
-    private GroupType groupType;
     private double rebarDiameter = 2;
 
     public ISingleBars Build() {
       var barBundle = IBarBundle.Create(material ?? defaultMaterial, Length.FromCentimeters(rebarDiameter), 1);
-      switch (groupType) {
-        case GroupType.SingleBar:
-          var singleBars = ISingleBars.Create(barBundle);
-          foreach (var position in positions) {
-            singleBars.Positions.Add(position);
-          }
-
-          group = singleBars;
-          break;
+      var singleBars = ISingleBars.Create(barBundle);
+      foreach (var position in positions) {
+        singleBars.Positions.Add(position);
       }
-
-      return group;
+      return singleBars;
     }
 
     public BuilderSingleBar AtPosition(IPoint position) {
@@ -47,15 +38,6 @@ namespace AdSecCore.Builders {
     public BuilderSingleBar WithMaterial(IReinforcement rebarMaterial) {
       material = rebarMaterial;
       return this;
-    }
-
-    public BuilderSingleBar CreateSingleBar() {
-      groupType = GroupType.SingleBar;
-      return this;
-    }
-
-    internal enum GroupType {
-      SingleBar,
     }
   }
 }

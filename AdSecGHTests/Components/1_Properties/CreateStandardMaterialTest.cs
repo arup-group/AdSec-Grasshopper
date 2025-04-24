@@ -18,10 +18,8 @@ namespace AdSecGHTests.Components.Properties {
     private readonly CreateStandardMaterial _component;
 
     public CreateStandardMaterialTests() {
-      if (AddReferencePriority.AdSecAPI == null) {
-        AddReferencePriority.AdSecAPI = Assembly.Load("AdSec_API.dll");
-      }
       _component = new CreateStandardMaterial();
+      AdSecUtility.LoadAdSecAPI();
     }
 
     private void SetConcrete() {

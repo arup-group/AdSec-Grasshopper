@@ -46,7 +46,7 @@ namespace AdSecCoreTests.Functions {
       function.Profile.Value = new ProfileDesign() {
         Profile = SectionBuilder.SimplePerimeterProfile(20, 20)
       };
-      var singleBars = new BuilderSingleBar().AtPosition(Geometry.Zero()).WithSize(2).CreateSingleBar()
+      var singleBars = new BuilderSingleBar().AtPosition(Geometry.Zero()).WithSize(2)
        .AtPosition(Geometry.Zero()).Build();
       var rebarOriginal = new List<AdSecRebarGroup> {
         new() {
