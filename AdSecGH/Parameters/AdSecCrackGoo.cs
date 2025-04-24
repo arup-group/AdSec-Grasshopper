@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
+using AdSecCore;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
@@ -20,24 +21,12 @@ namespace AdSecGH.Parameters {
     public static string Description => "AdSec Crack Parameter";
     public static string Name => "Crack";
     public static string NickName => "Cr";
-    public override BoundingBox Boundingbox {
-      get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
-
-        if (line == null) {
-          return BoundingBox.Empty;
-        }
-
-        var crv = new LineCurve(line);
-        return crv.GetBoundingBox(false);
-      }
-    }
+    public override BoundingBox Boundingbox
+      => IsValidCrack() ? new LineCurve(_line).GetBoundingBox(false) : BoundingBox.Empty;
     public override BoundingBox ClippingBox => Boundingbox;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    private readonly Line line;
-    private Point3d point;
+    private readonly Line _line;
+    private Point3d _point;
 
     public AdSecCrackGoo(CrackLoad crackLoad) : base(crackLoad) {
       var plane = Value.Plane.ToGh();
@@ -47,7 +36,7 @@ namespace AdSecGH.Parameters {
       // remap to local coordinate system
       var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
       point3d.Transform(mapFromLocal);
-      point = point3d;
+      _point = point3d;
 
       // move starting point of line by half the width
       var halfCrack = new Vector3d(plane.ZAxis);
@@ -58,7 +47,7 @@ namespace AdSecGH.Parameters {
           halfCrack.Z * m_value.Load.Width.Value / 2);
 
       var move = Rhino.Geometry.Transform.Translation(halfCrack);
-      var crackStart = new Point3d(this.point);
+      var crackStart = new Point3d(_point);
       crackStart.Transform(move);
 
       // create line in opposite direction from move point
@@ -69,12 +58,9 @@ namespace AdSecGH.Parameters {
           crackWidth.Y * m_value.Load.Width.Value * -1,
           crackWidth.Z * m_value.Load.Width.Value * -1);
 
-      line = new Line(crackStart, crackWidth);
+      _line = new Line(crackStart, crackWidth);
     }
     public override bool CastFrom(object source) {
-      if (source == null) {
-        return false;
-      }
       return false;
     }
 
@@ -85,32 +71,32 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(Point3d))) {
-        target = (Q)(object)point;
+        target = (Q)(object)_point;
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Point))) {
-        target = (Q)(object)new GH_Point(point);
+        target = (Q)(object)new GH_Point(_point);
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(Vector3d))) {
-        target = (Q)(object)new Vector3d(Value.Load.Width.Value, point.Y, point.Z);
+        target = (Q)(object)new Vector3d(Value.Load.Width.Value, _point.Y, _point.Z);
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Vector))) {
-        target = (Q)(object)new GH_Vector(new Vector3d(Value.Load.Width.Value, point.Y, point.Z));
+        target = (Q)(object)new GH_Vector(new Vector3d(Value.Load.Width.Value, _point.Y, _point.Z));
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(Line))) {
-        target = (Q)(object)line;
+        target = (Q)(object)_line;
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Line))) {
-        target = (Q)(object)new GH_Line(line);
+        target = (Q)(object)new GH_Line(_line);
         return true;
       }
 
@@ -132,38 +118,33 @@ namespace AdSecGH.Parameters {
     }
 
     public override void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (!point.IsValid) {
+      if (!IsValidCrack()) {
         return;
       }
 
       var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
+      if (args.Color.IsRgbEqualTo(defaultColor)) {
         // not selected
-        args.Pipeline.DrawLine(line, Colour.OasysBlue, 5);
+        args.Pipeline.DrawLine(_line, Colour.OasysBlue, 5);
       } else {
-        args.Pipeline.DrawLine(line, Colour.OasysYellow, 7);
+        args.Pipeline.DrawLine(_line, Colour.OasysYellow, 7);
       }
     }
 
     public override IGH_GeometricGoo Duplicate() {
-      return new AdSecCrackGoo(Value);
+      return IsValidCrack() ? new AdSecCrackGoo(Value) : null;
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      var dup = new AdSecCrackGoo(Value);
-      return dup;
+      return IsValid ? new AdSecCrackGoo(Value) : null;
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null) {
+      if (!IsValidCrack()) {
         return BoundingBox.Empty;
       }
 
-      if (point == null) {
-        return BoundingBox.Empty;
-      }
-
-      var crv = new LineCurve(line);
+      var crv = new LineCurve(_line);
       return crv.GetBoundingBox(xform);
     }
 
@@ -182,6 +163,10 @@ namespace AdSecGH.Parameters {
 
     public override IGH_GeometricGoo Transform(Transform xform) {
       return null;
+    }
+
+    public bool IsValidCrack() {
+      return Value != null && _line.IsValid;
     }
   }
 }
