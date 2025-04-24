@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
+using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.StandardMaterials;
 
@@ -12,7 +14,7 @@ namespace AdSecGHCore {
 
     private static Dictionary<string, object> Materials = new Dictionary<string, object>();
     private static readonly Type[] materialTypes = {
-      typeof(IReinforcement), typeof(IConcrete),
+      typeof(IReinforcement), typeof(IConcrete),typeof(IDesignCode),
       typeof(ISteel), typeof(Reinforcement.Tendon)
     };
 
@@ -53,6 +55,35 @@ namespace AdSecGHCore {
         }
 
         dictionary.Add($"{type.FullName}.{field.Name}", value);
+      }
+    }
+
+    public static string DesignCodeName(IDesignCode code) {
+      if (code == null) {
+        return string.Empty;
+      }
+
+      string path = FindPath(code);
+      if (string.IsNullOrEmpty(path)) {
+        return string.Empty;
+      }
+
+      // Remove prefix
+      const string prefix = "Oasys.AdSec.DesignCode.";
+      path = path.StartsWith(prefix) ? path.Replace(prefix, string.Empty) : path;
+
+      // Build code name
+      return string.Join("+", path.Split('.'));
+
+    }
+
+    // Add this helper method to the class
+    public static string ReplaceWithTimeout(string input, string pattern, string replacement, int timeoutMs = 1000) {
+      try {
+        var regex = new Regex(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(timeoutMs));
+        return regex.Replace(input, replacement);
+      } catch (RegexMatchTimeoutException) {
+        throw new RegexMatchTimeoutException($"Regex operation timed out after {timeoutMs}ms");
       }
     }
   }
