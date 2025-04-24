@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 using AdSecGH;
 using AdSecGH.Components;
@@ -8,6 +10,7 @@ using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
+using Oasys.AdSec.DesignCode;
 using Oasys.GH.Helpers;
 
 using Xunit;
@@ -16,7 +19,7 @@ namespace AdSecGHTests.Components.Properties {
   [Collection("GrasshopperFixture collection")]
   public class CreateStandardMaterialTests {
     private readonly CreateStandardMaterial _component;
-
+    private readonly List<string> StandardDesignCodes = new List<string> { "IS456", "ACI318", "EN1992" };
     public CreateStandardMaterialTests() {
       _component = new CreateStandardMaterial();
       AdSecUtility.LoadAdSecAPI();
@@ -179,5 +182,28 @@ namespace AdSecGHTests.Components.Properties {
     public void ShouldHavePluginInfoReferenced() {
       Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
     }
+
+    [Fact]
+    public void GetDesignCodeIsReportingCorrectGrade() {
+      var designCode = new AdSecDesignCode() { DesignCode = IS456.Edition_2000 };
+      var material = new AdSecMaterial() { DesignCode = designCode };
+      var standardMaterial = CreateStandardMaterial.GetDesignCode(material);
+      Assert.NotNull(standardMaterial.IDesignCode);
+      Assert.Equal("IS456+Edition_2000", standardMaterial.DesignCodeName);
+    }
+
+    [Fact]
+    public void GetInitialCodeSelectionIsPreviousOneWhenThereIsNoMatchForPreviousSelction() {
+      var selectedCode = CreateStandardMaterial.GetInitialCodeSelection(StandardDesignCodes.Where(x => x != "EN1992"), "EN1992");
+      Assert.Equal("IS456", selectedCode);
+    }
+
+    [Fact]
+    public void GetInitialCodeSelectionIsPreviousOneWhenThereIsMatchForPreviousSelction() {
+      var selectedCode = CreateStandardMaterial.GetInitialCodeSelection(StandardDesignCodes, "EN1992");
+      Assert.Equal("EN1992", selectedCode);
+    }
+
+
   }
 }
