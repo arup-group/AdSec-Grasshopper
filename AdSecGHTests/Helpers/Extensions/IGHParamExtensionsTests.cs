@@ -76,5 +76,33 @@ namespace AdSecGHTests.Helpers {
       Assert.Single(actualResult);
       Assert.Contains("failed", actualResult[0]);
     }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void UpdateInput_SetsPropertiesCorrectlyForItemAccess(bool optional) {
+      var param = owner.Params.Input[0];
+      param.UpdateItemInput("NewName", "NewNickName", "NewDescription", optional);
+
+      Assert.Equal("NewName", param.Name);
+      Assert.Equal("NewNickName", param.NickName);
+      Assert.Equal("NewDescription", param.Description);
+      Assert.Equal(GH_ParamAccess.item, param.Access);
+      Assert.Equal(optional, param.Optional);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void UpdateInput_SetsPropertiesCorrectlyForListAccess(bool optional) {
+      var param = owner.Params.Input[0];
+      param.UpdateListInput("X", "Y", "Z", optional);
+
+      Assert.Equal("X", param.Name);
+      Assert.Equal("Y", param.NickName);
+      Assert.Equal("Z", param.Description);
+      Assert.Equal(GH_ParamAccess.list, param.Access);
+      Assert.Equal(optional, param.Optional);
+    }
   }
 }
