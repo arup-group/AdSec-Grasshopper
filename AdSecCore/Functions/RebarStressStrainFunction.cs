@@ -80,20 +80,20 @@ namespace AdSecCore.Functions {
       };
     }
 
+    protected override void UpdateOutputNames(string strainUnit, string stressUnit) {
+      UlsStrainOutput.Name = FormatStrainName("ULS", strainUnit);
+      UlsStressOutput.Name = FormatStressName("ULS", stressUnit);
+      SlsStrainOutput.Name = FormatStrainName("SLS", strainUnit);
+      SlsStressOutput.Name = FormatStressName("SLS", stressUnit);
+    }
+
     public override void Compute() {
-      if (!ValidateInputs()) {
+      if (!ValidateLoadInput() || !ValidateSolutionInputs()) {
         return;
       }
 
       ProcessInput();
       ProcessOutput();
-    }
-
-    protected override bool ValidateInputs() {
-      if (!base.ValidateInputs()) {
-        return false;
-      }
-      return true;
     }
 
     private void ProcessOutput() {

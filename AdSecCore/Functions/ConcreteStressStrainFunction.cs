@@ -67,17 +67,31 @@ namespace AdSecCore.Functions {
 
     public override void UpdateOutputParameter() {
       base.UpdateOutputParameter();
-      string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
-      string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
-      UlsStrainOutput.Name = $"ULS Strain [{strainUnitAbbreviation}]";
-      UlsStressOutput.Name = $"ULS Stress [{stressUnitAbbreviation}]";
-      SlsStrainOutput.Name = $"SLS Strain [{strainUnitAbbreviation}]";
-      SlsStressOutput.Name = $"SLS Stress [{stressUnitAbbreviation}]";
+      string strainUnit = GetStrainUnitAbbreviation();
+      string stressUnit = GetStressUnitAbbreviation();
+      UpdateOutputNames(strainUnit, stressUnit);
+    }
+
+    protected virtual void UpdateOutputNames(string strainUnit, string stressUnit) {
+      UlsStrainOutput.Name = FormatStrainName("ULS", strainUnit);
+      UlsStressOutput.Name = FormatStressName("ULS", stressUnit);
+      SlsStrainOutput.Name = FormatStrainName("SLS", strainUnit);
+      SlsStressOutput.Name = FormatStressName("SLS", stressUnit);
+    }
+
+    protected virtual string FormatStrainName(string prefix, string unit) {
+      return $"{prefix} Strain [{unit}]";
+    }
+
+    protected virtual string FormatStressName(string prefix, string unit) {
+      return $"{prefix} Stress [{unit}]";
     }
 
 
     public override void Compute() {
-      if (!ValidateInputs()) {
+      if (!ValidateLoadInput() ||
+        !ValidateSolutionInputs() ||
+        !ValidateVertexInputs()) {
         return;
       }
 
@@ -86,10 +100,7 @@ namespace AdSecCore.Functions {
       ProcessOutput();
     }
 
-    protected override bool ValidateInputs() {
-      if (!base.ValidateInputs()) {
-        return false;
-      }
+    private bool ValidateVertexInputs() {
       if (VertexInput.Value == null) {
         ErrorMessages.Add("Vertex point is null");
         return false;

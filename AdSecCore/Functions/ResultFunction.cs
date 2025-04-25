@@ -164,7 +164,7 @@ namespace AdSecCore.Functions {
       MomentRangesOutput.Description = UncrackedMomentRangesOutput.Description;
     }
 
-    protected virtual bool ValidateInputs() {
+    protected virtual bool ValidateSolutionInputs() {
       if (SolutionInput.Value == null) {
         ErrorMessages.Add("Solution input is null");
         return false;
@@ -173,10 +173,10 @@ namespace AdSecCore.Functions {
         ErrorMessages.Add("Load input is null");
         return false;
       }
-      return IsLoadValid();
+      return true;
     }
 
-    private bool IsLoadValid() {
+    protected virtual bool ValidateLoadInput() {
       switch (LoadInput.Value) {
         case ILoad load:
           if (!LoadExtensions.IsValid(load)) {
