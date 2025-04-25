@@ -1,0 +1,165 @@
+﻿using System.Collections.Generic;
+
+using AdSecGHCore.Constants;
+
+using Oasys.AdSec;
+using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.Profiles;
+
+using OasysUnits;
+
+namespace AdSecCore.Functions {
+  public class RebarStressStrainFunction : ResultFunction {
+    private IServiceabilityResult Sls { get; set; }
+    private IStrengthResult Uls { get; set; }
+    private ISection FlatSection { get; set; }
+
+    public List<IPoint> Points { get; private set; } = new List<IPoint>();
+    public List<Strain> StrainsULS { get; private set; } = new List<Strain>();
+    public List<Pressure> StressesULS { get; private set; } = new List<Pressure>();
+    public List<Strain> StrainsSLS { get; private set; } = new List<Strain>();
+    public List<Pressure> StressesSLS { get; private set; } = new List<Pressure>();
+
+    public PointArrayParameter PointsOutput { get; set; } = new PointArrayParameter {
+      Name = "Position",
+      NickName = "Vx",
+      Description = "Rebar positions as 2D vertices in the section's local yz-plane",
+      Access = Access.List,
+    };
+
+    public StrainArrayParameter UlsStrainOutput { get; set; } = new StrainArrayParameter {
+      Name = "ULS Strain",
+      NickName = "εd",
+      Description = "ULS strain for each rebar position",
+      Access = Access.List,
+    };
+
+    public PressureArrayParameter UlsStressOutput { get; set; } = new PressureArrayParameter {
+      Name = "ULS Stress",
+      NickName = "σd",
+      Description = "ULS stress for each rebar position",
+      Access = Access.List,
+    };
+
+    public StrainArrayParameter SlsStrainOutput { get; set; } = new StrainArrayParameter {
+      Name = "SLS Strain",
+      NickName = "εk",
+      Description = "SLS strain for each rebar position",
+      Access = Access.List,
+    };
+
+    public PressureArrayParameter SlsStressOutput { get; set; } = new PressureArrayParameter {
+      Name = "SLS Stress",
+      NickName = "σk",
+      Description = "SLS stress for each rebar position",
+      Access = Access.List,
+    };
+
+    public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
+      Name = "Rebar Stress/Strain",
+      NickName = "RSS",
+      Description = "Calculate the Rebar Stress/Strains in the Section for a given Load or Deformation.",
+    };
+
+    public override Organisation Organisation { get; set; } = new Organisation {
+      Category = CategoryName.Name(),
+      SubCategory = SubCategoryName.Cat7(),
+    };
+
+    public override Attribute[] GetAllInputAttributes() {
+      return new Attribute[] {
+       SolutionInput,
+       LoadInput,
+      };
+    }
+
+    public override Attribute[] GetAllOutputAttributes() {
+      return new Attribute[] {
+        PointsOutput,
+        UlsStrainOutput,
+        UlsStressOutput,
+        SlsStrainOutput,
+        SlsStressOutput,
+      };
+    }
+
+    public override void UpdateOutputParameter() {
+      base.UpdateOutputParameter();
+      string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
+      string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
+      UlsStrainOutput.Name = $"ULS Strain [{strainUnitAbbreviation}]";
+      UlsStressOutput.Name = $"ULS Stress [{stressUnitAbbreviation}]";
+      SlsStrainOutput.Name = $"SLS Strain [{strainUnitAbbreviation}]";
+      SlsStressOutput.Name = $"SLS Stress [{stressUnitAbbreviation}]";
+    }
+
+    public override void Compute() {
+      if (!ValidateInputs()) {
+        return;
+      }
+
+      ProcessInput();
+      ProcessOutput();
+    }
+
+    protected override bool ValidateInputs() {
+      if (!base.ValidateInputs()) {
+        return false;
+      }
+      return true;
+    }
+
+    private void ProcessInput() {
+      // Get results based on input type
+      switch (LoadInput.Value) {
+        case ILoad load:
+          Uls = SolutionInput.Value.Solution.Strength.Check(load);
+          Sls = SolutionInput.Value.Serviceability.Check(load);
+          break;
+        case IDeformation def:
+          Uls = SolutionInput.Value.Solution.Strength.Check(def);
+          Sls = SolutionInput.Value.Serviceability.Check(def);
+          break;
+      }
+      // Get flattened section
+      FlatSection = SolutionInput.Value.SectionDesign.FlattenSection();
+    }
+
+    private void ProcessOutput() {
+      ClearResults();
+
+      foreach (var rebarGroup in FlatSection.ReinforcementGroups) {
+        if (rebarGroup is ISingleBars singleBars) {
+          foreach (var pos in singleBars.Positions) {
+            Points.Add(pos);
+
+            // Calculate ULS results
+            var strainULS = Uls.Deformation.StrainAt(pos);
+            StrainsULS.Add(strainULS);
+            StressesULS.Add(singleBars.BarBundle.Material.Strength.StressAt(strainULS));
+
+            // Calculate SLS results
+            var strainSLS = Sls.Deformation.StrainAt(pos);
+            StrainsSLS.Add(strainSLS);
+            StressesSLS.Add(singleBars.BarBundle.Material.Serviceability.StressAt(strainSLS));
+          }
+        }
+      }
+
+      // Set output parameters
+      PointsOutput.Value = Points.ToArray();
+      UlsStrainOutput.Value = StrainsULS.ToArray();
+      UlsStressOutput.Value = StressesULS.ToArray();
+      SlsStrainOutput.Value = StrainsSLS.ToArray();
+      SlsStressOutput.Value = StressesSLS.ToArray();
+    }
+
+    private void ClearResults() {
+      Points.Clear();
+      StrainsULS.Clear();
+      StressesULS.Clear();
+      StrainsSLS.Clear();
+      StressesSLS.Clear();
+    }
+  }
+}
