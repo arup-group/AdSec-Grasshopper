@@ -29,11 +29,10 @@ namespace AdSecCore.Functions {
     public List<string> ErrorMessages { get; set; } = new List<string>();
     public List<string> WarningMessages { get; set; } = new List<string>();
     public List<string> RemarkMessages { get; set; } = new List<string>();
-    protected virtual string GetStrainUnitAbbreviation() {
+    public string GetStrainUnitAbbreviation() {
       return Strain.GetAbbreviation(StrainUnitResult);
     }
-
-    protected virtual string GetStressUnitAbbreviation() {
+    public string GetStressUnitAbbreviation() {
       return Pressure.GetAbbreviation(StressUnitResult);
     }
     public abstract FuncAttribute Metadata { get; set; }

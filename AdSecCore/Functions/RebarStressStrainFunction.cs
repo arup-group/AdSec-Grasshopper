@@ -70,16 +70,6 @@ namespace AdSecCore.Functions {
       };
     }
 
-    public override Attribute[] GetAllOutputAttributes() {
-      return new Attribute[] {
-        PointsOutput,
-        UlsStrainOutput,
-        UlsStressOutput,
-        SlsStrainOutput,
-        SlsStressOutput,
-      };
-    }
-
     protected override void UpdateOutputNames(string strainUnit, string stressUnit) {
       UlsStrainOutput.Name = FormatStrainName("ULS", strainUnit);
       UlsStressOutput.Name = FormatStressName("ULS", stressUnit);
