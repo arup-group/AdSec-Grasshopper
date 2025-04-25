@@ -9,11 +9,8 @@ using Oasys.Profiles;
 using OasysUnits;
 
 namespace AdSecCore.Functions {
-  public class RebarStressStrainFunction : ResultFunction {
-    private IServiceabilityResult Sls { get; set; }
-    private IStrengthResult Uls { get; set; }
+  public class RebarStressStrainFunction : ConcreteStressStrainFunction {
     private ISection FlatSection { get; set; }
-
     public List<IPoint> Points { get; private set; } = new List<IPoint>();
     public List<Strain> StrainsULS { get; private set; } = new List<Strain>();
     public List<Pressure> StressesULS { get; private set; } = new List<Pressure>();
@@ -27,28 +24,28 @@ namespace AdSecCore.Functions {
       Access = Access.List,
     };
 
-    public StrainArrayParameter UlsStrainOutput { get; set; } = new StrainArrayParameter {
+    public new StrainArrayParameter UlsStrainOutput { get; set; } = new StrainArrayParameter {
       Name = "ULS Strain",
       NickName = "εd",
       Description = "ULS strain for each rebar position",
       Access = Access.List,
     };
 
-    public PressureArrayParameter UlsStressOutput { get; set; } = new PressureArrayParameter {
+    public new PressureArrayParameter UlsStressOutput { get; set; } = new PressureArrayParameter {
       Name = "ULS Stress",
       NickName = "σd",
       Description = "ULS stress for each rebar position",
       Access = Access.List,
     };
 
-    public StrainArrayParameter SlsStrainOutput { get; set; } = new StrainArrayParameter {
+    public new StrainArrayParameter SlsStrainOutput { get; set; } = new StrainArrayParameter {
       Name = "SLS Strain",
       NickName = "εk",
       Description = "SLS strain for each rebar position",
       Access = Access.List,
     };
 
-    public PressureArrayParameter SlsStressOutput { get; set; } = new PressureArrayParameter {
+    public new PressureArrayParameter SlsStressOutput { get; set; } = new PressureArrayParameter {
       Name = "SLS Stress",
       NickName = "σk",
       Description = "SLS stress for each rebar position",
@@ -83,16 +80,6 @@ namespace AdSecCore.Functions {
       };
     }
 
-    public override void UpdateOutputParameter() {
-      base.UpdateOutputParameter();
-      string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
-      string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
-      UlsStrainOutput.Name = $"ULS Strain [{strainUnitAbbreviation}]";
-      UlsStressOutput.Name = $"ULS Stress [{stressUnitAbbreviation}]";
-      SlsStrainOutput.Name = $"SLS Strain [{strainUnitAbbreviation}]";
-      SlsStressOutput.Name = $"SLS Stress [{stressUnitAbbreviation}]";
-    }
-
     public override void Compute() {
       if (!ValidateInputs()) {
         return;
@@ -109,25 +96,11 @@ namespace AdSecCore.Functions {
       return true;
     }
 
-    private void ProcessInput() {
-      // Get results based on input type
-      switch (LoadInput.Value) {
-        case ILoad load:
-          Uls = SolutionInput.Value.Solution.Strength.Check(load);
-          Sls = SolutionInput.Value.Serviceability.Check(load);
-          break;
-        case IDeformation def:
-          Uls = SolutionInput.Value.Solution.Strength.Check(def);
-          Sls = SolutionInput.Value.Serviceability.Check(def);
-          break;
-      }
-      // Get flattened section
-      FlatSection = SolutionInput.Value.SectionDesign.FlattenSection();
-    }
-
     private void ProcessOutput() {
       ClearResults();
 
+      // Get flattened section
+      FlatSection = SolutionInput.Value.SectionDesign.FlattenSection();
       foreach (var rebarGroup in FlatSection.ReinforcementGroups) {
         if (rebarGroup is ISingleBars singleBars) {
           foreach (var pos in singleBars.Positions) {

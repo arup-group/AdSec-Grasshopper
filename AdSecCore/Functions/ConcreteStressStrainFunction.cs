@@ -6,8 +6,8 @@ using OasysUnits;
 
 namespace AdSecCore.Functions {
   public class ConcreteStressStrainFunction : ResultFunction {
-    private IServiceabilityResult Sls { get; set; }
-    private IStrengthResult Uls { get; set; }
+    protected IServiceabilityResult Sls { get; set; }
+    protected IStrengthResult Uls { get; set; }
 
     public PointParameter VertexInput { get; set; } = new PointParameter {
       Name = "Vertex Point",
@@ -97,7 +97,7 @@ namespace AdSecCore.Functions {
       return true;
     }
 
-    private void ProcessInput() {
+    protected virtual void ProcessInput() {
       switch (LoadInput.Value) {
         case ILoad load:
           Uls = SolutionInput.Value.Solution.Strength.Check(load);
