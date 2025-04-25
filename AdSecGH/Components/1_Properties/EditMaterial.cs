@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 
+using AdSecCore;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
@@ -140,8 +141,10 @@ namespace AdSecGH.Components {
           rebuildCurves = true;
         }
 
+        var comparer = new DoubleComparer();
+
         if (rebuildCurves) {
-          if (ulsTensCrv.StressStrainCurve.FailureStrain.Value == 0) {
+          if (comparer.Equals(ulsTensCrv.StressStrainCurve.FailureStrain.Value, 0)) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
               $"ULS Stress Strain Curve for Tension has zero failure strain.{Environment.NewLine}The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
             IStressStrainCurve crv = ILinearStressStrainCurve.Create(
@@ -152,7 +155,7 @@ namespace AdSecGH.Components {
               AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, tuple.Item2);
           }
 
-          if (ulsCompCrv.StressStrainCurve.FailureStrain.Value == 0) {
+          if (comparer.Equals(ulsCompCrv.StressStrainCurve.FailureStrain.Value, 0)) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
               "ULS Stress Strain Curve for Compression has zero failure strain.");
             return;
@@ -162,13 +165,8 @@ namespace AdSecGH.Components {
           var slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
           switch (editMat.Type) {
             case AdSecMaterial.AdSecMaterialType.Concrete:
-
-              if (concreteCrack == null) {
-                editMat.Material = IConcrete.Create(ulsTC, slsTC);
-              } else {
-                editMat.Material = IConcrete.Create(ulsTC, slsTC, concreteCrack);
-              }
-
+              editMat.Material = concreteCrack == null ? IConcrete.Create(ulsTC, slsTC) :
+                (IMaterial)IConcrete.Create(ulsTC, slsTC, concreteCrack);
               break;
 
             case AdSecMaterial.AdSecMaterialType.FRP:
