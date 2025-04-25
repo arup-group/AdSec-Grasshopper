@@ -1,10 +1,10 @@
-﻿using Grasshopper.Kernel.Types;
+﻿using AdSecCore;
+
+using Grasshopper.Kernel.Types;
 
 using Oasys.Profiles;
 
 using OasysGH.Units;
-
-using OasysUnits;
 
 namespace AdSecGH.Parameters {
   public class AdSecProfileWebGoo : GH_Goo<IWeb> {
@@ -21,13 +21,14 @@ namespace AdSecGH.Parameters {
 
     public override string ToString() {
       string web = "AdSec Web {";
-      if (Value.BottomThickness.Value == Value.TopThickness.Value) {
-        Length thk = Value.BottomThickness.ToUnit(DefaultUnits.LengthUnitGeometry);
-        web += $"Constant {thk}}}";
+      var comparer = new DoubleComparer();
+      if (comparer.Equals(Value.BottomThickness.Value, Value.TopThickness.Value)) {
+        var thickness = Value.BottomThickness.ToUnit(DefaultUnits.LengthUnitGeometry);
+        web += $"Constant {thickness}}}";
       } else {
-        Length thk1 = Value.TopThickness.ToUnit(DefaultUnits.LengthUnitGeometry);
-        Length thk2 = Value.BottomThickness.ToUnit(DefaultUnits.LengthUnitGeometry);
-        web += $"Tapered: Top:{thk1}, Bottom:{thk2}}}";
+        var topThickness = Value.TopThickness.ToUnit(DefaultUnits.LengthUnitGeometry);
+        var bottomThickness = Value.BottomThickness.ToUnit(DefaultUnits.LengthUnitGeometry);
+        web += $"Tapered: Top:{topThickness}, Bottom:{bottomThickness}}}";
       }
       return web;
     }

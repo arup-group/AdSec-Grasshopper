@@ -1,5 +1,7 @@
 ﻿using System;
 
+using AdSecCore;
+
 namespace AdSecGH.Helpers {
   internal class Diagram {
     /// <summary>
@@ -41,7 +43,8 @@ namespace AdSecGH.Helpers {
       /// <param name="x_max">High end of range to be included</param>
       internal GridAxis(float x_min, float x_max) {
         //Check if the max and min are the same
-        if (x_min == x_max) {
+        var comparer = new DoubleComparer();
+        if (comparer.Equals(x_min, x_max)) {
           x_max *= 1.01f;
           x_min /= 1.01f;
         }
