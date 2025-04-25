@@ -132,11 +132,11 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo Duplicate() {
-      return IsValidCrack() ? new AdSecCrackGoo(Value) : null;
+      return DuplicateGeometry();
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return IsValid ? new AdSecCrackGoo(Value) : null;
+      return IsValidCrack() ? new AdSecCrackGoo(Value) : null;
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
