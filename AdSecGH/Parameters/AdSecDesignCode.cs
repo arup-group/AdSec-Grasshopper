@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using AdSecGH.Helpers;
+
 using AdSecGHCore;
 
 using Oasys.AdSec;
@@ -15,14 +17,7 @@ namespace AdSecGH.Parameters {
   public class AdSecDesignCode {
     public IDesignCode DesignCode { get; set; }
     public string DesignCodeName { get; set; }
-    public bool IsValid {
-      get {
-        if (DesignCode == null) {
-          return false;
-        }
-        return true;
-      }
-    }
+    public bool IsValid => DesignCode != null;
 
     public AdSecDesignCode() {
     }
@@ -50,12 +45,7 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecDesignCode Duplicate() {
-      if (this == null) {
-        return null;
-      }
-
-      var dup = (AdSecDesignCode)MemberwiseClone();
-      return dup;
+      return IsValid ? (AdSecDesignCode)MemberwiseClone() : null;
     }
 
     public override string ToString() {
@@ -63,14 +53,12 @@ namespace AdSecGH.Parameters {
     }
 
     private void CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false) {
-      Type codeType = GetDesignCodeType(designCodeReflectedLevels);
-
+      var codeType = GetDesignCodeType(designCodeReflectedLevels);
       GetDesignCode(designCodeReflectedLevels, codeType, fromDesignCode);
 
-      if (DesignCode != null) {
+      if (IsValid) {
         DesignCodeName = MaterialHelper.DesignCodeName(DesignCode);
       }
-
     }
 
     private void GetDesignCode(List<string> designCodeReflectedLevels, Type codeType, bool fromDesignCode) {
@@ -94,7 +82,7 @@ namespace AdSecGH.Parameters {
 
     private static Type GetDesignCodeType(List<string> designCodeReflectedLevels) {
       // Get all DesignCodes in DLL under namespace
-      Dictionary<string, Type> designCodeKVP = Helpers.ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+      Dictionary<string, Type> designCodeKVP = ReflectionHelper.ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
       // Loop through DesignCodes types to find the DesignCode type matching our input list of levels
       Type designCodeType = null;
       for (int i = 0; i < designCodeReflectedLevels.Count - 1; i++) {
@@ -102,15 +90,15 @@ namespace AdSecGH.Parameters {
         if (designCodeType == null) {
           return null;
         }
-        designCodeKVP = Helpers.ReflectionHelper.ReflectNestedTypes(designCodeType);
+        designCodeKVP = ReflectionHelper.ReflectNestedTypes(designCodeType);
       }
-      if (designCodeReflectedLevels.Count == 1) {
-        designCodeKVP.TryGetValue(designCodeReflectedLevels[0], out designCodeType);
-        if (designCodeType == null) {
-          return null;
-        }
+
+      if (designCodeReflectedLevels.Count != 1) {
+        return designCodeType;
       }
-      return designCodeType;
+
+      designCodeKVP.TryGetValue(designCodeReflectedLevels[0], out designCodeType);
+      return designCodeType ?? null;
     }
   }
 }
