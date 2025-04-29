@@ -102,7 +102,7 @@ namespace AdSecGH.Parameters {
 
       args.Pipeline.DrawMeshWires(Value, Colour.UILightGrey, 1);
       // local axis
-      if (!_previewPosXaxis.IsValid) {
+      if (!ArePositionsValid()) {
         return;
       }
 
@@ -118,6 +118,11 @@ namespace AdSecGH.Parameters {
       args.Pipeline.Draw3dText(_negMyy, Color.FromArgb(255, 96, 244, 96));
       args.Pipeline.Draw3dText(_posMzz, Color.FromArgb(255, 96, 96, 234));
       args.Pipeline.Draw3dText(_negMzz, Color.FromArgb(255, 96, 96, 234));
+    }
+
+    private bool ArePositionsValid() {
+      return _previewPosXaxis.IsValid && _previewPosYaxis.IsValid && _previewPosZaxis.IsValid
+        && _previewNegXaxis.IsValid && _previewNegYaxis.IsValid && _previewNegZaxis.IsValid;
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {

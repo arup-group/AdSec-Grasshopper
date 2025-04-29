@@ -1,16 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-using AdSecGH.Helpers;
+using AdSecCore.Builders;
+using AdSecCore.Functions;
+
 using AdSecGH.Parameters;
-
-using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.StandardMaterials;
-using Oasys.Taxonomy.Profiles;
-
-using OasysUnits;
-using OasysUnits.Units;
 
 using Rhino.Geometry;
 
@@ -22,18 +16,11 @@ namespace AdSecGHTests.Parameters {
     Justification = "<Pending>")]
   public class AdSecFailureSurfaceGooTests {
     private readonly AdSecFailureSurfaceGoo _testGoo;
+    private static SectionSolution Solution { get; set; }
 
     public AdSecFailureSurfaceGooTests() {
-      var length = new Length(1, LengthUnit.Meter);
-      var thickness = new Length(0.2, LengthUnit.Meter);
-      var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(thickness, length),
-        new WebConstant(thickness)));
-      var section = ISection.Create(profile, Concrete.ACI318.Edition_2002.Metric.MPa_20);
-      var designCode = new AdSecDesignCode(ACI318.Edition_2002.Metric, "test");
-      var adSecSection = new AdSecSection(section, designCode.DesignCode, "", "", Plane.WorldXY);
-      var adSec = IAdSec.Create(adSecSection.DesignCode);
-      var solution = adSec.Analyse(adSecSection.Section);
-      _testGoo = new AdSecFailureSurfaceGoo(solution.Strength.GetFailureSurface(), Plane.WorldXY);
+      Solution ??= new SolutionBuilder().Build();
+      _testGoo = new AdSecFailureSurfaceGoo(Solution.Strength.GetFailureSurface(), Plane.WorldXY);
     }
 
     [Fact]
