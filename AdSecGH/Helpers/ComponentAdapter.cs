@@ -63,7 +63,7 @@ namespace Oasys.GH.Helpers {
     public void UpdateUnit() {
       if (BusinessComponent is Function function) {
         function.MomentUnit = DefaultUnits.MomentUnit;
-        function.LengthUnitGeometry = DefaultUnits.LengthUnitGeometry;
+        function.LengthUnit = DefaultUnits.LengthUnitGeometry;
         function.StrainUnitResult = DefaultUnits.StrainUnitResult;
         function.StressUnitResult = DefaultUnits.StressUnitResult;
         function.CurvatureUnit = DefaultUnits.CurvatureUnit;
