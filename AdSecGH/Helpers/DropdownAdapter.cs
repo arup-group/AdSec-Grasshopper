@@ -8,11 +8,13 @@ using Grasshopper.Kernel;
 
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.Units;
 using OasysGH.Units.Helpers;
 
 using OasysUnits;
 using OasysUnits.Units;
 
+using Attribute = AdSecCore.Functions.Attribute;
 using Function = AdSecCore.Functions.Function;
 
 namespace Oasys.GH.Helpers {
@@ -99,6 +101,40 @@ namespace Oasys.GH.Helpers {
       return new Dictionary<Type, LengthUnit> {
         { typeof(LengthUnit), function.LengthUnit },
       };
+    }
+
+    public void UpdateUnit() {
+      if (BusinessComponent is Function function) {
+        function.MomentUnit = DefaultUnits.MomentUnit;
+        function.LengthUnit = DefaultUnits.LengthUnitGeometry;
+        function.StrainUnitResult = DefaultUnits.StrainUnitResult;
+        function.StressUnitResult = DefaultUnits.StressUnitResult;
+        function.CurvatureUnit = DefaultUnits.CurvatureUnit;
+        function.LengthUnitResult = DefaultUnits.LengthUnitResult;
+        function.AxialStiffnessUnit = DefaultUnits.AxialStiffnessUnit;
+        function.BendingStiffnessUnit = DefaultUnits.BendingStiffnessUnit;
+      }
+    }
+
+    private void RefreshOutputParameter() {
+      var outputAttributes = BusinessComponent.GetAllOutputAttributes();
+      for (int id = 0; id < outputAttributes.Length; id++) {
+        Params.Output[id].Description = outputAttributes[id].Description;
+        Params.Output[id].Name = outputAttributes[id].Name;
+      }
+    }
+
+    private void RefreshInputParameter() {
+      var outputAttributes = BusinessComponent.GetAllInputAttributes();
+      for (int id = 0; id < outputAttributes.Length; id++) {
+        Params.Input[id].Description = outputAttributes[id].Description;
+        Params.Input[id].Name = outputAttributes[id].Name;
+      }
+    }
+
+    public void RefreshParameter() {
+      RefreshOutputParameter();
+      RefreshInputParameter();
     }
   }
 }

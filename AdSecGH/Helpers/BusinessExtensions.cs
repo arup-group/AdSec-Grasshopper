@@ -117,6 +117,8 @@ namespace Oasys.GH.Helpers {
           typeof(StrainParameter), ParamGenericObject
         }, {
           typeof(PressureParameter), ParamGenericObject
+        },{
+          typeof(CurvatureParameter), ParamGenericObject
         },
       };
 
@@ -331,6 +333,14 @@ namespace Oasys.GH.Helpers {
               dynamic y = x;
               return (double)y.Value;
             }).ToArray();
+          }
+        },{
+          typeof(CurvatureParameter), goo => {
+            return UnitHelpers.ParseToQuantity<Curvature>(goo, DefaultUnits.CurvatureUnit);
+          }
+        },{
+          typeof(StrainParameter), goo => {
+            return UnitHelpers.ParseToQuantity<Strain>(goo, DefaultUnits.StrainUnitResult);
           }
         },
       };
