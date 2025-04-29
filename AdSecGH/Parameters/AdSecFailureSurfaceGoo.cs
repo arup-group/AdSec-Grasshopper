@@ -157,7 +157,7 @@ namespace AdSecGH.Parameters {
       return new AdSecFailureSurfaceGoo(FailureSurface, local, mesh);
     }
 
-    internal Mesh MeshFromILoadSurface(ILoadSurface loadsurface, Plane local) {
+    private Mesh MeshFromILoadSurface(ILoadSurface loadsurface, Plane local) {
       var outMesh = new Mesh();
 
       outMesh.Vertices.AddVertices(loadsurface.Vertices.Select(load => new Point3d(load.X.As(DefaultUnits.ForceUnit),
