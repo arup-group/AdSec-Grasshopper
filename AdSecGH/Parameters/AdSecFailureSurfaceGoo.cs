@@ -201,50 +201,50 @@ namespace AdSecGH.Parameters {
         Math.Max(Math.Max(Math.Max(Math.Max(Math.Abs(maxN), Math.Abs(minN)), Math.Abs(maxMyy)), Math.Abs(minMyy)),
           Math.Abs(maxMzz)), Math.Abs(minMzz));
       size /= 50;
-      var plnPosN = new Plane(_plane) {
+      var planePosN = new Plane(_plane) {
         Origin = _previewPosXaxis.PointAt(1.05),
       };
-      _posN = new Text3d("Tension", plnPosN, size) {
+      _posN = new Text3d("Tension", planePosN, size) {
         HorizontalAlignment = TextHorizontalAlignment.Center,
         VerticalAlignment = TextVerticalAlignment.Bottom,
       };
 
-      var plnNegN = new Plane(_plane) {
+      var planeNegN = new Plane(_plane) {
         Origin = _previewNegXaxis.PointAt(1.05),
       };
-      _negN = new Text3d("Compression", plnNegN, size) {
+      _negN = new Text3d("Compression", planeNegN, size) {
         HorizontalAlignment = TextHorizontalAlignment.Center,
         VerticalAlignment = TextVerticalAlignment.Bottom,
       };
 
-      var plnPosMyy = new Plane(_plane) {
+      var planePosMyy = new Plane(_plane) {
         Origin = _previewPosYaxis.PointAt(1.05),
       };
-      _posMyy = new Text3d("+Myy", plnPosMyy, size) {
+      _posMyy = new Text3d("+Myy", planePosMyy, size) {
         HorizontalAlignment = TextHorizontalAlignment.Center,
         VerticalAlignment = TextVerticalAlignment.Bottom,
       };
 
-      var plnNegMyy = new Plane(_plane) {
+      var planeNegMyy = new Plane(_plane) {
         Origin = _previewNegYaxis.PointAt(1.05),
       };
-      _negMyy = new Text3d("-Myy", plnNegMyy, size) {
+      _negMyy = new Text3d("-Myy", planeNegMyy, size) {
         HorizontalAlignment = TextHorizontalAlignment.Center,
         VerticalAlignment = TextVerticalAlignment.Top,
       };
 
-      var plnPosMzz = new Plane(_plane) {
+      var planePosMzz = new Plane(_plane) {
         Origin = _previewPosZaxis.PointAt(1.05),
       };
-      _posMzz = new Text3d("+Mzz", plnPosMzz, size) {
+      _posMzz = new Text3d("+Mzz", planePosMzz, size) {
         HorizontalAlignment = TextHorizontalAlignment.Left,
         VerticalAlignment = TextVerticalAlignment.Middle,
       };
 
-      var plnNegMzz = new Plane(_plane) {
+      var planeNegMzz = new Plane(_plane) {
         Origin = _previewNegZaxis.PointAt(1.05),
       };
-      _negMzz = new Text3d("-Mzz", plnNegMzz, size) {
+      _negMzz = new Text3d("-Mzz", planeNegMzz, size) {
         HorizontalAlignment = TextHorizontalAlignment.Right,
         VerticalAlignment = TextVerticalAlignment.Middle,
       };
