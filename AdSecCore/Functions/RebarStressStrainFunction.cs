@@ -91,7 +91,7 @@ namespace AdSecCore.Functions {
       PositionOutput.Name = FormatPositionName("Position", lengthUnit);
     }
 
-    private string FormatPositionName(string prefix, string unit) {
+    private static string FormatPositionName(string prefix, string unit) {
       return $"{prefix} [{unit}]";
     }
 
