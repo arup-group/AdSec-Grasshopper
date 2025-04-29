@@ -23,20 +23,8 @@ namespace AdSecGH.Parameters {
     public static string Description => "AdSec Load";
     public static string Name => "Load";
     public static string NickName => "Ld";
-    public override BoundingBox Boundingbox {
-      get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
-
-        if (_point == null) {
-          return BoundingBox.Empty;
-        }
-
-        return PointHelper.GetPointBoundingBox(_point);
-      }
-    }
-    public override bool IsValid => true;
+    public override BoundingBox Boundingbox => IsValid ? PointHelper.GetPointBoundingBox(_point) : BoundingBox.Empty;
+    public override bool IsValid => Value != null && _point.IsValid;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Load";
     private Point3d _point = Point3d.Unset;
@@ -57,13 +45,15 @@ namespace AdSecGH.Parameters {
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (_point.IsValid) {
-        var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-        if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
-          args.Pipeline.DrawPoint(_point, PointStyle.X, 7, Colour.ArupRed);
-        } else {
-          args.Pipeline.DrawPoint(_point, PointStyle.X, 8, Colour.UILightGrey);
-        }
+      if (!_point.IsValid) {
+        return;
+      }
+
+      var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
+        args.Pipeline.DrawPoint(_point, PointStyle.X, 7, Colour.ArupRed);
+      } else {
+        args.Pipeline.DrawPoint(_point, PointStyle.X, 8, Colour.UILightGrey);
       }
     }
 
@@ -126,31 +116,17 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_Goo Duplicate() {
-      return new AdSecLoadGoo(Value);
+      return IsValid ? new AdSecLoadGoo(Value) : null;
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecLoadGoo(Value) {
+      return IsValid ? new AdSecLoadGoo(Value) {
         _point = new Point3d(_point),
-      };
+      } : null;
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null) {
-        return BoundingBox.Empty;
-      }
-
-      if (_point == null) {
-        return BoundingBox.Empty;
-      }
-
-      var point1 = new Point3d(_point);
-      point1.Z += 0.25;
-      var point2 = new Point3d(_point);
-      point2.Z += -0.25;
-      var line = new Line(point1, point2);
-      var lineCurve = new LineCurve(line);
-      return lineCurve.GetBoundingBox(xform);
+      return !IsValid ? BoundingBox.Empty : PointHelper.GetPointBoundingBox(_point, xform);
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
