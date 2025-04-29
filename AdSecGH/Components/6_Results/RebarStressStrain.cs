@@ -1,11 +1,8 @@
 using System;
 using System.Drawing;
-using System.Linq;
 
-using AdSecCore;
 using AdSecCore.Functions;
 
-using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using AdSecGHCore.Constants;
@@ -16,27 +13,9 @@ using Oasys.GH.Helpers;
 
 using OasysGH;
 
-using Attribute = AdSecCore.Functions.Attribute;
 namespace AdSecGH.Components {
   public class RebarStressStrainGh : RebarStressStrainFunction {
     public RebarStressStrainGh() {
-
-      var adSecPoint = AdSecPoint as Attribute;
-      PointsOutput.Update(ref adSecPoint);
-      PointsOutput.OnValueChanged += goo => {
-        AdSecPoint.Value = goo.Select(x => new AdSecPointGoo(x)).ToArray();
-      };
-    }
-
-    public AdSecPointArrayParameter AdSecPoint { get; set; } = new AdSecPointArrayParameter();
-    public override Attribute[] GetAllOutputAttributes() {
-      return new Attribute[] {
-        AdSecPoint,
-        UlsStrainOutput,
-        UlsStressOutput,
-        SlsStrainOutput,
-        SlsStressOutput,
-      };
     }
   }
 

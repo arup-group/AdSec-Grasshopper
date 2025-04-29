@@ -67,12 +67,12 @@ namespace AdSecCore.Functions {
 
     public override void UpdateOutputParameter() {
       base.UpdateOutputParameter();
-      string strainUnit = GetStrainUnitAbbreviation();
-      string stressUnit = GetStressUnitAbbreviation();
-      UpdateOutputNames(strainUnit, stressUnit);
+      UpdateOutputNames();
     }
 
-    protected virtual void UpdateOutputNames(string strainUnit, string stressUnit) {
+    protected virtual void UpdateOutputNames() {
+      string strainUnit = GetStrainUnitAbbreviation();
+      string stressUnit = GetStressUnitAbbreviation();
       UlsStrainOutput.Name = FormatStrainName("ULS", strainUnit);
       UlsStressOutput.Name = FormatStressName("ULS", stressUnit);
       SlsStrainOutput.Name = FormatStrainName("SLS", strainUnit);

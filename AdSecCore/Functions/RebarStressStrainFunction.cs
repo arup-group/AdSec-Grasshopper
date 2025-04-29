@@ -17,7 +17,7 @@ namespace AdSecCore.Functions {
     public List<Strain> StrainsSLS { get; private set; } = new List<Strain>();
     public List<Pressure> StressesSLS { get; private set; } = new List<Pressure>();
 
-    public PointArrayParameter PointsOutput { get; set; } = new PointArrayParameter {
+    public PointArrayParameter PositionOutput { get; set; } = new PointArrayParameter {
       Name = "Position",
       NickName = "Vx",
       Description = "Rebar positions as 2D vertices in the section's local yz-plane",
@@ -70,11 +70,29 @@ namespace AdSecCore.Functions {
       };
     }
 
-    protected override void UpdateOutputNames(string strainUnit, string stressUnit) {
+    public override Attribute[] GetAllOutputAttributes() {
+      return new Attribute[] {
+        PositionOutput,
+        UlsStrainOutput,
+        UlsStressOutput,
+        SlsStrainOutput,
+        SlsStressOutput,
+      };
+    }
+
+    protected override void UpdateOutputNames() {
+      string strainUnit = GetStrainUnitAbbreviation();
+      string stressUnit = GetStressUnitAbbreviation();
+      string lengthUnit = GetLengthUnitGeometryAbbreviation();
       UlsStrainOutput.Name = FormatStrainName("ULS", strainUnit);
       UlsStressOutput.Name = FormatStressName("ULS", stressUnit);
       SlsStrainOutput.Name = FormatStrainName("SLS", strainUnit);
       SlsStressOutput.Name = FormatStressName("SLS", stressUnit);
+      PositionOutput.Name = FormatPositionName("Position", lengthUnit);
+    }
+
+    private string FormatPositionName(string prefix, string unit) {
+      return $"{prefix} [{unit}]";
     }
 
     public override void Compute() {
@@ -110,7 +128,7 @@ namespace AdSecCore.Functions {
       }
 
       // Set output parameters
-      PointsOutput.Value = Points.ToArray();
+      PositionOutput.Value = Points.ToArray();
       UlsStrainOutput.Value = StrainsULS.ToArray();
       UlsStressOutput.Value = StressesULS.ToArray();
       SlsStrainOutput.Value = StrainsSLS.ToArray();

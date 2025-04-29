@@ -121,6 +121,8 @@ namespace Oasys.GH.Helpers {
           typeof(StrainArrayParameter), ParamGenericObject
         },{
           typeof(PressureArrayParameter), ParamGenericObject
+        },{
+          typeof(PointArrayParameter), ParamGenericObject
         },
       };
 
@@ -194,7 +196,6 @@ namespace Oasys.GH.Helpers {
           }
         },
         { typeof(StringArrayParam), a => (a as StringArrayParam).Value },
-        // { typeof(IntegerParameter), a => (a as IntegerParameter).Value },
         {
           typeof(CrackParameter), a => {
             var crack = (a as CrackParameter).Value;
@@ -270,6 +271,15 @@ namespace Oasys.GH.Helpers {
               quantityInRelevantUnit.Add(new GH_UnitNumber(stress.ToUnit(DefaultUnits.StressUnitResult)));
             }
             return quantityInRelevantUnit;
+          }
+        },{
+          typeof(PointArrayParameter), a => {
+            var points = (a as PointArrayParameter).Value;
+             var quantityGoo = new List<AdSecPointGoo>();
+            foreach(var point in points) {
+              quantityGoo.Add(new AdSecPointGoo(point));
+            }
+            return quantityGoo;
           }
         },
       };
