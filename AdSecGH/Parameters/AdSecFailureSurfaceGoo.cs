@@ -129,7 +129,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
-      if (Value == null && !Value.IsValid) {
+      if (Value == null || !Value.IsValid) {
         return null;
       }
 
@@ -146,7 +146,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {
-      if (Value == null && !Value.IsValid) {
+      if (Value == null || !Value.IsValid) {
         return null;
       }
 
