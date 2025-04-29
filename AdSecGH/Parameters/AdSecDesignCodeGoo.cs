@@ -21,7 +21,7 @@ namespace AdSecGH.Parameters {
       designCode.DesignCodeName)) { }
 
     public override IGH_Goo Duplicate() {
-      return new AdSecDesignCodeGoo(Value);
+      return Value.IsValid ? new AdSecDesignCodeGoo(Value) : null;
     }
   }
 }
