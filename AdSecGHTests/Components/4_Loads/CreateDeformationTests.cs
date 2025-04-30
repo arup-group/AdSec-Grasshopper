@@ -5,6 +5,8 @@ using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
+using Grasshopper.Kernel;
+
 using Oasys.AdSec;
 using Oasys.GH.Helpers;
 
@@ -49,6 +51,15 @@ namespace AdSecGHTests.Components {
       Assert.Equal(0, output.Value.X.As(StrainUnit.Ratio), 1);
       Assert.Equal(0, output.Value.YY.As(CurvatureUnit.PerMeter), 2);
       Assert.Equal(0, output.Value.ZZ.As(CurvatureUnit.PerMeter), 3);
+    }
+
+    [Fact]
+    public void ShouldThrowExceptionWhenInputIsNotCorrectValues() {
+      ComponentTestHelper.SetInput(_component, Moment.Zero, 0);
+      ComponentTestHelper.ComputeData(_component);
+      var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      Assert.Single(runtimeMessages);
+      Assert.Contains("Could not parse the input", runtimeMessages[0]);
     }
 
     [Fact]
