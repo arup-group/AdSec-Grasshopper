@@ -41,11 +41,9 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHandleZeroValues() {
-      // Arrange
-      AdSecCrackGoo goo = null;
-      ComponentTestHelper.SetInput(_component, goo, 0);
-      ComponentTestHelper.SetInput(_component, goo, 1);
-      ComponentTestHelper.SetInput(_component, goo, 2);
+      ComponentTestHelper.SetInput(_component, Strain.Zero, 0);
+      ComponentTestHelper.SetInput(_component, Curvature.Zero, 1);
+      ComponentTestHelper.SetInput(_component, Curvature.Zero, 2);
       var output = (AdSecDeformationGoo)ComponentTestHelper.GetOutput(_component, 0);
       Assert.NotNull(output);
       Assert.Equal(0, output.Value.X.As(StrainUnit.Ratio), 1);
