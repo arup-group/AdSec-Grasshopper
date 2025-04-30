@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
@@ -13,6 +15,7 @@ using OasysGH;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;
 
+using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
@@ -24,21 +27,15 @@ namespace AdSecGH.Components {
   public class CreateDeformation : DropdownAdapter<CreateDeformationGh> {
     private CurvatureUnit _curvatureUnit = DefaultUnits.CurvatureUnit;
     private StrainUnit _strainUnit = DefaultUnits.StrainUnitResult;
+
     public CreateDeformation() : base() { Hidden = true; }
     public override Guid ComponentGuid => new Guid("cbab2b58-2a01-4f05-ba24-2c79827c7415");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.DeformationLoad;
 
-
     protected override void BeforeSolveInstance() {
-      // Update units before solving
-      UpdateUnit();
-      //update local unit
-      BusinessComponent.StrainUnitResult = _strainUnit;
-      BusinessComponent.CurvatureUnit = _curvatureUnit;
-      BusinessComponent.UpdateOutputParameter();
-      RefreshParameter();
+      UpdateUnits();
     }
 
     public override void SetSelected(int i, int j) {
@@ -52,13 +49,39 @@ namespace AdSecGH.Components {
           _curvatureUnit = (CurvatureUnit)UnitsHelper.Parse(typeof(CurvatureUnit), _selectedItems[i]);
           break;
       }
+
+      UpdateUnits();
       base.UpdateUI();
     }
 
+    protected override void InitialiseDropdowns() {
+      _spacerDescriptions = new List<string>(new[] {
+        "Strain Unit",
+        "Curvature Unit",
+      });
 
-    protected override void UpdateUIFromSelectedItems() {
-      BusinessComponent.UpdateOutputParameter();
-      base.UpdateUIFromSelectedItems();
+      _dropDownItems = new List<List<string>>();
+      _selectedItems = new List<string>();
+
+      // strain
+      _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain));
+      _selectedItems.Add(Strain.GetAbbreviation(_strainUnit));
+
+      // curvature
+      _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Curvature));
+      _selectedItems.Add(Curvature.GetAbbreviation(_curvatureUnit));
+
+      _isInitialised = true;
     }
+
+    private void UpdateUnits() {
+      // Update units first
+      this.UpdateDefaultUnits();
+      //update local unit if any
+      BusinessComponent.StrainUnitResult = _strainUnit;
+      BusinessComponent.CurvatureUnit = _curvatureUnit;
+      this.RefreshParameter();
+    }
+
   }
 }

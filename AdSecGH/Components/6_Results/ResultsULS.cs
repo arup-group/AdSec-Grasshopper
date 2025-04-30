@@ -3,6 +3,7 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Properties;
 
 using AdSecGHCore.Constants;
@@ -21,9 +22,8 @@ namespace AdSecGH.Components {
 
   public class UlsResult : ComponentAdapter<UlsResultGh> {
     protected override void BeforeSolveInstance() {
-      UpdateUnit();
-      BusinessComponent.UpdateOutputParameter();
-      RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
+      this.UpdateDefaultUnits();
+      this.RefreshParameter();
     }
 
     public UlsResult() {

@@ -3,6 +3,7 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Properties;
 
 using AdSecGHCore.Constants;
@@ -22,9 +23,8 @@ namespace AdSecGH.Components {
 
   public class SlsResult : ComponentAdapter<SlsResultGh> {
     protected override void BeforeSolveInstance() {
-      UpdateUnit();
-      BusinessComponent.UpdateOutputParameter();
-      RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
+      this.UpdateDefaultUnits();
+      this.RefreshParameter();
     }
 
     public SlsResult() { Hidden = true; Category = CategoryName.Name(); SubCategory = SubCategoryName.Cat7(); }

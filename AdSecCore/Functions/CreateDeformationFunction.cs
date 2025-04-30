@@ -62,8 +62,8 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat5(),
     };
 
-    public override void UpdateOutputParameter() {
-      base.UpdateOutputParameter();
+    public override void UpdateParameter() {
+      base.UpdateParameter();
       string strainUnit = Strain.GetAbbreviation(StrainUnitResult);
       string curvatureUnit = Curvature.GetAbbreviation(CurvatureUnit);
       StrainInput.Name = $"εx [{strainUnit}]";

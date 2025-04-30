@@ -36,7 +36,7 @@ namespace AdSecCore.Functions {
 
     public virtual Attribute[] GetAllOutputAttributes() { return Array.Empty<Attribute>(); }
 
-    public virtual void UpdateOutputParameter() { }
+    public virtual void UpdateParameter() { }
 
     public abstract void Compute();
   }
