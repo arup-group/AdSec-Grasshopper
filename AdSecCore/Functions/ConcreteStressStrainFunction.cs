@@ -71,8 +71,8 @@ namespace AdSecCore.Functions {
     }
 
     protected virtual void UpdateOutputNames() {
-      string strainUnit = GetStrainUnitAbbreviation();
-      string stressUnit = GetStressUnitAbbreviation();
+      string strainUnit = GetStrainUnitResultAbbreviation();
+      string stressUnit = GetStressUnitResultAbbreviation();
       UlsStrainOutput.Name = FormatStrainName("ULS", strainUnit);
       UlsStressOutput.Name = FormatStressName("ULS", stressUnit);
       SlsStrainOutput.Name = FormatStrainName("SLS", strainUnit);

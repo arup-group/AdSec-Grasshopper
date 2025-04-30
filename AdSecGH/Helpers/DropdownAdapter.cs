@@ -97,7 +97,7 @@ namespace Oasys.GH.Helpers {
 
     public static Dictionary<Type, LengthUnit> ToLengthUnits(Function function) {
       return new Dictionary<Type, LengthUnit> {
-        { typeof(LengthUnit), function.LengthUnit },
+        { typeof(LengthUnit), function.LengthUnitGeometry },
       };
     }
   }

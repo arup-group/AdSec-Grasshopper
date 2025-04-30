@@ -18,7 +18,7 @@ namespace AdSecCore.Functions {
   }
 
   public abstract class Function : IFunction {
-    public LengthUnit LengthUnit { get; set; } = LengthUnit.Meter;
+    public LengthUnit LengthUnitGeometry { get; set; } = LengthUnit.Meter;
     public LengthUnit LengthUnitResult { get; set; } = LengthUnit.Millimeter;
     public StrainUnit StrainUnitResult { get; set; } = StrainUnit.Ratio;
     public CurvatureUnit CurvatureUnit { get; set; } = CurvatureUnit.PerMeter;
@@ -29,15 +29,20 @@ namespace AdSecCore.Functions {
     public List<string> ErrorMessages { get; set; } = new List<string>();
     public List<string> WarningMessages { get; set; } = new List<string>();
     public List<string> RemarkMessages { get; set; } = new List<string>();
-    public string GetStrainUnitAbbreviation() {
+
+    public string GetStrainUnitResultAbbreviation() {
       return Strain.GetAbbreviation(StrainUnitResult);
     }
-    public string GetStressUnitAbbreviation() {
+    public string GetStressUnitResultAbbreviation() {
       return Pressure.GetAbbreviation(StressUnitResult);
     }
     public string GetLengthUnitGeometryAbbreviation() {
-      return Length.GetAbbreviation(LengthUnit);
+      return Length.GetAbbreviation(LengthUnitGeometry);
     }
+    public string GetLengthUnitResultAbbreviation() {
+      return Length.GetAbbreviation(LengthUnitResult);
+    }
+
     public abstract FuncAttribute Metadata { get; set; }
     public abstract Organisation Organisation { get; set; }
     public virtual Attribute[] GetAllInputAttributes() { return Array.Empty<Attribute>(); }
