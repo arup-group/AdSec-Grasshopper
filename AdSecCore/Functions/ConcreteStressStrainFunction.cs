@@ -89,23 +89,17 @@ namespace AdSecCore.Functions {
 
 
     public override void Compute() {
-      if (!ValidateLoadInput() ||
-        !ValidateSolutionInputs() ||
-        !ValidateVertexInputs()) {
+
+      if (!ValidateInputForNull(LoadInput) ||
+        !ValidateInputForNull(SolutionInput) ||
+        !ValidateInputForNull(VertexInput) ||
+        !ValidateLoad()) {
         return;
       }
 
       ProcessInput();
 
       ProcessOutput();
-    }
-
-    private bool ValidateVertexInputs() {
-      if (VertexInput.Value == null) {
-        ErrorMessages.Add("Vertex point is null");
-        return false;
-      }
-      return true;
     }
 
     protected virtual void ProcessInput() {

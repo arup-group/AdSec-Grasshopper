@@ -31,6 +31,13 @@ namespace AdSecGHTests.Functions {
     }
 
     [Fact]
+    public void ErrorMessageWhenVertexParameterIsNull() {
+      _component.VertexInput = null;
+      _component.Compute();
+      Assert.Single(_component.ErrorMessages);
+    }
+
+    [Fact]
     public void ShouldHaveWarningForInvalidLoad() {
       _component.LoadInput.Value = ILoad.Create(Force.Zero, Moment.Zero, Moment.Zero);
       _component.Compute();
@@ -49,6 +56,13 @@ namespace AdSecGHTests.Functions {
       _component.SolutionInput.Value = null;
       _component.Compute();
       Assert.Single(_component.ErrorMessages);
+    }
+
+    [Fact]
+    public void ShouldValidateOptionalLoad() {
+      _component.LoadInput.Value = null;
+      _component.LoadInput.Optional = true;
+      Assert.True(_component.ValidateInputForNull(_component.LoadInput));
     }
 
     [Fact]

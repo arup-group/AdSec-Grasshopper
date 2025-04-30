@@ -43,6 +43,27 @@ namespace AdSecCore.Functions {
       return Length.GetAbbreviation(LengthUnitResult);
     }
 
+    public bool ValidateInputForNull<T>(ParameterAttribute<T> parameter) {
+
+      if (parameter == null) {
+        ErrorMessages.Add("Input parameter is null");
+        return false;
+      }
+
+      var genericParam = new ParameterAttribute<object> {
+        Name = parameter.Name,
+        Value = parameter.Value,
+        Optional = parameter.Optional,
+      };
+
+      if (!genericParam.Optional && genericParam.Value == null) {
+        ErrorMessages.Add($"{genericParam.Name} input value is null");
+        return false;
+      }
+
+      return true;
+    }
+
     public abstract FuncAttribute Metadata { get; set; }
     public abstract Organisation Organisation { get; set; }
     public virtual Attribute[] GetAllInputAttributes() { return Array.Empty<Attribute>(); }

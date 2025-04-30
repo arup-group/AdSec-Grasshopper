@@ -7,6 +7,8 @@ using Grasshopper.Kernel.Types;
 
 using Rhino.Geometry;
 
+using Xunit;
+
 namespace AdSecGHTests.Helpers {
   public static class ComponentTestHelper {
     public static object GetOutput(GH_Component component, int index = 0, int branch = 0, int item = 0, bool forceUpdate = false) {
@@ -15,6 +17,13 @@ namespace AdSecGHTests.Helpers {
         component.Params.Output[index].CollectData();
       }
       return component.Params.Output[index].VolatileData.get_Branch(branch)[item];
+    }
+
+    public static void CheckOutputIsNotNull(GH_Component component) {
+      for (int i = 0; i < component.Params.Output.Count; i++) {
+        var output = ComponentTestHelper.GetOutput(component, i);
+        Assert.NotNull(output);
+      }
     }
 
     public static void SetInput(GH_Component component, int value, int index = 0) {

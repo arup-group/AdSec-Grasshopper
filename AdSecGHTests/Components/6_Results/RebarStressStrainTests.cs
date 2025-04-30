@@ -46,20 +46,13 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldComputeCorrectlyForLoad() {
       SetLoad();
-      // Check all outputs exist and are not empty lists
-      for (int i = 0; i < 5; i++) {
-        var output = ComponentTestHelper.GetOutput(_component, i);
-        Assert.NotNull(output);
-      }
+      ComponentTestHelper.CheckOutputIsNotNull(_component);
     }
 
     [Fact]
     public void ShouldComputeCorrectlyForDeformation() {
       SetDeformation();
-      for (int i = 0; i < 5; i++) {
-        var output = ComponentTestHelper.GetOutput(_component, i);
-        Assert.NotNull(output);
-      }
+      ComponentTestHelper.CheckOutputIsNotNull(_component);
     }
 
     [Fact]
