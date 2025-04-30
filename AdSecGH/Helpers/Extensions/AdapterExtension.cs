@@ -32,14 +32,14 @@ namespace AdSecGH.Helpers {
     }
 
     private static void RefreshOutputParameter<T>(T owner) where T : IGH_Component {
-      if (owner is IGH_Component component && component.Params?.Output != null) {
+      if (owner is IGH_Component component) {
         var outputAttributes = (owner as dynamic).BusinessComponent.GetAllOutputAttributes();
         RefreshParams(component.Params.Output, outputAttributes);
       }
     }
 
     private static void RefreshInputParameter<T>(T owner) where T : IGH_Component {
-      if (owner is IGH_Component component && component.Params?.Input != null) {
+      if (owner is IGH_Component component) {
         var inputAttributes = (owner as dynamic).BusinessComponent.GetAllInputAttributes();
         RefreshParams(component.Params.Input, inputAttributes);
       }

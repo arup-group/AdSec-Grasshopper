@@ -73,29 +73,15 @@ namespace AdSecCore.Functions {
 
     public override void Compute() {
 
-      var strain = GetStrainValue(StrainInput);
+      var strain = StrainInput.Value;
 
-      var curvatureY = GetCurvatureValue(CurvatureYInput);
+      var curvatureY = CurvatureYInput.Value;
 
-      var curvatureZ = GetCurvatureValue(CurvatureZInput);
+      var curvatureZ = CurvatureZInput.Value;
 
       var deformation = IDeformation.Create(strain, curvatureY, curvatureZ);
 
       DeformationOutput.Value = deformation;
-    }
-
-    private Strain GetStrainValue(StrainParameter strainInput) {
-      if (strainInput?.Value is Strain strainValue) {
-        return strainValue;
-      }
-      return Strain.From(0, StrainUnitResult);
-    }
-
-    private Curvature GetCurvatureValue(CurvatureParameter curvatureInput) {
-      if (curvatureInput?.Value is Curvature curvatureValue) {
-        return curvatureValue;
-      }
-      return Curvature.From(0, CurvatureUnit);
     }
   }
 }
