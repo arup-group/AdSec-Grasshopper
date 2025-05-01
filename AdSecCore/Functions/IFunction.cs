@@ -51,7 +51,7 @@ namespace AdSecCore.Functions {
           return false;
         }
         var valueProperty = input.GetType().GetProperty("Value");
-        var value = valueProperty?.GetValue(input);
+        var value = valueProperty.GetValue(input);
         if (!input.Optional && value == null) {
           ErrorMessages.Add($"{input.Name} input is null");
           return false;
