@@ -5,11 +5,9 @@ using Grasshopper.Kernel.Types;
 using OasysGH;
 using OasysGH.Parameters;
 
-using Rhino.Render.ChangeQueue;
-
 namespace AdSecGH.Parameters {
   /// <summary>
-  /// Goo wrapper class, makes sure this can be used in Grasshopper.
+  ///   Goo wrapper class, makes sure this can be used in Grasshopper.
   /// </summary>
   public class AdSecMaterialGoo : GH_OasysGoo<MaterialDesign> {
     public static string Description => "AdSec Material Parameter";
@@ -29,16 +27,12 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_Goo Duplicate() {
-      return new AdSecMaterialGoo(Value);
+      return IsValid ? new AdSecMaterialGoo(Value) : null;
     }
 
     public override string ToString() {
-      if (Material == null || Material.Material == null) {
-        return "Empty Material";
-      }
-
-      var mat = new AdSecMaterial(Material.Material, Material.GradeName);
-      return mat.ToString();
+      return Material?.Material == null ? "Empty Material" :
+        new AdSecMaterial(Material.Material, Material.GradeName).ToString();
     }
   }
 }

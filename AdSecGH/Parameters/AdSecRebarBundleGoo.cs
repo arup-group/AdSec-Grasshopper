@@ -26,7 +26,7 @@ namespace AdSecGH.Parameters {
       if (Value.CountPerBundle > 1) {
         bar += $", Bundle ({Value.CountPerBundle})";
       }
-      //bar += ", " + Value.Material.ToString();
+
       return $"AdSec {bar}}}";
     }
   }

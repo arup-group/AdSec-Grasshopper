@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 
 using AdSecGH.Helpers;
@@ -17,8 +18,6 @@ using Grasshopper.Kernel.Special;
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.UI;
-
-using OasysUnits;
 
 namespace AdSecGH.Components {
   public class SaveModel : GH_OasysDropDownComponent {
@@ -42,6 +41,7 @@ namespace AdSecGH.Components {
       if (!_isInitialised) {
         InitialiseDropdowns();
       }
+
       m_attributes = new ThreeButtonComponentAttributes(this, "Save", "Save As", "Open AdSec", SaveFile, SaveAsFile,
         () => OpenAdSecExe(), true, "Save AdSec file");
     }
@@ -57,7 +57,7 @@ namespace AdSecGH.Components {
 
     private void SaveJson() {
       try {
-        System.IO.File.WriteAllText(_fileName, _jsonString);
+        File.WriteAllText(_fileName, _jsonString);
         canOpen = true;
       } catch (Exception e) {
         this.AddRuntimeError(e.Message);

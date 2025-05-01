@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using AdSecGH.Components;
 using AdSecGH.Helpers;
@@ -14,6 +15,8 @@ using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.StandardMaterials;
 
 using OasysUnits;
 
@@ -122,6 +125,7 @@ namespace AdSecGHTests.Components.AdSec {
       SetLoad(true);
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
       Assert.Single(runtimeMessages);
+      Assert.Contains("either deformation or load can be specified", runtimeMessages[0]);
     }
 
     [Fact]
@@ -217,6 +221,27 @@ namespace AdSecGHTests.Components.AdSec {
     public void CombineJSonStringsWillBeNullIfListIsNull() {
       string jsonString = AdSecFile.CombineJSonStrings(null);
       Assert.Null(jsonString);
+    }
+
+    [Fact]
+    public void ModelJsonThrowExceptionWhenRebarAndConcreteMaterialAreNotConsistent() {
+      var concreteMaterial = Concrete.AS3600.Edition_2018.MPA40;
+      var rebarMaterial = Reinforcement.Steel.IS456.Edition_2000.S415;
+      var designCode = AS3600.Edition_2018;
+      var loads = new Dictionary<int, List<object>>();
+      var section = AdSecUtility.SectionObject(designCode, concreteMaterial, rebarMaterial);
+      var exception = Assert.Throws<InvalidOperationException>(() => AdSecFile.ModelJson(new List<AdSecSection> { section }, loads));
+      Assert.Contains("section material and rebar grade are not consistent", exception.Message);
+    }
+
+    [Fact]
+    public void ModelJsonThrowExceptionIfDesignCodeIsNotassigned() {
+      var concreteMaterial = Concrete.AS3600.Edition_2018.MPA40;
+      var rebarMaterial = Reinforcement.Steel.IS456.Edition_2000.S415;
+      var loads = new Dictionary<int, List<object>>();
+      var section = AdSecUtility.SectionObject(null, concreteMaterial, rebarMaterial);
+      var exception = Assert.Throws<ArgumentException>(() => AdSecFile.ModelJson(new List<AdSecSection> { section }, loads));
+      Assert.Contains("design code is null", exception.Message);
     }
   }
 }

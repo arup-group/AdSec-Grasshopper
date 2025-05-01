@@ -88,7 +88,7 @@ namespace AdSecGHTests.Parameters {
         = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio));
       IStressStrainCurve curve = ILinearStressStrainCurve.Create(stressStrainPoint);
       var tensionCompressionCurve = ITensionCompressionCurve.Create(curve, curve);
-      var load = ILoad.Create(Force.FromKilonewtons(100), Moment.FromKilonewtonMeters(100), Moment.Zero);
+      var load = ILoad.Create(Force.FromKilonewtons(1000), Moment.FromKilonewtonMeters(100), Moment.Zero);
       //-----------------
       InstanceOfGoos.Add(new AdSecConcreteCrackCalculationParametersGoo(concreteCrackCalculationParameters));
       InstanceOfGoos.Add(new AdSecCrackGoo(new CrackLoad() { Plane = OasysPlane.PlaneYZ, Load = solutionBuilder.Serviceability.Check(load).MaximumWidthCrack, }));

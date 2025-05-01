@@ -57,23 +57,27 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShoulHaveValidDeformationDescription() {
-      _component.DeformationDescription();
+      _component.StrainUnitResult = StrainUnit.MicroStrain;
+      _component.StressUnitResult = PressureUnit.Pascal;
+      _component.UpdateOutputParameter();
       var description = _component.DeformationOutput.Description;
-      Assert.Contains("[εm⁻¹]", description);
-      Assert.Contains("[εm⁻¹]", description);
+      Assert.Contains("[µε]", description);
+      Assert.Contains("[Pam⁻¹]", description);
     }
 
     [Fact]
     public void ShoulHaveValidFailureDeformationDescription() {
-      _component.FailureDeformationDescription();
+      _component.StrainUnitResult = StrainUnit.MicroStrain;
+      _component.StressUnitResult = PressureUnit.Pascal;
+      _component.UpdateOutputParameter();
       var description = _component.FailureDeformationOutput.Description;
-      Assert.Contains("[εm⁻¹]", description);
-      Assert.Contains("[εm⁻¹]", description);
+      Assert.Contains("[µε]", description);
+      Assert.Contains("[Pam⁻¹]", description);
     }
 
     [Fact]
     public void ShouldHaveValidMomentRangesDescription() {
-      _component.MomentRangesDescription();
+      _component.UpdateOutputParameter();
       Assert.Contains("[N·m]", _component.MomentRangesOutput.Description);
     }
 
