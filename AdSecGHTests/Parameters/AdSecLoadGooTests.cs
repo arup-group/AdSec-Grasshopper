@@ -93,7 +93,7 @@ namespace AdSecGHTests.Parameters {
     public void CastFromTest() {
       var loadGoo = new AdSecLoadGoo(ILoad.Create(new Force(), new Moment(), new Moment()));
       Assert.False(loadGoo.CastFrom(null));
-      Assert.True(loadGoo.CastFrom(new Line()));
+      Assert.False(loadGoo.CastFrom(new Line()));
       Assert.True(loadGoo.CastFrom(new Point3d()));
       Assert.True(loadGoo.CastFrom(new GH_Point()));
     }
