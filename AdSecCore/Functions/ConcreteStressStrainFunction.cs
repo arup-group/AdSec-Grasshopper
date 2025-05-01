@@ -56,6 +56,14 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat7(),
     };
 
+    public override Attribute[] GetAllInputAttributes() {
+      return new Attribute[] {
+       SolutionInput,
+       LoadInput,
+       VertexInput,
+      };
+    }
+
     public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
        UlsStrainOutput,
@@ -90,10 +98,7 @@ namespace AdSecCore.Functions {
 
     public override void Compute() {
 
-      if (!ValidateInputForNull(LoadInput) ||
-        !ValidateInputForNull(SolutionInput) ||
-        !ValidateInputForNull(VertexInput) ||
-        !ValidateLoad()) {
+      if (!ValidateInputs()) {
         return;
       }
 

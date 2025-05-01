@@ -97,9 +97,7 @@ namespace AdSecCore.Functions {
 
     public override void Compute() {
 
-      if (!ValidateInputForNull(LoadInput) ||
-        !ValidateInputForNull(SolutionInput) ||
-        !ValidateLoad()) {
+      if (!ValidateInputs()) {
         return;
       }
 

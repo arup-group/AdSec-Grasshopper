@@ -184,5 +184,12 @@ namespace AdSecCore.Functions {
       }
       return true;
     }
+
+    public override bool ValidateInputs() {
+      if (!base.ValidateInputs() || !ValidateLoad()) {
+        return false;
+      }
+      return true;
+    }
   }
 }
