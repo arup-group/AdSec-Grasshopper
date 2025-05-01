@@ -10,7 +10,7 @@ using OasysUnits;
 namespace AdSecCore.Functions {
   public class FindCrackLoadFunction : IFunction {
 
-    
+
     public SectionSolutionParameter Solution { get; set; } = new SectionSolutionParameter {
       Name = "Results",
       NickName = "Res",
