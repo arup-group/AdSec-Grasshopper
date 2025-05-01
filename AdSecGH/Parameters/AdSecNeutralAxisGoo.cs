@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
+using AdSecGH.UI;
 
 using Grasshopper;
 using Grasshopper.Kernel;
@@ -29,45 +29,38 @@ namespace AdSecGH.Parameters {
     }
 
     private Line CalculateNeutralAxis() {
-      // Cache frequently used values
       var local = m_value.Solution.SectionDesign.LocalPlane.ToGh();
       var profile = new AdSecSolutionGoo(m_value.Solution).ProfileEdge;
-      var offset = m_value.Offset.As(DefaultUnits.LengthUnitGeometry);
-      var angleRadians = m_value.Angle;
+      double offset = m_value.Offset.As(DefaultUnits.LengthUnitGeometry);
+      double angleRadians = m_value.Angle;
 
-      // Calculate direction vector once
       var direction = new Vector3d(local.XAxis);
       direction.Rotate(angleRadians, local.ZAxis);
       direction.Unitize();
 
       // Calculate profile width more efficiently
-      var bbox = profile.ToPolylineCurve().GetBoundingBox(local);
-      var width = 1.05 * bbox.PointAt(0, 0, 0).DistanceTo(bbox.PointAt(1, 0, 0));
+      var boundingBox = profile.ToPolylineCurve().GetBoundingBox(local);
+      double width = 1.05 * boundingBox.PointAt(0, 0, 0).DistanceTo(boundingBox.PointAt(1, 0, 0));
       // Calculate start point and line in one step
-      var start = local.Origin - direction * (width / 2);
+      var start = local.Origin - (direction * (width / 2));
       var line = new Line(start, direction, width);
 
-      // offset vector
-      var offsVec = new Vector3d(direction);
-      offsVec.Rotate(Math.PI / 2, local.ZAxis);
-      offsVec.Unitize();
-      // move the line
-      line.Transform(Rhino.Geometry.Transform.Translation(offsVec.X * offset, offsVec.Y * offset, offsVec.Z * offset));
+      var offsetVector = new Vector3d(direction);
+      offsetVector.Rotate(Math.PI / 2, local.ZAxis);
+      offsetVector.Unitize();
+
+      line.Transform(Rhino.Geometry.Transform.Translation(offsetVector.X * offset, offsetVector.Y * offset,
+        offsetVector.Z * offset));
       return line;
-
     }
 
-    public override BoundingBox Boundingbox {
-      get {
-        return AxisLine.BoundingBox;
-      }
-    }
+    public override BoundingBox Boundingbox => AxisLine.BoundingBox;
 
     public override string ToString() {
       var startPoint = AxisLine.PointAt(0);
       var endPoint = AxisLine.PointAt(1);
       var length = new Length(Point3d.Subtract(startPoint, endPoint).Length, DefaultUnits.LengthUnitGeometry);
-      return $"Line(Length = {length.ToString()})";
+      return $"Line(Length = {length})";
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
@@ -95,13 +88,14 @@ namespace AdSecGH.Parameters {
       var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
       if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) {
         // not selected
-        args.Pipeline.DrawLine(AxisLine, UI.Colour.OasysBlue);
+        args.Pipeline.DrawLine(AxisLine, Colour.OasysBlue);
       } else {
-        args.Pipeline.DrawLine(AxisLine, UI.Colour.OasysYellow);
+        args.Pipeline.DrawLine(AxisLine, Colour.OasysYellow);
       }
     }
 
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
+      // mandatory method
     }
   }
 }

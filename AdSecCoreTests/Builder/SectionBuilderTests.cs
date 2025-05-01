@@ -8,14 +8,14 @@ using Oasys.AdSec.Reinforcement.Groups;
 using OasysUnits.Units;
 
 namespace AdSecCoreTests.Builder {
+
   public class SectionBuilderTests {
 
     [Fact]
     public void ShouldNotDoAnythingForCenteredBars() {
       var designCode = IS456.Edition_2000;
 
-      var singleBars = new BuilderSingleBar().AtPosition(Geometry.Zero()).WithSize(2).CreateSingleBar()
-       .AtPosition(Geometry.Zero()).Build();
+      var singleBars = new BuilderSingleBar().AtPosition(Geometry.Zero()).WithSize(2).AtPosition(Geometry.Zero()).Build();
       var rebarOriginal = new List<AdSecRebarGroup> {
         new() {
           Group = singleBars,

@@ -1,4 +1,5 @@
-﻿using AdSecGH.Parameters;
+﻿using AdSecGH.Helpers;
+using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
 
@@ -83,6 +84,7 @@ namespace AdSecGHTests.Helpers.Extensions {
     [Fact]
     public void ReturnsDesignCodeWhenDataCorrect() {
       var designCode = new AdSecDesignCodeGoo(new AdSecDesignCode() {
+        DesignCode = AdSecFile.Codes["EC2_04"],
         DesignCodeName = "1",
       });
       ComponentTestHelper.SetInput(_component, designCode);

@@ -2,14 +2,12 @@
 
 using Grasshopper.Kernel.Types;
 
-using Oasys.AdSec.DesignCode;
-
 using OasysGH;
 using OasysGH.Parameters;
 
 namespace AdSecGH.Parameters {
   /// <summary>
-  /// Goo wrapper class, makes sure <see cref="AdSecDesignCode"/> can be used in Grasshopper.
+  ///   Goo wrapper class, makes sure <see cref="AdSecDesignCode" /> can be used in Grasshopper.
   /// </summary>
   public class AdSecDesignCodeGoo : GH_OasysGoo<AdSecDesignCode> {
     public static string Description => "AdSec Design Code";
@@ -17,15 +15,13 @@ namespace AdSecGH.Parameters {
     public static string NickName => "DC";
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
 
-    public AdSecDesignCodeGoo(AdSecDesignCode item) : base(item) {
-    }
+    public AdSecDesignCodeGoo(AdSecDesignCode item) : base(item) { }
 
-    public AdSecDesignCodeGoo(DesignCode designCode) : base(new AdSecDesignCode(designCode.IDesignCode, designCode.DesignCodeName)) {
-
-    }
+    public AdSecDesignCodeGoo(DesignCode designCode) : base(new AdSecDesignCode(designCode.IDesignCode,
+      designCode.DesignCodeName)) { }
 
     public override IGH_Goo Duplicate() {
-      return new AdSecDesignCodeGoo(Value);
+      return Value.IsValid ? new AdSecDesignCodeGoo(Value) : null;
     }
   }
 }

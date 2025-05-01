@@ -7,7 +7,6 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 
 using Rhino;
-using Rhino.Display;
 using Rhino.DocObjects;
 
 using Xunit;
@@ -59,10 +58,10 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void ShouldDrawForSelected() {
       sectionGoo.UpdateGeometryRepresentation(false);
-      var a = sectionGoo._drawInstructions[0].Color;
+      var a = sectionGoo.DrawInstructionsList[0].Color;
       var notSelectedColour = Color.FromArgb(a.A, a.R, a.G, a.B);
       sectionGoo.UpdateGeometryRepresentation(true);
-      var b = sectionGoo._drawInstructions[0].Color;
+      var b = sectionGoo.DrawInstructionsList[0].Color;
       var selectedColour = Color.FromArgb(b.A, b.R, b.G, b.B);
 
       Assert.NotEqual(notSelectedColour, selectedColour);
@@ -71,12 +70,12 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void ShouldDrawOnViewPort() {
       var doc = RhinoDoc.Create(string.Empty);
-      sectionGoo._drawInstructions.Clear();
+      sectionGoo.DrawInstructionsList.Clear();
       var displayPipeline = doc.Views.ActiveView.DisplayPipeline;
       var rhinoViewport = doc.Views.ActiveView.ActiveViewport;
       var ghPreviewWireArgs = new GH_PreviewWireArgs(rhinoViewport, displayPipeline, Color.White, 1);
       sectionGoo.DrawViewportWires(ghPreviewWireArgs);
-      Assert.NotEmpty(sectionGoo._drawInstructions);
+      Assert.NotEmpty(sectionGoo.DrawInstructionsList);
       doc.Dispose();
     }
   }

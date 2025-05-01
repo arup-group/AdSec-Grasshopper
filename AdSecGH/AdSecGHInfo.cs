@@ -15,8 +15,6 @@ namespace AdSecGH {
       => $"Official Oasys AdSec Grasshopper Plugin{Environment.NewLine}{(isBeta ? Disclaimer : "")}{Environment.NewLine}The plugin requires an AdSec 10 license to load. {Environment.NewLine}Contact oasys@arup.com to request a free trial version. {Environment.NewLine}{TermsConditions}{Environment.NewLine}{Copyright}";
     //Return a 24x24 pixel bitmap to represent this GHA library.
     public override Bitmap Icon => null;
-    public string IconUrl
-      => "https://raw.githubusercontent.com/arup-group/GSA-Grasshopper/main/Documentation/GettingStartedGuide/Icons/GsaGhLogo.jpg";
     public override Guid Id => GUID;
     public override string Name => ProductName;
     public override string Version => isBeta ? $"{Vers}-beta" : Vers;

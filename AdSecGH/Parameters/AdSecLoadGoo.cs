@@ -2,6 +2,9 @@
 using System.Drawing;
 using System.Linq;
 
+using AdSecGH.Helpers;
+using AdSecGH.UI;
+
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
@@ -25,77 +28,76 @@ namespace AdSecGH.Parameters {
         if (Value == null) {
           return BoundingBox.Empty;
         }
-        if (m_point == null) {
+
+        if (_point == null) {
           return BoundingBox.Empty;
         }
-        var pt1 = new Point3d(m_point);
-        pt1.Z += 0.25;
-        var pt2 = new Point3d(m_point);
-        pt2.Z += -0.25;
-        var ln = new Line(pt1, pt2);
-        var crv = new LineCurve(ln);
-        return crv.GetBoundingBox(false);
+
+        return PointHelper.GetPointBoundingBox(_point);
       }
     }
-    public BoundingBox ClippingBox => Boundingbox;
     public override bool IsValid => true;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Load";
-    private Point3d m_point = Point3d.Unset;
+    private Point3d _point = Point3d.Unset;
 
-    public AdSecLoadGoo(ILoad load) : base(load) {
-    }
+    public AdSecLoadGoo(ILoad load) : base(load) { }
 
     public AdSecLoadGoo(ILoad load, Plane local) {
       m_value = load;
-      var point = new Point3d(
-        load.ZZ.As(DefaultUnits.MomentUnit),
-        load.YY.As(DefaultUnits.MomentUnit),
+      var point = new Point3d(load.ZZ.As(DefaultUnits.MomentUnit), load.YY.As(DefaultUnits.MomentUnit),
         load.X.As(DefaultUnits.ForceUnit));
       var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
       point.Transform(mapFromLocal);
-      m_point = point;
+      _point = point;
+    }
+
+    public BoundingBox ClippingBox => Boundingbox;
+
+    public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
+
+    public void DrawViewportWires(GH_PreviewWireArgs args) {
+      if (_point.IsValid) {
+        var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+        if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
+          args.Pipeline.DrawPoint(_point, PointStyle.X, 7, Colour.ArupRed);
+        } else {
+          args.Pipeline.DrawPoint(_point, PointStyle.X, 8, Colour.UILightGrey);
+        }
+      }
     }
 
     public override bool CastFrom(object source) {
       if (source == null) {
         return false;
       }
-      if (source is Point3d) {
-        var point = (Point3d)source;
-        var load = ILoad.Create(
-            new Force(point.X, DefaultUnits.ForceUnit),
-            new Moment(point.Y, DefaultUnits.MomentUnit),
-            new Moment(point.Z, DefaultUnits.MomentUnit));
-        var temp = new AdSecLoadGoo(load);
-        Value = temp.Value;
-        return true;
+
+      Point3d point;
+      switch (source) {
+        case Point3d pt:
+          point = pt;
+          break;
+        case GH_Point ghPt:
+          point = ghPt.Value;
+          break;
+        default:
+          point = new Point3d();
+          if (!GH_Convert.ToPoint3d(source, ref point, GH_Conversion.Both)) {
+            return false;
+          }
+
+          break;
       }
 
-      if (source is GH_Point ptGoo) {
-        Point3d point = ptGoo.Value;
-        var load = ILoad.Create(
-            new Force(point.X, DefaultUnits.ForceUnit),
-            new Moment(point.Y, DefaultUnits.MomentUnit),
-            new Moment(point.Z, DefaultUnits.MomentUnit));
-        var temp = new AdSecLoadGoo(load);
-        Value = temp.Value;
-        return true;
-      }
+      return SetLoadFromPoint(point);
+    }
 
-      var pt = new Point3d();
-      if (GH_Convert.ToPoint3d(source, ref pt, GH_Conversion.Both)) {
-        Point3d point = pt;
-        var load = ILoad.Create(
-            new Force(point.X, DefaultUnits.ForceUnit),
-            new Moment(point.Y, DefaultUnits.MomentUnit),
-            new Moment(point.Z, DefaultUnits.MomentUnit));
-        var temp = new AdSecLoadGoo(load);
-        Value = temp.Value;
-        return true;
-      }
+    private bool SetLoadFromPoint(Point3d point) {
+      var load = ILoad.Create(new Force(point.X, DefaultUnits.ForceUnit), new Moment(point.Y, DefaultUnits.MomentUnit),
+        new Moment(point.Z, DefaultUnits.MomentUnit));
 
-      return false;
+      Value = new AdSecLoadGoo(load).Value;
+      return true;
     }
 
     public override bool CastTo<Q>(out Q target) {
@@ -105,17 +107,17 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(Point3d))) {
-        target = (Q)(object)m_point;
+        target = (Q)(object)_point;
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Point))) {
-        target = (Q)(object)new GH_Point(m_point);
+        target = (Q)(object)new GH_Point(_point);
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(ILoad))) {
-        target = (Q)(object)ILoad.Create(Value.X, Value.YY, Value.ZZ);
+        target = (Q)ILoad.Create(Value.X, Value.YY, Value.ZZ);
         return true;
       }
 
@@ -123,42 +125,32 @@ namespace AdSecGH.Parameters {
       return false;
     }
 
-    public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
-    }
-
-    public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (m_point.IsValid) {
-        Color defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-        if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) {
-          // not selected
-          args.Pipeline.DrawPoint(m_point, PointStyle.X, 7, UI.Colour.ArupRed);
-        } else {
-          args.Pipeline.DrawPoint(m_point, PointStyle.X, 8, UI.Colour.UILightGrey);
-        }
-      }
-    }
-
     public override IGH_Goo Duplicate() {
       return new AdSecLoadGoo(Value);
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      var dup = new AdSecLoadGoo(Value) {
-        m_point = new Point3d(m_point)
+      return new AdSecLoadGoo(Value) {
+        _point = new Point3d(_point),
       };
-      return dup;
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null) { return BoundingBox.Empty; }
-      if (m_point == null) { return BoundingBox.Empty; }
-      var pt1 = new Point3d(m_point);
-      pt1.Z += 0.25;
-      var pt2 = new Point3d(m_point);
-      pt2.Z += -0.25;
-      var ln = new Line(pt1, pt2);
-      var crv = new LineCurve(ln);
-      return crv.GetBoundingBox(xform);
+      if (Value == null) {
+        return BoundingBox.Empty;
+      }
+
+      if (_point == null) {
+        return BoundingBox.Empty;
+      }
+
+      var point1 = new Point3d(_point);
+      point1.Z += 0.25;
+      var point2 = new Point3d(_point);
+      point2.Z += -0.25;
+      var line = new Line(point1, point2);
+      var lineCurve = new LineCurve(line);
+      return lineCurve.GetBoundingBox(xform);
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {

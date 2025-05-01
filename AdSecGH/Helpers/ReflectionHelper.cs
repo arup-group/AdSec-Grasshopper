@@ -23,6 +23,8 @@ namespace AdSecGH.Helpers {
     }
 
     internal static Dictionary<string, FieldInfo> ReflectFields(Type type) {
+      var materials = new Dictionary<string, FieldInfo>();
+
       var fields = type.GetFields().ToList();
 
       var types = type.GetInterfaces();
@@ -30,7 +32,6 @@ namespace AdSecGH.Helpers {
         fields.AddRange(baseType.GetFields());
       }
 
-      var materials = new Dictionary<string, FieldInfo>();
       foreach (var field in fields) {
         materials.Add(field.Name, field);
       }
@@ -40,6 +41,7 @@ namespace AdSecGH.Helpers {
 
     internal static Dictionary<string, Type> ReflectNestedTypes(Type type) {
       var dict = new Dictionary<string, Type>();
+
       var members = type.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
       foreach (var member in members) {
         dict.Add(member.Name, (Type)member);
@@ -69,7 +71,7 @@ namespace AdSecGH.Helpers {
         case AdSecMaterial.AdSecMaterialType.Tendon: return ReflectNestedTypes(typeof(Reinforcement.Tendon));
       }
 
-      return null;
+      return new Dictionary<string, Type>();
     }
   }
 }

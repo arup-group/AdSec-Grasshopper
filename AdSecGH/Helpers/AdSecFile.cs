@@ -1,27 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 
 using AdSecGH.Parameters;
 
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
-using Grasshopper.Kernel.Types;
-
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
-using Oasys.Collections;
-
-using OasysUnits;
 
 using Rhino.UI;
 
-using static System.Collections.Specialized.BitVector32;
 namespace AdSecGH.Helpers {
   internal class AdSecFile {
     private AdSecFile() { }
@@ -182,33 +172,67 @@ namespace AdSecGH.Helpers {
 
     internal static List<string> SectionJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
       var jsonStrings = new List<string>();
+
+      if (sections[0].DesignCode == null) {
+        throw new ArgumentException("AdSec design code is null");
+      }
+
       var json = new JsonConverter(sections[0].DesignCode);
       for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
 
-        var adSecload = Oasys.Collections.IList<ILoad>.Create();
-        var adSecDeformation = Oasys.Collections.IList<IDeformation>.Create();
-        if (loads.ContainsKey(sectionId)) {
-
-          foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecLoadGoo))) {
-            adSecload.Add(((AdSecLoadGoo)item).Value);
-          }
-
-          foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecDeformationGoo))) {
-            adSecDeformation.Add(((AdSecDeformationGoo)item).Value);
-          }
-        }
+        PopulateLoadAndDeformationLists(loads, sectionId, out var adSecload, out var adSecDeformation);
 
         if (adSecload.Any() && adSecDeformation.Any()) {
           throw new ArgumentException("Only either deformation or load can be specified to a section.");
         }
-
-        if (adSecload.Any()) {
-          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecload));
-        } else {
-          jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecDeformation));
+        try {
+          if (adSecload.Any()) {
+            jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecload));
+          } else {
+            jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecDeformation));
+          }
+        } catch (System.Reflection.TargetInvocationException exception) {
+          ParseJsonException(exception);
         }
       }
       return jsonStrings;
+    }
+
+    private static void PopulateLoadAndDeformationLists(Dictionary<int, List<object>> loads, int sectionId, out Oasys.Collections.IList<ILoad> adSecload, out Oasys.Collections.IList<IDeformation> adSecDeformation) {
+      adSecload = Oasys.Collections.IList<ILoad>.Create();
+      adSecDeformation = Oasys.Collections.IList<IDeformation>.Create();
+
+      if (loads.ContainsKey(sectionId)) {
+
+        foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecLoadGoo))) {
+          adSecload.Add(((AdSecLoadGoo)item).Value);
+        }
+
+        foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecDeformationGoo))) {
+          adSecDeformation.Add(((AdSecDeformationGoo)item).Value);
+        }
+      }
+    }
+
+    private static void ParseJsonException(Exception exception) {
+      var messageBuilder = new StringBuilder();
+      messageBuilder.Append(exception.Message);
+      if (exception.InnerException != null) {
+        foreach (var value in exception.InnerException.Data.Values) {
+          if (value is IEnumerable<string> messages) {
+            foreach (var message in messages) {
+              messageBuilder.AppendLine(message);
+            }
+          }
+        }
+      }
+      string exceptionMessage = messageBuilder.ToString();
+
+      if (exceptionMessage.Contains("definition is not a standard")) {
+        messageBuilder.AppendLine(" The AdSec file cannot be created if the section material and rebar grade are not consistent with the design code.");
+      }
+
+      throw new InvalidOperationException(messageBuilder.ToString());
     }
 
     internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {

@@ -7,6 +7,8 @@ using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Mesh;
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
 
 using OasysUnits;
@@ -121,6 +123,9 @@ namespace AdSecCore.Functions {
     }
   }
 
+  public class RebarBundleParameter : ParameterAttribute<IBarBundle> { }
+  public class RebarLayerParameter : BaseArrayParameter<ILayer> { }
+
   public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
 
   public class DesignCodeParameter : ParameterAttribute<DesignCode> {
@@ -139,4 +144,6 @@ namespace AdSecCore.Functions {
 
   public class GeometryParameter : ParameterAttribute<object> { }
   public class NeutralLineParameter : ParameterAttribute<NeutralAxis> { }
+  public class StrainParameter : ParameterAttribute<Strain> { }
+  public class PressureParameter : ParameterAttribute<Pressure> { }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using AdSecGH.UI;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
@@ -26,75 +28,65 @@ namespace AdSecGH.Parameters {
       Park,
       Popovics,
       Rectangular,
-      StressStrainDefault
+      StressStrainDefault,
     }
 
     public List<AdSecStressStrainPointGoo> AdSecStressStrainPoints {
       get {
         var outPts = new List<AdSecStressStrainPointGoo>();
-        Oasys.Collections.IList<IStressStrainPoint> pts = IStressStrainPoints;
-        foreach (IStressStrainPoint pt in pts) {
-          outPts.Add(new AdSecStressStrainPointGoo(pt));
-        }
+        var points = GetIStressStrainPoints();
+        outPts.AddRange(points.Select(pt => new AdSecStressStrainPointGoo(pt)));
         return outPts;
       }
     }
-    public override BoundingBox Boundingbox {
-      get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
-        return Value.GetBoundingBox(false);
-      }
-    }
+    public override BoundingBox Boundingbox => Value == null ? BoundingBox.Empty : Value.GetBoundingBox(false);
     public BoundingBox ClippingBox => Boundingbox;
-    public List<Point3d> ControlPoints { get; } = new List<Point3d>();
-    public Oasys.Collections.IList<IStressStrainPoint> IStressStrainPoints {
-      get {
-        try {
-          var crv2 = (IExplicitStressStrainCurve)StressStrainCurve;
-          return crv2.Points;
-        } catch (Exception) {
-          throw new Exception("Unable to cast to internal IStressStrainCurve to IExplicitStressStrainCurve");
-        }
+    public List<Point3d> ControlPoints { get; }
+
+    public Oasys.Collections.IList<IStressStrainPoint> GetIStressStrainPoints() {
+      try {
+        var explicitStressStrainCurve = (IExplicitStressStrainCurve)StressStrainCurve;
+        return explicitStressStrainCurve.Points;
+      } catch (Exception) {
+        throw new InvalidCastException("Unable to cast to internal IStressStrainCurve to IExplicitStressStrainCurve");
       }
     }
     public IStressStrainCurve StressStrainCurve { get; }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "StressStrainCurve";
 
-    private StressStrainCurveType m_type;
+    private readonly StressStrainCurveType _type;
 
     public AdSecStressStrainCurveGoo(Curve curve, IStressStrainCurve stressStrainCurve, StressStrainCurveType type, List<Point3d> points) : base(curve) {
       ControlPoints = points;
-      m_type = type;
+      _type = type;
       StressStrainCurve = stressStrainCurve;
     }
 
     public override bool CastFrom(object source) {
-      if (source == null) {
-        return false;
-      }
-      if (source is Curve curve) {
-        Value = curve;
-        return true;
-      }
-      if (source is GH_Curve lineGoo) {
-        Value = lineGoo.Value;
-        return true;
+      switch (source) {
+        case null: return false;
+        case Curve curve:
+          Value = curve;
+          return true;
+        case GH_Curve lineGoo:
+          Value = lineGoo.Value;
+          return true;
       }
 
       Curve line = null;
-      if (GH_Convert.ToCurve(source, ref line, GH_Conversion.Both)) {
-        Value = line;
-        return true;
+      if (!GH_Convert.ToCurve(source, ref line, GH_Conversion.Both)) {
+        return false;
       }
-      return false;
+
+      Value = line;
+      return true;
     }
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecStressStrainCurveGoo))) {
-        target = (Q)(object)new AdSecStressStrainCurveGoo(m_value.DuplicateCurve(), StressStrainCurve, m_type, ControlPoints.ToList());
+        target = (Q)(object)new AdSecStressStrainCurveGoo(m_value.DuplicateCurve(), StressStrainCurve, _type,
+          ControlPoints.ToList());
         return true;
       }
 
@@ -116,16 +108,18 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (Value != null) {
-        args.Pipeline.DrawCurve(Value, UI.Colour.OasysBlue, 2);
-        foreach (Point3d pt in ControlPoints) {
-          args.Pipeline.DrawCircle(new Circle(pt, 0.5), UI.Colour.OasysYellow, 1);
-        }
+      if (Value == null) {
+        return;
+      }
+
+      args.Pipeline.DrawCurve(Value, Colour.OasysBlue, 2);
+      foreach (var point3d in ControlPoints) {
+        args.Pipeline.DrawCircle(new Circle(point3d, 0.5), Colour.OasysYellow, 1);
       }
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecStressStrainCurveGoo(Value.DuplicateCurve(), StressStrainCurve, m_type, ControlPoints);
+      return new AdSecStressStrainCurveGoo(Value.DuplicateCurve(), StressStrainCurve, _type, ControlPoints);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
@@ -137,7 +131,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return $"AdSec {TypeName} {{{m_type}}}";
+      return $"AdSec {TypeName} {{{_type}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {
@@ -146,137 +140,93 @@ namespace AdSecGH.Parameters {
 
     internal static Tuple<Curve, List<Point3d>> Create(IStressStrainCurve stressStrainCurve, StressStrainCurveType type, bool isCompression) {
       int direction = isCompression ? 1 : -1;
-      Curve crvOut = null;
-      var pts = new List<Point3d>();
-      if (type == StressStrainCurveType.Bilinear) {
-        var crv1 = (IBilinearStressStrainCurve)stressStrainCurve;
-        pts.Add(new Point3d(0, 0, 0));
-        pts.Add(new Point3d(
-            crv1.YieldPoint.Strain.As(DefaultUnits.StrainUnitResult) * direction,
-            crv1.YieldPoint.Stress.As(DefaultUnits.StressUnitResult) * direction, 0));
-        pts.Add(new Point3d(
-            crv1.FailurePoint.Strain.As(DefaultUnits.StrainUnitResult) * direction,
-            crv1.FailurePoint.Stress.As(DefaultUnits.StressUnitResult) * direction, 0));
-        crvOut = new Polyline(pts).ToPolylineCurve();
-      } else if (type == StressStrainCurveType.Explicit) {
-        var crv2 = (IExplicitStressStrainCurve)stressStrainCurve;
-        foreach (IStressStrainPoint pt in crv2.Points) {
-          pts.Add(new Point3d(
-          pt.Strain.As(DefaultUnits.StrainUnitResult) * direction,
-          pt.Stress.As(DefaultUnits.StressUnitResult) * direction, 0));
-        }
-        crvOut = new Polyline(pts).ToPolylineCurve();
-      } else if (type == StressStrainCurveType.Linear) {
-        var crv3 = (ILinearStressStrainCurve)stressStrainCurve;
-        pts.Add(new Point3d(0, 0, 0));
-        pts.Add(new Point3d(
-            crv3.FailurePoint.Strain.As(DefaultUnits.StrainUnitResult) * direction,
-            crv3.FailurePoint.Stress.As(DefaultUnits.StressUnitResult) * direction, 0));
-        crvOut = new Polyline(pts).ToPolylineCurve();
-      } else {
-        double maxStrain = stressStrainCurve.FailureStrain.As(DefaultUnits.StrainUnitResult);
-        var polypts = new List<Point3d>();
-        for (int i = 0; i < 250; i++) {
-          var strain = new Strain((double)i / (double)100.0 * maxStrain, DefaultUnits.StrainUnitResult);
-
-          Pressure stress;
-          try {
-            stress = stressStrainCurve.StressAt(strain); // for some material models the first point returns an NaN
-          } catch (Exception) {
-            stress = Pressure.Zero;
+      Curve curveOut;
+      var point3ds = new List<Point3d>();
+      switch (type) {
+        case StressStrainCurveType.Bilinear: {
+            var strainCurve = (IBilinearStressStrainCurve)stressStrainCurve;
+            point3ds.Add(new Point3d(0, 0, 0));
+            point3ds.Add(new Point3d(strainCurve.YieldPoint.Strain.As(DefaultUnits.StrainUnitResult) * direction,
+              strainCurve.YieldPoint.Stress.As(DefaultUnits.StressUnitResult) * direction, 0));
+            point3ds.Add(new Point3d(strainCurve.FailurePoint.Strain.As(DefaultUnits.StrainUnitResult) * direction,
+              strainCurve.FailurePoint.Stress.As(DefaultUnits.StressUnitResult) * direction, 0));
+            curveOut = new Polyline(point3ds).ToPolylineCurve();
+            break;
           }
 
-          polypts.Add(new Point3d(
-          strain.As(DefaultUnits.StrainUnitResult) * direction,
-          stress.As(DefaultUnits.StressUnitResult) * direction, 0));
-        }
-        crvOut = new Polyline(polypts).ToPolylineCurve();
+        case StressStrainCurveType.Explicit: {
+            var strainCurve = (IExplicitStressStrainCurve)stressStrainCurve;
+            point3ds.AddRange(strainCurve.Points.Select(point => new Point3d(
+              point.Strain.As(DefaultUnits.StrainUnitResult) * direction,
+              point.Stress.As(DefaultUnits.StressUnitResult) * direction, 0)));
+            curveOut = new Polyline(point3ds).ToPolylineCurve();
+            break;
+          }
 
-        //if (type == StressStrainCurveType.FibModelCode)
-        //{
-        //    IFibModelCodeStressStrainCurve crv = (IFibModelCodeStressStrainCurve)stressStrainCurve;
-        //    pts.Add(new Point3d(0, 0, 0));
-        //    pts.Add(new Point3d(
-        //        crv.PeakPoint.Strain.As(Units.StrainUnit) * direction,
-        //        crv.PeakPoint.Stress.As(DefaultUnits.StrainUnitResult) * direction, 0));
-        //}
-        //if (type == StressStrainCurveType.Mander)
-        //{
-        //    IManderStressStrainCurve crv = (IManderStressStrainCurve)stressStrainCurve;
-        //    pts.Add(new Point3d(0, 0, 0));
-        //    pts.Add(new Point3d(
-        //        crv.PeakPoint.Strain.As(Units.StrainUnit) * direction,
-        //        crv.PeakPoint.Stress.As(DefaultUnits.StrainUnitResult) * direction, 0));
-        //}
-        //if (type == StressStrainCurveType.ParabolaRectangle)
-        //{
-        //    IParabolaRectangleStressStrainCurve crv = (IParabolaRectangleStressStrainCurve)stressStrainCurve;
-        //    pts.Add(new Point3d(0, 0, 0));
-        //    pts.Add(new Point3d(
-        //        crv.YieldPoint.Strain.As(Units.StrainUnit) * direction,
-        //        crv.YieldPoint.Stress.As(DefaultUnits.StrainUnitResult) * direction, 0));
-        //}
-        //if (type == StressStrainCurveType.Park)
-        //{
-        //    IParkStressStrainCurve crv = (IParkStressStrainCurve)stressStrainCurve;
-        //    pts.Add(new Point3d(0, 0, 0));
-        //    pts.Add(new Point3d(
-        //        crv.YieldPoint.Strain.As(Units.StrainUnit) * direction,
-        //        crv.YieldPoint.Stress.As(DefaultUnits.StrainUnitResult) * direction, 0));
-        //}
-        //if (type == StressStrainCurveType.Popovics)
-        //{
-        //    IPopovicsStressStrainCurve crv = (IPopovicsStressStrainCurve)stressStrainCurve;
-        //    pts.Add(new Point3d(0, 0, 0));
-        //    pts.Add(new Point3d(
-        //        crv.PeakPoint.Strain.As(Units.StrainUnit) * direction,
-        //        crv.PeakPoint.Stress.As(DefaultUnits.StrainUnitResult) * direction, 0));
-        //}
-        //if (type == StressStrainCurveType.Rectangular)
-        //{
-        //    IRectangularStressStrainCurve crv = (IRectangularStressStrainCurve)stressStrainCurve;
-        //    pts.Add(new Point3d(0, 0, 0));
-        //    pts.Add(new Point3d(
-        //        crv.YieldPoint.Strain.As(Units.StrainUnit) * direction,
-        //        crv.YieldPoint.Stress.As(DefaultUnits.StrainUnitResult) * direction, 0));
-        //}
+        case StressStrainCurveType.Linear: {
+            var strainCurve = (ILinearStressStrainCurve)stressStrainCurve;
+            point3ds.Add(new Point3d(0, 0, 0));
+            point3ds.Add(new Point3d(strainCurve.FailurePoint.Strain.As(DefaultUnits.StrainUnitResult) * direction,
+              strainCurve.FailurePoint.Stress.As(DefaultUnits.StressUnitResult) * direction, 0));
+            curveOut = new Polyline(point3ds).ToPolylineCurve();
+            break;
+          }
+
+        default: {
+            double maxStrain = stressStrainCurve.FailureStrain.As(DefaultUnits.StrainUnitResult);
+            var polypoints = new List<Point3d>();
+            for (int i = 0; i < 250; i++) {
+              var strain = new Strain(i / 100.0 * maxStrain, DefaultUnits.StrainUnitResult);
+
+              Pressure stress;
+              try {
+                stress = stressStrainCurve.StressAt(strain); // for some material models the first point returns an NaN
+              } catch (Exception) {
+                stress = Pressure.Zero;
+              }
+
+              polypoints.Add(new Point3d(strain.As(DefaultUnits.StrainUnitResult) * direction,
+                stress.As(DefaultUnits.StressUnitResult) * direction, 0));
+            }
+
+            curveOut = new Polyline(polypoints).ToPolylineCurve();
+            break;
+          }
       }
 
-      return new Tuple<Curve, List<Point3d>>(crvOut, pts);
+      return new Tuple<Curve, List<Point3d>>(curveOut, point3ds);
     }
 
     internal static Tuple<Curve, List<Point3d>> CreateFromCode(IStressStrainCurve stressStrainCurve, bool isCompression) {
       int direction = isCompression ? 1 : -1;
-      Curve crvOut = null;
-      var pts = new List<Point3d>();
+      var point3ds = new List<Point3d>();
 
       double maxStrain = stressStrainCurve.FailureStrain.As(DefaultUnits.StrainUnitResult);
-      var polypts = new List<Point3d>();
+      var polypoints = new List<Point3d>();
       for (int i = 0; i < 100; i++) {
-        var strain = new Strain((double)i / (double)100.0 * maxStrain, DefaultUnits.StrainUnitResult);
-        Pressure stress = stressStrainCurve.StressAt(strain);
-        polypts.Add(new Point3d(
-        strain.As(DefaultUnits.StrainUnitResult) * direction,
-        stress.As(DefaultUnits.StressUnitResult) * direction, 0));
+        var strain = new Strain(i / 100.0 * maxStrain, DefaultUnits.StrainUnitResult);
+        var stress = stressStrainCurve.StressAt(strain);
+        polypoints.Add(new Point3d(strain.As(DefaultUnits.StrainUnitResult) * direction,
+          stress.As(DefaultUnits.StressUnitResult) * direction, 0));
       }
-      crvOut = new Polyline(polypts).ToPolylineCurve();
-      pts.Add(polypts.First());
-      pts.Add(polypts.Last());
 
-      return new Tuple<Curve, List<Point3d>>(crvOut, pts);
+      var curveOut = new Polyline(polypoints).ToPolylineCurve();
+      point3ds.Add(polypoints[0]);
+      point3ds.Add(polypoints[polypoints.Count - 1]);
+
+      return new Tuple<Curve, List<Point3d>>(curveOut, point3ds);
     }
 
     internal static Oasys.Collections.IList<IStressStrainPoint> StressStrainPtsFromPolyline(PolylineCurve curve) {
-      var pts = Oasys.Collections.IList<IStressStrainPoint>.Create();
-      IStressStrainPoint pt = null;
+      var strainPoints = Oasys.Collections.IList<IStressStrainPoint>.Create();
       for (int j = 0; j < curve.PointCount; j++) {
-        Point3d point3d = curve.Point(j);
-        pt = IStressStrainPoint.Create(
-            new Pressure(point3d.Y, DefaultUnits.StressUnitResult),
-            new Strain(point3d.X, DefaultUnits.StrainUnitResult));
-        pts.Add(pt);
+        var point3d = curve.Point(j);
+        var point = IStressStrainPoint.Create(new Pressure(point3d.Y, DefaultUnits.StressUnitResult),
+          new Strain(point3d.X, DefaultUnits.StrainUnitResult));
+        strainPoints.Add(point);
       }
-      return pts;
+
+      return strainPoints;
     }
   }
 }
