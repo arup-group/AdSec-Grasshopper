@@ -21,7 +21,7 @@ namespace AdSecGH.Parameters {
     public AdSecDesignCode DesignCode { get; set; }
     public string DesignCodeName => DesignCode?.DesignCodeName;
     public string GradeName { get; set; }
-    public bool IsValid => Material != null;
+    public bool IsValid => Material != null && DesignCode.IsValid;
     public IMaterial Material { get; set; }
     public string TypeName => Type.ToString();
     internal AdSecMaterialType Type { get; set; }
@@ -29,7 +29,7 @@ namespace AdSecGH.Parameters {
     public AdSecMaterial() { }
 
     public AdSecMaterial(IMaterial material, string materialGradeName) {
-      if (materialGradeName != null) {
+      if (!string.IsNullOrEmpty(materialGradeName)) {
         GradeName = materialGradeName;
       }
 
@@ -104,12 +104,7 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecMaterial Duplicate() {
-      if (this == null) {
-        return null;
-      }
-
-      var dup = (AdSecMaterial)MemberwiseClone();
-      return dup;
+      return IsValid ? (AdSecMaterial)MemberwiseClone() : null;
     }
 
     public override string ToString() {
