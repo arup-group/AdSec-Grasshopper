@@ -82,5 +82,10 @@ namespace AdSecGH.Components {
 
       _isInitialised = true;
     }
+
+    protected override void UpdateUIFromSelectedItems() {
+      BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[0]);
+      base.UpdateUIFromSelectedItems();
+    }
   }
 }
