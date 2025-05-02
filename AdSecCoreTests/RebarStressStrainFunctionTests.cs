@@ -33,22 +33,8 @@ namespace AdSecGHTests.Functions {
     }
 
     [Fact]
-    public void ShouldHaveErrorMessageForNullSolutionParameter() {
-      _component.SolutionInput = null;
-      _component.Compute();
-      Assert.Single(_component.ErrorMessages);
-    }
-
-    [Fact]
     public void ShouldHaveErrorMessageForNullLoad() {
       _component.LoadInput.Value = null;
-      _component.Compute();
-      Assert.Single(_component.ErrorMessages);
-    }
-
-    [Fact]
-    public void ShouldHaveErrorMessageForNullLoadPrameter() {
-      _component.LoadInput = null;
       _component.Compute();
       Assert.Single(_component.ErrorMessages);
     }

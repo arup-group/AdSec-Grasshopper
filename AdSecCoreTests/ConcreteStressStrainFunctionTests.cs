@@ -31,13 +31,6 @@ namespace AdSecGHTests.Functions {
     }
 
     [Fact]
-    public void ErrorMessageWhenVertexParameterIsNull() {
-      _component.VertexInput = null;
-      _component.Compute();
-      Assert.Single(_component.ErrorMessages);
-    }
-
-    [Fact]
     public void ShouldHaveWarningForInvalidLoad() {
       _component.LoadInput.Value = ILoad.Create(Force.Zero, Moment.Zero, Moment.Zero);
       _component.Compute();

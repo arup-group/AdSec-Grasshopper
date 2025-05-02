@@ -46,10 +46,6 @@ namespace AdSecCore.Functions {
     public virtual bool ValidateInputs() {
       var inputs = GetAllInputAttributes();
       foreach (var input in inputs) {
-        if (input == null) {
-          ErrorMessages.Add("Input parameter is null");
-          return false;
-        }
         var valueProperty = input.GetType().GetProperty("Value");
         var value = valueProperty.GetValue(input);
         if (!input.Optional && value == null) {
