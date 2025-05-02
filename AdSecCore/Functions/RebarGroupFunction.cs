@@ -183,7 +183,7 @@ namespace AdSecCore.Functions {
         }
 
         var rebarGroup = Layout.Value[i];
-        rebarGroup.Cover = ICover.Create(Length.From(coverSize, LengthUnit));
+        rebarGroup.Cover = ICover.Create(Length.From(coverSize, LengthUnitGeometry));
       }
     }
 

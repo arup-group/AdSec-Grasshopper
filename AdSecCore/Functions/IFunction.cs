@@ -18,7 +18,7 @@ namespace AdSecCore.Functions {
   }
 
   public abstract class Function : IFunction {
-    public LengthUnit LengthUnit { get; set; } = LengthUnit.Meter;
+    public LengthUnit LengthUnitGeometry { get; set; } = LengthUnit.Meter;
     public LengthUnit LengthUnitResult { get; set; } = LengthUnit.Millimeter;
     public StrainUnit StrainUnitResult { get; set; } = StrainUnit.Ratio;
     public CurvatureUnit CurvatureUnit { get; set; } = CurvatureUnit.PerMeter;
@@ -29,6 +29,32 @@ namespace AdSecCore.Functions {
     public List<string> ErrorMessages { get; set; } = new List<string>();
     public List<string> WarningMessages { get; set; } = new List<string>();
     public List<string> RemarkMessages { get; set; } = new List<string>();
+
+    public string GetStrainUnitResultAbbreviation() {
+      return Strain.GetAbbreviation(StrainUnitResult);
+    }
+    public string GetStressUnitResultAbbreviation() {
+      return Pressure.GetAbbreviation(StressUnitResult);
+    }
+    public string GetLengthUnitGeometryAbbreviation() {
+      return Length.GetAbbreviation(LengthUnitGeometry);
+    }
+    public string GetLengthUnitResultAbbreviation() {
+      return Length.GetAbbreviation(LengthUnitResult);
+    }
+
+    public virtual bool ValidateInputs() {
+      var inputs = GetAllInputAttributes();
+      foreach (var input in inputs) {
+        var valueProperty = input.GetType().GetProperty("Value");
+        var value = valueProperty.GetValue(input);
+        if (!input.Optional && value == null) {
+          ErrorMessages.Add($"{input.Name} input is null");
+          return false;
+        }
+      }
+      return true;
+    }
 
     public abstract FuncAttribute Metadata { get; set; }
     public abstract Organisation Organisation { get; set; }

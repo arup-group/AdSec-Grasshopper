@@ -4,7 +4,6 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
@@ -68,6 +67,10 @@ namespace AdSecGH.Components {
       _selectedItems.Add(Curvature.GetAbbreviation(_curvatureUnit));
 
       _isInitialised = true;
+    }
+
+    protected override void BeforeSolveInstance() {
+      UpdateUnits();
     }
 
     private void UpdateUnits() {

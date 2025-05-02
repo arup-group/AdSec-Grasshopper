@@ -164,19 +164,7 @@ namespace AdSecCore.Functions {
       MomentRangesOutput.Description = UncrackedMomentRangesOutput.Description;
     }
 
-    protected virtual bool ValidateInputs() {
-      if (SolutionInput.Value == null) {
-        ErrorMessages.Add("Solution input is null");
-        return false;
-      }
-      if (LoadInput.Value == null) {
-        ErrorMessages.Add("Load input is null");
-        return false;
-      }
-      return IsLoadValid();
-    }
-
-    private bool IsLoadValid() {
+    protected virtual bool ValidateLoad() {
       switch (LoadInput.Value) {
         case ILoad load:
           if (!LoadExtensions.IsValid(load)) {
@@ -193,6 +181,13 @@ namespace AdSecCore.Functions {
         default:
           ErrorMessages.Add("Invalid Load Input");
           return false;
+      }
+      return true;
+    }
+
+    public override bool ValidateInputs() {
+      if (!base.ValidateInputs() || !ValidateLoad()) {
+        return false;
       }
       return true;
     }

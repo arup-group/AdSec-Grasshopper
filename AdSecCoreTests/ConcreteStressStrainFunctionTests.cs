@@ -52,6 +52,13 @@ namespace AdSecGHTests.Functions {
     }
 
     [Fact]
+    public void ShouldValidateOptionalVertex() {
+      _component.VertexInput.Value = null;
+      _component.VertexInput.Optional = true;
+      Assert.True(_component.ValidateInputs());
+    }
+
+    [Fact]
     public void ShouldHaveErrorMessageForNullLoad() {
       _component.LoadInput.Value = null;
       _component.Compute();

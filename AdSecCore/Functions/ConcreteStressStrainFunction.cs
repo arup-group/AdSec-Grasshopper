@@ -6,8 +6,8 @@ using OasysUnits;
 
 namespace AdSecCore.Functions {
   public class ConcreteStressStrainFunction : ResultFunction {
-    private IServiceabilityResult Sls { get; set; }
-    private IStrengthResult Uls { get; set; }
+    protected IServiceabilityResult Sls { get; set; }
+    protected IStrengthResult Uls { get; set; }
 
     public PointParameter VertexInput { get; set; } = new PointParameter {
       Name = "Vertex Point",
@@ -56,6 +56,14 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat7(),
     };
 
+    public override Attribute[] GetAllInputAttributes() {
+      return new Attribute[] {
+       SolutionInput,
+       LoadInput,
+       VertexInput,
+      };
+    }
+
     public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
        UlsStrainOutput,
@@ -75,8 +83,17 @@ namespace AdSecCore.Functions {
       SlsStressOutput.Name = $"SLS Stress [{stressUnitAbbreviation}]";
     }
 
+    protected virtual string FormatStrainName(string prefix, string unit) {
+      return $"{prefix} Strain [{unit}]";
+    }
+
+    protected virtual string FormatStressName(string prefix, string unit) {
+      return $"{prefix} Stress [{unit}]";
+    }
+
 
     public override void Compute() {
+
       if (!ValidateInputs()) {
         return;
       }
@@ -86,18 +103,7 @@ namespace AdSecCore.Functions {
       ProcessOutput();
     }
 
-    protected override bool ValidateInputs() {
-      if (!base.ValidateInputs()) {
-        return false;
-      }
-      if (VertexInput.Value == null) {
-        ErrorMessages.Add("Vertex point is null");
-        return false;
-      }
-      return true;
-    }
-
-    private void ProcessInput() {
+    protected virtual void ProcessInput() {
       switch (LoadInput.Value) {
         case ILoad load:
           Uls = SolutionInput.Value.Solution.Strength.Check(load);

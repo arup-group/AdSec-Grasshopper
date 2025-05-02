@@ -20,14 +20,14 @@ using Function = AdSecCore.Functions.Function;
 namespace Oasys.GH.Helpers {
   public abstract class DropdownAdapter<T> : GH_OasysDropDownComponent, IDefaultValues where T : IFunction {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
-
+    private readonly AdapterBase _adapter;
     protected DropdownAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
       BusinessComponent.UpdateProperties(this);
       if (BusinessComponent is IVariableInput variableInput) {
         variableInput.OnVariableInputChanged += UpdateInputs;
         UpdateInputs();
       }
-      UpdateDefaultUnits();
+      _adapter = new AdapterBase(BusinessComponent as Function, this);
     }
 
     private void UpdateInputs() {
@@ -97,14 +97,13 @@ namespace Oasys.GH.Helpers {
     }
 
     public void UpdateDefaultUnits() {
-      AdapterBase.UpdateDefaultUnits(BusinessComponent as Function);
+      _adapter.UpdateDefaultUnits();
     }
 
     public void RefreshParameter() {
-      (BusinessComponent as Function).UpdateParameter();
-      AdapterBase.RefreshParams(Params.Input, BusinessComponent.GetAllInputAttributes());
-      AdapterBase.RefreshParams(Params.Output, BusinessComponent.GetAllOutputAttributes());
+      _adapter.RefreshParameter();
     }
+
 
     public static Dictionary<Type, EngineeringUnits> ToEngineeringUnits() {
       return new Dictionary<Type, EngineeringUnits> {
@@ -114,7 +113,7 @@ namespace Oasys.GH.Helpers {
 
     public static Dictionary<Type, LengthUnit> ToLengthUnits(Function function) {
       return new Dictionary<Type, LengthUnit> {
-        { typeof(LengthUnit), function.LengthUnit },
+        { typeof(LengthUnit), function.LengthUnitGeometry },
       };
     }
   }

@@ -8,16 +8,20 @@ using Grasshopper.Kernel;
 
 using OasysGH;
 using OasysGH.Components;
+using OasysGH.Units;
+
+using Attribute = AdSecCore.Functions.Attribute;
 
 namespace Oasys.GH.Helpers {
 
   public abstract class ComponentAdapter<T> : GH_OasysComponent, IDefaultValues where T : IFunction {
 
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
+    private readonly AdapterBase _adapter;
 
     protected ComponentAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
       BusinessComponent.UpdateProperties(this);
-      UpdateDefaultUnits();
+      _adapter = new AdapterBase(BusinessComponent as Function, this);
     }
 
 
@@ -66,14 +70,13 @@ namespace Oasys.GH.Helpers {
     }
 
     public void UpdateDefaultUnits() {
-      AdapterBase.UpdateDefaultUnits(BusinessComponent as Function);
+      _adapter.UpdateDefaultUnits();
     }
 
     public void RefreshParameter() {
-      (BusinessComponent as Function).UpdateParameter();
-      AdapterBase.RefreshParams(Params.Input, BusinessComponent.GetAllInputAttributes());
-      AdapterBase.RefreshParams(Params.Output, BusinessComponent.GetAllOutputAttributes());
+      _adapter.RefreshParameter();
     }
+
   }
 
   public interface IDefaultValues {
