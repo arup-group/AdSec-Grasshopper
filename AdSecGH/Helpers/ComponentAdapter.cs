@@ -2,13 +2,12 @@
 
 using AdSecCore.Functions;
 
+using AdSecGH.Components;
+
 using Grasshopper.Kernel;
 
 using OasysGH;
 using OasysGH.Components;
-using OasysGH.Units;
-
-using Attribute = AdSecCore.Functions.Attribute;
 
 namespace Oasys.GH.Helpers {
 
@@ -18,6 +17,7 @@ namespace Oasys.GH.Helpers {
 
     protected ComponentAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
       BusinessComponent.UpdateProperties(this);
+      UpdateDefaultUnits();
     }
 
 
@@ -60,6 +60,20 @@ namespace Oasys.GH.Helpers {
       BusinessComponent.SetOutputValues(this, DA);
     }
 
+    protected override void BeforeSolveInstance() {
+      UpdateDefaultUnits();
+      RefreshParameter();
+    }
+
+    public void UpdateDefaultUnits() {
+      AdapterBase.UpdateDefaultUnits(BusinessComponent as Function);
+    }
+
+    public void RefreshParameter() {
+      (BusinessComponent as Function).UpdateParameter();
+      AdapterBase.RefreshParams(Params.Input, BusinessComponent.GetAllInputAttributes());
+      AdapterBase.RefreshParams(Params.Output, BusinessComponent.GetAllOutputAttributes());
+    }
   }
 
   public interface IDefaultValues {

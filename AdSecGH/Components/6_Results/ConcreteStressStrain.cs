@@ -38,12 +38,6 @@ namespace AdSecCore.Functions {
 
 
   public class ConcreteStressStrain : ComponentAdapter<ConcreteStressStrainGh> {
-
-    protected override void BeforeSolveInstance() {
-      this.UpdateDefaultUnits();
-      this.RefreshParameter();
-    }
-
     public ConcreteStressStrain() {
       Hidden = true;
       Category = CategoryName.Name();

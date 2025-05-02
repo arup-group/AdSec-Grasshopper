@@ -34,10 +34,6 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.DeformationLoad;
 
-    protected override void BeforeSolveInstance() {
-      UpdateUnits();
-    }
-
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
       switch (i) {
@@ -75,12 +71,11 @@ namespace AdSecGH.Components {
     }
 
     private void UpdateUnits() {
-      // Update units first
-      this.UpdateDefaultUnits();
+      UpdateDefaultUnits();
       //update local unit if any
       BusinessComponent.StrainUnitResult = _strainUnit;
       BusinessComponent.CurvatureUnit = _curvatureUnit;
-      this.RefreshParameter();
+      RefreshParameter();
     }
 
   }
