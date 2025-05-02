@@ -146,4 +146,7 @@ namespace AdSecCore.Functions {
   public class NeutralLineParameter : ParameterAttribute<NeutralAxis> { }
   public class StrainParameter : ParameterAttribute<Strain> { }
   public class PressureParameter : ParameterAttribute<Pressure> { }
+  public class StrainArrayParameter : BaseArrayParameter<Strain> { }
+  public class PressureArrayParameter : BaseArrayParameter<Pressure> { }
+
 }

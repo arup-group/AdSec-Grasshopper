@@ -117,6 +117,12 @@ namespace Oasys.GH.Helpers {
           typeof(StrainParameter), ParamGenericObject
         }, {
           typeof(PressureParameter), ParamGenericObject
+        },{
+          typeof(StrainArrayParameter), ParamGenericObject
+        },{
+          typeof(PressureArrayParameter), ParamGenericObject
+        },{
+          typeof(PointArrayParameter), ParamGenericObject
         },
       };
 
@@ -190,7 +196,6 @@ namespace Oasys.GH.Helpers {
           }
         },
         { typeof(StringArrayParam), a => (a as StringArrayParam).Value },
-        // { typeof(IntegerParameter), a => (a as IntegerParameter).Value },
         {
           typeof(CrackParameter), a => {
             var crack = (a as CrackParameter).Value;
@@ -248,6 +253,33 @@ namespace Oasys.GH.Helpers {
           typeof(PressureParameter), a => {
             var value = (a as PressureParameter).Value;
             return new GH_UnitNumber(value.ToUnit(DefaultUnits.StressUnitResult));
+          }
+        },{
+          typeof(StrainArrayParameter), a => {
+            var strains = (a as StrainArrayParameter).Value;
+            var quantityInRelevantUnit = new List<GH_UnitNumber>();
+            foreach (var strain in strains) {
+              quantityInRelevantUnit.Add(new GH_UnitNumber(strain.ToUnit(DefaultUnits.StrainUnitResult)));
+            }
+            return quantityInRelevantUnit;
+          }
+        },{
+          typeof(PressureArrayParameter), a => {
+            var strsses = (a as PressureArrayParameter).Value;
+            var quantityInRelevantUnit = new List<GH_UnitNumber>();
+            foreach (var stress in strsses) {
+              quantityInRelevantUnit.Add(new GH_UnitNumber(stress.ToUnit(DefaultUnits.StressUnitResult)));
+            }
+            return quantityInRelevantUnit;
+          }
+        },{
+          typeof(PointArrayParameter), a => {
+            var points = (a as PointArrayParameter).Value;
+             var quantityGoo = new List<AdSecPointGoo>();
+            foreach(var point in points) {
+              quantityGoo.Add(new AdSecPointGoo(point));
+            }
+            return quantityGoo;
           }
         },
       };
