@@ -23,33 +23,29 @@ namespace AdSecGH.Parameters {
     public static string Description => "AdSec Load";
     public static string Name => "Load";
     public static string NickName => "Ld";
-    public override BoundingBox Boundingbox {
-      get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
-
-        if (_point == null) {
-          return BoundingBox.Empty;
-        }
-
-        return PointHelper.GetPointBoundingBox(_point);
-      }
-    }
-    public override bool IsValid => true;
+    public override BoundingBox Boundingbox => PointHelper.GetPointBoundingBox(_point);
+    public override bool IsValid => Value != null && _point.IsValid;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Load";
     private Point3d _point = Point3d.Unset;
 
-    public AdSecLoadGoo(ILoad load) : base(load) { }
-
-    public AdSecLoadGoo(ILoad load, Plane local) {
+    public AdSecLoadGoo(ILoad load, Plane? local = null) {
+      if (load == null) {
+        throw new ArgumentNullException(nameof(load), "Load cannot be null");
+      }
       m_value = load;
       var point = new Point3d(load.ZZ.As(DefaultUnits.MomentUnit), load.YY.As(DefaultUnits.MomentUnit),
         load.X.As(DefaultUnits.ForceUnit));
-      var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, local);
+      var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, GetPlane(local));
       point.Transform(mapFromLocal);
       _point = point;
+    }
+
+    private static Plane GetPlane(Plane? local) {
+      if (!local.HasValue || local.Value == Plane.Unset) {
+        return Plane.WorldXY;
+      }
+      return local.Value;
     }
 
     public BoundingBox ClippingBox => Boundingbox;
@@ -57,13 +53,15 @@ namespace AdSecGH.Parameters {
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (_point.IsValid) {
-        var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-        if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
-          args.Pipeline.DrawPoint(_point, PointStyle.X, 7, Colour.ArupRed);
-        } else {
-          args.Pipeline.DrawPoint(_point, PointStyle.X, 8, Colour.UILightGrey);
-        }
+      if (!_point.IsValid) {
+        return;
+      }
+
+      var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
+        args.Pipeline.DrawPoint(_point, PointStyle.X, 7, Colour.ArupRed);
+      } else {
+        args.Pipeline.DrawPoint(_point, PointStyle.X, 8, Colour.UILightGrey);
       }
     }
 
@@ -85,7 +83,6 @@ namespace AdSecGH.Parameters {
           if (!GH_Convert.ToPoint3d(source, ref point, GH_Conversion.Both)) {
             return false;
           }
-
           break;
       }
 
@@ -100,7 +97,7 @@ namespace AdSecGH.Parameters {
       return true;
     }
 
-    public override bool CastTo<Q>(out Q target) {
+    public override bool CastTo<Q>(ref Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecLoadGoo))) {
         target = (Q)(object)new AdSecLoadGoo(Value);
         return true;
@@ -130,27 +127,11 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecLoadGoo(Value) {
-        _point = new Point3d(_point),
-      };
+      return new AdSecLoadGoo(Value);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null) {
-        return BoundingBox.Empty;
-      }
-
-      if (_point == null) {
-        return BoundingBox.Empty;
-      }
-
-      var point1 = new Point3d(_point);
-      point1.Z += 0.25;
-      var point2 = new Point3d(_point);
-      point2.Z += -0.25;
-      var line = new Line(point1, point2);
-      var lineCurve = new LineCurve(line);
-      return lineCurve.GetBoundingBox(xform);
+      return PointHelper.GetPointBoundingBox(_point, xform);
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
