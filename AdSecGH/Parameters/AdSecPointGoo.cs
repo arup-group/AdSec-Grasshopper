@@ -24,15 +24,13 @@ namespace AdSecGH.Parameters {
     public IPoint AdSecPoint { get; private set; }
     public override BoundingBox Boundingbox {
       get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
-
-        return PointHelper.GetPointBoundingBox(Value);
+        const double offset = 0.5d;
+        return IsValid ? PointHelper.GetPointBoundingBox(Value, offset, true) : BoundingBox.Empty;
       }
     }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Vertex";
+    public override bool IsValid => Value.IsValid && AdSecPoint != null;
 
     public AdSecPointGoo(Point3d point) : base(point) {
       m_value = point;
@@ -141,19 +139,11 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecPointGoo(new Point3d(Value));
+      return IsValid ? new AdSecPointGoo(new Point3d(Value)) : null;
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null) {
-        return BoundingBox.Empty;
-      }
-
-      var point3d = new Point3d(Value);
-      point3d.Z += 0.001;
-      var line = new Line(Value, point3d);
-      var lineCurve = new LineCurve(line);
-      return lineCurve.GetBoundingBox(xform);
+      return IsValid ? PointHelper.GetPointBoundingBox(Value, xform, 0.001, false) : BoundingBox.Empty;
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
