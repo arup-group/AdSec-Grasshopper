@@ -17,11 +17,9 @@ namespace Oasys.GH.Helpers {
   public abstract class ComponentAdapter<T> : GH_OasysComponent, IDefaultValues where T : IFunction {
 
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
-    private readonly AdapterBase _adapter;
 
     protected ComponentAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
       BusinessComponent.UpdateProperties(this);
-      _adapter = new AdapterBase(BusinessComponent as Function, this);
     }
 
 
@@ -70,11 +68,11 @@ namespace Oasys.GH.Helpers {
     }
 
     public void UpdateDefaultUnits() {
-      _adapter.UpdateDefaultUnits();
+      AdapterBase.UpdateDefaultUnits(BusinessComponent);
     }
 
     public void RefreshParameter() {
-      _adapter.RefreshParameter();
+      AdapterBase.RefreshParameter(BusinessComponent, this.Params);
     }
 
   }

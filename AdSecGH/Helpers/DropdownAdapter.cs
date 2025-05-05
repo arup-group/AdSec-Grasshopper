@@ -20,14 +20,12 @@ using Function = AdSecCore.Functions.Function;
 namespace Oasys.GH.Helpers {
   public abstract class DropdownAdapter<T> : GH_OasysDropDownComponent, IDefaultValues where T : IFunction {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
-    private readonly AdapterBase _adapter;
     protected DropdownAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
       BusinessComponent.UpdateProperties(this);
       if (BusinessComponent is IVariableInput variableInput) {
         variableInput.OnVariableInputChanged += UpdateInputs;
         UpdateInputs();
       }
-      _adapter = new AdapterBase(BusinessComponent as Function, this);
     }
 
     private void UpdateInputs() {
@@ -97,13 +95,12 @@ namespace Oasys.GH.Helpers {
     }
 
     public void UpdateDefaultUnits() {
-      _adapter.UpdateDefaultUnits();
+      AdapterBase.UpdateDefaultUnits(BusinessComponent);
     }
 
     public void RefreshParameter() {
-      _adapter.RefreshParameter();
+      AdapterBase.RefreshParameter(BusinessComponent, this.Params);
     }
-
 
     public static Dictionary<Type, EngineeringUnits> ToEngineeringUnits() {
       return new Dictionary<Type, EngineeringUnits> {

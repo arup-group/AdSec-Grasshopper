@@ -44,7 +44,6 @@ namespace AdSecGH.Components {
           _curvatureUnit = (CurvatureUnit)UnitsHelper.Parse(typeof(CurvatureUnit), _selectedItems[i]);
           break;
       }
-
       UpdateUnits();
       base.UpdateUI();
     }

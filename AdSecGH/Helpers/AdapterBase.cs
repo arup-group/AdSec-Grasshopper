@@ -8,36 +8,28 @@ using OasysGH.Units;
 
 namespace AdSecGH.Components {
   public class AdapterBase {
-    private readonly Function _businessComponent;
-    private readonly GH_Component _component;
+    protected AdapterBase() { }
 
-    public AdapterBase(Function businessComponent, GH_Component component) {
-      _businessComponent = businessComponent;
-      _component = component;
+    public static void UpdateDefaultUnits<T>(T BusinessComponent) {
+      if (BusinessComponent is Function function) {
+        function.MomentUnit = DefaultUnits.MomentUnit;
+        function.LengthUnitGeometry = DefaultUnits.LengthUnitGeometry;
+        function.StrainUnitResult = DefaultUnits.StrainUnitResult;
+        function.StressUnitResult = DefaultUnits.StressUnitResult;
+        function.CurvatureUnit = DefaultUnits.CurvatureUnit;
+        function.LengthUnitResult = DefaultUnits.LengthUnitResult;
+        function.AxialStiffnessUnit = DefaultUnits.AxialStiffnessUnit;
+        function.BendingStiffnessUnit = DefaultUnits.BendingStiffnessUnit;
+      }
     }
 
-    public void UpdateDefaultUnits() {
-      if (_businessComponent == null) {
-        return;
+    public static void RefreshParameter<T>(T BusinessComponent, GH_ComponentParamServer parameter) {
+      if (BusinessComponent is Function function) {
+        function.UpdateParameter();
+        RefreshParams(parameter.Input, function.GetAllInputAttributes());
+        RefreshParams(parameter.Output, function.GetAllOutputAttributes());
       }
 
-      _businessComponent.MomentUnit = DefaultUnits.MomentUnit;
-      _businessComponent.LengthUnitGeometry = DefaultUnits.LengthUnitGeometry;
-      _businessComponent.StrainUnitResult = DefaultUnits.StrainUnitResult;
-      _businessComponent.StressUnitResult = DefaultUnits.StressUnitResult;
-      _businessComponent.CurvatureUnit = DefaultUnits.CurvatureUnit;
-      _businessComponent.LengthUnitResult = DefaultUnits.LengthUnitResult;
-      _businessComponent.AxialStiffnessUnit = DefaultUnits.AxialStiffnessUnit;
-      _businessComponent.BendingStiffnessUnit = DefaultUnits.BendingStiffnessUnit;
-    }
-
-    public void RefreshParameter() {
-      if (_businessComponent == null) {
-        return;
-      }
-      _businessComponent.UpdateParameter();
-      RefreshParams(_component.Params.Input, _businessComponent.GetAllInputAttributes());
-      RefreshParams(_component.Params.Output, _businessComponent.GetAllOutputAttributes());
     }
 
     private static void RefreshParams(List<IGH_Param> parameters, Attribute[] attributes) {

@@ -64,11 +64,9 @@ namespace AdSecCore.Functions {
 
     public override void UpdateParameter() {
       base.UpdateParameter();
-      string strainUnit = Strain.GetAbbreviation(StrainUnitResult);
-      string curvatureUnit = Curvature.GetAbbreviation(CurvatureUnit);
-      StrainInput.Name = $"εx [{strainUnit}]";
-      CurvatureYInput.Name = $"κyy [{curvatureUnit}]";
-      CurvatureZInput.Name = $"κzz [{curvatureUnit}]";
+      StrainInput.Name = UnitExtensions.NameWithUnits("εx", StrainUnitResult);
+      CurvatureYInput.Name = UnitExtensions.NameWithUnits("κyy", CurvatureUnit);
+      CurvatureZInput.Name = UnitExtensions.NameWithUnits("κzz", CurvatureUnit);
     }
 
     public override void Compute() {

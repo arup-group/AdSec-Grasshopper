@@ -39,6 +39,7 @@ namespace AdSecGHTests.Components {
     public void ShouldUpdateAttributeAsWell() {
       component.SetSelected(0, 0); // mm
       var componentBusinessComponent = component.BusinessComponent;
+      var geo = componentBusinessComponent.LengthUnitGeometry;
       Assert.Equal("Y [mm]", componentBusinessComponent.Y.Name);
       Assert.Equal("Z [mm]", componentBusinessComponent.Z.Name);
     }
