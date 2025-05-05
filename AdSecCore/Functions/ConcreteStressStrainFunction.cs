@@ -75,22 +75,11 @@ namespace AdSecCore.Functions {
 
     public override void UpdateParameter() {
       base.UpdateParameter();
-      string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
-      string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
-      UlsStrainOutput.Name = $"ULS Strain [{strainUnitAbbreviation}]";
-      UlsStressOutput.Name = $"ULS Stress [{stressUnitAbbreviation}]";
-      SlsStrainOutput.Name = $"SLS Strain [{strainUnitAbbreviation}]";
-      SlsStressOutput.Name = $"SLS Stress [{stressUnitAbbreviation}]";
+      UlsStrainOutput.Name = UnitExtensions.NameWithUnits("ULS Strain", StrainUnitResult);
+      UlsStressOutput.Name = UnitExtensions.NameWithUnits("ULS Stress", StressUnitResult);
+      SlsStrainOutput.Name = UnitExtensions.NameWithUnits("SLS Strain", StrainUnitResult);
+      SlsStressOutput.Name = UnitExtensions.NameWithUnits("SLS Stress", StressUnitResult);
     }
-
-    protected virtual string FormatStrainName(string prefix, string unit) {
-      return $"{prefix} Strain [{unit}]";
-    }
-
-    protected virtual string FormatStressName(string prefix, string unit) {
-      return $"{prefix} Stress [{unit}]";
-    }
-
 
     public override void Compute() {
 

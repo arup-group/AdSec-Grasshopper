@@ -30,19 +30,6 @@ namespace AdSecCore.Functions {
     public List<string> WarningMessages { get; set; } = new List<string>();
     public List<string> RemarkMessages { get; set; } = new List<string>();
 
-    public string GetStrainUnitResultAbbreviation() {
-      return Strain.GetAbbreviation(StrainUnitResult);
-    }
-    public string GetStressUnitResultAbbreviation() {
-      return Pressure.GetAbbreviation(StressUnitResult);
-    }
-    public string GetLengthUnitGeometryAbbreviation() {
-      return Length.GetAbbreviation(LengthUnitGeometry);
-    }
-    public string GetLengthUnitResultAbbreviation() {
-      return Length.GetAbbreviation(LengthUnitResult);
-    }
-
     public virtual bool ValidateInputs() {
       var inputs = GetAllInputAttributes();
       foreach (var input in inputs) {

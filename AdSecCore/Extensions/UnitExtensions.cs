@@ -28,5 +28,9 @@ namespace AdSecCore {
     public static string NameWithUnits(string name, CurvatureUnit unit) {
       return $"{name} [{Curvature.GetAbbreviation(unit)}]";
     }
+
+    public static string NameWithUnits(string name, PressureUnit unit) {
+      return $"{name} [{Pressure.GetAbbreviation(unit)}]";
+    }
   }
 }
