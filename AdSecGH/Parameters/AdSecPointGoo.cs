@@ -39,11 +39,19 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecPointGoo(AdSecPointGoo adsecPoint) {
+      if (adsecPoint == null) {
+        return;
+      }
+
       AdSecPoint = adsecPoint.AdSecPoint;
       m_value = new Point3d(Value);
     }
 
     public AdSecPointGoo(IPoint adsecPoint) {
+      if (adsecPoint == null) {
+        return;
+      }
+
       AdSecPoint = adsecPoint;
       m_value = new Point3d(0, AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
         AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
@@ -159,23 +167,6 @@ namespace AdSecGH.Parameters {
 
     public override IGH_GeometricGoo Transform(Transform xform) {
       return null;
-    }
-
-    internal static IList<IPoint> PtsFromPolyline(Polyline curve) {
-      Plane.FitPlaneToPoints(curve.ToList(), out var plane);
-      var mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
-
-      var points = IList<IPoint>.Create();
-      IPoint point = null;
-      for (int j = 0; j < curve.Count; j++) {
-        var point3d = curve[j];
-        point3d.Transform(mapToLocal);
-        point = IPoint.Create(new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
-          new Length(point3d.Y, DefaultUnits.LengthUnitGeometry));
-        points.Add(point);
-      }
-
-      return points;
     }
 
     internal static IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve) {
