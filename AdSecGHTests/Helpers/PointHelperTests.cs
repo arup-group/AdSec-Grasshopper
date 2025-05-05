@@ -102,7 +102,7 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void GetPointBoundingBox_ReturnsInvalidBoundingBox_WhenTransformScalesToZeroWhenSymmetric() {
+    public void GetPointBoundingBox_ReturnsValidBoundingBox_WhenTransformScalesToZeroWhenSymmetric() {
       var point = new Point3d(1, 2, 3);
       var xform = Transform.Scale(new Point3d(0, 0, 0), 0);
 
@@ -215,7 +215,7 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void GetPointBoundingBox_ReturnsInvalidBoundingBox_WhenTransformScalesToZeroWhenNotSymmetric() {
+    public void GetPointBoundingBox_ReturnsValidBoundingBox_WhenTransformScalesToZeroWhenNotSymmetric() {
       var point = new Point3d(1, 2, 3);
       var xform = Transform.Scale(new Point3d(0, 0, 0), 0);
 
