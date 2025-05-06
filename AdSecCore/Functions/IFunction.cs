@@ -22,7 +22,7 @@ namespace AdSecCore.Functions {
     private LengthUnit _lengthUnitResult = LengthUnit.Millimeter;
     private StrainUnit _strainUnitResult = StrainUnit.Ratio;
     private CurvatureUnit _curvatureUnit = CurvatureUnit.PerMeter;
-    public MomentUnit _momentUnit = MomentUnit.NewtonMeter;
+    private MomentUnit _momentUnit = MomentUnit.NewtonMeter;
     private AxialStiffnessUnit _axialStiffnessUnit = AxialStiffnessUnit.Newton;
     private BendingStiffnessUnit _bendingStiffnessUnit = BendingStiffnessUnit.NewtonSquareMeter;
     private PressureUnit _stressUnitResult = PressureUnit.Megapascal;
