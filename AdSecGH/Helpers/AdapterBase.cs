@@ -13,6 +13,7 @@ namespace AdSecGH.Components {
     public static void UpdateDefaultUnits<T>(T BusinessComponent) {
       if (BusinessComponent is Function function) {
         function.MomentUnit = DefaultUnits.MomentUnit;
+        function.ForceUnit = DefaultUnits.ForceUnit;
         function.LengthUnitGeometry = DefaultUnits.LengthUnitGeometry;
         function.StrainUnitResult = DefaultUnits.StrainUnitResult;
         function.StressUnitResult = DefaultUnits.StressUnitResult;
