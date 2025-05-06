@@ -23,22 +23,13 @@ namespace AdSecGH.Parameters {
     public static string Description => "AdSec Load";
     public static string Name => "Load";
     public static string NickName => "Ld";
-    public override BoundingBox Boundingbox {
-      get {
-        const double offset = 0.5d;
-        return PointHelper.GetPointBoundingBox(_point, offset, true);
-      }
-    }
-    public override bool IsValid => Value != null && _point.IsValid;
+    public override BoundingBox Boundingbox => PointHelper.GetPointBoundingBox(_point);
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Load";
-    private Point3d _point = Point3d.Unset;
+    private Point3d _point;
 
     public AdSecLoadGoo(ILoad load, Plane? local = null) {
-      if (load == null) {
-        throw new ArgumentNullException(nameof(load), "Load cannot be null");
-      }
-      m_value = load;
+      m_value = load ?? throw new ArgumentNullException(nameof(load), "Load cannot be null");
       var point = new Point3d(load.ZZ.As(DefaultUnits.MomentUnit), load.YY.As(DefaultUnits.MomentUnit),
         load.X.As(DefaultUnits.ForceUnit));
       var mapFromLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, GetPlane(local));
@@ -47,10 +38,7 @@ namespace AdSecGH.Parameters {
     }
 
     private static Plane GetPlane(Plane? local) {
-      if (!local.HasValue || local.Value == Plane.Unset) {
-        return Plane.WorldXY;
-      }
-      return local.Value;
+      return !local.HasValue || local.Value == Plane.Unset ? Plane.WorldXY : local.Value;
     }
 
     public BoundingBox ClippingBox => Boundingbox;
