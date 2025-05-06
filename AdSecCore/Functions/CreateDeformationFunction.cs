@@ -62,7 +62,7 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat5(),
     };
 
-    public override void UpdateParameter() {
+    protected override void UpdateParameter() {
       base.UpdateParameter();
       StrainInput.Name = UnitExtensions.NameWithUnits("εx", StrainUnitResult);
       CurvatureYInput.Name = UnitExtensions.NameWithUnits("κyy", CurvatureUnit);

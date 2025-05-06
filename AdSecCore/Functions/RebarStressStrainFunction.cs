@@ -80,7 +80,7 @@ namespace AdSecCore.Functions {
       };
     }
 
-    public override void UpdateParameter() {
+    protected override void UpdateParameter() {
       base.UpdateParameter();
       UlsStrainOutput.Name = UnitExtensions.NameWithUnits("ULS", StrainUnitResult);
       UlsStressOutput.Name = UnitExtensions.NameWithUnits("ULS", StressUnitResult);

@@ -152,7 +152,7 @@ namespace AdSecCore.Functions {
       Description = "Increases the load until set crack width is reached",
     };
 
-    public override void UpdateParameter() {
+    protected override void UpdateParameter() {
       base.UpdateParameter();
       string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
       string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);

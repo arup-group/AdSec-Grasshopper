@@ -25,7 +25,6 @@ namespace AdSecGH.Components {
 
     public static void RefreshParameter<T>(T BusinessComponent, GH_ComponentParamServer parameter) {
       if (BusinessComponent is Function function) {
-        function.UpdateParameter();
         RefreshParams(parameter.Input, function.GetAllInputAttributes());
         RefreshParams(parameter.Output, function.GetAllOutputAttributes());
       }
