@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 using AdSecGH.Parameters;
 
@@ -15,8 +14,6 @@ using Xunit;
 
 namespace AdSecGHTests.Parameters {
   [Collection("GrasshopperFixture collection")]
-  [SuppressMessage("Major Bug", "S4143:Collection elements should not be replaced unconditionally",
-    Justification = "<Pending>")]
   public class AdSecLoadGooTests {
     private readonly AdSecLoadGoo _testGoo;
 
@@ -103,11 +100,11 @@ namespace AdSecGHTests.Parameters {
       var adsecLoad = ILoad.Create(new Force(), new Moment(), new Moment());
       var loadGoo = new AdSecLoadGoo(adsecLoad);
 
-      AdSecLoadGoo load = new AdSecLoadGoo(adsecLoad);
+      var load = new AdSecLoadGoo(adsecLoad);
       Assert.True(loadGoo.CastTo<AdSecLoadGoo>(ref load));
       Assert.True(load.IsValid);
 
-      Point3d point = Point3d.Unset;
+      var point = Point3d.Unset;
       Assert.True(loadGoo.CastTo<Point3d>(ref point));
       Assert.True(point.IsValid);
 
@@ -115,7 +112,7 @@ namespace AdSecGHTests.Parameters {
       Assert.True(loadGoo.CastTo<GH_Point>(ref ghPoint));
       Assert.NotNull(ghPoint);
 
-      Line line = Line.Unset;
+      var line = Line.Unset;
       Assert.False(loadGoo.CastTo<Line>(ref line));
       Assert.False(line.IsValid);
 
