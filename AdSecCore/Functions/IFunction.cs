@@ -23,6 +23,7 @@ namespace AdSecCore.Functions {
     public StrainUnit StrainUnitResult { get; set; } = StrainUnit.Ratio;
     public CurvatureUnit CurvatureUnit { get; set; } = CurvatureUnit.PerMeter;
     public MomentUnit MomentUnit { get; set; } = MomentUnit.NewtonMeter;
+    public ForceUnit ForceUnit { get; set; } = ForceUnit.Newton;
     public AxialStiffnessUnit AxialStiffnessUnit { get; set; } = AxialStiffnessUnit.Newton;
     public BendingStiffnessUnit BendingStiffnessUnit { get; set; } = BendingStiffnessUnit.NewtonSquareMeter;
     public PressureUnit StressUnitResult { get; set; } = PressureUnit.Megapascal;
