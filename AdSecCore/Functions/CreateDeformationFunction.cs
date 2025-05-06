@@ -75,7 +75,7 @@ namespace AdSecCore.Functions {
 
       var curvatureY = Curvature.From(CurvatureYInput.Value.Value, CurvatureUnit);
 
-      var curvatureZ = Curvature.From(CurvatureZInput.Value.Value, CurvatureUnit); ;
+      var curvatureZ = Curvature.From(CurvatureZInput.Value.Value, CurvatureUnit);
 
       var deformation = IDeformation.Create(strain, curvatureY, curvatureZ);
 
