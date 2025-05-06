@@ -1,4 +1,6 @@
-﻿using AdSecGH;
+﻿using AdSecCore;
+
+using AdSecGH;
 using AdSecGH.Components;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -7,8 +9,9 @@ using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
 
-using Oasys.AdSec;
 using Oasys.GH.Helpers;
+
+using OasysGH.Units;
 
 using OasysUnits;
 using OasysUnits.Units;
@@ -19,15 +22,15 @@ namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
   public class CreateDeformationTests {
     private readonly CreateDeformation _component;
-
+    private readonly DoubleComparer _comparer = new DoubleComparer();
     public CreateDeformationTests() {
       _component = new CreateDeformation();
     }
 
     private void SetDefaultInputs() {
-      ComponentTestHelper.SetInput(_component, Strain.FromRatio(0.001).Value, 0);
-      ComponentTestHelper.SetInput(_component, Curvature.FromPerMeters(0.002).Value, 1);
-      ComponentTestHelper.SetInput(_component, Curvature.FromPerMeters(0.003).Value, 2);
+      ComponentTestHelper.SetInput(_component, 0.001, 0);
+      ComponentTestHelper.SetInput(_component, 0.002, 1);
+      ComponentTestHelper.SetInput(_component, 0.003, 2);
     }
 
     [Fact]
@@ -36,9 +39,9 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.ComputeData(_component);
       var output = (AdSecDeformationGoo)ComponentTestHelper.GetOutput(_component, 0);
       Assert.NotNull(output);
-      Assert.Equal(0.001, output.Value.X.As(StrainUnit.Ratio), 1);
-      Assert.Equal(0.002, output.Value.YY.As(CurvatureUnit.PerMeter), 2);
-      Assert.Equal(0.003, output.Value.ZZ.As(CurvatureUnit.PerMeter), 3);
+      Assert.Equal(0.001, output.Value.X.As(DefaultUnits.StrainUnitResult), _comparer);
+      Assert.Equal(0.002, output.Value.YY.As(DefaultUnits.CurvatureUnit), _comparer);
+      Assert.Equal(0.003, output.Value.ZZ.As(DefaultUnits.CurvatureUnit), _comparer);
     }
 
     [Fact]
@@ -48,9 +51,9 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.SetInput(_component, Curvature.Zero, 2);
       var output = (AdSecDeformationGoo)ComponentTestHelper.GetOutput(_component, 0);
       Assert.NotNull(output);
-      Assert.Equal(0, output.Value.X.As(StrainUnit.Ratio), 1);
-      Assert.Equal(0, output.Value.YY.As(CurvatureUnit.PerMeter), 2);
-      Assert.Equal(0, output.Value.ZZ.As(CurvatureUnit.PerMeter), 3);
+      Assert.Equal(0, output.Value.X.As(StrainUnit.Ratio), _comparer);
+      Assert.Equal(0, output.Value.YY.As(CurvatureUnit.PerMeter), _comparer);
+      Assert.Equal(0, output.Value.ZZ.As(CurvatureUnit.PerMeter), _comparer);
     }
 
     [Fact]
