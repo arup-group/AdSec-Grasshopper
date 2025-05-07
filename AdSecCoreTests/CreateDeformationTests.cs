@@ -38,6 +38,13 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void GetAllOutputAttributesReturnsOneParameters() {
+      var outputs = _function.GetAllOutputAttributes();
+      Assert.Single(outputs);
+      Assert.Contains(outputs, x => x.Name.Contains("Load"));
+    }
+
+    [Fact]
     public void UpdateParameterUpdatesUnitDisplayNamesCorrectly() {
       // Arrange
       _function.StrainUnitResult = StrainUnit.MicroStrain;
