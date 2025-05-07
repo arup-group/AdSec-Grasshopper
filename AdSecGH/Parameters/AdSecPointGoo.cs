@@ -22,15 +22,8 @@ using Rhino.Geometry;
 namespace AdSecGH.Parameters {
   public class AdSecPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData {
     public IPoint AdSecPoint { get; private set; }
-    public override BoundingBox Boundingbox {
-      get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
+    public override BoundingBox Boundingbox => PointHelper.GetPointBoundingBox(Value, 0.5d, true);
 
-        return PointHelper.GetPointBoundingBox(Value);
-      }
-    }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Vertex";
 
@@ -41,12 +34,18 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecPointGoo(AdSecPointGoo adsecPoint) {
+      if (adsecPoint == null) {
+        const string error = "AdSec Point cannot be null";
+        throw new ArgumentNullException(nameof(adsecPoint), error);
+      }
+
       AdSecPoint = adsecPoint.AdSecPoint;
       m_value = new Point3d(Value);
     }
 
     public AdSecPointGoo(IPoint adsecPoint) {
-      AdSecPoint = adsecPoint;
+      const string error = "AdSec Point cannot be null";
+      AdSecPoint = adsecPoint ?? throw new ArgumentNullException(nameof(adsecPoint), error);
       m_value = new Point3d(0, AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
         AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
     }
@@ -145,15 +144,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null) {
-        return BoundingBox.Empty;
-      }
-
-      var point3d = new Point3d(Value);
-      point3d.Z += 0.001;
-      var line = new Line(Value, point3d);
-      var lineCurve = new LineCurve(line);
-      return lineCurve.GetBoundingBox(xform);
+      return PointHelper.GetPointBoundingBox(Value, xform, 0.001, false);
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
@@ -169,23 +160,6 @@ namespace AdSecGH.Parameters {
 
     public override IGH_GeometricGoo Transform(Transform xform) {
       return null;
-    }
-
-    internal static IList<IPoint> PtsFromPolyline(Polyline curve) {
-      Plane.FitPlaneToPoints(curve.ToList(), out var plane);
-      var mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
-
-      var points = IList<IPoint>.Create();
-      IPoint point = null;
-      for (int j = 0; j < curve.Count; j++) {
-        var point3d = curve[j];
-        point3d.Transform(mapToLocal);
-        point = IPoint.Create(new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
-          new Length(point3d.Y, DefaultUnits.LengthUnitGeometry));
-        points.Add(point);
-      }
-
-      return points;
     }
 
     internal static IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve) {

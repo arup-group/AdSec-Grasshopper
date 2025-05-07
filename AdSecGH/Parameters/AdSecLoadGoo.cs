@@ -23,7 +23,7 @@ namespace AdSecGH.Parameters {
     public static string Description => "AdSec Load";
     public static string Name => "Load";
     public static string NickName => "Ld";
-    public override BoundingBox Boundingbox => PointHelper.GetPointBoundingBox(_point);
+    public override BoundingBox Boundingbox => PointHelper.GetPointBoundingBox(_point, 0.5d, true);
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Load";
     private Point3d _point;
@@ -124,7 +124,8 @@ namespace AdSecGH.Parameters {
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      return PointHelper.GetPointBoundingBox(_point, xform);
+      const double offset = 0.5d;
+      return PointHelper.GetPointBoundingBox(_point, xform, offset, true);
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
