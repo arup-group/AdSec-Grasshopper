@@ -44,11 +44,6 @@ steps:
     displayName: Install Stryker
     failOnStderr: false
 
-  - powershell: |
-      dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
-    displayName: Run Stryker
-    failOnStderr: false
-
   - task: VSBuild@1
     displayName: 'Re-Building project in $(configuration)'
     inputs:
@@ -59,24 +54,6 @@ steps:
       clean: true
     env:
       MSBUILDDISABLENODEREUSE: 1
-
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Stryker Mutation Report'
-    inputs:
-      pathToPublish: '$(System.DefaultWorkingDirectory)/StrykerOutput'
-      artifactName: 'StrykerReport'
-
-  - task: PublishMutationReport@2
-    displayName: 'Publish Mutation Test Report'
-    inputs:
-      reportPattern: '$(System.DefaultWorkingDirectory)/StrykerOutput/**/mutation-report.html'
-      reportDisplayName: 'Mutation Report'
-
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Stryker Mutation Report'
-    inputs:
-      pathToPublish: '$(System.DefaultWorkingDirectory)/StrykerOutput'
-      artifactName: 'StrykerReport'
 
   - powershell: |
       dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecCore .\AdSecCoreTests\bin\Release\net7.0\AdSecCoreTests.dll
@@ -127,6 +104,28 @@ steps:
     displayName: Upload Code Coverage to codecovio
     failOnStderr: true
 
+  - powershell: |
+      dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
+    displayName: Run Stryker
+    failOnStderr: false
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Stryker Mutation Report'
+    inputs:
+      pathToPublish: '$(System.DefaultWorkingDirectory)/StrykerOutput'
+      artifactName: 'StrykerReport'
+
+  - task: PublishMutationReport@2
+    displayName: 'Publish Mutation Test Report'
+    inputs:
+      reportPattern: '$(System.DefaultWorkingDirectory)/StrykerOutput/**/mutation-report.html'
+      reportDisplayName: 'Mutation Report'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Stryker Mutation Report'
+    inputs:
+      pathToPublish: '$(System.DefaultWorkingDirectory)/StrykerOutput'
+      artifactName: 'StrykerReport'
 
   - task: PowerShell@2
     displayName: Check for existing tags
