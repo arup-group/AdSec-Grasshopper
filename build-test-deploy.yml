@@ -39,6 +39,16 @@ steps:
     env:
       MSBUILDDISABLENODEREUSE: 1
 
+
+  - task: GitHubComment@0
+    inputs:
+      gitHubConnection: ''  # Replace with your service connection name
+      repositoryName: 'arup-group/AdSec-Grasshopper'   # Format: 'owner/repo'
+      comment: |
+        ✅ Mutation testing complete.
+        View the [Stryker report](https://dev.azure.com/oasys-software/OASYS%20libraries/_build/results?buildId=$(Build.BuildId)&view=stryker-mutator.mutation-report-publisher.mutation-report-tab) for details.
+    displayName: 'Post comment to GitHub PR'
+
   - powershell: |
       dotnet tool install --global dotnet-stryker
     displayName: Install Stryker
