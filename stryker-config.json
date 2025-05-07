@@ -4,6 +4,9 @@
       "html",
       "progress"
     ],
+    "ignore-mutations": [
+      "string"
+    ],
     "since": {
       "target": "origin/main"
     },
