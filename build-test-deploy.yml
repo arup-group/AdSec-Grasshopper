@@ -45,10 +45,10 @@ steps:
     failOnStderr: false
 
   - powershell: |
-      dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l basic
+      dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l standard
     displayName: Run Stryker
     failOnStderr: false
-  
+
   - task: VSBuild@1
     displayName: 'Re-Building project in $(configuration)'
     inputs:
@@ -65,7 +65,7 @@ steps:
     inputs:
       pathToPublish: '$(System.DefaultWorkingDirectory)/StrykerOutput'
       artifactName: 'StrykerReport'
-  
+
   - task: PublishMutationReport@2
     displayName: 'Publish Mutation Test Report'
     inputs:
