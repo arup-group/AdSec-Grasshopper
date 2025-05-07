@@ -35,7 +35,8 @@ namespace AdSecGH.Parameters {
 
     public AdSecPointGoo(AdSecPointGoo adsecPoint) {
       if (adsecPoint == null) {
-        return;
+        const string error = "AdSec Point cannot be null";
+        throw new ArgumentNullException(nameof(adsecPoint), error);
       }
 
       AdSecPoint = adsecPoint.AdSecPoint;
@@ -43,11 +44,8 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecPointGoo(IPoint adsecPoint) {
-      if (adsecPoint == null) {
-        return;
-      }
-
-      AdSecPoint = adsecPoint;
+      const string error = "AdSec Point cannot be null";
+      AdSecPoint = adsecPoint ?? throw new ArgumentNullException(nameof(adsecPoint), error);
       m_value = new Point3d(0, AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
         AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
     }

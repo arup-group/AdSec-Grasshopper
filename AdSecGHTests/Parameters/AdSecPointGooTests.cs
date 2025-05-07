@@ -1,4 +1,8 @@
-﻿using AdSecGH.Parameters;
+﻿using System;
+
+using AdSecGH.Parameters;
+
+using Oasys.Profiles;
 
 using OasysUnits;
 using OasysUnits.Units;
@@ -15,6 +19,23 @@ namespace AdSecGHTests.Parameters {
 
     public AdSecPointGooTests() {
       _testGoo = new AdSecPointGoo(new Length(1, LengthUnit.Inch), new Length(2, LengthUnit.Meter));
+    }
+
+    [Fact]
+    public void WillThrowErrorWhenCantCreateFromAdSecPointGoo() {
+      AdSecPointGoo adsecPointGoo = null;
+      Assert.Throws<ArgumentNullException>(() => new AdSecPointGoo(adsecPointGoo));
+    }
+
+    [Fact]
+    public void WillThrowErrorWhenCantCreateFromIPoint() {
+      IPoint point = null;
+      Assert.Throws<ArgumentNullException>(() => new AdSecPointGoo(point));
+    }
+
+    [Fact]
+    public void BoundingBox_ReturnsValidBoundingBox() {
+      Assert.True(_testGoo.Boundingbox.IsValid);
     }
 
     [Fact]
