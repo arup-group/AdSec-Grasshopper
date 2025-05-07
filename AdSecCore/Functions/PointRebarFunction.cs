@@ -48,7 +48,7 @@ namespace AdSecCore.Functions {
       };
     }
 
-    public override void UpdateParameter() {
+    protected override void UpdateParameter() {
       base.UpdateParameter();
       Y.Name = UnitExtensions.NameWithUnits("Y", LengthUnitGeometry);
       Z.Name = UnitExtensions.NameWithUnits("Z", LengthUnitGeometry);

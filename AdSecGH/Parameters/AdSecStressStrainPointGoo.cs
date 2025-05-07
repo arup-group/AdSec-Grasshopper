@@ -23,7 +23,8 @@ namespace AdSecGH.Parameters {
           return BoundingBox.Empty;
         }
 
-        return PointHelper.GetPointBoundingBox(Value);
+        const double offset = 0.5d;
+        return PointHelper.GetPointBoundingBox(Value, offset, true);
       }
     }
 
