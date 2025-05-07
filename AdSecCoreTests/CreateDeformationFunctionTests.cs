@@ -5,13 +5,18 @@ using Oasys.AdSec;
 using OasysUnits;
 using OasysUnits.Units;
 
-using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace AdSecCoreTests.Functions {
   public class CreateDeformationFunctionTests {
     private readonly CreateDeformationFunction _function;
 
     public CreateDeformationFunctionTests() {
       _function = new CreateDeformationFunction();
+    }
+
+    private void AssertName() {
+      Assert.Contains("εx [ε]", _function.StrainInput.Name);
+      Assert.Contains("κyy [m⁻¹]", _function.CurvatureYInput.Name);
+      Assert.Contains("κzz [m⁻¹]", _function.CurvatureZInput.Name);
     }
 
     [Fact]
@@ -48,28 +53,48 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void UpdateParameterUpdatesUnitDisplayNamesCorrectly() {
-      // Arrange
       _function.StrainUnitResult = StrainUnit.MicroStrain;
       _function.CurvatureUnit = CurvatureUnit.PerMillimeter;
 
-      // Assert
       Assert.Contains("εx [µε]", _function.StrainInput.Name);
       Assert.Contains("κyy [mm⁻¹]", _function.CurvatureYInput.Name);
       Assert.Contains("κzz [mm⁻¹]", _function.CurvatureZInput.Name);
     }
 
     [Fact]
-    public void ParameterShouldDisplayDefaultNamesWhenRelevantUnitIsNotSet() {
+    public void ParameterShouldDisplayDefaultNamesWhenLengthUnitGeometryIsSet() {
       _function.LengthUnitGeometry = LengthUnit.Meter;
-      _function.LengthUnitResult = LengthUnit.Millimeter;
-      _function.MomentUnit = MomentUnit.NewtonMeter;
-      _function.AxialStiffnessUnit = AxialStiffnessUnit.Newton;
-      _function.BendingStiffnessUnit = BendingStiffnessUnit.NewtonSquareMeter;
-      _function.StressUnitResult = PressureUnit.Megapascal;
+      AssertName();
+    }
 
-      Assert.Contains("εx [ε]", _function.StrainInput.Name);
-      Assert.Contains("κyy [m⁻¹]", _function.CurvatureYInput.Name);
-      Assert.Contains("κzz [m⁻¹]", _function.CurvatureZInput.Name);
+    [Fact]
+    public void ParameterShouldDisplayDefaultNamesWhenLengthUnitResultIsSet() {
+      _function.LengthUnitResult = LengthUnit.Millimeter;
+      AssertName();
+    }
+
+    [Fact]
+    public void ParameterShouldDisplayDefaultNamesWhenMomentUnitIsSet() {
+      _function.MomentUnit = MomentUnit.NewtonMeter;
+      AssertName();
+    }
+
+    [Fact]
+    public void ParameterShouldDisplayDefaultNamesWhenAxialStiffnessUnitIsSet() {
+      _function.AxialStiffnessUnit = AxialStiffnessUnit.Newton;
+      AssertName();
+    }
+
+    [Fact]
+    public void ParameterShouldDisplayDefaultNamesWhenBendingStiffnessUnitIsSet() {
+      _function.BendingStiffnessUnit = BendingStiffnessUnit.NewtonSquareMeter;
+      AssertName();
+    }
+
+    [Fact]
+    public void ParameterShouldDisplayDefaultNamesWhenStressUnitResultIsSet() {
+      _function.StressUnitResult = PressureUnit.Megapascal;
+      AssertName();
     }
 
     [Theory]
@@ -85,7 +110,6 @@ namespace AdSecCoreTests.Functions {
 
       _function.Compute();
 
-      // Assert
       var result = _function.DeformationOutput.Value as IDeformation;
       Assert.NotNull(result);
       Assert.Equal(strain, result.X.As(StrainUnit.Ratio), 6);
