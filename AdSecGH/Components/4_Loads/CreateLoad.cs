@@ -28,7 +28,7 @@ namespace AdSecGH.Components {
     private MomentUnit _momentUnit = DefaultUnits.MomentUnit;
 
     public CreateLoad() : base() { Hidden = true; }
-    public override Guid ComponentGuid => new Guid("cbab2b58-2a01-4f05-ba24-2c79827c7416");
+    public override Guid ComponentGuid => new Guid("cbab2b74-2a01-4f05-ba24-2c79827c7415");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.CreateLoad;
