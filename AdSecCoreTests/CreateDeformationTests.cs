@@ -4,6 +4,8 @@ using Oasys.AdSec;
 
 using OasysUnits;
 using OasysUnits.Units;
+
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace AdSecCoreTests.Functions {
   public class CreateDeformationFunctionTests {
     private readonly CreateDeformationFunction _function;
@@ -54,6 +56,20 @@ namespace AdSecCoreTests.Functions {
       Assert.Contains("εx [µε]", _function.StrainInput.Name);
       Assert.Contains("κyy [mm⁻¹]", _function.CurvatureYInput.Name);
       Assert.Contains("κzz [mm⁻¹]", _function.CurvatureZInput.Name);
+    }
+
+    [Fact]
+    public void ParameterShouldDisplayDefaultNamesWhenRelevantUnitIsNotSet() {
+      _function.LengthUnitGeometry = LengthUnit.Meter;
+      _function.LengthUnitResult = LengthUnit.Millimeter;
+      _function.MomentUnit = MomentUnit.NewtonMeter;
+      _function.AxialStiffnessUnit = AxialStiffnessUnit.Newton;
+      _function.BendingStiffnessUnit = BendingStiffnessUnit.NewtonSquareMeter;
+      _function.StressUnitResult = PressureUnit.Megapascal;
+
+      Assert.Contains("εx [ε]", _function.StrainInput.Name);
+      Assert.Contains("κyy [m⁻¹]", _function.CurvatureYInput.Name);
+      Assert.Contains("κzz [m⁻¹]", _function.CurvatureZInput.Name);
     }
 
     [Theory]
