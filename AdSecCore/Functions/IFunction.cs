@@ -26,6 +26,7 @@ namespace AdSecCore.Functions {
     private AxialStiffnessUnit _axialStiffnessUnit = AxialStiffnessUnit.Newton;
     private BendingStiffnessUnit _bendingStiffnessUnit = BendingStiffnessUnit.NewtonSquareMeter;
     private PressureUnit _stressUnitResult = PressureUnit.Megapascal;
+    private ForceUnit _forceUnit = ForceUnit.Newton;
 
     public LengthUnit LengthUnitGeometry {
       get => _lengthUnitGeometry;
@@ -87,6 +88,14 @@ namespace AdSecCore.Functions {
       get => _stressUnitResult;
       set {
         _stressUnitResult = value;
+        UpdateParameter();
+      }
+    }
+
+    public ForceUnit ForceUnit {
+      get => _forceUnit;
+      set {
+        _forceUnit = value;
         UpdateParameter();
       }
     }
