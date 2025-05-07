@@ -22,15 +22,10 @@ using Rhino.Geometry;
 namespace AdSecGH.Parameters {
   public class AdSecPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData {
     public IPoint AdSecPoint { get; private set; }
-    public override BoundingBox Boundingbox {
-      get {
-        const double offset = 0.5d;
-        return IsValid ? PointHelper.GetPointBoundingBox(Value, offset, true) : BoundingBox.Empty;
-      }
-    }
+    public override BoundingBox Boundingbox => PointHelper.GetPointBoundingBox(Value, 0.5d, true);
+
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Vertex";
-    public override bool IsValid => Value.IsValid && AdSecPoint != null;
 
     public AdSecPointGoo(Point3d point) : base(point) {
       m_value = point;
@@ -147,11 +142,11 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return IsValid ? new AdSecPointGoo(new Point3d(Value)) : null;
+      return new AdSecPointGoo(new Point3d(Value));
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      return IsValid ? PointHelper.GetPointBoundingBox(Value, xform, 0.001, false) : BoundingBox.Empty;
+      return PointHelper.GetPointBoundingBox(Value, xform, 0.001, false);
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
