@@ -3,6 +3,7 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
@@ -37,13 +38,6 @@ namespace AdSecCore.Functions {
 
 
   public class ConcreteStressStrain : ComponentAdapter<ConcreteStressStrainGh> {
-
-    protected override void BeforeSolveInstance() {
-      UpdateUnit();
-      BusinessComponent.UpdateOutputParameter();
-      RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
-    }
-
     public ConcreteStressStrain() {
       Hidden = true;
       Category = CategoryName.Name();

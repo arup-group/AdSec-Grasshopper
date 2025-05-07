@@ -20,12 +20,6 @@ namespace AdSecGH.Components {
   }
 
   public class RebarStressStrain : ComponentAdapter<RebarStressStrainGh> {
-    protected override void BeforeSolveInstance() {
-      UpdateUnit();
-      BusinessComponent.UpdateOutputParameter();
-      RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
-    }
-
     public RebarStressStrain() {
       Hidden = true;
       Category = CategoryName.Name();

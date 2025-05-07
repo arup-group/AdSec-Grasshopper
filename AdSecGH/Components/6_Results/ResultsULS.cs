@@ -20,12 +20,6 @@ namespace AdSecGH.Components {
   }
 
   public class UlsResult : ComponentAdapter<UlsResultGh> {
-    protected override void BeforeSolveInstance() {
-      UpdateUnit();
-      BusinessComponent.UpdateOutputParameter();
-      RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
-    }
-
     public UlsResult() {
       Hidden = true;
       Category = CategoryName.Name();

@@ -80,19 +80,13 @@ namespace AdSecCore.Functions {
       };
     }
 
-    protected override void UpdateOutputNames() {
-      string strainUnit = GetStrainUnitResultAbbreviation();
-      string stressUnit = GetStressUnitResultAbbreviation();
-      string lengthUnit = GetLengthUnitResultAbbreviation();
-      UlsStrainOutput.Name = FormatStrainName("ULS", strainUnit);
-      UlsStressOutput.Name = FormatStressName("ULS", stressUnit);
-      SlsStrainOutput.Name = FormatStrainName("SLS", strainUnit);
-      SlsStressOutput.Name = FormatStressName("SLS", stressUnit);
-      PositionOutput.Name = FormatPositionName("Position", lengthUnit);
-    }
-
-    private static string FormatPositionName(string prefix, string unit) {
-      return $"{prefix} [{unit}]";
+    protected override void UpdateParameter() {
+      base.UpdateParameter();
+      UlsStrainOutput.Name = UnitExtensions.NameWithUnits("ULS", StrainUnitResult);
+      UlsStressOutput.Name = UnitExtensions.NameWithUnits("ULS", StressUnitResult);
+      SlsStrainOutput.Name = UnitExtensions.NameWithUnits("SLS", StrainUnitResult);
+      SlsStressOutput.Name = UnitExtensions.NameWithUnits("SLS", StressUnitResult);
+      PositionOutput.Name = UnitExtensions.NameWithUnits("Position", LengthUnitResult);
     }
 
     public override void Compute() {
