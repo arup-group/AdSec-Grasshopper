@@ -95,5 +95,11 @@ namespace AdSecGHTests.Parameters {
       Assert.Equal(_testGoo.Profile, result);
     }
 
+    [Fact]
+    public void ToString_ReturnsProfileDescription() {
+      object result = _testGoo.ToString();
+      Assert.Equal(_testGoo.Profile.Description(), result);
+    }
+
   }
 }
