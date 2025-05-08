@@ -113,13 +113,13 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void GetPointBoundingBox_ReturnsInvalidBoundingBox_WhenPointIsNaNWhenSymmetric() {
+    public void GetPointBoundingBox_ReturnsBoundingBoxUnset_WhenPointIsNaNWhenSymmetric() {
       var point = new Point3d(double.NaN, 0, 0);
       var xform = Transform.Identity;
 
       var bbox = PointHelper.GetPointBoundingBox(point, xform, _offset, true);
 
-      Assert.False(bbox.IsValid);
+      Assert.Equal(BoundingBox.Unset, bbox);
     }
 
     [Fact]
@@ -226,13 +226,13 @@ namespace AdSecGHTests.Helpers {
     }
 
     [Fact]
-    public void GetPointBoundingBox_ReturnsInvalidBoundingBox_WhenPointIsNaNWhenNotSymmetric() {
+    public void GetPointBoundingBox_ReturnsBoundingBoxUnset_WhenPointIsNaNWhenNotSymmetric() {
       var point = new Point3d(double.NaN, 0, 0);
       var xform = Transform.Identity;
 
       var bbox = PointHelper.GetPointBoundingBox(point, xform, _offset, false);
 
-      Assert.False(bbox.IsValid);
+      Assert.Equal(BoundingBox.Unset, bbox);
     }
   }
 
