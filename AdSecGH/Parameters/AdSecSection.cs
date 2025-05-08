@@ -62,7 +62,7 @@ namespace AdSecGH.Parameters {
       DesignCode = code;
       _codeName = codeName;
       LocalPlane = local;
-      AssignPreviewData();
+      AssignPreviewData(subComponentOffset);
     }
 
     public AdSecSection(
@@ -184,8 +184,8 @@ namespace AdSecGH.Parameters {
       return flat;
     }
 
-    internal void AssignPreviewData() {
-      CreatePreview(out var profileData, out var reinforcementData, out var subData);
+    internal void AssignPreviewData(IPoint subComponentOffset = null) {
+      CreatePreview(out var profileData, out var reinforcementData, out var subData, subComponentOffset);
       _profile = profileData.Profile;
       _profileEdge = profileData.ProfileEdge;
       _profileVoidEdges = profileData.ProfileVoidEdges;
