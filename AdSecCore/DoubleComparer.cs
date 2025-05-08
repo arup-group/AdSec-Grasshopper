@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace AdSecCore {
 
-
   public class DoubleComparer : IEqualityComparer<double> {
     private readonly double _epsilon;
     private readonly bool _margin;

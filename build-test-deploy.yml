@@ -119,7 +119,7 @@ steps:
         } else {
           Write-Host "No score found"
           Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
-          Write-Host "##vso[task.setvariable variable=mutationStatus]❌"
+          Write-Host "##vso[task.setvariable variable=mutationStatus]➖"
       }
     displayName: Run Stryker
     failOnStderr: false
