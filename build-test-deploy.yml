@@ -39,10 +39,9 @@ steps:
     env:
       MSBUILDDISABLENODEREUSE: 1
 
-
   - task: GitHubComment@0
     inputs:
-      gitHubConnection: ''  # Replace with your service connection name
+      gitHubConnection: '$(GITHUB_TOKEN)'  # Replace with your service connection name
       repositoryName: 'arup-group/AdSec-Grasshopper'   # Format: 'owner/repo'
       comment: |
         ✅ Mutation testing complete.
