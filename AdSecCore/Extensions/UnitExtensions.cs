@@ -32,5 +32,13 @@ namespace AdSecCore {
     public static string NameWithUnits(string name, PressureUnit unit) {
       return $"{name} [{Pressure.GetAbbreviation(unit)}]";
     }
+
+    public static string NameWithUnits(string name, ForceUnit unit) {
+      return $"{name} [{Force.GetAbbreviation(unit)}]";
+    }
+
+    public static string NameWithUnits(string name, MomentUnit unit) {
+      return $"{name} [{Moment.GetAbbreviation(unit)}]";
+    }
   }
 }
