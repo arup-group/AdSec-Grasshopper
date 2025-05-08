@@ -109,8 +109,17 @@ steps:
       $scoreLine = $output | Select-String -Pattern 'final mutation score is (\d+(\.\d+)?) ?%'
       if ($scoreLine) {
         $matches = [regex]::Match($scoreLine.Line, 'final mutation score is (\d+(\.\d+)?) ?%')
-        $score = $matches.Groups[1].Value
+        $score = [double]$matches.Groups[1].Value
+
+        $status = if ($score -ge 50) { "✅" } else { "❌" }
+
+        # Set both variables
         Write-Host "##vso[task.setvariable variable=mutationScore]$score"
+        Write-Host "##vso[task.setvariable variable=mutationStatus]$status"
+        } else {
+          Write-Host "No score found"
+          Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
+          Write-Host "##vso[task.setvariable variable=mutationStatus]❌"
       }
     displayName: Run Stryker
     failOnStderr: false
@@ -132,7 +141,7 @@ steps:
       gitHubConnection: 'github-connection'  # Replace with your service connection name
       repositoryName: 'arup-group/AdSec-Grasshopper'   # Format: 'owner/repo'
       comment: |
-        ✅ Mutation testing complete.
+        $(mutationStatus) Mutation testing complete.
         **Score**: $(mutationScore)%
         View the [Stryker report](https://dev.azure.com/oasys-software/OASYS%20libraries/_build/results?buildId=$(Build.BuildId)&view=stryker-mutator.mutation-report-publisher.mutation-report-tab) for details.
     displayName: 'Post comment to GitHub PR'
