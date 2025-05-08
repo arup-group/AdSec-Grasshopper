@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+using AdSecCore;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
@@ -23,7 +24,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
   public class AdSecProfileGoo : GH_GeometricGoo<ProfileDesign>, IGH_PreviewData {
-    public override BoundingBox Boundingbox => Value == null ? BoundingBox.Empty : Polyline.BoundingBox;
+    public override BoundingBox Boundingbox => Polyline.BoundingBox;
     public BoundingBox ClippingBox => Boundingbox;
     public bool IsReflectedY {
       get => Profile.IsReflectedY;
@@ -58,6 +59,11 @@ namespace AdSecGH.Parameters {
     private Line previewZaxis;
 
     public AdSecProfileGoo(ProfileDesign profileDesign) : base(profileDesign) {
+      if (profileDesign == null) {
+        const string error = "ProfileDesign cannot be null";
+        throw new ArgumentNullException(nameof(profileDesign), error);
+      }
+
       Profile = profileDesign.Profile;
       _plane = profileDesign.LocalPlane.ToGh();
       var edges = PolylinesFromAdSecProfile(Profile, _plane);
@@ -67,6 +73,11 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecProfileGoo(IProfile profile, Plane local) {
+      if (profile == null) {
+        const string error = "Profile cannot be null";
+        throw new ArgumentNullException(nameof(profile), error);
+      }
+
       Value = new ProfileDesign() {
         Profile = profile,
         LocalPlane = local.ToOasys(),
@@ -80,6 +91,11 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecProfileGoo(Polyline polygon, LengthUnit lengthUnit) {
+      if (polygon == null) {
+        const string error = "Polygon cannot be null";
+        throw new ArgumentNullException(nameof(polygon), error);
+      }
+
       var perimprofile = IPerimeterProfile.Create();
       Plane.FitPlaneToPoints(polygon.ToList(), out var plane);
 
@@ -104,7 +120,7 @@ namespace AdSecGH.Parameters {
       }
 
       var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      if (args.Color.R == defaultColor.R && args.Color.G == defaultColor.G && args.Color.B == defaultColor.B) {
+      if (args.Color.IsRgbEqualTo(defaultColor)) {
         args.Pipeline.DrawPolyline(Polyline, Colour.OasysBlue, 2);
         if (VoidEdges != null) {
           foreach (var polyline in VoidEdges) {
@@ -353,7 +369,7 @@ namespace AdSecGH.Parameters {
     }
 
     private void UpdatePreview() {
-      if (_plane == null || _plane == Plane.WorldXY || _plane == Plane.WorldYZ || _plane == Plane.WorldZX) {
+      if (!_plane.IsValid || _plane == Plane.WorldXY || _plane == Plane.WorldYZ || _plane == Plane.WorldZX) {
         return;
       }
 
