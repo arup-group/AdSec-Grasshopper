@@ -3,11 +3,19 @@
 namespace AdSecGH.Helpers {
   public static class PointHelper {
     public static BoundingBox GetPointBoundingBox(Point3d value, double offset, bool symmetric) {
+      if (!value.IsValid) {
+        return BoundingBox.Unset;
+      }
+
       var curve = GetLineCurve(value, offset, symmetric);
       return curve.GetBoundingBox(false);
     }
 
     public static BoundingBox GetPointBoundingBox(Point3d value, Transform xform, double offset, bool symmetric) {
+      if (!value.IsValid) {
+        return BoundingBox.Unset;
+      }
+
       var curve = GetLineCurve(value, offset, symmetric);
       return curve.GetBoundingBox(xform);
     }

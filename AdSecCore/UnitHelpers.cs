@@ -22,8 +22,9 @@ namespace AdSecCore {
         } else if (Quantity.TryParse(typeof(T), txt, out var quantity)) {
           return (T)quantity;
         }
+      } else if (Quantity.TryFrom(0, units, out var quantityObject) && goo is IQuantity quantity && quantity.GetType() == quantityObject.GetType()) {
+        return (T)quantity;
       }
-
       throw new InvalidCastException($"Could not parse the input {goo} to the desired quantity {units}.");
     }
   }

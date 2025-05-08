@@ -73,28 +73,13 @@ namespace AdSecCore.Functions {
       };
     }
 
-    public override void UpdateOutputParameter() {
-      base.UpdateOutputParameter();
-      UpdateOutputNames();
+    protected override void UpdateParameter() {
+      base.UpdateParameter();
+      UlsStrainOutput.Name = UnitExtensions.NameWithUnits("ULS Strain", StrainUnitResult);
+      UlsStressOutput.Name = UnitExtensions.NameWithUnits("ULS Stress", StressUnitResult);
+      SlsStrainOutput.Name = UnitExtensions.NameWithUnits("SLS Strain", StrainUnitResult);
+      SlsStressOutput.Name = UnitExtensions.NameWithUnits("SLS Stress", StressUnitResult);
     }
-
-    protected virtual void UpdateOutputNames() {
-      string strainUnit = GetStrainUnitResultAbbreviation();
-      string stressUnit = GetStressUnitResultAbbreviation();
-      UlsStrainOutput.Name = FormatStrainName("ULS", strainUnit);
-      UlsStressOutput.Name = FormatStressName("ULS", stressUnit);
-      SlsStrainOutput.Name = FormatStrainName("SLS", strainUnit);
-      SlsStressOutput.Name = FormatStressName("SLS", stressUnit);
-    }
-
-    protected virtual string FormatStrainName(string prefix, string unit) {
-      return $"{prefix} Strain [{unit}]";
-    }
-
-    protected virtual string FormatStressName(string prefix, string unit) {
-      return $"{prefix} Stress [{unit}]";
-    }
-
 
     public override void Compute() {
 

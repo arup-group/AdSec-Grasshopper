@@ -88,7 +88,6 @@ namespace AdSecGHTests.Functions {
     public void ShouldRefreshDescription() {
       _component.StrainUnitResult = StrainUnit.MicroStrain;
       _component.StressUnitResult = PressureUnit.Pascal;
-      _component.UpdateOutputParameter();
 
       Assert.Contains("[µε]", _component.UlsStrainOutput.Name);
       Assert.Contains("[µε]", _component.SlsStrainOutput.Name);

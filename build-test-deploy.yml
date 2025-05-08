@@ -55,7 +55,6 @@ steps:
     env:
       MSBUILDDISABLENODEREUSE: 1
 
-
   - powershell: |
       dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecCore .\AdSecCoreTests\bin\Release\net7.0\AdSecCoreTests.dll
     displayName: dotnet tests AdSecCore
@@ -106,7 +105,7 @@ steps:
     failOnStderr: true
 
   - powershell: |
-      dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l basic
+      dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
     displayName: Run Stryker
     failOnStderr: false
 

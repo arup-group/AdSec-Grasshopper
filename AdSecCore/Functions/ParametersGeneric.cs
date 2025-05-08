@@ -148,5 +148,7 @@ namespace AdSecCore.Functions {
   public class PressureParameter : ParameterAttribute<Pressure> { }
   public class StrainArrayParameter : BaseArrayParameter<Strain> { }
   public class PressureArrayParameter : BaseArrayParameter<Pressure> { }
-
+  public class CurvatureParameter : ParameterAttribute<Curvature> { }
+  public class ForceParameter : ParameterAttribute<Force> { }
+  public class MomentParameter : ParameterAttribute<Moment> { }
 }

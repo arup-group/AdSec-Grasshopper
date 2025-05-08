@@ -3,6 +3,7 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Properties;
 
 using AdSecGHCore.Constants;
@@ -21,12 +22,6 @@ namespace AdSecGH.Components {
   }
 
   public class SlsResult : ComponentAdapter<SlsResultGh> {
-    protected override void BeforeSolveInstance() {
-      UpdateUnit();
-      BusinessComponent.UpdateOutputParameter();
-      RefreshOutputParameter(BusinessComponent.GetAllOutputAttributes());
-    }
-
     public SlsResult() { Hidden = true; Category = CategoryName.Name(); SubCategory = SubCategoryName.Cat7(); }
     public override Guid ComponentGuid => new Guid("27ba3ec5-b94c-43ad-8623-087540413628");
     public override GH_Exposure Exposure => GH_Exposure.primary;
