@@ -7,6 +7,7 @@ using Oasys.AdSec.Reinforcement.Preloads;
 
 using OasysUnits;
 
+
 namespace AdSecCore.Functions {
   public class CreatePreLoadFunction : Function {
     public RebarGroupParameter RebarGroupInput { get; set; } = new RebarGroupParameter {
@@ -54,6 +55,19 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat5(),
     };
 
+    private IPreload ParsePreLoad() {
+      // Determine the preload type and create the appropriate preload
+      if (PreloadInput.Name.ToLower().Contains("force")) {
+        return IPreForce.Create(UnitHelpers.ParseToQuantity<Force>(PreloadInput.Value, ForceUnit));
+      } else if (PreloadInput.Name.ToLower().Contains("strain")) {
+        return IPreStrain.Create(UnitHelpers.ParseToQuantity<Strain>(PreloadInput.Value, MaterialStrainUnit));
+      } else if (PreloadInput.Name.ToLower().Contains("stress")) {
+        return IPreStress.Create(UnitHelpers.ParseToQuantity<Pressure>(PreloadInput.Value, StressUnitResult));
+      } else {
+        throw new ArgumentException("Invalid Preload input type.");
+      }
+    }
+
 
     public override void Compute() {
       // Get the rebar group
@@ -63,18 +77,7 @@ namespace AdSecCore.Functions {
         throw new ArgumentException("Invalid RebarGroup input.");
       }
 
-      // Determine the preload type and create the appropriate preload
-      IPreload preload = null;
-      if (PreloadInput.Value is Force force) {
-        preload = IPreForce.Create(force);
-      } else if (PreloadInput.Value is Strain strain) {
-        preload = IPreStrain.Create(strain);
-      } else if (PreloadInput.Value is Pressure stress) {
-        preload = IPreStress.Create(stress);
-      } else {
-        throw new ArgumentException("Invalid Preload input type.");
-      }
-
+      IPreload preload = ParsePreLoad();
       // Apply the preload to the rebar group
       var longitudinalGroup = outRebarGroup.Group as ILongitudinalGroup;
       if (longitudinalGroup == null) {

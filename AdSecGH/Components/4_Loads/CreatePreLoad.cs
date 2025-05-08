@@ -129,9 +129,9 @@ namespace AdSecGH.Components {
 
     private void UpdateUnits() {
       UpdateDefaultUnits();
-      //BusinessComponent.ForceUnit = _forceUnit;
-      //BusinessComponent.StrainUnit = _strainUnit;
-      //BusinessComponent.StressUnit = _stressUnit;
+      BusinessComponent.ForceUnit = _forceUnit;
+      BusinessComponent.MaterialStrainUnit = _strainUnit;
+      BusinessComponent.StressUnitResult = _stressUnit;
       RefreshParameter();
     }
   }
