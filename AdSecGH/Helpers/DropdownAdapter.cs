@@ -4,6 +4,8 @@ using System.Linq;
 
 using AdSecCore.Functions;
 
+using AdSecGH.Components;
+
 using Grasshopper.Kernel;
 
 using OasysGH;
@@ -18,10 +20,8 @@ using Function = AdSecCore.Functions.Function;
 namespace Oasys.GH.Helpers {
   public abstract class DropdownAdapter<T> : GH_OasysDropDownComponent, IDefaultValues where T : IFunction {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
-
     protected DropdownAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
       BusinessComponent.UpdateProperties(this);
-
       if (BusinessComponent is IVariableInput variableInput) {
         variableInput.OnVariableInputChanged += UpdateInputs;
         UpdateInputs();
@@ -87,6 +87,19 @@ namespace Oasys.GH.Helpers {
       }
 
       _isInitialised = true;
+    }
+
+    protected override void BeforeSolveInstance() {
+      UpdateDefaultUnits();
+      RefreshParameter();
+    }
+
+    public void UpdateDefaultUnits() {
+      AdapterBase.UpdateDefaultUnits(BusinessComponent);
+    }
+
+    public void RefreshParameter() {
+      AdapterBase.RefreshParameter(BusinessComponent, this.Params);
     }
 
     public static Dictionary<Type, EngineeringUnits> ToEngineeringUnits() {
