@@ -39,15 +39,6 @@ steps:
     env:
       MSBUILDDISABLENODEREUSE: 1
 
-  - task: GitHubComment@0
-    inputs:
-      gitHubConnection: 'github-connection'  # Replace with your service connection name
-      repositoryName: 'arup-group/AdSec-Grasshopper'   # Format: 'owner/repo'
-      comment: |
-        ✅ Mutation testing complete.
-        View the [Stryker report](https://dev.azure.com/oasys-software/OASYS%20libraries/_build/results?buildId=$(Build.BuildId)&view=stryker-mutator.mutation-report-publisher.mutation-report-tab) for details.
-    displayName: 'Post comment to GitHub PR'
-
   - powershell: |
       dotnet tool install --global dotnet-stryker
     displayName: Install Stryker
@@ -131,11 +122,14 @@ steps:
       reportPattern: '$(System.DefaultWorkingDirectory)/StrykerOutput/**/mutation-report.html'
       reportDisplayName: 'Mutation Report'
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Stryker Mutation Report'
+  - task: GitHubComment@0
     inputs:
-      pathToPublish: '$(System.DefaultWorkingDirectory)/StrykerOutput'
-      artifactName: 'StrykerReport'
+      gitHubConnection: 'github-connection'  # Replace with your service connection name
+      repositoryName: 'arup-group/AdSec-Grasshopper'   # Format: 'owner/repo'
+      comment: |
+        ✅ Mutation testing complete.
+        View the [Stryker report](https://dev.azure.com/oasys-software/OASYS%20libraries/_build/results?buildId=$(Build.BuildId)&view=stryker-mutator.mutation-report-publisher.mutation-report-tab) for details.
+    displayName: 'Post comment to GitHub PR'
 
   - task: PowerShell@2
     displayName: Check for existing tags
