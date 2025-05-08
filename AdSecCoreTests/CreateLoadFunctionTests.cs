@@ -31,26 +31,79 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void GetAllInputAttributesReturnsThreeParameters() {
       var inputs = _function.GetAllInputAttributes();
-
       Assert.Equal(3, inputs.Length);
-      Assert.Contains(inputs, x => x.Name.Contains("Fx"));
-      Assert.Contains(inputs, x => x.Name.Contains("Myy"));
-      Assert.Contains(inputs, x => x.Name.Contains("Mzz"));
     }
 
     [Fact]
     public void GetAllOutputAttributesReturnsOneParameters() {
       var outputs = _function.GetAllOutputAttributes();
       Assert.Single(outputs);
-      Assert.Contains(outputs, x => x.Name.Contains("Load"));
     }
 
     [Fact]
-    public void UpdateParameterUpdatesUnitDisplayNamesCorrectly() {
-      _function.ForceUnit = ForceUnit.KiloPond;
-      _function.MomentUnit = MomentUnit.KilopoundForceFoot;
+    public void ParametersHaveCorrectNames() {
+      Assert.Equal("Fx", _function.ForceInput.Name);
+      Assert.Equal("Myy", _function.MomentYInput.Name);
+      Assert.Equal("Mzz", _function.MomentZInput.Name);
+      Assert.Equal("Load", _function.LoadOutput.Name);
+    }
 
+    [Fact]
+    public void ParametersHaveCorrectNickNames() {
+      Assert.Equal("X", _function.ForceInput.NickName);
+      Assert.Equal("YY", _function.MomentYInput.NickName);
+      Assert.Equal("ZZ", _function.MomentZInput.NickName);
+      Assert.Equal("Ld", _function.LoadOutput.NickName);
+    }
+
+    [Fact]
+    public void ParametersHaveCorrectDescriptions() {
+      Assert.Contains("The axial force", _function.ForceInput.Description);
+      Assert.Contains("The moment about local y-axis", _function.MomentYInput.Description);
+      Assert.Contains("The moment about local z-axis", _function.MomentZInput.Description);
+      Assert.Contains("AdSec Load", _function.LoadOutput.Description);
+    }
+
+    [Fact]
+    public void ParametersOptionalPropertiesAreCorrect() {
+      Assert.True(_function.ForceInput.Optional);
+      Assert.True(_function.MomentYInput.Optional);
+      Assert.True(_function.MomentZInput.Optional);
+    }
+
+    [Fact]
+    public void ParametersDataAccessAreCorrect() {
+      Assert.Equal(Access.Item, _function.ForceInput.Access);
+      Assert.Equal(Access.Item, _function.MomentYInput.Access);
+      Assert.Equal(Access.Item, _function.MomentZInput.Access);
+      Assert.Equal(Access.Item, _function.LoadOutput.Access);
+    }
+
+    [Fact]
+    public void OrganisationHasCorrectValues() {
+      Assert.Equal("AdSec", _function.Organisation.Category);
+      Assert.Equal("Loads", _function.Organisation.SubCategory.Trim());
+    }
+
+    [Fact]
+    public void MetaDataHasCorrectValues() {
+      Assert.Equal("Create Load", _function.Metadata.Name);
+      Assert.Equal("Load", _function.Metadata.NickName);
+      Assert.Contains("Create an AdSec Load", _function.Metadata.Description);
+    }
+
+    [Fact]
+    public void UpdatesForceUnitDisplayNamesCorrectly() {
+      _function.ForceUnit = ForceUnit.KiloPond;
       Assert.Contains("Fx [kp]", _function.ForceInput.Name);
+      Assert.Contains("Myy [N·m]", _function.MomentYInput.Name);
+      Assert.Contains("Mzz [N·m]", _function.MomentZInput.Name);
+    }
+
+    [Fact]
+    public void UpdatesMomentUnitDisplayNamesCorrectly() {
+      _function.MomentUnit = MomentUnit.KilopoundForceFoot;
+      Assert.Contains("Fx [N]", _function.ForceInput.Name);
       Assert.Contains("Myy [kipf·ft]", _function.MomentYInput.Name);
       Assert.Contains("Mzz [kipf·ft]", _function.MomentZInput.Name);
     }
