@@ -105,7 +105,13 @@ steps:
     failOnStderr: true
 
   - powershell: |
-      dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
+      $output = dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
+      $scoreLine = $output | Select-String -Pattern 'final mutation score is (\d+(\.\d+)?) ?%'
+      if ($scoreLine) {
+        $matches = [regex]::Match($scoreLine.Line, 'final mutation score is (\d+(\.\d+)?) ?%')
+        $score = $matches.Groups[1].Value
+        Write-Host "##vso[task.setvariable variable=mutationScore]$score"
+      }
     displayName: Run Stryker
     failOnStderr: false
 
@@ -127,6 +133,7 @@ steps:
       repositoryName: 'arup-group/AdSec-Grasshopper'   # Format: 'owner/repo'
       comment: |
         ✅ Mutation testing complete.
+        **Score**: $(mutationScore)%
         View the [Stryker report](https://dev.azure.com/oasys-software/OASYS%20libraries/_build/results?buildId=$(Build.BuildId)&view=stryker-mutator.mutation-report-publisher.mutation-report-tab) for details.
     displayName: 'Post comment to GitHub PR'
 
