@@ -5,6 +5,7 @@ using System.IO;
 using AdSecCore;
 
 using AdSecGH.Helpers;
+using AdSecGH.Parameters;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
@@ -20,14 +21,25 @@ using Oasys.Taxonomy.Profiles;
 using OasysUnits;
 using OasysUnits.Units;
 
+using Rhino.Geometry;
+
 using Xunit;
 
 using IPerimeterProfile = Oasys.Profiles.IPerimeterProfile;
 using IPolygon = Oasys.Taxonomy.Geometry.IPolygon;
+using Point2d = Oasys.Taxonomy.Geometry.Point2d;
 
 namespace AdSecGHTests.Parameters {
   [Collection("GrasshopperFixture collection")]
   public class AdSecSectionTests {
+    private readonly AdSecSection _sectionTest = null;
+
+    public AdSecSectionTests() {
+      var section = CreateSection();
+      var designCode = EN1992.Part1_1.Edition_2004.NationalAnnex.DE.Edition_2013;
+      _sectionTest = new AdSecSection(section, designCode, "test1", "test2", Plane.WorldXY);
+    }
+
     [Fact]
     public void SerialiseUnflattenedSectionTest() {
       var section = CreateSection();
@@ -69,6 +81,29 @@ namespace AdSecGHTests.Parameters {
       var actualProfile = (IPerimeterProfile)actualSection.Profile;
 
       TestFlattenedSection(flattened, actualSection);
+    }
+
+    [Fact]
+    public void Duplicate_ReturnGoo_WhenIsValid() {
+      var duplicate = _sectionTest.Duplicate();
+      Assert.NotNull(duplicate);
+      Assert.Equal(_sectionTest.IsValid, duplicate.IsValid);
+      Assert.Equal(_sectionTest.DesignCode, duplicate.DesignCode);
+      Assert.Equal(_sectionTest._materialName, duplicate._materialName);
+      Assert.Equal(_sectionTest.LocalPlane, duplicate.LocalPlane);
+      Assert.Equal(_sectionTest.Section.ToString(), duplicate.Section.ToString());
+    }
+
+    [Fact]
+    public void Duplicate_ReturnNull_WhenIsValidIsFalse() {
+      var duplicate = new AdSecSectionDummy().Duplicate();
+      Assert.Null(duplicate);
+    }
+
+    [Fact]
+    public void ToString_ReturnProfileDescription() {
+      string result = _sectionTest.ToString();
+      Assert.Equal(_sectionTest.Section.Profile.Description(), result);
     }
 
     private void TestFlattenedSection(ISection expected, ISection actual) {
@@ -169,5 +204,7 @@ namespace AdSecGHTests.Parameters {
 
       return section;
     }
+
+    private class AdSecSectionDummy : AdSecSection { }
   }
 }
