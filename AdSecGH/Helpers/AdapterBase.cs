@@ -25,6 +25,20 @@ namespace AdSecGH.Components {
       }
     }
 
+    public static void UpdateMessages<T>(T BusinessComponent, GH_Component component) {
+      if (BusinessComponent is Function function) {
+        foreach (string warning in function.WarningMessages) {
+          component.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning);
+        }
+        foreach (string remark in function.RemarkMessages) {
+          component.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, remark);
+        }
+        foreach (string error in function.ErrorMessages) {
+          component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, error);
+        }
+      }
+    }
+
     public static void RefreshParameter<T>(T BusinessComponent, GH_ComponentParamServer parameter) {
       if (BusinessComponent is Function function) {
         RefreshParams(parameter.Input, function.GetAllInputAttributes());

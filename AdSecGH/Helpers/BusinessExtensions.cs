@@ -331,8 +331,10 @@ namespace Oasys.GH.Helpers {
           }
         },{
           typeof(RebarGroupParameter), goo => {
-            dynamic gooDynamic = goo;
-            return new AdSecRebarGroup(gooDynamic);
+            if (goo is AdSecRebarGroup value) {
+              return new AdSecRebarGroup(value);
+            }
+            return null;
           }
         }, {
           typeof(SubComponentArrayParameter), goo => {

@@ -4,11 +4,7 @@ using AdSecCore.Functions;
 using AdSecGH.Parameters;
 
 using Oasys.AdSec.Reinforcement.Groups;
-using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.AdSec.Reinforcement.Preloads;
-
-using OasysUnits;
-using OasysUnits.Units;
 
 namespace AdSecCoreTests.Functions {
   public class CreatePreLoadFunctionTests {

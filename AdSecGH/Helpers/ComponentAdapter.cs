@@ -41,24 +41,7 @@ namespace Oasys.GH.Helpers {
       }
 
       BusinessComponent.Compute();
-      if (BusinessComponent is Function function) {
-        foreach (string warning in function.WarningMessages) {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning);
-        }
-
-        foreach (string remark in function.RemarkMessages) {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, remark);
-        }
-
-        foreach (string error in function.ErrorMessages) {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Error, error);
-        }
-
-        if (function.ErrorMessages.Count > 0) {
-          return;
-        }
-      }
-
+      AdapterBase.UpdateMessages(BusinessComponent, this);
       BusinessComponent.SetOutputValues(this, DA);
     }
 
