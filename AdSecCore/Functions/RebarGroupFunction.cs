@@ -65,7 +65,7 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat3()
     };
 
-    public RebarGroupParameter Layout { get; set; } = new RebarGroupParameter() {
+    public RebarGroupArrayParameter Layout { get; set; } = new RebarGroupArrayParameter() {
       Name = "Layout",
       NickName = "RbG",
       Description = "Rebar Groups for AdSec Section",

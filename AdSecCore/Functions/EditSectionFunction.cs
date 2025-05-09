@@ -34,10 +34,10 @@ namespace AdSecCore.Functions {
     public DesignCodeParameter DesignCode { get; set; }
       = Default.DesignCode(description: "[Optional] Edit the Section DesignCode", optional: true);
     public DesignCodeParameter DesignCodeOut { get; set; } = Default.DesignCode();
-    public RebarGroupParameter RebarGroup { get; set; } = Default.RebarGroup(
+    public RebarGroupArrayParameter RebarGroup { get; set; } = Default.RebarGroup(
       description: "[Optional] Edit the Reinforcement Groups in the section (applicable for only concrete material).",
       optional: true);
-    public RebarGroupParameter RebarGroupOut { get; set; } = Default.RebarGroup(
+    public RebarGroupArrayParameter RebarGroupOut { get; set; } = Default.RebarGroup(
       description: "Reinforcement Groups in the section (applicable for only concrete material).");
     public SubComponentArrayParameter SubComponent { get; set; } = Default.SubComponent(
       description: "[Optional] Edit the Subcomponents contained within the section", optional: true);

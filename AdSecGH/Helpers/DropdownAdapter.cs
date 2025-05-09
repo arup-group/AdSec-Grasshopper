@@ -55,6 +55,9 @@ namespace Oasys.GH.Helpers {
     protected override void SolveInternal(IGH_DataAccess da) {
       BusinessComponent.UpdateInputValues(this, da);
       BusinessComponent.Compute();
+      if (!AdapterBase.UpdateMessages(BusinessComponent, this)) {
+        return;
+      }
       BusinessComponent.SetOutputValues(this, da);
     }
 
