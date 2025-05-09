@@ -41,7 +41,9 @@ namespace Oasys.GH.Helpers {
       }
 
       BusinessComponent.Compute();
-      AdapterBase.UpdateMessages(BusinessComponent, this);
+      if (!AdapterBase.UpdateMessages(BusinessComponent, this)) {
+        return;
+      }
       BusinessComponent.SetOutputValues(this, DA);
     }
 

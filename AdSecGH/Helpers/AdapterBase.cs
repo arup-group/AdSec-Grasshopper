@@ -25,7 +25,7 @@ namespace AdSecGH.Components {
       }
     }
 
-    public static void UpdateMessages<T>(T BusinessComponent, GH_Component component) {
+    public static bool UpdateMessages<T>(T BusinessComponent, GH_Component component) {
       if (BusinessComponent is Function function) {
         foreach (string warning in function.WarningMessages) {
           component.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning);
@@ -36,7 +36,11 @@ namespace AdSecGH.Components {
         foreach (string error in function.ErrorMessages) {
           component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, error);
         }
+        if (function.ErrorMessages.Count > 0) {
+          return false;
+        }
       }
+      return true;
     }
 
     public static void RefreshParameter<T>(T BusinessComponent, GH_ComponentParamServer parameter) {
