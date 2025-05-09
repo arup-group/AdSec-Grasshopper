@@ -70,5 +70,15 @@ namespace AdSecCoreTests.Functions {
       function.SetMode(CreateRebarFunction.RebarMode.Bundle);
       Assert.Equal(3, function.GetAllInputAttributes().Length);
     }
+
+    [Fact]
+    public void ShouldHaveTwoInputsOnSingle() {
+      Assert.Equal(2, function.GetAllInputAttributes().Length);
+    }
+
+    [Fact]
+    public void ShouldHaveSingleOutput() {
+      Assert.Single(function.GetAllOutputAttributes());
+    }
   }
 }
