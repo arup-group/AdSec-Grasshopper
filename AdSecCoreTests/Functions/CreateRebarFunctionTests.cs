@@ -39,5 +39,25 @@ namespace AdSecCoreTests.Functions {
     public void ShouldHaveDefaultRebarModeSingle() {
       Assert.Equal(CreateRebarFunction.RebarMode.Single, function.Mode);
     }
+
+    [Fact]
+    public void ShouldHaveTwoDropdowns() {
+      Assert.Equal(2, function.Options.Length);
+    }
+
+    [Fact]
+    public void ShouldHaveDiameterParameter() {
+      Assert.Equal("Diameter", function.DiameterParameter.Name);
+    }
+
+    [Fact]
+    public void ShouldHaveMaterialParameter() {
+      Assert.Equal("Material", function.MaterialParameter.Name);
+    }
+
+    [Fact]
+    public void ShouldHaveRebarBundleParameter() {
+      Assert.Equal("Rebar", function.RebarBundleParameter.Name);
+    }
   }
 }
