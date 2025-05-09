@@ -28,4 +28,13 @@ namespace AdSecCore.Builders {
       return ILineGroup.Create(_firstBarPosition, _lastBarPosition, _layer);
     }
   }
+
+  public class BuilderTopTemplateGroup : IBuilder<ITemplateGroup> {
+    public ITemplateGroup Build() {
+      var templateGroup = ITemplateGroup.Create(ITemplateGroup.Face.Top);
+      templateGroup.Layers.Add(new BuilderLayer().Build());
+      return templateGroup;
+    }
+  }
+
 }

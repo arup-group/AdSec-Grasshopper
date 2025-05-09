@@ -64,7 +64,8 @@ namespace AdSecCore.Functions {
       } else if (PreloadInput.Name.ToLower().Contains("stress")) {
         return IPreStress.Create(UnitHelpers.ParseToQuantity<Pressure>(PreloadInput.Value, StressUnitResult));
       } else {
-        throw new ArgumentException("Invalid Preload input type.");
+        ErrorMessages.Add("Invalid Preload input type.");
+        return null;
       }
     }
 
@@ -74,14 +75,21 @@ namespace AdSecCore.Functions {
       var rebarGroup = RebarGroupInput.Value;
       var outRebarGroup = rebarGroup;
       if (outRebarGroup == null) {
-        throw new ArgumentException("Invalid RebarGroup input.");
+        ErrorMessages.Add("Invalid RebarGroup input.");
+        return;
       }
 
-      IPreload preload = ParsePreLoad();
+      //parse preload
+      var preload = ParsePreLoad();
+      if (preload == null) {
+        return;
+      }
+
       // Apply the preload to the rebar group
       var longitudinalGroup = outRebarGroup.Group as ILongitudinalGroup;
       if (longitudinalGroup == null) {
-        throw new ArgumentException("RebarGroup must be a longitudinal group.");
+        ErrorMessages.Add("RebarGroup must be a longitudinal group.");
+        return;
       }
 
       longitudinalGroup.Preload = preload;
