@@ -18,17 +18,104 @@ namespace AdSecCore.Functions {
   }
 
   public abstract class Function : IFunction {
-    public LengthUnit LengthUnit { get; set; } = LengthUnit.Meter;
-    public LengthUnit LengthUnitResult { get; set; } = LengthUnit.Millimeter;
-    public StrainUnit StrainUnitResult { get; set; } = StrainUnit.Ratio;
-    public CurvatureUnit CurvatureUnit { get; set; } = CurvatureUnit.PerMeter;
-    public MomentUnit MomentUnit { get; set; } = MomentUnit.NewtonMeter;
-    public AxialStiffnessUnit AxialStiffnessUnit { get; set; } = AxialStiffnessUnit.Newton;
-    public BendingStiffnessUnit BendingStiffnessUnit { get; set; } = BendingStiffnessUnit.NewtonSquareMeter;
-    public PressureUnit StressUnitResult { get; set; } = PressureUnit.Megapascal;
+    private LengthUnit _lengthUnitGeometry = LengthUnit.Meter;
+    private LengthUnit _lengthUnitResult = LengthUnit.Millimeter;
+    private StrainUnit _strainUnitResult = StrainUnit.Ratio;
+    private CurvatureUnit _curvatureUnit = CurvatureUnit.PerMeter;
+    private MomentUnit _momentUnit = MomentUnit.NewtonMeter;
+    private AxialStiffnessUnit _axialStiffnessUnit = AxialStiffnessUnit.Newton;
+    private BendingStiffnessUnit _bendingStiffnessUnit = BendingStiffnessUnit.NewtonSquareMeter;
+    private PressureUnit _stressUnitResult = PressureUnit.Megapascal;
+    private ForceUnit _forceUnit = ForceUnit.Newton;
+
+    public LengthUnit LengthUnitGeometry {
+      get => _lengthUnitGeometry;
+      set {
+        _lengthUnitGeometry = value;
+        UpdateParameter();
+      }
+    }
+
+    public LengthUnit LengthUnitResult {
+      get => _lengthUnitResult;
+      set {
+        _lengthUnitResult = value;
+        UpdateParameter();
+      }
+    }
+
+    public StrainUnit StrainUnitResult {
+      get => _strainUnitResult;
+      set {
+        _strainUnitResult = value;
+        UpdateParameter();
+      }
+    }
+
+    public CurvatureUnit CurvatureUnit {
+      get => _curvatureUnit;
+      set {
+        _curvatureUnit = value;
+        UpdateParameter();
+      }
+    }
+
+    public MomentUnit MomentUnit {
+      get => _momentUnit;
+      set {
+        _momentUnit = value;
+        UpdateParameter();
+      }
+    }
+
+    public AxialStiffnessUnit AxialStiffnessUnit {
+      get => _axialStiffnessUnit;
+      set {
+        _axialStiffnessUnit = value;
+        UpdateParameter();
+      }
+    }
+
+    public BendingStiffnessUnit BendingStiffnessUnit {
+      get => _bendingStiffnessUnit;
+      set {
+        _bendingStiffnessUnit = value;
+        UpdateParameter();
+      }
+    }
+
+    public PressureUnit StressUnitResult {
+      get => _stressUnitResult;
+      set {
+        _stressUnitResult = value;
+        UpdateParameter();
+      }
+    }
+
+    public ForceUnit ForceUnit {
+      get => _forceUnit;
+      set {
+        _forceUnit = value;
+        UpdateParameter();
+      }
+    }
+
     public List<string> ErrorMessages { get; set; } = new List<string>();
     public List<string> WarningMessages { get; set; } = new List<string>();
     public List<string> RemarkMessages { get; set; } = new List<string>();
+
+    public virtual bool ValidateInputs() {
+      var inputs = GetAllInputAttributes();
+      foreach (var input in inputs) {
+        var valueProperty = input.GetType().GetProperty("Value");
+        var value = valueProperty.GetValue(input);
+        if (!input.Optional && value == null) {
+          ErrorMessages.Add($"{input.Name} input is null");
+          return false;
+        }
+      }
+      return true;
+    }
 
     public abstract FuncAttribute Metadata { get; set; }
     public abstract Organisation Organisation { get; set; }
@@ -36,7 +123,7 @@ namespace AdSecCore.Functions {
 
     public virtual Attribute[] GetAllOutputAttributes() { return Array.Empty<Attribute>(); }
 
-    public virtual void UpdateOutputParameter() { }
+    protected virtual void UpdateParameter() { }
 
     public abstract void Compute();
   }

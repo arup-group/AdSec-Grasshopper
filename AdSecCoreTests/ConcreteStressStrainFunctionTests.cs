@@ -52,6 +52,13 @@ namespace AdSecGHTests.Functions {
     }
 
     [Fact]
+    public void ShouldValidateOptionalVertex() {
+      _component.VertexInput.Value = null;
+      _component.VertexInput.Optional = true;
+      Assert.True(_component.ValidateInputs());
+    }
+
+    [Fact]
     public void ShouldHaveErrorMessageForNullLoad() {
       _component.LoadInput.Value = null;
       _component.Compute();
@@ -81,7 +88,6 @@ namespace AdSecGHTests.Functions {
     public void ShouldRefreshDescription() {
       _component.StrainUnitResult = StrainUnit.MicroStrain;
       _component.StressUnitResult = PressureUnit.Pascal;
-      _component.UpdateOutputParameter();
       Assert.Contains("[µε]", _component.UlsStrainOutput.Name);
       Assert.Contains("[µε]", _component.SlsStrainOutput.Name);
       Assert.Contains("[Pa]", _component.UlsStressOutput.Name);

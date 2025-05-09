@@ -12,13 +12,14 @@ using Grasshopper.Kernel;
 using Oasys.GH.Helpers;
 
 using OasysGH;
+using OasysGH.Units;
 using OasysGH.Units.Helpers;
 
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateReinforcementGroup : DropdownAdapter<RebarGroupFunction> {
-
+    private LengthUnit _lengthUnitGeometry = DefaultUnits.LengthUnitGeometry;
     public override Guid ComponentGuid => new Guid("9876f456-de99-4834-8d7f-4019cc0c70ba");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -29,9 +30,9 @@ namespace AdSecGH.Components {
       if (i == 0) {
         BusinessComponent.SetMode((FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[i]));
       } else {
-        BusinessComponent.LengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
+        _lengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       }
-
+      UpdateUnits();
       base.UpdateUI();
     }
 
@@ -40,7 +41,7 @@ namespace AdSecGH.Components {
     public override bool Read(GH_IReader reader) {
       var unitString = string.Empty;
       if (reader.TryGetString("LengthUnit", ref unitString)) {
-        BusinessComponent.LengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), unitString);
+        BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), unitString);
         _selectedItems[1] = unitString;
       }
 
@@ -54,7 +55,7 @@ namespace AdSecGH.Components {
     }
 
     public override bool Write(GH_IWriter writer) {
-      writer.SetString("LengthUnit", BusinessComponent.LengthUnit.ToString());
+      writer.SetString("LengthUnit", BusinessComponent.LengthUnitGeometry.ToString());
       writer.SetString(modeKey, BusinessComponent.Mode.ToString());
 
       return base.Write(writer);
@@ -67,8 +68,19 @@ namespace AdSecGH.Components {
 
     protected override void UpdateUIFromSelectedItems() {
       BusinessComponent.SetMode((FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[0]));
-      BusinessComponent.LengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
+      _lengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
       base.UpdateUIFromSelectedItems();
+    }
+
+    protected override void BeforeSolveInstance() {
+      UpdateUnits();
+    }
+
+    private void UpdateUnits() {
+      UpdateDefaultUnits();
+      //update local unit if any
+      BusinessComponent.LengthUnitGeometry = _lengthUnitGeometry;
+      RefreshParameter();
     }
   }
 }

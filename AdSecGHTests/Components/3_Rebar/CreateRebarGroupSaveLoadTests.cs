@@ -51,7 +51,7 @@ namespace AdSecGHTests.Components._3_Rebar {
 
     [Fact]
     public void ShouldHaveDefaultUnits() {
-      Assert.Equal("Meter", component.BusinessComponent.LengthUnit.ToString());
+      Assert.Equal("Meter", component.BusinessComponent.LengthUnitGeometry.ToString());
     }
 
     [Fact]
@@ -59,7 +59,7 @@ namespace AdSecGHTests.Components._3_Rebar {
       component.SetSelected(1, 1);
       ComponentTesting.ComputeOutputs(component);
       var loadedComponent = SaveAndLoad();
-      Assert.Equal("Centimeter", loadedComponent.BusinessComponent.LengthUnit.ToString());
+      Assert.Equal("Centimeter", loadedComponent.BusinessComponent.LengthUnitGeometry.ToString());
     }
 
     private CreateReinforcementGroup SaveAndLoad() {

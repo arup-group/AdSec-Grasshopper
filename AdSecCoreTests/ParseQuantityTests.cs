@@ -44,5 +44,13 @@ namespace AdSecCoreTests {
     public void ShouldWorkForOtherQuantities() {
       Assert.Equal(new Area(2, AreaUnit.SquareMeter), UnitHelpers.ParseToQuantity<Area>("2m²", AreaUnit.SquareMeter));
     }
+
+    [Fact]
+    public void ParseToQuantityWithExistingQuantityReturnsSameQuantity() {
+      var length = Length.FromMeters(42);
+      var unit = LengthUnit.Meter;
+      var result = UnitHelpers.ParseToQuantity<Length>(length, unit);
+      Assert.Equal(length.As(unit), result.As(unit));
+    }
   }
 }

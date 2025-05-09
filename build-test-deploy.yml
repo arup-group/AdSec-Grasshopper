@@ -1,7 +1,7 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+  - main
 
 variables:
   - group: s3PushInstallers
@@ -12,88 +12,145 @@ variables:
 pool: 'rhino-compute'
 
 steps:
-- powershell: Remove-Item -Path C:\Users\**\AppData\Roaming\Grasshopper\Libraries\*.ghlink
-  displayName: 'Delete orphan .ghlink files'
+  - powershell: Remove-Item -Path C:\Users\**\AppData\Roaming\Grasshopper\Libraries\*.ghlink
+    displayName: 'Delete orphan .ghlink files'
 
-- task: NuGetToolInstaller@1
+  - task: NuGetToolInstaller@1
 
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '7.x'  # Specify the version you need, e.g., '7.0.100'
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'sdk'
+      version: '8.x'  # Specify the version you need, e.g., '7.0.100'
 
-- task: NuGetCommand@2
-  displayName: 'Restoring NuGet packages'
-  inputs:
+  - task: NuGetCommand@2
+    displayName: 'Restoring NuGet packages'
+    inputs:
       command: 'restore'
       restoreSolution: 'AdSecGH.sln'
 
-- task: VSBuild@1
-  displayName: 'Building project in $(configuration)'
-  inputs:
-    solution: 'AdSecGH.sln'
-    msbuildArgs: '/p:AppxBundlePlatforms="x64" /p:AppxPackageDir="$(build.artifactStagingDirectory)\AppxPackages" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload /m /nr:false'
-    platform: 'x64'
-    configuration: '$(configuration)'
-    clean: true
-  env:
-    MSBUILDDISABLENODEREUSE: 1
+  - task: VSBuild@1
+    displayName: 'Building project in $(configuration)'
+    inputs:
+      solution: 'AdSecGH.sln'
+      msbuildArgs: '/p:AppxBundlePlatforms="x64" /p:AppxPackageDir="$(build.artifactStagingDirectory)\AppxPackages" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload /m /nr:false'
+      platform: 'x64'
+      configuration: '$(configuration)'
+      clean: true
+    env:
+      MSBUILDDISABLENODEREUSE: 1
 
-- powershell: |
-    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecCore .\AdSecCoreTests\bin\Release\net7.0\AdSecCoreTests.dll
-  displayName: dotnet tests AdSecCore
-  failOnStderr: false
+  - powershell: |
+      dotnet tool install --global dotnet-stryker
+    displayName: Install Stryker
+    failOnStderr: false
 
-- powershell: |
-    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecgh .\AdSecGHTests\bin\x64\Release\net48\AdSecGHTests.dll
-  displayName: dotnet tests AdSecGh
-  failOnStderr: false
+  - task: VSBuild@1
+    displayName: 'Re-Building project in $(configuration)'
+    inputs:
+      solution: 'AdSecGH.sln'
+      msbuildArgs: '/p:AppxBundlePlatforms="x64" /p:AppxPackageDir="$(build.artifactStagingDirectory)\AppxPackages" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload /m /nr:false'
+      platform: 'x64'
+      configuration: '$(configuration)'
+      clean: true
+    env:
+      MSBUILDDISABLENODEREUSE: 1
 
-- powershell: |
-    dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\integration  .\IntegrationTests\bin\x64\Release\net48\IntegrationTests.dll
-  displayName: dotnet tests Integration
-  failOnStderr: false
+  - powershell: |
+      dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecCore .\AdSecCoreTests\bin\Release\net7.0\AdSecCoreTests.dll
+    displayName: dotnet tests AdSecCore
+    failOnStderr: false
 
-- powershell: |
-    if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post | Select-Object StatusCode).StatusCode) {
-      Write-Output "codecov.yml is invalid"
-      Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post
-      exit(1)
-    } else {
-      Write-Output "codecov.yml is valid"
-    }
-  displayName: Validate codecov.yml
-  failOnStderr: true
+  - powershell: |
+      dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecgh .\AdSecGHTests\bin\x64\Release\net48\AdSecGHTests.dll
+    displayName: dotnet tests AdSecGh
+    failOnStderr: false
 
-- powershell: |
-    $coverage_file_adsecCore = (Resolve-Path $(System.DefaultWorkingDirectory)/results/adsecCore/*/coverage.cobertura.xml).Path
-    echo $coverage_file_adsecCore
-    $coverage_file_adsecgh = (Resolve-Path $(System.DefaultWorkingDirectory)/results/adsecgh/*/coverage.cobertura.xml).Path
-    echo $coverage_file_adsecgh
-    $coverage_file_integration = (Resolve-Path $(System.DefaultWorkingDirectory)/results/integration/*/coverage.cobertura.xml).Path
-    echo $coverage_file_integration
+  - powershell: |
+      dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\integration  .\IntegrationTests\bin\x64\Release\net48\IntegrationTests.dll
+    displayName: dotnet tests Integration
+    failOnStderr: false
 
-    Copy-Item $coverage_file_adsecCore $(System.DefaultWorkingDirectory)\results\coverage_adsecCore.xml
-    Copy-Item $coverage_file_adsecgh $(System.DefaultWorkingDirectory)\results\coverage_adsecgh.xml
-    Copy-Item $coverage_file_integration $(System.DefaultWorkingDirectory)\results\coverage_integration.xml
-    $ProgressPreference = 'SilentlyContinue'
-    Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
-    ls $(System.DefaultWorkingDirectory)\
-    cd $(System.DefaultWorkingDirectory)\
-    .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_adsecCore.xml -F adsecCore
-    .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_adsecgh.xml -F adsecgh
-    .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_integration.xml -F adsecgh_integration
-  env:
-    CODECOV_TOKEN: $(CODECOV_TOKEN)
-  displayName: Upload Code Coverage to codecovio
-  failOnStderr: true
+  - powershell: |
+      if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post | Select-Object StatusCode).StatusCode) {
+        Write-Output "codecov.yml is invalid"
+        Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post
+        exit(1)
+      } else {
+        Write-Output "codecov.yml is valid"
+      }
+    displayName: Validate codecov.yml
+    failOnStderr: true
 
+  - powershell: |
+      $coverage_file_adsecCore = (Resolve-Path $(System.DefaultWorkingDirectory)/results/adsecCore/*/coverage.cobertura.xml).Path
+      echo $coverage_file_adsecCore
+      $coverage_file_adsecgh = (Resolve-Path $(System.DefaultWorkingDirectory)/results/adsecgh/*/coverage.cobertura.xml).Path
+      echo $coverage_file_adsecgh
+      $coverage_file_integration = (Resolve-Path $(System.DefaultWorkingDirectory)/results/integration/*/coverage.cobertura.xml).Path
+      echo $coverage_file_integration
 
-- task: PowerShell@2
-  displayName: Check for existing tags
-  inputs:
-    targetType: 'inline'
-    script: |
+      Copy-Item $coverage_file_adsecCore $(System.DefaultWorkingDirectory)\results\coverage_adsecCore.xml
+      Copy-Item $coverage_file_adsecgh $(System.DefaultWorkingDirectory)\results\coverage_adsecgh.xml
+      Copy-Item $coverage_file_integration $(System.DefaultWorkingDirectory)\results\coverage_integration.xml
+      $ProgressPreference = 'SilentlyContinue'
+      Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
+      ls $(System.DefaultWorkingDirectory)\
+      cd $(System.DefaultWorkingDirectory)\
+      .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_adsecCore.xml -F adsecCore
+      .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_adsecgh.xml -F adsecgh
+      .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_integration.xml -F adsecgh_integration
+    env:
+      CODECOV_TOKEN: $(CODECOV_TOKEN)
+    displayName: Upload Code Coverage to codecovio
+    failOnStderr: true
+
+  - powershell: |
+      $output = dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
+      $scoreLine = $output | Select-String -Pattern 'final mutation score is (\d+(\.\d+)?) ?%'
+      if ($scoreLine) {
+        $matches = [regex]::Match($scoreLine.Line, 'final mutation score is (\d+(\.\d+)?) ?%')
+        $score = [double]$matches.Groups[1].Value
+
+        $status = if ($score -ge 50) { "✅" } else { "❌" }
+
+        # Set both variables
+        Write-Host "##vso[task.setvariable variable=mutationScore]$score"
+        Write-Host "##vso[task.setvariable variable=mutationStatus]$status"
+        } else {
+          Write-Host "No score found"
+          Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
+          Write-Host "##vso[task.setvariable variable=mutationStatus]➖"
+      }
+    displayName: Run Stryker
+    failOnStderr: false
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Stryker Mutation Report'
+    inputs:
+      pathToPublish: '$(System.DefaultWorkingDirectory)/StrykerOutput'
+      artifactName: 'StrykerReport'
+
+  - task: PublishMutationReport@2
+    displayName: 'Publish Mutation Test Report'
+    inputs:
+      reportPattern: '$(System.DefaultWorkingDirectory)/StrykerOutput/**/mutation-report.html'
+      reportDisplayName: 'Mutation Report'
+
+  - task: GitHubComment@0
+    inputs:
+      gitHubConnection: 'github-connection'  # Replace with your service connection name
+      repositoryName: 'arup-group/AdSec-Grasshopper'   # Format: 'owner/repo'
+      comment: |
+        $(mutationStatus) Mutation testing complete.
+        **Score**: $(mutationScore)%
+        View the [Stryker report](https://dev.azure.com/oasys-software/OASYS%20libraries/_build/results?buildId=$(Build.BuildId)&view=stryker-mutator.mutation-report-publisher.mutation-report-tab) for details.
+    displayName: 'Post comment to GitHub PR'
+
+  - task: PowerShell@2
+    displayName: Check for existing tags
+    inputs:
+      targetType: 'inline'
+      script: |
         $versionInfo = $(Get-Item .\AdSecGH\bin\x64\Release\net48\AdSecGH.dll).VersionInfo
         echo $versionInfo
         $fullVersion = [array]${versionInfo}.FileVersion.split('.')
@@ -118,59 +175,59 @@ steps:
           $tagExists = 'true'
           echo $tagExists
         }
-    errorActionPreference: 'continue'
-    workingDirectory: '$(System.DefaultWorkingDirectory)'
-    ignoreLASTEXITCODE: true
+      errorActionPreference: 'continue'
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
+      ignoreLASTEXITCODE: true
 
-- powershell: |
-    cd AdSecGH\bin\x64\Release
-    curl https://files.mcneel.com/yak/tools/latest/yak.exe -o yak.exe
-    .\yak version
-    cd net48
-    ..\yak spec
-    Add-Content manifest.yml 'icon: AdSecIcon.png'
-    Add-Content manifest.yml 'keywords:'
-    Add-Content manifest.yml '- oasys'
-    Add-Content manifest.yml '- adsec'
-    Add-Content manifest.yml '- adsecgh'
-    Add-Content manifest.yml '- section'
-    Add-Content manifest.yml '- concrete'
-    Add-Content manifest.yml '- composite'
-    Add-Content manifest.yml '- structural'
-    Add-Content manifest.yml '- concreteanalysis'
-    Add-Content manifest.yml '- structuraldesign'
-    ..\yak build --platform win
-    $yakCurrentVersName = Get-ChildItem -Path . -Filter "*.yak"
-    $yakRh7Name =  $yakCurrentVersName -Replace "rh6_27", "rh7_0"
-    Rename-Item -Path $yakCurrentVersName -NewName $yakRh7Name
-    ..\yak build --platform win
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables.TAG_EXISTS, 'true'))
-  displayName: Package yak
+  - powershell: |
+      cd AdSecGH\bin\x64\Release
+      curl https://files.mcneel.com/yak/tools/latest/yak.exe -o yak.exe
+      .\yak version
+      cd net48
+      ..\yak spec
+      Add-Content manifest.yml 'icon: AdSecIcon.png'
+      Add-Content manifest.yml 'keywords:'
+      Add-Content manifest.yml '- oasys'
+      Add-Content manifest.yml '- adsec'
+      Add-Content manifest.yml '- adsecgh'
+      Add-Content manifest.yml '- section'
+      Add-Content manifest.yml '- concrete'
+      Add-Content manifest.yml '- composite'
+      Add-Content manifest.yml '- structural'
+      Add-Content manifest.yml '- concreteanalysis'
+      Add-Content manifest.yml '- structuraldesign'
+      ..\yak build --platform win
+      $yakCurrentVersName = Get-ChildItem -Path . -Filter "*.yak"
+      $yakRh7Name =  $yakCurrentVersName -Replace "rh6_27", "rh7_0"
+      Rename-Item -Path $yakCurrentVersName -NewName $yakRh7Name
+      ..\yak build --platform win
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables.TAG_EXISTS, 'true'))
+    displayName: Package yak
 
-- powershell: |
-    cd AdSecGH
-    & 'C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\MSBuild.exe' AdSecGH.csproj /t:pack /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg /p:DebugType=portable /property:Configuration=Debug
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables.TAG_EXISTS, 'true'))
-  displayName: Package NuGet
+  - powershell: |
+      cd AdSecGH
+      & 'C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\MSBuild.exe' AdSecGH.csproj /t:pack /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg /p:DebugType=portable /property:Configuration=Debug
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables.TAG_EXISTS, 'true'))
+    displayName: Package NuGet
 
-- task: GitHubRelease@1
-  inputs:
-    gitHubConnection: 'github.com_MJCramp'
-    repositoryName: 'arup-group/AdSec-Grasshopper'
-    action: 'edit'
-    target: '$(Build.SourceVersion)'
-    tag: '$(dotSeparatedTag)'
-    title: 'AdSecGH version $(dotSeparatedTag)'
-    releaseNotesSource: 'inline'
-    releaseNotesInline: |
-      Created from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
-    assets: |
-      $(System.DefaultWorkingDirectory)/**/*.yak
-      $(System.DefaultWorkingDirectory)/**/*.nupkg
-      $(System.DefaultWorkingDirectory)/**/*.snupkg
-    assetUploadMode: 'replace'
-    isDraft: true
-    isPreRelease: true
-    addChangeLog: false
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables.TAG_EXISTS, 'true'))
-  displayName: 'Publishing assets to Github'
+  - task: GitHubRelease@1
+    inputs:
+      gitHubConnection: 'github.com_MJCramp'
+      repositoryName: 'arup-group/AdSec-Grasshopper'
+      action: 'edit'
+      target: '$(Build.SourceVersion)'
+      tag: '$(dotSeparatedTag)'
+      title: 'AdSecGH version $(dotSeparatedTag)'
+      releaseNotesSource: 'inline'
+      releaseNotesInline: |
+        Created from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
+      assets: |
+        $(System.DefaultWorkingDirectory)/**/*.yak
+        $(System.DefaultWorkingDirectory)/**/*.nupkg
+        $(System.DefaultWorkingDirectory)/**/*.snupkg
+      assetUploadMode: 'replace'
+      isDraft: true
+      isPreRelease: true
+      addChangeLog: false
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables.TAG_EXISTS, 'true'))
+    displayName: 'Publishing assets to Github'

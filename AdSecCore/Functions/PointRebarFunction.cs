@@ -48,8 +48,14 @@ namespace AdSecCore.Functions {
       };
     }
 
+    protected override void UpdateParameter() {
+      base.UpdateParameter();
+      Y.Name = UnitExtensions.NameWithUnits("Y", LengthUnitGeometry);
+      Z.Name = UnitExtensions.NameWithUnits("Z", LengthUnitGeometry);
+    }
+
     public override void Compute() {
-      Point.Value = IPoint.Create(new Length(Y.Value, LengthUnit), new Length(Z.Value, LengthUnit));
+      Point.Value = IPoint.Create(new Length(Y.Value, LengthUnitGeometry), new Length(Z.Value, LengthUnitGeometry));
     }
   }
 }

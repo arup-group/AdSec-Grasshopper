@@ -6,8 +6,8 @@ using OasysUnits;
 
 namespace AdSecCore.Functions {
   public class ConcreteStressStrainFunction : ResultFunction {
-    private IServiceabilityResult Sls { get; set; }
-    private IStrengthResult Uls { get; set; }
+    protected IServiceabilityResult Sls { get; set; }
+    protected IStrengthResult Uls { get; set; }
 
     public PointParameter VertexInput { get; set; } = new PointParameter {
       Name = "Vertex Point",
@@ -56,6 +56,14 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat7(),
     };
 
+    public override Attribute[] GetAllInputAttributes() {
+      return new Attribute[] {
+       SolutionInput,
+       LoadInput,
+       VertexInput,
+      };
+    }
+
     public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
        UlsStrainOutput,
@@ -65,18 +73,16 @@ namespace AdSecCore.Functions {
       };
     }
 
-    public override void UpdateOutputParameter() {
-      base.UpdateOutputParameter();
-      string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
-      string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
-      UlsStrainOutput.Name = $"ULS Strain [{strainUnitAbbreviation}]";
-      UlsStressOutput.Name = $"ULS Stress [{stressUnitAbbreviation}]";
-      SlsStrainOutput.Name = $"SLS Strain [{strainUnitAbbreviation}]";
-      SlsStressOutput.Name = $"SLS Stress [{stressUnitAbbreviation}]";
+    protected override void UpdateParameter() {
+      base.UpdateParameter();
+      UlsStrainOutput.Name = UnitExtensions.NameWithUnits("ULS Strain", StrainUnitResult);
+      UlsStressOutput.Name = UnitExtensions.NameWithUnits("ULS Stress", StressUnitResult);
+      SlsStrainOutput.Name = UnitExtensions.NameWithUnits("SLS Strain", StrainUnitResult);
+      SlsStressOutput.Name = UnitExtensions.NameWithUnits("SLS Stress", StressUnitResult);
     }
 
-
     public override void Compute() {
+
       if (!ValidateInputs()) {
         return;
       }
@@ -86,18 +92,7 @@ namespace AdSecCore.Functions {
       ProcessOutput();
     }
 
-    protected override bool ValidateInputs() {
-      if (!base.ValidateInputs()) {
-        return false;
-      }
-      if (VertexInput.Value == null) {
-        ErrorMessages.Add("Vertex point is null");
-        return false;
-      }
-      return true;
-    }
-
-    private void ProcessInput() {
+    protected virtual void ProcessInput() {
       switch (LoadInput.Value) {
         case ILoad load:
           Uls = SolutionInput.Value.Solution.Strength.Check(load);
