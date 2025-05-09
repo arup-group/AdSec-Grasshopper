@@ -133,5 +133,12 @@ namespace AdSecCoreTests.Functions {
       _function.PreloadInput.Value = "InvalidType";
       Assert.Throws<InvalidCastException>(() => _function.Compute());
     }
+
+    [Fact]
+    public void ComputeReportErrorMessageWhenRebarTemplateIsNull() {
+      _function.RebarGroupInput.Value = new AdSecRebarGroup();
+      _function.Compute();
+      Assert.Single(_function.ErrorMessages);
+    }
   }
 }
