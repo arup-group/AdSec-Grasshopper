@@ -34,5 +34,10 @@ namespace AdSecCoreTests.Functions {
     public void ShouldHaveSubCategoryCat3() {
       Assert.Equal(CategoryName.Name(), function.Organisation.Category);
     }
+
+    [Fact]
+    public void ShouldHaveDefaultRebarModeSingle() {
+      Assert.Equal(CreateRebarFunction.RebarMode.Single, function.Mode);
+    }
   }
 }

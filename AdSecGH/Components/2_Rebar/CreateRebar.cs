@@ -9,8 +9,6 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using AdSecGHCore.Constants;
-
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
@@ -19,7 +17,6 @@ using Oasys.AdSec.Reinforcement;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Components;
 using OasysGH.Helpers;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;
@@ -32,14 +29,6 @@ namespace AdSecGH.Components {
     private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
     private FoldMode _mode = FoldMode.Single;
 
-    public CreateRebar()
-      // : base("Create Rebar", "Rebar", "Create Rebar (single or bundle) for an AdSec Section",
-      // CategoryName.Name(), SubCategoryName.Cat3())
-      {
-      Hidden = false; // sets the initial state of the component to hidden
-    }
-
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("024d241a-b6cc-4134-9f5c-ac9a6dcb2c4b");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
