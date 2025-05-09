@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -14,6 +16,7 @@ using Grasshopper.Kernel.Parameters;
 
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement;
+using Oasys.GH.Helpers;
 
 using OasysGH;
 using OasysGH.Components;
@@ -25,12 +28,14 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
-  public class CreateRebar : GH_OasysDropDownComponent {
+  public class CreateRebar : DropdownAdapter<CreateRebarFunction> {
     private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
     private FoldMode _mode = FoldMode.Single;
 
-    public CreateRebar() : base("Create Rebar", "Rebar", "Create Rebar (single or bundle) for an AdSec Section",
-      CategoryName.Name(), SubCategoryName.Cat3()) {
+    public CreateRebar()
+      // : base("Create Rebar", "Rebar", "Create Rebar (single or bundle) for an AdSec Section",
+      // CategoryName.Name(), SubCategoryName.Cat3())
+      {
       Hidden = false; // sets the initial state of the component to hidden
     }
 
