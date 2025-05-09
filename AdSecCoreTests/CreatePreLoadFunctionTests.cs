@@ -71,14 +71,14 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ParametersHaveCorrectNames() {
       Assert.Equal("RebarGroup", _function.RebarGroupInput.Name);
-      Assert.Equal("Preload", _function.PreloadInput.Name);
+      Assert.Equal("Force", _function.PreloadInput.Name);
       Assert.Equal("Prestressed RebarGroup", _function.PreloadedRebarGroupOutput.Name);
     }
 
     [Fact]
     public void ParametersHaveCorrectNickNames() {
       Assert.Equal("RbG", _function.RebarGroupInput.NickName);
-      Assert.Equal("PL", _function.PreloadInput.NickName);
+      Assert.Equal("P", _function.PreloadInput.NickName);
       Assert.Equal("RbG", _function.PreloadedRebarGroupOutput.NickName);
     }
 

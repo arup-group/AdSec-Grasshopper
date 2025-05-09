@@ -18,8 +18,8 @@ namespace AdSecCore.Functions {
     };
 
     public GenericParameter PreloadInput { get; set; } = new GenericParameter {
-      Name = "Preload",
-      NickName = "PL",
+      Name = "Force",
+      NickName = "P",
       Description = "The preload value (Force, Strain, or Stress) to apply to the reinforcement group",
       Access = Access.Item,
     };
