@@ -85,12 +85,13 @@ namespace AdSecGH.Parameters {
       AssignPreviewData();
     }
 
+    internal AdSecSection() { }
+
     public IDesignCode DesignCode { get; set; }
-    public bool IsValid => SolidBrep != null || SolidBrep.IsValid;
+    public bool IsValid => SolidBrep != null && SolidBrep.IsValid;
     public Plane LocalPlane { get; set; }
     public ISection Section { get; set; }
     internal Brep SolidBrep => _profile;
-    internal List<Brep> SubBreps => _subProfiles;
 
     public AdSecSection Duplicate() {
       return IsValid ? (AdSecSection)MemberwiseClone() : null;
@@ -200,7 +201,7 @@ namespace AdSecGH.Parameters {
       _subColours = subData.SubColours;
     }
 
-    internal void CreatePreview(
+    private void CreatePreview(
       out ProfilePreviewData profileData, out ReinforcementPreviewData reinforcementData,
       out SubComponentsPreviewData subData, IPoint pointOffset = null) {
       var flat = SetFlattenSection();
@@ -213,7 +214,7 @@ namespace AdSecGH.Parameters {
       GenerateLocalPlanePreviewAxes();
     }
 
-    internal ProfilePreviewData GenerateProfilePreview(ISection flat, Vector3d currentOffset) {
+    private ProfilePreviewData GenerateProfilePreview(ISection flat, Vector3d currentOffset) {
       GenerateProfileGeometryWithOffset(out var profile, out var edge, out var voids, flat, currentOffset);
       MapMaterialToProfileColour(Section.Material, out var colour);
 
@@ -302,7 +303,7 @@ namespace AdSecGH.Parameters {
         profile.Polyline.ToPolylineCurve(),
       };
       curves.AddRange(profile.VoidEdges.Select(x => x.ToPolylineCurve()));
-      return Brep.CreatePlanarBreps(curves, tolerance)[0]; //TODO: use OasysUnits tolerance
+      return Brep.CreatePlanarBreps(curves, tolerance)[0];
     }
 
     private static List<Brep> CreateBrepsFromSingleRebar(
@@ -320,7 +321,7 @@ namespace AdSecGH.Parameters {
         var curves = new List<Curve> {
           edgeCurve.ToNurbsCurve(),
         };
-        rebarBreps.Add(Brep.CreatePlanarBreps(curves, tolerance)[0]); //TODO: use OasysUnits tolerance
+        rebarBreps.Add(Brep.CreatePlanarBreps(curves, tolerance)[0]);
       }
 
       return rebarBreps;
@@ -396,27 +397,26 @@ namespace AdSecGH.Parameters {
         cover = reinforcement.Cover;
       }
     }
-  }
 
-  internal class ProfilePreviewData {
-    public Brep Profile { get; set; }
-    public Polyline ProfileEdge { get; set; }
-    public List<Polyline> ProfileVoidEdges { get; set; }
-    public DisplayMaterial ProfileColour { get; set; }
-  }
+    private sealed class ProfilePreviewData {
+      public Brep Profile { get; set; }
+      public Polyline ProfileEdge { get; set; }
+      public List<Polyline> ProfileVoidEdges { get; set; }
+      public DisplayMaterial ProfileColour { get; set; }
+    }
 
-  internal class ReinforcementPreviewData {
-    public List<Brep> Rebars { get; set; } = new List<Brep>();
-    public List<Circle> RebarEdges { get; set; } = new List<Circle>();
-    public List<Curve> LinkEdges { get; set; } = new List<Curve>();
-    public List<DisplayMaterial> RebarColours { get; set; } = new List<DisplayMaterial>();
-  }
+    private sealed class ReinforcementPreviewData {
+      public List<Brep> Rebars { get; set; } = new List<Brep>();
+      public List<Circle> RebarEdges { get; set; } = new List<Circle>();
+      public List<Curve> LinkEdges { get; set; } = new List<Curve>();
+      public List<DisplayMaterial> RebarColours { get; set; } = new List<DisplayMaterial>();
+    }
 
-  internal class SubComponentsPreviewData {
-    public List<Brep> SubProfiles { get; set; } = new List<Brep>();
-    public List<Polyline> SubEdges { get; set; } = new List<Polyline>();
-    public List<List<Polyline>> SubVoidEdges { get; set; } = new List<List<Polyline>>();
-    public List<DisplayMaterial> SubColours { get; set; } = new List<DisplayMaterial>();
+    private sealed class SubComponentsPreviewData {
+      public List<Brep> SubProfiles { get; set; } = new List<Brep>();
+      public List<Polyline> SubEdges { get; set; } = new List<Polyline>();
+      public List<List<Polyline>> SubVoidEdges { get; set; } = new List<List<Polyline>>();
+      public List<DisplayMaterial> SubColours { get; set; } = new List<DisplayMaterial>();
+    }
   }
-
 }
