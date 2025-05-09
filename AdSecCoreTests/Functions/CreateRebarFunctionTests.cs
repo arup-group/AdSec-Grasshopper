@@ -59,5 +59,16 @@ namespace AdSecCoreTests.Functions {
     public void ShouldHaveRebarBundleParameter() {
       Assert.Equal("Rebar", function.RebarBundleParameter.Name);
     }
+
+    [Fact]
+    public void ShouldHaveCountParameter() {
+      Assert.Equal("Count", function.CountParameter.Name);
+    }
+
+    [Fact]
+    public void ShouldHaveThreeInputsOnBundle() {
+      function.SetMode(CreateRebarFunction.RebarMode.Bundle);
+      Assert.Equal(3, function.GetAllInputAttributes().Length);
+    }
   }
 }

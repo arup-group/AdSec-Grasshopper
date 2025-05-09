@@ -20,6 +20,13 @@ namespace AdSecCore.Functions {
       NickName = "Ø",
       Description = "Bar Diameter",
     };
+
+    public IntegerParameter CountParameter { get; set; } = new IntegerParameter() {
+      Name = "Count",
+      NickName = "N",
+      Description = "Count per bundle (1, 2, 3 or 4)",
+    };
+
     public RebarBundleParameter RebarBundleParameter { get; set; } = Default.RebarBundle();
 
     public override FuncAttribute Metadata { get; set; } = new FuncAttribute() {
@@ -33,7 +40,17 @@ namespace AdSecCore.Functions {
     };
 
     public override Attribute[] GetAllInputAttributes() {
-      return new Attribute[] { MaterialParameter, DiameterParameter };
+      Attribute[] attributes = { };
+      switch (Mode) {
+        case RebarMode.Single:
+          attributes = new Attribute[] { MaterialParameter, DiameterParameter };
+          break;
+        case RebarMode.Bundle:
+          attributes = new Attribute[] { MaterialParameter, DiameterParameter, CountParameter };
+          break;
+      }
+
+      return attributes;
     }
 
     public override Attribute[] GetAllOutputAttributes() {
