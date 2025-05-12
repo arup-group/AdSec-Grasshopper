@@ -74,7 +74,7 @@ namespace AdSecCore.Functions {
       // Get the rebar group
       var rebarGroup = RebarGroupInput.Value;
       var outRebarGroup = rebarGroup;
-      if (outRebarGroup == null) {
+      if (outRebarGroup?.Group == null) {
         ErrorMessages.Add("Invalid RebarGroup input.");
         return;
       }

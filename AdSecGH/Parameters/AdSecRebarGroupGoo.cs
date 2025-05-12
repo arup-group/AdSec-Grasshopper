@@ -30,7 +30,7 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecRebarGroupGoo(AdSecRebarGroup goo) {
-      Value = goo;
+      Value = new AdSecRebarGroup(goo);
     }
 
     public override bool CastFrom(object source) {
@@ -53,11 +53,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_Goo Duplicate() {
-      var dup = new AdSecRebarGroupGoo(Value);
-      if (Value?.Cover != null) {
-        dup.Value.Cover = ICover.Create(Value.Cover.UniformCover);
-      }
-      return dup;
+      return new AdSecRebarGroupGoo(Value);
     }
 
     public override string ToString() {

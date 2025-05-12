@@ -46,8 +46,19 @@ namespace AdSecGHTests.Components {
 
 
     [Fact]
-    public void ShouldThrowExceptionWhenRebarGroupInputIsInvalid() {
+    public void ShouldLogErrorMessageWhenRebarGroupIsNull() {
       ComponentTestHelper.SetInput(_component, new AdSecRebarGroupGoo(), 0);
+      ComponentTestHelper.SetInput(_component, 10, 1);
+      ComponentTestHelper.ComputeData(_component);
+      var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      Assert.Single(runtimeMessages);
+      Assert.Contains("Invalid RebarGroup input", runtimeMessages[0]);
+    }
+
+    [Fact]
+    public void ShouldLogErrorMessageWhenRebarGroupInputIsNull() {
+      AdSecRebarGroupGoo group = null;
+      ComponentTestHelper.SetInput(_component, group, 0);
       ComponentTestHelper.SetInput(_component, 10, 1);
       ComponentTestHelper.ComputeData(_component);
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
