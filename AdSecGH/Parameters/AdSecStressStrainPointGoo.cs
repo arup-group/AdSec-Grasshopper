@@ -129,7 +129,7 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (!IsValid) {
+      if (IsValid) {
         args.Pipeline.DrawCircle(new Circle(Value, 0.5), Colour.OasysYellow, 1);
       }
     }
