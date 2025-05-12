@@ -20,7 +20,7 @@ namespace AdSecGH.Parameters {
       Value = sectionSolutionParameter;
       section = new AdSecSection(sectionSolutionParameter.SectionDesign);
       plane = section.LocalPlane;
-      ProfileEdge = section._profileEdge;
+      ProfileEdge = section._profileData.ProfileEdge;
     }
 
     public AdSecSolutionGoo(ISolution solution, AdSecSection section) {
@@ -35,7 +35,7 @@ namespace AdSecGH.Parameters {
       };
       this.section = section;
       plane = this.section.LocalPlane;
-      ProfileEdge = this.section._profileEdge;
+      ProfileEdge = this.section._profileData.ProfileEdge;
     }
 
     public override IGH_Goo Duplicate() {

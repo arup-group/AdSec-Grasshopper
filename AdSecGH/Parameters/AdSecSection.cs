@@ -28,21 +28,12 @@ namespace AdSecGH.Parameters {
     private const double tolerance = 0.001;
     internal string _codeName;
     internal string _materialName;
-    internal List<Brep> _subProfiles;
-    internal List<Curve> _linkEdges = new List<Curve>();
-    internal Brep _profile;
-    internal DisplayMaterial _profileColour;
-    internal Polyline _profileEdge;
-    internal List<Polyline> _profileVoidEdges = new List<Polyline>();
-    internal List<DisplayMaterial> _rebarColours;
-    internal List<Circle> _rebarEdges = new List<Circle>();
-    internal List<Brep> _rebars;
-    internal List<DisplayMaterial> _subColours;
-    internal List<Polyline> _subEdges = new List<Polyline>();
-    internal List<List<Polyline>> _subVoidEdges = new List<List<Polyline>>();
     internal Line previewXaxis;
     internal Line previewYaxis;
     internal Line previewZaxis;
+    internal ProfilePreviewData _profileData;
+    internal ReinforcementPreviewData _reinforcementData;
+    internal SubComponentsPreviewData _subProfilesData;
 
     public AdSecSection(SectionDesign sectionDesign) {
       Section = sectionDesign.Section;
@@ -51,7 +42,7 @@ namespace AdSecGH.Parameters {
       _materialName = sectionDesign.MaterialName;
       LocalPlane = sectionDesign.LocalPlane.ToGh();
 
-      AssignPreviewData();
+      CreatePreview();
     }
 
     public AdSecSection(
@@ -62,7 +53,7 @@ namespace AdSecGH.Parameters {
       DesignCode = code;
       _codeName = codeName;
       LocalPlane = local;
-      AssignPreviewData(subComponentOffset);
+      CreatePreview(subComponentOffset);
     }
 
     public AdSecSection(
@@ -82,7 +73,7 @@ namespace AdSecGH.Parameters {
       }
 
       LocalPlane = local;
-      AssignPreviewData();
+      CreatePreview();
     }
 
     internal AdSecSection() { }
@@ -91,7 +82,7 @@ namespace AdSecGH.Parameters {
     public bool IsValid => SolidBrep != null && SolidBrep.IsValid;
     public Plane LocalPlane { get; set; }
     public ISection Section { get; set; }
-    internal Brep SolidBrep => _profile;
+    internal Brep SolidBrep => _profileData?.Profile;
 
     public AdSecSection Duplicate() {
       return IsValid ? (AdSecSection)MemberwiseClone() : null;
@@ -107,8 +98,8 @@ namespace AdSecGH.Parameters {
       }
 
       var area = Section.Profile.Area();
-      double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-      var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
+      double sideSize = Math.Sqrt(area.As(AreaUnit.SquareMeter));
+      var length = new Length(sideSize * 0.15, LengthUnit.Meter);
       previewXaxis = new Line(LocalPlane.Origin, LocalPlane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
       previewYaxis = new Line(LocalPlane.Origin, LocalPlane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
       previewZaxis = new Line(LocalPlane.Origin, LocalPlane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
@@ -185,31 +176,13 @@ namespace AdSecGH.Parameters {
       return flat;
     }
 
-    internal void AssignPreviewData(IPoint subComponentOffset = null) {
-      CreatePreview(out var profileData, out var reinforcementData, out var subData, subComponentOffset);
-      _profile = profileData.Profile;
-      _profileEdge = profileData.ProfileEdge;
-      _profileVoidEdges = profileData.ProfileVoidEdges;
-      _profileColour = profileData.ProfileColour;
-      _rebars = reinforcementData.Rebars;
-      _rebarEdges = reinforcementData.RebarEdges;
-      _linkEdges = reinforcementData.LinkEdges;
-      _rebarColours = reinforcementData.RebarColours;
-      _subProfiles = subData.SubProfiles;
-      _subEdges = subData.SubEdges;
-      _subVoidEdges = subData.SubVoidEdges;
-      _subColours = subData.SubColours;
-    }
-
-    private void CreatePreview(
-      out ProfilePreviewData profileData, out ReinforcementPreviewData reinforcementData,
-      out SubComponentsPreviewData subData, IPoint pointOffset = null) {
+    private void CreatePreview(IPoint pointOffset = null) {
       var flat = SetFlattenSection();
       var currentOffset = ApplyOffsetToVector(pointOffset, Vector3d.Zero);
 
-      profileData = GenerateProfilePreview(flat, currentOffset);
-      subData = GenerateSubComponentsPreview(flat, currentOffset);
-      reinforcementData = GenerateReinforcementPreview(flat, currentOffset);
+      _profileData = GenerateProfilePreview(flat, currentOffset);
+      _subProfilesData = GenerateSubComponentsPreview(flat, currentOffset);
+      _reinforcementData = GenerateReinforcementPreview(flat, currentOffset);
 
       GenerateLocalPlanePreviewAxes();
     }
@@ -398,21 +371,21 @@ namespace AdSecGH.Parameters {
       }
     }
 
-    private sealed class ProfilePreviewData {
+    internal sealed class ProfilePreviewData {
       public Brep Profile { get; set; }
       public Polyline ProfileEdge { get; set; }
       public List<Polyline> ProfileVoidEdges { get; set; }
       public DisplayMaterial ProfileColour { get; set; }
     }
 
-    private sealed class ReinforcementPreviewData {
+    internal sealed class ReinforcementPreviewData {
       public List<Brep> Rebars { get; set; } = new List<Brep>();
       public List<Circle> RebarEdges { get; set; } = new List<Circle>();
       public List<Curve> LinkEdges { get; set; } = new List<Curve>();
       public List<DisplayMaterial> RebarColours { get; set; } = new List<DisplayMaterial>();
     }
 
-    private sealed class SubComponentsPreviewData {
+    internal sealed class SubComponentsPreviewData {
       public List<Brep> SubProfiles { get; set; } = new List<Brep>();
       public List<Polyline> SubEdges { get; set; } = new List<Polyline>();
       public List<List<Polyline>> SubVoidEdges { get; set; } = new List<List<Polyline>>();
