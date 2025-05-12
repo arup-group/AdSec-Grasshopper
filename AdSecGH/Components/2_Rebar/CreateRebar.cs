@@ -44,36 +44,6 @@ namespace AdSecGH.Components {
       }
     }
 
-    public override void VariableParameterMaintenance() {
-      string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      Params.Input[1].Name = $"Diameter [{unitAbbreviation}]";
-      if (_mode == FoldMode.Bundle) {
-        Params.Input[2].Name = "Count";
-        Params.Input[2].NickName = "N";
-        Params.Input[2].Description = "Count per bundle (1, 2, 3 or 4)";
-        Params.Input[2].Access = GH_ParamAccess.item;
-        Params.Input[2].Optional = false;
-      }
-    }
-
-    protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new[] {
-        "Rebar Type",
-        "Measure",
-      });
-
-      _dropDownItems = new List<List<string>>();
-      _selectedItems = new List<string>();
-
-      _dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
-      _selectedItems.Add(_dropDownItems[0][0]);
-
-      _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-      _selectedItems.Add(Length.GetAbbreviation(_lengthUnit));
-
-      _isInitialised = true;
-    }
-
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
       pManager.AddGenericParameter("Material", "Mat", "AdSec Reinforcement Material", GH_ParamAccess.item);

@@ -81,5 +81,11 @@ namespace AdSecCore.Functions {
       }
     };
     public event Action OnVariableInputChanged;
+
+    protected override void UpdateParameter() {
+      base.UpdateParameter();
+      DiameterParameter.Name = UnitExtensions.NameWithUnits("Diameter", LengthUnitGeometry);
+
+    }
   }
 }
