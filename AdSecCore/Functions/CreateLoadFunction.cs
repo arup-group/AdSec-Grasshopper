@@ -66,7 +66,7 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat5(),
     };
 
-    protected override void UpdateParameter() {
+    protected sealed override void UpdateParameter() {
       base.UpdateParameter();
       ForceInput.Name = UnitExtensions.NameWithUnits("Fx", ForceUnit);
       MomentYInput.Name = UnitExtensions.NameWithUnits("Myy", MomentUnit);

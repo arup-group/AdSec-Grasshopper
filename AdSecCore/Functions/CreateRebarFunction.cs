@@ -85,7 +85,7 @@ namespace AdSecCore.Functions {
     };
     public event Action OnVariableInputChanged;
 
-    protected override void UpdateParameter() {
+    protected sealed override void UpdateParameter() {
       DiameterParameter.Name = UnitExtensions.NameWithUnits("Diameter", LengthUnitGeometry);
 
     }
