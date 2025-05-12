@@ -39,7 +39,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveDefaultRebarModeSingle() {
-      Assert.Equal(CreateRebarFunction.RebarMode.Single, function.Mode);
+      Assert.Equal(RebarMode.Single, function.Mode);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveThreeInputsOnBundle() {
-      function.SetMode(CreateRebarFunction.RebarMode.Bundle);
+      function.SetMode(RebarMode.Bundle);
       Assert.Equal(3, function.GetAllInputAttributes().Length);
     }
 
@@ -98,7 +98,7 @@ namespace AdSecCoreTests.Functions {
     public void ShouldTriggerEventWhenChangingModes() {
       bool hasRun = false;
       function.OnVariableInputChanged += () => { hasRun = true; };
-      function.SetMode(CreateRebarFunction.RebarMode.Bundle);
+      function.SetMode(RebarMode.Bundle);
       Assert.True(hasRun);
     }
 
@@ -106,7 +106,7 @@ namespace AdSecCoreTests.Functions {
     public void ShouldNotTriggerWhenYouAreOnCurrentMode() {
       bool hasRun = false;
       function.OnVariableInputChanged += () => { hasRun = true; };
-      function.SetMode(CreateRebarFunction.RebarMode.Single);
+      function.SetMode(RebarMode.Single);
       Assert.False(hasRun);
     }
 

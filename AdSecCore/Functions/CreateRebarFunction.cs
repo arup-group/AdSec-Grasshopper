@@ -7,15 +7,15 @@ using AdSecGHCore.Constants;
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
+  public enum RebarMode {
+    Single,
+    Bundle,
+  }
+
   public class CreateRebarFunction : Function, IDropdownOptions, IVariableInput {
 
     public CreateRebarFunction() {
       UpdateParameter();
-    }
-
-    public enum RebarMode {
-      Single,
-      Bundle,
     }
 
     public MaterialParameter MaterialParameter { get; set; } = Default.Material();
@@ -87,7 +87,6 @@ namespace AdSecCore.Functions {
 
     protected sealed override void UpdateParameter() {
       DiameterParameter.Name = UnitExtensions.NameWithUnits("Diameter", LengthUnitGeometry);
-
     }
   }
 }

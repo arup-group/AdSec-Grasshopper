@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 using AdSecCore.Functions;
 
@@ -24,10 +22,10 @@ using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
 
+using CreateRebarFunction = AdSecCore.Functions.CreateRebarFunction;
+
 namespace AdSecGH.Components {
   public class CreateRebar : DropdownAdapter<CreateRebarFunction> {
-    private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
-    private FoldMode _mode = FoldMode.Single;
 
     public override Guid ComponentGuid => new Guid("024d241a-b6cc-4134-9f5c-ac9a6dcb2c4b");
     public override GH_Exposure Exposure => GH_Exposure.primary;
@@ -37,30 +35,34 @@ namespace AdSecGH.Components {
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
       if (i == 0) {
-        _mode = (FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[i]);
+        BusinessComponent.SetMode(UpdateMode());
         ToggleInput();
       } else {
-        _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
+        BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       }
+    }
+
+    private RebarMode UpdateMode() {
+      return (RebarMode)Enum.Parse(typeof(RebarMode), _selectedItems[0]);
     }
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       // 0 material input
       var material = this.GetAdSecMaterial(DA, 0);
 
-      switch (_mode) {
-        case FoldMode.Single:
+      switch (BusinessComponent.Mode) {
+        case RebarMode.Single:
           var rebar = new AdSecRebarBundleGoo(IBarBundle.Create((IReinforcement)material.Material,
-            (Length)Input.UnitNumber(this, DA, 1, _lengthUnit)));
+            (Length)Input.UnitNumber(this, DA, 1, BusinessComponent.LengthUnitGeometry)));
           DA.SetData(0, rebar);
           break;
 
-        case FoldMode.Bundle:
+        case RebarMode.Bundle:
           int count = 1;
           DA.GetData(2, ref count);
 
           var bundle = new AdSecRebarBundleGoo(IBarBundle.Create((IReinforcement)material.Material,
-            (Length)Input.UnitNumber(this, DA, 1, _lengthUnit), count));
+            (Length)Input.UnitNumber(this, DA, 1, BusinessComponent.LengthUnitGeometry), count));
 
           DA.SetData(0, bundle);
           break;
@@ -68,16 +70,16 @@ namespace AdSecGH.Components {
     }
 
     protected override void UpdateUIFromSelectedItems() {
-      _mode = (FoldMode)Enum.Parse(typeof(FoldMode), _selectedItems[0]);
-      _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
+      BusinessComponent.SetMode((UpdateMode()));
+      BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
       ToggleInput();
       base.UpdateUIFromSelectedItems();
     }
 
     private void ToggleInput() {
       RecordUndoEvent("Changed dropdown");
-      switch (_mode) {
-        case FoldMode.Single:
+      switch (BusinessComponent.Mode) {
+        case RebarMode.Single:
           // remove any additional input parameters
           while (Params.Input.Count > 2) {
             Params.UnregisterInputParameter(Params.Input[2], true);
@@ -85,7 +87,7 @@ namespace AdSecGH.Components {
 
           break;
 
-        case FoldMode.Bundle:
+        case RebarMode.Bundle:
           // add input parameter
           while (Params.Input.Count != 3) {
             Params.RegisterInputParam(new Param_Integer());
@@ -93,11 +95,6 @@ namespace AdSecGH.Components {
 
           break;
       }
-    }
-
-    private enum FoldMode {
-      Single,
-      Bundle,
     }
   }
 }
