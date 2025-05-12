@@ -36,7 +36,6 @@ namespace AdSecGH.Components {
       _selectedItems[i] = _dropDownItems[i][j];
       if (i == 0) {
         BusinessComponent.SetMode(UpdateMode());
-        ToggleInput();
       } else {
         BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       }
@@ -72,29 +71,13 @@ namespace AdSecGH.Components {
     protected override void UpdateUIFromSelectedItems() {
       BusinessComponent.SetMode((UpdateMode()));
       BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
-      ToggleInput();
       base.UpdateUIFromSelectedItems();
     }
 
-    private void ToggleInput() {
-      RecordUndoEvent("Changed dropdown");
-      switch (BusinessComponent.Mode) {
-        case RebarMode.Single:
-          // remove any additional input parameters
-          while (Params.Input.Count > 2) {
-            Params.UnregisterInputParameter(Params.Input[2], true);
-          }
-
-          break;
-
-        case RebarMode.Bundle:
-          // add input parameter
-          while (Params.Input.Count != 3) {
-            Params.RegisterInputParam(new Param_Integer());
-          }
-
-          break;
-      }
+    protected override void BeforeSolveInstance() {
+      UpdateDefaultUnits();
+      BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
+      RefreshParameter();
     }
   }
 }
