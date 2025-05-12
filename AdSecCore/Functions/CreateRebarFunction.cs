@@ -9,6 +9,10 @@ using OasysUnits.Units;
 namespace AdSecCore.Functions {
   public class CreateRebarFunction : Function, IDropdownOptions, IVariableInput {
 
+    public CreateRebarFunction() {
+      UpdateParameter();
+    }
+
     public enum RebarMode {
       Single,
       Bundle,

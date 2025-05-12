@@ -6,6 +6,10 @@ using OasysUnits;
 
 namespace AdSecCore.Functions {
   public class CreateLoadFunction : Function {
+    public CreateLoadFunction() {
+      UpdateParameter();
+    }
+
     public ForceParameter ForceInput { get; set; } = new ForceParameter {
       Name = "Fx",
       NickName = "X",
@@ -70,7 +74,6 @@ namespace AdSecCore.Functions {
     }
 
     public override void Compute() {
-
       var force = Force.From(ForceInput.Value.Value, ForceUnit);
 
       var momentY = Moment.From(MomentYInput.Value.Value, MomentUnit);
