@@ -19,10 +19,6 @@ namespace AdSecGH.Parameters {
   public class AdSecStressStrainPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData {
     public override BoundingBox Boundingbox {
       get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
-
         const double offset = 0.5d;
         return PointHelper.GetPointBoundingBox(Value, offset, true);
       }
@@ -133,7 +129,7 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (Value != null) {
+      if (!IsValid) {
         args.Pipeline.DrawCircle(new Circle(Value, 0.5), Colour.OasysYellow, 1);
       }
     }
@@ -143,15 +139,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null) {
-        return BoundingBox.Empty;
-      }
-
-      var point3d = new Point3d(Value);
-      point3d.Z += 0.001;
-      var line = new Line(Value, point3d);
-      var lineCurve = new LineCurve(line);
-      return lineCurve.GetBoundingBox(xform);
+      return PointHelper.GetPointBoundingBox(Value, xform, 0.001, false);
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
