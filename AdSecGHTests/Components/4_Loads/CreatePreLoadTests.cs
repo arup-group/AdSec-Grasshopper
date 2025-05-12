@@ -10,6 +10,7 @@ using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
 
+using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
 using Oasys.GH.Helpers;
@@ -17,6 +18,8 @@ using Oasys.GH.Helpers;
 using OasysGH.Units;
 
 using Xunit;
+
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
@@ -74,6 +77,18 @@ namespace AdSecGHTests.Components {
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
       Assert.Single(runtimeMessages);
       Assert.Contains("Could not parse the input InvalidType to the desired quantity", runtimeMessages[0]);
+    }
+
+    [Fact]
+    public void ShouldLogErrorMessageWhenRebarGroupIsNotLogitudinal() {
+      var linkGroup = ILinkGroup.Create(new BuilderLayer().Build().BarBundle);
+      var rebarGroup = new AdSecRebarGroupGoo(new AdSecRebarGroup(linkGroup));
+      ComponentTestHelper.SetInput(_component, rebarGroup, 0);
+      ComponentTestHelper.SetInput(_component, 10, 1);
+      ComponentTestHelper.ComputeData(_component);
+      var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      Assert.Single(runtimeMessages);
+      Assert.Contains("RebarGroup must be a longitudinal group", runtimeMessages[0]);
     }
 
     [Fact]
