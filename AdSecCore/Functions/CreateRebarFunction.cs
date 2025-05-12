@@ -76,7 +76,6 @@ namespace AdSecCore.Functions {
         EnumType = typeof(RebarMode),
       },
       new UnitOptions() {
-        Description = "Measure",
         UnitType = typeof(LengthUnit),
       }
     };

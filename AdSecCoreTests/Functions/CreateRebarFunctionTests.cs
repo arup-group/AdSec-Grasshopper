@@ -2,6 +2,8 @@
 
 using AdSecGHCore.Constants;
 
+using OasysUnits.Units;
+
 namespace AdSecCoreTests.Functions {
   public class CreateRebarFunctionTests {
     private CreateRebarFunction function;
@@ -73,6 +75,22 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ShouldHaveAMeasureDropdown() {
       Assert.Equal("Measure", function.Options[1].Description);
+    }
+
+    [Fact]
+    public void ShouldHaveDropdownForLengthUnit() {
+      Assert.Equal(typeof(LengthUnit), (function.Options[1] as UnitOptions)?.UnitType);
+    }
+
+    [Fact]
+    public void ShouldUpdateDiameterWhenUnitsChange() {
+      var name = function.DiameterParameter.Name;
+      function.LengthUnitGeometry = LengthUnit.Millimeter;
+      Assert.NotEqual(name, function.DiameterParameter.Name);
+    }
+    [Fact]
+    public void ShouldHaveInitialValueWithUnits() {
+      Assert.Equal("Diameter [m]", function.DiameterParameter.Name);
     }
 
     [Fact]

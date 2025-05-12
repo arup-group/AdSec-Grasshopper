@@ -104,6 +104,10 @@ namespace AdSecCore.Functions {
     public List<string> WarningMessages { get; set; } = new List<string>();
     public List<string> RemarkMessages { get; set; } = new List<string>();
 
+    public Function() {
+      UpdateParameter();
+    }
+
     public virtual bool ValidateInputs() {
       var inputs = GetAllInputAttributes();
       foreach (var input in inputs) {
