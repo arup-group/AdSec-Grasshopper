@@ -66,6 +66,16 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void ShouldHaveARebarTypeDropdown() {
+      Assert.Equal("Rebar Type", function.Options[0].Description);
+    }
+
+    [Fact]
+    public void ShouldHaveAMeasureDropdown() {
+      Assert.Equal("Measure", function.Options[1].Description);
+    }
+
+    [Fact]
     public void ShouldHaveThreeInputsOnBundle() {
       function.SetMode(CreateRebarFunction.RebarMode.Bundle);
       Assert.Equal(3, function.GetAllInputAttributes().Length);

@@ -44,18 +44,6 @@ namespace AdSecGH.Components {
       }
     }
 
-    protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      pManager.AddGenericParameter("Material", "Mat", "AdSec Reinforcement Material", GH_ParamAccess.item);
-      pManager.AddGenericParameter($"Diameter [{unitAbbreviation}]", "Ø", "Bar Diameter", GH_ParamAccess.item);
-      _mode = FoldMode.Single;
-    }
-
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("Rebar", "Rb", "Rebar (single or bundle) for AdSec Reinforcement",
-        GH_ParamAccess.item);
-    }
-
     protected override void SolveInternal(IGH_DataAccess DA) {
       // 0 material input
       var material = this.GetAdSecMaterial(DA, 0);
