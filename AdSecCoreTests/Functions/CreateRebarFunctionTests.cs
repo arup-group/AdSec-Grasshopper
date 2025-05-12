@@ -82,6 +82,22 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void ShouldTriggerEventWhenChangingModes() {
+      bool hasRun = false;
+      function.OnVariableInputChanged += () => { hasRun = true; };
+      function.SetMode(CreateRebarFunction.RebarMode.Bundle);
+      Assert.True(hasRun);
+    }
+
+    [Fact]
+    public void ShouldNotTriggerWhenYouAreOnCurrentMode() {
+      bool hasRun = false;
+      function.OnVariableInputChanged += () => { hasRun = true; };
+      function.SetMode(CreateRebarFunction.RebarMode.Single);
+      Assert.False(hasRun);
+    }
+
+    [Fact]
     public void ShouldHaveTwoInputsOnSingle() {
       Assert.Equal(2, function.GetAllInputAttributes().Length);
     }
