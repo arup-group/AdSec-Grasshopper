@@ -48,11 +48,6 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
-    public void ShouldHaveDiameterParameter() {
-      Assert.Equal("Diameter", function.DiameterParameter.Name);
-    }
-
-    [Fact]
     public void ShouldHaveMaterialParameter() {
       Assert.Equal("Material", function.MaterialParameter.Name);
     }

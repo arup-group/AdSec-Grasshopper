@@ -42,9 +42,9 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ParametersHaveCorrectNames() {
-      Assert.Equal("Fx", _function.ForceInput.Name);
-      Assert.Equal("Myy", _function.MomentYInput.Name);
-      Assert.Equal("Mzz", _function.MomentZInput.Name);
+      Assert.Equal("Fx [N]", _function.ForceInput.Name);
+      Assert.Equal("Myy [N·m]", _function.MomentYInput.Name);
+      Assert.Equal("Mzz [N·m]", _function.MomentZInput.Name);
       Assert.Equal("Load", _function.LoadOutput.Name);
     }
 
@@ -108,14 +108,11 @@ namespace AdSecCoreTests.Functions {
       Assert.Contains("Mzz [kipf·ft]", _function.MomentZInput.Name);
     }
 
-
     [Theory]
     [InlineData(1, 2, 3)]
     [InlineData(-1, -2, -3)]
     [InlineData(0, 0, 0)]
-    public void ComputeWithDifferentValuesCreatesCorrectLoad(
-      double strain, double curvY, double curvZ) {
-
+    public void ComputeWithDifferentValuesCreatesCorrectLoad(double strain, double curvY, double curvZ) {
       _function.ForceInput.Value = Force.FromNewtons(strain);
       _function.MomentYInput.Value = Moment.FromNewtonMeters(curvY);
       _function.MomentZInput.Value = Moment.FromNewtonMeters(curvZ);
