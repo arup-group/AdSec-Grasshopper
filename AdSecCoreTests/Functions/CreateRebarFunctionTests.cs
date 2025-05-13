@@ -2,6 +2,8 @@
 
 using AdSecGHCore.Constants;
 
+using Oasys.AdSec.StandardMaterials;
+
 using OasysUnits.Units;
 
 namespace AdSecCoreTests.Functions {
@@ -118,6 +120,16 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ShouldHaveSingleOutput() {
       Assert.Single(function.GetAllOutputAttributes());
+    }
+
+    [Fact]
+    public void ShouldComputeSingleBar() {
+      function.DiameterParameter.Value = 0.01;
+      function.MaterialParameter.Value = new MaterialDesign() {
+        Material = Reinforcement.Steel.IS456.Edition_2000.S250
+      };
+      function.Compute();
+      Assert.NotNull(function.RebarBundleParameter.Value);
     }
   }
 }

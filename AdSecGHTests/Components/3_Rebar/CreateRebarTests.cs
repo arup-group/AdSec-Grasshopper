@@ -28,6 +28,17 @@ namespace AdSecGHTests.Components._3_Rebar {
     }
 
     [Fact]
+    public void ShouldHaveDefaultMeters() {
+      Assert.Contains("[m]", component.BusinessComponent.DiameterParameter.Name);
+    }
+
+    [Fact]
+    public void ShouldHaveTheUnitsChanged() {
+      component.SetSelected(1, 0);
+      Assert.Contains("[mm]", component.BusinessComponent.DiameterParameter.Name);
+    }
+
+    [Fact]
     public void ShouldHaveTwoDropDowns() {
       Assert.Equal(2, component.DropDownItems.Count);
     }
@@ -36,6 +47,7 @@ namespace AdSecGHTests.Components._3_Rebar {
     public void ShouldHavePluginInfoReferenced() {
       Assert.Equal(PluginInfo.Instance, component.PluginInfo);
     }
+
     [Fact]
     public void ShouldHaveIconReferenced() {
       Assert.True(component.MatchesExpectedIcon(Resources.Rebar));
