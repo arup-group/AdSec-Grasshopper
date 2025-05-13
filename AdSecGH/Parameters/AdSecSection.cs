@@ -277,7 +277,11 @@ namespace AdSecGH.Parameters {
         profile.Polyline.ToPolylineCurve(),
       };
       curves.AddRange(profile.VoidEdges.Select(x => x.ToPolylineCurve()));
-      return Brep.CreatePlanarBreps(curves, tolerance)[0];
+      var breps = Brep.CreatePlanarBreps(curves, tolerance);
+      if (breps == null || breps.Length == 0) {
+        throw new InvalidOperationException("Failed to create planar Brep. Ensure the input curves form a valid planar boundary.");
+      }
+      return breps[0];
     }
 
     private static List<Brep> CreateBrepsFromSingleRebar(
