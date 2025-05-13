@@ -70,21 +70,15 @@ namespace AdSecCore.Functions {
     public override void Compute() {
       // 0 material input
       IMaterial material = MaterialParameter.Value.Material;
+      var diameter = Length.From(DiameterParameter.Value, LengthUnitGeometry);
 
       switch (Mode) {
         case RebarMode.Single:
-          RebarBundleParameter.Value = IBarBundle.Create((IReinforcement)material,
-            Length.From(DiameterParameter.Value, LengthUnitGeometry));
+          RebarBundleParameter.Value = IBarBundle.Create((IReinforcement)material, diameter);
           break;
 
         case RebarMode.Bundle:
-          // int count = 1;
-          // DA.GetData(2, ref count);
-          //
-          // var bundle = new AdSecRebarBundleGoo(IBarBundle.Create((IReinforcement)material.Material,
-          //   (Length)Input.UnitNumber(this, DA, 1, BusinessComponent.LengthUnitGeometry), count));
-          //
-          // DA.SetData(0, bundle);
+          RebarBundleParameter.Value = IBarBundle.Create((IReinforcement)material, diameter, CountParameter.Value);
           break;
       }
     }

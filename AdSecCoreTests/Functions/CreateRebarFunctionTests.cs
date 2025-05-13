@@ -85,6 +85,7 @@ namespace AdSecCoreTests.Functions {
       function.LengthUnitGeometry = LengthUnit.Millimeter;
       Assert.NotEqual(name, function.DiameterParameter.Name);
     }
+
     [Fact]
     public void ShouldHaveInitialValueWithUnits() {
       Assert.Equal("Diameter [m]", function.DiameterParameter.Name);
@@ -128,6 +129,18 @@ namespace AdSecCoreTests.Functions {
       function.MaterialParameter.Value = new MaterialDesign() {
         Material = Reinforcement.Steel.IS456.Edition_2000.S250
       };
+      function.Compute();
+      Assert.NotNull(function.RebarBundleParameter.Value);
+    }
+
+    [Fact]
+    public void ShouldComputeBundleBars() {
+      function.DiameterParameter.Value = 0.01;
+      function.MaterialParameter.Value = new MaterialDesign() {
+        Material = Reinforcement.Steel.IS456.Edition_2000.S250
+      };
+      function.CountParameter.Value = 2;
+      function.SetMode(RebarMode.Bundle);
       function.Compute();
       Assert.NotNull(function.RebarBundleParameter.Value);
     }
