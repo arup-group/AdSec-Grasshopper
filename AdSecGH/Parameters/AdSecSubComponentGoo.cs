@@ -102,15 +102,15 @@ namespace AdSecGH.Parameters {
       //Draw shape.
       if (section.SolidBrep != null) {
         // draw profile
-        args.Pipeline.DrawBrepShaded(section.SolidBrep, section._profileData.ProfileColour);
+        args.Pipeline.DrawBrepShaded(section.SolidBrep, section.ProfileData.ProfileColour);
         // draw subcomponents
-        var subComponentsPreviewData = section._subProfilesData;
+        var subComponentsPreviewData = section.SubProfilesData;
         for (int i = 0; i < subComponentsPreviewData.SubProfiles.Count; i++) {
           args.Pipeline.DrawBrepShaded(subComponentsPreviewData.SubProfiles[i], subComponentsPreviewData.SubColours[i]);
         }
 
         // draw rebars
-        var sectionReinforcementData = section._reinforcementData;
+        var sectionReinforcementData = section.ReinforcementData;
         for (int i = 0; i < sectionReinforcementData.Rebars.Count; i++) {
           args.Pipeline.DrawBrepShaded(sectionReinforcementData.Rebars[i], sectionReinforcementData.RebarColours[i]);
         }
@@ -125,56 +125,56 @@ namespace AdSecGH.Parameters {
       var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
       if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
       {
-        args.Pipeline.DrawPolyline(section._profileData.ProfileEdge, Colour.OasysBlue, 2);
-        if (section._profileData.ProfileVoidEdges != null) {
-          foreach (var crv in section._profileData.ProfileVoidEdges) {
+        args.Pipeline.DrawPolyline(section.ProfileData.ProfileEdge, Colour.OasysBlue, 2);
+        if (section.ProfileData.ProfileVoidEdges != null) {
+          foreach (var crv in section.ProfileData.ProfileVoidEdges) {
             args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
           }
         }
 
-        if (section._subProfilesData.SubEdges != null) {
-          foreach (var crv in section._subProfilesData.SubEdges) {
+        if (section.SubProfilesData.SubEdges != null) {
+          foreach (var crv in section.SubProfilesData.SubEdges) {
             args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
           }
         }
 
-        if (section._subProfilesData.SubVoidEdges != null) {
-          foreach (var crvs in section._subProfilesData.SubVoidEdges) {
+        if (section.SubProfilesData.SubVoidEdges != null) {
+          foreach (var crvs in section.SubProfilesData.SubVoidEdges) {
             foreach (var crv in crvs) {
               args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
             }
           }
         }
 
-        if (section._reinforcementData.RebarEdges != null) {
-          foreach (var crv in section._reinforcementData.RebarEdges) {
+        if (section.ReinforcementData.RebarEdges != null) {
+          foreach (var crv in section.ReinforcementData.RebarEdges) {
             args.Pipeline.DrawCircle(crv, Color.Black, 1);
           }
         }
       } else {
-        args.Pipeline.DrawPolyline(section._profileData.ProfileEdge, Colour.OasysYellow, 3);
-        if (section._profileData.ProfileVoidEdges != null) {
-          foreach (var crv in section._profileData.ProfileVoidEdges) {
+        args.Pipeline.DrawPolyline(section.ProfileData.ProfileEdge, Colour.OasysYellow, 3);
+        if (section.ProfileData.ProfileVoidEdges != null) {
+          foreach (var crv in section.ProfileData.ProfileVoidEdges) {
             args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
           }
         }
 
-        if (section._subProfilesData.SubEdges != null) {
-          foreach (var crv in section._subProfilesData.SubEdges) {
+        if (section.SubProfilesData.SubEdges != null) {
+          foreach (var crv in section.SubProfilesData.SubEdges) {
             args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
           }
         }
 
-        if (section._subProfilesData.SubVoidEdges != null) {
-          foreach (var crvs in section._subProfilesData.SubVoidEdges) {
+        if (section.SubProfilesData.SubVoidEdges != null) {
+          foreach (var crvs in section.SubProfilesData.SubVoidEdges) {
             foreach (var crv in crvs) {
               args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
             }
           }
         }
 
-        if (section._reinforcementData.RebarEdges != null) {
-          foreach (var crv in section._reinforcementData.RebarEdges) {
+        if (section.ReinforcementData.RebarEdges != null) {
+          foreach (var crv in section.ReinforcementData.RebarEdges) {
             args.Pipeline.DrawCircle(crv, Colour.UILightGrey, 2);
           }
         }

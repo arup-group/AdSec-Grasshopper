@@ -32,9 +32,9 @@ namespace AdSecGH.Parameters {
     internal Line previewXaxis;
     internal Line previewYaxis;
     internal Line previewZaxis;
-    internal ProfilePreviewData _profileData;
-    internal ReinforcementPreviewData _reinforcementData;
-    internal SubComponentsPreviewData _subProfilesData;
+    internal ProfilePreviewData ProfileData { get; private set; }
+    internal ReinforcementPreviewData ReinforcementData { get; private set; }
+    internal SubComponentsPreviewData SubProfilesData { get; private set; }
 
     public AdSecSection(SectionDesign sectionDesign) {
       Section = sectionDesign.Section;
@@ -83,7 +83,7 @@ namespace AdSecGH.Parameters {
     public bool IsValid => SolidBrep != null && SolidBrep.IsValid;
     public Plane LocalPlane { get; set; }
     public ISection Section { get; set; }
-    internal Brep SolidBrep => _profileData?.Profile;
+    internal Brep SolidBrep => ProfileData?.Profile;
 
     public AdSecSection Duplicate() {
       return IsValid ? (AdSecSection)MemberwiseClone() : null;
@@ -181,9 +181,9 @@ namespace AdSecGH.Parameters {
       var flat = SetFlattenSection();
       var currentOffset = ApplyOffsetToVector(pointOffset, Vector3d.Zero);
 
-      _profileData = GenerateProfilePreview(flat, currentOffset);
-      _subProfilesData = GenerateSubComponentsPreview(flat, currentOffset);
-      _reinforcementData = GenerateReinforcementPreview(flat, currentOffset);
+      ProfileData = GenerateProfilePreview(flat, currentOffset);
+      SubProfilesData = GenerateSubComponentsPreview(flat, currentOffset);
+      ReinforcementData = GenerateReinforcementPreview(flat, currentOffset);
 
       GenerateLocalPlanePreviewAxes();
     }
@@ -279,8 +279,10 @@ namespace AdSecGH.Parameters {
       curves.AddRange(profile.VoidEdges.Select(x => x.ToPolylineCurve()));
       var breps = Brep.CreatePlanarBreps(curves, tolerance);
       if (breps == null || breps.Length == 0) {
-        throw new InvalidOperationException("Failed to create planar Brep. Ensure the input curves form a valid planar boundary.");
+        throw new InvalidOperationException(
+          "Failed to create planar Brep. Ensure the input curves form a valid planar boundary.");
       }
+
       return breps[0];
     }
 

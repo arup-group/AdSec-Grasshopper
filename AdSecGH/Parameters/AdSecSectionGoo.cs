@@ -78,15 +78,15 @@ namespace AdSecGH.Parameters {
         return;
       }
 
-      args.Pipeline.DrawBrepShaded(Value.SolidBrep, Value._profileData.ProfileColour);
-      var subProfiles = Value._subProfilesData.SubProfiles;
+      args.Pipeline.DrawBrepShaded(Value.SolidBrep, Value.ProfileData.ProfileColour);
+      var subProfiles = Value.SubProfilesData.SubProfiles;
       for (int i = 0; i < subProfiles.Count; i++) {
-        args.Pipeline.DrawBrepShaded(subProfiles[i], Value._subProfilesData.SubColours[i]);
+        args.Pipeline.DrawBrepShaded(subProfiles[i], Value.SubProfilesData.SubColours[i]);
       }
 
-      var reinforcementDataRebars = Value._reinforcementData.Rebars;
+      var reinforcementDataRebars = Value.ReinforcementData.Rebars;
       for (int i = 0; i < reinforcementDataRebars.Count; i++) {
-        args.Pipeline.DrawBrepShaded(reinforcementDataRebars[i], Value._reinforcementData.RebarColours[i]);
+        args.Pipeline.DrawBrepShaded(reinforcementDataRebars[i], Value.ReinforcementData.RebarColours[i]);
       }
     }
 
@@ -119,18 +119,18 @@ namespace AdSecGH.Parameters {
       var primaryThickness = isNotSelected ? 2 : 3;
       var secondaryThickness = isNotSelected ? 1 : 2;
 
-      drawInstructions.Add(new DrawPolyline() { Polyline = Value._profileData.ProfileEdge, Color = primaryColor, Thickness = primaryThickness, });
+      drawInstructions.Add(new DrawPolyline() { Polyline = Value.ProfileData.ProfileEdge, Color = primaryColor, Thickness = primaryThickness, });
 
-      drawInstructions.AddRange(Value._profileData.ProfileVoidEdges.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness, }));
+      drawInstructions.AddRange(Value.ProfileData.ProfileVoidEdges.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness, }));
 
-      drawInstructions.AddRange(Value._subProfilesData.SubEdges.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = primaryColor, Thickness = secondaryThickness, }));
+      drawInstructions.AddRange(Value.SubProfilesData.SubEdges.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = primaryColor, Thickness = secondaryThickness, }));
 
-      drawInstructions.AddRange(Value._subProfilesData.SubVoidEdges.SelectMany(voids
+      drawInstructions.AddRange(Value.SubProfilesData.SubVoidEdges.SelectMany(voids
         => voids.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness, })));
 
-      drawInstructions.AddRange(Value._reinforcementData.RebarEdges.Select(circle => new DrawCircle() { Circle = circle, Color = secondaryColor, Thickness = secondaryThickness, }));
+      drawInstructions.AddRange(Value.ReinforcementData.RebarEdges.Select(circle => new DrawCircle() { Circle = circle, Color = secondaryColor, Thickness = secondaryThickness, }));
 
-      drawInstructions.AddRange(Value._reinforcementData.LinkEdges.Select(curve => new DrawCurve() { Curve = curve, Color = secondaryColor, Thickness = secondaryThickness, }));
+      drawInstructions.AddRange(Value.ReinforcementData.LinkEdges.Select(curve => new DrawCurve() { Curve = curve, Color = secondaryColor, Thickness = secondaryThickness, }));
 
       return drawInstructions;
     }
