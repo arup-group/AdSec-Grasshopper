@@ -7,9 +7,21 @@ using Oasys.AdSec.Reinforcement.Preloads;
 
 using OasysUnits;
 
-
 namespace AdSecCore.Functions {
+
   public class CreatePreLoadFunction : Function {
+    private string _preLoadType = string.Empty;
+    public string PreLoadType {
+      get { return _preLoadType; }
+      set {
+        if (_preLoadType == value) {
+          return;
+        }
+        _preLoadType = value;
+        UpdateParameter();
+      }
+    }
+
     public RebarGroupParameter RebarGroupInput { get; set; } = new RebarGroupParameter {
       Name = "RebarGroup",
       NickName = "RbG",
@@ -55,17 +67,38 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat5(),
     };
 
+    protected override void UpdateParameter() {
+      string forceUnitAbbreviation = Force.GetAbbreviation(ForceUnit);
+      string strainUnitAbbreviation = Strain.GetAbbreviation(MaterialStrainUnit);
+      string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
+
+      switch (PreLoadType) {
+        case "Force":
+          PreloadInput.Name = $"{PreLoadType} [{forceUnitAbbreviation}]";
+          PreloadInput.NickName = "P";
+          break;
+        case "Strain":
+          PreloadInput.Name = $"{PreLoadType} [{strainUnitAbbreviation}]";
+          PreloadInput.NickName = "ε";
+          break;
+        case "Stress":
+          PreloadInput.Name = $"{PreLoadType} [{stressUnitAbbreviation}]";
+          PreloadInput.NickName = "σ";
+          break;
+      }
+    }
+
     private IPreload ParsePreLoad() {
-      // Determine the preload type and create the appropriate preload
-      if (PreloadInput.Name.ToLower().Contains("force")) {
-        return IPreForce.Create(UnitHelpers.ParseToQuantity<Force>(PreloadInput.Value, ForceUnit));
-      } else if (PreloadInput.Name.ToLower().Contains("strain")) {
-        return IPreStrain.Create(UnitHelpers.ParseToQuantity<Strain>(PreloadInput.Value, MaterialStrainUnit));
-      } else if (PreloadInput.Name.ToLower().Contains("stress")) {
-        return IPreStress.Create(UnitHelpers.ParseToQuantity<Pressure>(PreloadInput.Value, StressUnitResult));
-      } else {
-        ErrorMessages.Add("Invalid Preload input type.");
-        return null;
+      switch (PreLoadType) {
+        case "Force":
+          return IPreForce.Create(UnitHelpers.ParseToQuantity<Force>(PreloadInput.Value, ForceUnit));
+        case "Strain":
+          return IPreStrain.Create(UnitHelpers.ParseToQuantity<Strain>(PreloadInput.Value, MaterialStrainUnit));
+        case "Stress":
+          return IPreStress.Create(UnitHelpers.ParseToQuantity<Pressure>(PreloadInput.Value, StressUnitResult));
+        default:
+          ErrorMessages.Add("Invalid Preload input type.");
+          return null;
       }
     }
 

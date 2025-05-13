@@ -32,7 +32,6 @@ namespace AdSecGH.Components {
     private const string _selectedStrainUnit = "Strain";
     private const string _selectedStressUnit = "Stress";
 
-    public CreatePreLoad() : base() { Hidden = true; }
     public override Guid ComponentGuid => new Guid("cbab2b12-2a01-4f05-ba24-2c79827c7415");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -100,26 +99,7 @@ namespace AdSecGH.Components {
     }
 
     public override void VariableParameterMaintenance() {
-      string forceUnitAbbreviation = Force.GetAbbreviation(_forceUnit);
-      string strainUnitAbbreviation = Strain.GetAbbreviation(_strainUnit);
-      string stressUnitAbbreviation = Pressure.GetAbbreviation(_stressUnit);
-
-      switch (_selectedItems[0]) {
-        case _selectedForceUnit:
-          BusinessComponent.PreloadInput.Name = $"{_selectedForceUnit} [{forceUnitAbbreviation}]";
-          BusinessComponent.PreloadInput.NickName = "P";
-          break;
-
-        case _selectedStrainUnit:
-          BusinessComponent.PreloadInput.Name = $"{_selectedStrainUnit} [{strainUnitAbbreviation}]";
-          BusinessComponent.PreloadInput.NickName = "ε";
-          break;
-
-        case _selectedStressUnit:
-          BusinessComponent.PreloadInput.Name = $"{_selectedStressUnit} [{stressUnitAbbreviation}]";
-          BusinessComponent.PreloadInput.NickName = "σ";
-          break;
-      }
+      UpdateUnits();
     }
 
 
@@ -129,6 +109,7 @@ namespace AdSecGH.Components {
 
     private void UpdateUnits() {
       UpdateDefaultUnits();
+      BusinessComponent.PreLoadType = _selectedItems[0];
       BusinessComponent.ForceUnit = _forceUnit;
       BusinessComponent.MaterialStrainUnit = _strainUnit;
       BusinessComponent.StressUnitResult = _stressUnit;

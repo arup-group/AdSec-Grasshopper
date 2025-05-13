@@ -431,6 +431,7 @@ namespace Oasys.GH.Helpers {
       component.Description = BusinessComponent.Metadata.Description;
       component.Category = BusinessComponent.Organisation.Category;
       component.SubCategory = BusinessComponent.Organisation.SubCategory;
+      component.Hidden = BusinessComponent.Organisation.Hidden;
     }
 
     public static GH_ParamAccess GetAccess(this Attribute attribute) {

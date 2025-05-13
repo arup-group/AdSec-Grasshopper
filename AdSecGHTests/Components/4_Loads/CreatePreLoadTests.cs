@@ -26,7 +26,7 @@ namespace AdSecGHTests.Components {
   public class CreatePreLoadTests {
     private readonly CreatePreLoad _component;
     private readonly DoubleComparer _comparer = new DoubleComparer();
-    private readonly AdSecRebarGroupGoo _rebarGroup = new AdSecRebarGroupGoo(new AdSecRebarGroup(new BuilderTopTemplateGroup().Build()));
+    private readonly AdSecRebarGroupGoo _rebarGroup = new AdSecRebarGroupGoo(new AdSecRebarGroup(new BuilderTemplateGroup().AtFace(ITemplateGroup.Face.Top).Build()));
     public CreatePreLoadTests() {
       _component = new CreatePreLoad();
     }
@@ -123,6 +123,11 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldHavePluginInfoReferenced() {
       Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldBeHidden() {
+      Assert.False(_component.Hidden);
     }
   }
 }

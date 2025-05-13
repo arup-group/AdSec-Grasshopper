@@ -12,44 +12,42 @@ namespace AdSecCoreTests.Functions {
 
     public CreatePreLoadFunctionTests() {
       _function = new CreatePreLoadFunction();
-      _function.RebarGroupInput.Value = new AdSecRebarGroup(new BuilderTopTemplateGroup().Build());
+      _function.RebarGroupInput.Value = new AdSecRebarGroup(new BuilderTemplateGroup().AtFace(ITemplateGroup.Face.Top).Build());
       _function.PreloadInput.Value = 10;
     }
 
-    [Theory]
-    [InlineData("force")]
-    [InlineData("strain")]
-    [InlineData("stress")]
-    [InlineData("invalid")]
-    public void ComputeWithValidInputsCreatesPreload(string force) {
-      _function.PreloadInput.Name = force;
+    [Fact]
+    public void ComputeWithValidForceCreatesPreload() {
+      _function.PreLoadType = "Force";
       _function.Compute();
-
-      if (force == "invalid") {
-        Assert.Contains("Invalid Preload input type.", _function.ErrorMessages);
-        return;
-      }
-
-      var outPreLoad = ((ILongitudinalGroup)_function.PreloadedRebarGroupOutput.Value.Group).Preload;
-      double outputForce = 0;
-      switch (outPreLoad) {
-        case IPreForce preForce:
-          outputForce = preForce.Force.As(_function.ForceUnit);
-          break;
-
-        case IPreStrain preStrain:
-          outputForce = preStrain.Strain.As(_function.MaterialStrainUnit);
-          break;
-
-        case IPreStress preStress:
-          outputForce = preStress.Stress.As(_function.StressUnitResult);
-          break;
-      }
-
-      var result = _function.PreloadedRebarGroupOutput.Value as AdSecRebarGroup;
-      Assert.NotNull(result);
-      Assert.NotNull(result.Group as ILongitudinalGroup);
+      var outPreLoad = (IPreForce)(((ILongitudinalGroup)_function.PreloadedRebarGroupOutput.Value.Group).Preload);
+      double outputForce = outPreLoad.Force.As(_function.ForceUnit);
       Assert.Equal(10, outputForce);
+    }
+
+    [Fact]
+    public void ComputeWithValidStrainCreatesPreload() {
+      _function.PreLoadType = "Strain";
+      _function.Compute();
+      var outPreLoad = (IPreStrain)(((ILongitudinalGroup)_function.PreloadedRebarGroupOutput.Value.Group).Preload);
+      double outputForce = outPreLoad.Strain.As(_function.MaterialStrainUnit);
+      Assert.Equal(10, outputForce);
+    }
+
+    [Fact]
+    public void ComputeWithValidPreStressCreatesPreload() {
+      _function.PreLoadType = "Stress";
+      _function.Compute();
+      var outPreLoad = (IPreStress)(((ILongitudinalGroup)_function.PreloadedRebarGroupOutput.Value.Group).Preload);
+      double outputForce = outPreLoad.Stress.As(_function.StressUnitResult);
+      Assert.Equal(10, outputForce);
+    }
+
+    [Fact]
+    public void ComputeWithInvalidForceWillHaveErrorMessage() {
+      _function.PreLoadType = "invalid";
+      _function.Compute();
+      Assert.Contains("Invalid Preload input type.", _function.ErrorMessages);
     }
 
     [Fact]
@@ -110,6 +108,7 @@ namespace AdSecCoreTests.Functions {
     [InlineData(-50)]
     [InlineData(0)]
     public void ComputeWithDifferentPreloadValuesCreatesCorrectPreload(double preloadValue) {
+      _function.PreLoadType = "Force";
       _function.PreloadInput.Value = preloadValue;
       _function.Compute();
 
@@ -117,17 +116,28 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(preloadValue, outPreLoad.Force.As(_function.ForceUnit), 6);
     }
 
+    [Theory]
+    [InlineData("Force")]
+    [InlineData("Stress")]
+    [InlineData("Strain")]
+    public void CanUpdateParameterNameAndNickName(string forceType) {
+      _function.PreLoadType = forceType;
+      Assert.Contains(forceType, _function.PreloadInput.Name);
+    }
+
     [Fact]
-    public void ComputeThrowsErrorForInvalidRebarGroup() {
+    public void ComputeReportErrorForInvalidRebarGroup() {
       _function.RebarGroupInput.Value = null;
       _function.Compute();
       Assert.Single(_function.ErrorMessages);
     }
 
     [Fact]
-    public void ComputeThrowsInvalidCastExceptionForInvalidPreloadType() {
+    public void ComputeReportErrorForInvalidPreloadType() {
       _function.PreloadInput.Value = "InvalidType";
-      Assert.Throws<InvalidCastException>(() => _function.Compute());
+      _function.Compute();
+      Assert.Single(_function.ErrorMessages);
+      Assert.Contains("Invalid Preload input type", _function.ErrorMessages[0]);
     }
 
     [Fact]
@@ -135,6 +145,7 @@ namespace AdSecCoreTests.Functions {
       _function.RebarGroupInput.Value = new AdSecRebarGroup();
       _function.Compute();
       Assert.Single(_function.ErrorMessages);
+      Assert.Contains("Invalid RebarGroup input", _function.ErrorMessages[0]);
     }
   }
 }

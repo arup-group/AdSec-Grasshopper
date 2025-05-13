@@ -1,4 +1,6 @@
-﻿using Oasys.AdSec.Materials;
+﻿using System.Collections.Generic;
+
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
@@ -29,11 +31,16 @@ namespace AdSecCore.Builders {
     }
   }
 
-  public class BuilderTopTemplateGroup : IBuilder<ITemplateGroup> {
+  public class BuilderTemplateGroup : IBuilder<ITemplateGroup> {
+    private ITemplateGroup templateGroup = ITemplateGroup.Create(ITemplateGroup.Face.Top);
     public ITemplateGroup Build() {
-      var templateGroup = ITemplateGroup.Create(ITemplateGroup.Face.Top);
       templateGroup.Layers.Add(new BuilderLayer().Build());
       return templateGroup;
+    }
+
+    public BuilderTemplateGroup AtFace(IFace face) {
+      templateGroup = ITemplateGroup.Create(face);
+      return this;
     }
   }
 
