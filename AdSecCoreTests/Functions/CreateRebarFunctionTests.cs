@@ -92,6 +92,11 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void ShouldHaveDiameterParameter() {
+      Assert.Equal("Ø", function.DiameterParameter.NickName);
+    }
+
+    [Fact]
     public void ShouldHaveThreeInputsOnBundle() {
       function.SetMode(RebarMode.Bundle);
       Assert.Equal(3, function.GetAllInputAttributes().Length);
