@@ -1,5 +1,8 @@
 ﻿using AdSecGH.Parameters;
 
+using OasysUnits;
+using OasysUnits.Units;
+
 using Rhino.Geometry;
 using Rhino.Geometry.Morphs;
 
@@ -13,6 +16,20 @@ namespace AdSecGHTests.Parameters {
     public AdSecStressStrainPointGooTests() {
       var point = new Point3d(0.1, 0.2, 0);
       stressStrainPointGoo = new AdSecStressStrainPointGoo(point);
+    }
+
+    [Fact]
+    public void CanCreateFromOtherPointGoo() {
+      var newPointGoo = new AdSecStressStrainPointGoo(stressStrainPointGoo);
+      Assert.True(newPointGoo.IsValid);
+    }
+
+    [Fact]
+    public void CanCreateFromPressureAndStressValues() {
+      var pressure = new Pressure(0.1, PressureUnit.Pascal);
+      var stress = new Strain(0.2, StrainUnit.Ratio);
+      var newPointGoo = new AdSecStressStrainPointGoo(pressure, stress);
+      Assert.True(newPointGoo.IsValid);
     }
 
     [Fact]
