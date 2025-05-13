@@ -56,6 +56,12 @@ namespace AdSecGHTests.Parameters {
     }
 
     [Fact]
+    public void BoundingBox_ReturnsValidValue() {
+      var result = stressStrainPointGoo.Boundingbox;
+      Assert.NotEqual(BoundingBox.Empty, result);
+    }
+
+    [Fact]
     public void Morph_ReturnsNull_Always() {
       var result = stressStrainPointGoo.Morph(null);
       Assert.Null(result);
