@@ -5,6 +5,7 @@ using System.Linq;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
+using AdSecGH.Helpers.PreviewHelpers;
 using AdSecGH.UI;
 
 using Oasys.AdSec;
@@ -369,27 +370,6 @@ namespace AdSecGH.Parameters {
       if (reinforcement.Cover != null && (cover == null || reinforcement.Cover.UniformCover > cover.UniformCover)) {
         cover = reinforcement.Cover;
       }
-    }
-
-    internal sealed class ProfilePreviewData {
-      public Brep Profile { get; set; }
-      public Polyline ProfileEdge { get; set; }
-      public List<Polyline> ProfileVoidEdges { get; set; }
-      public DisplayMaterial ProfileColour { get; set; }
-    }
-
-    internal sealed class ReinforcementPreviewData {
-      public List<Brep> Rebars { get; set; } = new List<Brep>();
-      public List<Circle> RebarEdges { get; set; } = new List<Circle>();
-      public List<Curve> LinkEdges { get; set; } = new List<Curve>();
-      public List<DisplayMaterial> RebarColours { get; set; } = new List<DisplayMaterial>();
-    }
-
-    internal sealed class SubComponentsPreviewData {
-      public List<Brep> SubProfiles { get; set; } = new List<Brep>();
-      public List<Polyline> SubEdges { get; set; } = new List<Polyline>();
-      public List<List<Polyline>> SubVoidEdges { get; set; } = new List<List<Polyline>>();
-      public List<DisplayMaterial> SubColours { get; set; } = new List<DisplayMaterial>();
     }
   }
 }
