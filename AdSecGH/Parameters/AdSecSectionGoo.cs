@@ -104,7 +104,7 @@ namespace AdSecGH.Parameters {
         DrawingHelper.Draw(args.Pipeline, instruction);
       }
 
-      DrawingHelper.DrawLocalAxis(args, Value.previewXaxis, Value.previewYaxis, Value.previewZaxis);
+      DrawingHelper.DrawLocalAxis(args, Value.previewZaxis, Value.previewXaxis, Value.previewYaxis);
     }
 
     private List<DrawInstructions> UpdateDrawInstructions(bool isNotSelected) {
