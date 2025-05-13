@@ -45,29 +45,6 @@ namespace AdSecGH.Components {
       return (RebarMode)Enum.Parse(typeof(RebarMode), _selectedItems[0]);
     }
 
-    protected override void SolveInternal(IGH_DataAccess DA) {
-      // 0 material input
-      var material = this.GetAdSecMaterial(DA, 0);
-
-      switch (BusinessComponent.Mode) {
-        case RebarMode.Single:
-          var rebar = new AdSecRebarBundleGoo(IBarBundle.Create((IReinforcement)material.Material,
-            (Length)Input.UnitNumber(this, DA, 1, BusinessComponent.LengthUnitGeometry)));
-          DA.SetData(0, rebar);
-          break;
-
-        case RebarMode.Bundle:
-          int count = 1;
-          DA.GetData(2, ref count);
-
-          var bundle = new AdSecRebarBundleGoo(IBarBundle.Create((IReinforcement)material.Material,
-            (Length)Input.UnitNumber(this, DA, 1, BusinessComponent.LengthUnitGeometry), count));
-
-          DA.SetData(0, bundle);
-          break;
-      }
-    }
-
     protected override void UpdateUIFromSelectedItems() {
       BusinessComponent.SetMode((UpdateMode()));
       BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
