@@ -110,7 +110,7 @@ namespace AdSecCore.Functions {
       DiameterParameter.Name = UnitExtensions.NameWithUnits("Diameter", LengthUnitGeometry);
     }
     
-    public void UpdateLocalUnits() {
+    public override void UpdateUnits() {
       LengthUnitGeometry = LocalLengthUnitGeometry;
       UpdateParameter();
     }
