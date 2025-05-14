@@ -1,8 +1,14 @@
-﻿using AdSecGH.Parameters;
+﻿using System.Drawing;
+
+using AdSecGH.Parameters;
+using AdSecGH.UI;
+
+using Grasshopper.Kernel;
 
 using OasysUnits;
 using OasysUnits.Units;
 
+using Rhino;
 using Rhino.Geometry;
 using Rhino.Geometry.Morphs;
 
@@ -16,6 +22,12 @@ namespace AdSecGHTests.Parameters {
     public AdSecStressStrainPointGooTests() {
       var point = new Point3d(0.1, 0.2, 0);
       stressStrainPointGoo = new AdSecStressStrainPointGoo(point);
+    }
+
+    [Fact]
+    public void CanCreateFromInvalidPoint() {
+      var newPointGoo = new AdSecStressStrainPointGoo(Point3d.Unset);
+      Assert.True(newPointGoo.IsValid);
     }
 
     [Fact]
@@ -77,6 +89,27 @@ namespace AdSecGHTests.Parameters {
 
       var result2 = stressStrainPointGoo.Transform(Transform.Unset);
       Assert.Null(result2);
+    }
+
+    [Fact]
+    public void ShouldDrawOnViewPort() {
+      var doc = SetupRhinoPreviewWire(out var ghPreviewWireArgs);
+
+      stressStrainPointGoo.DrawViewportWires(ghPreviewWireArgs);
+
+      Assert.NotEmpty(stressStrainPointGoo.DrawInstructionsList);
+      Assert.Single(stressStrainPointGoo.DrawInstructionsList);
+      Assert.Equal(Colour.OasysYellow, stressStrainPointGoo.DrawInstructionsList[0].Color);
+
+      doc.Dispose();
+    }
+
+    private static RhinoDoc SetupRhinoPreviewWire(out GH_PreviewWireArgs ghPreviewWireArgs) {
+      var doc = RhinoDoc.Create(string.Empty);
+      var displayPipeline = doc.Views.ActiveView.DisplayPipeline;
+      var rhinoViewport = doc.Views.ActiveView.ActiveViewport;
+      ghPreviewWireArgs = new GH_PreviewWireArgs(rhinoViewport, displayPipeline, Color.White, 1);
+      return doc;
     }
 
   }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using AdSecGH.Helpers;
@@ -28,6 +29,7 @@ namespace AdSecGH.Parameters {
     public IStressStrainPoint StressStrainPoint { get; private set; }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "StressStrainPoint";
+    public List<DrawInstructions> DrawInstructionsList { get; private set; } = new List<DrawInstructions>();
 
     public AdSecStressStrainPointGoo(Point3d point) : base(point) {
       m_value = point;
@@ -129,9 +131,10 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (IsValid) {
-        args.Pipeline.DrawCircle(new Circle(Value, 0.5), Colour.OasysYellow, 1);
-      }
+      DrawInstructionsList.Clear();
+      DrawInstructionsList.Add(new DrawCircle() { Circle = new Circle(Value, 0.5), Color = Colour.OasysYellow, Thickness = 1, });
+
+      DrawingHelper.Draw(args.Pipeline, DrawInstructionsList[0]);
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
