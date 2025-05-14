@@ -45,16 +45,10 @@ namespace AdSecGH.Components {
       return (RebarMode)Enum.Parse(typeof(RebarMode), _selectedItems[0]);
     }
 
-    protected override void UpdateUIFromSelectedItems() {
-      BusinessComponent.SetMode((UpdateMode()));
-      BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
-      base.UpdateUIFromSelectedItems();
-    }
-
     protected override void BeforeSolveInstance() {
-      UpdateDefaultUnits();
-      BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
-      RefreshParameter();
+      UpdateDefaultUnits(); // In Case the user has updated units from the settings dialogue
+      BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]); // out local component settings
+      RefreshParameter(); // Simply passing the function names into the GH names. As we have the logic to update the names on the Core
     }
   }
 }
