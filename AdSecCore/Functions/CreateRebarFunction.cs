@@ -69,7 +69,7 @@ namespace AdSecCore.Functions {
     }
 
     public override void Compute() {
-      UpdateLocalUnits();
+      UpdateUnits();
       IMaterial material = MaterialParameter.Value.Material;
       var diameter = Length.From(DiameterParameter.Value, LengthUnitGeometry);
 
