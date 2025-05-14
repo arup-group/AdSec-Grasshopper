@@ -7,9 +7,6 @@ namespace AdSecGH.Parameters {
     public AdSecRebarGroup() { }
 
     public AdSecRebarGroup(AdSecRebarGroup rebarGroup) {
-      if (rebarGroup == null) {
-        return;
-      }
       Group = rebarGroup.Group;
       if (rebarGroup.Cover != null) {
         Cover = ICover.Create(rebarGroup.Cover.UniformCover);

@@ -28,9 +28,9 @@ namespace AdSecGH.Components {
     private ForceUnit _forceUnit = DefaultUnits.ForceUnit;
     private StrainUnit _strainUnit = DefaultUnits.MaterialStrainUnit;
     private PressureUnit _stressUnit = DefaultUnits.StressUnitResult;
-    private const string _selectedForceUnit = "Force";
-    private const string _selectedStrainUnit = "Strain";
-    private const string _selectedStressUnit = "Stress";
+    private const string _forceString = "Force";
+    private const string _strainString = "Strain";
+    private const string _stressString = "Stress";
 
     public override Guid ComponentGuid => new Guid("cbab2b12-2a01-4f05-ba24-2c79827c7415");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
@@ -42,17 +42,17 @@ namespace AdSecGH.Components {
       switch (i) {
         case 0:
           switch (_selectedItems[0]) {
-            case _selectedForceUnit:
+            case _forceString:
               _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
               _selectedItems[1] = _forceUnit.ToString();
               break;
 
-            case _selectedStrainUnit:
+            case _strainString:
               _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
               _selectedItems[1] = _strainUnit.ToString();
               break;
 
-            case _selectedStressUnit:
+            case _stressString:
               _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
               _selectedItems[1] = _stressUnit.ToString();
               break;
@@ -60,15 +60,15 @@ namespace AdSecGH.Components {
           break;
         case 1:
           switch (_selectedItems[0]) {
-            case _selectedForceUnit:
+            case _forceString:
               _forceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), _selectedItems[i]);
               break;
 
-            case _selectedStrainUnit:
+            case _strainString:
               _strainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), _selectedItems[i]);
               break;
 
-            case _selectedStressUnit:
+            case _stressString:
               _stressUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), _selectedItems[i]);
               break;
           }
@@ -80,15 +80,14 @@ namespace AdSecGH.Components {
 
     protected override void InitialiseDropdowns() {
       _spacerDescriptions = new List<string> {
-        _selectedForceUnit,
-        _selectedStrainUnit,
-        _selectedStressUnit,
+        "Force",
+         "Measure"
       };
 
       _dropDownItems = new List<List<string>>();
       _selectedItems = new List<string>();
 
-      _dropDownItems.Add(_spacerDescriptions);
+      _dropDownItems.Add(new List<string>() { _forceString, _strainString, _stressString });
       _selectedItems.Add(_dropDownItems[0][0]);
 
       _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
