@@ -91,6 +91,9 @@ namespace Oasys.GH.Helpers {
 
     protected override void BeforeSolveInstance() {
       UpdateDefaultUnits();
+      if (BusinessComponent is Function function) {
+        function.UpdateUnits();
+      }
       RefreshParameter();
     }
 

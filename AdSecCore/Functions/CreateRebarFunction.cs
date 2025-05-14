@@ -20,6 +20,7 @@ namespace AdSecCore.Functions {
 
   public class CreateRebarFunction : Function, IDropdownOptions, IVariableInput {
 
+    public LengthUnit LocalLengthUnitGeometry = LengthUnit.Meter;
     public CreateRebarFunction() {
       UpdateParameter();
     }
@@ -68,7 +69,7 @@ namespace AdSecCore.Functions {
     }
 
     public override void Compute() {
-      // 0 material input
+      UpdateLocalUnits();
       IMaterial material = MaterialParameter.Value.Material;
       var diameter = Length.From(DiameterParameter.Value, LengthUnitGeometry);
 
@@ -107,6 +108,11 @@ namespace AdSecCore.Functions {
 
     protected sealed override void UpdateParameter() {
       DiameterParameter.Name = UnitExtensions.NameWithUnits("Diameter", LengthUnitGeometry);
+    }
+    
+    public void UpdateLocalUnits() {
+      LengthUnitGeometry = LocalLengthUnitGeometry;
+      UpdateParameter();
     }
   }
 }

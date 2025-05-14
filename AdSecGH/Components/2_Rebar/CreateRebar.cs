@@ -37,8 +37,14 @@ namespace AdSecGH.Components {
       if (i == 0) {
         BusinessComponent.SetMode(UpdateMode());
       } else {
-        BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
+        SetUnit();
       }
+    }
+
+    private void SetUnit()
+    {
+      BusinessComponent.LocalLengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
+      BusinessComponent.UpdateLocalUnits();
     }
 
     private RebarMode UpdateMode() {
@@ -46,9 +52,11 @@ namespace AdSecGH.Components {
     }
 
     protected override void BeforeSolveInstance() {
-      UpdateDefaultUnits(); // In Case the user has updated units from the settings dialogue
-      BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]); // out local component settings
-      RefreshParameter(); // Simply passing the function names into the GH names. As we have the logic to update the names on the Core
+      SetUnit();
+      base.BeforeSolveInstance();
+      // UpdateDefaultUnits(); // In Case the user has updated units from the settings dialogue
+      // BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]); // out local component settings
+      // RefreshParameter(); // Simply passing the function names into the GH names. As we have the logic to update the names on the Core
     }
   }
 }
