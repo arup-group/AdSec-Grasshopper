@@ -10,12 +10,12 @@ using Oasys.Profiles;
 namespace AdSecGHCore {
   public static class SampleData {
 
-    private static readonly ISteel _defaultSteelBeam = Steel.AS4100.Edition_1998.AS1163_C250;
-    public static IConcrete _defaultConcrete = Concrete.AS3600.Edition_2001.MPA20;
+    private static readonly ISteel _defaultSteelBeamForSubComponentCanBeAnyMaterialCode = Steel.AS4100.Edition_1998.AS1163_C250;
+    public static IConcrete _defaultConcreteConsistentWithDesignCode = Concrete.IS456.Edition_2000.M65;
     private static readonly IDesignCode _defaultDesignCode = IS456.Edition_2000;
 
     public static SectionDesign GetSectionDesign(IDesignCode? designCode = null, ISteel? iBeamMat = null) {
-      iBeamMat ??= _defaultSteelBeam;
+      iBeamMat ??= _defaultSteelBeamForSubComponentCanBeAnyMaterialCode;
 
       designCode ??= _defaultDesignCode;
 
@@ -36,7 +36,7 @@ namespace AdSecGHCore {
       }
 
       var profile = new ProfileBuilder().WithWidth(100).WidthDepth(100).Build();
-      var section = new SectionBuilder().WithProfile(profile).WithMaterial(_defaultConcrete).WithSubComponents(
+      var section = new SectionBuilder().WithProfile(profile).WithMaterial(_defaultConcreteConsistentWithDesignCode).WithSubComponents(
         new List<ISubComponent> {
           GetSubComponentZero().ISubComponent,
         }).WithReinforcementGroup(new BuilderLineGroup().Build()).Build();
@@ -56,7 +56,7 @@ namespace AdSecGHCore {
 
     public static SubComponent GetSubComponent(IPoint offset) {
       var iProfile = ProfileBuilder.GetIBeam();
-      var subSection = new SectionBuilder().WithProfile(iProfile).WithMaterial(_defaultSteelBeam).Build();
+      var subSection = new SectionBuilder().WithProfile(iProfile).WithMaterial(_defaultSteelBeamForSubComponentCanBeAnyMaterialCode).Build();
       return new SubComponent {
         ISubComponent = ISubComponent.Create(subSection, offset),
         SectionDesign = new SectionDesign {
