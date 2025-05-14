@@ -90,11 +90,11 @@ namespace Oasys.GH.Helpers {
     }
 
     protected override void BeforeSolveInstance() {
-      UpdateDefaultUnits();
+      UpdateDefaultUnits();// In Case the user has updated units from the settings dialogue
       if (BusinessComponent is Function function) {
-        function.UpdateUnits();
+        function.UpdateUnits();// out local component settings
       }
-      RefreshParameter();
+      RefreshParameter();// Simply passing the function names into the GH names. As we have the logic to update the names on the Core
     }
 
     public void UpdateDefaultUnits() {
