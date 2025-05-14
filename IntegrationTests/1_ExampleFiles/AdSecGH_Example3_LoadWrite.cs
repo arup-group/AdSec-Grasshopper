@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
@@ -23,8 +24,8 @@ namespace IntegrationTests.Components {
 
     [Fact]
     public void NoRuntimeErrorTest() {
-      var errors = GetAllMessaged(_document, GH_RuntimeMessageLevel.Error);
-      var warnings = GetAllMessaged(_document, GH_RuntimeMessageLevel.Error);
+      var errors = GetAllMessaged(Document, GH_RuntimeMessageLevel.Error);
+      var warnings = GetAllMessaged(Document, GH_RuntimeMessageLevel.Warning);
       Assert.Empty(errors);
       Assert.Empty(warnings);
     }
@@ -50,8 +51,8 @@ namespace IntegrationTests.Components {
         }
 
         comp.CollectData();
-        comp.Params.Output[0].CollectData();
-        comp.Params.Output[0].VolatileData.get_Branch(0);
+        comp.ComputeData();
+
         var runtimeMessages = comp.RuntimeMessages(runtimeMessageLevel);
         if (runtimeMessages.Any()) {
           messages.AddRange(runtimeMessages);
