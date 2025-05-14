@@ -10,6 +10,10 @@ using OasysUnits;
 namespace AdSecCore.Functions {
 
   public class CreatePreLoadFunction : Function {
+    public const string ForceString = "Force";
+    public const string StrainString = "Strain";
+    public const string StressString = "Stress";
+
     private string _preLoadType = string.Empty;
     public string PreLoadType {
       get { return _preLoadType; }
@@ -73,15 +77,15 @@ namespace AdSecCore.Functions {
       string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
 
       switch (PreLoadType) {
-        case "Force":
+        case ForceString:
           PreloadInput.Name = $"{PreLoadType} [{forceUnitAbbreviation}]";
           PreloadInput.NickName = "P";
           break;
-        case "Strain":
+        case StrainString:
           PreloadInput.Name = $"{PreLoadType} [{strainUnitAbbreviation}]";
           PreloadInput.NickName = "ε";
           break;
-        case "Stress":
+        case StressString:
           PreloadInput.Name = $"{PreLoadType} [{stressUnitAbbreviation}]";
           PreloadInput.NickName = "σ";
           break;
@@ -90,11 +94,11 @@ namespace AdSecCore.Functions {
 
     private IPreload ParsePreLoad() {
       switch (PreLoadType) {
-        case "Force":
+        case ForceString:
           return IPreForce.Create(UnitHelpers.ParseToQuantity<Force>(PreloadInput.Value, ForceUnit));
-        case "Strain":
+        case StrainString:
           return IPreStrain.Create(UnitHelpers.ParseToQuantity<Strain>(PreloadInput.Value, MaterialStrainUnit));
-        case "Stress":
+        case StressString:
           return IPreStress.Create(UnitHelpers.ParseToQuantity<Pressure>(PreloadInput.Value, StressUnitResult));
         default:
           ErrorMessages.Add("Invalid Preload input type.");
