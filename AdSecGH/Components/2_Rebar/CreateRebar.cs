@@ -44,7 +44,7 @@ namespace AdSecGH.Components {
     private void SetUnit()
     {
       BusinessComponent.LocalLengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
-      BusinessComponent.UpdateLocalUnits();
+      BusinessComponent.UpdateUnits();
     }
 
     private RebarMode UpdateMode() {
