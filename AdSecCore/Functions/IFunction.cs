@@ -128,6 +128,10 @@ namespace AdSecCore.Functions {
     public abstract void Compute();
   }
 
+  public interface ILocalUnits {
+    void UpdateUnits();
+  }
+
   public class FuncAttribute {
     public string Name { get; set; }
     public string NickName { get; set; }
