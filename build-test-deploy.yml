@@ -50,10 +50,9 @@ steps:
     failOnStderr: true
 
   - powershell: |
-      download-latest-gsa.ps1
+      .\download-latest-gsa.ps1
     displayName: Download latest GSA GH
     failOnStderr: true
-
 
   - powershell: Remove-Item -Path C:\Users\**\AppData\Roaming\Grasshopper\Libraries\*.ghlink
     displayName: 'Delete orphan .ghlink files'
