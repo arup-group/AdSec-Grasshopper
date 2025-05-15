@@ -11,10 +11,6 @@ using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.StandardMaterials;
 using Oasys.GH.Helpers;
 
-using OasysGH.Units;
-
-using OasysUnits.Units;
-
 using Xunit;
 
 namespace AdSecGHTests.Components._3_Rebar {

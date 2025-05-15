@@ -41,8 +41,7 @@ namespace AdSecGH.Components {
       }
     }
 
-    private void SetUnit()
-    {
+    private void SetUnit() {
       BusinessComponent.LocalLengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
       BusinessComponent.UpdateUnits();
     }

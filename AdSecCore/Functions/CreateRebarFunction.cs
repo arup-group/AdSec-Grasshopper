@@ -2,8 +2,6 @@
 
 using AdSecCore.Parameters;
 
-using AdSecGH.Parameters;
-
 using AdSecGHCore.Constants;
 
 using Oasys.AdSec.Materials;
@@ -20,7 +18,8 @@ namespace AdSecCore.Functions {
 
   public class CreateRebarFunction : Function, IDropdownOptions, IVariableInput {
 
-    public LengthUnit LocalLengthUnitGeometry = LengthUnit.Meter;
+    public LengthUnit LocalLengthUnitGeometry { get; set; } = LengthUnit.Meter;
+
     public CreateRebarFunction() {
       UpdateParameter();
     }
@@ -53,9 +52,7 @@ namespace AdSecCore.Functions {
     public override Attribute[] GetAllInputAttributes() {
       Attribute[] attributes = { };
       switch (Mode) {
-        case RebarMode.Single:
-          attributes = new Attribute[] { MaterialParameter, DiameterParameter };
-          break;
+        case RebarMode.Single: attributes = new Attribute[] { MaterialParameter, DiameterParameter }; break;
         case RebarMode.Bundle:
           attributes = new Attribute[] { MaterialParameter, DiameterParameter, CountParameter };
           break;
@@ -109,7 +106,7 @@ namespace AdSecCore.Functions {
     protected sealed override void UpdateParameter() {
       DiameterParameter.Name = UnitExtensions.NameWithUnits("Diameter", LengthUnitGeometry);
     }
-    
+
     public override void UpdateUnits() {
       LengthUnitGeometry = LocalLengthUnitGeometry;
       UpdateParameter();
