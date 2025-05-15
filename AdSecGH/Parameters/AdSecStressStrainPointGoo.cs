@@ -29,7 +29,7 @@ namespace AdSecGH.Parameters {
     public IStressStrainPoint StressStrainPoint { get; private set; }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "StressStrainPoint";
-    public List<DrawInstructions> DrawInstructionsList { get; private set; } = new List<DrawInstructions>();
+    internal List<DrawInstructions> DrawInstructionsList { get; } = new List<DrawInstructions>();
 
     public AdSecStressStrainPointGoo(Point3d point) : base(point) {
       m_value = point;
