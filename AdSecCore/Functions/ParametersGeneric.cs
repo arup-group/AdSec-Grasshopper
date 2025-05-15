@@ -126,7 +126,8 @@ namespace AdSecCore.Functions {
   public class RebarBundleParameter : ParameterAttribute<IBarBundle> { }
   public class RebarLayerParameter : BaseArrayParameter<ILayer> { }
 
-  public class RebarGroupParameter : BaseArrayParameter<AdSecRebarGroup> { }
+  public class RebarGroupArrayParameter : BaseArrayParameter<AdSecRebarGroup> { }
+  public class RebarGroupParameter : ParameterAttribute<AdSecRebarGroup> { }
 
   public class DesignCodeParameter : ParameterAttribute<DesignCode> {
     public static DesignCode From(SectionDesign section) {

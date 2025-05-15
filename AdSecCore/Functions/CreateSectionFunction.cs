@@ -20,7 +20,7 @@ namespace AdSecCore.Functions {
       Description = "AdSet Material for the section. The DesignCode of this material will be used for analysis",
       Access = Access.Item,
     };
-    public RebarGroupParameter RebarGroup { get; set; } = new RebarGroupParameter {
+    public RebarGroupArrayParameter RebarGroup { get; set; } = new RebarGroupArrayParameter {
       Name = "RebarGroup",
       NickName = "RbG",
       Description = "[Optional] AdSec Reinforcement Groups in the section (applicable for only concrete material).",
