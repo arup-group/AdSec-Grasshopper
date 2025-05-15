@@ -7,7 +7,6 @@ using AdSecGHCore.Constants;
 using Oasys.Profiles;
 
 namespace AdSecCore.Functions {
-
   public class CreateSectionFunction : IFunction {
     public ProfileParameter Profile { get; set; } = new ProfileParameter {
       Name = "Profile",
