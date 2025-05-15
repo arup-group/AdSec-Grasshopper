@@ -1,4 +1,6 @@
-﻿using AdSecCore.Functions;
+﻿using System.Reflection;
+
+using AdSecCore.Functions;
 
 using AdSecCoreTests.Functions;
 
@@ -7,6 +9,7 @@ using AdSecGHCore;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
+using Oasys.AdSec.StandardMaterials;
 
 namespace AdSecCore {
   public class SaveLoadTests {
@@ -18,7 +21,7 @@ namespace AdSecCore {
     }
 
     [Fact]
-    public void EditSectionPassThrough() {
+    public void EditSectionPassThroughForConsistentRebarAndConcreteGrade() {
       var designCode = IS456.Edition_2000;
       var sectionDesign = SampleData.GetCompositeSectionDesign();
       var function = new EditSectionFunction();
@@ -26,6 +29,19 @@ namespace AdSecCore {
       function.Compute();
 
       Assert.True(TrySaveAndLoad(designCode, function.SectionOut.Value.Section));
+    }
+
+    [Fact]
+    public void EditSectionWillNotPassThroughForInConsistentRebarAndConcreteGrade() {
+      var designCode = IS456.Edition_2000;
+      var sectionDesign = SampleData.GetCompositeSectionDesign(Concrete.AS5100.Edition_2017.MPA100);
+      var function = new EditSectionFunction();
+      function.Section.Value = sectionDesign;
+      function.Compute();
+
+      var exception = Assert.Throws<TargetInvocationException>(() => TrySaveAndLoad(designCode, function.SectionOut.Value.Section));
+      var message = exception.InnerException?.Message;
+      Assert.Contains("The section is invalid", message);
     }
 
     private static bool TrySaveAndLoad(IDesignCode designCode, ISection section) {
