@@ -1,5 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+
+using Oasys.Geometry.Paths2D;
 
 using OasysGH.Units;
 
@@ -59,8 +62,19 @@ namespace IntegrationTests {
       Directory.CreateDirectory(_linkFilePath);
       StreamWriter writer = File.CreateText(Path.Combine(_linkFilePath, _linkFileName));
       writer.WriteLine(Environment.CurrentDirectory);
-      writer.WriteLine(@"D:\Repos\gsa-gh\GsaGH\bin\x64\Debug\net48");
+      string gsaGhPath = Path.Combine(FindSolutionRoot(Environment.CurrentDirectory), "GSA-GH");
+      writer.WriteLine(gsaGhPath);
       writer.Close();
+    }
+
+    public static string FindSolutionRoot(string startPath) {
+      var dir = new DirectoryInfo(startPath);
+
+      while (dir != null && !dir.GetFiles("*.sln").Any()) {
+        dir = dir.Parent;
+      }
+
+      return dir?.FullName ?? throw new Exception("Solution root not found.");
     }
 
     public void Dispose() {
