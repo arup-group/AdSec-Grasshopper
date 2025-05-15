@@ -157,6 +157,28 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void ShouldComputeSingleBarWithDifferentUnits() {
+      function.LocalLengthUnitGeometry = LengthUnit.Centimeter;
+      function.DiameterParameter.Value = 0.01;
+      function.MaterialParameter.Value = new MaterialDesign() {
+        Material = Reinforcement.Steel.IS456.Edition_2000.S250
+      };
+      function.Compute();
+      Assert.Equal(0.01, function.RebarBundleParameter.Value.Diameter.As(LengthUnit.Centimeter));
+    }
+
+    [Fact]
+    public void ShouldComputeSingleBarUpdateParameterName() {
+      function.LocalLengthUnitGeometry = LengthUnit.Centimeter;
+      function.DiameterParameter.Value = 0.01;
+      function.MaterialParameter.Value = new MaterialDesign() {
+        Material = Reinforcement.Steel.IS456.Edition_2000.S250
+      };
+      function.Compute();
+      Assert.Equal("Diameter [cm]", function.DiameterParameter.Name);
+    }
+
+    [Fact]
     public void ShouldComputeBundleBars() {
       function.DiameterParameter.Value = 0.01;
       function.MaterialParameter.Value = new MaterialDesign() {

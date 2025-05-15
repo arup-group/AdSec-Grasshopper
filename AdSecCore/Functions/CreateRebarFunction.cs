@@ -111,7 +111,6 @@ namespace AdSecCore.Functions {
 
     public void UpdateUnits() {
       LengthUnitGeometry = LocalLengthUnitGeometry;
-      UpdateParameter();
     }
   }
 
