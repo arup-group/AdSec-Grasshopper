@@ -20,6 +20,14 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void ShouldUpdateUnitsFromLocal() {
+      function.LengthUnitGeometry = LengthUnit.Millimeter;
+      function.LocalLengthUnitGeometry = LengthUnit.Decameter;
+      function.UpdateUnits();
+      Assert.Equal(LengthUnit.Decameter, function.LengthUnitGeometry);
+    }
+
+    [Fact]
     public void ShouldHaveANickName() {
       Assert.Equal("Rebar", function.Metadata.NickName);
     }
