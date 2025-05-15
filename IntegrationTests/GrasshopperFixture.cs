@@ -58,7 +58,8 @@ namespace IntegrationTests {
     public void AddPluginToGH() {
       Directory.CreateDirectory(_linkFilePath);
       StreamWriter writer = File.CreateText(Path.Combine(_linkFilePath, _linkFileName));
-      writer.Write(Environment.CurrentDirectory);
+      writer.WriteLine(Environment.CurrentDirectory);
+      writer.WriteLine(@"D:\Repos\gsa-gh\GsaGH\bin\x64\Debug\net48");
       writer.Close();
     }
 
