@@ -78,6 +78,8 @@ namespace AdSecCore.Functions {
         case RebarMode.Bundle:
           RebarBundleParameter.Value = IBarBundle.Create((IReinforcement)material, diameter, CountParameter.Value);
           break;
+        default:
+          throw new InvalidModeSetException($"Invalid mode set {Mode}. Please select either Single (0) or Bundle (1).");
       }
     }
 
@@ -111,5 +113,9 @@ namespace AdSecCore.Functions {
       LengthUnitGeometry = LocalLengthUnitGeometry;
       UpdateParameter();
     }
+  }
+
+  public class InvalidModeSetException : Exception {
+    public InvalidModeSetException(string message) : base(message) { }
   }
 }

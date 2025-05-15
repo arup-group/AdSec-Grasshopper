@@ -28,6 +28,16 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void AnyOtherModeIsSingle() {
+      function.DiameterParameter.Value = 0.01;
+      function.MaterialParameter.Value = new MaterialDesign() {
+        Material = Reinforcement.Steel.IS456.Edition_2000.S250
+      };
+      function.SetMode((RebarMode)3);
+      Assert.Throws<InvalidModeSetException>(() => function.Compute());
+    }
+
+    [Fact]
     public void ShouldHaveANickName() {
       Assert.Equal("Rebar", function.Metadata.NickName);
     }
