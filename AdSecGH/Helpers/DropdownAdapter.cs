@@ -20,6 +20,7 @@ using Function = AdSecCore.Functions.Function;
 namespace Oasys.GH.Helpers {
   public abstract class DropdownAdapter<T> : GH_OasysDropDownComponent, IDefaultValues where T : IFunction {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
+
     protected DropdownAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
       BusinessComponent.UpdateProperties(this);
       if (BusinessComponent is IVariableInput variableInput) {
@@ -90,11 +91,13 @@ namespace Oasys.GH.Helpers {
     }
 
     protected override void BeforeSolveInstance() {
-      UpdateDefaultUnits();// In Case the user has updated units from the settings dialogue
-      if (BusinessComponent is Function function) {
-        function.UpdateUnits();// out local component settings
-      }
-      RefreshParameter();// Simply passing the function names into the GH names. As we have the logic to update the names on the Core
+      UpdateDefaultUnits(); // In Case the user has updated units from the settings dialogue
+      UpdateFromLocalUnits();
+      RefreshParameter(); // Simply passing the function names into the GH names. As we have the logic to update the names on the Core
+    }
+
+    private void UpdateFromLocalUnits() {
+      AdapterBase.UpdateFromLocalUnits(BusinessComponent);
     }
 
     public void UpdateDefaultUnits() {

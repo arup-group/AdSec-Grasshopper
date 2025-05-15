@@ -124,9 +124,12 @@ namespace AdSecCore.Functions {
     public virtual Attribute[] GetAllOutputAttributes() { return Array.Empty<Attribute>(); }
 
     protected virtual void UpdateParameter() { }
-    public virtual void UpdateUnits() { }
 
     public abstract void Compute();
+  }
+
+  public interface ILocalUnits {
+    void UpdateUnits();
   }
 
   public class FuncAttribute {

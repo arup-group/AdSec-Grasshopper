@@ -16,7 +16,7 @@ namespace AdSecCore.Functions {
     Bundle,
   }
 
-  public class CreateRebarFunction : Function, IDropdownOptions, IVariableInput {
+  public class CreateRebarFunction : Function, IDropdownOptions, IVariableInput, ILocalUnits {
 
     public LengthUnit LocalLengthUnitGeometry { get; set; } = LengthUnit.Meter;
 
@@ -109,7 +109,7 @@ namespace AdSecCore.Functions {
       DiameterParameter.Name = UnitExtensions.NameWithUnits("Diameter", LengthUnitGeometry);
     }
 
-    public override void UpdateUnits() {
+    public void UpdateUnits() {
       LengthUnitGeometry = LocalLengthUnitGeometry;
       UpdateParameter();
     }
