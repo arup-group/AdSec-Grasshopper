@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
@@ -9,13 +8,13 @@ using Xunit;
 
 namespace IntegrationTests.Components {
   [Collection("GrasshopperFixture collection")]
-  public class AdSecGH_Example3_LoadWrite {
+  public class AdSecGH_Example4_LoadWrite {
 
     private static GH_Document _document;
     public static GH_Document Document {
       get {
         if (_document == null) {
-          _document = OpenDocument("AdSecGH_Example3_SaveLoad.gh");
+          _document = OpenDocument("AdSecGH_Example4_LoadWrite.gh");
         }
 
         return _document;
