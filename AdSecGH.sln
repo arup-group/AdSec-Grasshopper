@@ -48,12 +48,15 @@ Global
 		{D7A31820-EC4F-42EC-863C-51BB3647A145}.Debug|x64.ActiveCfg = Debug|x64
 		{D7A31820-EC4F-42EC-863C-51BB3647A145}.Debug|x64.Build.0 = Debug|x64
 		{D7A31820-EC4F-42EC-863C-51BB3647A145}.Release|x64.ActiveCfg = Release|x64
+		{D7A31820-EC4F-42EC-863C-51BB3647A145}.Release|x64.Build.0 = Release|x64
 		{DF259C79-A298-44B9-B702-573D4206A3C2}.Debug|x64.ActiveCfg = Debug|x64
 		{DF259C79-A298-44B9-B702-573D4206A3C2}.Debug|x64.Build.0 = Debug|x64
 		{DF259C79-A298-44B9-B702-573D4206A3C2}.Release|x64.ActiveCfg = Release|x64
+		{DF259C79-A298-44B9-B702-573D4206A3C2}.Release|x64.Build.0 = Release|x64
 		{9D376477-DEDE-4DCC-B12F-7361BF763BFF}.Debug|x64.ActiveCfg = Debug|x64
 		{9D376477-DEDE-4DCC-B12F-7361BF763BFF}.Debug|x64.Build.0 = Debug|x64
 		{9D376477-DEDE-4DCC-B12F-7361BF763BFF}.Release|x64.ActiveCfg = Release|x64
+		{9D376477-DEDE-4DCC-B12F-7361BF763BFF}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
