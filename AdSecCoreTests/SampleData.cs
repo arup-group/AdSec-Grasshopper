@@ -1,4 +1,6 @@
-﻿using AdSecCore.Builders;
+﻿using System.Collections.Generic;
+
+using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using Oasys.AdSec;
@@ -10,12 +12,12 @@ using Oasys.Profiles;
 namespace AdSecGHCore {
   public static class SampleData {
 
-    private static readonly ISteel _defaultSteelBeamForSubComponentCanBeAnyMaterialFromAnyCode = Steel.AS4100.Edition_1998.AS1163_C250;
-    private static readonly IConcrete _defaultConcreteGrade = Concrete.IS456.Edition_2000.M65;
+    private static readonly ISteel _defaultSteelBeam = Steel.AS4100.Edition_1998.AS1163_C250;
+    private static readonly IConcrete _defaultConcrete = Concrete.IS456.Edition_2000.M10;
     private static readonly IDesignCode _defaultDesignCode = IS456.Edition_2000;
 
     public static SectionDesign GetSectionDesign(IDesignCode? designCode = null, ISteel? iBeamMat = null) {
-      iBeamMat ??= _defaultSteelBeamForSubComponentCanBeAnyMaterialFromAnyCode;
+      iBeamMat ??= _defaultSteelBeam;
 
       designCode ??= _defaultDesignCode;
 
@@ -32,7 +34,7 @@ namespace AdSecGHCore {
 
     public static SectionDesign GetCompositeSectionDesign(IConcrete concreteGrade = null, IDesignCode designCode = null) {
       designCode ??= _defaultDesignCode;
-      concreteGrade ??= _defaultConcreteGrade;
+      concreteGrade ??= _defaultConcrete;
       var profile = new ProfileBuilder().WithWidth(100).WidthDepth(100).Build();
       var section = new SectionBuilder().WithProfile(profile).WithMaterial(concreteGrade).WithSubComponents(
         new List<ISubComponent> {
@@ -54,7 +56,7 @@ namespace AdSecGHCore {
 
     public static SubComponent GetSubComponent(IPoint offset) {
       var iProfile = ProfileBuilder.GetIBeam();
-      var subSection = new SectionBuilder().WithProfile(iProfile).WithMaterial(_defaultSteelBeamForSubComponentCanBeAnyMaterialFromAnyCode).Build();
+      var subSection = new SectionBuilder().WithProfile(iProfile).WithMaterial(_defaultSteelBeam).Build();
       return new SubComponent {
         ISubComponent = ISubComponent.Create(subSection, offset),
         SectionDesign = new SectionDesign {
