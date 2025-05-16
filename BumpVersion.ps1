@@ -59,11 +59,11 @@ $filesToUpdate = @(
     @{
         FilePath = ".\AdSecGH\AdSecGH.csproj"
         SearchPattern = '<Version>(.*?)<\/Version>'
-        ReplacementPattern = "<Version>$newVersion</Version>"
+        ReplacementPattern = "<Version>$newVersion-beta</Version>"
     },
     @{
         FilePath = ".\AdSecGH\AdSecGHInfo.cs"
-        SearchPattern = 'string GrasshopperVersion = "(.*?)"'
+        SearchPattern = 'string Vers = "(.*?)"'
         ReplacementPattern = 'string Vers = "' + $newVersion + '"'
     }
 )
