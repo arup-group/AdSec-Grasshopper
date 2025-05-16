@@ -2,9 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AdSec" Version="2.0.4.234" />
     <PackageReference Include="Grasshopper" Version="6.27.20176.5001" />
     <PackageReference Include="RhinoCommon" Version="6.27.20176.5001" />
   </ItemGroup>
