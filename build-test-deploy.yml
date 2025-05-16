@@ -245,7 +245,7 @@ steps:
       ..\yak build --platform win
     displayName: Package yak
 
-  - publish: $(System.DefaultWorkingDirectory)\results\yak\
+  - publish: $(System.DefaultWorkingDirectory)\AdSecGH\bin\x64\Release\yak\
     displayName: Publish Yak Package to Azure
     artifact: Yak Package
     continueOnError: false
