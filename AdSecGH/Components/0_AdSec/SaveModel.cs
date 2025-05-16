@@ -47,7 +47,7 @@ namespace AdSecGH.Components {
     }
 
     public Process OpenAdSecExe() {
-      return canOpen ? Process.Start(_fileName) : null;
+      return File.Exists(_fileName) ? Process.Start(_fileName) : null;
     }
 
     public override bool Read(GH_IReader reader) {
