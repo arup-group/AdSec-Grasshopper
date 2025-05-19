@@ -36,6 +36,7 @@ namespace AdSecGH.Components {
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.SaveAdSec;
+    internal string FileNotExistError => "File does not exist";
 
     public override void CreateAttributes() {
       if (!_isInitialised) {
@@ -47,7 +48,12 @@ namespace AdSecGH.Components {
     }
 
     public Process OpenAdSecExe() {
-      return File.Exists(_fileName) ? Process.Start(_fileName) : null;
+      if (File.Exists(_fileName)) {
+        return Process.Start(_fileName);
+      }
+
+      this.AddRuntimeError(FileNotExistError);
+      return null;
     }
 
     public override bool Read(GH_IReader reader) {

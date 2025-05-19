@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 using AdSecGH.Components;
 using AdSecGH.Helpers;
@@ -136,11 +135,11 @@ namespace AdSecGHTests.Components.AdSec {
     }
 
     [Fact]
-    public void AdSecProcesscanBeLaunched() {
+    public void AdSecProcessCanBeLaunched() {
       SetLoad();
       var process = _component.OpenAdSecExe();
       if (process == null) {
-        return;
+        Assert.Fail("Process doesn't exist!");
       }
       try {
         Assert.Contains("AdSec", process.ProcessName);
@@ -154,6 +153,7 @@ namespace AdSecGHTests.Components.AdSec {
       SetWrongFilePath();
       var process = _component.OpenAdSecExe();
       Assert.Null(process);
+      Assert.Contains(_component.FileNotExistError, _component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
     }
 
     [Fact]
@@ -161,6 +161,7 @@ namespace AdSecGHTests.Components.AdSec {
       SetNullFilePath();
       var process = _component.OpenAdSecExe();
       Assert.Null(process);
+      Assert.Contains(_component.FileNotExistError, _component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
     }
 
     [Fact]
@@ -168,6 +169,7 @@ namespace AdSecGHTests.Components.AdSec {
       SetEmptyFilePath();
       var process = _component.OpenAdSecExe();
       Assert.Null(process);
+      Assert.Contains(_component.FileNotExistError, _component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
     }
 
     [Fact]
