@@ -6,6 +6,7 @@ using AdSecCore.Functions;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 
 using Rhino.Geometry;
 
@@ -98,6 +99,10 @@ namespace IntegrationTests.Components {
     })]
     [InlineData("LoadUtilisationTest", 0.137663)]
     [InlineData("CrackUtilisationTest", 1.423388)]
+    [InlineData("Neutral Offset", -0.004332)]
+    [InlineData("Neutral Angle", 0.790348)]
+    [InlineData("Neutral Failure Offset", 0.002438)]
+    [InlineData("Neutral Failure Angle", 0.888143)]
     public void Test(string groupIdentifier, object expected) {
       var param = Helper.FindParameter(Document, groupIdentifier);
       Helper.TestGHPrimitives(param, expected);
