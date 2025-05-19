@@ -18,7 +18,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
   public class AdSecNeutralAxisGoo : GH_GeometricGoo<NeutralAxis>, IGH_PreviewData {
-    internal Line AxisLine { get; private set; }
+    public Line AxisLine { get; private set; }
     public BoundingBox ClippingBox => Boundingbox;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Neutral Axis";

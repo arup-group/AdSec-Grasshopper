@@ -1,7 +1,13 @@
 ﻿using System.IO;
 using System.Reflection;
 
+using AdSecCore.Functions;
+
+using AdSecGH.Parameters;
+
 using Grasshopper.Kernel;
+
+using Rhino.Geometry;
 
 using Xunit;
 
@@ -95,6 +101,26 @@ namespace IntegrationTests.Components {
     public void Test(string groupIdentifier, object expected) {
       var param = Helper.FindParameter(Document, groupIdentifier);
       Helper.TestGHPrimitives(param, expected);
+    }
+
+    [Fact]
+    public void ShouldContainNeutralAxis() {
+      var groupName = "Neutral Axis";
+      var param = Helper.FindParameter(Document, groupName);
+      AdSecNeutralAxisGoo line = param.VolatileData.get_Branch(0)[0] as AdSecNeutralAxisGoo;
+      Assert.NotNull(line);
+      Assert.Equal(new Point3d(-0.232384, -0.240854, 0), line.AxisLine.From);
+      Assert.Equal(new Point3d(0.238541, 0.234757, 0), line.AxisLine.To);
+    }
+
+    [Fact]
+    public void ShouldContainNeutralFailureAxis() {
+      var groupName = "Failure Neutral Axis";
+      var param = Helper.FindParameter(Document, groupName);
+      AdSecNeutralAxisGoo line = param.VolatileData.get_Branch(0)[0] as AdSecNeutralAxisGoo;
+      Assert.NotNull(line);
+      Assert.Equal(new Point3d(-0.218759, -0.265192, 0), line.AxisLine.From);
+      Assert.Equal(new Point3d(0.214976, 0.268269, 0), line.AxisLine.To);
     }
 
     private static GH_Document OpenDocument() {
