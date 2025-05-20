@@ -31,7 +31,7 @@ namespace AdSecCore.Functions {
       XAxis = OasysPoint.XAxis,
       YAxis = OasysPoint.YAxis,
     };
-    public OasysPoint Origin { get; set; } = new OasysPoint { X = 0, Y = 0, Z = 0, };
+    public OasysPoint Origin { get; set; } = new OasysPoint { };
     public OasysPoint XAxis { get; set; }
     public OasysPoint YAxis { get; set; }
 
