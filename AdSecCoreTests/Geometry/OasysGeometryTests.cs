@@ -56,7 +56,7 @@ namespace AdSecCoreTests {
 
     [Fact]
     public void ShouldNotMatchAnyComponent() {
-      Assert.True(new OasysPoint(1, 2, 3).Equals(new OasysPoint(4, 5, 6)));
+      Assert.False(new OasysPoint(1, 2, 3).Equals(new OasysPoint(4, 5, 6)));
     }
 
     [Fact]
