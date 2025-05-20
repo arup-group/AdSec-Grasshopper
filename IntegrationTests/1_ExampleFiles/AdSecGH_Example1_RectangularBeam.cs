@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 
 using AdSecCore;
@@ -11,6 +12,7 @@ using Grasshopper.Kernel;
 using OasysGH.Units;
 
 using OasysUnits;
+using OasysUnits.Units;
 
 using Rhino.Geometry;
 
@@ -103,9 +105,9 @@ namespace IntegrationTests.Components {
     })]
     [InlineData("LoadUtilisationTest", 0.137663)]
     [InlineData("CrackUtilisationTest", 1.423388)]
-    [InlineData("Neutral Offset", -0.004332)]
+    [InlineData("Neutral Offset", -4.332)]
     [InlineData("Neutral Angle", 0.790348)]
-    [InlineData("Neutral Failure Offset", 0.002438)]
+    [InlineData("Neutral Failure Offset", 2.438)]
     [InlineData("Neutral Failure Angle", 0.888143)]
     public void Test(string groupIdentifier, object expected) {
       var param = Helper.FindParameter(Document, groupIdentifier);
@@ -148,6 +150,7 @@ namespace IntegrationTests.Components {
 
     internal static void AssertPoint3d(Point3d expectedPoint, Point3d actualpoint) {
       var comparer = new DoubleComparer();
+
       var x = Length.From(actualpoint.X, DefaultUnits.LengthUnitGeometry).Meters;
       var y = Length.From(actualpoint.Y, DefaultUnits.LengthUnitGeometry).Meters;
       var z = Length.From(actualpoint.Z, DefaultUnits.LengthUnitGeometry).Meters;
