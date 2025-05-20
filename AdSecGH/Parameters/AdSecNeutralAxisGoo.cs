@@ -84,7 +84,7 @@ namespace AdSecGH.Parameters {
       throw new NotImplementedException();
     }
 
-    public bool IsNotSelected(GH_PreviewWireArgs args) {
+    private static bool IsNotSelected(GH_PreviewWireArgs args) {
       var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
       return (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B);
     }
