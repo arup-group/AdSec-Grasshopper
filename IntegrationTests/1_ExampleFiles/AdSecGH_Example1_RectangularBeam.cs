@@ -1,12 +1,16 @@
 ﻿using System.IO;
 using System.Reflection;
 
+using AdSecCore;
 using AdSecCore.Functions;
 
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
+
+using OasysGH.Units;
+
+using OasysUnits;
 
 using Rhino.Geometry;
 
@@ -114,8 +118,8 @@ namespace IntegrationTests.Components {
       var param = Helper.FindParameter(Document, groupName);
       AdSecNeutralAxisGoo line = param.VolatileData.get_Branch(0)[0] as AdSecNeutralAxisGoo;
       Assert.NotNull(line);
-      Assert.Equal(new Point3d(-0.232384, -0.240854, 0), line.AxisLine.From);
-      Assert.Equal(new Point3d(0.238541, 0.234757, 0), line.AxisLine.To);
+      AssertPoint3d(new Point3d(0, -0.2447, -0.2533), line.AxisLine.From);
+      AssertPoint3d(new Point3d(0, 0.2508, 0.24721), line.AxisLine.To);
     }
 
     [Fact]
@@ -124,8 +128,8 @@ namespace IntegrationTests.Components {
       var param = Helper.FindParameter(Document, groupName);
       AdSecNeutralAxisGoo line = param.VolatileData.get_Branch(0)[0] as AdSecNeutralAxisGoo;
       Assert.NotNull(line);
-      Assert.Equal(new Point3d(-0.218759, -0.265192, 0), line.AxisLine.From);
-      Assert.Equal(new Point3d(0.214976, 0.268269, 0), line.AxisLine.To);
+      AssertPoint3d(new Point3d(0, -0.2240, -0.2717), line.AxisLine.From);
+      AssertPoint3d(new Point3d(0, 0.2202, 0.2747), line.AxisLine.To);
     }
 
     private static GH_Document OpenDocument() {
@@ -140,6 +144,16 @@ namespace IntegrationTests.Components {
       });
 
       return Helper.CreateDocument(Path.Combine(path, fileName));
+    }
+
+    internal static void AssertPoint3d(Point3d expectedPoint, Point3d actualpoint) {
+      var comparer = new DoubleComparer();
+      var x = Length.From(actualpoint.X, DefaultUnits.LengthUnitGeometry).Meters;
+      var y = Length.From(actualpoint.Y, DefaultUnits.LengthUnitGeometry).Meters;
+      var z = Length.From(actualpoint.Z, DefaultUnits.LengthUnitGeometry).Meters;
+      Assert.Equal(expectedPoint.X, x, comparer);
+      Assert.Equal(expectedPoint.Y, y, comparer);
+      Assert.Equal(expectedPoint.Z, z, comparer);
     }
   }
 }

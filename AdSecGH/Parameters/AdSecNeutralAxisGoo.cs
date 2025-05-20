@@ -40,8 +40,8 @@ namespace AdSecGH.Parameters {
 
       // Calculate profile width more efficiently
       var boundingBox = profile.ToPolylineCurve().GetBoundingBox(local);
-      double width = 1.05 * boundingBox.PointAt(0, 0, 0).DistanceTo(boundingBox.PointAt(1, 0, 0));
-      // Calculate start point and line in one step
+      double width = 1.05 * boundingBox.Min.DistanceTo(boundingBox.Max);
+      // Calculate start point and line in one stepZ
       var start = local.Origin - (direction * (width / 2));
       var line = new Line(start, direction, width);
 
