@@ -41,20 +41,20 @@ namespace AdSecGH.Parameters {
     private Line _previewPosYaxis;
     private Line _previewPosZaxis;
 
-    public AdSecFailureSurfaceGoo(ILoadSurface loadsurface, Plane local, Mesh mesh) : base(mesh) {
+    public AdSecFailureSurfaceGoo(ILoadSurface loadSurface, Plane local, Mesh mesh) : base(mesh) {
       if (mesh == null) {
-        m_value = MeshFromILoadSurface(loadsurface, local);
+        m_value = MeshFromILoadSurface(loadSurface, local);
       }
 
-      FailureSurface = new LoadSurfaceDesign() { LoadSurface = loadsurface };
+      FailureSurface = new LoadSurfaceDesign() { LoadSurface = loadSurface, LocalPlane = local.ToOasys() };
       _plane = local;
       UpdatePreview();
     }
 
-    public AdSecFailureSurfaceGoo(LoadSurfaceDesign loadsurface) {
-      _plane = loadsurface.LocalPlane.ToGh();
-      m_value = MeshFromILoadSurface(loadsurface.LoadSurface, _plane);
-      FailureSurface = loadsurface;
+    public AdSecFailureSurfaceGoo(LoadSurfaceDesign loadSurface) {
+      _plane = loadSurface.LocalPlane.ToGh();
+      m_value = MeshFromILoadSurface(loadSurface.LoadSurface, _plane);
+      FailureSurface = loadSurface;
       UpdatePreview();
     }
 
