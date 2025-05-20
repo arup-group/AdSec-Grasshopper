@@ -84,13 +84,24 @@ namespace AdSecGH.Parameters {
       throw new NotImplementedException();
     }
 
-    public void DrawViewportWires(GH_PreviewWireArgs args) {
+    public bool IsNotSelected(GH_PreviewWireArgs args) {
       var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) {
-        // not selected
-        args.Pipeline.DrawLine(AxisLine, Colour.OasysBlue);
+      return (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B);
+    }
+
+    public void DrawViewportWires(GH_PreviewWireArgs args) {
+      if (m_value.IsFailureNeutralAxis) {
+        if (IsNotSelected(args)) {
+          args.Pipeline.DrawDottedLine(AxisLine, Colour.OasysBlue);
+        } else {
+          args.Pipeline.DrawDottedLine(AxisLine, Colour.OasysYellow);
+        }
       } else {
-        args.Pipeline.DrawLine(AxisLine, Colour.OasysYellow);
+        if (IsNotSelected(args)) {
+          args.Pipeline.DrawLine(AxisLine, Colour.OasysBlue);
+        } else {
+          args.Pipeline.DrawLine(AxisLine, Colour.OasysYellow);
+        }
       }
     }
 
