@@ -24,16 +24,14 @@ namespace AdSecCore.Functions {
 
   public class OasysPlane {
     public static readonly OasysPlane PlaneYZ = new OasysPlane {
-      Origin = new OasysPoint { X = 0, Y = 0, Z = 0, },
-      XAxis = new OasysPoint { X = 0, Y = 1, Z = 0, },
-      YAxis = new OasysPoint { X = 0, Y = 0, Z = 1, },
+      XAxis = OasysPoint.YAxis,
+      YAxis = OasysPoint.ZAxis,
     };
     public static readonly OasysPlane PlaneXY = new OasysPlane {
-      Origin = new OasysPoint { X = 0, Y = 0, Z = 0, },
-      XAxis = new OasysPoint { X = 1, Y = 0, Z = 0, },
-      YAxis = new OasysPoint { X = 0, Y = 1, Z = 0, },
+      XAxis = OasysPoint.XAxis,
+      YAxis = OasysPoint.YAxis,
     };
-    public OasysPoint Origin { get; set; }
+    public OasysPoint Origin { get; set; } = new OasysPoint { X = 0, Y = 0, Z = 0, };
     public OasysPoint XAxis { get; set; }
     public OasysPoint YAxis { get; set; }
 
@@ -55,11 +53,22 @@ namespace AdSecCore.Functions {
     public double Y { get; set; }
     public double Z { get; set; }
 
+    public OasysPoint() { }
+
+    public OasysPoint(double x, double y, double z) {
+      X = x;
+      Y = y;
+      Z = z;
+    }
+
+    public static OasysPoint Zero { get; set; } = new OasysPoint() { };
+    public static OasysPoint XAxis { get; set; } = new OasysPoint() { X = 1, Y = 0, Z = 0 };
+    public static OasysPoint YAxis { get; set; } = new OasysPoint() { X = 0, Y = 1, Z = 0 };
+    public static OasysPoint ZAxis { get; set; } = new OasysPoint() { X = 0, Y = 0, Z = 1 };
+
     public override bool Equals(object obj) {
       if (obj is OasysPoint other) {
-        return Math.Abs(X - other.X) < 1e-6 &&
-               Math.Abs(Y - other.Y) < 1e-6 &&
-               Math.Abs(Z - other.Z) < 1e-6;
+        return Math.Abs(X - other.X) < 1e-6 && Math.Abs(Y - other.Y) < 1e-6 && Math.Abs(Z - other.Z) < 1e-6;
       }
 
       return false;
