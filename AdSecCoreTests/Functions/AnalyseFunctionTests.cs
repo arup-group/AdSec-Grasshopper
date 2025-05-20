@@ -52,5 +52,23 @@ namespace AdSecCoreTests.Functions {
       analyseFunction.Compute();
       Assert.Single(analyseFunction.WarningMessages);
     }
+
+    [Fact]
+    public void ShouldMaintainThePlaneFromSection() {
+      var sectionBuilder = new SectionBuilder();
+      var section = sectionBuilder.WithHeight(0.0001).WithWidth(0.01).CreateRectangularSection().Build();
+      analyseFunction.Section = new SectionParameter() {
+        Value = new SectionDesign() {
+          DesignCode = new DesignCode() {
+            IDesignCode = IS456.Edition_2000,
+          },
+          Section = section,
+          LocalPlane = OasysPlane.PlaneXY
+        }
+      };
+
+      analyseFunction.Compute();
+      Assert.Equal(OasysPlane.PlaneXY, analyseFunction.LoadSurface.Value.LocalPlane);
+    }
   }
 }

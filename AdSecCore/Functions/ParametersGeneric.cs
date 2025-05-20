@@ -28,15 +28,46 @@ namespace AdSecCore.Functions {
       XAxis = new OasysPoint { X = 0, Y = 1, Z = 0, },
       YAxis = new OasysPoint { X = 0, Y = 0, Z = 1, },
     };
+    public static readonly OasysPlane PlaneXY = new OasysPlane {
+      Origin = new OasysPoint { X = 0, Y = 0, Z = 0, },
+      XAxis = new OasysPoint { X = 1, Y = 0, Z = 0, },
+      YAxis = new OasysPoint { X = 0, Y = 1, Z = 0, },
+    };
     public OasysPoint Origin { get; set; }
     public OasysPoint XAxis { get; set; }
     public OasysPoint YAxis { get; set; }
+
+    public override bool Equals(object obj) {
+      if (obj is OasysPlane other) {
+        return Origin.Equals(other.Origin) && XAxis.Equals(other.XAxis) && YAxis.Equals(other.YAxis);
+      }
+
+      return false;
+    }
+
+    public override int GetHashCode() {
+      return Origin.GetHashCode() ^ XAxis.GetHashCode() ^ YAxis.GetHashCode();
+    }
   }
 
   public class OasysPoint {
     public double X { get; set; }
     public double Y { get; set; }
     public double Z { get; set; }
+
+    public override bool Equals(object obj) {
+      if (obj is OasysPoint other) {
+        return Math.Abs(X - other.X) < 1e-6 &&
+               Math.Abs(Y - other.Y) < 1e-6 &&
+               Math.Abs(Z - other.Z) < 1e-6;
+      }
+
+      return false;
+    }
+
+    public override int GetHashCode() {
+      return X.GetHashCode() ^ Y.GetHashCode() ^ Z.GetHashCode();
+    }
   }
 
   public class SectionSolution {
@@ -80,13 +111,18 @@ namespace AdSecCore.Functions {
     public SectionDesign SectionDesign { get; set; } = new SectionDesign();
   }
 
+  public class LoadSurfaceDesign {
+    public ILoadSurface LoadSurface { get; set; }
+    public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
+  }
+
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }
   public class PointParameter : ParameterAttribute<IPoint> { }
   public class StringArrayParam : BaseArrayParameter<string> { }
   public class StringParameter : ParameterAttribute<string> { }
   public class LengthParameter : ParameterAttribute<Length> { }
   public class SectionSolutionParameter : ParameterAttribute<SectionSolution> { }
-  public class LoadSurfaceParameter : ParameterAttribute<ILoadSurface> { }
+  public class LoadSurfaceParameter : ParameterAttribute<LoadSurfaceDesign> { }
   public class SubComponentParameter : ParameterAttribute<SubComponent> { }
 
   public class SubComponentArrayParameter : BaseArrayParameter<SubComponent> {

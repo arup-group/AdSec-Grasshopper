@@ -20,7 +20,11 @@ namespace AdSecGHTests.Parameters {
 
     public AdSecFailureSurfaceGooTests() {
       Solution ??= new SolutionBuilder().Build();
-      _testGoo = new AdSecFailureSurfaceGoo(Solution.Strength.GetFailureSurface(), Plane.WorldXY);
+      var loadSurface = new LoadSurfaceDesign() {
+        LoadSurface = Solution.Strength.GetFailureSurface(),
+        LocalPlane = OasysPlane.PlaneXY
+      };
+      _testGoo = new AdSecFailureSurfaceGoo(loadSurface);
     }
 
     [Fact]

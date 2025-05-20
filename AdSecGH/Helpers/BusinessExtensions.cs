@@ -153,7 +153,7 @@ namespace Oasys.GH.Helpers {
         },
         { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
           typeof(LoadSurfaceParameter),
-          a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value, Plane.WorldXY)
+          a => new AdSecFailureSurfaceGoo((a as LoadSurfaceParameter).Value)
         },
         { typeof(DoubleArrayParameter), a => (a as DoubleArrayParameter).Value }, {
           typeof(ProfileParameter), a => {

@@ -2,6 +2,9 @@
 using System.Drawing;
 using System.Linq;
 
+using AdSecCore.Functions;
+
+using AdSecGH.Helpers;
 using AdSecGH.UI;
 
 using Grasshopper;
@@ -20,7 +23,7 @@ namespace AdSecGH.Parameters {
   public class AdSecFailureSurfaceGoo : GH_GeometricGoo<Mesh>, IGH_PreviewData {
     public override BoundingBox Boundingbox => Value?.GetBoundingBox(false) ?? BoundingBox.Empty;
     public BoundingBox ClippingBox => Boundingbox;
-    public ILoadSurface FailureSurface { get; }
+    public LoadSurfaceDesign FailureSurface { get; }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "FailureSurface";
     internal Text3d _negMyy;
@@ -43,15 +46,15 @@ namespace AdSecGH.Parameters {
         m_value = MeshFromILoadSurface(loadsurface, local);
       }
 
-      FailureSurface = loadsurface;
+      FailureSurface = new LoadSurfaceDesign() { LoadSurface = loadsurface };
       _plane = local;
       UpdatePreview();
     }
 
-    public AdSecFailureSurfaceGoo(ILoadSurface loadsurface, Plane local) {
-      m_value = MeshFromILoadSurface(loadsurface, local);
+    public AdSecFailureSurfaceGoo(LoadSurfaceDesign loadsurface) {
+      _plane = loadsurface.LocalPlane.ToGh();
+      m_value = MeshFromILoadSurface(loadsurface.LoadSurface, _plane);
       FailureSurface = loadsurface;
-      _plane = local;
       UpdatePreview();
     }
 
@@ -61,7 +64,7 @@ namespace AdSecGH.Parameters {
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecFailureSurfaceGoo))) {
-        target = (Q)(object)new AdSecFailureSurfaceGoo(FailureSurface, _plane, Value);
+        target = (Q)(object)new AdSecFailureSurfaceGoo(FailureSurface.LoadSurface, _plane, Value);
         return true;
       }
 
@@ -126,7 +129,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return !Value.IsValid ? null : (IGH_GeometricGoo)new AdSecFailureSurfaceGoo(FailureSurface, _plane);
+      return !Value.IsValid ? null : (IGH_GeometricGoo)new AdSecFailureSurfaceGoo(FailureSurface);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
@@ -142,7 +145,7 @@ namespace AdSecGH.Parameters {
       xmorph.Morph(mesh);
       var local = new Plane(_plane);
       xmorph.Morph(ref local);
-      return new AdSecFailureSurfaceGoo(FailureSurface, local, mesh);
+      return new AdSecFailureSurfaceGoo(FailureSurface.LoadSurface, local, mesh);
     }
 
     public override string ToString() {
@@ -159,7 +162,7 @@ namespace AdSecGH.Parameters {
       mesh.Transform(xform);
       var local = new Plane(_plane);
       local.Transform(xform);
-      return new AdSecFailureSurfaceGoo(FailureSurface, local, mesh);
+      return new AdSecFailureSurfaceGoo(FailureSurface.LoadSurface, local, mesh);
     }
 
     private Mesh MeshFromILoadSurface(ILoadSurface loadsurface, Plane local) {

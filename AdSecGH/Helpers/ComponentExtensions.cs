@@ -41,6 +41,10 @@ namespace Oasys.GH.Helpers {
       return param.VolatileData.get_Branch(branch)[index] as T;
     }
 
+    public static T GetValue<T>(this GH_Component component, int outIndex = 0, int branch = 0, int index = 0) where T : class {
+      return component.GetOutputParamAt(outIndex).GetValue<T>(branch, index);
+    }
+
     public static object GetValue(this IGH_Param param, int branch, int index) {
       return param.VolatileData.get_Branch(branch)[index];
     }
