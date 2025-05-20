@@ -146,7 +146,7 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void IsFailureNeutralAxisIsTrueForFailureNeutralAxis() {
       _component.Compute();
-      var line = _component.NeutralAxisLineOutput;
+      var line = _component.FailureNeutralAxisLineOutput;
       Assert.True(line.Value.IsFailureNeutralAxis);
     }
 
