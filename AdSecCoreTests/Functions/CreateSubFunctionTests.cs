@@ -15,12 +15,19 @@ namespace AdSecCoreTests.Functions {
       function = new CreateSubComponentFunction();
       function.Section.Value = new SectionDesign {
         Section = SectionBuilder.Get100Section(),
+        LocalPlane = OasysPlane.PlaneXY,
       };
     }
 
     [Fact]
     public void ShouldHaveTwoInputs() {
       Assert.Equal(2, function.GetAllInputAttributes().Length);
+    }
+
+    [Fact]
+    public void ShouldMaintainThePlane() {
+      function.Compute();
+      Assert.Equal(OasysPlane.PlaneXY, function.SubComponent.Value.SectionDesign.LocalPlane);
     }
 
     [Fact]
