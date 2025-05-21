@@ -71,8 +71,8 @@ namespace AdSecGHTests.Parameters {
 
     [Fact]
     public void ShouldDrawOnViewPort() {
-      var doc = RhinoDoc.Create(string.Empty);
       sectionGoo.DrawInstructionsList.Clear();
+      var doc = RhinoDoc.Create(string.Empty);
       var displayPipeline = doc.Views.ActiveView.DisplayPipeline;
       var rhinoViewport = doc.Views.ActiveView.ActiveViewport;
       var ghPreviewWireArgs = new GH_PreviewWireArgs(rhinoViewport, displayPipeline, Color.White, 1);

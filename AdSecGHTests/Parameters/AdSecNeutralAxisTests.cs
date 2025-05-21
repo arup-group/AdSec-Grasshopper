@@ -96,44 +96,38 @@ namespace AdSecGHTests.Parameters {
       Assert.Equal(_neutralAxisGoo.AxisLine.BoundingBox, boundingBox);
     }
 
-    private static GH_PreviewWireArgs CreatePreviewArgs(RhinoDoc document, Color defaultColour) {
-      var displayPipeline = document.Views.ActiveView.DisplayPipeline;
-      var rhinoViewport = document.Views.ActiveView.ActiveViewport;
-      return new GH_PreviewWireArgs(rhinoViewport, displayPipeline, defaultColour, 1);
-    }
-
     [Fact]
     public void ShouldDrawLoadAxisWhenNotSelected() {
       using var doc = RhinoDoc.Create(string.Empty);
-      var ghPreviewWireArgs = CreatePreviewArgs(doc, Instances.Settings.GetValue("DefaultPreviewColour", Color.White));
+      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Instances.Settings.GetValue("DefaultPreviewColour", Color.White));
       _neutralAxisGoo.DrawViewportWires(ghPreviewWireArgs);
-      Assert.NotEmpty(_neutralAxisGoo.DrawInstructionsList);
+      Assert.NotEmpty(_neutralAxisGoo.DrawInstructions);
     }
 
     [Fact]
     public void ShouldDrawLoadAxisWhenSelected() {
       using var doc = RhinoDoc.Create(string.Empty);
-      var ghPreviewWireArgs = CreatePreviewArgs(doc, Color.Turquoise);
+      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.Turquoise);
       _neutralAxisGoo.DrawViewportWires(ghPreviewWireArgs);
-      Assert.NotEmpty(_neutralAxisGoo.DrawInstructionsList);
+      Assert.NotEmpty(_neutralAxisGoo.DrawInstructions);
     }
 
     [Fact]
     public void ShouldDrawFailureLoadAxisWhenNotSelected() {
       using var doc = RhinoDoc.Create(string.Empty);
-      var ghPreviewWireArgs = CreatePreviewArgs(doc, Instances.Settings.GetValue("DefaultPreviewColour", Color.White));
+      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Instances.Settings.GetValue("DefaultPreviewColour", Color.White));
       _neutralAxisGoo.Value.IsFailureNeutralAxis = true;
       _neutralAxisGoo.DrawViewportWires(ghPreviewWireArgs);
-      Assert.NotEmpty(_neutralAxisGoo.DrawInstructionsList);
+      Assert.NotEmpty(_neutralAxisGoo.DrawInstructions);
     }
 
     [Fact]
     public void ShouldDrawFailureLoadAxisWhenSelected() {
       using var doc = RhinoDoc.Create(string.Empty);
-      var ghPreviewWireArgs = CreatePreviewArgs(doc, Color.Turquoise);
+      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.Turquoise);
       _neutralAxisGoo.Value.IsFailureNeutralAxis = true;
       _neutralAxisGoo.DrawViewportWires(ghPreviewWireArgs);
-      Assert.NotEmpty(_neutralAxisGoo.DrawInstructionsList);
+      Assert.NotEmpty(_neutralAxisGoo.DrawInstructions);
     }
   }
 }

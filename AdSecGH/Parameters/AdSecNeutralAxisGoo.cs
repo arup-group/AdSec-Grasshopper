@@ -24,7 +24,7 @@ namespace AdSecGH.Parameters {
     public BoundingBox ClippingBox => Boundingbox;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Neutral Axis";
-    public List<DrawInstructions> DrawInstructionsList { get; private set; } = new List<DrawInstructions>();
+    public List<DrawInstructions> DrawInstructions { get; private set; } = new List<DrawInstructions>();
     public AdSecNeutralAxisGoo(NeutralAxis axis) {
       m_value = axis;
       AxisLine = CalculateNeutralAxis();
@@ -103,9 +103,9 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      DrawInstructionsList.Clear();
-      DrawInstructionsList.AddRange(UpdateDrawInstructions(IsNotSelected(args)));
-      foreach (var instruction in DrawInstructionsList) {
+      DrawInstructions.Clear();
+      DrawInstructions.AddRange(UpdateDrawInstructions(IsNotSelected(args)));
+      foreach (var instruction in DrawInstructions) {
         DrawingHelper.Draw(args.Pipeline, instruction);
       }
     }
