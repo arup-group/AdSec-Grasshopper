@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
+using AdSecCore;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
@@ -18,11 +20,11 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
   public class AdSecNeutralAxisGoo : GH_GeometricGoo<NeutralAxis>, IGH_PreviewData {
-    internal Line AxisLine { get; private set; }
+    public Line AxisLine { get; private set; }
     public BoundingBox ClippingBox => Boundingbox;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Neutral Axis";
-
+    public List<DrawInstructions> DrawInstructions { get; private set; } = new List<DrawInstructions>();
     public AdSecNeutralAxisGoo(NeutralAxis axis) {
       m_value = axis;
       AxisLine = CalculateNeutralAxis();
@@ -40,8 +42,8 @@ namespace AdSecGH.Parameters {
 
       // Calculate profile width more efficiently
       var boundingBox = profile.ToPolylineCurve().GetBoundingBox(local);
-      double width = 1.05 * boundingBox.PointAt(0, 0, 0).DistanceTo(boundingBox.PointAt(1, 0, 0));
-      // Calculate start point and line in one step
+      double width = 1.05 * boundingBox.Min.DistanceTo(boundingBox.Max);
+      // Calculate start point and line in one stepZ
       var start = local.Origin - (direction * (width / 2));
       var line = new Line(start, direction, width);
 
@@ -84,13 +86,27 @@ namespace AdSecGH.Parameters {
       throw new NotImplementedException();
     }
 
-    public void DrawViewportWires(GH_PreviewWireArgs args) {
-      var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) {
-        // not selected
-        args.Pipeline.DrawLine(AxisLine, Colour.OasysBlue);
+    private static bool IsNotSelected(GH_PreviewWireArgs args) {
+      var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      return args.Color.IsRgbEqualTo(defaultColor);
+    }
+
+    private List<DrawInstructions> UpdateDrawInstructions(bool isNotSelected) {
+      var drawInstructions = new List<DrawInstructions>();
+      var primaryColor = isNotSelected ? Colour.OasysBlue : Colour.OasysYellow;
+      if (m_value.IsFailureNeutralAxis) {
+        drawInstructions.Add(new DrawDottedLine() { Curve = AxisLine, Color = primaryColor });
       } else {
-        args.Pipeline.DrawLine(AxisLine, Colour.OasysYellow);
+        drawInstructions.Add(new DrawSolidLine() { Curve = AxisLine, Color = primaryColor });
+      }
+      return drawInstructions;
+    }
+
+    public void DrawViewportWires(GH_PreviewWireArgs args) {
+      DrawInstructions.Clear();
+      DrawInstructions.AddRange(UpdateDrawInstructions(IsNotSelected(args)));
+      foreach (var instruction in DrawInstructions) {
+        DrawingHelper.Draw(args.Pipeline, instruction);
       }
     }
 

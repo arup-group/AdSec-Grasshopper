@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
+using Rhino;
 using Rhino.Geometry;
 
 using Xunit;
@@ -121,5 +123,12 @@ namespace AdSecGHTests.Helpers {
       component.CollectData();
       component.ComputeData();
     }
+
+    public static GH_PreviewWireArgs CreatePreviewArgs(RhinoDoc document, Color defaultColour) {
+      var displayPipeline = document.Views.ActiveView.DisplayPipeline;
+      var rhinoViewport = document.Views.ActiveView.ActiveViewport;
+      return new GH_PreviewWireArgs(rhinoViewport, displayPipeline, defaultColour, 1);
+    }
+
   }
 }
