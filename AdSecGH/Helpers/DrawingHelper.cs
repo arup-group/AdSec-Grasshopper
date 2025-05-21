@@ -67,11 +67,9 @@ namespace AdSecGH.Helpers {
 
   public class DrawDottedLine : DrawInstructions {
     public Line Curve { get; set; }
-    public override object Geometry => Curve;
   }
 
   public class DrawSolidLine : DrawInstructions {
     public Line Curve { get; set; }
-    public override object Geometry => Curve;
   }
 }
