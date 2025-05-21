@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 using AdSecCore.Builders;
 using AdSecCore.Functions;
@@ -7,9 +8,13 @@ using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
 
+using Grasshopper;
+using Grasshopper.Kernel;
+
 using OasysUnits;
 using OasysUnits.Units;
 
+using Rhino;
 using Rhino.Geometry;
 
 using Xunit;
@@ -91,5 +96,44 @@ namespace AdSecGHTests.Parameters {
       Assert.Equal(_neutralAxisGoo.AxisLine.BoundingBox, boundingBox);
     }
 
+    private static GH_PreviewWireArgs CreatePreviewArgs(RhinoDoc document, Color defaultColour) {
+      var displayPipeline = document.Views.ActiveView.DisplayPipeline;
+      var rhinoViewport = document.Views.ActiveView.ActiveViewport;
+      return new GH_PreviewWireArgs(rhinoViewport, displayPipeline, defaultColour, 1);
+    }
+
+    [Fact]
+    public void ShouldDrawLoadAxisWhenNotSelected() {
+      using var doc = RhinoDoc.Create(string.Empty);
+      var ghPreviewWireArgs = CreatePreviewArgs(doc, Instances.Settings.GetValue("DefaultPreviewColour", Color.White));
+      _neutralAxisGoo.DrawViewportWires(ghPreviewWireArgs);
+      Assert.NotEmpty(_neutralAxisGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void ShouldDrawLoadAxisWhenSelected() {
+      using var doc = RhinoDoc.Create(string.Empty);
+      var ghPreviewWireArgs = CreatePreviewArgs(doc, Color.Turquoise);
+      _neutralAxisGoo.DrawViewportWires(ghPreviewWireArgs);
+      Assert.NotEmpty(_neutralAxisGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void ShouldDrawFailureLoadAxisWhenNotSelected() {
+      using var doc = RhinoDoc.Create(string.Empty);
+      var ghPreviewWireArgs = CreatePreviewArgs(doc, Instances.Settings.GetValue("DefaultPreviewColour", Color.White));
+      _neutralAxisGoo.Value.IsFailureNeutralAxis = true;
+      _neutralAxisGoo.DrawViewportWires(ghPreviewWireArgs);
+      Assert.NotEmpty(_neutralAxisGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void ShouldDrawFailureLoadAxisWhenSelected() {
+      using var doc = RhinoDoc.Create(string.Empty);
+      var ghPreviewWireArgs = CreatePreviewArgs(doc, Color.Turquoise);
+      _neutralAxisGoo.Value.IsFailureNeutralAxis = true;
+      _neutralAxisGoo.DrawViewportWires(ghPreviewWireArgs);
+      Assert.NotEmpty(_neutralAxisGoo.DrawInstructionsList);
+    }
   }
 }

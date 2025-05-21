@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
+using AdSecCore;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
@@ -22,7 +24,7 @@ namespace AdSecGH.Parameters {
     public BoundingBox ClippingBox => Boundingbox;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "Neutral Axis";
-
+    public List<DrawInstructions> DrawInstructionsList { get; private set; } = new List<DrawInstructions>();
     public AdSecNeutralAxisGoo(NeutralAxis axis) {
       m_value = axis;
       AxisLine = CalculateNeutralAxis();
@@ -85,23 +87,26 @@ namespace AdSecGH.Parameters {
     }
 
     private static bool IsNotSelected(GH_PreviewWireArgs args) {
-      var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      return (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B);
+      var defaultColor = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      return args.Color.IsRgbEqualTo(defaultColor);
+    }
+
+    private List<DrawInstructions> UpdateDrawInstructions(bool isNotSelected) {
+      var drawInstructions = new List<DrawInstructions>();
+      var primaryColor = isNotSelected ? Colour.OasysBlue : Colour.OasysYellow;
+      if (m_value.IsFailureNeutralAxis) {
+        drawInstructions.Add(new DrawDottedLine() { Curve = AxisLine, Color = primaryColor });
+      } else {
+        drawInstructions.Add(new DrawSolidLine() { Curve = AxisLine, Color = primaryColor });
+      }
+      return drawInstructions;
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (m_value.IsFailureNeutralAxis) {
-        if (IsNotSelected(args)) {
-          args.Pipeline.DrawDottedLine(AxisLine, Colour.OasysBlue);
-        } else {
-          args.Pipeline.DrawDottedLine(AxisLine, Colour.OasysYellow);
-        }
-      } else {
-        if (IsNotSelected(args)) {
-          args.Pipeline.DrawLine(AxisLine, Colour.OasysBlue);
-        } else {
-          args.Pipeline.DrawLine(AxisLine, Colour.OasysYellow);
-        }
+      DrawInstructionsList.Clear();
+      DrawInstructionsList.AddRange(UpdateDrawInstructions(IsNotSelected(args)));
+      foreach (var instruction in DrawInstructionsList) {
+        DrawingHelper.Draw(args.Pipeline, instruction);
       }
     }
 
