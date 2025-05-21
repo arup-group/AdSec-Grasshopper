@@ -3,6 +3,8 @@
 using AdSecGH.Parameters;
 using AdSecGH.UI;
 
+using AdSecGHTests.Helpers;
+
 using Grasshopper.Kernel;
 
 using OasysUnits;
@@ -93,24 +95,14 @@ namespace AdSecGHTests.Parameters {
 
     [Fact]
     public void ShouldDrawOnViewPort() {
-      var doc = SetupRhinoPreviewWire(out var ghPreviewWireArgs);
+      using var doc = RhinoDoc.Create(string.Empty);
+      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White);
 
       stressStrainPointGoo.DrawViewportWires(ghPreviewWireArgs);
 
       Assert.NotEmpty(stressStrainPointGoo.DrawInstructionsList);
       Assert.Single(stressStrainPointGoo.DrawInstructionsList);
       Assert.Equal(Colour.OasysYellow, stressStrainPointGoo.DrawInstructionsList[0].Color);
-
-      doc.Dispose();
     }
-
-    private static RhinoDoc SetupRhinoPreviewWire(out GH_PreviewWireArgs ghPreviewWireArgs) {
-      var doc = RhinoDoc.Create(string.Empty);
-      var displayPipeline = doc.Views.ActiveView.DisplayPipeline;
-      var rhinoViewport = doc.Views.ActiveView.ActiveViewport;
-      ghPreviewWireArgs = new GH_PreviewWireArgs(rhinoViewport, displayPipeline, Color.White, 1);
-      return doc;
-    }
-
   }
 }
