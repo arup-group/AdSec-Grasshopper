@@ -88,7 +88,13 @@ namespace AdSecGHTests.Components {
     public void ShouldHavePointsAtAParticularPlane() {
       var position = component.GetOutputParamAt(0).GetValues<AdSecPointGoo>();
       Assert.All(position, x => Assert.True(x.Value.Z == 0));
-      Assert.Equal(OasysPlane.PlaneXY, position[0].Plane.ToOasys());
+    }
+
+    [Fact]
+    public void ShouldHaveSavePlaneOnEachPoint() {
+      var position = component.GetOutputParamAt(0).GetValues<AdSecPointGoo>();
+      Assert.All(position, x => Assert.True(x.Value.Z == 0));
+      Assert.All(position, x => Assert.True(x.Plane.ToOasys().Equals(OasysPlane.PlaneXY)));
     }
 
     [Fact]
