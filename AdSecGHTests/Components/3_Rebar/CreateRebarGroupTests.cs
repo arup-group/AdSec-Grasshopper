@@ -53,12 +53,12 @@ namespace AdSecGHTests.Components._3_Rebar {
 
     [Fact]
     public void ShouldHaveCorrectDefaultUnit() {
-      var orginalUnit = DefaultUnits.LengthUnitGeometry;
+      var originalUnit = DefaultUnits.LengthUnitGeometry;
       DefaultUnits.LengthUnitGeometry = LengthUnit.Millimeter;
       component = new CreateReinforcementGroup();
       Assert.Equal("mm", component.SelectedItems[1]);
       //restore original unit
-      DefaultUnits.LengthUnitGeometry = orginalUnit;
+      DefaultUnits.LengthUnitGeometry = originalUnit;
 
     }
 
