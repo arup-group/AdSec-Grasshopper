@@ -50,10 +50,7 @@ namespace AdSecGH.Parameters {
       const string error = "AdSec Point cannot be null";
       AdSecPoint = adsecPoint ?? throw new ArgumentNullException(nameof(adsecPoint), error);
       Plane = plane?.ToGh() ?? OasysPlane.PlaneXY.ToGh();
-      // Create the Point on the Plane
       m_value = Plane.PointAt(AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry), AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
-      // m_value = new Point3d(0, AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
-      // AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
     }
 
     public AdSecPointGoo(Length y, Length z) {
