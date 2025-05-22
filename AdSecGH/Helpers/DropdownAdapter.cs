@@ -60,17 +60,20 @@ namespace Oasys.GH.Helpers {
     }
 
     protected override void InitialiseDropdowns() {
-      ProcessDropdownItems(out _spacerDescriptions, out _dropDownItems, out _selectedItems);
+      ProcessDropdownItems();
       _isInitialised = true;
     }
 
-    internal void ProcessDropdownItems(out List<string> spacerDescriptions, out List<List<string>> dropDownItems, out List<string> selectedItems) {
-      spacerDescriptions = new List<string>();
-      dropDownItems = new List<List<string>>();
-      selectedItems = new List<string>();
+    internal void ProcessDropdownItems() {
+      if (!_isInitialised) {
+        _spacerDescriptions = new List<string>();
+        _dropDownItems = new List<List<string>>();
+        _selectedItems = new List<string>();
+      }
       UpdateDefaultUnits();
       if (BusinessComponent is IDropdownOptions dropdownOptions) {
         foreach (var option in dropdownOptions.Options()) {
+          int index = 0;
           string description = string.Empty;
           var items = new List<string>();
           string selectedItem = string.Empty;
@@ -78,16 +81,24 @@ namespace Oasys.GH.Helpers {
             description = enumOptions.Description;
             items = enumOptions.GetOptions().ToList();
             selectedItem = items.FirstOrDefault(x => x == enumOptions.Selected?.ToString()) ?? items[0];
+            index++;
           } else if (option is UnitOptions unitOptions) {
             description = unitOptions.Description;
             var unitType = unitOptions.UnitType;
             var unitValue = unitOptions.UnitValue;
             items = UnitsHelper.GetFilteredAbbreviations(ToEngineeringUnits()[unitType]);
             selectedItem = UnitAbbreviation(unitType, unitValue);
+            index++;
           }
-          spacerDescriptions.Add(description);
-          dropDownItems.Add(items);
-          selectedItems.Add(selectedItem);
+          if (_isInitialised) {
+            _spacerDescriptions[index] = description;
+            _dropDownItems[index] = items;
+            _selectedItems[index] = selectedItem;
+          } else {
+            _spacerDescriptions.Add(description);
+            _dropDownItems.Add(items);
+            _selectedItems.Add(selectedItem);
+          }
         }
       }
     }

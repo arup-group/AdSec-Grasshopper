@@ -33,9 +33,7 @@ namespace AdSecGH.Components {
       _selectedItems[i] = _dropDownItems[i][j];
       BusinessComponent.PreLoadType = (PreLoadType)Enum.Parse(typeof(PreLoadType), _selectedItems[0], true);
       if (i == 0) {
-        ProcessDropdownItems(out _, out var dropDownItems, out _);
-        _dropDownItems[1] = dropDownItems[1];
-        _selectedItems[1] = dropDownItems[1][0];
+        ProcessDropdownItems();
       }
       base.UpdateUI();
     }
