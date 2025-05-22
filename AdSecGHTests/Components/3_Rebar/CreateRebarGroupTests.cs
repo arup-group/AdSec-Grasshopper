@@ -11,6 +11,10 @@ using Grasshopper.Kernel.Special;
 
 using Oasys.GH.Helpers;
 
+using OasysGH.Units;
+
+using OasysUnits.Units;
+
 using Xunit;
 
 namespace AdSecGHTests.Components._3_Rebar {
@@ -45,6 +49,17 @@ namespace AdSecGHTests.Components._3_Rebar {
     [Fact]
     public void ShouldHaveTemplateOnTheSelectedUnit() {
       Assert.Equal("Template", component.SelectedItems[0]);
+    }
+
+    [Fact]
+    public void ShouldHaveCorrectDefaultUnit() {
+      var orginalUnit = DefaultUnits.LengthUnitGeometry;
+      DefaultUnits.LengthUnitGeometry = LengthUnit.Millimeter;
+      component = new CreateReinforcementGroup();
+      Assert.Equal("mm", component.SelectedItems[1]);
+      //restore original unit
+      DefaultUnits.LengthUnitGeometry = orginalUnit;
+
     }
 
     [Fact]
