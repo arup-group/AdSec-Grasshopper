@@ -12,7 +12,6 @@ using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
 
-using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
 using Oasys.GH.Helpers;

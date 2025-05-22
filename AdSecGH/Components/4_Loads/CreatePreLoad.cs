@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 
 using AdSecCore.Functions;
@@ -11,10 +10,9 @@ using Grasshopper.Kernel;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Units;
+
 using OasysGH.Units.Helpers;
 
-using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
@@ -33,71 +31,31 @@ namespace AdSecGH.Components {
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
+      BusinessComponent.PreLoadType = (PreLoadType)Enum.Parse(typeof(PreLoadType), _selectedItems[0], true);
       if (i == 0) {
-        switch (_selectedItems[0]) {
-          case CreatePreLoadFunction.ForceString:
-            _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force);
-            _selectedItems[1] = _dropDownItems[1][0];
-            break;
-
-          case CreatePreLoadFunction.StrainString:
-            _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Strain);
-            _selectedItems[1] = _dropDownItems[1][0];
-            break;
-
-          case CreatePreLoadFunction.StressString:
-            _dropDownItems[1] = UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Stress);
-            _selectedItems[1] = _dropDownItems[1][0];
-            break;
-        }
+        ProcessDropdownItems(out var spacerDescriptions, out var dropDownItems, out var selectedItems);
+        _dropDownItems[1] = dropDownItems[1];
+        _selectedItems[1] = dropDownItems[1][0];
       }
-      UpdateUnits();
       base.UpdateUI();
     }
-
-    protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string> {
-        "Force",
-         "Measure"
-      };
-
-      _dropDownItems = new List<List<string>>();
-      _selectedItems = new List<string>();
-
-      _dropDownItems.Add(new List<string>() { CreatePreLoadFunction.ForceString, CreatePreLoadFunction.StrainString, CreatePreLoadFunction.StressString });
-
-      _selectedItems.Add(_dropDownItems[0][0]);
-
-      _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Force));
-      _selectedItems.Add(Force.GetAbbreviation(DefaultUnits.ForceUnit));
-
-      _isInitialised = true;
-
-    }
-
-    public override void VariableParameterMaintenance() {
-      UpdateUnits();
-    }
-
 
     protected override void BeforeSolveInstance() {
       UpdateUnits();
     }
 
     private void UpdateLocalUnits() {
-      var loadType = _selectedItems[0];
       var unitString = _selectedItems[1];
-      BusinessComponent.PreLoadType = loadType;
-      switch (loadType) {
-        case CreatePreLoadFunction.ForceString:
+      switch (BusinessComponent.PreLoadType) {
+        case PreLoadType.Force:
           BusinessComponent.ForceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), unitString);
           break;
 
-        case CreatePreLoadFunction.StrainString:
+        case PreLoadType.Strain:
           BusinessComponent.MaterialStrainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), unitString);
           break;
 
-        case CreatePreLoadFunction.StressString:
+        case PreLoadType.Stress:
           BusinessComponent.StressUnitResult = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), unitString);
           break;
       }

@@ -18,7 +18,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ComputeWithValidForceCreatesPreload() {
-      _function.PreLoadType = "Force";
+      _function.PreLoadType = PreLoadType.Force;
       _function.Compute();
       var outPreLoad = (IPreForce)(((ILongitudinalGroup)_function.PreloadedRebarGroupOutput.Value.Group).Preload);
       double outputForce = outPreLoad.Force.As(_function.ForceUnit);
@@ -27,7 +27,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ComputeWithValidStrainCreatesPreload() {
-      _function.PreLoadType = "Strain";
+      _function.PreLoadType = PreLoadType.Strain;
       _function.Compute();
       var outPreLoad = (IPreStrain)(((ILongitudinalGroup)_function.PreloadedRebarGroupOutput.Value.Group).Preload);
       double outputForce = outPreLoad.Strain.As(_function.MaterialStrainUnit);
@@ -36,18 +36,11 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ComputeWithValidPreStressCreatesPreload() {
-      _function.PreLoadType = "Stress";
+      _function.PreLoadType = PreLoadType.Stress;
       _function.Compute();
       var outPreLoad = (IPreStress)(((ILongitudinalGroup)_function.PreloadedRebarGroupOutput.Value.Group).Preload);
       double outputForce = outPreLoad.Stress.As(_function.StressUnitResult);
       Assert.Equal(10, outputForce);
-    }
-
-    [Fact]
-    public void ComputeWithInvalidForceWillHaveErrorMessage() {
-      _function.PreLoadType = "invalid";
-      _function.Compute();
-      Assert.Contains("Invalid Preload input type.", _function.ErrorMessages);
     }
 
     [Fact]
@@ -108,7 +101,7 @@ namespace AdSecCoreTests.Functions {
     [InlineData(-50)]
     [InlineData(0)]
     public void ComputeWithDifferentPreloadValuesCreatesCorrectPreload(double preloadValue) {
-      _function.PreLoadType = "Force";
+      _function.PreLoadType = PreLoadType.Force;
       _function.PreloadInput.Value = preloadValue;
       _function.Compute();
 
@@ -121,7 +114,7 @@ namespace AdSecCoreTests.Functions {
     [InlineData("Stress")]
     [InlineData("Strain")]
     public void CanUpdateParameterNameAndNickName(string forceType) {
-      _function.PreLoadType = forceType;
+      _function.PreLoadType = (PreLoadType)Enum.Parse(typeof(PreLoadType), forceType, true); ;
       Assert.Contains(forceType, _function.PreloadInput.Name);
     }
 
@@ -135,9 +128,7 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ComputeReportErrorForInvalidPreloadType() {
       _function.PreloadInput.Value = "InvalidType";
-      _function.Compute();
-      Assert.Single(_function.ErrorMessages);
-      Assert.Contains("Invalid Preload input type", _function.ErrorMessages[0]);
+      Assert.Throws<InvalidCastException>(() => _function.Compute());
     }
 
     [Fact]

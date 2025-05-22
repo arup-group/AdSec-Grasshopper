@@ -36,7 +36,7 @@ namespace AdSecCore.Functions {
   public class EnumOptions : IOptions {
     public string Description { get; set; }
     public Type EnumType { get; set; }
-
+    public Enum Selected { get; set; }
     public string[] GetOptions() {
       return Enum.GetNames(EnumType);
     }

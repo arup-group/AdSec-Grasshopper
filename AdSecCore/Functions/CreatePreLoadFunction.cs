@@ -6,16 +6,17 @@ using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
 
 using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
-
-  public class CreatePreLoadFunction : Function {
-    public const string ForceString = "Force";
-    public const string StrainString = "Strain";
-    public const string StressString = "Stress";
-
-    private string _preLoadType = string.Empty;
-    public string PreLoadType {
+  public enum PreLoadType {
+    Force,
+    Strain,
+    Stress,
+  }
+  public class CreatePreLoadFunction : Function, IDropdownOptions {
+    private PreLoadType _preLoadType = PreLoadType.Force;
+    public PreLoadType PreLoadType {
       get { return _preLoadType; }
       set {
         if (_preLoadType == value) {
@@ -77,15 +78,15 @@ namespace AdSecCore.Functions {
       string stressUnitAbbreviation = Pressure.GetAbbreviation(StressUnitResult);
 
       switch (PreLoadType) {
-        case ForceString:
+        case PreLoadType.Force:
           PreloadInput.Name = $"{PreLoadType} [{forceUnitAbbreviation}]";
           PreloadInput.NickName = "P";
           break;
-        case StrainString:
+        case PreLoadType.Strain:
           PreloadInput.Name = $"{PreLoadType} [{strainUnitAbbreviation}]";
           PreloadInput.NickName = "ε";
           break;
-        case StressString:
+        case PreLoadType.Stress:
           PreloadInput.Name = $"{PreLoadType} [{stressUnitAbbreviation}]";
           PreloadInput.NickName = "σ";
           break;
@@ -93,17 +94,12 @@ namespace AdSecCore.Functions {
     }
 
     private IPreload ParsePreLoad() {
-      switch (PreLoadType) {
-        case ForceString:
-          return IPreForce.Create(UnitHelpers.ParseToQuantity<Force>(PreloadInput.Value, ForceUnit));
-        case StrainString:
-          return IPreStrain.Create(UnitHelpers.ParseToQuantity<Strain>(PreloadInput.Value, MaterialStrainUnit));
-        case StressString:
-          return IPreStress.Create(UnitHelpers.ParseToQuantity<Pressure>(PreloadInput.Value, StressUnitResult));
-        default:
-          ErrorMessages.Add("Invalid Preload input type.");
-          return null;
+      if (PreLoadType == PreLoadType.Force) {
+        return IPreForce.Create(UnitHelpers.ParseToQuantity<Force>(PreloadInput.Value, ForceUnit));
+      } else if (PreLoadType == PreLoadType.Strain) {
+        return IPreStrain.Create(UnitHelpers.ParseToQuantity<Strain>(PreloadInput.Value, MaterialStrainUnit));
       }
+      return IPreStress.Create(UnitHelpers.ParseToQuantity<Pressure>(PreloadInput.Value, StressUnitResult));
     }
 
 
@@ -133,6 +129,39 @@ namespace AdSecCore.Functions {
 
       // Set the output
       PreloadedRebarGroupOutput.Value = outRebarGroup;
+    }
+
+    private int UnitValue() {
+      if (PreLoadType == PreLoadType.Force) {
+        return (int)ForceUnit;
+      } else if (PreLoadType == PreLoadType.Strain) {
+        return (int)MaterialStrainUnit;
+      }
+      return (int)StressUnitResult;
+    }
+
+    private Type TypeOfUnit() {
+      if (PreLoadType == PreLoadType.Force) {
+        return typeof(ForceUnit);
+      } else if (PreLoadType == PreLoadType.Strain) {
+        return typeof(StrainUnit);
+      }
+      return typeof(PressureUnit);
+    }
+
+    public IOptions[] Options() {
+      return new IOptions[] {
+        new EnumOptions() {
+        EnumType = typeof(PreLoadType),
+        Selected= PreLoadType,
+        Description = "Force",
+      },
+      new UnitOptions() {
+        Description = "Measure",
+        UnitType = TypeOfUnit(),
+        UnitValue = UnitValue(),
+      }
+      };
     }
   }
 }
