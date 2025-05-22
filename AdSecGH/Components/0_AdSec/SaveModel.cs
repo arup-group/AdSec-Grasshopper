@@ -147,7 +147,6 @@ namespace AdSecGH.Components {
       string pathString = "";
       if (DA.GetData(3, ref pathString)) {
         _fileName = pathString;
-        canOpen = false;
       }
 
       // input save bool
@@ -157,6 +156,5 @@ namespace AdSecGH.Components {
         SaveJson();
       }
     }
-
   }
 }
