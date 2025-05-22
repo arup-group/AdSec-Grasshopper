@@ -6,12 +6,12 @@
     <LangVersion>8</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AdSec" Version="2.0.3.300"/>
-    <PackageReference Include="Grasshopper" Version="7.0.20314.3001"/>
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.3"/>
-    <PackageReference Include="Moq" Version="4.20.72"/>
-    <PackageReference Include="Rhino.Inside" Version="7.0.0"/>
-    <PackageReference Include="xunit" Version="2.7.0"/>
+    <PackageReference Include="AdSec" Version="2.0.4.234" />
+    <PackageReference Include="Grasshopper" Version="7.0.20314.3001" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.3" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="Rhino.Inside" Version="7.0.0" />
+    <PackageReference Include="xunit" Version="2.7.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AdSecGH\AdSecGH.csproj"/>
-    <ProjectReference Include="..\TestGrasshopperObjects\TestGrasshopperObjects.csproj"/>
+    <ProjectReference Include="..\AdSecGH\AdSecGH.csproj" />
+    <ProjectReference Include="..\TestGrasshopperObjects\TestGrasshopperObjects.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="xunit.runner.json">
@@ -32,10 +32,10 @@
     </None>
   </ItemGroup>
 
-  <Import Project="PreBuild.targets"/>
+  <Import Project="PreBuild.targets" />
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Copy &quot;$(TargetDir)AdSecGH.dll&quot; &quot;$(TargetDir)AdSec.gha&quot;"/>
+    <Exec Command="Copy &quot;$(TargetDir)AdSecGH.dll&quot; &quot;$(TargetDir)AdSec.gha&quot;" />
   </Target>
 
 </Project>

@@ -4,6 +4,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <TargetFrameworks>net48;net7.0</TargetFrameworks>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +13,7 @@
     </AssemblyAttribute>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AdSec" Version="2.0.3.300"/>
+    <PackageReference Include="AdSec" Version="2.0.4.234" />
   </ItemGroup>
 
 </Project>

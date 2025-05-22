@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using AdSecGH.Helpers;
@@ -19,10 +20,6 @@ namespace AdSecGH.Parameters {
   public class AdSecStressStrainPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData {
     public override BoundingBox Boundingbox {
       get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
-
         const double offset = 0.5d;
         return PointHelper.GetPointBoundingBox(Value, offset, true);
       }
@@ -32,6 +29,7 @@ namespace AdSecGH.Parameters {
     public IStressStrainPoint StressStrainPoint { get; private set; }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "StressStrainPoint";
+    internal List<DrawInstructions> DrawInstructionsList { get; } = new List<DrawInstructions>();
 
     public AdSecStressStrainPointGoo(Point3d point) : base(point) {
       m_value = point;
@@ -133,9 +131,10 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (Value != null) {
-        args.Pipeline.DrawCircle(new Circle(Value, 0.5), Colour.OasysYellow, 1);
-      }
+      DrawInstructionsList.Clear();
+      DrawInstructionsList.Add(new DrawCircle() { Circle = new Circle(Value, 0.5), Color = Colour.OasysYellow, Thickness = 1, });
+
+      DrawingHelper.Draw(args.Pipeline, DrawInstructionsList[0]);
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
@@ -143,15 +142,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      if (Value == null) {
-        return BoundingBox.Empty;
-      }
-
-      var point3d = new Point3d(Value);
-      point3d.Z += 0.001;
-      var line = new Line(Value, point3d);
-      var lineCurve = new LineCurve(line);
-      return lineCurve.GetBoundingBox(xform);
+      return PointHelper.GetPointBoundingBox(Value, xform, 0.001, false);
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {
