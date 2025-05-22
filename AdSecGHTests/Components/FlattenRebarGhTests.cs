@@ -15,6 +15,12 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.GH.Helpers;
+using Oasys.Profiles;
+
+using OasysGH.Units;
+
+using OasysUnits;
+using OasysUnits.Units;
 
 using Rhino.Geometry;
 
@@ -100,6 +106,16 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldPassDataFromPositionToAdSecPoint() {
       Assert.NotNull(component.BusinessComponent.AdSecPoint);
+    }
+
+    [Fact]
+    public void ShouldMatchXXXX() {
+      IPoint p = IPoint.Create(Length.From(1, LengthUnit.Meter), Length.From(2, LengthUnit.Meter));
+      Point3d point = new Point3d(0, p.Y.As(DefaultUnits.LengthUnitGeometry),
+        p.Z.As(DefaultUnits.LengthUnitGeometry));
+      var adSecPoint = new AdSecPointGoo(p);
+      Assert.Equal(point, adSecPoint.Value);
+
     }
 
     [Fact]
