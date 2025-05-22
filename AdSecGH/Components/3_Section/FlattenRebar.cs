@@ -42,7 +42,7 @@ namespace AdSecGH.Components {
       var adSecPoint = AdSecPoint as Attribute;
       Position.Update(ref adSecPoint);
       Position.OnValueChanged += goo => {
-        AdSecPoint.Value = goo.Select(x => new AdSecPointGoo(x)).ToArray();
+        AdSecPoint.Value = goo.Select(x => new AdSecPointGoo(x, Section.Value.LocalPlane)).ToArray();
       };
 
       AdSecPoint.Name = Position.NameWithUnits(DefaultUnits.LengthUnitGeometry);

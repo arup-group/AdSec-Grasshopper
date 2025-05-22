@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Linq;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.UI;
 
@@ -22,6 +24,7 @@ using Rhino.Geometry;
 namespace AdSecGH.Parameters {
   public class AdSecPointGoo : GH_GeometricGoo<Point3d>, IGH_PreviewData {
     public IPoint AdSecPoint { get; private set; }
+    public Plane Plane { get; private set; } = Plane.WorldYZ;
     public override BoundingBox Boundingbox => PointHelper.GetPointBoundingBox(Value, 0.5d, true);
 
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
@@ -40,14 +43,17 @@ namespace AdSecGH.Parameters {
       }
 
       AdSecPoint = adsecPoint.AdSecPoint;
-      m_value = new Point3d(Value);
+      m_value = new Point3d(adsecPoint.Value);
     }
 
-    public AdSecPointGoo(IPoint adsecPoint) {
+    public AdSecPointGoo(IPoint adsecPoint, OasysPlane plane = null) {
       const string error = "AdSec Point cannot be null";
       AdSecPoint = adsecPoint ?? throw new ArgumentNullException(nameof(adsecPoint), error);
-      m_value = new Point3d(0, AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
-        AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
+      Plane = plane?.ToGh() ?? OasysPlane.PlaneXY.ToGh();
+      // Create the Point on the Plane
+      m_value = Plane.PointAt(AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry), AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
+      // m_value = new Point3d(0, AdSecPoint.Y.As(DefaultUnits.LengthUnitGeometry),
+      // AdSecPoint.Z.As(DefaultUnits.LengthUnitGeometry));
     }
 
     public AdSecPointGoo(Length y, Length z) {
