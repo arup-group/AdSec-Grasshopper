@@ -3,23 +3,15 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
-using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Parameters;
 
-using Oasys.AdSec.Materials;
-using Oasys.AdSec.Reinforcement;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Helpers;
-using OasysGH.Units;
 using OasysGH.Units.Helpers;
 
-using OasysUnits;
 using OasysUnits.Units;
 
 using CreateRebarFunction = AdSecCore.Functions.CreateRebarFunction;
@@ -48,11 +40,6 @@ namespace AdSecGH.Components {
 
     private RebarMode UpdateMode() {
       return (RebarMode)Enum.Parse(typeof(RebarMode), _selectedItems[0]);
-    }
-
-    protected override void BeforeSolveInstance() {
-      SetUnit();
-      base.BeforeSolveInstance();
     }
   }
 }
