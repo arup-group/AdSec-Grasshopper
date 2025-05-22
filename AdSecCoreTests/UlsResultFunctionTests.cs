@@ -142,5 +142,19 @@ namespace AdSecCoreTests.Functions {
       _component.Compute();
       Assert.Single(_component.ErrorMessages);
     }
+
+    [Fact]
+    public void IsFailureNeutralAxisIsTrueForFailureNeutralAxis() {
+      _component.Compute();
+      var line = _component.FailureNeutralAxisLineOutput;
+      Assert.True(line.Value.IsFailureNeutralAxis);
+    }
+
+    [Fact]
+    public void IsFailureNeutralAxisIsFalseForLoadNeutralAxis() {
+      _component.Compute();
+      var line = _component.NeutralAxisLineOutput;
+      Assert.False(line.Value.IsFailureNeutralAxis);
+    }
   }
 }

@@ -142,14 +142,14 @@ namespace AdSecCore.Functions {
       FailureDeformationOutput.Value = Failure.Deformation;
 
       // failure neutral Line
-      FailureNeutralAxisLineOutput.Value = GetNeutralAxisResults(Failure.Deformation);
+      FailureNeutralAxisLineOutput.Value = GetNeutralAxisResults(Failure.Deformation, true);
       FailureNeutralAxisOffsetOutput.Value = FailureNeutralAxisLineOutput.Value.Offset;
       FailureNeutralAxisAngleOutput.Value = FailureNeutralAxisLineOutput.Value.Angle;
 
     }
 
 
-    private NeutralAxis GetNeutralAxisResults(IDeformation deformationResult) {
+    private NeutralAxis GetNeutralAxisResults(IDeformation deformationResult, bool failureNeutralAxis = false) {
       var ulsDeformationResult = deformationResult;
       var offset = CalculateOffset(ulsDeformationResult).ToUnit(LengthUnitResult);
       var angle = CalculateAngle(ulsDeformationResult);
@@ -157,7 +157,8 @@ namespace AdSecCore.Functions {
       return new NeutralAxis {
         Angle = angle,
         Offset = offset,
-        Solution = SolutionInput.Value
+        Solution = SolutionInput.Value,
+        IsFailureNeutralAxis = failureNeutralAxis,
       };
     }
 

@@ -73,6 +73,7 @@ namespace AdSecCore.Functions {
     public Length Offset { get; set; }
     public double Angle { get; set; }
     public SectionSolution Solution { get; set; }
+    public bool IsFailureNeutralAxis { get; set; } = false;
   }
 
   public class SubComponent {
