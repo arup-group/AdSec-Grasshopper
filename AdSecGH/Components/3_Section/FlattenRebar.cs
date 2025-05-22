@@ -5,6 +5,7 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
@@ -32,7 +33,8 @@ namespace AdSecGH.Components {
             DesignCode = new DesignCode() {
               IDesignCode = goo.Value.DesignCode,
               DesignCodeName = goo.Value._codeName,
-            }
+            },
+            LocalPlane = goo.Value.LocalPlane.ToOasys()
           };
         }
       };

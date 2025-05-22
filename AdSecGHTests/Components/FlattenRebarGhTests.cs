@@ -1,4 +1,7 @@
-﻿using AdSecCore.Builders;
+﻿using System.Linq;
+
+using AdSecCore.Builders;
+using AdSecCore.Functions;
 
 using AdSecGH.Components;
 using AdSecGH.Parameters;
@@ -71,6 +74,19 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldPassDataFromGhInputToSection() {
       Assert.NotNull(component.BusinessComponent.Section.Value);
+    }
+
+    [Fact]
+    public void ShouldFlattenOnTheXYPlane() {
+      var position = component.GetOutputParamAt(0).GetValues<AdSecPointGoo>();
+      Assert.NotEmpty(position);
+      Assert.True(position.All(x => x.Value.Z == 0));
+    }
+
+    [Fact(Skip = "Not Yes Implemented")]
+    public void ShouldHavePointsAtAParticularPlane() {
+      var position = component.GetOutputParamAt(0).GetValues<AdSecPointGoo>();
+      // Assert.Equal(OasysPlane.PlaneXY, position[0].Value.LocalPlane);
     }
 
     [Fact]
