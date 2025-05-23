@@ -94,12 +94,17 @@ namespace AdSecCore.Functions {
     }
 
     private IPreload ParsePreLoad() {
-      if (PreLoadType == PreLoadType.Force) {
-        return IPreForce.Create(UnitHelpers.ParseToQuantity<Force>(PreloadInput.Value, ForceUnit));
-      } else if (PreLoadType == PreLoadType.Strain) {
-        return IPreStrain.Create(UnitHelpers.ParseToQuantity<Strain>(PreloadInput.Value, MaterialStrainUnit));
+      try {
+        if (PreLoadType == PreLoadType.Force) {
+          return IPreForce.Create(UnitHelpers.ParseToQuantity<Force>(PreloadInput.Value, ForceUnit));
+        } else if (PreLoadType == PreLoadType.Strain) {
+          return IPreStrain.Create(UnitHelpers.ParseToQuantity<Strain>(PreloadInput.Value, MaterialStrainUnit));
+        }
+        return IPreStress.Create(UnitHelpers.ParseToQuantity<Pressure>(PreloadInput.Value, StressUnitResult));
+      } catch (InvalidCastException ex) {
+        ErrorMessages.Add(ex.Message);
+        return null;
       }
-      return IPreStress.Create(UnitHelpers.ParseToQuantity<Pressure>(PreloadInput.Value, StressUnitResult));
     }
 
 

@@ -72,28 +72,29 @@ namespace Oasys.GH.Helpers {
       }
       UpdateDefaultUnits();
       if (BusinessComponent is IDropdownOptions dropdownOptions) {
-        foreach (var option in dropdownOptions.Options()) {
-          int index = 0;
-          string description = string.Empty;
-          var items = new List<string>();
-          string selectedItem = string.Empty;
+        var options = dropdownOptions.Options();
+        for (int i = 0; i < options.Length; i++) {
+          var option = options[i];
+          string description = option.Description;
+          List<string> items;
+          string selectedItem;
+
           if (option is EnumOptions enumOptions) {
-            description = enumOptions.Description;
             items = enumOptions.GetOptions().ToList();
             selectedItem = items.FirstOrDefault(x => x == enumOptions.Selected?.ToString()) ?? items[0];
-            index++;
           } else if (option is UnitOptions unitOptions) {
-            description = unitOptions.Description;
             var unitType = unitOptions.UnitType;
             var unitValue = unitOptions.UnitValue;
             items = UnitsHelper.GetFilteredAbbreviations(ToEngineeringUnits()[unitType]);
             selectedItem = UnitAbbreviation(unitType, unitValue);
-            index++;
+          } else {
+            items = new List<string>();
+            selectedItem = string.Empty;
           }
           if (_isInitialised) {
-            _spacerDescriptions[index] = description;
-            _dropDownItems[index] = items;
-            _selectedItems[index] = selectedItem;
+            _spacerDescriptions[i] = description;
+            _dropDownItems[i] = items;
+            _selectedItems[i] = selectedItem;
           } else {
             _spacerDescriptions.Add(description);
             _dropDownItems.Add(items);
@@ -102,6 +103,7 @@ namespace Oasys.GH.Helpers {
         }
       }
     }
+
 
     protected override void BeforeSolveInstance() {
       UpdateDefaultUnits();
