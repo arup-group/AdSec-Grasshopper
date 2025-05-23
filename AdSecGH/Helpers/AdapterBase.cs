@@ -21,7 +21,26 @@ namespace AdSecGH.Components {
         function.LengthUnitResult = DefaultUnits.LengthUnitResult;
         function.AxialStiffnessUnit = DefaultUnits.AxialStiffnessUnit;
         function.BendingStiffnessUnit = DefaultUnits.BendingStiffnessUnit;
+        function.MaterialStrainUnit = DefaultUnits.MaterialStrainUnit;
       }
+    }
+
+    public static bool UpdateMessages<T>(T BusinessComponent, GH_Component component) {
+      if (BusinessComponent is Function function) {
+        foreach (string warning in function.WarningMessages) {
+          component.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning);
+        }
+        foreach (string remark in function.RemarkMessages) {
+          component.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, remark);
+        }
+        foreach (string error in function.ErrorMessages) {
+          component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, error);
+        }
+        if (function.ErrorMessages.Count > 0) {
+          return false;
+        }
+      }
+      return true;
     }
 
     public static void RefreshParameter<T>(T BusinessComponent, GH_ComponentParamServer parameter) {

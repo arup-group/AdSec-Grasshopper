@@ -21,6 +21,7 @@ namespace AdSecCore.Functions {
     private LengthUnit _lengthUnitGeometry = LengthUnit.Meter;
     private LengthUnit _lengthUnitResult = LengthUnit.Millimeter;
     private StrainUnit _strainUnitResult = StrainUnit.Ratio;
+    private StrainUnit _materialStrainUnit = StrainUnit.Ratio;
     private CurvatureUnit _curvatureUnit = CurvatureUnit.PerMeter;
     private MomentUnit _momentUnit = MomentUnit.NewtonMeter;
     private AxialStiffnessUnit _axialStiffnessUnit = AxialStiffnessUnit.Newton;
@@ -48,6 +49,14 @@ namespace AdSecCore.Functions {
       get => _strainUnitResult;
       set {
         _strainUnitResult = value;
+        UpdateParameter();
+      }
+    }
+
+    public StrainUnit MaterialStrainUnit {
+      get => _materialStrainUnit;
+      set {
+        _materialStrainUnit = value;
         UpdateParameter();
       }
     }

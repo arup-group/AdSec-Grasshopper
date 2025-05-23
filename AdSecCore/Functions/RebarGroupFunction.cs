@@ -36,7 +36,7 @@ namespace AdSecCore.Functions {
   public class EnumOptions : IOptions {
     public string Description { get; set; }
     public Type EnumType { get; set; }
-
+    public Enum Selected { get; set; }
     public string[] GetOptions() {
       return Enum.GetNames(EnumType);
     }
@@ -64,7 +64,7 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat3()
     };
 
-    public RebarGroupParameter Layout { get; set; } = new RebarGroupParameter() {
+    public RebarGroupArrayParameter Layout { get; set; } = new RebarGroupArrayParameter() {
       Name = "Layout",
       NickName = "RbG",
       Description = "Rebar Groups for AdSec Section",
