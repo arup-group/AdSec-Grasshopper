@@ -106,7 +106,6 @@ namespace AdSecGH.Components {
       if (string.IsNullOrEmpty(_fileName)) {
         SaveAsFile();
       } else {
-        // write to file
         SaveJson();
       }
     }
@@ -146,8 +145,7 @@ namespace AdSecGH.Components {
 
       // filepath
       string pathString = "";
-      if (DA.GetData(3, ref pathString) /*&& !pathString.Equals(_fileName)*/) {
-        // canOpen = false;
+      if (DA.GetData(3, ref pathString)) {
         if (!pathString.Equals(_fileName)) {
           canOpen = false;
         }
@@ -161,7 +159,6 @@ namespace AdSecGH.Components {
       // input save bool
       bool save = false;
       if (DA.GetData(2, ref save) && save) {
-        // write to file
         SaveJson();
       }
     }
