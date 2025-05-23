@@ -148,6 +148,10 @@ namespace AdSecGH.Components {
       string pathString = "";
       if (DA.GetData(3, ref pathString) /*&& !pathString.Equals(_fileName)*/) {
         // canOpen = false;
+        if (!pathString.Equals(_fileName)) {
+          canOpen = false;
+        }
+
         _fileName = pathString;
       } else {
         canOpen = false;
