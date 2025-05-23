@@ -1,5 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.Linq;
 using System.Reflection;
 
 using Grasshopper.Kernel;
@@ -41,8 +44,22 @@ namespace Oasys.GH.Helpers {
       return param.VolatileData.get_Branch(branch)[index] as T;
     }
 
+    public static T GetValue<T>(this GH_Component component, int outIndex = 0, int branch = 0, int index = 0) where T : class {
+      return component.GetOutputParamAt(outIndex).GetValue<T>(branch, index);
+    }
+
     public static object GetValue(this IGH_Param param, int branch, int index) {
       return param.VolatileData.get_Branch(branch)[index];
+    }
+    public static List<T> GetValues<T>(this IGH_Param param, int branch = 0) where T : class {
+      var list = param.VolatileData.get_Branch(branch);
+      var result = new List<T>(list.Count);
+      foreach (var item in list) {
+        if (item is T t) {
+          result.Add(t);
+        }
+      }
+      return result;
     }
 
     [SuppressMessage("Major Code Smell", "S3011:Make sure that this accessibility bypass is safe here.",

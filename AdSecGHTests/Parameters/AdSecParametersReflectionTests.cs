@@ -95,7 +95,7 @@ namespace AdSecGHTests.Parameters {
       InstanceOfGoos.Add(
         new AdSecDeformationGoo(IDeformation.Create(GetStrainOne(), GetCurvatureOne(), GetCurvatureOne())));
       InstanceOfGoos.Add(new AdSecDesignCodeGoo(designCode));
-      InstanceOfGoos.Add(new AdSecFailureSurfaceGoo(solution.Strength.GetFailureSurface(), Plane.WorldXY));
+      InstanceOfGoos.Add(new AdSecFailureSurfaceGoo(new LoadSurfaceDesign() { LoadSurface = solution.Strength.GetFailureSurface(), LocalPlane = OasysPlane.PlaneXY }));
       InstanceOfGoos.Add(new AdSecLoadGoo(ILoad.Create(new Force(), new Moment(), new Moment()), Plane.WorldXY));
       InstanceOfGoos.Add(new AdSecMaterialGoo(new MaterialDesign()));
       InstanceOfGoos.Add(new AdSecInteractionDiagramGoo(

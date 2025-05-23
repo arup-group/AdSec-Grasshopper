@@ -3,6 +3,7 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
@@ -29,7 +30,8 @@ namespace AdSecGH.Components {
             DesignCode = new DesignCode() {
               IDesignCode = goo.Value.DesignCode,
               DesignCodeName = goo.Value._codeName,
-            }
+            },
+            LocalPlane = goo.Value.LocalPlane.ToOasys()
           };
         }
       };

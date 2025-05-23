@@ -1,4 +1,5 @@
 ﻿using AdSecCore.Builders;
+using AdSecCore.Functions;
 
 using AdSecGH.Components;
 using AdSecGH.Parameters;
@@ -36,6 +37,12 @@ namespace AdSecGHTests.Components {
 
         ComponentTesting.ComputeOutputs(component);
       }
+    }
+
+    [Fact]
+    public void ShouldReuseThePlaneFromTheInput() {
+      var adSecFailureSurfaceGoo = component.GetValue<AdSecFailureSurfaceGoo>(1);
+      Assert.Equal(OasysPlane.PlaneXY, adSecFailureSurfaceGoo.FailureSurface.LocalPlane);
     }
 
     [Fact]

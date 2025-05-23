@@ -1,6 +1,10 @@
-﻿using AdSecCore.Builders;
+﻿using System.Linq;
+
+using AdSecCore.Builders;
+using AdSecCore.Functions;
 
 using AdSecGH.Components;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
@@ -11,6 +15,12 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.GH.Helpers;
+using Oasys.Profiles;
+
+using OasysGH.Units;
+
+using OasysUnits;
+using OasysUnits.Units;
 
 using Rhino.Geometry;
 
@@ -74,8 +84,38 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
+    public void ShouldFlattenOnTheXYPlane() {
+      var position = component.GetOutputParamAt(0).GetValues<AdSecPointGoo>();
+      Assert.NotEmpty(position);
+      Assert.True(position.All(x => x.Value.Z == 0));
+    }
+
+    [Fact]
+    public void ShouldHavePointsAtAParticularPlane() {
+      var position = component.GetOutputParamAt(0).GetValues<AdSecPointGoo>();
+      Assert.All(position, x => Assert.True(x.Value.Z == 0));
+    }
+
+    [Fact]
+    public void ShouldHaveSavePlaneOnEachPoint() {
+      var position = component.GetOutputParamAt(0).GetValues<AdSecPointGoo>();
+      Assert.All(position, x => Assert.True(x.Value.Z == 0));
+      Assert.All(position, x => Assert.True(x.Plane.ToOasys().Equals(OasysPlane.PlaneXY)));
+    }
+
+    [Fact]
     public void ShouldPassDataFromPositionToAdSecPoint() {
       Assert.NotNull(component.BusinessComponent.AdSecPoint);
+    }
+
+    [Fact]
+    public void ShouldMatchXXXX() {
+      IPoint p = IPoint.Create(Length.From(1, LengthUnit.Meter), Length.From(2, LengthUnit.Meter));
+      Point3d point = new Point3d(0, p.Y.As(DefaultUnits.LengthUnitGeometry),
+        p.Z.As(DefaultUnits.LengthUnitGeometry));
+      var adSecPoint = new AdSecPointGoo(p);
+      Assert.Equal(point, adSecPoint.Value);
+
     }
 
     [Fact]
