@@ -29,6 +29,7 @@ namespace AdSecGH.Components {
       "Saves your AdSec Section with loads from this parametric nightmare", CategoryName.Name(),
       SubCategoryName.Cat0()) {
       Hidden = true; // sets the initial state of the component to hidden
+      Params.Input[0].ObjectChanged += (sender, args) => { ResetFields(); };
     }
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
@@ -145,8 +146,12 @@ namespace AdSecGH.Components {
 
       // filepath
       string pathString = "";
-      if (DA.GetData(3, ref pathString)) {
+      if (DA.GetData(3, ref pathString) /*&& !pathString.Equals(_fileName)*/) {
+        // canOpen = false;
         _fileName = pathString;
+      } else {
+        canOpen = false;
+        _fileName = string.Empty;
       }
 
       // input save bool
@@ -155,6 +160,12 @@ namespace AdSecGH.Components {
         // write to file
         SaveJson();
       }
+    }
+
+    private void ResetFields() {
+      _fileName = null;
+      canOpen = false;
+      _jsonString = null;
     }
   }
 }
