@@ -42,6 +42,7 @@ namespace AdSecGHTests.Components._3_Rebar {
     [Fact]
     public void ShouldHaveTheUnitsChanged() {
       component.SetSelected(1, 0);
+      ComponentTestHelper.ComputeData(component);
       Assert.Contains("[mm]", component.BusinessComponent.DiameterParameter.Name);
     }
 
