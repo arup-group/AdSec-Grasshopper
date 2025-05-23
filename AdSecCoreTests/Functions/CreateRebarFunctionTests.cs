@@ -64,7 +64,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveTwoDropdowns() {
-      Assert.Equal(2, function.Options.Length);
+      Assert.Equal(2, function.Options().Length);
     }
 
     [Fact]
@@ -84,17 +84,17 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveARebarTypeDropdown() {
-      Assert.Equal("Rebar Type", function.Options[0].Description);
+      Assert.Equal("Rebar Type", function.Options()[0].Description);
     }
 
     [Fact]
     public void ShouldHaveAMeasureDropdown() {
-      Assert.Equal("Measure", function.Options[1].Description);
+      Assert.Equal("Measure", function.Options()[1].Description);
     }
 
     [Fact]
     public void ShouldHaveDropdownForLengthUnit() {
-      Assert.Equal(typeof(LengthUnit), (function.Options[1] as UnitOptions)?.UnitType);
+      Assert.Equal(typeof(LengthUnit), (function.Options()[1] as UnitOptions)?.UnitType);
     }
 
     [Fact]

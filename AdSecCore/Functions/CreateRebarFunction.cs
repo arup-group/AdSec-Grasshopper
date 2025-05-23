@@ -94,15 +94,18 @@ namespace AdSecCore.Functions {
 
     public RebarMode Mode { get; set; } = RebarMode.Single;
 
-    public IOptions[] Options { get; set; } = {
+    public IOptions[] Options() {
+      return new IOptions[] {
       new EnumOptions() {
         Description = "Rebar Type",
         EnumType = typeof(RebarMode),
       },
       new UnitOptions() {
         UnitType = typeof(LengthUnit),
+        UnitValue = (int)LengthUnitGeometry,
       }
     };
+    }
     public event Action OnVariableInputChanged;
 
     protected sealed override void UpdateParameter() {

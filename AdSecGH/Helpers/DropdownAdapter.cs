@@ -88,7 +88,10 @@ namespace Oasys.GH.Helpers {
       _isInitialised = true;
     }
 
+    internal virtual void SetLocalUnits() { }
+
     protected override void BeforeSolveInstance() {
+      SetLocalUnits();
       UpdateDefaultUnits(); // In Case the user has updated units from the settings dialogue
       UpdateFromLocalUnits();
       RefreshParameter(); // Simply passing the function names into the GH names. As we have the logic to update the names on the Core

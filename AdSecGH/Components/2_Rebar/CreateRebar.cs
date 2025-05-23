@@ -18,7 +18,6 @@ using CreateRebarFunction = AdSecCore.Functions.CreateRebarFunction;
 
 namespace AdSecGH.Components {
   public class CreateRebar : DropdownAdapter<CreateRebarFunction> {
-
     public override Guid ComponentGuid => new Guid("024d241a-b6cc-4134-9f5c-ac9a6dcb2c4b");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -29,13 +28,13 @@ namespace AdSecGH.Components {
       if (i == 0) {
         BusinessComponent.SetMode(UpdateMode());
       } else {
-        SetUnit();
+        SetLocalUnits();
       }
     }
 
-    private void SetUnit() {
+
+    internal override void SetLocalUnits() {
       BusinessComponent.LocalLengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
-      BusinessComponent.UpdateUnits();
     }
 
     private RebarMode UpdateMode() {
