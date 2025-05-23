@@ -25,7 +25,7 @@ namespace AdSecCore.Functions {
   }
 
   public interface IDropdownOptions {
-    IOptions[] Options { get; set; }
+    IOptions[] Options();
   }
 
   public interface IOptions {
@@ -46,6 +46,7 @@ namespace AdSecCore.Functions {
     public string Description { get; set; } = "Measure";
     public string[] GetOptions() { return Array.Empty<string>(); }
     public Type UnitType { get; set; }
+    public int UnitValue { get; set; }
   }
 
   public class RebarGroupFunction : Function, IVariableInput, IDropdownOptions {
@@ -251,16 +252,20 @@ namespace AdSecCore.Functions {
       OnVariableInputChanged?.Invoke();
     }
 
-    public FoldMode Mode { get; set; } = FoldMode.Template;
-    public IOptions[] Options { get; set; } = {
-      new EnumOptions() {
+    public IOptions[] Options() {
+      return new IOptions[] {
+        new EnumOptions() {
         EnumType = typeof(FoldMode),
         Description = "Group Type",
       },
       new UnitOptions() {
         Description = "Measure",
         UnitType = typeof(LengthUnit),
+        UnitValue = (int)LengthUnitGeometry,
       }
-    };
+      };
+    }
+
+    public FoldMode Mode { get; set; } = FoldMode.Template;
   }
 }

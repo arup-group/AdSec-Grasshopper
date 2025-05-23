@@ -15,8 +15,6 @@ using OasysGH.Units.Helpers;
 using OasysUnits;
 using OasysUnits.Units;
 
-using Function = AdSecCore.Functions.Function;
-
 namespace Oasys.GH.Helpers {
   public abstract class DropdownAdapter<T> : GH_OasysDropDownComponent, IDefaultValues where T : IFunction {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
@@ -64,8 +62,9 @@ namespace Oasys.GH.Helpers {
       _dropDownItems = new List<List<string>>();
       _selectedItems = new List<string>();
 
+      UpdateDefaultUnits();
       if (BusinessComponent is IDropdownOptions dropdownOptions) {
-        foreach (var option in dropdownOptions.Options) {
+        foreach (var option in dropdownOptions.Options()) {
           string description = string.Empty;
           var items = new List<string>();
           string selectedItem = string.Empty;
@@ -76,17 +75,16 @@ namespace Oasys.GH.Helpers {
             selectedItem = items[0];
           } else if (option is UnitOptions unitOptions) {
             description = unitOptions.Description;
-            var unit = unitOptions.UnitType;
-            items = UnitsHelper.GetFilteredAbbreviations(ToEngineeringUnits()[unit]);
-            selectedItem = Length.GetAbbreviation(ToLengthUnits(BusinessComponent as Function)[unit]);
+            var unitType = unitOptions.UnitType;
+            var unitValue = unitOptions.UnitValue;
+            items = UnitsHelper.GetFilteredAbbreviations(ToEngineeringUnits()[unitType]);
+            selectedItem = UnitAbbreviation(unitType, unitValue);
           }
-
           _spacerDescriptions.Add(description);
           _dropDownItems.Add(items);
           _selectedItems.Add(selectedItem);
         }
       }
-
       _isInitialised = true;
     }
 
@@ -114,10 +112,8 @@ namespace Oasys.GH.Helpers {
       };
     }
 
-    public static Dictionary<Type, LengthUnit> ToLengthUnits(Function function) {
-      return new Dictionary<Type, LengthUnit> {
-        { typeof(LengthUnit), function.LengthUnitGeometry },
-      };
+    public string UnitAbbreviation(Type unitType, int unitValue) {
+      return OasysUnitsSetup.Default.UnitAbbreviations.GetDefaultAbbreviation(unitType, unitValue);
     }
   }
 }
