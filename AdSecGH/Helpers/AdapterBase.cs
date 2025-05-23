@@ -58,5 +58,11 @@ namespace AdSecGH.Components {
         parameters[i].Description = attributes[i].Description;
       }
     }
+
+    public static void UpdateFromLocalUnits<T>(T businessComponent) where T : IFunction {
+      if (businessComponent is ILocalUnits localUnits) {
+        localUnits.UpdateUnits();
+      }
+    }
   }
 }

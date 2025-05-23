@@ -10,7 +10,7 @@ using Grasshopper.Kernel;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-
+using OasysGH.Units;
 using OasysGH.Units.Helpers;
 
 using OasysUnits.Units;
@@ -38,31 +38,21 @@ namespace AdSecGH.Components {
       base.UpdateUI();
     }
 
-    protected override void BeforeSolveInstance() {
-      UpdateUnits();
-    }
-
-    private void UpdateLocalUnits() {
+    internal override void SetLocalUnits() {
       var unitString = _selectedItems[1];
       switch (BusinessComponent.PreLoadType) {
         case PreLoadType.Force:
-          BusinessComponent.ForceUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), unitString);
+          BusinessComponent.LocalUnit = (ForceUnit)UnitsHelper.Parse(typeof(ForceUnit), unitString);
           break;
 
         case PreLoadType.Strain:
-          BusinessComponent.MaterialStrainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), unitString);
+          BusinessComponent.LocalUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), unitString);
           break;
 
         case PreLoadType.Stress:
-          BusinessComponent.StressUnitResult = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), unitString);
+          BusinessComponent.LocalUnit = (PressureUnit)UnitsHelper.Parse(typeof(PressureUnit), unitString);
           break;
       }
-    }
-
-    private void UpdateUnits() {
-      UpdateDefaultUnits();
-      UpdateLocalUnits();
-      RefreshParameter();
     }
   }
 }

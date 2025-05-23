@@ -77,5 +77,18 @@ namespace AdSecCore.Parameters {
         Optional = optional
       };
     }
+
+    public static RebarBundleParameter RebarBundle(
+      string name = "Rebar", string nickName = "Rb",
+      string description = "AdSec Rebar (single or bundle) for AdSec Reinforcement", Access access = Access.Item,
+      bool optional = false) {
+      return new RebarBundleParameter() {
+        Name = name,
+        NickName = nickName,
+        Description = description,
+        Access = access,
+        Optional = optional
+      };
+    }
   }
 }

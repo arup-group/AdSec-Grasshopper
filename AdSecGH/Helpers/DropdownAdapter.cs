@@ -18,6 +18,7 @@ using OasysUnits.Units;
 namespace Oasys.GH.Helpers {
   public abstract class DropdownAdapter<T> : GH_OasysDropDownComponent, IDefaultValues where T : IFunction {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
+
     protected DropdownAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
       BusinessComponent.UpdateProperties(this);
       if (BusinessComponent is IVariableInput variableInput) {
@@ -76,8 +77,8 @@ namespace Oasys.GH.Helpers {
         for (int i = 0; i < options.Length; i++) {
           var option = options[i];
           string description = option.Description;
-          List<string> items;
-          string selectedItem;
+          List<string> items = new List<string>();
+          string selectedItem = string.Empty;
 
           if (option is EnumOptions enumOptions) {
             items = enumOptions.GetOptions().ToList();
@@ -87,9 +88,6 @@ namespace Oasys.GH.Helpers {
             var unitValue = unitOptions.UnitValue;
             items = UnitsHelper.GetFilteredAbbreviations(ToEngineeringUnits()[unitType]);
             selectedItem = UnitAbbreviation(unitType, unitValue);
-          } else {
-            items = new List<string>();
-            selectedItem = string.Empty;
           }
           if (_isInitialised) {
             _spacerDescriptions[i] = description;
@@ -104,10 +102,20 @@ namespace Oasys.GH.Helpers {
       }
     }
 
+    internal virtual void SetLocalUnits() { }
+
+    public override void VariableParameterMaintenance() {
+      SetLocalUnits();
+    }
 
     protected override void BeforeSolveInstance() {
-      UpdateDefaultUnits();
-      RefreshParameter();
+      UpdateDefaultUnits(); // In Case the user has updated units from the settings dialogue
+      UpdateFromLocalUnits();
+      RefreshParameter(); // Simply passing the function names into the GH names. As we have the logic to update the names on the Core
+    }
+
+    private void UpdateFromLocalUnits() {
+      AdapterBase.UpdateFromLocalUnits(BusinessComponent);
     }
 
     public void UpdateDefaultUnits() {

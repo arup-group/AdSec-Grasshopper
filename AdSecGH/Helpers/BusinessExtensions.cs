@@ -17,6 +17,7 @@ using Grasshopper.Kernel.Types;
 using Microsoft.CSharp.RuntimeBinder;
 
 using Oasys.AdSec;
+using Oasys.AdSec.Reinforcement;
 
 using OasysGH.Parameters;
 using OasysGH.Units;
@@ -157,6 +158,9 @@ namespace Oasys.GH.Helpers {
             var group = (a as RebarGroupParameter).Value;
             return new AdSecRebarGroupGoo(group);
           }
+        },
+        {
+         typeof(RebarBundleParameter), a => new AdSecRebarBundleGoo((a as RebarBundleParameter).Value)
         },
         { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
           typeof(LoadSurfaceParameter),

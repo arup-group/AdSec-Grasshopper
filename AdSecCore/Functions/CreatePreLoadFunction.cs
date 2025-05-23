@@ -14,7 +14,8 @@ namespace AdSecCore.Functions {
     Strain,
     Stress,
   }
-  public class CreatePreLoadFunction : Function, IDropdownOptions {
+  public class CreatePreLoadFunction : Function, IDropdownOptions, ILocalUnits {
+    public object LocalUnit { get; set; } = ForceUnit.Newton;
     private PreLoadType _preLoadType = PreLoadType.Force;
     public PreLoadType PreLoadType {
       get { return _preLoadType; }
@@ -24,6 +25,20 @@ namespace AdSecCore.Functions {
         }
         _preLoadType = value;
         UpdateParameter();
+      }
+    }
+
+    public void UpdateUnits() {
+      switch (PreLoadType) {
+        case PreLoadType.Force:
+          ForceUnit = (ForceUnit)LocalUnit;
+          break;
+        case PreLoadType.Strain:
+          MaterialStrainUnit = (StrainUnit)LocalUnit;
+          break;
+        case PreLoadType.Stress:
+          StressUnitResult = (PressureUnit)LocalUnit;
+          break;
       }
     }
 
@@ -109,7 +124,7 @@ namespace AdSecCore.Functions {
 
 
     public override void Compute() {
-      // Get the rebar group
+      // Get the rebar groupZz
       var rebarGroup = RebarGroupInput.Value;
       var outRebarGroup = rebarGroup;
       if (outRebarGroup?.Group == null) {
