@@ -18,6 +18,7 @@ using OasysUnits.Units;
 namespace Oasys.GH.Helpers {
   public abstract class DropdownAdapter<T> : GH_OasysDropDownComponent, IDefaultValues where T : IFunction {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
+
     protected DropdownAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
       BusinessComponent.UpdateProperties(this);
       if (BusinessComponent is IVariableInput variableInput) {
@@ -87,9 +88,20 @@ namespace Oasys.GH.Helpers {
       _isInitialised = true;
     }
 
+    internal virtual void SetLocalUnits() { }
+
+    public override void VariableParameterMaintenance() {
+      SetLocalUnits();
+    }
+
     protected override void BeforeSolveInstance() {
-      UpdateDefaultUnits();
-      RefreshParameter();
+      UpdateDefaultUnits(); // In Case the user has updated units from the settings dialogue
+      UpdateFromLocalUnits();
+      RefreshParameter(); // Simply passing the function names into the GH names. As we have the logic to update the names on the Core
+    }
+
+    private void UpdateFromLocalUnits() {
+      AdapterBase.UpdateFromLocalUnits(BusinessComponent);
     }
 
     public void UpdateDefaultUnits() {
