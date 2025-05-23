@@ -1,10 +1,6 @@
 using System;
 using System.Drawing;
 
-using AdSecCore.Functions;
-
-using AdSecGH.Helpers;
-using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using AdSecGHCore.Constants;

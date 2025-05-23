@@ -118,8 +118,8 @@ namespace IntegrationTests {
         }
 
         comp.CollectData();
-        comp.Params.Output[0].CollectData();
-        comp.Params.Output[0].VolatileData.get_Branch(0);
+        comp.ComputeData();
+
         if (comp.Name != exceptComponentNamed && comp.RuntimeMessages(runtimeMessageLevel).Any()) {
           return $"Failed for {comp}";
         }
