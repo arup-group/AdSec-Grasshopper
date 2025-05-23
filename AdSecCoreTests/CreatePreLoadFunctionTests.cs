@@ -128,7 +128,8 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ComputeReportErrorForInvalidPreloadType() {
       _function.PreloadInput.Value = "InvalidType";
-      Assert.Throws<InvalidCastException>(() => _function.Compute());
+      _function.Compute();
+      Assert.Single(_function.ErrorMessages);
     }
 
     [Fact]
