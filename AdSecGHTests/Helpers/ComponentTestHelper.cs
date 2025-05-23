@@ -23,7 +23,7 @@ namespace AdSecGHTests.Helpers {
 
     public static void CheckOutputIsNotNull(GH_Component component) {
       for (int i = 0; i < component.Params.Output.Count; i++) {
-        var output = ComponentTestHelper.GetOutput(component, i);
+        var output = GetOutput(component, i);
         Assert.NotNull(output);
       }
     }
@@ -115,6 +115,14 @@ namespace AdSecGHTests.Helpers {
       foreach (object obj in objs) {
         input.PersistentData.Append(new GH_ObjectWrapper(obj));
       }
+      component.Params.Input[index].AddSource(input);
+    }
+
+    public static void ResetInput(GH_Component component, int index = 0) {
+      var input = new Param_GenericObject();
+      input.CreateAttributes();
+      input.Access = GH_ParamAccess.list;
+      input.PersistentData.Append(new GH_ObjectWrapper(null));
       component.Params.Input[index].AddSource(input);
     }
 

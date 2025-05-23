@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 using AdSecGH.Components;
 using AdSecGH.Helpers;
@@ -35,7 +34,7 @@ namespace AdSecGHTests.Components.AdSec {
     public static SaveModel ComponentMother() {
       var component = new SaveModel();
       component.CreateAttributes();
-      tempPath = Path.GetTempPath() + Guid.NewGuid().ToString() + ".ads";
+      tempPath = GetValidPath();
       return component;
     }
 
@@ -72,7 +71,7 @@ namespace AdSecGHTests.Components.AdSec {
       return tree;
     }
 
-    private static void SetLoad(bool mix = false) {
+    private static void SetLoadAndPath(bool mix = false) {
       SetFilePath();
       ComponentTestHelper.SetInput(_component, CreateLoad(mix), 1);
       ComponentTestHelper.ComputeData(_component);
@@ -90,15 +89,37 @@ namespace AdSecGHTests.Components.AdSec {
       ComponentTestHelper.ComputeData(_component);
     }
 
-    private static void SetNullFilePath() {
+    private static void SetNullFilePath(bool save = true) {
       tempPath = null;
-      SetFilePath();
+      SetFilePath(save);
       ComponentTestHelper.ComputeData(_component);
     }
 
     private static void SetEmptyFilePath() {
       tempPath = string.Empty;
       SetFilePath();
+      ComponentTestHelper.ComputeData(_component);
+    }
+
+    private static string GetValidPath(bool extra = false) {
+      string additional = extra ? Guid.NewGuid().ToString() : string.Empty;
+      return $"{Path.GetTempPath()}{Guid.NewGuid()}{additional}.ads";
+    }
+
+    private static void ChangeFileNameTo(string path) {
+      tempPath = path;
+      ComponentTestHelper.SetInput(_component, tempPath, 3);
+      ComponentTestHelper.ResetInput(_component, 2);
+      ComponentTestHelper.ComputeData(_component);
+    }
+
+    private static void DisconnectSection() {
+      ComponentTestHelper.ResetInput(_component);
+      ComponentTestHelper.ComputeData(_component);
+    }
+
+    private static void DisconnectFileNamePanel() {
+      ComponentTestHelper.ResetInput(_component, 3);
       ComponentTestHelper.ComputeData(_component);
     }
 
@@ -122,7 +143,7 @@ namespace AdSecGHTests.Components.AdSec {
 
     [Fact]
     public void SettingTwoDifferentTypeOfLoadForSectionWillBeAnError() {
-      SetLoad(true);
+      SetLoadAndPath(true);
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
       Assert.Single(runtimeMessages);
       Assert.Contains("either deformation or load can be specified", runtimeMessages[0]);
@@ -136,8 +157,9 @@ namespace AdSecGHTests.Components.AdSec {
     }
 
     [Fact]
-    public void AdSecProcesscanBeLaunched() {
-      SetLoad();
+    public void ShouldLaunchProcessWhenEverythingIsSet() {
+      SetLoadAndPath();
+      ComponentTestHelper.ComputeData(_component);
       var process = _component.OpenAdSecExe();
       if (process == null) {
         return;
@@ -147,6 +169,49 @@ namespace AdSecGHTests.Components.AdSec {
       } finally {
         process.Kill();
       }
+    }
+
+    [Fact]
+    public void ShouldLaunchProcessWhenSectionAndPathIsSet() {
+      SetFilePath();
+      ComponentTestHelper.ComputeData(_component);
+      var process = _component.OpenAdSecExe();
+      if (process == null) {
+        return;
+      }
+
+      try {
+        Assert.Contains("AdSec", process.ProcessName);
+      } finally {
+        process.Kill();
+      }
+    }
+
+    [Fact]
+    public void ShouldNotOpenWhenSectionDisconnectsAfterSuccess() {
+      SetFilePath();
+      ComponentTestHelper.ComputeData(_component);
+      DisconnectSection();
+      var process = _component.OpenAdSecExe();
+      Assert.Null(process);
+    }
+
+    [Fact]
+    public void ShouldNotOpenWhenFileNameDisconnectsAfterSuccess() {
+      SetFilePath();
+      ComponentTestHelper.ComputeData(_component);
+      DisconnectFileNamePanel();
+      var process = _component.OpenAdSecExe();
+      Assert.Null(process);
+    }
+
+    [Fact]
+    public void ShouldNotOpenWhenFileNameChangesWithoutSavingAfterSuccess() {
+      SetFilePath();
+      ChangeFileNameTo(GetValidPath(true));
+      ComponentTestHelper.ComputeData(_component);
+      var process = _component.OpenAdSecExe();
+      Assert.Null(process);
     }
 
     [Fact]
@@ -193,7 +258,7 @@ namespace AdSecGHTests.Components.AdSec {
 
     [Fact]
     public void OpeningValidModelWillParseJsonStringCorrectly() {
-      SetLoad();
+      SetLoadAndPath();
       var sections = AdSecFile.ReadSection(tempPath);
       Assert.Equal(2, sections.Count);
       Assert.Equal("STD R(m) 0.6 0.3", sections[0].Profile.Description());
