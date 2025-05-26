@@ -60,7 +60,11 @@ namespace AdSecCore.Functions {
       };
 
       Solution.Value = sectionSolution;
-      LoadSurface.Value = solution.Strength.GetFailureSurface();
+      LoadSurface.Value = new LoadSurfaceDesign() {
+        LoadSurface = solution.Strength.GetFailureSurface(),
+        LocalPlane = sectionSolution.SectionDesign.LocalPlane,
+      };
+
     }
   }
 }

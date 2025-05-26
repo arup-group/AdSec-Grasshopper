@@ -24,19 +24,59 @@ namespace AdSecCore.Functions {
 
   public class OasysPlane {
     public static readonly OasysPlane PlaneYZ = new OasysPlane {
-      Origin = new OasysPoint { X = 0, Y = 0, Z = 0, },
-      XAxis = new OasysPoint { X = 0, Y = 1, Z = 0, },
-      YAxis = new OasysPoint { X = 0, Y = 0, Z = 1, },
+      XAxis = OasysPoint.YAxis,
+      YAxis = OasysPoint.ZAxis,
     };
-    public OasysPoint Origin { get; set; }
+    public static readonly OasysPlane PlaneXY = new OasysPlane {
+      XAxis = OasysPoint.XAxis,
+      YAxis = OasysPoint.YAxis,
+    };
+    public OasysPoint Origin { get; set; } = new OasysPoint { };
     public OasysPoint XAxis { get; set; }
     public OasysPoint YAxis { get; set; }
+
+    public override bool Equals(object obj) {
+      if (obj is OasysPlane other) {
+        return Origin.Equals(other.Origin) && XAxis.Equals(other.XAxis) && YAxis.Equals(other.YAxis);
+      }
+
+      return false;
+    }
+
+    public override int GetHashCode() {
+      return Origin.GetHashCode() ^ XAxis.GetHashCode() ^ YAxis.GetHashCode();
+    }
   }
 
   public class OasysPoint {
     public double X { get; set; }
     public double Y { get; set; }
     public double Z { get; set; }
+
+    public OasysPoint() { }
+
+    public OasysPoint(double x, double y, double z) {
+      X = x;
+      Y = y;
+      Z = z;
+    }
+
+    public static OasysPoint Zero { get; set; } = new OasysPoint() { };
+    public static OasysPoint XAxis { get; set; } = new OasysPoint() { X = 1, Y = 0, Z = 0 };
+    public static OasysPoint YAxis { get; set; } = new OasysPoint() { X = 0, Y = 1, Z = 0 };
+    public static OasysPoint ZAxis { get; set; } = new OasysPoint() { X = 0, Y = 0, Z = 1 };
+
+    public override bool Equals(object obj) {
+      if (obj is OasysPoint other) {
+        return Math.Abs(X - other.X) < 1e-6 && Math.Abs(Y - other.Y) < 1e-6 && Math.Abs(Z - other.Z) < 1e-6;
+      }
+
+      return false;
+    }
+
+    public override int GetHashCode() {
+      return X.GetHashCode() ^ Y.GetHashCode() ^ Z.GetHashCode();
+    }
   }
 
   public class SectionSolution {
@@ -73,11 +113,17 @@ namespace AdSecCore.Functions {
     public Length Offset { get; set; }
     public double Angle { get; set; }
     public SectionSolution Solution { get; set; }
+    public bool IsFailureNeutralAxis { get; set; } = false;
   }
 
   public class SubComponent {
     public ISubComponent ISubComponent { get; set; }
     public SectionDesign SectionDesign { get; set; } = new SectionDesign();
+  }
+
+  public class LoadSurfaceDesign {
+    public ILoadSurface LoadSurface { get; set; }
+    public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
   }
 
   public class PointArrayParameter : BaseArrayParameter<IPoint> { }
@@ -86,7 +132,7 @@ namespace AdSecCore.Functions {
   public class StringParameter : ParameterAttribute<string> { }
   public class LengthParameter : ParameterAttribute<Length> { }
   public class SectionSolutionParameter : ParameterAttribute<SectionSolution> { }
-  public class LoadSurfaceParameter : ParameterAttribute<ILoadSurface> { }
+  public class LoadSurfaceParameter : ParameterAttribute<LoadSurfaceDesign> { }
   public class SubComponentParameter : ParameterAttribute<SubComponent> { }
 
   public class SubComponentArrayParameter : BaseArrayParameter<SubComponent> {

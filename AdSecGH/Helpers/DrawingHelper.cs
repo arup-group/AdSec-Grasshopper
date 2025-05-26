@@ -23,6 +23,12 @@ namespace AdSecGH.Helpers {
         case DrawCurve drawCurve:
           pipeline.DrawCurve(drawCurve.Curve, drawCurve.Color, drawCurve.Thickness);
           break;
+        case DrawDottedLine drawDottedLine:
+          pipeline.DrawDottedLine(drawDottedLine.Curve, drawDottedLine.Color);
+          break;
+        case DrawSolidLine drawSolidLine:
+          pipeline.DrawLine(drawSolidLine.Curve, drawSolidLine.Color);
+          break;
       }
     }
 
@@ -57,5 +63,13 @@ namespace AdSecGH.Helpers {
   public class DrawCurve : DrawInstructions {
     public Curve Curve { get; set; }
     public override object Geometry => Curve;
+  }
+
+  public class DrawDottedLine : DrawInstructions {
+    public Line Curve { get; set; }
+  }
+
+  public class DrawSolidLine : DrawInstructions {
+    public Line Curve { get; set; }
   }
 }

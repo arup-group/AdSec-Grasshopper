@@ -4,6 +4,8 @@ using System.Drawing;
 
 using AdSecGH.Parameters;
 
+using AdSecGHTests.Helpers;
+
 using Grasshopper.Kernel;
 
 using Rhino;
@@ -35,17 +37,16 @@ namespace AdSecGHTests.Parameters {
 
     [Fact]
     public void ShouldBakeIds() {
-      var doc = RhinoDoc.Create(string.Empty);
+      using var doc = RhinoDoc.Create(string.Empty);
       var obj_ids = new List<Guid>();
       sectionGoo.BakeGeometry(doc, obj_ids);
 
       Assert.True(obj_ids.Count > 0, $"Expected at least one object to be created, but got {obj_ids.Count}");
-      doc.Dispose();
     }
 
     [Fact]
     public void ShouldBakeWithAttributes() {
-      var doc = RhinoDoc.Create(string.Empty);
+      using var doc = RhinoDoc.Create(string.Empty);
       var obj_ids = new List<Guid>();
 
       var objectAttributes = new ObjectAttributes() {
@@ -54,7 +55,6 @@ namespace AdSecGHTests.Parameters {
       sectionGoo.BakeGeometry(doc, objectAttributes, obj_ids);
 
       Assert.Equal("Test", doc.Objects.FindId(obj_ids[0]).Attributes.Name);
-      doc.Dispose();
     }
 
     [Fact]
@@ -71,14 +71,10 @@ namespace AdSecGHTests.Parameters {
 
     [Fact]
     public void ShouldDrawOnViewPort() {
-      var doc = RhinoDoc.Create(string.Empty);
       sectionGoo.DrawInstructionsList.Clear();
-      var displayPipeline = doc.Views.ActiveView.DisplayPipeline;
-      var rhinoViewport = doc.Views.ActiveView.ActiveViewport;
-      var ghPreviewWireArgs = new GH_PreviewWireArgs(rhinoViewport, displayPipeline, Color.White, 1);
-      sectionGoo.DrawViewportWires(ghPreviewWireArgs);
+      using var doc = RhinoDoc.Create(string.Empty);
+      sectionGoo.DrawViewportWires(ComponentTestHelper.CreatePreviewArgs(doc, Color.White));
       Assert.NotEmpty(sectionGoo.DrawInstructionsList);
-      doc.Dispose();
     }
 
     [Fact]

@@ -1,7 +1,20 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 
+using AdSecCore;
+using AdSecCore.Functions;
+
+using AdSecGH.Parameters;
+
 using Grasshopper.Kernel;
+
+using OasysGH.Units;
+
+using OasysUnits;
+using OasysUnits.Units;
+
+using Rhino.Geometry;
 
 using Xunit;
 
@@ -92,9 +105,33 @@ namespace IntegrationTests.Components {
     })]
     [InlineData("LoadUtilisationTest", 0.137663)]
     [InlineData("CrackUtilisationTest", 1.423388)]
+    [InlineData("Neutral Offset", -4.332)]
+    [InlineData("Neutral Angle", 0.790348)]
+    [InlineData("Neutral Failure Offset", 2.438)]
+    [InlineData("Neutral Failure Angle", 0.888143)]
     public void Test(string groupIdentifier, object expected) {
       var param = Helper.FindParameter(Document, groupIdentifier);
       Helper.TestGHPrimitives(param, expected);
+    }
+
+    [Fact]
+    public void ShouldContainNeutralAxis() {
+      var groupName = "Neutral Axis";
+      var param = Helper.FindParameter(Document, groupName);
+      AdSecNeutralAxisGoo line = param.VolatileData.get_Branch(0)[0] as AdSecNeutralAxisGoo;
+      Assert.NotNull(line);
+      AssertPoint3d(new Point3d(-0.2447, -0.2533, 0), line.AxisLine.From);
+      AssertPoint3d(new Point3d(0.2508, 0.24721, 0), line.AxisLine.To);
+    }
+
+    [Fact]
+    public void ShouldContainNeutralFailureAxis() {
+      var groupName = "Failure Neutral Axis";
+      var param = Helper.FindParameter(Document, groupName);
+      AdSecNeutralAxisGoo line = param.VolatileData.get_Branch(0)[0] as AdSecNeutralAxisGoo;
+      Assert.NotNull(line);
+      AssertPoint3d(new Point3d(-0.2240, -0.2717, 0), line.AxisLine.From);
+      AssertPoint3d(new Point3d(0.2202, 0.2747, 0), line.AxisLine.To);
     }
 
     private static GH_Document OpenDocument() {
@@ -109,6 +146,17 @@ namespace IntegrationTests.Components {
       });
 
       return Helper.CreateDocument(Path.Combine(path, fileName));
+    }
+
+    internal static void AssertPoint3d(Point3d expectedPoint, Point3d actualpoint) {
+      var comparer = new DoubleComparer();
+
+      var x = Length.From(actualpoint.X, DefaultUnits.LengthUnitGeometry).Meters;
+      var y = Length.From(actualpoint.Y, DefaultUnits.LengthUnitGeometry).Meters;
+      var z = Length.From(actualpoint.Z, DefaultUnits.LengthUnitGeometry).Meters;
+      Assert.Equal(expectedPoint.X, x, comparer);
+      Assert.Equal(expectedPoint.Y, y, comparer);
+      Assert.Equal(expectedPoint.Z, z, comparer);
     }
   }
 }
