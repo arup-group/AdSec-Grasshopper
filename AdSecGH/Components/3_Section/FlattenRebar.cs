@@ -5,6 +5,7 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
@@ -32,7 +33,8 @@ namespace AdSecGH.Components {
             DesignCode = new DesignCode() {
               IDesignCode = goo.Value.DesignCode,
               DesignCodeName = goo.Value._codeName,
-            }
+            },
+            LocalPlane = goo.Value.LocalPlane.ToOasys()
           };
         }
       };
@@ -40,7 +42,7 @@ namespace AdSecGH.Components {
       var adSecPoint = AdSecPoint as Attribute;
       Position.Update(ref adSecPoint);
       Position.OnValueChanged += goo => {
-        AdSecPoint.Value = goo.Select(x => new AdSecPointGoo(x)).ToArray();
+        AdSecPoint.Value = goo.Select(x => new AdSecPointGoo(x, Section.Value.LocalPlane)).ToArray();
       };
 
       AdSecPoint.Name = Position.NameWithUnits(DefaultUnits.LengthUnitGeometry);

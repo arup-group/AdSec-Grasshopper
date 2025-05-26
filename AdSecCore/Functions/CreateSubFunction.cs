@@ -29,7 +29,7 @@ namespace AdSecCore.Functions {
       Description
         = $"[Optional] Section offset (Vertex Point).{Environment.NewLine}Offset is applied between origins of containing section and sub-component. The offset of the profile is in the containing section's Profile Coordinate System. Any rotation applied to the containing section's profile will be applied to its sub-components. Sub-components can also have an additional rotation for their profiles.",
       Access = Access.Item,
-      // Optional = true,
+      Optional = true,
     };
 
     public FuncAttribute Metadata { get; set; } = new FuncAttribute {
