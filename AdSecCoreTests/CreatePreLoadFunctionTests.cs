@@ -12,6 +12,7 @@ namespace AdSecCoreTests.Functions {
 
     public CreatePreLoadFunctionTests() {
       _function = new CreatePreLoadFunction();
+      _function.PreLoadType = (PreLoadType)100;
       _function.RebarGroupInput.Value = new AdSecRebarGroup(new BuilderTemplateGroup().Build());
       _function.PreloadInput.Value = 10;
     }
