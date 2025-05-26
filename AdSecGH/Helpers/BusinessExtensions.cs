@@ -458,6 +458,11 @@ namespace Oasys.GH.Helpers {
     }
 
     public static void UpdateInputValues(this IFunction function, GH_Component component, IGH_DataAccess dataAccess) {
+      if (function is Function coreFunction) {
+        coreFunction.ErrorMessages.Clear();
+        coreFunction.WarningMessages.Clear();
+        coreFunction.RemarkMessages.Clear();
+      }
       foreach (var attribute in function.GetAllInputAttributes()) {
         int index = component.Params.IndexOfInputParam(attribute.Name);
         if (attribute.GetAccess() == GH_ParamAccess.item) {
