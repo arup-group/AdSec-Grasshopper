@@ -16,6 +16,8 @@ using Grasshopper.Kernel.Types;
 
 using Microsoft.CSharp.RuntimeBinder;
 
+using Newtonsoft.Json.Linq;
+
 using Oasys.AdSec;
 using Oasys.AdSec.Reinforcement;
 
@@ -465,10 +467,11 @@ namespace Oasys.GH.Helpers {
       }
       foreach (var attribute in function.GetAllInputAttributes()) {
         int index = component.Params.IndexOfInputParam(attribute.Name);
+        dynamic valueBasedParameter = attribute;
+        valueBasedParameter.SetDefault();
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           dynamic inputs = null;
           if (dataAccess.GetData(index, ref inputs)) {
-            dynamic valueBasedParameter = attribute;
             if (GooToParam.ContainsKey(attribute.GetType())) {
               dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
               valueBasedParameter.Value = newValue;
@@ -484,7 +487,6 @@ namespace Oasys.GH.Helpers {
         } else if (attribute.GetAccess() == GH_ParamAccess.list) {
           var inputs = new List<object>();
           if (dataAccess.GetDataList(index, inputs)) {
-            dynamic valueBasedParameter = attribute;
             if (GooToParam.ContainsKey(attribute.GetType())) {
               dynamic newValue = GooToParam[attribute.GetType()](inputs);
               valueBasedParameter.Value = newValue;
