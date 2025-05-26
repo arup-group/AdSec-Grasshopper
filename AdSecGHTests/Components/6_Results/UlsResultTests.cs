@@ -80,11 +80,11 @@ namespace AdSecGHTests.Components {
     public void MessagesShouldBeClearedOnEachRun() {
       SetLargeLoad();
       Assert.Equal(2, _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning).Count);
-      var newLoadWithInCovergence = ILoad.Create(
+      var newLoadWithConvergence = ILoad.Create(
             Force.FromKilonewtons(-10),
             Moment.Zero,
             Moment.Zero);
-      _component.Params.Input[1].AddVolatileData(new GH_Path(0), 0, newLoadWithInCovergence);
+      _component.Params.Input[1].AddVolatileData(new GH_Path(0), 0, newLoadWithConvergence);
       ComponentTestHelper.ComputeData(_component);
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
     }
