@@ -10,6 +10,19 @@ namespace AdSecGH.Components {
   public class AdapterBase {
     protected AdapterBase() { }
 
+    public static void UpdateMessages(Function function, GH_Component component) {
+      foreach (string warning in function.WarningMessages) {
+        component.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning);
+      }
+
+      foreach (string remark in function.RemarkMessages) {
+        component.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, remark);
+      }
+
+      foreach (string error in function.ErrorMessages) {
+        component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, error);
+      }
+    }
     public static void UpdateDefaultUnits<T>(T BusinessComponent) {
       if (BusinessComponent is Function function) {
         function.MomentUnit = DefaultUnits.MomentUnit;
