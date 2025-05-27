@@ -131,6 +131,14 @@ namespace AdSecCore.Functions {
       }
     }
 
+    public void ClearOutputs() {
+      foreach (var output in GetAllOutputAttributes()) {
+        if (output is IDefault outputAttribute) {
+          outputAttribute.SetDefault();
+        }
+      }
+    }
+
     public abstract FuncAttribute Metadata { get; set; }
     public abstract Organisation Organisation { get; set; }
     public virtual Attribute[] GetAllInputAttributes() { return Array.Empty<Attribute>(); }

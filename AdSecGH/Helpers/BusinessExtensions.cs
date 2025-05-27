@@ -460,6 +460,7 @@ namespace Oasys.GH.Helpers {
       if (function is Function coreFunction) {
         coreFunction.ClearMessages();
         coreFunction.ClearInputs();
+        coreFunction.ClearOutputs();
       }
       foreach (var attribute in function.GetAllInputAttributes()) {
         int index = component.Params.IndexOfInputParam(attribute.Name);
