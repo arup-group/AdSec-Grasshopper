@@ -7,8 +7,7 @@ using Grasshopper.Kernel;
 using OasysGH.Units;
 
 namespace AdSecGH.Components {
-  public class AdapterBase {
-    protected AdapterBase() { }
+  public static class AdapterBase {
 
     public static void UpdateMessages(Function function, GH_Component component) {
       foreach (string warning in function.WarningMessages) {
