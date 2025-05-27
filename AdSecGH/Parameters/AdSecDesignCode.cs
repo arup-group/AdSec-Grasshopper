@@ -35,10 +35,11 @@ namespace AdSecGH.Parameters {
           = "Unable to retrieve the full type name from the provided FieldInfo. Ensure that the FieldInfo belongs to a valid type within the 'Oasys.AdSec.DesignCode' namespace.";
         throw new ArgumentNullException(nameof(fieldDesignCode), Message);
       }
-
+      designCodeReflectedLevels = $"{designCodeReflectedLevels}+{fieldDesignCode.Name}";
       var designCodeLevelsSplit = designCodeReflectedLevels.Split('+').ToList();
-      CreateFromReflectedLevels(designCodeLevelsSplit, true);
+      CreateFromReflectedLevels(designCodeLevelsSplit);
     }
+
 
     internal AdSecDesignCode(List<string> designCodeReflectedLevels) {
       CreateFromReflectedLevels(designCodeReflectedLevels);
