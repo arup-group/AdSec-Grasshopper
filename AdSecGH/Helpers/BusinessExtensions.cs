@@ -16,10 +16,7 @@ using Grasshopper.Kernel.Types;
 
 using Microsoft.CSharp.RuntimeBinder;
 
-using Newtonsoft.Json.Linq;
-
 using Oasys.AdSec;
-using Oasys.AdSec.Reinforcement;
 
 using OasysGH.Parameters;
 using OasysGH.Units;
@@ -461,14 +458,12 @@ namespace Oasys.GH.Helpers {
 
     public static void UpdateInputValues(this IFunction function, GH_Component component, IGH_DataAccess dataAccess) {
       if (function is Function coreFunction) {
-        coreFunction.ErrorMessages.Clear();
-        coreFunction.WarningMessages.Clear();
-        coreFunction.RemarkMessages.Clear();
+        coreFunction.ClearMessages();
+        coreFunction.ClearInputs();
       }
       foreach (var attribute in function.GetAllInputAttributes()) {
         int index = component.Params.IndexOfInputParam(attribute.Name);
         dynamic valueBasedParameter = attribute;
-        valueBasedParameter.SetDefault();
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           dynamic inputs = null;
           if (dataAccess.GetData(index, ref inputs)) {
