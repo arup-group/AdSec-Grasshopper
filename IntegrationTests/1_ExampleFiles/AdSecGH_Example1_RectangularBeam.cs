@@ -120,8 +120,8 @@ namespace IntegrationTests.Components {
       var param = Helper.FindParameter(Document, groupName);
       AdSecNeutralAxisGoo line = param.VolatileData.get_Branch(0)[0] as AdSecNeutralAxisGoo;
       Assert.NotNull(line);
-      AssertPoint3d(new Point3d(0, -0.2447, -0.2533), line.AxisLine.From);
-      AssertPoint3d(new Point3d(0, 0.2508, 0.24721), line.AxisLine.To);
+      AssertPoint3d(new Point3d(-0.2447, -0.2533, 0), line.AxisLine.From);
+      AssertPoint3d(new Point3d(0.2508, 0.24721, 0), line.AxisLine.To);
     }
 
     [Fact]
@@ -130,8 +130,8 @@ namespace IntegrationTests.Components {
       var param = Helper.FindParameter(Document, groupName);
       AdSecNeutralAxisGoo line = param.VolatileData.get_Branch(0)[0] as AdSecNeutralAxisGoo;
       Assert.NotNull(line);
-      AssertPoint3d(new Point3d(0, -0.2240, -0.2717), line.AxisLine.From);
-      AssertPoint3d(new Point3d(0, 0.2202, 0.2747), line.AxisLine.To);
+      AssertPoint3d(new Point3d(-0.2240, -0.2717, 0), line.AxisLine.From);
+      AssertPoint3d(new Point3d(0.2202, 0.2747, 0), line.AxisLine.To);
     }
 
     private static GH_Document OpenDocument() {

@@ -1,6 +1,8 @@
 ﻿using AdSecCore.Builders;
+using AdSecCore.Functions;
 
 using AdSecGH.Components;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
@@ -37,6 +39,13 @@ namespace AdSecGHTests.Components {
     public void ShouldHaveNoWarnings() {
       ComponentTestHelper.ComputeData(component);
       Assert.Empty(component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
+    }
+
+    [Fact]
+    public void ShouldTakePlaneFromSectionInput() {
+      ComponentTestHelper.ComputeData(component);
+      var data = component.GetValue<AdSecSubComponentGoo>();
+      Assert.Equal(OasysPlane.PlaneXY, data.section.LocalPlane.ToOasys());
     }
 
     [Fact]

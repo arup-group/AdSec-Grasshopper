@@ -6,6 +6,8 @@ using AdSecCore.Functions;
 
 using AdSecGH.Parameters;
 
+using Grasshopper.Kernel.Types;
+
 using Rhino.Geometry;
 
 using Xunit;
@@ -20,7 +22,11 @@ namespace AdSecGHTests.Parameters {
 
     public AdSecFailureSurfaceGooTests() {
       Solution ??= new SolutionBuilder().Build();
-      _testGoo = new AdSecFailureSurfaceGoo(Solution.Strength.GetFailureSurface(), Plane.WorldXY);
+      var loadSurface = new LoadSurfaceDesign() {
+        LoadSurface = Solution.Strength.GetFailureSurface(),
+        LocalPlane = OasysPlane.PlaneXY
+      };
+      _testGoo = new AdSecFailureSurfaceGoo(loadSurface);
     }
 
     [Fact]
@@ -113,7 +119,8 @@ namespace AdSecGHTests.Parameters {
       Assert.IsType<AdSecFailureSurfaceGoo>(result);
       var newGoo = (AdSecFailureSurfaceGoo)result;
 
-      Assert.Equal(_testGoo.FailureSurface, newGoo.FailureSurface);
+      Assert.Equal(_testGoo.FailureSurface.LocalPlane.Origin.X + 1, newGoo.FailureSurface.LocalPlane.Origin.X);
+      Assert.Equal(_testGoo.FailureSurface.LoadSurface, newGoo.FailureSurface.LoadSurface);
 
       var originalVertex = _testGoo.Value.Vertices[0];
       var newVertex = newGoo.Value.Vertices[0];
@@ -144,15 +151,11 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void Transform_ReturnsTransformedAdSecFailureSurfaceGoo_WhenValueIsValid() {
       var transform = Transform.Translation(1, 0, 0);
-      var result = _testGoo.Transform(transform);
 
-      Assert.NotNull(result);
-      Assert.IsType<AdSecFailureSurfaceGoo>(result);
-
-      var newGoo = (AdSecFailureSurfaceGoo)result;
+      var newGoo = (AdSecFailureSurfaceGoo)_testGoo.Transform(transform);
       var originalVertex = _testGoo.Value.Vertices[0];
       var transformedVertex = newGoo.Value.Vertices[0];
-      Assert.Equal(_testGoo.FailureSurface, newGoo.FailureSurface);
+      Assert.Equal(_testGoo.FailureSurface.LocalPlane.Origin.X + 1, newGoo.FailureSurface.LocalPlane.Origin.X);
       Assert.Equal(originalVertex.X + 1, transformedVertex.X, 5);
       Assert.Equal(originalVertex.Y, transformedVertex.Y, 5);
       Assert.Equal(originalVertex.Z, transformedVertex.Z, 5);
