@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 using AdSecGH;
 using AdSecGH.Components;
@@ -21,8 +20,8 @@ namespace AdSecGHTests.Components.Properties {
     private readonly CreateStandardMaterial _component;
     private readonly List<string> StandardDesignCodes = new List<string> { "IS456", "ACI318", "EN1992" };
     public CreateStandardMaterialTests() {
-      _component = new CreateStandardMaterial();
       AdSecUtility.LoadAdSecAPI();
+      _component = new CreateStandardMaterial();
     }
 
     private void SetConcrete() {

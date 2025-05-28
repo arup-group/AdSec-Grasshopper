@@ -7,6 +7,8 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.StandardMaterials;
 using Oasys.GH.Helpers;
 
 using Rhino.Geometry;
@@ -84,7 +86,13 @@ namespace AdSecGHTests.Helpers {
     [Fact]
     public void ShouldHaveSameMaterialOutput() {
       allParameters.Material.Default = new[] {
-        new AdSecMaterialGoo(new MaterialDesign()),
+        new AdSecMaterialGoo(new MaterialDesign() {
+          Material = Concrete.IS456.Edition_2000.M10,
+          DesignCode = new DesignCode() {
+            IDesignCode = IS456.Edition_2000,
+            DesignCodeName = "IS456 Edition 2000",
+          }
+        }),
       };
       Recompute();
 

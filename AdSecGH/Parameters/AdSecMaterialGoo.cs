@@ -17,13 +17,10 @@ namespace AdSecGH.Parameters {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
 
     public AdSecMaterialGoo(MaterialDesign materialDesign) : base(materialDesign) {
-      Material = new AdSecMaterial() {
-        Material = Value?.Material,
-        DesignCode = new AdSecDesignCode() {
-          DesignCode = Value?.DesignCode?.IDesignCode,
-        },
-        GradeName = Value?.GradeName,
-      };
+      Material = new AdSecMaterial(materialDesign);
+    }
+
+    public AdSecMaterialGoo() : base() {
     }
 
     public override IGH_Goo Duplicate() {
@@ -31,8 +28,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return Material?.Material == null ? "Empty Material" :
-        new AdSecMaterial(Material.Material, Material.GradeName).ToString();
+      return Material?.Material == null ? "Empty Material" : Material.ToString();
     }
   }
 }

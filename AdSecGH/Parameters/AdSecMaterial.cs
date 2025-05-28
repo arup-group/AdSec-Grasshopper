@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Reflection;
 
+using AdSecCore.Functions;
+
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
 
@@ -28,7 +30,15 @@ namespace AdSecGH.Parameters {
 
     public AdSecMaterial() { }
 
-    public AdSecMaterial(IMaterial material, string materialGradeName) {
+    public AdSecMaterial(MaterialDesign materialDesign) {
+      var material = materialDesign.Material;
+      var materialGradeName = materialDesign.GradeName;
+
+      DesignCode = new AdSecDesignCode() {
+        DesignCode = materialDesign.DesignCode?.IDesignCode,
+        DesignCodeName = materialDesign.DesignCode?.DesignCodeName,
+      };
+
       if (!string.IsNullOrEmpty(materialGradeName)) {
         GradeName = materialGradeName;
       }
@@ -118,7 +128,9 @@ namespace AdSecGH.Parameters {
         code = $" to {DesignCodeName.Replace("  ", " ")}";
       }
 
-      return grade + TypeName.Replace("  ", " ") + code;
+      var description = grade + TypeName.Replace("  ", " ") + code;
+      description = description.Replace("+", " ");
+      return $"AdSec Material ({description})";
     }
   }
 }

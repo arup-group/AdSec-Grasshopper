@@ -53,7 +53,19 @@ namespace Oasys.GH.Helpers {
 
     protected override void SolveInternal(IGH_DataAccess da) {
       BusinessComponent.UpdateInputValues(this, da);
+      if (RuntimeMessages(GH_RuntimeMessageLevel.Error).Count > 0) {
+        return;
+      }
+
       BusinessComponent.Compute();
+      if (BusinessComponent is Function function) {
+        AdapterBase.UpdateMessages(function, this);
+
+        if (function.ErrorMessages.Count > 0) {
+          return;
+        }
+      }
+
       BusinessComponent.SetOutputValues(this, da);
     }
 
@@ -80,11 +92,13 @@ namespace Oasys.GH.Helpers {
             items = UnitsHelper.GetFilteredAbbreviations(ToEngineeringUnits()[unitType]);
             selectedItem = UnitAbbreviation(unitType, unitValue);
           }
+
           _spacerDescriptions.Add(description);
           _dropDownItems.Add(items);
           _selectedItems.Add(selectedItem);
         }
       }
+
       _isInitialised = true;
     }
 

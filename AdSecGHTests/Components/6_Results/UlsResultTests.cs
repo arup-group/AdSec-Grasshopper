@@ -8,10 +8,12 @@ using AdSecGH.Parameters;
 using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
 
+using OasysGH.Helpers;
 using OasysGH.Units;
 
 using OasysUnits;
@@ -73,9 +75,16 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
-    public void ShouldHaveWarningForHighLoad() {
+    public void MessagesShouldBeClearedOnEachRun() {
       SetLargeLoad();
       Assert.Equal(2, _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning).Count);
+      var newLoadWithConvergence = ILoad.Create(
+            Force.FromKilonewtons(-10),
+            Moment.Zero,
+            Moment.Zero);
+      _component.Params.Input[1].AddVolatileData(new GH_Path(0), 0, newLoadWithConvergence);
+      ComponentTestHelper.ComputeData(_component);
+      Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
     }
 
     [Fact]
