@@ -10,23 +10,37 @@ namespace AdSecGHTests {
   [Collection("GrasshopperFixture collection")]
   public class AdapterBaseTests {
 
-    private CreatePoint _component;
-    private Function _function;
+    private readonly CreatePoint _component;
+    private readonly Function _function;
 
     public AdapterBaseTests() {
       _component = new CreatePoint();
       _function = _component.BusinessComponent;
     }
 
-    [Theory]
-    [InlineData("This is a warning message.", GH_RuntimeMessageLevel.Warning)]
-    [InlineData("This is a remark message.", GH_RuntimeMessageLevel.Remark)]
-    [InlineData("This is an error message.", GH_RuntimeMessageLevel.Error)]
-    public void ShouldAddWarningsOnComponent(string message, GH_RuntimeMessageLevel level) {
+    [Fact]
+    public void ShouldAddWarningsOnComponent() {
+      var message = "This is a warning message.";
       _function.WarningMessages.Add(message);
       AdapterBase.UpdateMessages(_function, _component);
-
-      Assert.Contains(message, _component.RuntimeMessages(level));
+      Assert.Contains(message, _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
     }
+
+    [Fact]
+    public void ShouldAddErrorsOnComponent() {
+      var message = "This is a error message.";
+      _function.ErrorMessages.Add(message);
+      AdapterBase.UpdateMessages(_function, _component);
+      Assert.Contains(message, _component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
+    }
+
+    [Fact]
+    public void ShouldAddRemarksOnComponent() {
+      var message = "This is a remark message.";
+      _function.RemarkMessages.Add(message);
+      AdapterBase.UpdateMessages(_function, _component);
+      Assert.Contains(message, _component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
+    }
+
   }
 }
