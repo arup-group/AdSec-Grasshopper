@@ -20,6 +20,9 @@ namespace AdSecGH.Parameters {
       Material = new AdSecMaterial(materialDesign);
     }
 
+    public AdSecMaterialGoo() : base() {
+    }
+
     public override IGH_Goo Duplicate() {
       return IsValid ? new AdSecMaterialGoo(Value) : null;
     }

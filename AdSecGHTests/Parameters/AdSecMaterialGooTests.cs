@@ -43,5 +43,22 @@ namespace AdSecGHTests.Parameters {
       Assert.StartsWith("(", actualString);
       Assert.EndsWith(")", actualString);
     }
+
+    [Fact]
+    public void ShouldHavePluginInfo() {
+      Assert.NotNull(_materialGoo.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveCorrectMaterial() {
+      var materialDesign = new MaterialDesign {
+        Material = null,
+        DesignCode = new DesignCode() {
+          IDesignCode = DesignCode,
+          DesignCodeName = "IS456 Edition 2000",
+        },
+      };
+      Assert.Equal("Empty Material", new AdSecMaterialGoo().ToString());
+    }
   }
 }
