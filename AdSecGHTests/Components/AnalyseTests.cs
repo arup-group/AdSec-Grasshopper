@@ -46,10 +46,15 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
-    public void ShouldHaveAWarning() {
+    public void AllMessageShouldBeClearedOnCompute() {
       component.BusinessComponent.WarningMessages.Add("Test");
+      component.BusinessComponent.ErrorMessages.Add("Test");
+      component.BusinessComponent.RemarkMessages.Add("Test");
       ComponentTesting.ComputeOutputs(component);
-      Assert.Single(component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
+      Assert.Empty(component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
+      Assert.Empty(component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
+      Assert.Empty(component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
+
     }
 
     [Fact]
