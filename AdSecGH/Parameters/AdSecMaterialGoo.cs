@@ -17,14 +17,7 @@ namespace AdSecGH.Parameters {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
 
     public AdSecMaterialGoo(MaterialDesign materialDesign) : base(materialDesign) {
-      Material = new AdSecMaterial() {
-        Material = Value?.Material,
-        DesignCode = new AdSecDesignCode() {
-          DesignCode = Value?.DesignCode?.IDesignCode,
-          DesignCodeName = Value?.DesignCode?.DesignCodeName,
-        },
-        GradeName = Value?.GradeName,
-      };
+      Material = new AdSecMaterial(materialDesign);
     }
 
     public override IGH_Goo Duplicate() {

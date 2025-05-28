@@ -97,7 +97,13 @@ namespace AdSecGHTests.Parameters {
       InstanceOfGoos.Add(new AdSecDesignCodeGoo(designCode));
       InstanceOfGoos.Add(new AdSecFailureSurfaceGoo(new LoadSurfaceDesign() { LoadSurface = solution.Strength.GetFailureSurface(), LocalPlane = OasysPlane.PlaneXY }));
       InstanceOfGoos.Add(new AdSecLoadGoo(ILoad.Create(new Force(), new Moment(), new Moment()), Plane.WorldXY));
-      InstanceOfGoos.Add(new AdSecMaterialGoo(new MaterialDesign()));
+      InstanceOfGoos.Add(new AdSecMaterialGoo(new MaterialDesign() {
+        Material = Concrete.IS456.Edition_2000.M10,
+        DesignCode = new DesignCode() {
+          IDesignCode = IS456.Edition_2000,
+          DesignCodeName = "IS456 Edition 2000",
+        }
+      }));
       InstanceOfGoos.Add(new AdSecInteractionDiagramGoo(
         solution.Strength.GetForceMomentInteractionCurve(new Angle())[0], Angle.FromRadians(0), new Rectangle3d()));
       InstanceOfGoos.Add(new AdSecPointGoo(length, length));
