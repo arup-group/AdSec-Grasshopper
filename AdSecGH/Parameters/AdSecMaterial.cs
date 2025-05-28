@@ -118,7 +118,9 @@ namespace AdSecGH.Parameters {
         code = $" to {DesignCodeName.Replace("  ", " ")}";
       }
 
-      return grade + TypeName.Replace("  ", " ") + code;
+      var description = grade + TypeName.Replace("  ", " ") + code;
+      description = description.Replace("+", " ");
+      return $"AdSec Material ({description})";
     }
   }
 }

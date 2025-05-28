@@ -21,6 +21,7 @@ namespace AdSecGH.Parameters {
         Material = Value?.Material,
         DesignCode = new AdSecDesignCode() {
           DesignCode = Value?.DesignCode?.IDesignCode,
+          DesignCodeName = Value?.DesignCode.DesignCodeName,
         },
         GradeName = Value?.GradeName,
       };
@@ -31,8 +32,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return Material?.Material == null ? "Empty Material" :
-        new AdSecMaterial(Material.Material, Material.GradeName).ToString();
+      return Material?.Material == null ? "Empty Material" : Material.ToString();
     }
   }
 }
