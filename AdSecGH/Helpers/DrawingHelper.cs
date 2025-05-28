@@ -29,6 +29,9 @@ namespace AdSecGH.Helpers {
         case DrawSolidLine drawSolidLine:
           pipeline.DrawLine(drawSolidLine.Curve, drawSolidLine.Color);
           break;
+        case DrawBrepShaded drawBrepShaded:
+          pipeline.DrawBrepShaded(drawBrepShaded.Brep, drawBrepShaded.DisplayMaterial);
+          break;
       }
     }
 
@@ -71,5 +74,10 @@ namespace AdSecGH.Helpers {
 
   public class DrawSolidLine : DrawInstructions {
     public Line Curve { get; set; }
+  }
+
+  public class DrawBrepShaded : DrawInstructions {
+    public Brep Brep { get; set; }
+    public DisplayMaterial DisplayMaterial { get; set; }
   }
 }
