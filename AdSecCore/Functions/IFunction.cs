@@ -117,6 +117,28 @@ namespace AdSecCore.Functions {
       return true;
     }
 
+    public void ClearMessages() {
+      ErrorMessages.Clear();
+      WarningMessages.Clear();
+      RemarkMessages.Clear();
+    }
+
+    public void ClearInputs() {
+      foreach (var input in GetAllInputAttributes()) {
+        if (input is IDefault inputAttribute) {
+          inputAttribute.SetDefault();
+        }
+      }
+    }
+
+    public void ClearOutputs() {
+      foreach (var output in GetAllOutputAttributes()) {
+        if (output is IDefault outputAttribute) {
+          outputAttribute.SetDefault();
+        }
+      }
+    }
+
     public abstract FuncAttribute Metadata { get; set; }
     public abstract Organisation Organisation { get; set; }
     public virtual Attribute[] GetAllInputAttributes() { return Array.Empty<Attribute>(); }

@@ -11,13 +11,16 @@ using Oasys.GH.Helpers;
 
 using OasysGH;
 
-using Attribute = AdSecCore.Functions.Attribute;
 namespace AdSecCore.Functions {
   public class ConcreteStressStrainGh : ConcreteStressStrainFunction {
     public ConcreteStressStrainGh() {
       var vertex = Vertex as Attribute;
       VertexInput.Update(ref vertex);
-      Vertex.OnValueChanged += goo => { VertexInput.Value = goo.AdSecPoint; };
+      Vertex.OnValueChanged += goo => {
+        if (goo?.Value != null) {
+          VertexInput.Value = goo.AdSecPoint;
+        }
+      };
     }
 
     public AdSecPointParameter Vertex { get; set; } = new AdSecPointParameter();
