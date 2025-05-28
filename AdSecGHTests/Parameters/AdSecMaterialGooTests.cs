@@ -24,7 +24,24 @@ namespace AdSecGHTests.Parameters {
         },
       };
       _materialGoo = new AdSecMaterialGoo(materialDesign);
-      Assert.Equal("", _materialGoo.ToString());
+    }
+
+    [Fact]
+    public void ShouldIncludeTheNameOfTheType() {
+      Assert.Contains("AdSec Material", _materialGoo.ToString());
+    }
+
+    [Fact]
+    public void ShouldIncludeTheDesignCode() {
+      Assert.Contains(_materialGoo.Material.DesignCodeName, _materialGoo.ToString());
+    }
+
+    [Fact]
+    public void ShouldBeSurroundedByParenthesis() {
+      string actualString = _materialGoo.ToString();
+      actualString = actualString.Replace("AdSec Material ", string.Empty).Trim();
+      Assert.StartsWith("(", actualString);
+      Assert.EndsWith(")", actualString);
     }
   }
 }
