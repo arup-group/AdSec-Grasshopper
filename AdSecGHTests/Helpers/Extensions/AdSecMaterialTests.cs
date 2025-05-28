@@ -4,6 +4,9 @@ using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
 
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.StandardMaterials;
+
 using TestGrasshopperObjects.Extensions;
 
 using Xunit;
@@ -84,7 +87,13 @@ namespace AdSecGHTests.Helpers.Extensions {
 
     [Fact]
     public void ReturnsMaterialWhenDataCorrect() {
-      var material = new AdSecMaterialGoo(new MaterialDesign());
+      var material = new AdSecMaterialGoo(new MaterialDesign() {
+        Material = Concrete.IS456.Edition_2000.M10,
+        DesignCode = new DesignCode() {
+          IDesignCode = IS456.Edition_2000,
+          DesignCodeName = "IS456 Edition 2000",
+        },
+      });
       ComponentTestHelper.SetInput(_component, material);
 
       object result = ComponentTestHelper.GetOutput(_component);

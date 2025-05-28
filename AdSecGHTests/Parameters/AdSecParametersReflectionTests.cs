@@ -79,8 +79,13 @@ namespace AdSecGHTests.Parameters {
       var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(thickness, length),
         new WebConstant(thickness)));
       var section = ISection.Create(profile, Concrete.ACI318.Edition_2002.Metric.MPa_20);
-      var designCode = new AdSecDesignCode(ACI318.Edition_2002.Metric, "test");
-      var adSecSection = new AdSecSection(section, designCode.DesignCode, "", "", Plane.WorldXY);
+
+      var _designCode = new DesignCode() {
+        IDesignCode = ACI318.Edition_2002.Metric,
+        DesignCodeName = "ACI318 Edition 2002",
+      };
+      var adSecDesignCode = new AdSecDesignCode(_designCode);
+      var adSecSection = new AdSecSection(section, adSecDesignCode.DesignCode, "", "", Plane.WorldXY);
       var adSec = IAdSec.Create(adSecSection.DesignCode);
       var solution = adSec.Analyse(adSecSection.Section);
       var solutionBuilder = new SolutionBuilder().Build();
@@ -94,10 +99,16 @@ namespace AdSecGHTests.Parameters {
       InstanceOfGoos.Add(new AdSecCrackGoo(new CrackLoad() { Plane = OasysPlane.PlaneYZ, Load = solutionBuilder.Serviceability.Check(load).MaximumWidthCrack, }));
       InstanceOfGoos.Add(
         new AdSecDeformationGoo(IDeformation.Create(GetStrainOne(), GetCurvatureOne(), GetCurvatureOne())));
-      InstanceOfGoos.Add(new AdSecDesignCodeGoo(designCode));
+      InstanceOfGoos.Add(new AdSecDesignCodeGoo(adSecDesignCode));
       InstanceOfGoos.Add(new AdSecFailureSurfaceGoo(new LoadSurfaceDesign() { LoadSurface = solution.Strength.GetFailureSurface(), LocalPlane = OasysPlane.PlaneXY }));
       InstanceOfGoos.Add(new AdSecLoadGoo(ILoad.Create(new Force(), new Moment(), new Moment()), Plane.WorldXY));
-      InstanceOfGoos.Add(new AdSecMaterialGoo(new MaterialDesign()));
+      InstanceOfGoos.Add(new AdSecMaterialGoo(new MaterialDesign() {
+        Material = Concrete.IS456.Edition_2000.M10,
+        DesignCode = new DesignCode() {
+          IDesignCode = IS456.Edition_2000,
+          DesignCodeName = "IS456 Edition 2000",
+        }
+      }));
       InstanceOfGoos.Add(new AdSecInteractionDiagramGoo(
         solution.Strength.GetForceMomentInteractionCurve(new Angle())[0], Angle.FromRadians(0), new Rectangle3d()));
       InstanceOfGoos.Add(new AdSecPointGoo(length, length));
@@ -116,7 +127,7 @@ namespace AdSecGHTests.Parameters {
         AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, new List<Point3d>()));
       InstanceOfGoos.Add(new AdSecStressStrainPointGoo(stressStrainPoint));
       InstanceOfGoos.Add(new AdSecSubComponentGoo(section, Plane.WorldXY, IPoint.Create(length, length),
-        designCode.DesignCode, "test", "test1"));
+        adSecDesignCode.DesignCode, "test", "test1"));
       InstanceOfGoos.Add(new AdSecNeutralAxisGoo(new NeutralAxis() { Angle = 0, Offset = length, Solution = solutionBuilder }));
     }
 

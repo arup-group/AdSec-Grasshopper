@@ -389,6 +389,14 @@ namespace Oasys.GH.Helpers {
           typeof(MomentParameter), goo => {
             return UnitHelpers.ParseToQuantity<Moment>(goo, DefaultUnits.MomentUnit);
           }
+        },{
+          typeof(DesignCodeParameter), goo => {
+            return goo is AdSecDesignCode value
+              ? new DesignCode {
+              IDesignCode = value.DesignCode,
+              DesignCodeName = value.DesignCodeName
+            }: goo;
+          }
         },
       };
 
