@@ -17,8 +17,7 @@ namespace AdSecGH.Parameters {
 
     public AdSecDesignCodeGoo(AdSecDesignCode item) : base(item) { }
 
-    public AdSecDesignCodeGoo(DesignCode designCode) : base(new AdSecDesignCode(designCode.IDesignCode,
-      designCode.DesignCodeName)) { }
+    public AdSecDesignCodeGoo(DesignCode designCode) : base(new AdSecDesignCode(designCode)) { }
 
     public override IGH_Goo Duplicate() {
       return Value.IsValid ? new AdSecDesignCodeGoo(Value) : null;

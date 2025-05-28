@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 
 using AdSecGHCore;
@@ -22,9 +24,9 @@ namespace AdSecGH.Parameters {
     public AdSecDesignCode() {
     }
 
-    public AdSecDesignCode(IDesignCode designCode, string designCodeName) {
-      DesignCode = designCode;
-      DesignCodeName = designCodeName;
+    public AdSecDesignCode(DesignCode designCode) {
+      DesignCode = designCode.IDesignCode;
+      DesignCodeName = designCode.DesignCodeName;
     }
 
     internal AdSecDesignCode(FieldInfo fieldDesignCode) {

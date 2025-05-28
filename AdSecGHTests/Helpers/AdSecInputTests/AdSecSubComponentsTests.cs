@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
@@ -139,8 +141,8 @@ namespace AdSecGHTests.Helpers {
       var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(thickness, length),
         new WebConstant(thickness)));
       var section = ISection.Create(profile, Concrete.ACI318.Edition_2002.Metric.MPa_20);
-      var designCode = new AdSecDesignCode(ACI318.Edition_2002.Metric, "test").DesignCode;
-      var adSecSection = new AdSecSection(section, designCode, "", "", Plane.WorldXY);
+
+      var adSecSection = new AdSecSection(section, ACI318.Edition_2002.Metric, "", "", Plane.WorldXY);
       var input = new AdSecSectionGoo(adSecSection);
 
       var objwrap = new List<GH_ObjectWrapper>() {
