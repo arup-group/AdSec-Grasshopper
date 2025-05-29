@@ -7,7 +7,7 @@
     <Platforms>x64</Platforms>
     <Title>AdSecGH</Title>
     <Company>Oasys</Company>
-    <Copyright>Copyright © Oasys 1985 - 2024</Copyright>
+    <Copyright>Copyright © Oasys 1985 - 2025</Copyright>
     <PackageProjectUrl>https://github.com/arup-group/AdSec-Grasshopper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/arup-group/AdSec-Grasshopper</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -21,7 +21,7 @@
 
       Contact oasys@arup.com to request a free trial version.
 
-      Copyright © Oasys 1985 - 2024
+      Copyright © Oasys 1985 - 2025
     </Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
