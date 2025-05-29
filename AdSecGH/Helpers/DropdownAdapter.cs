@@ -136,8 +136,11 @@ namespace Oasys.GH.Helpers {
     }
 
     public static Dictionary<Type, EngineeringUnits> ToEngineeringUnits() {
-      return new Dictionary<Type, EngineeringUnits> {
+      return new Dictionary<Type, EngineeringUnits>{
         { typeof(LengthUnit), EngineeringUnits.Length },
+        { typeof(ForceUnit), EngineeringUnits.Force },
+        { typeof(StrainUnit), EngineeringUnits.Strain },
+        { typeof(PressureUnit), EngineeringUnits.Stress },
       };
     }
 
