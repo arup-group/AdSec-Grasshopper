@@ -41,11 +41,17 @@ namespace Oasys.GH.Helpers {
       }
 
       BusinessComponent.Compute();
-      if (!AdapterBase.UpdateMessages(BusinessComponent, this)) {
-        return;
+      if (BusinessComponent is Function function) {
+        AdapterBase.UpdateMessages(function, this);
+
+        if (function.ErrorMessages.Count > 0) {
+          return;
+        }
       }
+
       BusinessComponent.SetOutputValues(this, DA);
     }
+
 
     protected override void BeforeSolveInstance() {
       UpdateDefaultUnits();

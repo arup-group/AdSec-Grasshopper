@@ -53,10 +53,19 @@ namespace Oasys.GH.Helpers {
 
     protected override void SolveInternal(IGH_DataAccess da) {
       BusinessComponent.UpdateInputValues(this, da);
-      BusinessComponent.Compute();
-      if (!AdapterBase.UpdateMessages(BusinessComponent, this)) {
+      if (RuntimeMessages(GH_RuntimeMessageLevel.Error).Count > 0) {
         return;
       }
+
+      BusinessComponent.Compute();
+      if (BusinessComponent is Function function) {
+        AdapterBase.UpdateMessages(function, this);
+
+        if (function.ErrorMessages.Count > 0) {
+          return;
+        }
+      }
+
       BusinessComponent.SetOutputValues(this, da);
     }
 
@@ -127,11 +136,8 @@ namespace Oasys.GH.Helpers {
     }
 
     public static Dictionary<Type, EngineeringUnits> ToEngineeringUnits() {
-      return new Dictionary<Type, EngineeringUnits>{
+      return new Dictionary<Type, EngineeringUnits> {
         { typeof(LengthUnit), EngineeringUnits.Length },
-        { typeof(ForceUnit), EngineeringUnits.Force },
-        { typeof(StrainUnit), EngineeringUnits.Strain },
-        { typeof(PressureUnit), EngineeringUnits.Stress },
       };
     }
 

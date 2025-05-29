@@ -17,7 +17,6 @@ using Grasshopper.Kernel.Types;
 using Microsoft.CSharp.RuntimeBinder;
 
 using Oasys.AdSec;
-using Oasys.AdSec.Reinforcement;
 
 using OasysGH.Parameters;
 using OasysGH.Units;
@@ -400,6 +399,14 @@ namespace Oasys.GH.Helpers {
           typeof(MomentParameter), goo => {
             return UnitHelpers.ParseToQuantity<Moment>(goo, DefaultUnits.MomentUnit);
           }
+        },{
+          typeof(DesignCodeParameter), goo => {
+            return goo is AdSecDesignCode value
+              ? new DesignCode {
+              IDesignCode = value.DesignCode,
+              DesignCodeName = value.DesignCodeName
+            }: goo;
+          }
         },
       };
 
@@ -469,12 +476,17 @@ namespace Oasys.GH.Helpers {
     }
 
     public static void UpdateInputValues(this IFunction function, GH_Component component, IGH_DataAccess dataAccess) {
+      if (function is Function coreFunction) {
+        coreFunction.ClearMessages();
+        coreFunction.ClearInputs();
+        coreFunction.ClearOutputs();
+      }
       foreach (var attribute in function.GetAllInputAttributes()) {
         int index = component.Params.IndexOfInputParam(attribute.Name);
+        dynamic valueBasedParameter = attribute;
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           dynamic inputs = null;
           if (dataAccess.GetData(index, ref inputs)) {
-            dynamic valueBasedParameter = attribute;
             if (GooToParam.ContainsKey(attribute.GetType())) {
               dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
               valueBasedParameter.Value = newValue;
@@ -490,7 +502,6 @@ namespace Oasys.GH.Helpers {
         } else if (attribute.GetAccess() == GH_ParamAccess.list) {
           var inputs = new List<object>();
           if (dataAccess.GetDataList(index, inputs)) {
-            dynamic valueBasedParameter = attribute;
             if (GooToParam.ContainsKey(attribute.GetType())) {
               dynamic newValue = GooToParam[attribute.GetType()](inputs);
               valueBasedParameter.Value = newValue;
