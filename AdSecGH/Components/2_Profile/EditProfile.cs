@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using AdSecGHCore.Constants;
-
 using Grasshopper.Kernel;
 
+using Oasys.GH.Helpers;
+
 using OasysGH;
-using OasysGH.Components;
 using OasysGH.Helpers;
 using OasysGH.Units.Helpers;
 
@@ -20,13 +21,8 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
-  public class EditProfile : GH_OasysDropDownComponent {
+  public class EditProfile : DropdownAdapter<EditProfileFunction> {
     private AngleUnit _angleUnit = AngleUnit.Radian;
-
-    public EditProfile() : base("Edit Profile", "ProfileEdit", "Modify an AdSec Profile", CategoryName.Name(),
-      SubCategoryName.Cat2()) {
-      Hidden = false; // sets the initial state of the component to hidden
-    }
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("78f26bee-c72c-4d88-9b30-492190df2910");
