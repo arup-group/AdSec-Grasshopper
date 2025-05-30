@@ -24,7 +24,6 @@ namespace AdSecGH.Components {
   public class EditProfile : DropdownAdapter<EditProfileFunction> {
     private AngleUnit _angleUnit = AngleUnit.Radian;
 
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("78f26bee-c72c-4d88-9b30-492190df2910");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
