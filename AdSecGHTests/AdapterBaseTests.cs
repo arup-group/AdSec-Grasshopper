@@ -42,5 +42,27 @@ namespace AdSecGHTests {
       Assert.Contains(message, _component.RuntimeMessages(GH_RuntimeMessageLevel.Remark));
     }
 
+    public class DummyFunction : Function {
+
+      public override FuncAttribute Metadata { get; set; }
+      public override Organisation Organisation { get; set; }
+      public override void Compute() { }
+    }
+
+    [Fact]
+    public void ShouldSkipRenameWhenParametersDoNotMatch() {
+      // Works well for valid component
+      string somethingNotRight = "SomethingNotRight";
+      _component.Params.Input[0].Name = somethingNotRight;
+      AdapterBase.RefreshParameter(_component.BusinessComponent, _component.Params);
+      Assert.NotEqual(somethingNotRight, _component.Params.Input[0].Name);
+
+      // But not for dummy function, as it doesn't have the right number of Attributes (empty)
+      var dummyFunction = new DummyFunction();
+      _component.Params.Input[0].Name = somethingNotRight;
+      AdapterBase.RefreshParameter(dummyFunction, _component.Params);
+      Assert.Equal(somethingNotRight, _component.Params.Input[0].Name);
+    }
+
   }
 }

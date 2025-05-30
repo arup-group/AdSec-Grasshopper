@@ -22,6 +22,7 @@ namespace AdSecGH.Components {
         component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, error);
       }
     }
+
     public static void UpdateDefaultUnits<T>(T BusinessComponent) {
       if (BusinessComponent is Function function) {
         function.MomentUnit = DefaultUnits.MomentUnit;
@@ -42,10 +43,13 @@ namespace AdSecGH.Components {
         RefreshParams(parameter.Input, function.GetAllInputAttributes());
         RefreshParams(parameter.Output, function.GetAllOutputAttributes());
       }
-
     }
 
     private static void RefreshParams(List<IGH_Param> parameters, Attribute[] attributes) {
+      if (parameters.Count != attributes.Length) {
+        return;
+      }
+
       for (int i = 0; i < parameters.Count; i++) {
         parameters[i].Name = attributes[i].Name;
         parameters[i].NickName = attributes[i].NickName;
