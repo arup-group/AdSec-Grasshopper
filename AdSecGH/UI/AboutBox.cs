@@ -11,7 +11,7 @@ namespace AdSecGH.UI {
   [SuppressMessage("Style", "IDE1006:Naming Styles",
     Justification = "Naming convention exception for this file")]
   internal partial class AboutBox : Form {
-    public static string AssemblyCompany => "Copyright © Oasys 1985 - 2024";
+    public static string AssemblyCompany => "Copyright © Oasys 1985 - 2025";
 #pragma warning disable S1075 // URIs should not be hardcoded
     private const string packagePath = @"rhino://package/search?name=adsec";
 #pragma warning restore S1075 // URIs should not be hardcoded

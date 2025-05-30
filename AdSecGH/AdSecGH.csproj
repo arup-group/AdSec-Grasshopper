@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <TargetFramework>net48</TargetFramework>
@@ -7,12 +7,12 @@
     <Platforms>x64</Platforms>
     <Title>AdSecGH</Title>
     <Company>Oasys</Company>
-    <Copyright>Copyright © Oasys 1985 - 2024</Copyright>
+    <Copyright>Copyright © Oasys 1985 - 2025</Copyright>
     <PackageProjectUrl>https://github.com/arup-group/AdSec-Grasshopper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/arup-group/AdSec-Grasshopper</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>AdSecLogo128.png</PackageIcon>
-    <Version>0.9.28-beta</Version>
+    <Version>0.9.29-beta</Version>
     <Description>Official Oasys AdSec Grasshopper Plugin
 
       AdSecGH is pre-release and under active development, including further testing to be undertaken. It is provided "as-is" and you bear the risk of using it. Future versions may contain breaking changes. Any files, results, or other types of output information created using AdSecGH should not be relied upon without thorough and independent checking.
@@ -21,7 +21,7 @@
 
       Contact oasys@arup.com to request a free trial version.
 
-      Copyright © Oasys 1985 - 2024
+      Copyright © Oasys 1985 - 2025
     </Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
@@ -59,15 +59,10 @@
     <PackageReference Include="Grasshopper" Version="6.27.20176.5001" IncludeAssets="compile;build">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.3</Version>
-    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
     <PackageReference Include="OasysGH" Version="1.2.4" />
-    <PackageReference Include="OasysUnits">
-      <Version>1.2.1</Version>
-    </PackageReference>
-    <PackageReference Include="RhinoCommon">
-      <Version>6.27.20176.5001</Version>
+    <PackageReference Include="OasysUnits" Version="1.2.1"/>
+    <PackageReference Include="RhinoCommon" Version="6.27.20176.5001">
       <IncludeAssets>compile;build</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
