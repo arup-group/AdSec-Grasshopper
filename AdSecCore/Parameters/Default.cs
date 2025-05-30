@@ -53,10 +53,10 @@ namespace AdSecCore.Parameters {
       };
     }
 
-    public static RebarGroupParameter RebarGroup(
+    public static RebarGroupArrayParameter RebarGroup(
       string name = "RebarGroup", string nickName = "RbG", string description = "Reinforcement Groups in the section",
       Access access = Access.List, bool optional = false) {
-      return new RebarGroupParameter {
+      return new RebarGroupArrayParameter {
         Name = name,
         NickName = nickName,
         Description = description,

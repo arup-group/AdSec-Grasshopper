@@ -33,6 +33,7 @@ namespace AdSecGH.Components {
         function.LengthUnitResult = DefaultUnits.LengthUnitResult;
         function.AxialStiffnessUnit = DefaultUnits.AxialStiffnessUnit;
         function.BendingStiffnessUnit = DefaultUnits.BendingStiffnessUnit;
+        function.MaterialStrainUnit = DefaultUnits.MaterialStrainUnit;
       }
     }
 
