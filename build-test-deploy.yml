@@ -2,6 +2,7 @@
 
 trigger:
   - main
+  - dev
 
 variables:
   - group: s3PushInstallers
