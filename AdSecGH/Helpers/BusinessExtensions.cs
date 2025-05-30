@@ -41,6 +41,8 @@ namespace Oasys.GH.Helpers {
         {
           typeof(SubComponentParameter), ParamGenericObject
         }, {
+          typeof(BooleanParameter), ConfigureParam<Param_Boolean>
+        }, {
           typeof(SubComponentArrayParameter), ParamGenericObject
         }, {
           typeof(DesignCodeParameter), ParamGenericObject

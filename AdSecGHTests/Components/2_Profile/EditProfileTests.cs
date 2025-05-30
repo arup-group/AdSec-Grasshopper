@@ -29,5 +29,10 @@ namespace AdSecGHTests.Components._2_Profile {
     public void ShouldHavePluginInfoReferenced() {
       Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
     }
+
+    [Fact]
+    public void ShouldHaveFourInputs() {
+      Assert.Equal(4, _component.Params.Input.Count);
+    }
   }
 }
