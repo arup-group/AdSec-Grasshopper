@@ -5,6 +5,7 @@ on:
     types: [opened, edited, reopened, synchronize]
     branches:
       - main
+      - dev
   workflow_call:
     inputs:
       mark_as_draft:
