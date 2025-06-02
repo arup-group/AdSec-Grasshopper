@@ -382,13 +382,12 @@ namespace AdSecGH.Helpers {
       for (path = 0; path < ghTypes.Branches.Count; path++) {
         var sectionLoads = new List<object>();
         for (index = 0; index < ghTypes.Branches[path].Count; index++) {
-          if (TryCastToLoad(ghTypes[path][index], out object sectionLoad)) {
-            sectionLoads.Add(sectionLoad);
+          if (TryCastToLoad(ghTypes[path][index], out dynamic sectionLoad)) {
+            sectionLoads.Add(sectionLoad.Value);
           } else {
             return false;
           }
         }
-
         loads.Add(path, sectionLoads);
       }
 

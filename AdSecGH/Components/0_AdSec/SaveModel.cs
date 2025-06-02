@@ -4,6 +4,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 
+using AdSecCore.Functions;
+using AdSecCore.Helpers;
+
 using AdSecGH.Helpers;
 using AdSecGH.Properties;
 
@@ -67,7 +70,7 @@ namespace AdSecGH.Components {
     }
 
     public void SaveAsFile() {
-      _fileName = AdSecFile.SaveFilePath();
+      _fileName = GhFileHelper.SaveFilePath();
       SaveJson();
       if (canOpen) {
         WriteFilePathToPanel();
@@ -140,8 +143,8 @@ namespace AdSecGH.Components {
       }
 
       var loads = this.GetLoads(DA, 1);
-
-      _jsonString = AdSecFile.ModelJson(sections, loads);
+      var sectionDesign = sections.Select(x => new SectionDesign() { Section = x.Section, DesignCode = new DesignCode() { IDesignCode = x.DesignCode } }).ToList();
+      _jsonString = FileHelper.ModelJson(sectionDesign, loads);
 
       // filepath
       string pathString = "";

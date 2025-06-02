@@ -4,6 +4,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 
+using AdSecCore.Helpers;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -152,11 +154,11 @@ namespace AdSecGH.Components {
       DA.GetDataList(1, planes);
 
       var sections = new List<AdSecSectionGoo>();
-      var code = AdSecFile.GetDesignCode(json);
+      var code = CodeHelper.GetDesignCode(json);
       if (code == null) {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to read DesignCode. DesignCode set to Eurocode.");
         code = new AdSecDesignCode {
-          DesignCode = AdSecFile.Codes["EC2_04"],
+          DesignCode = FileHelper.Codes["EC2_04"],
           DesignCodeName = "EC2_04",
         };
       }

@@ -7,7 +7,6 @@ using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Reinforcement.Groups;
 
 namespace AdSecCore.Builders {
-
   public class SolutionBuilder : IBuilder<SectionSolution> {
     private ISection Section { get; set; } = CreateRectangularSection();
     private IDesignCode DesignCode { get; set; } = IS456.Edition_2000;

@@ -4,18 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-using AdSecGH.Parameters;
+using AdSecCore.Functions;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
 
-using Rhino.UI;
-
-namespace AdSecGH.Helpers {
-  internal class AdSecFile {
-    private AdSecFile() { }
-    internal static readonly Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>() {
+namespace AdSecCore.Helpers {
+  public class FileHelper {
+    private FileHelper() { }
+    public static readonly Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>() {
       { "ACI318M_02",  ACI318.Edition_2002.Metric },
       { "ACI318M_05",  ACI318.Edition_2005.Metric },
       { "ACI318M_08",  ACI318.Edition_2008.Metric },
@@ -76,7 +74,7 @@ namespace AdSecGH.Helpers {
       { "IRC112_2011",  IRC112.Edition_2011 }
     };
 
-    internal static readonly Dictionary<string, string> CodesStrings = new Dictionary<string, string>()
+    public static readonly Dictionary<string, string> CodesStrings = new Dictionary<string, string>()
 {
       { "ACI318M_02", "ACI318+Edition_2002+Metric" },
       { "ACI318M_05", "ACI318+Edition_2005+Metric" },
@@ -138,27 +136,6 @@ namespace AdSecGH.Helpers {
       { "IRC112_2011", "IRC112+Edition_2011" }
     };
 
-    internal static AdSecDesignCode GetDesignCode(string json) {
-      // "codes":{"concrete":"EC2_GB_04"}
-
-      string[] jsonSplit = json.Split(new string[] { "\"codes\": {\r\n        \"concrete\": \"" }, StringSplitOptions.None);
-      if (jsonSplit.Length == 1) {
-        jsonSplit = json.Split(new string[] { "codes\":{\"concrete\":\"" }, StringSplitOptions.None);
-      }
-      if (jsonSplit.Length < 2) {
-        return null;
-      }
-      string codeName = jsonSplit[1].Split('"')[0];
-
-      if (!CodesStrings.TryGetValue(codeName, out string codeString)) {
-        return null;
-      }
-
-      var designCodeLevelsSplit = codeString.Split('+').ToList();
-
-      return new AdSecDesignCode(designCodeLevelsSplit);
-    }
-
     public static List<ISection> ReadSection(string fileName) {
       var sections = new List<ISection>();
       if (!File.Exists(fileName)) {
@@ -170,14 +147,14 @@ namespace AdSecGH.Helpers {
       return sections;
     }
 
-    internal static List<string> SectionJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
+    internal static List<string> SectionJson(List<SectionDesign> sections, Dictionary<int, List<object>> loads) {
       var jsonStrings = new List<string>();
 
       if (sections[0].DesignCode == null) {
         throw new ArgumentException("AdSec design code is null");
       }
 
-      var json = new JsonConverter(sections[0].DesignCode);
+      var json = new JsonConverter(sections[0].DesignCode.IDesignCode);
       for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
 
         PopulateLoadAndDeformationLists(loads, sectionId, out var adSecload, out var adSecDeformation);
@@ -204,12 +181,12 @@ namespace AdSecGH.Helpers {
 
       if (loads.ContainsKey(sectionId)) {
 
-        foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecLoadGoo))) {
-          adSecload.Add(((AdSecLoadGoo)item).Value);
+        foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(ILoad))) {
+          adSecload.Add(((ILoad)item));
         }
 
-        foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecDeformationGoo))) {
-          adSecDeformation.Add(((AdSecDeformationGoo)item).Value);
+        foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(IDeformation))) {
+          adSecDeformation.Add(((IDeformation)item));
         }
       }
     }
@@ -235,19 +212,12 @@ namespace AdSecGH.Helpers {
       throw new InvalidOperationException(messageBuilder.ToString());
     }
 
-    internal static string ModelJson(List<AdSecSection> sections, Dictionary<int, List<object>> loads) {
+    public static string ModelJson(List<SectionDesign> sections, Dictionary<int, List<object>> loads) {
       if (sections == null || !sections.Any()) {
         return string.Empty;
       }
       var json = SectionJson(sections, loads);
       return CombineJSonStrings(json);
-    }
-
-    internal static string SaveFilePath() {
-      var saveDialog = new SaveFileDialog {
-        Filter = "AdSec File (*.ads)|*.ads|All files (*.*)|*.*",
-      };
-      return saveDialog.ShowSaveDialog() ? saveDialog.FileName : string.Empty;
     }
 
     internal static string CombineJSonStrings(List<string> jsonStrings) {

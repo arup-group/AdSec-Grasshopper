@@ -126,7 +126,7 @@ namespace AdSecCore.Functions {
     public override void Compute() {
       // Get the rebar groupZz
       var rebarGroup = RebarGroupInput.Value;
-      var outRebarGroup = rebarGroup;
+      var outRebarGroup = rebarGroup.Duplicate();
       if (outRebarGroup?.Group == null) {
         ErrorMessages.Add("Invalid RebarGroup input.");
         return;

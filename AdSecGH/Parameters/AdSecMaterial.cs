@@ -4,6 +4,8 @@ using System.Reflection;
 
 using AdSecCore.Functions;
 
+using AdSecGHCore;
+
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
 

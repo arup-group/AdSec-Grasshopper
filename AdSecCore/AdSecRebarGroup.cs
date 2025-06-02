@@ -1,4 +1,6 @@
-﻿using Oasys.AdSec.Reinforcement;
+﻿using AdSecGH.Helpers;
+
+using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 
 namespace AdSecGH.Parameters {
@@ -30,7 +32,7 @@ namespace AdSecGH.Parameters {
     }
 
     public AdSecRebarGroup Duplicate() {
-      return (AdSecRebarGroup)MemberwiseClone();
+      return new AdSecRebarGroup(Group.Clone());
     }
 
     public override string ToString() {

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 using AdSecGH.Parameters;
+
+using AdSecGHCore;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
@@ -15,7 +19,6 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCore.Builders {
-
   public class SectionBuilder : IBuilder<ISection> {
     public readonly IConcrete defaultMaterial = Concrete.IS456.Edition_2000.M10;
 
