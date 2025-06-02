@@ -38,7 +38,7 @@ namespace AdSecGH.Parameters {
     private readonly Line previewXaxis;
     private readonly Line previewYaxis;
     private readonly Line previewZaxis;
-    private List<DrawInstructions> drawInstructions = new List<DrawInstructions>();
+    internal List<DrawInstructions> DrawInstructionsList { get; } = new List<DrawInstructions>();
 
     public AdSecSubComponentGoo(SubComponent subComponent) : base(subComponent.ISubComponent) {
       offset = subComponent.ISubComponent.Offset;
@@ -99,7 +99,7 @@ namespace AdSecGH.Parameters {
         return;
       }
 
-      drawInstructions.Clear();
+      DrawInstructionsList.Clear();
       AddBrepShaded(section.SolidBrep, section.ProfileData.ProfileColour);
 
       var subComponentsPreviewData = section.SubProfilesData;
@@ -114,7 +114,7 @@ namespace AdSecGH.Parameters {
         return;
       }
 
-      drawInstructions.Clear();
+      DrawInstructionsList.Clear();
 
       var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
       bool isSelected = !args.Color.IsRgbEqualTo(defaultCol);
@@ -124,7 +124,7 @@ namespace AdSecGH.Parameters {
       var rebarColor = isSelected ? Colour.UILightGrey : Color.Black;
       int rebarWidth = isSelected ? 2 : 1;
 
-      drawInstructions.Add(new DrawPolyline() { Color = edgeColor, Polyline = section.ProfileData.ProfileEdge, Thickness = mainEdgeWidth, });
+      DrawInstructionsList.Add(new DrawPolyline() { Color = edgeColor, Polyline = section.ProfileData.ProfileEdge, Thickness = mainEdgeWidth, });
 
       AddEdges(section.ProfileData.ProfileVoidEdges, edgeColor, voidEdgeWidth);
       AddEdges(section.SubProfilesData.SubEdges, edgeColor, voidEdgeWidth);
@@ -140,7 +140,7 @@ namespace AdSecGH.Parameters {
     }
 
     private void AddBrepShaded(Brep brep, DisplayMaterial displayMaterial) {
-      drawInstructions.Add(new DrawBrepShaded() { Brep = brep, DisplayMaterial = displayMaterial, });
+      DrawInstructionsList.Add(new DrawBrepShaded() { Brep = brep, DisplayMaterial = displayMaterial, });
     }
 
     private void AddBrepsShaded(IList<Brep> breps, IList<DisplayMaterial> displayMaterials) {
@@ -155,7 +155,7 @@ namespace AdSecGH.Parameters {
 
     private void AddEdges(IEnumerable<Polyline> edges, Color color, int width) {
       if (edges != null) {
-        drawInstructions.AddRange(edges.Select(item => new DrawPolyline() { Polyline = item, Color = color, Thickness = width, }));
+        DrawInstructionsList.AddRange(edges.Select(item => new DrawPolyline() { Polyline = item, Color = color, Thickness = width, }));
       }
     }
 
@@ -165,18 +165,19 @@ namespace AdSecGH.Parameters {
       }
 
       foreach (var edgeList in nestedEdges) {
-        drawInstructions.AddRange(edgeList.Select(item => new DrawPolyline() { Polyline = item, Color = color, Thickness = width, }));
+        DrawInstructionsList.AddRange(edgeList.Select(item => new DrawPolyline() { Polyline = item, Color = color, Thickness = width, }));
       }
     }
 
     private void AddCircles(IEnumerable<Circle> circles, Color color, int width) {
       if (circles != null) {
-        drawInstructions.AddRange(circles.Select(item => new DrawCircle() { Circle = item, Color = color, Thickness = width, }));
+        DrawInstructionsList.AddRange(circles.Select(item => new DrawCircle() { Circle = item, Color = color, Thickness = width, }));
       }
     }
 
     private void DrawAll(DisplayPipeline pipeline) {
-      foreach (var drawInstruction in drawInstructions.Where(drawInstruction => drawInstruction?.Geometry != null)) {
+      foreach (var drawInstruction in
+        DrawInstructionsList.Where(drawInstruction => drawInstruction?.Geometry != null)) {
         DrawingHelper.Draw(pipeline, drawInstruction);
       }
     }

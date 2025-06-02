@@ -1,7 +1,12 @@
-﻿using AdSecCore.Functions;
+﻿using System.Drawing;
+
+using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
+using AdSecGH.UI;
+
+using AdSecGHTests.Helpers;
 
 using Oasys.AdSec;
 using Oasys.AdSec.StandardMaterials;
@@ -11,6 +16,8 @@ using Oasys.Taxonomy.Profiles;
 using OasysUnits;
 using OasysUnits.Units;
 
+using Rhino;
+using Rhino.Display;
 using Rhino.Geometry;
 using Rhino.Geometry.Morphs;
 
@@ -90,6 +97,34 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void ToStringContainsInfoAboutOffset() {
       Assert.Contains("Offset", subComponentGoo.ToString());
+    }
+
+    [Fact]
+    public void ShouldDrawOnViewPortWires() {
+      using var doc = RhinoDoc.Create(string.Empty);
+      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White);
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+
+      subComponentGoo.DrawViewportWires(ghPreviewWireArgs);
+
+      Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
+      Assert.Single(subComponentGoo.DrawInstructionsList);
+      Assert.Equal(Colour.OasysYellow, subComponentGoo.DrawInstructionsList[0].Color);
+    }
+
+    [Fact]
+    public void ShouldDrawOnViewportMesh() {
+      using var doc = RhinoDoc.Create(string.Empty);
+      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(Color.White));
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+
+      subComponentGoo.DrawViewportMeshes(ghPreviewWireArgs);
+
+      Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
+      Assert.Single(subComponentGoo.DrawInstructionsList);
+      Assert.Equal(Color.White, (subComponentGoo.DrawInstructionsList[0] as DrawBrepShaded)?.DisplayMaterial.Specular);
     }
 
     private static AdSecSectionGoo GetAdSecSectionGoo() {

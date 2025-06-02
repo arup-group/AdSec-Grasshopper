@@ -7,6 +7,7 @@ using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
 using Rhino;
+using Rhino.Display;
 using Rhino.Geometry;
 
 using Xunit;
@@ -136,6 +137,13 @@ namespace AdSecGHTests.Helpers {
       var displayPipeline = document.Views.ActiveView.DisplayPipeline;
       var rhinoViewport = document.Views.ActiveView.ActiveViewport;
       return new GH_PreviewWireArgs(rhinoViewport, displayPipeline, defaultColour, 1);
+    }
+
+    public static GH_PreviewMeshArgs CreatePreviewMeshArgs(RhinoDoc document, DisplayMaterial displayMaterial) {
+      var displayPipeline = document.Views.ActiveView.DisplayPipeline;
+      var rhinoViewport = document.Views.ActiveView.ActiveViewport;
+      var meshParams = new MeshingParameters();
+      return new GH_PreviewMeshArgs(rhinoViewport, displayPipeline, displayMaterial, meshParams);
     }
 
   }
