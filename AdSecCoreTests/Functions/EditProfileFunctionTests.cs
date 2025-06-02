@@ -88,5 +88,15 @@ namespace AdSecCoreTests.Functions {
     public void ShouldHaveDefaultRadians() {
       Assert.Contains("rad", _function.Rotation.Name);
     }
+
+    [Fact]
+    public void ShouldDropdownWithDescriptionMeasure() {
+      Assert.Equal("Measure", _function.Options()[0].Description);
+    }
+
+    [Fact]
+    public void ShouldDropdownWithUnitTypeAngleUnit() {
+      Assert.Equal(typeof(AngleUnit), (_function.Options()[0] as UnitOptions).UnitType);
+    }
   }
 }

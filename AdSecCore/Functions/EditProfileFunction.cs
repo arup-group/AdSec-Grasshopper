@@ -55,7 +55,15 @@ namespace AdSecCore.Functions {
       };
     }
 
-    public IOptions[] Options() { return new IOptions[] { new UnitOptions() }; }
+    public IOptions[] Options() {
+      return new IOptions[] {
+        new UnitOptions() {
+          Description = "Measure",
+          UnitType = typeof(AngleUnit),
+          UnitValue = (int)AngleUnit,
+        }
+      };
+    }
 
     public override void Compute() { }
 

@@ -41,20 +41,6 @@ namespace AdSecGH.Components {
       Params.Input[1].Name = $"Rotation [{angleAbbreviation}]";
     }
 
-    protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new[] {
-        "Measure",
-      });
-
-      _dropDownItems = new List<List<string>>();
-      _selectedItems = new List<string>();
-
-      _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Angle));
-      _selectedItems.Add(_angleUnit.ToString());
-
-      _isInitialised = true;
-    }
-
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       pManager.AddGenericParameter("Profile", "Pf", "Modified AdSet Profile", GH_ParamAccess.item);
     }
