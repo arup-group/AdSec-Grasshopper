@@ -22,7 +22,7 @@ namespace AdSecCore.Functions {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat2()
     };
-    public ProfileParameter Profile { get; set; } = Default.Profile();
+    public ProfileParameter Profile { get; set; } = Default.Profile(description: "Modified AdSet Profile");
     public DoubleParameter Rotation { get; set; } = new DoubleParameter() {
       Name = "Rotation", // Need to include the unit
       NickName = "R",
@@ -53,6 +53,10 @@ namespace AdSecCore.Functions {
         ReflectedY,
         ReflectedZ
       };
+    }
+
+    public override Attribute[] GetAllOutputAttributes() {
+      return new Attribute[] { Profile };
     }
 
     public IOptions[] Options() {

@@ -41,10 +41,6 @@ namespace AdSecGH.Components {
       Params.Input[1].Name = $"Rotation [{angleAbbreviation}]";
     }
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("Profile", "Pf", "Modified AdSet Profile", GH_ParamAccess.item);
-    }
-
     protected override void SolveInternal(IGH_DataAccess DA) {
       // #### get material input and duplicate it ####
       var editPrf = this.GetAdSecProfileGoo(DA, 0);

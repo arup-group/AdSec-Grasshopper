@@ -44,6 +44,11 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void ShouldHaveFourOutputs() {
+      Assert.Single(_function.GetAllOutputAttributes());
+    }
+
+    [Fact]
     public void ShouldHaveProfileInput() {
       Assert.Equal("Profile", _function.Profile.Name);
     }
