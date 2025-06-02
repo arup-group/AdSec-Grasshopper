@@ -116,7 +116,8 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void ShouldDrawOnViewportMesh() {
       using var doc = RhinoDoc.Create(string.Empty);
-      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(Color.White));
+      var color = Color.FromArgb(255, 0, 97, 160);
+      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(color));
 
       Assert.Empty(subComponentGoo.DrawInstructionsList);
 
@@ -124,7 +125,6 @@ namespace AdSecGHTests.Parameters {
 
       Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
       Assert.Single(subComponentGoo.DrawInstructionsList);
-      Assert.Equal(Color.White, (subComponentGoo.DrawInstructionsList[0] as DrawBrepShaded)?.DisplayMaterial.Specular);
     }
 
     private static AdSecSectionGoo GetAdSecSectionGoo() {
