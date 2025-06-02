@@ -116,8 +116,8 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void ShouldDrawOnViewportMesh() {
       using var doc = RhinoDoc.Create(string.Empty);
-      var color = Color.FromArgb(255, 0, 97, 160);
-      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(color));
+      var ghPreviewWireArgs
+        = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(Color.White)); // color doesn;t matter here
 
       Assert.Empty(subComponentGoo.DrawInstructionsList);
 
