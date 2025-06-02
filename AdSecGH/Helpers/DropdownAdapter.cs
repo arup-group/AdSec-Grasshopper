@@ -70,36 +70,45 @@ namespace Oasys.GH.Helpers {
     }
 
     protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>();
-      _dropDownItems = new List<List<string>>();
-      _selectedItems = new List<string>();
+      ProcessDropdownItems();
+      _isInitialised = true;
+    }
 
+    internal void ProcessDropdownItems() {
+      if (!_isInitialised) {
+        _spacerDescriptions = new List<string>();
+        _dropDownItems = new List<List<string>>();
+        _selectedItems = new List<string>();
+      }
       UpdateDefaultUnits();
       if (BusinessComponent is IDropdownOptions dropdownOptions) {
-        foreach (var option in dropdownOptions.Options()) {
-          string description = string.Empty;
-          var items = new List<string>();
+        var options = dropdownOptions.Options();
+        for (int i = 0; i < options.Length; i++) {
+          var option = options[i];
+          string description = option.Description;
+          List<string> items = new List<string>();
           string selectedItem = string.Empty;
 
           if (option is EnumOptions enumOptions) {
-            description = enumOptions.Description;
             items = enumOptions.GetOptions().ToList();
-            selectedItem = items[0];
+            selectedItem = items.FirstOrDefault(x => x == enumOptions.Selected?.ToString()) ?? items[0];
           } else if (option is UnitOptions unitOptions) {
-            description = unitOptions.Description;
             var unitType = unitOptions.UnitType;
             var unitValue = unitOptions.UnitValue;
             items = UnitsHelper.GetFilteredAbbreviations(ToEngineeringUnits()[unitType]);
             selectedItem = UnitAbbreviation(unitType, unitValue);
           }
-
-          _spacerDescriptions.Add(description);
-          _dropDownItems.Add(items);
-          _selectedItems.Add(selectedItem);
+          if (_isInitialised) {
+            _spacerDescriptions[i] = description;
+            _dropDownItems[i] = items;
+            _selectedItems[i] = selectedItem;
+          } else {
+            _spacerDescriptions.Add(description);
+            _dropDownItems.Add(items);
+            _selectedItems.Add(selectedItem);
+          }
         }
       }
-
-      _isInitialised = true;
     }
 
     internal virtual void SetLocalUnits() { }
@@ -127,8 +136,11 @@ namespace Oasys.GH.Helpers {
     }
 
     public static Dictionary<Type, EngineeringUnits> ToEngineeringUnits() {
-      return new Dictionary<Type, EngineeringUnits> {
+      return new Dictionary<Type, EngineeringUnits>{
         { typeof(LengthUnit), EngineeringUnits.Length },
+        { typeof(ForceUnit), EngineeringUnits.Force },
+        { typeof(StrainUnit), EngineeringUnits.Strain },
+        { typeof(PressureUnit), EngineeringUnits.Stress },
       };
     }
 
