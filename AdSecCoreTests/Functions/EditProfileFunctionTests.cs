@@ -2,6 +2,8 @@
 
 using AdSecGHCore.Constants;
 
+using OasysUnits.Units;
+
 namespace AdSecCoreTests.Functions {
   public class EditProfileFunctionTests {
 
@@ -70,5 +72,21 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(_function.ReflectedZ, inputs[3]);
     }
 
+    [Fact]
+    public void ShouldIncludeDropdownWithAngleUnits() {
+      Assert.Contains(_function.Options(), x => x.GetType() == typeof(UnitOptions));
+    }
+
+    [Fact]
+    public void ShouldUpdateNameForRotationBasedOnUnit() {
+      _function.LocalAngleUnit = AngleUnit.Degree;
+      _function.UpdateUnits();
+      Assert.Contains("°", _function.Rotation.Name);
+    }
+
+    [Fact]
+    public void ShouldHaveDefaultRadians() {
+      Assert.Contains("rad", _function.Rotation.Name);
+    }
   }
 }

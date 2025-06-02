@@ -55,25 +55,6 @@ namespace AdSecGH.Components {
       _isInitialised = true;
     }
 
-    protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      string angleAbbreviation = Angle.GetAbbreviation(_angleUnit);
-
-      pManager.AddGenericParameter("Profile", "Pf", "AdSet Profile to Edit or get information from",
-        GH_ParamAccess.item);
-      pManager.AddGenericParameter($"Rotation [{angleAbbreviation}]", "R",
-        "[Optional] The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.",
-        GH_ParamAccess.item);
-      pManager.AddBooleanParameter("isReflectedY", "rY",
-        "[Optional] Reflects the profile over the y-axis in the local coordinate system.", GH_ParamAccess.item);
-      pManager.AddBooleanParameter("isReflectedZ", "rZ",
-        "[Optional] Reflects the profile over the z-axis in the local coordinate system.", GH_ParamAccess.item);
-
-      // make all but first input optional
-      for (int i = 1; i < pManager.ParamCount; i++) {
-        pManager[i].Optional = true;
-      }
-    }
-
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       pManager.AddGenericParameter("Profile", "Pf", "Modified AdSet Profile", GH_ParamAccess.item);
     }

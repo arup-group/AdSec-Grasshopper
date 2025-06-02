@@ -2,8 +2,16 @@
 
 using AdSecGHCore.Constants;
 
+using OasysUnits.Units;
+
 namespace AdSecCore.Functions {
-  public class EditProfileFunction : Function {
+  public class EditProfileFunction : Function, IDropdownOptions, ILocalUnits {
+    public AngleUnit LocalAngleUnit { get; set; } = AngleUnit.Radian;
+
+    public EditProfileFunction() {
+      UpdateUnits();
+      UpdateParameter();
+    }
 
     public override FuncAttribute Metadata { get; set; } = new FuncAttribute() {
       Name = "Edit Profile",
@@ -18,7 +26,8 @@ namespace AdSecCore.Functions {
     public DoubleParameter Rotation { get; set; } = new DoubleParameter() {
       Name = "Rotation", // Need to include the unit
       NickName = "R",
-      Description = "[Optional] The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.",
+      Description
+        = "[Optional] The angle at which the profile is rotated. Positive rotation is anti-clockwise around the x-axis in the local coordinate system.",
       Access = Access.Item,
       Optional = true,
     };
@@ -46,6 +55,16 @@ namespace AdSecCore.Functions {
       };
     }
 
+    public IOptions[] Options() { return new IOptions[] { new UnitOptions() }; }
+
     public override void Compute() { }
+
+    protected sealed override void UpdateParameter() {
+      Rotation.Name = UnitExtensions.NameWithUnits("Rotation", AngleUnit);
+    }
+
+    public void UpdateUnits() {
+      AngleUnit = LocalAngleUnit;
+    }
   }
 }
