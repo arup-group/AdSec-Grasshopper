@@ -1,4 +1,6 @@
-﻿using AdSecCore.Functions;
+﻿using System;
+
+using AdSecCore.Functions;
 
 using AdSecGH;
 using AdSecGH.Components;
@@ -23,6 +25,32 @@ namespace AdSecGHTests.Components {
       _component = new EditSection();
       var section = new AdSecSectionGoo(new AdSecSection(SampleData.GetSectionDesign()));
       _component.SetInputParamAt(0, section);
+    }
+
+    private AdSecDesignCodeGoo GetDesignCode() {
+      AdSecUtility.LoadAdSecAPI();
+      var component = new CreateDesignCode();
+      component.SetSelected(0, 1);
+      return (AdSecDesignCodeGoo)ComponentTestHelper.GetOutput(component);
+    }
+
+    [Fact]
+    public void CanSetAdSecDesignCodeGooObject() {
+      ComponentTestHelper.SetInput(_component, GetDesignCode(), 3);
+      ComponentTestHelper.ComputeData(_component);
+      Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
+    }
+
+    [Fact]
+    public void CanSetDesignCodeObject() {
+      var designCodeGoo = GetDesignCode();
+      var designCode = new DesignCode {
+        IDesignCode = designCodeGoo.Value.DesignCode,
+        DesignCodeName = designCodeGoo.Value.DesignCodeName
+      };
+      ComponentTestHelper.SetInput(_component, designCode, 3);
+      ComponentTestHelper.ComputeData(_component);
+      Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
     }
 
     [Fact]

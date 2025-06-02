@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 
 using AdSecGHCore;
@@ -22,9 +24,9 @@ namespace AdSecGH.Parameters {
     public AdSecDesignCode() {
     }
 
-    public AdSecDesignCode(IDesignCode designCode, string designCodeName) {
-      DesignCode = designCode;
-      DesignCodeName = designCodeName;
+    public AdSecDesignCode(DesignCode designCode) {
+      DesignCode = designCode.IDesignCode;
+      DesignCodeName = designCode.DesignCodeName;
     }
 
     internal AdSecDesignCode(FieldInfo fieldDesignCode) {
@@ -35,10 +37,11 @@ namespace AdSecGH.Parameters {
           = "Unable to retrieve the full type name from the provided FieldInfo. Ensure that the FieldInfo belongs to a valid type within the 'Oasys.AdSec.DesignCode' namespace.";
         throw new ArgumentNullException(nameof(fieldDesignCode), Message);
       }
-
+      designCodeReflectedLevels = $"{designCodeReflectedLevels}+{fieldDesignCode.Name}";
       var designCodeLevelsSplit = designCodeReflectedLevels.Split('+').ToList();
-      CreateFromReflectedLevels(designCodeLevelsSplit, true);
+      CreateFromReflectedLevels(designCodeLevelsSplit);
     }
+
 
     internal AdSecDesignCode(List<string> designCodeReflectedLevels) {
       CreateFromReflectedLevels(designCodeReflectedLevels);
@@ -49,7 +52,9 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return (string.IsNullOrEmpty(DesignCodeName) ? DesignCode?.ToString() : DesignCodeName.Replace("  ", " ")) ?? string.Empty;
+      string description = (string.IsNullOrEmpty(DesignCodeName) ? DesignCode?.ToString() : DesignCodeName.Replace("  ", " ")) ?? string.Empty;
+      description = description.Replace("+", " ");
+      return description;
     }
 
     private void CreateFromReflectedLevels(List<string> designCodeReflectedLevels, bool fromDesignCode = false) {

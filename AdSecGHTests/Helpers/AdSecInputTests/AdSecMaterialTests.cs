@@ -5,6 +5,9 @@ using AdSecGH.Parameters;
 
 using Grasshopper.Kernel.Types;
 
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.StandardMaterials;
+
 using Xunit;
 
 namespace AdSecGHTests.Helpers {
@@ -27,23 +30,20 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToAdSecMaterialReturnsDesignCode() {
-      var material = new AdSecMaterial() {
-        GradeName = "test",
-      };
       var materialDesign = new MaterialDesign() {
-        Material = material.Material,
+        Material = Concrete.IS456.Edition_2000.M10,
         DesignCode = new DesignCode() {
-          IDesignCode = material.DesignCode?.DesignCode,
-          DesignCodeName = material.DesignCodeName,
+          IDesignCode = IS456.Edition_2000,
+          DesignCodeName = "IS456 Edition 2000",
         },
-        GradeName = material.GradeName,
+        GradeName = "test"
       };
       var objwrap = new GH_ObjectWrapper(new AdSecMaterialGoo(materialDesign));
       bool castSuccessful = AdSecInput.TryCastToAdSecMaterial(objwrap, ref _adSecMaterial);
 
       Assert.True(castSuccessful);
       Assert.NotNull(_adSecMaterial);
-      Assert.False(_adSecMaterial.IsValid);
+      Assert.True(_adSecMaterial.IsValid);
       Assert.Equal("test", _adSecMaterial.GradeName);
     }
   }

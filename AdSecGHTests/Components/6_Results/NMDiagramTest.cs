@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using AdSecGH.Components;
+﻿using AdSecGH.Components;
 using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
