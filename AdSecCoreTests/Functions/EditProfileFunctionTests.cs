@@ -106,7 +106,9 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldDropdownWithUnitTypeAngleUnit() {
-      Assert.Equal(typeof(AngleUnit), (_function.Options()[0] as UnitOptions).UnitType);
+      var unitOptions = _function.Options()[0] as UnitOptions;
+      Assert.NotNull(unitOptions);
+      Assert.Equal(typeof(AngleUnit), unitOptions.UnitType);
     }
 
     [Fact]
