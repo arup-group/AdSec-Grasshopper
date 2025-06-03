@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
-using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
@@ -14,10 +10,8 @@ using Grasshopper.Kernel;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Helpers;
 using OasysGH.Units.Helpers;
 
-using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
