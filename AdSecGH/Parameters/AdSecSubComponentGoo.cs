@@ -107,6 +107,7 @@ namespace AdSecGH.Parameters {
 
       AddBrepsShaded(subComponentsPreviewData.SubProfiles, subComponentsPreviewData.SubColours);
       AddBrepsShaded(sectionReinforcementData.Rebars, sectionReinforcementData.RebarColours);
+      DrawAll(args.Pipeline);
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
