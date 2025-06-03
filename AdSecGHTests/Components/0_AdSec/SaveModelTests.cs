@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 
+using AdSecGH;
 using AdSecGH.Components;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
@@ -16,6 +18,7 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.StandardMaterials;
+using Oasys.GH.Helpers;
 
 using OasysUnits;
 
@@ -307,6 +310,16 @@ namespace AdSecGHTests.Components.AdSec {
       var section = AdSecUtility.SectionObject(null, concreteMaterial, rebarMaterial);
       var exception = Assert.Throws<ArgumentException>(() => AdSecFile.ModelJson(new List<AdSecSection> { section }, loads));
       Assert.Contains("design code is null", exception.Message);
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(_component.MatchesExpectedIcon(Resources.SaveAdSec));
     }
   }
 }

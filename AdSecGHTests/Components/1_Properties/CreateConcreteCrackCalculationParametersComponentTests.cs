@@ -1,7 +1,11 @@
-﻿using AdSecGH.Components;
+﻿using AdSecGH;
+using AdSecGH.Components;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
+
+using Oasys.GH.Helpers;
 
 using OasysGH.Components;
 
@@ -42,6 +46,18 @@ namespace AdSecGHTests.Properties {
     public void DeserializeTest() {
       var comp = ComponentMother();
       Assert.Empty(OasysDropDownComponentTestHelper.DeserializeTest(comp));
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      var _component = ComponentMother();
+      Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      var _component = ComponentMother();
+      Assert.True(_component.MatchesExpectedIcon(Resources.CreateCrackCalcParams));
     }
   }
 }
