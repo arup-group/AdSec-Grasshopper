@@ -170,7 +170,7 @@ namespace AdSecCore.Functions {
   }
 
   public class RebarBundleParameter : ParameterAttribute<IBarBundle> { }
-  public class BooleanParameter : ParameterAttribute<bool> { }
+  public class BooleanParameter : ParameterAttribute<bool?> { }
   public class RebarLayerParameter : BaseArrayParameter<ILayer> { }
 
   public class RebarGroupArrayParameter : BaseArrayParameter<AdSecRebarGroup> { }

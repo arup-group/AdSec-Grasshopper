@@ -76,8 +76,13 @@ namespace AdSecCore.Functions {
     public override void Compute() {
       ProfileOut.Value = Profile.Value;
       ProfileOut.Value.Profile.Rotation = Angle.From(Rotation.Value, AngleUnit);
-      ProfileOut.Value.Profile.IsReflectedY = ReflectedY.Value;
-      ProfileOut.Value.Profile.IsReflectedZ = ReflectedZ.Value;
+      if (ReflectedY.Value.HasValue) {
+        ProfileOut.Value.Profile.IsReflectedY = ReflectedY.Value.Value;
+      }
+
+      if (ReflectedZ.Value.HasValue) {
+        ProfileOut.Value.Profile.IsReflectedZ = ReflectedZ.Value.Value;
+      }
     }
 
     protected sealed override void UpdateParameter() {

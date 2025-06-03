@@ -3,6 +3,7 @@ using AdSecCore.Functions;
 
 using AdSecGHCore.Constants;
 
+using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCoreTests.Functions {
@@ -125,6 +126,13 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(Math.PI, _function.ProfileOut.Value.Profile.Rotation.Radians);
     }
 
+    [Fact(Skip = "Not implemented yet")]
+    public void ShouldNotChangeTheRotationIfNotProvided() {
+      _function.Profile.Value.Profile.Rotation = Angle.From(Math.PI, AngleUnit.Radian);
+      _function.Compute();
+      Assert.Equal(Math.PI, _function.ProfileOut.Value.Profile.Rotation.Radians);
+    }
+
     [Fact]
     public void ShouldChangeTheReflectionYIfProvided() {
       _function.ReflectedY.Value = true;
@@ -133,8 +141,22 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void ShouldNotChangeTheReflectionYIfNotProvided() {
+      _function.Profile.Value.Profile.IsReflectedY = true;
+      _function.Compute();
+      Assert.True(_function.ProfileOut.Value.Profile.IsReflectedY);
+    }
+
+    [Fact]
     public void ShouldChangeTheReflectionZIfProvided() {
       _function.ReflectedZ.Value = true;
+      _function.Compute();
+      Assert.True(_function.ProfileOut.Value.Profile.IsReflectedZ);
+    }
+
+    [Fact]
+    public void ShouldNotChangeTheReflectionZIfNotProvided() {
+      _function.Profile.Value.Profile.IsReflectedZ = true;
       _function.Compute();
       Assert.True(_function.ProfileOut.Value.Profile.IsReflectedZ);
     }
