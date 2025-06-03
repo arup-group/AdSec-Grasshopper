@@ -11,7 +11,7 @@ namespace AdSecCore.Functions {
     public LengthUnit LocalLengthUnitGeometry { get; set; } = LengthUnit.Meter;
     public event Action OnVariableInputChanged;
     public event Action OnDropdownChanged;
-    public FoldMode Mode = FoldMode.Distance;
+    private FoldMode _mode = FoldMode.Distance;
 
     public CreateRebarSpacingFunction() {
       UpdateUnits();
@@ -52,7 +52,7 @@ namespace AdSecCore.Functions {
 
     public override Attribute[] GetAllInputAttributes() {
       var attributes = new Attribute[] { Rebar, Spacing };
-      if (Mode == FoldMode.Count) {
+      if (_mode == FoldMode.Count) {
         attributes = new Attribute[] { Rebar, Count };
       }
 
@@ -79,7 +79,7 @@ namespace AdSecCore.Functions {
         EnumType = typeof(FoldMode)
       };
 
-      if (Mode == FoldMode.Count) {
+      if (_mode == FoldMode.Count) {
         return new IOptions[] {
           enumOptions
         };
@@ -95,7 +95,7 @@ namespace AdSecCore.Functions {
     }
 
     public void SetMode(FoldMode mode) {
-      Mode = mode;
+      _mode = mode;
       UpdateParameter();
       OnVariableInputChanged?.Invoke();
       OnDropdownChanged?.Invoke();
