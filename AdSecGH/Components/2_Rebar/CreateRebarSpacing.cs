@@ -71,6 +71,7 @@ namespace AdSecGH.Components {
         _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
       }
 
+      BusinessComponent.SetMode(_mode);
       base.UpdateUIFromSelectedItems();
     }
   }
