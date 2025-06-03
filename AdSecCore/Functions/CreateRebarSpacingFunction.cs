@@ -73,11 +73,19 @@ namespace AdSecCore.Functions {
     }
 
     public IOptions[] Options() {
+      var enumOptions = new EnumOptions() {
+        Description = "Spacing method",
+        EnumType = typeof(FoldMode)
+      };
+
+      if (Mode == FoldMode.Count) {
+        return new IOptions[] {
+          enumOptions
+        };
+      }
+
       return new IOptions[] {
-        new EnumOptions() {
-          Description = "Spacing method",
-          EnumType = typeof(FoldMode)
-        },
+        enumOptions,
         new UnitOptions() {
           UnitType = typeof(LengthUnit),
           UnitValue = (int)LengthUnitGeometry,

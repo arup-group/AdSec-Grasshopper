@@ -62,46 +62,46 @@ namespace AdSecGH.Components {
       base.UpdateUI();
     }
 
-    public override void VariableParameterMaintenance() {
-      if (_mode == FoldMode.Distance) {
-        string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-        Params.Input[1].Name = $"Spacing [{unitAbbreviation}]";
-        Params.Input[1].NickName = "S";
-        Params.Input[1].Description
-          = "Number of bars is calculated based on the available length and the given bar pitch. The bar pitch is re-calculated to place the bars at equal spacing, with a maximum final pitch of the given value. Example: If the available length for the bars is 1000mm and the given bar pitch is 300mm, then the number of spacings that can fit in the available length is calculated as 1000 / 300 i.e. 3.333. The number of spacings is rounded up (3.333 rounds up to 4) and the bar pitch re-calculated (1000mm / 4), resulting in a final pitch of 250mm.";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
-      }
+    // public override void VariableParameterMaintenance() {
+    //   if (_mode == FoldMode.Distance) {
+    //     string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
+    //     Params.Input[1].Name = $"Spacing [{unitAbbreviation}]";
+    //     Params.Input[1].NickName = "S";
+    //     Params.Input[1].Description
+    //       = "Number of bars is calculated based on the available length and the given bar pitch. The bar pitch is re-calculated to place the bars at equal spacing, with a maximum final pitch of the given value. Example: If the available length for the bars is 1000mm and the given bar pitch is 300mm, then the number of spacings that can fit in the available length is calculated as 1000 / 300 i.e. 3.333. The number of spacings is rounded up (3.333 rounds up to 4) and the bar pitch re-calculated (1000mm / 4), resulting in a final pitch of 250mm.";
+    //     Params.Input[1].Access = GH_ParamAccess.item;
+    //     Params.Input[1].Optional = false;
+    //   }
+    //
+    //   if (_mode == FoldMode.Count) {
+    //     Params.Input[1].Name = "Count";
+    //     Params.Input[1].NickName = "N";
+    //     Params.Input[1].Description
+    //       = "The number of bundles or single bars. The bundles or single bars are spaced out evenly over the available space.";
+    //     Params.Input[1].Access = GH_ParamAccess.item;
+    //     Params.Input[1].Optional = false;
+    //   }
+    // }
 
-      if (_mode == FoldMode.Count) {
-        Params.Input[1].Name = "Count";
-        Params.Input[1].NickName = "N";
-        Params.Input[1].Description
-          = "The number of bundles or single bars. The bundles or single bars are spaced out evenly over the available space.";
-        Params.Input[1].Access = GH_ParamAccess.item;
-        Params.Input[1].Optional = false;
-      }
-    }
-
-    protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new[] {
-        "Spacing method",
-        "Measure",
-      });
-
-      _dropDownItems = new List<List<string>>();
-      _selectedItems = new List<string>();
-
-      _dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
-      _selectedItems.Add(_dropDownItems[0][0]);
-
-      // length
-      _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
-      _selectedItems.Add(Length.GetAbbreviation(_lengthUnit));
-
-      _isInitialised = true;
-      _mode = FoldMode.Distance;
-    }
+    // protected override void InitialiseDropdowns() {
+    //   _spacerDescriptions = new List<string>(new[] {
+    //     "Spacing method",
+    //     "Measure",
+    //   });
+    //
+    //   _dropDownItems = new List<List<string>>();
+    //   _selectedItems = new List<string>();
+    //
+    //   _dropDownItems.Add(Enum.GetNames(typeof(FoldMode)).ToList());
+    //   _selectedItems.Add(_dropDownItems[0][0]);
+    //
+    //   // length
+    //   _dropDownItems.Add(UnitsHelper.GetFilteredAbbreviations(EngineeringUnits.Length));
+    //   _selectedItems.Add(Length.GetAbbreviation(_lengthUnit));
+    //
+    //   _isInitialised = true;
+    //   _mode = FoldMode.Distance;
+    // }
 
     // protected override void RegisterInputParams(GH_InputParamManager pManager) {
     //   string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);

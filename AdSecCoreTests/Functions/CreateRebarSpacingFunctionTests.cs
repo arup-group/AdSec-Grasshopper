@@ -98,5 +98,11 @@ namespace AdSecCoreTests.Functions {
       _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
       Assert.Equal(_function.Count, _function.GetAllInputAttributes()[1]);
     }
+
+    [Fact]
+    public void ShouldHaveOneDropdownForCount() {
+      _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
+      Assert.Single(_function.Options());
+    }
   }
 }
