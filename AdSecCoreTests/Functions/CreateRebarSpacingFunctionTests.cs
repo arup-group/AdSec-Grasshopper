@@ -82,5 +82,21 @@ namespace AdSecCoreTests.Functions {
     public void ShouldIncludeTheUnitInTheSpacingName() {
       Assert.Contains("[m]", _function.Spacing.Name);
     }
+
+    [Fact]
+    public void ShouldHaveDropdownForMeasure() {
+      Assert.Contains(_function.Options(), x => x.Description == "Measure");
+    }
+
+    [Fact]
+    public void ShouldHaveDropdownForSpacingMethod() {
+      Assert.Contains(_function.Options(), x => x.Description == "Spacing method");
+    }
+
+    [Fact]
+    public void ShouldChangeInputFromDistanceToCount() {
+      _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
+      Assert.Equal(_function.Count, _function.GetAllInputAttributes()[1]);
+    }
   }
 }

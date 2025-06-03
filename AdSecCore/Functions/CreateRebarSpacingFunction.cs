@@ -1,12 +1,16 @@
-﻿using AdSecCore.Parameters;
+﻿using System;
+
+using AdSecCore.Parameters;
 
 using AdSecGHCore.Constants;
 
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
-  public class CreateRebarSpacingFunction : Function, ILocalUnits {
+  public class CreateRebarSpacingFunction : Function, IDropdownOptions, ILocalUnits, IVariableInput {
     public LengthUnit LocalLengthUnitGeometry { get; set; } = LengthUnit.Meter;
+    public event Action OnVariableInputChanged;
+    public FoldMode Mode = FoldMode.Distance;
 
     public CreateRebarSpacingFunction() {
       UpdateUnits();
@@ -46,7 +50,12 @@ namespace AdSecCore.Functions {
     };
 
     public override Attribute[] GetAllInputAttributes() {
-      return new Attribute[] { Rebar, Spacing };
+      var attributes = new Attribute[] { Rebar, Spacing };
+      if (Mode == FoldMode.Count) {
+        attributes = new Attribute[] { Rebar, Count };
+      }
+
+      return attributes;
     }
 
     public override Attribute[] GetAllOutputAttributes() {
@@ -62,5 +71,30 @@ namespace AdSecCore.Functions {
     protected sealed override void UpdateParameter() {
       Spacing.Name = UnitExtensions.NameWithUnits("Spacing", LengthUnitGeometry);
     }
+
+    public IOptions[] Options() {
+      return new IOptions[] {
+        new EnumOptions() {
+          Description = "Spacing method",
+          EnumType = typeof(FoldMode)
+        },
+        new UnitOptions() {
+          UnitType = typeof(LengthUnit),
+          UnitValue = (int)LengthUnitGeometry,
+        }
+      };
+    }
+
+    public void SetMode(FoldMode mode) {
+      Mode = mode;
+      UpdateParameter();
+      OnVariableInputChanged?.Invoke();
+    }
+
+    public enum FoldMode {
+      Distance,
+      Count,
+    }
+
   }
 }
