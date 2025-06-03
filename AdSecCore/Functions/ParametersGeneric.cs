@@ -170,8 +170,8 @@ namespace AdSecCore.Functions {
   }
 
   public class RebarBundleParameter : ParameterAttribute<IBarBundle> { }
-  public class RebarLayerParameter : BaseArrayParameter<ILayer> { }
-
+  public class RebarLayerArrayParameter : BaseArrayParameter<ILayer> { }
+  public class RebarLayerParameter : ParameterAttribute<ILayer> { }
   public class RebarGroupArrayParameter : BaseArrayParameter<AdSecRebarGroup> { }
   public class RebarGroupParameter : ParameterAttribute<AdSecRebarGroup> { }
 
