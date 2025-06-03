@@ -69,10 +69,5 @@ namespace AdSecGH.Components {
         DA.SetData(0, new AdSecProfileGoo(editPrf.Profile, editPrf.LocalPlane));
       }
     }
-
-    protected override void UpdateUIFromSelectedItems() {
-      _angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), _selectedItems[0]);
-      base.UpdateUIFromSelectedItems();
-    }
   }
 }
