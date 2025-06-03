@@ -380,6 +380,20 @@ namespace Oasys.GH.Helpers {
             return null;
           }
         }, {
+          typeof(BooleanParameter), goo => {
+            if (goo is bool value) {
+              return value;
+            }
+            return null;
+          }
+        }, {
+          typeof(NullableDoubleParameter), goo => {
+            if (goo is double value) {
+              return value;
+            }
+            return null;
+          }
+        }, {
           typeof(DoubleArrayParameter), goo => {
             var list = goo as List<object>;
             return list.Select(x => {
