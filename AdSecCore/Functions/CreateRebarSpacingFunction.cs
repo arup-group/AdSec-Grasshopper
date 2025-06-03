@@ -2,8 +2,16 @@
 
 using AdSecGHCore.Constants;
 
+using OasysUnits.Units;
+
 namespace AdSecCore.Functions {
-  public class CreateRebarSpacingFunction : Function {
+  public class CreateRebarSpacingFunction : Function, ILocalUnits {
+    public LengthUnit LocalLengthUnitGeometry { get; set; } = LengthUnit.Meter;
+
+    public CreateRebarSpacingFunction() {
+      UpdateUnits();
+      UpdateParameter();
+    }
 
     public override FuncAttribute Metadata { get; set; } = new FuncAttribute() {
       Name = "Create Rebar Spacing",
@@ -46,5 +54,13 @@ namespace AdSecCore.Functions {
     }
 
     public override void Compute() { }
+
+    public void UpdateUnits() {
+      LengthUnitGeometry = LocalLengthUnitGeometry;
+    }
+
+    protected sealed override void UpdateParameter() {
+      Spacing.Name = UnitExtensions.NameWithUnits("Spacing", LengthUnitGeometry);
+    }
   }
 }

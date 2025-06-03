@@ -77,5 +77,10 @@ namespace AdSecCoreTests.Functions {
       var outputs = _function.GetAllOutputAttributes();
       Assert.Equal(_function.SpacedRebars, outputs[0]);
     }
+
+    [Fact]
+    public void ShouldIncludeTheUnitInTheSpacingName() {
+      Assert.Contains("[m]", _function.Spacing.Name);
+    }
   }
 }
