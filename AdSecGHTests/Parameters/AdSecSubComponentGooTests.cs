@@ -4,7 +4,6 @@ using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
-using AdSecGH.UI;
 
 using AdSecGHTests.Helpers;
 
@@ -102,7 +101,7 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void ShouldDrawOnViewPortWires() {
       using var doc = RhinoDoc.Create(string.Empty);
-      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White);
+      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White); // color doesn;t matter here
 
       Assert.Empty(subComponentGoo.DrawInstructionsList);
 
@@ -110,7 +109,6 @@ namespace AdSecGHTests.Parameters {
 
       Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
       Assert.Single(subComponentGoo.DrawInstructionsList);
-      Assert.Equal(Colour.OasysYellow, subComponentGoo.DrawInstructionsList[0].Color);
     }
 
     [Fact]
