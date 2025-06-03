@@ -126,7 +126,7 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(Math.PI, _function.ProfileOut.Value.Profile.Rotation.Radians);
     }
 
-    [Fact(Skip = "Not implemented yet")]
+    [Fact]
     public void ShouldNotChangeTheRotationIfNotProvided() {
       _function.Profile.Value.Profile.Rotation = Angle.From(Math.PI, AngleUnit.Radian);
       _function.Compute();

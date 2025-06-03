@@ -25,9 +25,10 @@ namespace AdSecCore.Functions {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat2()
     };
-    public ProfileParameter Profile { get; set; } = Default.Profile(description: "AdSec Profile to Edit or get information from");
+    public ProfileParameter Profile { get; set; }
+      = Default.Profile(description: "AdSec Profile to Edit or get information from");
     public ProfileParameter ProfileOut { get; set; } = Default.Profile(description: "Modified AdSet Profile");
-    public DoubleParameter Rotation { get; set; } = new DoubleParameter() {
+    public NullableDoubleParameter Rotation { get; set; } = new NullableDoubleParameter() {
       Name = "Rotation", // Need to include the unit
       NickName = "R",
       Description
@@ -75,7 +76,10 @@ namespace AdSecCore.Functions {
 
     public override void Compute() {
       ProfileOut.Value = Profile.Value;
-      ProfileOut.Value.Profile.Rotation = Angle.From(Rotation.Value, AngleUnit);
+      if (Rotation.Value.HasValue) {
+        ProfileOut.Value.Profile.Rotation = Angle.From(Rotation.Value.Value, AngleUnit);
+      }
+
       if (ReflectedY.Value.HasValue) {
         ProfileOut.Value.Profile.IsReflectedY = ReflectedY.Value.Value;
       }

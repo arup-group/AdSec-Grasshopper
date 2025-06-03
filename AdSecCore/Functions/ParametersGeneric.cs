@@ -92,6 +92,7 @@ namespace AdSecCore.Functions {
   }
 
   public class DoubleParameter : ParameterAttribute<double> { }
+  public class NullableDoubleParameter : ParameterAttribute<double?> { }
   public class DoubleArrayParameter : BaseArrayParameter<double> { }
   public class IntegerArrayParameter : BaseArrayParameter<int> { }
   public class SectionParameter : ParameterAttribute<SectionDesign> { }

@@ -67,6 +67,8 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(DoubleParameter), ParamNumber
         }, {
+          typeof(NullableDoubleParameter), ParamNumber
+        }, {
           typeof(DoubleArrayParameter), ParamNumber
         }, {
           typeof(AdSecSectionParameter), ConfigureParam<AdSecGH.Parameters.AdSecSectionParameter>
