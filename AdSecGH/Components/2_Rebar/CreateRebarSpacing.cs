@@ -9,8 +9,6 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using AdSecGHCore.Constants;
-
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
@@ -18,7 +16,6 @@ using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Components;
 using OasysGH.Helpers;
 using OasysGH.Units;
 using OasysGH.Units.Helpers;

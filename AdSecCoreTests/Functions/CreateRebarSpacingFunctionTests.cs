@@ -34,5 +34,48 @@ namespace AdSecCoreTests.Functions {
     public void ShouldHaveNoSubCategory() {
       Assert.Equal(SubCategoryName.Cat3(), _function.Organisation.SubCategory);
     }
+
+    [Fact]
+    public void ShouldHaveFourInputs() {
+      Assert.Equal(2, _function.GetAllInputAttributes().Length);
+    }
+
+    [Fact]
+    public void ShouldHaveFourOutputs() {
+      Assert.Single(_function.GetAllOutputAttributes());
+    }
+
+    [Fact]
+    public void ShouldHaveARebarInput() {
+      Assert.Equal("Rebar", _function.Rebar.Name);
+    }
+
+    [Fact]
+    public void ShouldHaveASpacingInput() {
+      Assert.Equal("S", _function.Spacing.NickName);
+    }
+
+    [Fact]
+    public void ShouldHaveACountInput() {
+      Assert.Equal("Count", _function.Count.Name);
+    }
+
+    [Fact]
+    public void ShouldHaveDefaultInputOrder() {
+      var inputs = _function.GetAllInputAttributes();
+      Assert.Equal(_function.Rebar, inputs[0]);
+      Assert.Equal(_function.Spacing, inputs[1]);
+    }
+
+    [Fact]
+    public void ShouldHaveALayer() {
+      Assert.Equal("Spaced Rebars", _function.SpacedRebars.Name);
+    }
+
+    [Fact]
+    public void ShouldHaveOutputParam() {
+      var outputs = _function.GetAllOutputAttributes();
+      Assert.Equal(_function.SpacedRebars, outputs[0]);
+    }
   }
 }
