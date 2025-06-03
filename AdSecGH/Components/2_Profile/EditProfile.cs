@@ -32,13 +32,14 @@ namespace AdSecGH.Components {
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
       _angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), _selectedItems[i]);
+      UpdateUnits();
       base.UpdateUI();
     }
 
-    public override void VariableParameterMaintenance() {
-      IQuantity quantityAngle = new Angle(0, _angleUnit);
-      string angleAbbreviation = string.Concat(quantityAngle.ToString().Where(char.IsLetter));
-      Params.Input[1].Name = $"Rotation [{angleAbbreviation}]";
+    private void UpdateUnits() {
+      UpdateDefaultUnits();
+      BusinessComponent.AngleUnit = _angleUnit;
+      RefreshParameter();
     }
 
     protected override void SolveInternal(IGH_DataAccess DA) {

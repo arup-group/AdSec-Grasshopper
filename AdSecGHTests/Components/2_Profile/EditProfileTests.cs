@@ -34,5 +34,11 @@ namespace AdSecGHTests.Components._2_Profile {
     public void ShouldHaveFourInputs() {
       Assert.Equal(4, _component.Params.Input.Count);
     }
+
+    [Fact]
+    public void ShouldUpdateNameWhenChangingDropdownToRad() {
+      _component.SetSelected(0, 1);
+      Assert.Contains("°", _component.Params.Input[1].Name);
+    }
   }
 }
