@@ -92,6 +92,7 @@ namespace AdSecCore.Functions {
   }
 
   public class DoubleParameter : ParameterAttribute<double> { }
+  public class NullableDoubleParameter : ParameterAttribute<double?> { }
   public class DoubleArrayParameter : BaseArrayParameter<double> { }
   public class IntegerArrayParameter : BaseArrayParameter<int> { }
   public class SectionParameter : ParameterAttribute<SectionDesign> { }
@@ -170,6 +171,7 @@ namespace AdSecCore.Functions {
   }
 
   public class RebarBundleParameter : ParameterAttribute<IBarBundle> { }
+  public class BooleanParameter : ParameterAttribute<bool?> { }
   public class RebarLayerParameter : BaseArrayParameter<ILayer> { }
 
   public class RebarGroupArrayParameter : BaseArrayParameter<AdSecRebarGroup> { }
