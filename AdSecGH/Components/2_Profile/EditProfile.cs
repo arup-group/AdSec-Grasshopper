@@ -36,39 +36,10 @@ namespace AdSecGH.Components {
       base.UpdateUI();
     }
 
-
     private void UpdateUnits() {
       UpdateDefaultUnits();
       BusinessComponent.AngleUnit = _angleUnit;
       RefreshParameter();
-    }
-
-    protected override void SolveInternal(IGH_DataAccess DA) {
-      // #### get material input and duplicate it ####
-      var editPrf = this.GetAdSecProfileGoo(DA, 0);
-
-      if (editPrf != null) {
-        // #### get the remaining inputs ####
-
-        // 1 Rotation
-        if (Params.Input[1].SourceCount > 0) {
-          editPrf.Rotation = (Angle)Input.UnitNumber(this, DA, 1, _angleUnit);
-        }
-
-        // 2 ReflectionY
-        bool refY = false;
-        if (DA.GetData(2, ref refY)) {
-          editPrf.IsReflectedY = refY;
-        }
-
-        // 3 Reflection3
-        bool refZ = false;
-        if (DA.GetData(3, ref refZ)) {
-          editPrf.IsReflectedZ = refZ;
-        }
-
-        DA.SetData(0, new AdSecProfileGoo(editPrf.Profile, editPrf.LocalPlane));
-      }
     }
   }
 }

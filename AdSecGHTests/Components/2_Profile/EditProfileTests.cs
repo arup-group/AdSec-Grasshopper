@@ -1,6 +1,14 @@
-﻿using AdSecGH;
+﻿using AdSecCore.Builders;
+using AdSecCore.Functions;
+
+using AdSecGH;
 using AdSecGH.Components;
+using AdSecGH.Parameters;
 using AdSecGH.Properties;
+
+using AdSecGHTests.Helpers;
+
+using Grasshopper.Kernel;
 
 using Oasys.GH.Helpers;
 
@@ -13,6 +21,11 @@ namespace AdSecGHTests.Components._2_Profile {
 
     public EditProfileTests() {
       _component = new EditProfile();
+      ProfileDesign profile = ProfileDesign.From(new SectionDesign() {
+        Section = new SectionBuilder().WithHeight(1).WithWidth(1).Build()
+      });
+      _component.SetInputParamAt(0, new AdSecProfileGoo(profile));
+      ComponentTestHelper.ComputeData(_component);
     }
 
     [Fact]
@@ -39,6 +52,21 @@ namespace AdSecGHTests.Components._2_Profile {
     public void ShouldUpdateNameWhenChangingDropdownToRad() {
       _component.SetSelected(0, 1);
       Assert.Contains("°", _component.Params.Input[1].Name);
+    }
+
+    [Fact]
+    public void ShouldHaveNoWarnings() {
+      Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Warning));
+    }
+
+    [Fact]
+    public void ShouldHaveNoErrors() {
+      Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
+    }
+
+    [Fact]
+    public void ShouldBeAbleToGetPlaneWithNoInputs() {
+      Assert.NotNull(_component.GetValue<AdSecProfileGoo>());
     }
   }
 }
