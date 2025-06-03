@@ -34,6 +34,7 @@ namespace AdSecCore.Functions {
       SubCategory = SubCategoryName.Cat3(),
       Hidden = false,
     };
+    
 
     public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
