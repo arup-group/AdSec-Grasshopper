@@ -2,6 +2,9 @@
 
 using AdSecGHCore.Constants;
 
+using Oasys.Profiles;
+
+using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
@@ -22,7 +25,8 @@ namespace AdSecCore.Functions {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat2()
     };
-    public ProfileParameter Profile { get; set; } = Default.Profile(description: "Modified AdSet Profile");
+    public ProfileParameter Profile { get; set; } = Default.Profile(description: "AdSec Profile to Edit or get information from");
+    public ProfileParameter ProfileOut { get; set; } = Default.Profile(description: "Modified AdSet Profile");
     public DoubleParameter Rotation { get; set; } = new DoubleParameter() {
       Name = "Rotation", // Need to include the unit
       NickName = "R",
@@ -69,7 +73,12 @@ namespace AdSecCore.Functions {
       };
     }
 
-    public override void Compute() { }
+    public override void Compute() {
+      ProfileOut.Value = Profile.Value;
+      ProfileOut.Value.Profile.Rotation = Angle.From(Rotation.Value, AngleUnit);
+      ProfileOut.Value.Profile.IsReflectedY = ReflectedY.Value;
+      ProfileOut.Value.Profile.IsReflectedZ = ReflectedZ.Value;
+    }
 
     protected sealed override void UpdateParameter() {
       Rotation.Name = UnitExtensions.NameWithUnits("Rotation", AngleUnit);

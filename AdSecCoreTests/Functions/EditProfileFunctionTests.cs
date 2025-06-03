@@ -1,4 +1,5 @@
-﻿using AdSecCore.Functions;
+﻿using AdSecCore.Builders;
+using AdSecCore.Functions;
 
 using AdSecGHCore.Constants;
 
@@ -11,6 +12,9 @@ namespace AdSecCoreTests.Functions {
 
     public EditProfileFunctionTests() {
       _function = new EditProfileFunction();
+      _function.Profile.Value = ProfileDesign.From(new SectionDesign() {
+        Section = new SectionBuilder().WithHeight(1).WithWidth(1).Build()
+      });
     }
 
     [Fact]
@@ -102,6 +106,37 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ShouldDropdownWithUnitTypeAngleUnit() {
       Assert.Equal(typeof(AngleUnit), (_function.Options()[0] as UnitOptions).UnitType);
+    }
+
+    [Fact]
+    public void ShouldMentionTheOutputIsModded() {
+      Assert.Equal("Modified AdSet Profile", _function.ProfileOut.Description);
+    }
+
+    [Fact]
+    public void ShouldMentionInputWillBeUsedAsABases() {
+      Assert.Equal("AdSec Profile to Edit or get information from", _function.Profile.Description);
+    }
+
+    [Fact]
+    public void ShouldChangeTheRotationIfProvided() {
+      _function.Rotation.Value = Math.PI;
+      _function.Compute();
+      Assert.Equal(Math.PI, _function.ProfileOut.Value.Profile.Rotation.Radians);
+    }
+
+    [Fact]
+    public void ShouldChangeTheReflectionYIfProvided() {
+      _function.ReflectedY.Value = true;
+      _function.Compute();
+      Assert.True(_function.ProfileOut.Value.Profile.IsReflectedY);
+    }
+
+    [Fact]
+    public void ShouldChangeTheReflectionZIfProvided() {
+      _function.ReflectedZ.Value = true;
+      _function.Compute();
+      Assert.True(_function.ProfileOut.Value.Profile.IsReflectedZ);
     }
   }
 }

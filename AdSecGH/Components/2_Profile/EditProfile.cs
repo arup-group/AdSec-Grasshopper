@@ -36,6 +36,7 @@ namespace AdSecGH.Components {
       base.UpdateUI();
     }
 
+
     private void UpdateUnits() {
       UpdateDefaultUnits();
       BusinessComponent.AngleUnit = _angleUnit;
