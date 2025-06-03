@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
@@ -13,6 +15,7 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
 using Oasys.AdSec.Reinforcement.Layers;
+using Oasys.GH.Helpers;
 
 using OasysGH;
 using OasysGH.Components;
@@ -24,14 +27,9 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
-  public class CreateRebarSpacing : GH_OasysDropDownComponent {
+  public class CreateRebarSpacing : DropdownAdapter<CreateRebarSpacingFunction> {
     private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
     private FoldMode _mode = FoldMode.Distance;
-
-    public CreateRebarSpacing() : base("Create Rebar Spacing", "Spacing",
-      "Create Rebar spacing (by Count or Pitch) for an AdSec Section", CategoryName.Name(), SubCategoryName.Cat3()) {
-      Hidden = false;
-    }
 
     public override Guid ComponentGuid => new Guid("846d546a-4284-4d69-906b-0e6985d7ddd3");
     public override GH_Exposure Exposure => GH_Exposure.primary;
