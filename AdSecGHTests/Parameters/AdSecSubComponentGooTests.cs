@@ -88,7 +88,7 @@ namespace AdSecGHTests.Parameters {
     }
 
     [Fact]
-    public void TransformRturnsNullAlways() {
+    public void TransformReturnsNullAlways() {
       Assert.Null(subComponentGoo.Transform(new Transform()));
       Assert.Null(subComponentGoo.Transform(new Transform(2)));
     }
