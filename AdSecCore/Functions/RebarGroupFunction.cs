@@ -24,6 +24,9 @@ namespace AdSecCore.Functions {
     event Action OnVariableInputChanged;
   }
 
+  public interface IDynamicDropdown {
+    event Action OnDropdownChanged;
+  }
   public interface IDropdownOptions {
     IOptions[] Options();
   }

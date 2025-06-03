@@ -38,5 +38,11 @@ namespace AdSecGHTests.Components._3_Rebar {
       _component.SetSelected(1, 1); // mm
       Assert.Contains("[mm]", _component.BusinessComponent.Spacing.Name);
     }
+
+    [Fact]
+    public void ShouldHaveDynamicDropdownItems() {
+      _component.SetSelected(0, 1); // Count
+      Assert.Single(_component.DropDownItems);
+    }
   }
 }

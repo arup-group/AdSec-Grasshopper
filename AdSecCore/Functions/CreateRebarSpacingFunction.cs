@@ -7,9 +7,10 @@ using AdSecGHCore.Constants;
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
-  public class CreateRebarSpacingFunction : Function, IDropdownOptions, ILocalUnits, IVariableInput {
+  public class CreateRebarSpacingFunction : Function, IDropdownOptions, ILocalUnits, IVariableInput, IDynamicDropdown {
     public LengthUnit LocalLengthUnitGeometry { get; set; } = LengthUnit.Meter;
     public event Action OnVariableInputChanged;
+    public event Action OnDropdownChanged;
     public FoldMode Mode = FoldMode.Distance;
 
     public CreateRebarSpacingFunction() {
@@ -97,6 +98,7 @@ namespace AdSecCore.Functions {
       Mode = mode;
       UpdateParameter();
       OnVariableInputChanged?.Invoke();
+      OnDropdownChanged?.Invoke();
     }
 
     public enum FoldMode {

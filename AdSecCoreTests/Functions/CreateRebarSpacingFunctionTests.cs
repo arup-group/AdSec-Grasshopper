@@ -104,5 +104,21 @@ namespace AdSecCoreTests.Functions {
       _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
       Assert.Single(_function.Options());
     }
+
+    [Fact]
+    public void ShouldNotifyWhenModeIsChangedToUpdateInputs() {
+      bool wasCalled = false;
+      _function.OnVariableInputChanged += () => wasCalled = true;
+      _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
+      Assert.True(wasCalled);
+    }
+
+    [Fact]
+    public void ShouldNotifyWhenModeIsChangedToUpdateDropdowns() {
+      bool wasCalled = false;
+      _function.OnDropdownChanged += () => wasCalled = true;
+      _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
+      Assert.True(wasCalled);
+    }
   }
 }
