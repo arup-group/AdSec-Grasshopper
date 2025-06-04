@@ -43,6 +43,13 @@ namespace AdSecGHTests.Parameters {
       subComponentGoo.Value = null;
 
       Assert.Equal(BoundingBox.Empty, subComponentGoo.Boundingbox);
+      Assert.Equal(subComponentGoo.ClippingBox, subComponentGoo.Boundingbox);
+    }
+
+    [Fact]
+    public void BoundingBoxReturnsNotEmptyWhenValueIsValid() {
+      Assert.NotEqual(BoundingBox.Empty, subComponentGoo.Boundingbox);
+      Assert.Equal(subComponentGoo.ClippingBox, subComponentGoo.Boundingbox);
     }
 
     [Fact]
