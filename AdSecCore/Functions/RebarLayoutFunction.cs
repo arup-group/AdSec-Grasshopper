@@ -208,8 +208,6 @@ namespace AdSecCore.Functions {
     }
 
     private IGroup CreateCircleTypeGroup() {
-      var radius = UnitHelpers.ParseToQuantity<Length>(RadiusOfCircle.Value, LengthUnitGeometry);
-      var startAngle = UnitHelpers.ParseToQuantity<Angle>(StartAngle.Value, AngleUnit);
       return ICircleGroup.Create(CentreOfCircle.Value, RadiusToLength(), StartAngleToAngle(), SpacedRebars.Value);
     }
 
