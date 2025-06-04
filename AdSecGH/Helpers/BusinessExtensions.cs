@@ -334,9 +334,14 @@ namespace Oasys.GH.Helpers {
             return gooDynamic.Select(x => (x as AdSecRebarLayerGoo).Value).ToArray();
           }
         }, {
-          typeof(RebarLayerParameter), goo => {
+          typeof(PointParameter), goo => {
             dynamic gooDynamic = goo;
-            return new AdSecRebarLayerGoo(gooDynamic);
+            return new AdSecPointGoo(gooDynamic).AdSecPoint;
+          }
+        }, {
+          typeof(PointArrayParameter), goo => {
+           var gooDynamic = goo as List<object>;
+            return gooDynamic.Select(x => new AdSecPointGoo((x as AdSecPointGoo).Value).AdSecPoint).ToArray();
           }
         },{
           typeof(RebarGroupArrayParameter), goo => {

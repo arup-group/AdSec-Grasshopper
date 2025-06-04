@@ -38,8 +38,12 @@ namespace AdSecGH.Components {
 
     private void UpdateUnits() {
       BusinessComponent.RebarLayoutOption = (RebarLayoutOption)Enum.Parse(typeof(RebarLayoutOption), _selectedItems[0]);
-      BusinessComponent.LocalLengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
-      BusinessComponent.AngleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), _selectedItems[2]);
+      if (_selectedItems.Count > 1) {
+        BusinessComponent.LocalLengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
+      }
+      if (_selectedItems.Count > 2) {
+        BusinessComponent.AngleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), _selectedItems[2]);
+      }
     }
   }
 }

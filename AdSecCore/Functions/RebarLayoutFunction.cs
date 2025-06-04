@@ -18,11 +18,14 @@ namespace AdSecCore.Functions {
     Circle,
     Arc,
   }
-  public class RebarLayoutFunction : Function, IDropdownOptions, ILocalUnits {
+  public class RebarLayoutFunction : Function, IVariableInput, IDropdownOptions, ILocalUnits {
     private const string PositiveAngleIsConsideredAntiClockwise = "Positive angle is considered anti-clockwise.";
     public LengthUnit LocalLengthUnit { get; set; } = LengthUnit.Meter;
     public AngleUnit LocalAngleUnit { get; set; } = AngleUnit.Radian;
     private RebarLayoutOption _rebarLayoutOption = RebarLayoutOption.Line;
+
+    public event Action OnVariableInputChanged;
+
     public RebarLayoutOption RebarLayoutOption {
       get { return _rebarLayoutOption; }
       set {
@@ -30,6 +33,7 @@ namespace AdSecCore.Functions {
           return;
         }
         _rebarLayoutOption = value;
+        OnVariableInputChanged?.Invoke();
       }
     }
 
@@ -158,62 +162,32 @@ namespace AdSecCore.Functions {
     };
 
     public override void Compute() {
-      if (!ValidateInput()) {
-        return;
-      }
-
       IGroup group = null;
-      switch (RebarLayoutOption) {
-        case RebarLayoutOption.Line:
-          group = CreateLineTypeGroup();
-          break;
-        case RebarLayoutOption.SingleBars:
-          group = CreateSingleBarsTypeGroup();
-          break;
-        case RebarLayoutOption.Circle:
-          group = CreateCircleTypeGroup();
-          break;
-        case RebarLayoutOption.Arc:
-          group = CreateArcTypeGroup();
-          break;
+      try {
+        switch (RebarLayoutOption) {
+          case RebarLayoutOption.Line:
+            group = CreateLineTypeGroup();
+            break;
+          case RebarLayoutOption.SingleBars:
+            group = CreateSingleBarsTypeGroup();
+            break;
+          case RebarLayoutOption.Circle:
+            group = CreateCircleTypeGroup();
+            break;
+          case RebarLayoutOption.Arc:
+            group = CreateArcTypeGroup();
+            break;
+        }
+      } catch (ArgumentNullException) {
+        ErrorMessages.Add("Input value like rebar and position can not be null");
+        return;
+      } catch (ArgumentOutOfRangeException) {
+        ErrorMessages.Add("Radius should be postive value and greater than zero");
+        return;
       }
       RebarGroup.Value = new AdSecRebarGroup(group);
     }
 
-    private bool ValidateInput() {
-      const double TOLERANCE = 1e-9;
-      const string errorMessage = "All inputs must be provided.";
-      bool IsNullOrInvalid(object value) => value == null;
-      bool IsZeroOrInvalid(double? value) => !value.HasValue || Math.Abs(value.Value) <= TOLERANCE;
-
-      switch (RebarLayoutOption) {
-        case RebarLayoutOption.Line:
-          if (IsNullOrInvalid(Position1.Value) || IsNullOrInvalid(Position2.Value) || IsNullOrInvalid(SpacedRebars.Value)) {
-            ErrorMessages.Add(errorMessage);
-            return false;
-          }
-          break;
-        case RebarLayoutOption.SingleBars:
-          if (IsNullOrInvalid(RebarBundle.Value) || IsNullOrInvalid(Positions.Value)) {
-            ErrorMessages.Add(errorMessage);
-            return false;
-          }
-          break;
-        case RebarLayoutOption.Circle:
-          if (IsNullOrInvalid(CentreOfCircle.Value) || IsZeroOrInvalid(RadiusOfCircle.Value) || IsZeroOrInvalid(StartAngle.Value)) {
-            ErrorMessages.Add(errorMessage);
-            return false;
-          }
-          break;
-        case RebarLayoutOption.Arc:
-          if (IsNullOrInvalid(CentreOfCircle.Value) || IsZeroOrInvalid(RadiusOfCircle.Value) || IsZeroOrInvalid(StartAngle.Value) || IsZeroOrInvalid(SweepAngle.Value)) {
-            ErrorMessages.Add(errorMessage);
-            return false;
-          }
-          break;
-      }
-      return true;
-    }
 
     private IGroup CreateLineTypeGroup() {
       return ILineGroup.Create(Position1.Value, Position2.Value, SpacedRebars.Value);
@@ -259,7 +233,6 @@ namespace AdSecCore.Functions {
       StartAngle.Name = $"StartAngle [{angleUnitAbbreviation}]";
       StartAngle.Description = $"[Optional] The starting angle (in {angleUnitAbbreviation}) of the circle. {PositiveAngleIsConsideredAntiClockwise} Default is 0";
       RadiusOfCircle.Name = $"Radius [{lenhthUnitAbbreviation}]";
-
     }
 
     public void UpdateUnits() {
