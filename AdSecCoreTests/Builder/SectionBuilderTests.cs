@@ -28,7 +28,9 @@ namespace AdSecCoreTests.Builder {
 
       var rebar = SectionBuilder.CalibrateReinforcementGroupsForSection(rebarOriginal, designCode, section);
 
-      var group = rebar.First().Group as ISingleBars;
+      Assert.Single(rebar);
+      var group = rebar[0].Group as ISingleBars;
+      Assert.NotNull(group);
       var position = group.Positions.First();
       Assert.Equal(0, position.Y.ToUnit(LengthUnit.Centimeter).Value);
       Assert.Equal(0, position.Z.ToUnit(LengthUnit.Centimeter).Value);

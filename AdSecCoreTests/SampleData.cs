@@ -32,7 +32,7 @@ namespace AdSecGHCore {
       return sectionDesign;
     }
 
-    public static SectionDesign GetCompositeSectionDesign(IConcrete concreteGrade = null, IDesignCode designCode = null) {
+    public static SectionDesign GetCompositeSectionDesign(IConcrete? concreteGrade = null, IDesignCode? designCode = null) {
       designCode ??= _defaultDesignCode;
       concreteGrade ??= _defaultConcrete;
       var profile = new ProfileBuilder().WithWidth(100).WidthDepth(100).Build();
