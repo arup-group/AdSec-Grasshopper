@@ -7,6 +7,8 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
+using GH_IO.Serialization;
+
 using Grasshopper.Kernel;
 
 using Oasys.AdSec.Reinforcement.Layers;
@@ -45,14 +47,30 @@ namespace AdSecGH.Components {
       base.UpdateUI();
     }
 
+    protected override void BeforeSolveInstance() { UpdateUnits(); }
+
+    private void UpdateUnits() {
+      UpdateDefaultUnits();
+      if (_dropDownItems.Count > 1) {
+        _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
+        BusinessComponent.LocalLengthUnitGeometry
+          = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
+      }
+
+      RefreshParameter();
+    }
+
     protected override void SolveInternal(IGH_DataAccess da) {
       // 0 rebar input
       AdSecRebarBundleGoo rebar = this.GetAdSecRebarBundleGoo(da, 0);
 
+      _mode = (CreateRebarSpacingFunction.FoldMode)Enum.Parse(typeof(CreateRebarSpacingFunction.FoldMode),
+        _selectedItems[0]);
       switch (_mode) {
         case CreateRebarSpacingFunction.FoldMode.Distance:
           var bundleD = new AdSecRebarLayerGoo(ILayerByBarPitch.Create(rebar.Value,
-            (Length)Input.UnitNumber(this, da, 1, _lengthUnit)));
+            (Length)Input.UnitNumber(this, da, 1,
+              (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]))));
           da.SetData(0, bundleD);
           break;
 
