@@ -101,13 +101,13 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldChangeInputFromDistanceToCount() {
-      _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
+      _function.SetMode(SpacingMode.Count);
       Assert.Equal(_function.Count, _function.GetAllInputAttributes()[1]);
     }
 
     [Fact]
     public void ShouldHaveOneDropdownForCount() {
-      _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
+      _function.SetMode(SpacingMode.Count);
       Assert.Single(_function.Options());
     }
 
@@ -115,7 +115,7 @@ namespace AdSecCoreTests.Functions {
     public void ShouldNotifyWhenModeIsChangedToUpdateInputs() {
       bool wasCalled = false;
       _function.OnVariableInputChanged += () => wasCalled = true;
-      _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
+      _function.SetMode(SpacingMode.Count);
       Assert.True(wasCalled);
     }
 
@@ -123,13 +123,13 @@ namespace AdSecCoreTests.Functions {
     public void ShouldNotifyWhenModeIsChangedToUpdateDropdowns() {
       bool wasCalled = false;
       _function.OnDropdownChanged += () => wasCalled = true;
-      _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
+      _function.SetMode(SpacingMode.Count);
       Assert.True(wasCalled);
     }
 
     [Fact]
     public void ShouldComputeByDistance() {
-      _function.SetMode(CreateRebarSpacingFunction.FoldMode.Distance);
+      _function.SetMode(SpacingMode.Distance);
       _function.Spacing.Value = 0.1;
       _function.Compute();
       var layer = _function.SpacedRebars.Value as ILayerByBarPitch;
@@ -139,7 +139,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldComputeByCount() {
-      _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
+      _function.SetMode(SpacingMode.Count);
       _function.Count.Value = 1;
       _function.Compute();
       var layer = _function.SpacedRebars.Value as ILayerByBarCount;

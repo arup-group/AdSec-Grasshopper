@@ -86,7 +86,7 @@ namespace AdSecGHTests.Components._3_Rebar {
       _component.SetSelected(0, 1); // Count
       _component.SetInputParamAt(1, 2);
       ComponentTestHelper.ComputeData(_component);
-      Assert.Equal(CreateRebarSpacingFunction.FoldMode.Count, _component.BusinessComponent.GetMode());
+      Assert.Equal(SpacingMode.Count, _component.BusinessComponent.Mode);
 
       var doc = new GH_DocumentIO();
       doc.Document = new GH_Document();
@@ -96,7 +96,7 @@ namespace AdSecGHTests.Components._3_Rebar {
       doc.Open(randomPath);
       var loadedComponent = (CreateRebarSpacing)doc.Document.FindComponent(_component.InstanceGuid);
       ComponentTestHelper.ComputeData(loadedComponent);
-      Assert.Equal(CreateRebarSpacingFunction.FoldMode.Count, loadedComponent.BusinessComponent.GetMode());
+      Assert.Equal(SpacingMode.Count, loadedComponent.BusinessComponent.Mode);
     }
 
     [Fact]
