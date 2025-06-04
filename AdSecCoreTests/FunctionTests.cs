@@ -5,8 +5,8 @@ namespace AdSecCoreTests {
     private readonly TestFunction function;
 
     public class TestFunction : Function {
-      public override FuncAttribute Metadata { get; set; }
-      public override Organisation Organisation { get; set; }
+      public override FuncAttribute Metadata { get; set; } = new();
+      public override Organisation Organisation { get; set; } = new();
       public override void Compute() { }
     }
 
@@ -18,6 +18,7 @@ namespace AdSecCoreTests {
     public void ShouldHaveInputAttributeInitialized() {
       Assert.Empty(function.GetAllInputAttributes());
     }
+
     [Fact]
     public void ShouldHaveOutputsAttributeInitialized() {
       Assert.Empty(function.GetAllOutputAttributes());
