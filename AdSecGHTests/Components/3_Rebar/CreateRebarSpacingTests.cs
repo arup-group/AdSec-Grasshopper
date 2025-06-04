@@ -42,14 +42,13 @@ namespace AdSecGHTests.Components._3_Rebar {
     [Fact]
     public void ShouldUpdateNameWithUnits() {
       _component.SetSelected(0, 0); // Distance
-      _component.SetSelected(1, 0); // m
       Assert.Contains("[m]", _component.BusinessComponent.Spacing.Name);
     }
 
-    [Fact(Skip = "Not implemented yet")]
+    [Fact]
     public void ShouldUpdateNameWithUnitsWithNonDefaultUnits() {
       _component.SetSelected(0, 0); // Distance
-      _component.SetSelected(1, 1); // mm
+      _component.SetSelected(1, 0); // mm
       Assert.Contains("[mm]", _component.BusinessComponent.Spacing.Name);
     }
 
