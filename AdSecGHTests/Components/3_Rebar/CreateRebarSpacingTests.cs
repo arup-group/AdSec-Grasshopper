@@ -98,5 +98,27 @@ namespace AdSecGHTests.Components._3_Rebar {
       ComponentTestHelper.ComputeData(loadedComponent);
       Assert.Equal(CreateRebarSpacingFunction.FoldMode.Count, loadedComponent.BusinessComponent.GetMode());
     }
+
+    [Fact]
+    public void ShouldUseSavedUnits() {
+      _component.SetSelected(0, 0); // Distance
+      _component.SetSelected(1, 1); // cm
+      _component.SetInputParamAt(1, 2);
+      ComponentTestHelper.ComputeData(_component);
+      Assert.Equal(LengthUnit.Centimeter, _component.BusinessComponent.LocalLengthUnitGeometry);
+
+      var doc = new GH_DocumentIO();
+      doc.Document = new GH_Document();
+      doc.Document.AddObject(_component, false);
+      var randomPath = CreateRebarGroupSaveLoadTests.GetRandomName();
+      doc.SaveQuiet(randomPath);
+      var doc2 = new GH_DocumentIO();
+      doc2.Document = new GH_Document();
+      doc2.Open(randomPath);
+      var loadedComponent = (CreateRebarSpacing)doc2.Document.FindComponent(_component.InstanceGuid);
+      ComponentTestHelper.ComputeData(loadedComponent);
+
+      Assert.Equal(LengthUnit.Centimeter, loadedComponent.BusinessComponent.LocalLengthUnitGeometry);
+    }
   }
 }

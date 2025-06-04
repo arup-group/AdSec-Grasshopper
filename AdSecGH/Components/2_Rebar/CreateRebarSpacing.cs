@@ -3,28 +3,22 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
-using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using GH_IO.Serialization;
 
 using Grasshopper.Kernel;
 
-using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Helpers;
-using OasysGH.Units;
 using OasysGH.Units.Helpers;
 
-using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
   public class CreateRebarSpacing : DropdownAdapter<CreateRebarSpacingFunction> {
-    private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
+    // private LengthUnit _lengthUnit = DefaultUnits.LengthUnitGeometry;
     private CreateRebarSpacingFunction.FoldMode _mode = CreateRebarSpacingFunction.FoldMode.Distance;
 
     public override Guid ComponentGuid => new Guid("846d546a-4284-4d69-906b-0e6985d7ddd3");
@@ -41,7 +35,7 @@ namespace AdSecGH.Components {
         BusinessComponent.SetMode(_mode);
         _selectedItems[i] = selectedItem;
       } else {
-        _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
+        UpdateUnits();
       }
 
       base.UpdateUI();
@@ -55,11 +49,21 @@ namespace AdSecGH.Components {
         _selectedItems[0] = modeString;
       }
 
+      var unitString = string.Empty;
+      if (reader.TryGetString("LengthUnit", ref unitString)) {
+        BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), unitString);
+
+        if (_dropDownItems.Count > 1) {
+          _selectedItems[1] = unitString;
+        }
+      }
+
       return base.Read(reader);
     }
 
     public override bool Write(GH_IWriter writer) {
       writer.SetString("Mode", BusinessComponent.GetMode().ToString());
+      writer.SetString("LengthUnit", BusinessComponent.LengthUnitGeometry.ToString());
       return base.Write(writer);
     }
 
@@ -68,9 +72,9 @@ namespace AdSecGH.Components {
     private void UpdateUnits() {
       UpdateDefaultUnits();
       if (_dropDownItems.Count > 1) {
-        _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
         BusinessComponent.LocalLengthUnitGeometry
           = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
+        BusinessComponent.UpdateUnits();
       }
 
       RefreshParameter();
