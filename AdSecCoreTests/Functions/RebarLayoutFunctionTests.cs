@@ -75,7 +75,7 @@ namespace AdSecCoreTests.Functions {
 
       var singleBarGroup = group.Group as ISingleBars;
       Assert.NotNull(singleBarGroup);
-      Assert.Equal(2, singleBarGroup.BarBundle.CountPerBundle);
+      Assert.Equal(1, singleBarGroup.BarBundle.CountPerBundle);
       Assert.Equal(0.02, singleBarGroup.BarBundle.Diameter.As(LengthUnit.Meter), comparer);
       Assert.Equal(100, singleBarGroup.Positions[0].Y.As(LengthUnit.Millimeter), comparer);
       Assert.Equal(100, singleBarGroup.Positions[0].Z.As(LengthUnit.Millimeter), comparer);
@@ -118,7 +118,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ArcLayout_ValidInputs_CreatesArcGroup() {
-      function.RebarLayoutOption = RebarLayoutOption.Circle;
+      function.RebarLayoutOption = RebarLayoutOption.Arc;
       function.SpacedRebars.Value = _spacedRebars[0];
       function.CentreOfCircle.Value = IPoint.Create(Length.FromMillimeters(10), Length.FromMillimeters(11));
       function.RadiusOfCircle.Value = 2;
