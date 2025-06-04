@@ -1,4 +1,5 @@
 ﻿using AdSecCore.Builders;
+using AdSecCore.Functions;
 
 using AdSecGH;
 using AdSecGH.Components;
@@ -6,6 +7,8 @@ using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
+
+using Grasshopper.Kernel;
 
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.GH.Helpers;
@@ -76,6 +79,24 @@ namespace AdSecGHTests.Components._3_Rebar {
       var layerByBarCount = adSecRebarLayerGoo.Value as ILayerByBarCount;
       Assert.NotNull(layerByBarCount);
       Assert.Equal(2, layerByBarCount.Count);
+    }
+
+    [Fact]
+    public void ShouldUseSavedMode() {
+      _component.SetSelected(0, 1); // Count
+      _component.SetInputParamAt(1, 2);
+      ComponentTestHelper.ComputeData(_component);
+      Assert.Equal(CreateRebarSpacingFunction.FoldMode.Count, _component.BusinessComponent.GetMode());
+
+      var doc = new GH_DocumentIO();
+      doc.Document = new GH_Document();
+      doc.Document.AddObject(_component, false);
+      var randomPath = CreateRebarGroupSaveLoadTests.GetRandomName();
+      doc.SaveQuiet(randomPath);
+      doc.Open(randomPath);
+      var loadedComponent = (CreateRebarSpacing)doc.Document.FindComponent(_component.InstanceGuid);
+      ComponentTestHelper.ComputeData(loadedComponent);
+      Assert.Equal(CreateRebarSpacingFunction.FoldMode.Count, loadedComponent.BusinessComponent.GetMode());
     }
   }
 }

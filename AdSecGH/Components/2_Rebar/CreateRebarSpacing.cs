@@ -47,6 +47,22 @@ namespace AdSecGH.Components {
       base.UpdateUI();
     }
 
+    public override bool Read(GH_IReader reader) {
+      var modeString = string.Empty;
+      if (reader.TryGetString("Mode", ref modeString)) {
+        BusinessComponent.SetMode(
+          (CreateRebarSpacingFunction.FoldMode)Enum.Parse(typeof(CreateRebarSpacingFunction.FoldMode), modeString));
+        _selectedItems[0] = modeString;
+      }
+
+      return base.Read(reader);
+    }
+
+    public override bool Write(GH_IWriter writer) {
+      writer.SetString("Mode", BusinessComponent.GetMode().ToString());
+      return base.Write(writer);
+    }
+
     protected override void BeforeSolveInstance() { UpdateUnits(); }
 
     private void UpdateUnits() {
@@ -59,29 +75,5 @@ namespace AdSecGH.Components {
 
       RefreshParameter();
     }
-
-    // protected override void SolveInternal(IGH_DataAccess da) {
-    //   // 0 rebar input
-    //   AdSecRebarBundleGoo rebar = this.GetAdSecRebarBundleGoo(da, 0);
-    //
-    //   _mode = (CreateRebarSpacingFunction.FoldMode)Enum.Parse(typeof(CreateRebarSpacingFunction.FoldMode),
-    //     _selectedItems[0]);
-    //   switch (_mode) {
-    //     case CreateRebarSpacingFunction.FoldMode.Distance:
-    //       var bundleD = new AdSecRebarLayerGoo(ILayerByBarPitch.Create(rebar.Value,
-    //         (Length)Input.UnitNumber(this, da, 1,
-    //           (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]))));
-    //       da.SetData(0, bundleD);
-    //       break;
-    //
-    //     case CreateRebarSpacingFunction.FoldMode.Count:
-    //       int count = 1;
-    //       da.GetData(1, ref count);
-    //
-    //       var bundleC = new AdSecRebarLayerGoo(ILayerByBarCount.Create(count, rebar.Value));
-    //       da.SetData(0, bundleC);
-    //       break;
-    //   }
-    // }
   }
 }

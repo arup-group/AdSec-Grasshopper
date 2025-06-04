@@ -128,5 +128,8 @@ namespace AdSecCore.Functions {
       Count,
     }
 
+    public FoldMode GetMode() {
+      return _mode;
+    }
   }
 }
