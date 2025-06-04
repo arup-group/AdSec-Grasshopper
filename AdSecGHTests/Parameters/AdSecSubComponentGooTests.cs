@@ -7,10 +7,6 @@ using AdSecCore.Functions;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
-using AdSecGHTests.Helpers;
-
-using Grasshopper.Kernel;
-
 using Oasys.AdSec;
 using Oasys.AdSec.StandardMaterials;
 using Oasys.Profiles;
@@ -19,7 +15,6 @@ using Oasys.Taxonomy.Profiles;
 using OasysUnits;
 using OasysUnits.Units;
 
-using Rhino;
 using Rhino.Display;
 using Rhino.Geometry;
 using Rhino.Geometry.Morphs;
@@ -117,7 +112,7 @@ namespace AdSecGHTests.Parameters {
     }
 
     [Fact]
-    public void ShouldDrawOnViewPortWires() {
+    public void ShouldPrepareInstructionsForDrawingWires() {
       Assert.Empty(subComponentGoo.DrawInstructionsList);
 
       subComponentGoo.TryPrepareDrawWiresInstructions(Color.Red);
@@ -127,7 +122,7 @@ namespace AdSecGHTests.Parameters {
     }
 
     [Fact]
-    public void ShouldDrawOnViewportMeshesWhenBrepIsValid() {
+    public void ShouldPrepareInstructionsWhenBrepIsValid() {
       Assert.Empty(subComponentGoo.DrawInstructionsList);
 
       subComponentGoo.TryPrepareDrawMeshesInstructions();
@@ -305,19 +300,6 @@ namespace AdSecGHTests.Parameters {
       var section = ISection.Create(profile, material);
       var designCode = new AdSecDesignCode().DesignCode;
       return new AdSecSectionGoo(new AdSecSection(section, designCode, "", "", Plane.WorldXY));
-    }
-
-    private static GH_PreviewMeshArgs GetGhPreviewMeshArgs() {
-      using var doc = RhinoDoc.Create(string.Empty);
-      var ghPreviewWireArgs
-        = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(Color.White)); // color doesn't matter here
-      return ghPreviewWireArgs;
-    }
-
-    private static GH_PreviewWireArgs GetGhPreviewWireArgs() {
-      using var doc = RhinoDoc.Create(string.Empty);
-      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White); // color doesn;t matter here
-      return ghPreviewWireArgs;
     }
   }
 }
