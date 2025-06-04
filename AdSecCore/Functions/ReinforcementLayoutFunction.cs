@@ -18,18 +18,19 @@ namespace AdSecCore.Functions {
     Circle,
     Arc,
   }
-  public class ReinforcementLayoutFunction : Function, IDropdownOptions, ILocalUnits {
+  public class RebarLayoutFunction : Function, IDropdownOptions, ILocalUnits {
     private const string PositiveAngleIsConsideredAntiClockwise = "Positive angle is considered anti-clockwise.";
     public LengthUnit LocalLengthUnit { get; set; } = LengthUnit.Meter;
     public AngleUnit LocalAngleUnit { get; set; } = AngleUnit.Radian;
-    public RebarLayoutOption RebarLayoutOption { get; set; } = RebarLayoutOption.Line;
-    public event Action OnVariableInputChanged;
-    public void SetRebarLayoutOption(RebarLayoutOption layoutOption) {
-      if (RebarLayoutOption == layoutOption) {
-        return;
+    private RebarLayoutOption _rebarLayoutOption = RebarLayoutOption.Line;
+    public RebarLayoutOption RebarLayoutOption {
+      get { return _rebarLayoutOption; }
+      set {
+        if (_rebarLayoutOption == value) {
+          return;
+        }
+        _rebarLayoutOption = value;
       }
-      RebarLayoutOption = layoutOption;
-      OnVariableInputChanged?.Invoke();
     }
 
     public RebarLayerParameter SpacedRebars { get; set; } = new RebarLayerParameter {
