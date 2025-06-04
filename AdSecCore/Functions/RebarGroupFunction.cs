@@ -73,35 +73,35 @@ namespace AdSecCore.Functions {
       Description = "Rebar Groups for AdSec Section",
     };
 
-    public RebarLayerParameter TopRebars { get; set; } = new RebarLayerParameter() {
+    public RebarLayersParameter TopRebars { get; set; } = new RebarLayersParameter() {
       Name = "Top Rebars",
       NickName = "TRs",
       Description = "Top Face AdSec Rebars Spaced in a Layer",
       Optional = true,
     };
 
-    public RebarLayerParameter LeftRebars { get; set; } = new RebarLayerParameter() {
+    public RebarLayersParameter LeftRebars { get; set; } = new RebarLayersParameter() {
       Name = "Left Side Rebars",
       NickName = "LRs",
       Description = "Left Side Face AdSec Rebars Spaced in a Layer",
       Optional = true,
     };
 
-    public RebarLayerParameter RightRebars { get; set; } = new RebarLayerParameter() {
+    public RebarLayersParameter RightRebars { get; set; } = new RebarLayersParameter() {
       Name = "Right Side Rebars",
       NickName = "RRs",
       Description = "Right Side Face AdSec Rebars Spaced in a Layer",
       Optional = true,
     };
 
-    public RebarLayerParameter BottomRebars { get; set; } = new RebarLayerParameter() {
+    public RebarLayersParameter BottomRebars { get; set; } = new RebarLayersParameter() {
       Name = "Bottom Rebars",
       NickName = "BRs",
       Description = "Bottom Face AdSec Rebars Spaced in a Layer",
       Optional = true,
     };
 
-    public RebarLayerParameter SpacedRebars { get; set; } = new RebarLayerParameter() {
+    public RebarLayersParameter SpacedRebars { get; set; } = new RebarLayersParameter() {
       Name = "Spaced Rebars",
       NickName = "RbS",
       Description = "AdSec Rebars Spaced in a Layer",

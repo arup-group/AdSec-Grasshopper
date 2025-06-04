@@ -72,14 +72,14 @@ namespace AdSecCore.Functions {
           if (Spacing.Value.HasValue) {
             var length = Length.From(Spacing.Value.Value, LengthUnitGeometry);
             var layerByBarPitch = ILayerByBarPitch.Create(Rebar.Value, length);
-            SpacedRebars.Value = new[] { layerByBarPitch as ILayer };
+            SpacedRebars.Value = layerByBarPitch;
           }
 
           break;
 
         case FoldMode.Count:
           if (Count.Value > 0) {
-            SpacedRebars.Value = new[] { ILayerByBarCount.Create(Count.Value, Rebar.Value) };
+            SpacedRebars.Value = ILayerByBarCount.Create(Count.Value, Rebar.Value);
           }
 
           break;

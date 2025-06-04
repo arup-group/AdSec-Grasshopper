@@ -60,28 +60,28 @@ namespace AdSecGH.Components {
       RefreshParameter();
     }
 
-    protected override void SolveInternal(IGH_DataAccess da) {
-      // 0 rebar input
-      AdSecRebarBundleGoo rebar = this.GetAdSecRebarBundleGoo(da, 0);
-
-      _mode = (CreateRebarSpacingFunction.FoldMode)Enum.Parse(typeof(CreateRebarSpacingFunction.FoldMode),
-        _selectedItems[0]);
-      switch (_mode) {
-        case CreateRebarSpacingFunction.FoldMode.Distance:
-          var bundleD = new AdSecRebarLayerGoo(ILayerByBarPitch.Create(rebar.Value,
-            (Length)Input.UnitNumber(this, da, 1,
-              (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]))));
-          da.SetData(0, bundleD);
-          break;
-
-        case CreateRebarSpacingFunction.FoldMode.Count:
-          int count = 1;
-          da.GetData(1, ref count);
-
-          var bundleC = new AdSecRebarLayerGoo(ILayerByBarCount.Create(count, rebar.Value));
-          da.SetData(0, bundleC);
-          break;
-      }
-    }
+    // protected override void SolveInternal(IGH_DataAccess da) {
+    //   // 0 rebar input
+    //   AdSecRebarBundleGoo rebar = this.GetAdSecRebarBundleGoo(da, 0);
+    //
+    //   _mode = (CreateRebarSpacingFunction.FoldMode)Enum.Parse(typeof(CreateRebarSpacingFunction.FoldMode),
+    //     _selectedItems[0]);
+    //   switch (_mode) {
+    //     case CreateRebarSpacingFunction.FoldMode.Distance:
+    //       var bundleD = new AdSecRebarLayerGoo(ILayerByBarPitch.Create(rebar.Value,
+    //         (Length)Input.UnitNumber(this, da, 1,
+    //           (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]))));
+    //       da.SetData(0, bundleD);
+    //       break;
+    //
+    //     case CreateRebarSpacingFunction.FoldMode.Count:
+    //       int count = 1;
+    //       da.GetData(1, ref count);
+    //
+    //       var bundleC = new AdSecRebarLayerGoo(ILayerByBarCount.Create(count, rebar.Value));
+    //       da.SetData(0, bundleC);
+    //       break;
+    //   }
+    // }
   }
 }

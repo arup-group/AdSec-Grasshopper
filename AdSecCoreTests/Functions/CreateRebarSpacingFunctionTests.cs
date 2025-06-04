@@ -132,8 +132,7 @@ namespace AdSecCoreTests.Functions {
       _function.SetMode(CreateRebarSpacingFunction.FoldMode.Distance);
       _function.Spacing.Value = 0.1;
       _function.Compute();
-      Assert.Single(_function.SpacedRebars.Value);
-      var layer = _function.SpacedRebars.Value[0] as ILayerByBarPitch;
+      var layer = _function.SpacedRebars.Value as ILayerByBarPitch;
       Assert.NotNull(layer);
       Assert.Equal(0.1, layer.Pitch.Value);
     }
@@ -143,8 +142,7 @@ namespace AdSecCoreTests.Functions {
       _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
       _function.Count.Value = 1;
       _function.Compute();
-      Assert.Single(_function.SpacedRebars.Value);
-      var layer = _function.SpacedRebars.Value[0] as ILayerByBarCount;
+      var layer = _function.SpacedRebars.Value as ILayerByBarCount;
       Assert.NotNull(layer);
       Assert.Equal(1, layer.Count);
     }
