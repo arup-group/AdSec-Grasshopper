@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 using AdSecCore.Functions;
 
@@ -6,6 +8,8 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
+
+using Grasshopper.Kernel;
 
 using Oasys.AdSec;
 using Oasys.AdSec.StandardMaterials;
@@ -32,6 +36,13 @@ namespace AdSecGHTests.Parameters {
       var subComponent = ISubComponent.Create(GetAdSecSectionGoo().Value.Section, point);
       subComponentGoo = new AdSecSubComponentGoo(subComponent, Plane.WorldXY, new AdSecDesignCode().DesignCode, "test",
         string.Empty);
+    }
+
+    [Fact]
+    public void BoundingBoxReturnsEmptyWhenValueIsNull() {
+      subComponentGoo.Value = null;
+
+      Assert.Equal(BoundingBox.Empty, subComponentGoo.Boundingbox);
     }
 
     [Fact]
@@ -100,29 +111,183 @@ namespace AdSecGHTests.Parameters {
 
     [Fact]
     public void ShouldDrawOnViewPortWires() {
-      using var doc = RhinoDoc.Create(string.Empty);
-      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White); // color doesn;t matter here
-
       Assert.Empty(subComponentGoo.DrawInstructionsList);
 
-      subComponentGoo.DrawViewportWires(ghPreviewWireArgs);
+      subComponentGoo.TryPrepareDrawWiresInstructions(Color.Red);
 
       Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
       Assert.Single(subComponentGoo.DrawInstructionsList);
     }
 
     [Fact]
-    public void ShouldDrawOnViewportMesh() {
-      using var doc = RhinoDoc.Create(string.Empty);
-      var ghPreviewWireArgs
-        = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(Color.White)); // color doesn;t matter here
-
+    public void ShouldDrawOnViewportMeshesWhenBrepIsValid() {
       Assert.Empty(subComponentGoo.DrawInstructionsList);
 
-      subComponentGoo.DrawViewportMeshes(ghPreviewWireArgs);
+      subComponentGoo.TryPrepareDrawMeshesInstructions();
 
       Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
       Assert.Single(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void ShouldNotDrawOnViewportMeshesWhenSectionIsNull() {
+      subComponentGoo.section = null; // set to null to simulate no brep
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+
+      subComponentGoo.TryPrepareDrawMeshesInstructions();
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void ShouldNotDrawOnViewportWiresWhenSectionIsNull() {
+      subComponentGoo.section = null; // set to null to simulate no brep
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+
+      subComponentGoo.TryPrepareDrawWiresInstructions(Color.Red);
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void BrepShadedShouldBeAddedToInstructionList() {
+      var displayMaterial = new DisplayMaterial(Color.Red);
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+
+      var brep = new Brep();
+      subComponentGoo.AddBrepShaded(brep, displayMaterial);
+
+      Assert.Single(subComponentGoo.DrawInstructionsList);
+      Assert.IsType<DrawBrepShaded>(subComponentGoo.DrawInstructionsList[0]);
+      Assert.Equal(brep, ((DrawBrepShaded)subComponentGoo.DrawInstructionsList[0]).Brep);
+      Assert.Equal(displayMaterial, ((DrawBrepShaded)subComponentGoo.DrawInstructionsList[0]).DisplayMaterial);
+    }
+
+    [Fact]
+    public void BrepsShadedShouldNotBeAddedWhenNullBreps() {
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+      subComponentGoo.AddBrepsShaded(null, new List<DisplayMaterial>());
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void BrepsShadedShouldNotBeAddedWhenNullMaterials() {
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+      subComponentGoo.AddBrepsShaded(new List<Brep>(), null);
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void BrepsShadedShouldNotBeAddedWhenEmptyBreps() {
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+      subComponentGoo.AddBrepsShaded(new List<Brep>(), new List<DisplayMaterial>());
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void BrepsShadedShouldBeAdded() {
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+      subComponentGoo.AddBrepsShaded(new List<Brep>() { new Brep(), },
+        new List<DisplayMaterial>() { new DisplayMaterial(Color.Red), });
+
+      Assert.Single(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void EdgesShouldBeAddedToInstructionList() {
+      var edges = new List<Polyline>() { new Polyline(new Point3d[] { Point3d.Origin, }), };
+      var color = Color.Red;
+      int width = 2;
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+
+      subComponentGoo.AddEdges(edges, color, width);
+
+      Assert.Single(subComponentGoo.DrawInstructionsList);
+      Assert.IsType<DrawPolyline>(subComponentGoo.DrawInstructionsList[0]);
+      Assert.Equal(edges[0], ((DrawPolyline)subComponentGoo.DrawInstructionsList[0]).Polyline);
+      Assert.Equal(color, ((DrawPolyline)subComponentGoo.DrawInstructionsList[0]).Color);
+      Assert.Equal(width, ((DrawPolyline)subComponentGoo.DrawInstructionsList[0]).Thickness);
+    }
+
+    [Fact]
+    public void EdgesShouldNotBeAddedWhenNullEdges() {
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+      subComponentGoo.AddEdges(null, Color.Red, 2);
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void NestedEdgesShouldBeAddedToInstructionList() {
+      var nestedEdges = new List<IEnumerable<Polyline>>() {
+        new List<Polyline>() { new Polyline(new Point3d[] { Point3d.Origin, }), },
+      };
+      var color = Color.Red;
+      int width = 2;
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+
+      subComponentGoo.AddNestedEdges(nestedEdges, color, width);
+
+      Assert.Single(subComponentGoo.DrawInstructionsList);
+      Assert.IsType<DrawPolyline>(subComponentGoo.DrawInstructionsList[0]);
+      Assert.Equal(nestedEdges[0].First(), ((DrawPolyline)subComponentGoo.DrawInstructionsList[0]).Polyline);
+      Assert.Equal(color, ((DrawPolyline)subComponentGoo.DrawInstructionsList[0]).Color);
+      Assert.Equal(width, ((DrawPolyline)subComponentGoo.DrawInstructionsList[0]).Thickness);
+    }
+
+    [Fact]
+    public void NestedEdgesShouldNotBeAddedWhenNullNestedEdges() {
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+      subComponentGoo.AddNestedEdges(null, Color.Red, 2);
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void NestedEdgesShouldNotBeAddedWhenEmptyNestedEdges() {
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+      subComponentGoo.AddNestedEdges(new List<IEnumerable<Polyline>>(), Color.Red, 2);
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void CirclesShouldBeAddedToInstructionList() {
+      var circles = new List<Circle>() { new Circle(Point3d.Origin, 1), };
+      var color = Color.Red;
+      int width = 2;
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+
+      subComponentGoo.AddCircles(circles, color, width);
+
+      Assert.Single(subComponentGoo.DrawInstructionsList);
+      Assert.IsType<DrawCircle>(subComponentGoo.DrawInstructionsList[0]);
+      Assert.Equal(circles[0], ((DrawCircle)subComponentGoo.DrawInstructionsList[0]).Circle);
+      Assert.Equal(color, ((DrawCircle)subComponentGoo.DrawInstructionsList[0]).Color);
+      Assert.Equal(width, ((DrawCircle)subComponentGoo.DrawInstructionsList[0]).Thickness);
+    }
+
+    [Fact]
+    public void CirclesShouldNotBeAddedWhenNullCircles() {
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+      subComponentGoo.AddCircles(null, Color.Red, 2);
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void CirclesShouldNotBeAddedWhenEmptyCircles() {
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
+      subComponentGoo.AddCircles(new List<Circle>(), Color.Red, 2);
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
     }
 
     private static AdSecSectionGoo GetAdSecSectionGoo() {
@@ -133,6 +298,19 @@ namespace AdSecGHTests.Parameters {
       var section = ISection.Create(profile, material);
       var designCode = new AdSecDesignCode().DesignCode;
       return new AdSecSectionGoo(new AdSecSection(section, designCode, "", "", Plane.WorldXY));
+    }
+
+    private static GH_PreviewMeshArgs GetGhPreviewMeshArgs() {
+      using var doc = RhinoDoc.Create(string.Empty);
+      var ghPreviewWireArgs
+        = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(Color.White)); // color doesn't matter here
+      return ghPreviewWireArgs;
+    }
+
+    private static GH_PreviewWireArgs GetGhPreviewWireArgs() {
+      using var doc = RhinoDoc.Create(string.Empty);
+      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White); // color doesn;t matter here
+      return ghPreviewWireArgs;
     }
   }
 }

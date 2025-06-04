@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -16,11 +15,6 @@ using Grasshopper.Kernel.Types;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.Profiles;
-
-using OasysGH.Units;
-
-using OasysUnits;
-using OasysUnits.Units;
 
 using Rhino.Display;
 using Rhino.Geometry;
@@ -63,16 +57,12 @@ namespace AdSecGH.Parameters {
       this.section = new AdSecSection(section, code, codeName, materialName, local, offset);
       plane = local;
       // local axis
-      if (plane == Plane.WorldXY || local == Plane.WorldYZ || local == Plane.WorldZX) {
+
+      if (!PlaneHelper.IsValidPlane(plane)) {
         return;
       }
 
-      var area = this.section.Section.Profile.Area();
-      double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-      var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-      previewXaxis = new Line(local.Origin, local.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
-      previewYaxis = new Line(local.Origin, local.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
-      previewZaxis = new Line(local.Origin, local.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      (previewXaxis, previewYaxis, previewZaxis) = AxisHelper.GetLocalAxisLines(section.Profile, local);
     }
 
     public override bool CastFrom(object source) {
@@ -95,8 +85,16 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
-      if (section.SolidBrep == null) {
+      if (!TryPrepareDrawMeshesInstructions()) {
         return;
+      }
+
+      DrawAll(args.Pipeline);
+    }
+
+    internal bool TryPrepareDrawMeshesInstructions() {
+      if (section?.SolidBrep == null) {
+        return false;
       }
 
       DrawInstructionsList.Clear();
@@ -107,18 +105,31 @@ namespace AdSecGH.Parameters {
 
       AddBrepsShaded(subComponentsPreviewData.SubProfiles, subComponentsPreviewData.SubColours);
       AddBrepsShaded(sectionReinforcementData.Rebars, sectionReinforcementData.RebarColours);
-      DrawAll(args.Pipeline);
+      return true;
     }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (section == null || !section.IsValid) {
+      if (!TryPrepareDrawWiresInstructions(args.Color)) {
         return;
+      }
+
+      DrawAll(args.Pipeline);
+      if (!previewXaxis.IsValid) {
+        return;
+      }
+
+      DrawingHelper.DrawLocalAxis(args, previewZaxis, previewXaxis, previewYaxis);
+    }
+
+    internal bool TryPrepareDrawWiresInstructions(Color color) {
+      if (section == null || !section.IsValid) {
+        return false;
       }
 
       DrawInstructionsList.Clear();
 
       var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      bool isSelected = !args.Color.IsRgbEqualTo(defaultCol);
+      bool isSelected = !color.IsRgbEqualTo(defaultCol);
       var edgeColor = isSelected ? Colour.OasysYellow : Colour.OasysBlue;
       int mainEdgeWidth = isSelected ? 3 : 2;
       int voidEdgeWidth = isSelected ? 2 : 1;
@@ -132,20 +143,16 @@ namespace AdSecGH.Parameters {
       AddNestedEdges(section.SubProfilesData.SubVoidEdges, edgeColor, voidEdgeWidth);
       AddCircles(section.ReinforcementData.RebarEdges, rebarColor, rebarWidth);
 
-      DrawAll(args.Pipeline);
-      if (!previewXaxis.IsValid) {
-        return;
-      }
-
-      DrawingHelper.DrawLocalAxis(args, previewZaxis, previewXaxis, previewYaxis);
+      return true;
     }
 
-    private void AddBrepShaded(Brep brep, DisplayMaterial displayMaterial) {
-      DrawInstructionsList.Add(new DrawBrepShaded() { Brep = brep, DisplayMaterial = displayMaterial, });
+    internal void AddBrepShaded(Brep brep, DisplayMaterial displayMaterial) {
+      DrawInstructionsList.Add(
+        new DrawBrepShaded() { Brep = brep, DisplayMaterial = displayMaterial, Geometry = brep, });
     }
 
-    private void AddBrepsShaded(IList<Brep> breps, IList<DisplayMaterial> displayMaterials) {
-      if (breps == null) {
+    internal void AddBrepsShaded(IList<Brep> breps, IList<DisplayMaterial> displayMaterials) {
+      if (breps == null || displayMaterials == null) {
         return;
       }
 
@@ -154,13 +161,13 @@ namespace AdSecGH.Parameters {
       }
     }
 
-    private void AddEdges(IEnumerable<Polyline> edges, Color color, int width) {
+    internal void AddEdges(IEnumerable<Polyline> edges, Color color, int width) {
       if (edges != null) {
         DrawInstructionsList.AddRange(edges.Select(item => new DrawPolyline() { Polyline = item, Color = color, Thickness = width, }));
       }
     }
 
-    private void AddNestedEdges(IEnumerable<IEnumerable<Polyline>> nestedEdges, Color color, int width) {
+    internal void AddNestedEdges(IEnumerable<IEnumerable<Polyline>> nestedEdges, Color color, int width) {
       if (nestedEdges == null) {
         return;
       }
@@ -170,10 +177,12 @@ namespace AdSecGH.Parameters {
       }
     }
 
-    private void AddCircles(IEnumerable<Circle> circles, Color color, int width) {
-      if (circles != null) {
-        DrawInstructionsList.AddRange(circles.Select(item => new DrawCircle() { Circle = item, Color = color, Thickness = width, }));
+    internal void AddCircles(IEnumerable<Circle> circles, Color color, int width) {
+      if (circles == null) {
+        return;
       }
+
+      DrawInstructionsList.AddRange(circles.Select(item => new DrawCircle() { Circle = item, Color = color, Thickness = width, }));
     }
 
     private void DrawAll(DisplayPipeline pipeline) {

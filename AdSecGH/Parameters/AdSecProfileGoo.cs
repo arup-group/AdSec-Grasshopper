@@ -136,9 +136,7 @@ namespace AdSecGH.Parameters {
         }
       }
 
-      args.Pipeline.DrawLine(previewZaxis, Color.FromArgb(255, 244, 96, 96), 1);
-      args.Pipeline.DrawLine(previewXaxis, Color.FromArgb(255, 96, 244, 96), 1);
-      args.Pipeline.DrawLine(previewYaxis, Color.FromArgb(255, 96, 96, 234), 1);
+      DrawingHelper.DrawLocalAxis(args, previewZaxis, previewXaxis, previewYaxis);
     }
 
     public override bool CastFrom(object source) {
@@ -369,16 +367,11 @@ namespace AdSecGH.Parameters {
     }
 
     private void UpdatePreview() {
-      if (!_plane.IsValid || _plane == Plane.WorldXY || _plane == Plane.WorldYZ || _plane == Plane.WorldZX) {
+      if (!PlaneHelper.IsValidPlane(_plane)) {
         return;
       }
 
-      var area = Profile.Area();
-      double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-      var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-      previewXaxis = new Line(_plane.Origin, _plane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
-      previewYaxis = new Line(_plane.Origin, _plane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
-      previewZaxis = new Line(_plane.Origin, _plane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      (previewXaxis, previewYaxis, previewZaxis) = AxisHelper.GetLocalAxisLines(Profile, _plane);
     }
   }
 }
