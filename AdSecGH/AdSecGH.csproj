@@ -101,6 +101,9 @@
     <StartArguments></StartArguments>
     <StartAction>Program</StartAction>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(TargetDir)AdSec.gha&quot;&#xD;&#xA;Copy &quot;$(ProjectDir)obj\OasysUnits.dll&quot; &quot;$(TargetDir)OasysUnits.dll&quot;&#xD;&#xA;Copy &quot;Properties\Icons\AdSecLogo64.png&quot; &quot;$(TargetDir)AdSecIcon.png&quot;" />
   </Target>
