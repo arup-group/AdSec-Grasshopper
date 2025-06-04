@@ -138,5 +138,16 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(0.1, layer.Pitch.Value);
     }
 
+    [Fact]
+    public void ShouldComputeByCount() {
+      _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
+      _function.Count.Value = 1;
+      _function.Compute();
+      Assert.Single(_function.SpacedRebars.Value);
+      var layer = _function.SpacedRebars.Value[0] as ILayerByBarCount;
+      Assert.NotNull(layer);
+      Assert.Equal(1, layer.Count);
+    }
+
   }
 }

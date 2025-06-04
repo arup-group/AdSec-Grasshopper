@@ -74,9 +74,15 @@ namespace AdSecCore.Functions {
             var layerByBarPitch = ILayerByBarPitch.Create(Rebar.Value, length);
             SpacedRebars.Value = new[] { layerByBarPitch as ILayer };
           }
+
           break;
 
-        case FoldMode.Count: break;
+        case FoldMode.Count:
+          if (Count.Value > 0) {
+            SpacedRebars.Value = new[] { ILayerByBarCount.Create(Count.Value, Rebar.Value) };
+          }
+
+          break;
         default: throw new ArgumentOutOfRangeException();
       }
     }
