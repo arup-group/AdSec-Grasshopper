@@ -1,6 +1,10 @@
-﻿using AdSecCore.Functions;
+﻿using AdSecCore.Builders;
+using AdSecCore.Functions;
 
 using AdSecGHCore.Constants;
+
+using Oasys.AdSec.Reinforcement;
+using Oasys.AdSec.Reinforcement.Layers;
 
 namespace AdSecCoreTests.Functions {
   public class CreateRebarSpacingFunctionTests {
@@ -8,6 +12,8 @@ namespace AdSecCoreTests.Functions {
 
     public CreateRebarSpacingFunctionTests() {
       _function = new CreateRebarSpacingFunction();
+      var singleBars = new BuilderSingleBar().AtPosition(Geometry.Zero()).Build().BarBundle;
+      _function.Rebar.Value = singleBars as IBarBundle;
     }
 
     [Fact]
@@ -120,5 +126,17 @@ namespace AdSecCoreTests.Functions {
       _function.SetMode(CreateRebarSpacingFunction.FoldMode.Count);
       Assert.True(wasCalled);
     }
+
+    [Fact]
+    public void ShouldComputeByDistance() {
+      _function.SetMode(CreateRebarSpacingFunction.FoldMode.Distance);
+      _function.Spacing.Value = 0.1;
+      _function.Compute();
+      Assert.Single(_function.SpacedRebars.Value);
+      var layer = _function.SpacedRebars.Value[0] as ILayerByBarPitch;
+      Assert.NotNull(layer);
+      Assert.Equal(0.1, layer.Pitch.Value);
+    }
+
   }
 }

@@ -4,6 +4,9 @@ using AdSecCore.Parameters;
 
 using AdSecGHCore.Constants;
 
+using Oasys.AdSec.Reinforcement.Layers;
+
+using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
@@ -30,7 +33,7 @@ namespace AdSecCore.Functions {
 
     public RebarBundleParameter Rebar { get; set; } = Default.RebarBundle();
 
-    public DoubleParameter Spacing { get; set; } = new DoubleParameter() {
+    public NullableDoubleParameter Spacing { get; set; } = new NullableDoubleParameter() {
       Name = "Spacing",
       NickName = "S",
       Description
@@ -63,7 +66,20 @@ namespace AdSecCore.Functions {
       return new Attribute[] { SpacedRebars };
     }
 
-    public override void Compute() { }
+    public override void Compute() {
+      switch (_mode) {
+        case FoldMode.Distance:
+          if (Spacing.Value.HasValue) {
+            var length = Length.From(Spacing.Value.Value, LengthUnitGeometry);
+            var layerByBarPitch = ILayerByBarPitch.Create(Rebar.Value, length);
+            SpacedRebars.Value = new[] { layerByBarPitch as ILayer };
+          }
+          break;
+
+        case FoldMode.Count: break;
+        default: throw new ArgumentOutOfRangeException();
+      }
+    }
 
     public void UpdateUnits() {
       LengthUnitGeometry = LocalLengthUnitGeometry;
