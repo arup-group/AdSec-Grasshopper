@@ -5,6 +5,9 @@
     <Platforms>x64</Platforms>
     <LangVersion>8</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AdSec" Version="2.0.4.234" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.3" />
