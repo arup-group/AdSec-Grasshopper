@@ -21,6 +21,10 @@ namespace AdSecCore {
       return $"{name} [{unit.GetUnit()}]";
     }
 
+    public static string NameWithUnits(string name, AngleUnit unit) {
+      return $"{name} [{Angle.GetAbbreviation(unit)}]";
+    }
+
     public static string NameWithUnits(string name, StrainUnit unit) {
       return $"{name} [{Strain.GetAbbreviation(unit)}]";
     }

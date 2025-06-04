@@ -18,6 +18,7 @@ namespace AdSecCore.Functions {
   }
 
   public abstract class Function : IFunction {
+    private AngleUnit _angleUnit = AngleUnit.Radian;
     private LengthUnit _lengthUnitGeometry = LengthUnit.Meter;
     private LengthUnit _lengthUnitResult = LengthUnit.Millimeter;
     private StrainUnit _strainUnitResult = StrainUnit.Ratio;
@@ -29,6 +30,13 @@ namespace AdSecCore.Functions {
     private PressureUnit _stressUnitResult = PressureUnit.Megapascal;
     private ForceUnit _forceUnit = ForceUnit.Newton;
 
+    public AngleUnit AngleUnit {
+      get => _angleUnit;
+      set {
+        _angleUnit = value;
+        UpdateParameter();
+      }
+    }
     public LengthUnit LengthUnitGeometry {
       get => _lengthUnitGeometry;
       set {
