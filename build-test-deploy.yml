@@ -148,6 +148,28 @@ steps:
     failOnStderr: true
 
   - powershell: |
+      $jsonPath = "stryker-config.json"
+
+      # Get PR target or fallback
+      $fullBranch = "$(System.PullRequest.TargetBranch)"
+      if (-not $fullBranch) {
+        $fullBranch = "$(Build.SourceBranch)"
+      }
+
+      $branchName = $fullBranch -replace '^refs/heads/', ''
+      $originBranch = "origin/$branchName"
+
+      Write-Host "Using Stryker since target: $originBranch"
+
+      # Load and modify JSON
+      $json = Get-Content $jsonPath | ConvertFrom-Json
+      $json."stryker-config".since.target = $originBranch
+
+      # Save updated JSON back to file
+      $json | ConvertTo-Json -Depth 10 | Set-Content $jsonPath -Encoding UTF8
+    displayName: "Update stryker-config.json target branch"
+
+  - powershell: |
       $output = dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
       $scoreLine = $output | Select-String -Pattern 'final mutation score is (\d+(\.\d+)?) ?%'
       if ($scoreLine) {
