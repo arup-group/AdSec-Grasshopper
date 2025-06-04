@@ -41,6 +41,8 @@ namespace Oasys.GH.Helpers {
         {
           typeof(SubComponentParameter), ParamGenericObject
         }, {
+          typeof(BooleanParameter), ConfigureParam<Param_Boolean>
+        }, {
           typeof(SubComponentArrayParameter), ParamGenericObject
         }, {
           typeof(DesignCodeParameter), ParamGenericObject
@@ -64,6 +66,8 @@ namespace Oasys.GH.Helpers {
           typeof(ProfileParameter), ParamGenericObject
         }, {
           typeof(DoubleParameter), ParamNumber
+        }, {
+          typeof(NullableDoubleParameter), ParamNumber
         }, {
           typeof(DoubleArrayParameter), ParamNumber
         }, {
@@ -338,29 +342,7 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(SubComponentArrayParameter), goo => {
             var gooDynamic = goo as List<object>;
-            return gooDynamic.Select(x => {
-              if (x is AdSecSubComponentGoo subComponentGoo) {
-                var component = subComponentGoo.Value;
-                return new SubComponent {
-                  ISubComponent = component,
-                  SectionDesign = new SectionDesign {
-                    Section = component.Section,
-                  },
-                };
-              }
-
-              if (x is AdSecSectionGoo sectionGoo) {
-                var section = sectionGoo.Value;
-                return new SubComponent {
-                  ISubComponent = ISubComponent.Create(section.Section, AdSecCore.Builders.Geometry.Zero()),
-                  SectionDesign = new SectionDesign {
-                    Section = section.Section,
-                  },
-                };
-              }
-
-              return null;
-            }).ToArray();
+            return SubComponentCasting(gooDynamic);
           }
         }, {
           typeof(AdSecPointParameter), goo => {
@@ -373,6 +355,20 @@ namespace Oasys.GH.Helpers {
               return value;
             }
 
+            return null;
+          }
+        }, {
+          typeof(BooleanParameter), goo => {
+            if (goo is bool value) {
+              return value;
+            }
+            return null;
+          }
+        }, {
+          typeof(NullableDoubleParameter), goo => {
+            if (goo is double value) {
+              return value;
+            }
             return null;
           }
         }, {
@@ -409,6 +405,32 @@ namespace Oasys.GH.Helpers {
           }
         },
       };
+
+    private static SubComponent[] SubComponentCasting(List<object> gooDynamic) {
+      return gooDynamic.Select(x => {
+        if (x is AdSecSubComponentGoo subComponentGoo) {
+          var component = subComponentGoo.Value;
+          return new SubComponent {
+            ISubComponent = component,
+            SectionDesign = new SectionDesign {
+              Section = component.Section,
+            },
+          };
+        }
+
+        if (x is AdSecSectionGoo sectionGoo) {
+          var section = sectionGoo.Value;
+          return new SubComponent {
+            ISubComponent = ISubComponent.Create(section.Section, AdSecCore.Builders.Geometry.Zero()),
+            SectionDesign = new SectionDesign {
+              Section = section.Section,
+            },
+          };
+        }
+
+        return null;
+      }).ToArray();
+    }
 
     private static T ConfigureParam<T>(Attribute a) where T : IGH_Param, new() {
       return new T {

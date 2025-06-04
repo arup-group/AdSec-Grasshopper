@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 using AdSecGH.Parameters;
 
@@ -11,14 +12,26 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
-  public enum RebarType {
+  public enum RebarLayoutOption {
     Line,
     SingleBars,
     Circle,
     Arc,
   }
   public class ReinforcementLayoutFunction : Function, IDropdownOptions, ILocalUnits {
-    public RebarType Type { get; set; } = RebarType.Line;
+    private const string PositiveAngleIsConsideredAntiClockwise = "Positive angle is considered anti-clockwise.";
+    public LengthUnit LocalLengthUnit { get; set; } = LengthUnit.Meter;
+    public AngleUnit LocalAngleUnit { get; set; } = AngleUnit.Radian;
+    public RebarLayoutOption RebarLayoutOption { get; set; } = RebarLayoutOption.Line;
+    public event Action OnVariableInputChanged;
+    public void SetRebarLayoutOption(RebarLayoutOption layoutOption) {
+      if (RebarLayoutOption == layoutOption) {
+        return;
+      }
+      RebarLayoutOption = layoutOption;
+      OnVariableInputChanged?.Invoke();
+    }
+
     public RebarLayerParameter SpacedRebars { get; set; } = new RebarLayerParameter {
       Name = "Spaced Rebars",
       NickName = "RbS",
@@ -49,14 +62,14 @@ namespace AdSecCore.Functions {
 
     public DoubleParameter StartAngle { get; set; } = new DoubleParameter {
       Name = "StartAngle",
-      NickName = "s�",
+      NickName = "s°",
       Description = "The starting angle of the circle",
       Optional = true,
     };
 
     public DoubleParameter SweepAngle { get; set; } = new DoubleParameter {
       Name = "SweepAngle",
-      NickName = "e�",
+      NickName = "e°",
       Description = "The angle sweeped by the arc from its start angle",
       Optional = true,
     };
@@ -82,7 +95,7 @@ namespace AdSecCore.Functions {
       Optional = false,
     };
 
-    public RebarGroupParameter Layout { get; set; } = new RebarGroupParameter {
+    public RebarGroupParameter RebarGroup { get; set; } = new RebarGroupParameter {
       Name = "Layout",
       NickName = "RbG",
       Description = "Rebar Group for AdSec Section",
@@ -91,21 +104,21 @@ namespace AdSecCore.Functions {
 
     public override Attribute[] GetAllInputAttributes() {
       Attribute[] allInputAttributes = { };
-      switch (Type) {
-        case RebarType.Line:
+      switch (RebarLayoutOption) {
+        case RebarLayoutOption.Line:
           allInputAttributes = new Attribute[] {
             SpacedRebars,
             Position1,
             Position2
           };
           break;
-        case RebarType.SingleBars:
+        case RebarLayoutOption.SingleBars:
           allInputAttributes = new Attribute[] {
             RebarBundle,
             Positions
           };
           break;
-        case RebarType.Circle:
+        case RebarLayoutOption.Circle:
           allInputAttributes = new Attribute[] {
             SpacedRebars,
             CentreOfCircle,
@@ -113,7 +126,7 @@ namespace AdSecCore.Functions {
             StartAngle,
           };
           break;
-        case RebarType.Arc:
+        case RebarLayoutOption.Arc:
           allInputAttributes = new Attribute[] {
             SpacedRebars,
             CentreOfCircle,
@@ -128,7 +141,7 @@ namespace AdSecCore.Functions {
 
     public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
-        Layout
+        RebarGroup
       };
     }
 
@@ -144,26 +157,61 @@ namespace AdSecCore.Functions {
     };
 
     public override void Compute() {
+      if (!ValidateInput()) {
+        return;
+      }
+
       IGroup group = null;
-      switch (Type) {
-        case RebarType.Line:
+      switch (RebarLayoutOption) {
+        case RebarLayoutOption.Line:
           group = CreateLineTypeGroup();
           break;
-        case RebarType.SingleBars:
+        case RebarLayoutOption.SingleBars:
           group = CreateSingleBarsTypeGroup();
           break;
-        case RebarType.Circle:
+        case RebarLayoutOption.Circle:
           group = CreateCircleTypeGroup();
           break;
-        case RebarType.Arc:
+        case RebarLayoutOption.Arc:
           group = CreateArcTypeGroup();
           break;
       }
-      Layout.Value = new AdSecRebarGroup(group);
+      RebarGroup.Value = new AdSecRebarGroup(group);
     }
 
-    private void AddErrorMessage() {
-      ErrorMessages.Add("All inputs must be provided.");
+    private bool ValidateInput() {
+      const double TOLERANCE = 1e-9;
+      const string errorMessage = "All inputs must be provided.";
+      bool IsNullOrInvalid(object value) => value == null;
+      bool IsZeroOrInvalid(double? value) => !value.HasValue || Math.Abs(value.Value) <= TOLERANCE;
+
+      switch (RebarLayoutOption) {
+        case RebarLayoutOption.Line:
+          if (IsNullOrInvalid(Position1.Value) || IsNullOrInvalid(Position2.Value) || IsNullOrInvalid(SpacedRebars.Value)) {
+            ErrorMessages.Add(errorMessage);
+            return false;
+          }
+          break;
+        case RebarLayoutOption.SingleBars:
+          if (IsNullOrInvalid(RebarBundle.Value) || IsNullOrInvalid(Positions.Value)) {
+            ErrorMessages.Add(errorMessage);
+            return false;
+          }
+          break;
+        case RebarLayoutOption.Circle:
+          if (IsNullOrInvalid(CentreOfCircle.Value) || IsZeroOrInvalid(RadiusOfCircle.Value) || IsZeroOrInvalid(StartAngle.Value)) {
+            ErrorMessages.Add(errorMessage);
+            return false;
+          }
+          break;
+        case RebarLayoutOption.Arc:
+          if (IsNullOrInvalid(CentreOfCircle.Value) || IsZeroOrInvalid(RadiusOfCircle.Value) || IsZeroOrInvalid(StartAngle.Value) || IsZeroOrInvalid(SweepAngle.Value)) {
+            ErrorMessages.Add(errorMessage);
+            return false;
+          }
+          break;
+      }
+      return true;
     }
 
     private IGroup CreateLineTypeGroup() {
@@ -181,23 +229,65 @@ namespace AdSecCore.Functions {
     }
 
     private IGroup CreateArcTypeGroup() {
-      return IArcGroup.Create(CentreOfCircle.Value,
-        Length.From(RadiusOfCircle.Value, LengthUnitGeometry),
-        Angle.FromDegrees(StartAngle.Value),
-        Angle.FromDegrees(SweepAngle.Value),
-        SpacedRebars.Value);
+      return IArcGroup.Create(CentreOfCircle.Value, RadiusToLength(), StartAngleToAngle(), SweepAngleToAngle(), SpacedRebars.Value);
     }
 
     private IGroup CreateCircleTypeGroup() {
-      return ICircleGroup.Create(CentreOfCircle.Value,
-        Length.From(RadiusOfCircle.Value, LengthUnitGeometry),
-        Angle.FromDegrees(StartAngle.Value),
-        SpacedRebars.Value);
+      var radius = UnitHelpers.ParseToQuantity<Length>(RadiusOfCircle.Value, LengthUnitGeometry);
+      var startAngle = UnitHelpers.ParseToQuantity<Angle>(StartAngle.Value, AngleUnit);
+      return ICircleGroup.Create(CentreOfCircle.Value, RadiusToLength(), StartAngleToAngle(), SpacedRebars.Value);
     }
+
+    private Angle SweepAngleToAngle() {
+      return UnitHelpers.ParseToQuantity<Angle>(SweepAngle.Value, AngleUnit);
+    }
+
+    private Angle StartAngleToAngle() {
+      return UnitHelpers.ParseToQuantity<Angle>(StartAngle.Value, AngleUnit);
+    }
+
+    private Length RadiusToLength() {
+      return UnitHelpers.ParseToQuantity<Length>(RadiusOfCircle.Value, LengthUnitGeometry);
+    }
+
+    protected override void UpdateParameter() {
+      string lenhthUnitAbbreviation = Length.GetAbbreviation(LengthUnitGeometry);
+      string angleUnitAbbreviation = Angle.GetAbbreviation(AngleUnit);
+      SweepAngle.Name = $"SweepAngle [{angleUnitAbbreviation}]";
+      SweepAngle.Description = $"The angle (in {angleUnitAbbreviation}) sweeped by the arc from its start angle. {PositiveAngleIsConsideredAntiClockwise} Default is π/2";
+      StartAngle.Name = $"StartAngle [{angleUnitAbbreviation}]";
+      StartAngle.Description = $"[Optional] The starting angle (in {angleUnitAbbreviation}) of the circle. {PositiveAngleIsConsideredAntiClockwise} Default is 0";
+      RadiusOfCircle.Name = $"Radius [{lenhthUnitAbbreviation}]";
+
+    }
+
     public void UpdateUnits() {
+      AngleUnit = LocalAngleUnit;
+      LengthUnitGeometry = LocalLengthUnit;
     }
+
     public IOptions[] Options() {
-      return new IOptions[] { };
+      var options = new List<IOptions>();
+      options.Add(new EnumOptions() {
+        EnumType = typeof(RebarLayoutOption),
+        Description = "Layout Type",
+      });
+      switch (RebarLayoutOption) {
+        case RebarLayoutOption.Circle:
+        case RebarLayoutOption.Arc:
+          options.Add(new UnitOptions() {
+            Description = "Length measure",
+            UnitType = typeof(LengthUnit),
+            UnitValue = (int)LengthUnitGeometry,
+          });
+          options.Add(new UnitOptions() {
+            Description = "Angle measure",
+            UnitType = typeof(AngleUnit),
+            UnitValue = (int)AngleUnit,
+          });
+          break;
+      }
+      return options.ToArray();
     }
   }
 }
