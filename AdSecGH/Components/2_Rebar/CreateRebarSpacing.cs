@@ -31,11 +31,13 @@ namespace AdSecGH.Components {
     protected override Bitmap Icon => Resources.RebarSpacing;
 
     public override void SetSelected(int i, int j) {
-      _selectedItems[i] = _dropDownItems[i][j];
+      string selectedItem = _dropDownItems[i][j];
+      _selectedItems[i] = selectedItem;
       if (i == 0) {
         _mode = (CreateRebarSpacingFunction.FoldMode)Enum.Parse(typeof(CreateRebarSpacingFunction.FoldMode),
           _selectedItems[i]);
         BusinessComponent.SetMode(_mode);
+        _selectedItems[i] = selectedItem;
       } else {
         _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       }
@@ -64,15 +66,15 @@ namespace AdSecGH.Components {
       }
     }
 
-    protected override void UpdateUIFromSelectedItems() {
-      _mode = (CreateRebarSpacingFunction.FoldMode)Enum.Parse(typeof(CreateRebarSpacingFunction.FoldMode),
-        _selectedItems[0]);
-      if (_mode == CreateRebarSpacingFunction.FoldMode.Distance) {
-        _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
-      }
-
-      BusinessComponent.SetMode(_mode);
-      base.UpdateUIFromSelectedItems();
-    }
+    // protected override void UpdateUIFromSelectedItems() {
+    //   _mode = (CreateRebarSpacingFunction.FoldMode)Enum.Parse(typeof(CreateRebarSpacingFunction.FoldMode),
+    //     _selectedItems[0]);
+    //   if (_mode == CreateRebarSpacingFunction.FoldMode.Distance) {
+    //     _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
+    //   }
+    //
+    //   BusinessComponent.SetMode(_mode);
+    //   base.UpdateUIFromSelectedItems();
+    // }
   }
 }
