@@ -65,16 +65,5 @@ namespace AdSecGH.Components {
           break;
       }
     }
-
-    // protected override void UpdateUIFromSelectedItems() {
-    //   _mode = (CreateRebarSpacingFunction.FoldMode)Enum.Parse(typeof(CreateRebarSpacingFunction.FoldMode),
-    //     _selectedItems[0]);
-    //   if (_mode == CreateRebarSpacingFunction.FoldMode.Distance) {
-    //     _lengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
-    //   }
-    //
-    //   BusinessComponent.SetMode(_mode);
-    //   base.UpdateUIFromSelectedItems();
-    // }
   }
 }

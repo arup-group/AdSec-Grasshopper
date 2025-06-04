@@ -104,7 +104,7 @@ namespace Oasys.GH.Helpers {
             selectedItem = UnitAbbreviation(unitType, unitValue);
           }
 
-          if (_isInitialised) {
+          if (_isInitialised && i < _dropDownItems.Count) {
             _spacerDescriptions[i] = description;
             _dropDownItems[i] = items;
             _selectedItems[i] = selectedItem;
