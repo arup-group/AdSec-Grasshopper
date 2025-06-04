@@ -16,7 +16,7 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
 
-  public class CreateRebarLayout : DropdownAdapter<ReinforcementLayoutFunction> {
+  public class CreateRebarLayout : DropdownAdapter<RebarLayoutFunction> {
 
     public override Guid ComponentGuid => new Guid("1250f456-de99-4834-8d7f-4019cc0c70ba");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
