@@ -203,11 +203,6 @@ namespace Oasys.GH.Helpers {
            var points = (a as PointArrayParameter).Value;
            return points.Select(point => new AdSecPointGoo(point)).ToList();
           }
-        },{
-          typeof(PointParameter), a => {
-            var point = (a as PointParameter).Value;
-            return new AdSecPointGoo(point);
-         }
         }, {
           typeof(AdSecMaterialArrayParam), a => {
             var materials = (a as AdSecMaterialArrayParam).Value;
@@ -328,11 +323,6 @@ namespace Oasys.GH.Helpers {
           typeof(AdSecSectionParameter), goo => {
             dynamic gooDynamic = goo;
             return new AdSecSectionGoo(gooDynamic);
-          }
-        }, {
-          typeof(RebarLayerArrayParameter), goo => {
-            var gooDynamic = goo as List<object>;
-            return gooDynamic.Select(x => (x as AdSecRebarLayerGoo).Value).ToArray();
           }
         }, {
           typeof(PointParameter), goo => {

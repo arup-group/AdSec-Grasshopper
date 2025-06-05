@@ -23,6 +23,12 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.RebarLayout;
 
+    protected override void UpdateUIFromSelectedItems() {
+      base.UpdateUIFromSelectedItems();
+      BusinessComponent.RebarLayoutOption = (RebarLayoutOption)Enum.Parse(typeof(RebarLayoutOption), _selectedItems[0], true);
+      UpdateUnits();
+    }
+
     public override void SetSelected(int i, int j) {
       var selectedItem = _dropDownItems[i][j];
       _selectedItems[i] = selectedItem;
