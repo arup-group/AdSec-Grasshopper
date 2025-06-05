@@ -9,6 +9,7 @@ using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using AdSecGHCore.Constants;
+using AdSecGHCore.Functions;
 
 using Grasshopper;
 using Grasshopper.Kernel;
@@ -16,6 +17,7 @@ using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec.IO.Serialization;
+using Oasys.GH.Helpers;
 
 using OasysGH;
 using OasysGH.Components;
@@ -25,7 +27,7 @@ using Rhino.Geometry;
 using Rhino.UI;
 
 namespace AdSecGH.Components {
-  public class OpenModel : GH_OasysDropDownComponent {
+  public class OpenModel : DropdownAdapter<OpenModelFunction> {
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("42135d0f-bf55-40c0-8f6f-5dc2ad5f7741");
@@ -33,11 +35,6 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.OpenAdSec;
     private Guid _panelGuid = Guid.NewGuid();
-
-    public OpenModel() : base("Open Model", "Open", "Open an existing AdSec .ads file", CategoryName.Name(),
-      SubCategoryName.Cat0()) {
-      Hidden = false; // sets the initial state of the component to hidden
-    }
 
     public override void CreateAttributes() {
       m_attributes = new ButtonComponentAttributes(this, "Open", OpenFile, "Open AdSec file");
@@ -128,7 +125,7 @@ namespace AdSecGH.Components {
         $"AdSec file to open and work with.{Environment.NewLine}Input either path component, a text string with path and {Environment.NewLine}filename or an existing AdSec File created in Grasshopper.",
         GH_ParamAccess.item);
       pManager.AddPlaneParameter("LocalPlane", "Pln",
-        "[Optional] Plane representing local " + "coordinate system, by default a YZ-plane is used",
+        "[Optional] Plane representing local coordinate system, by default a YZ-plane is used",
         GH_ParamAccess.list, Plane.WorldYZ);
       pManager[1].Optional = true;
     }

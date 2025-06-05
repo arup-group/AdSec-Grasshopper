@@ -1,4 +1,7 @@
-﻿using AdSecGHCore.Constants;
+﻿using AdSecCore.Functions;
+
+using AdSecGHCore.Constants;
+using AdSecGHCore.Functions;
 
 namespace AdSecCoreTests.Functions {
   public class OpenModelFunctionTests {
@@ -31,6 +34,38 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ShouldHaveNoSubCategory() {
       Assert.Equal(SubCategoryName.Cat0(), _function.Organisation.SubCategory);
+    }
+
+    [Fact]
+    public void ShouldHavePathWithName() {
+      Assert.Equal("Filename and path", _function.Path.Name);
+    }
+
+    [Fact]
+    public void ShouldHaveLocalPlaneWithName() {
+      Assert.Equal("LocalPlane", _function.Plane.Name);
+    }
+
+    [Fact]
+    public void ShouldHaveLocalPlaneOptional() {
+      Assert.True(_function.Plane.Optional);
+    }
+
+    [Fact]
+    public void ShouldHaveLocalPlaneWithDefaultYZ() {
+      Assert.Equal(OasysPlane.PlaneYZ, _function.Plane.Default);
+    }
+
+    [Fact]
+    public void ShouldHaveTwoInputs() {
+      Assert.Equal(2, _function.GetAllInputAttributes().Length);
+    }
+
+    [Fact]
+    public void ShouldIncludeInputsInThatOrder() {
+      var attributes = _function.GetAllInputAttributes();
+      Assert.IsType<PathParameter>(attributes[0]);
+      Assert.IsType<PlaneParameter>(attributes[1]);
     }
 
   }
