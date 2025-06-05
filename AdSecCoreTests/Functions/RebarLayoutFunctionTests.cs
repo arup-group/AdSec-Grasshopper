@@ -11,6 +11,8 @@ using Oasys.Profiles;
 using OasysUnits;
 using OasysUnits.Units;
 
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace AdSecCoreTests.Functions {
   public class RebarLayoutFunctionTests {
     public RebarLayoutFunction function;
@@ -126,6 +128,89 @@ namespace AdSecCoreTests.Functions {
       Assert.Contains("°", function.SweepAngle.Description);
       Assert.Contains("[°]", function.StartAngle.Name);
       Assert.Contains("°", function.StartAngle.Description);
+    }
+
+    [Theory]
+    [InlineData(3, (int)RebarLayoutOption.Line)]
+    [InlineData(2, (int)RebarLayoutOption.SingleBars)]
+    [InlineData(4, (int)RebarLayoutOption.Circle)]
+    [InlineData(5, (int)RebarLayoutOption.Arc)]
+    public void GetAllInputAttributesReturnsTwoParameters(int count, int layoutOption) {
+      function.RebarLayoutOption = (RebarLayoutOption)layoutOption;
+      var inputs = function.GetAllInputAttributes();
+      Assert.Equal(count, inputs.Length);
+    }
+
+    [Fact]
+    public void GetAllOutputAttributesReturnsOneParameter() {
+      var outputs = function.GetAllOutputAttributes();
+      Assert.Single(outputs);
+    }
+
+    [Fact]
+    public void ParametersHaveCorrectNames() {
+      Assert.Equal("Spaced Rebars", function.SpacedRebars.Name);
+      Assert.Equal("Rebar", function.RebarBundle.Name);
+      Assert.Equal("Centre", function.CentreOfCircle.Name);
+      Assert.Equal("Radius", function.RadiusOfCircle.Name);
+      Assert.Equal("StartAngle", function.StartAngle.Name);
+      Assert.Equal("SweepAngle", function.SweepAngle.Name);
+      Assert.Equal("Position(s)", function.Positions.Name);
+      Assert.Equal("Position 1", function.Position1.Name);
+      Assert.Equal("Position 2", function.Position2.Name);
+    }
+
+    [Fact]
+    public void ParametersHaveCorrectNickNames() {
+      Assert.Equal("RbS", function.SpacedRebars.NickName);
+      Assert.Equal("Rb", function.RebarBundle.NickName);
+      Assert.Equal("CVx", function.CentreOfCircle.NickName);
+      Assert.Equal("r", function.RadiusOfCircle.NickName);
+      Assert.Equal("s°", function.StartAngle.NickName);
+      Assert.Equal("e°", function.SweepAngle.NickName);
+      Assert.Equal("Vxs", function.Positions.NickName);
+      Assert.Equal("Vx1", function.Position1.NickName);
+      Assert.Equal("Vx2", function.Position2.NickName);
+    }
+
+    [Fact]
+    public void ParametersHaveCorrectDescriptionNames() {
+      Assert.Contains("AdSec Rebars Spaced in a Layer", function.SpacedRebars.Description);
+      Assert.Contains("AdSec Rebar (single or bundle)", function.RebarBundle.Description);
+      Assert.Contains("Vertex Point representing the centre of the circle", function.CentreOfCircle.Description);
+      Assert.Contains("Distance representing the radius of the circle", function.RadiusOfCircle.Description);
+      Assert.Contains("The starting angle of the circle", function.StartAngle.Description);
+      Assert.Contains("The angle sweeped by the arc", function.SweepAngle.Description);
+      Assert.Contains("List of bar positions", function.Positions.Description);
+      Assert.Contains("First bar position", function.Position1.Description);
+      Assert.Contains("Last bar position", function.Position2.Description);
+    }
+
+    [Fact]
+    public void ParametersHaveCorrecOptionalValue() {
+      Assert.False(function.SpacedRebars.Optional);
+      Assert.False(function.RebarBundle.Optional);
+      Assert.True(function.CentreOfCircle.Optional);
+      Assert.True(function.RadiusOfCircle.Optional);
+      Assert.True(function.StartAngle.Optional);
+      Assert.True(function.SweepAngle.Optional);
+      Assert.False(function.Positions.Optional);
+      Assert.False(function.Position1.Optional);
+      Assert.False(function.Position2.Optional);
+    }
+
+
+    [Fact]
+    public void OrganisationHasCorrectValues() {
+      Assert.Equal("AdSec", function.Organisation.Category);
+      Assert.Equal("Rebar", function.Organisation.SubCategory.Trim());
+    }
+
+    [Fact]
+    public void MetaDataHasCorrectValues() {
+      Assert.Equal("Create Reinforcement Layout", function.Metadata.Name);
+      Assert.Equal("Reinforcement Layout", function.Metadata.NickName);
+      Assert.Contains("Create a Reinforcement Layout for an AdSec Section", function.Metadata.Description);
     }
   }
 }
