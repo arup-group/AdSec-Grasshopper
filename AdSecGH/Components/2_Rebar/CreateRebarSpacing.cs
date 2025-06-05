@@ -27,9 +27,7 @@ namespace AdSecGH.Components {
       string selectedItem = _dropDownItems[i][j];
       _selectedItems[i] = selectedItem;
       if (i == 0) {
-        BusinessComponent.SetMode(
-          (SpacingMode)Enum.Parse(typeof(SpacingMode),
-            _selectedItems[i]));
+        BusinessComponent.SetMode((SpacingMode)Enum.Parse(typeof(SpacingMode), _selectedItems[i]));
         _selectedItems[i] = selectedItem;
       } else {
         UpdateUnits();
@@ -38,30 +36,9 @@ namespace AdSecGH.Components {
       base.UpdateUI();
     }
 
-    public override bool Read(GH_IReader reader) {
-      var modeString = string.Empty;
-      if (reader.TryGetString("Mode", ref modeString)) {
-        BusinessComponent.SetMode(
-          (SpacingMode)Enum.Parse(typeof(SpacingMode), modeString));
-        _selectedItems[0] = modeString;
-      }
-
-      var unitString = string.Empty;
-      if (reader.TryGetString("LengthUnit", ref unitString)) {
-        BusinessComponent.LengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), unitString);
-
-        if (_dropDownItems.Count > 1) {
-          _selectedItems[1] = unitString;
-        }
-      }
-
-      return base.Read(reader);
-    }
-
-    public override bool Write(GH_IWriter writer) {
-      writer.SetString("Mode", BusinessComponent.Mode.ToString());
-      writer.SetString("LengthUnit", BusinessComponent.LengthUnitGeometry.ToString());
-      return base.Write(writer);
+    protected override void UpdateUIFromSelectedItems() {
+      base.UpdateUIFromSelectedItems();
+      UpdateUnits();
     }
 
     protected override void BeforeSolveInstance() { UpdateUnits(); }
