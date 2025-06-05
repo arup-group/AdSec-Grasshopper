@@ -99,7 +99,7 @@ namespace AdSecCore.Functions {
   public class SectionArrayParameter : BaseArrayParameter<SectionDesign> { }
   public class ProfileParameter : ParameterAttribute<ProfileDesign> { }
   public class PathParameter : ParameterAttribute<string> { }
-  public class PlaneParameter : ParameterAttribute<OasysPlane> { }
+  public class PlaneParameter : BaseArrayParameter<OasysPlane> { }
 
   public class ProfileDesign {
     public IProfile Profile { get; set; }

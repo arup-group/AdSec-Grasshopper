@@ -31,7 +31,7 @@ namespace AdSecGHCore.Functions {
       NickName = "Pln",
       Description = "[Optional] Plane representing local coordinate system, by default a YZ-plane is used",
       Optional = true,
-      Default = OasysPlane.PlaneYZ,
+      Default = new[] { OasysPlane.PlaneYZ },
     };
     public SectionArrayParameter Sections { get; set; } = new SectionArrayParameter() {
       Name = "Section",

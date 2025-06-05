@@ -53,9 +53,13 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveLocalPlaneWithDefaultYZ() {
-      Assert.Equal(OasysPlane.PlaneYZ, _function.Plane.Default);
+      Assert.Equal(OasysPlane.PlaneYZ, _function.Plane.Default[0]);
     }
 
+    [Fact]
+    public void ShouldHaveAnArrayOfLocalPlane() {
+      Assert.Equal(Access.List, _function.Plane.Access);
+    }
     [Fact]
     public void ShouldHaveTwoInputs() {
       Assert.Equal(2, _function.GetAllInputAttributes().Length);
