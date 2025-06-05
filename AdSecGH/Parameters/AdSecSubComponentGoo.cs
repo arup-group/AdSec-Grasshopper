@@ -29,9 +29,9 @@ namespace AdSecGH.Parameters {
     internal AdSecSection section;
     private readonly IPoint offset;
     private readonly Plane plane;
-    private readonly Line previewXaxis;
-    private readonly Line previewYaxis;
-    private readonly Line previewZaxis;
+    public readonly Line previewXaxis;
+    public readonly Line previewYaxis;
+    public readonly Line previewZaxis;
     internal List<DrawInstructions> DrawInstructionsList { get; } = new List<DrawInstructions>();
 
     public AdSecSubComponentGoo(SubComponent subComponent) : base(subComponent.ISubComponent) {

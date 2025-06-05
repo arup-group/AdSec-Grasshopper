@@ -2,12 +2,14 @@
 using System.Drawing;
 using System.Linq;
 
+using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.StandardMaterials;
 using Oasys.Profiles;
 using Oasys.Taxonomy.Profiles;
@@ -39,6 +41,15 @@ namespace AdSecGHTests.Parameters {
 
       Assert.Equal(BoundingBox.Empty, subComponentGoo.Boundingbox);
       Assert.Equal(subComponentGoo.ClippingBox, subComponentGoo.Boundingbox);
+    }
+
+    [Fact]
+    public void ShouldHaveInvalidPlane() {
+      var local = new Plane(Point3d.Origin, Vector3d.ZAxis, Vector3d.YAxis);
+      var componentGoo = new AdSecSubComponentGoo(GetAdSecSectionGoo().Value.Section,
+        local, Geometry.Zero(), IS456.Edition_2000, string.Empty,
+        string.Empty);
+      Assert.True(componentGoo.previewXaxis.IsValid);
     }
 
     [Fact]
@@ -298,8 +309,8 @@ namespace AdSecGHTests.Parameters {
         new WebConstant(length)));
       var material = Steel.ASTM.A242_46;
       var section = ISection.Create(profile, material);
-      var designCode = new AdSecDesignCode().DesignCode;
-      return new AdSecSectionGoo(new AdSecSection(section, designCode, "", "", Plane.WorldXY));
+      var designCode = IS456.Edition_2000;
+      return new AdSecSectionGoo(new AdSecSection(section, designCode, string.Empty, string.Empty, Plane.WorldXY));
     }
   }
 }
