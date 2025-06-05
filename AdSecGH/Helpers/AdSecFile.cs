@@ -17,23 +17,11 @@ namespace AdSecGH.Helpers {
   internal class AdSecFile {
     private AdSecFile() { }
 
-
     internal static AdSecDesignCode GetDesignCode(string json) {
       // "codes":{"concrete":"EC2_GB_04"}
-      string[] jsonSplit = json.Split(new string[] { "\"codes\": {\r\n        \"concrete\": \"" }, StringSplitOptions.None);
-      if (jsonSplit.Length == 1) {
-        jsonSplit = json.Split(new string[] { "codes\":{\"concrete\":\"" }, StringSplitOptions.None);
-      }
-      if (jsonSplit.Length < 2) {
+      if (!AdSecFileHelper.ProcessJsonIntoDesignCodeParts(json, out var designCodeLevelsSplit)) {
         return null;
       }
-      string codeName = jsonSplit[1].Split('"')[0];
-
-      if (!AdSecFileHelper.CodesStrings.TryGetValue(codeName, out string codeString)) {
-        return null;
-      }
-
-      var designCodeLevelsSplit = codeString.Split('+').ToList();
 
       return new AdSecDesignCode(designCodeLevelsSplit);
     }
@@ -43,6 +31,7 @@ namespace AdSecGH.Helpers {
       if (!File.Exists(fileName)) {
         return sections;
       }
+
       string json = File.ReadAllText(fileName);
       var jsonParser = JsonParser.Deserialize(json);
       sections.AddRange(from section in jsonParser.Sections select section);
@@ -58,12 +47,12 @@ namespace AdSecGH.Helpers {
 
       var json = new JsonConverter(sections[0].DesignCode);
       for (int sectionId = 0; sectionId < sections.Count; sectionId++) {
-
         PopulateLoadAndDeformationLists(loads, sectionId, out var adSecload, out var adSecDeformation);
 
         if (adSecload.Any() && adSecDeformation.Any()) {
           throw new ArgumentException("Only either deformation or load can be specified to a section.");
         }
+
         try {
           if (adSecload.Any()) {
             jsonStrings.Add(json.SectionToJson(sections[sectionId].Section, adSecload));
@@ -74,15 +63,17 @@ namespace AdSecGH.Helpers {
           ParseJsonException(exception);
         }
       }
+
       return jsonStrings;
     }
 
-    private static void PopulateLoadAndDeformationLists(Dictionary<int, List<object>> loads, int sectionId, out Oasys.Collections.IList<ILoad> adSecload, out Oasys.Collections.IList<IDeformation> adSecDeformation) {
+    private static void PopulateLoadAndDeformationLists(
+      Dictionary<int, List<object>> loads, int sectionId, out Oasys.Collections.IList<ILoad> adSecload,
+      out Oasys.Collections.IList<IDeformation> adSecDeformation) {
       adSecload = Oasys.Collections.IList<ILoad>.Create();
       adSecDeformation = Oasys.Collections.IList<IDeformation>.Create();
 
       if (loads.ContainsKey(sectionId)) {
-
         foreach (var item in loads[sectionId].Where(x => x.GetType() == typeof(AdSecLoadGoo))) {
           adSecload.Add(((AdSecLoadGoo)item).Value);
         }
@@ -105,10 +96,12 @@ namespace AdSecGH.Helpers {
           }
         }
       }
+
       string exceptionMessage = messageBuilder.ToString();
 
       if (exceptionMessage.Contains("definition is not a standard")) {
-        messageBuilder.AppendLine(" The AdSec file cannot be created if the section material and rebar grade are not consistent with the design code.");
+        messageBuilder.AppendLine(
+          " The AdSec file cannot be created if the section material and rebar grade are not consistent with the design code.");
       }
 
       throw new InvalidOperationException(messageBuilder.ToString());
@@ -118,6 +111,7 @@ namespace AdSecGH.Helpers {
       if (sections == null || !sections.Any()) {
         return string.Empty;
       }
+
       var json = SectionJson(sections, loads);
       return CombineJSonStrings(json);
     }
@@ -143,6 +137,7 @@ namespace AdSecGH.Helpers {
         nextJson = $",{nextJson.Substring(start)}";
         stringBuilder.Append(nextJson.Remove(nextJson.Length - 2, 2));
       }
+
       stringBuilder.Append(jsonStrings[0].Substring(jsonStrings[0].Length - 2));
       return stringBuilder.ToString();
     }

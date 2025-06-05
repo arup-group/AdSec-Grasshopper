@@ -1,4 +1,5 @@
-﻿using AdSecCore.Functions;
+﻿using AdSecCore.Constants;
+using AdSecCore.Functions;
 
 using AdSecGHCore.Constants;
 using AdSecGHCore.Functions;
@@ -88,12 +89,29 @@ namespace AdSecCoreTests.Functions {
       Assert.IsType<SectionArrayParameter>(_function.GetAllOutputAttributes()[0]);
     }
 
-    [Fact(Skip = "Not implemented yet")]
+    [Fact]
     public void ShouldLoadAnAdsJsonFile() {
       _function.Path.Value = "simple.ads";
       _function.Compute();
       Assert.NotNull(_function.Sections.Value);
     }
 
+    [Fact]
+    public void ShouldLoadWithDesignCode() {
+      _function.Path.Value = "simple.ads";
+      _function.Compute();
+      Assert.NotNull(_function.Sections.Value[0].DesignCode);
+      Assert.NotNull(_function.Sections.Value[0]);
+      Assert.Equal("EN1992", _function.Sections.Value[0].DesignCode.DesignCodeName);
+    }
+
+    [Fact]
+    public void ShouldLoadWithDefaultDesignCode() {
+      _function.Path.Value = "simple.ads";
+      AdSecFileHelper.CodesStrings.Remove("EC2_GB_04");
+      _function.Compute();
+      AdSecFileHelper.CodesStrings.Add("EC2_GB_04", "EN1992+Part1_1+Edition_2004+NationalAnnex+GB+Edition_2014");
+      Assert.Equal("EC2_04", _function.Sections.Value[0].DesignCode.DesignCodeName);
+    }
   }
 }

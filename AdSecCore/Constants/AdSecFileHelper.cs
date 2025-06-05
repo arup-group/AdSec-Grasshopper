@@ -1,10 +1,126 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
+using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 
 namespace AdSecCore.Constants {
 
   public static class AdSecFileHelper {
+
+    private static Assembly _adSecAPI;
+
+    public static Assembly AdSecAPI() {
+      if (_adSecAPI == null) {
+        _adSecAPI = Assembly.LoadFrom("AdSec_API.dll");
+      }
+
+      return _adSecAPI;
+    }
+
+    public static Dictionary<string, Type> ReflectAdSecNamespace(string @namespace) {
+      var adsecAPI = AdSecAPI();
+      var q = from t in adsecAPI.GetTypes() where t.IsInterface && t.Namespace == @namespace select t;
+      var dict = new Dictionary<string, Type>();
+      foreach (var typ in q) {
+        if ($"{@namespace}.{typ.Name}" == typ.FullName) {
+          dict.Add(typ.Name, typ);
+        }
+      }
+
+      return dict;
+    }
+
+    public static Dictionary<string, Type> ReflectNestedTypes(Type type) {
+      var dict = new Dictionary<string, Type>();
+
+      var members = type.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
+      foreach (var member in members) {
+        dict.Add(member.Name, (Type)member);
+      }
+
+      var types = type.GetInterfaces();
+      foreach (var baseType in types) {
+        var baseMembers = baseType.FindMembers(MemberTypes.NestedType, BindingFlags.Public, null, null);
+        foreach (var member in baseMembers) {
+          dict.Add(member.Name, (Type)member);
+        }
+      }
+
+      return dict;
+    }
+
+    public static Type GetDesignCodeType(List<string> designCodeReflectedLevels) {
+      // Get all DesignCodes in DLL under namespace
+      Dictionary<string, Type> designCodeKVP = ReflectAdSecNamespace("Oasys.AdSec.DesignCode");
+      // Loop through DesignCodes types to find the DesignCode type matching our input list of levels
+      Type designCodeType = null;
+      for (int i = 0; i < designCodeReflectedLevels.Count - 1; i++) {
+        designCodeKVP.TryGetValue(designCodeReflectedLevels[i], out designCodeType);
+        if (designCodeType == null) {
+          return null;
+        }
+
+        designCodeKVP = ReflectNestedTypes(designCodeType);
+      }
+
+      if (designCodeReflectedLevels.Count != 1) {
+        return designCodeType;
+      }
+
+      designCodeKVP.TryGetValue(designCodeReflectedLevels[0], out designCodeType);
+      return designCodeType ?? null;
+    }
+
+    public static bool ProcessJsonIntoDesignCodeParts(string json, out List<string> designCodeLevelsSplit) {
+      string[] jsonSplit = json.Split(new[] { "\"codes\": {\r\n        \"concrete\": \"" }, StringSplitOptions.None);
+      if (jsonSplit.Length == 1) {
+        jsonSplit = json.Split(new[] { "codes\":{\"concrete\":\"" }, StringSplitOptions.None);
+      }
+
+      if (jsonSplit.Length < 2) {
+        designCodeLevelsSplit = null;
+        return false;
+      }
+
+      string codeName = jsonSplit[1].Split('"')[0];
+
+      if (!CodesStrings.TryGetValue(codeName, out string codeString)) {
+        designCodeLevelsSplit = null;
+        return false;
+      }
+
+      designCodeLevelsSplit = codeString.Split('+').ToList();
+      return true;
+    }
+
+    public static IDesignCode GetDesignCode(
+      List<string> designCodeReflectedLevels, Type codeType, bool fromDesignCode) {
+      if (codeType == null) {
+        return null;
+      }
+
+      // we need to find the right type Interface under Oasys.AdSec.IAdsec in order to cast to IDesignCode
+      // the string to search for depends on where we call this function from, if we come from an IMaterial type
+      // we can simply use the full name but if from IDesignCode we need to add the name of the code with a +
+      string searchFor = codeType.Namespace;
+      for (int i = 0; i < designCodeReflectedLevels.Count; i++) {
+        searchFor = $"{searchFor}{(i == 0 ? "." : "+")}{designCodeReflectedLevels[i]}";
+      }
+
+      foreach (var field in
+        // loop through all types in Oasys.AdSec.IAdsec and cast to IDesignCode if match with above string
+        from Type type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes()
+        where type.IsInterface && type.Namespace == "Oasys.AdSec.DesignCode" from FieldInfo field in type.GetFields()
+        where (fromDesignCode ? field.ReflectedType.FullName : $"{field.ReflectedType.FullName}+{field.Name}")
+          == searchFor select field) {
+        return (IDesignCode)field.GetValue(null);
+      }
+
+      return null;
+    }
 
     public static readonly Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>() {
       { "ACI318M_02", ACI318.Edition_2002.Metric },

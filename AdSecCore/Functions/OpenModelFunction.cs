@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using AdSecCore.Constants;
 using AdSecCore.Functions;
 
 using AdSecGHCore.Constants;
 
 using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
 
 using Attribute = AdSecCore.Functions.Attribute;
@@ -59,14 +61,27 @@ namespace AdSecGHCore.Functions {
       string json = File.ReadAllText(Path.Value);
       var jsonParser = JsonParser.Deserialize(json);
 
+      DesignCode designCode = new DesignCode() {
+        IDesignCode = AdSecFileHelper.Codes["EC2_04"],
+        DesignCodeName = "EC2_04"
+      };
+
+      if (AdSecFileHelper.ProcessJsonIntoDesignCodeParts(json, out var designCodeLevelsSplit)) {
+        var codeType = AdSecFileHelper.GetDesignCodeType(designCodeLevelsSplit);
+        designCode.IDesignCode = AdSecFileHelper.GetDesignCode(designCodeLevelsSplit, codeType, false);
+        designCode.DesignCodeName = designCodeLevelsSplit[0];
+      }
+
       var sections = new List<SectionDesign>();
+
       for (int i = 0; i < jsonParser.Sections.Count; i++) {
         sections.Add(new SectionDesign() {
           Section = jsonParser.Sections[i],
-
+          DesignCode = designCode,
         });
       }
 
+      Sections.Value = sections.ToArray();
     }
   }
 }

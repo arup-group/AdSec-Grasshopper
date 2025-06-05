@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 
+using AdSecCore.Constants;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
@@ -59,7 +60,7 @@ namespace AdSecGH.Components {
         designCodeKVP.TryGetValue(typeString, out var typ);
 
         // update the KVP by reflecting the type
-        designCodeKVP = ReflectionHelper.ReflectNestedTypes(typ);
+        designCodeKVP = AdSecFileHelper.ReflectNestedTypes(typ);
 
         if (designCodeKVP.Count > 1) {
           level++;
@@ -207,7 +208,7 @@ namespace AdSecGH.Components {
           designCodeKVP.TryGetValue(typeString, out var typ);
 
           // update the KVP by reflecting the type
-          designCodeKVP = ReflectionHelper.ReflectNestedTypes(typ);
+          designCodeKVP = AdSecFileHelper.ReflectNestedTypes(typ);
 
           // determine if we have reached the fields layer
           if (designCodeKVP.Count > 1) {
@@ -344,7 +345,7 @@ namespace AdSecGH.Components {
         designCodeKVP.TryGetValue(typeString, out var typ);
 
         // update the KVP by reflecting the type
-        designCodeKVP = ReflectionHelper.ReflectNestedTypes(typ);
+        designCodeKVP = AdSecFileHelper.ReflectNestedTypes(typ);
 
         // determine if we have reached the fields layer
         if (designCodeKVP.Count > 1) {
