@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
@@ -119,10 +120,15 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToAdSecSubComponentsReturnsCorrectDataFromAdSecSubComponentGoo() {
-      var point = IPoint.Create(new Length(1, LengthUnit.Meter), new Length(2, LengthUnit.Meter));
-      var subComponent = ISubComponent.Create(GetAdSecSectionGoo().Value.Section, point);
-      var input = new AdSecSubComponentGoo(subComponent, Plane.WorldXY, new AdSecDesignCode().DesignCode, "test",
-        string.Empty);
+      var section = GetAdSecSectionGoo().Value.Section;
+      var _subComponent = new SubComponent() {
+        ISubComponent = ISubComponent.Create(section, Geometry.Zero()),
+        SectionDesign = new SectionDesign() {
+          Section = section,
+          LocalPlane = OasysPlane.PlaneXY,
+        }
+      };
+      var input = new AdSecSubComponentGoo(_subComponent);
 
       var objwrap = new List<GH_ObjectWrapper>() {
         new GH_ObjectWrapper(input),

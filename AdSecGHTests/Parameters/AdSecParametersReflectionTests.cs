@@ -126,8 +126,14 @@ namespace AdSecGHTests.Parameters {
       InstanceOfGoos.Add(new AdSecStressStrainCurveGoo(new PolylineCurve(), curve,
         AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, new List<Point3d>()));
       InstanceOfGoos.Add(new AdSecStressStrainPointGoo(stressStrainPoint));
-      InstanceOfGoos.Add(new AdSecSubComponentGoo(section, Plane.WorldXY, IPoint.Create(length, length),
-        adSecDesignCode.DesignCode, "test", "test1"));
+      var subComponent = new SubComponent() {
+        ISubComponent = ISubComponent.Create(section, Geometry.Zero()),
+        SectionDesign = new SectionDesign() {
+          Section = section,
+          LocalPlane = OasysPlane.PlaneXY,
+        }
+      };
+      InstanceOfGoos.Add(new AdSecSubComponentGoo(subComponent));
       InstanceOfGoos.Add(new AdSecNeutralAxisGoo(new NeutralAxis() { Angle = 0, Offset = length, Solution = solutionBuilder }));
     }
 
