@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 
 using AdSecGH.Parameters;
@@ -62,7 +63,7 @@ namespace AdSecCore.Functions {
       Name = "Radius",
       NickName = "r",
       Description = "Distance representing the radius of the circle",
-      Optional = true,
+      Optional = false,
     };
 
     public DoubleParameter StartAngle { get; set; } = new DoubleParameter {
@@ -204,7 +205,12 @@ namespace AdSecCore.Functions {
     }
 
     private IGroup CreateArcTypeGroup() {
-      return IArcGroup.Create(CentreOfCircle.Value, RadiusToLength(), StartAngleToAngle(), SweepAngleToAngle(), SpacedRebars.Value);
+      var tolerance = Angle.FromRadians(1e-9);
+      var sweepAngle = SweepAngleToAngle();
+      if (sweepAngle.Equals(Angle.Zero, tolerance)) {
+        WarningMessages.Add("Sweep angle is zero, create a circle instead of an arc.");
+      }
+      return IArcGroup.Create(CentreOfCircle.Value, RadiusToLength(), StartAngleToAngle(), sweepAngle, SpacedRebars.Value);
     }
 
     private IGroup CreateCircleTypeGroup() {
@@ -227,9 +233,9 @@ namespace AdSecCore.Functions {
       string lenhthUnitAbbreviation = Length.GetAbbreviation(LengthUnitGeometry);
       string angleUnitAbbreviation = Angle.GetAbbreviation(AngleUnit);
       SweepAngle.Name = $"SweepAngle [{angleUnitAbbreviation}]";
-      SweepAngle.Description = $"The angle (in {angleUnitAbbreviation}) sweeped by the arc from its start angle. {PositiveAngleIsConsideredAntiClockwise} Default is π/2";
+      SweepAngle.Description = $"The angle (in {angleUnitAbbreviation}) sweeped by the arc from its start angle. {PositiveAngleIsConsideredAntiClockwise}";
       StartAngle.Name = $"StartAngle [{angleUnitAbbreviation}]";
-      StartAngle.Description = $"[Optional] The starting angle (in {angleUnitAbbreviation}) of the circle. {PositiveAngleIsConsideredAntiClockwise} Default is 0";
+      StartAngle.Description = $"The starting angle (in {angleUnitAbbreviation}) of the circle. {PositiveAngleIsConsideredAntiClockwise} Default is 0";
       RadiusOfCircle.Name = $"Radius [{lenhthUnitAbbreviation}]";
     }
 

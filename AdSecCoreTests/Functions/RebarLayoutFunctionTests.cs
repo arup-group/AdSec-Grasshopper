@@ -88,14 +88,18 @@ namespace AdSecCoreTests.Functions {
       Assert.Empty(function.ErrorMessages);
     }
 
-    [Fact]
-    public void CanCreatesArcLayout() {
+    void SetArcInput() {
       function.RebarLayoutOption = RebarLayoutOption.Arc;
       function.SpacedRebars.Value = _spacedRebars[0];
       function.CentreOfCircle.Value = IPoint.Create(Length.FromMillimeters(10), Length.FromMillimeters(11));
       function.RadiusOfCircle.Value = 2;
       function.StartAngle.Value = Math.PI / 4;
       function.SweepAngle.Value = Math.PI / 2;
+    }
+
+    [Fact]
+    public void CanCreatesArcLayout() {
+      SetArcInput();
       function.Compute();
       var group = function.RebarGroup.Value;
       Assert.NotNull(group);
@@ -104,6 +108,14 @@ namespace AdSecCoreTests.Functions {
       var layer = circleBarGroup.Layer as ILayerByBarCount;
       Assert.NotNull(layer);
       Assert.Empty(function.ErrorMessages);
+    }
+
+    [Fact]
+    public void HaveWarningForZeroSweepAngle() {
+      SetArcInput();
+      function.SweepAngle.Value = 0;
+      function.Compute();
+      Assert.Single(function.WarningMessages);
     }
 
     [Fact]
@@ -191,7 +203,7 @@ namespace AdSecCoreTests.Functions {
       Assert.False(function.SpacedRebars.Optional);
       Assert.False(function.RebarBundle.Optional);
       Assert.True(function.CentreOfCircle.Optional);
-      Assert.True(function.RadiusOfCircle.Optional);
+      Assert.False(function.RadiusOfCircle.Optional);
       Assert.True(function.StartAngle.Optional);
       Assert.True(function.SweepAngle.Optional);
       Assert.False(function.Positions.Optional);
