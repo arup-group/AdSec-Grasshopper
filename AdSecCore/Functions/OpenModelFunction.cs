@@ -33,11 +33,20 @@ namespace AdSecGHCore.Functions {
       Optional = true,
       Default = OasysPlane.PlaneYZ,
     };
+    public SectionArrayParameter Sections { get; set; } = new SectionArrayParameter() {
+      Name = "Section",
+      NickName = "Sec",
+      Description = "AdSec Sections",
+    };
 
     public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
         Path, Plane,
       };
+    }
+
+    public override Attribute[] GetAllOutputAttributes() {
+      return new Attribute[] { Sections };
     }
 
     public override void Compute() { }

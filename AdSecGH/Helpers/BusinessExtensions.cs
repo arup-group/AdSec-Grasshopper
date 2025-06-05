@@ -41,6 +41,12 @@ namespace Oasys.GH.Helpers {
         {
           typeof(SubComponentParameter), ParamGenericObject
         }, {
+          typeof(PathParameter), ConfigureParam<Param_FilePath>
+        }, {
+          typeof(SectionArrayParameter), ParamGenericObject
+        }, {
+          typeof(PlaneParameter), ConfigureParam<Param_Plane>
+        }, {
           typeof(BooleanParameter), ConfigureParam<Param_Boolean>
         }, {
           typeof(SubComponentArrayParameter), ParamGenericObject
@@ -56,7 +62,7 @@ namespace Oasys.GH.Helpers {
           typeof(AdSecMaterialParameter), ParamGenericObject
         }, {
           typeof(RebarGroupArrayParameter), ParamGenericObject
-        },{
+        }, {
           typeof(RebarGroupParameter), ParamGenericObject
         }, {
           typeof(RebarLayerParameter), ParamGenericObject
@@ -123,17 +129,17 @@ namespace Oasys.GH.Helpers {
           typeof(StrainParameter), ParamGenericObject
         }, {
           typeof(PressureParameter), ParamGenericObject
-        },{
+        }, {
           typeof(StrainArrayParameter), ParamGenericObject
-        },{
+        }, {
           typeof(PressureArrayParameter), ParamGenericObject
-        },{
+        }, {
           typeof(PointArrayParameter), ParamGenericObject
-        },{
+        }, {
           typeof(CurvatureParameter), ParamGenericObject
-        },{
+        }, {
           typeof(ForceParameter), ParamGenericObject
-        },{
+        }, {
           typeof(MomentParameter), ParamGenericObject
         },
       };
@@ -152,18 +158,16 @@ namespace Oasys.GH.Helpers {
     /// </summary>
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
-        { typeof(SubComponentParameter), a => new AdSecSubComponentGoo((a as SubComponentParameter)?.Value) },
-        { typeof(RebarGroupArrayParameter), a => {
-            return (a as RebarGroupArrayParameter).Value.Select(x=> new AdSecRebarGroupGoo(x)).ToList();
-          }
-        },{
+        { typeof(SubComponentParameter), a => new AdSecSubComponentGoo((a as SubComponentParameter)?.Value) }, {
+          typeof(RebarGroupArrayParameter),
+          a => { return (a as RebarGroupArrayParameter).Value.Select(x => new AdSecRebarGroupGoo(x)).ToList(); }
+        }, {
           typeof(RebarGroupParameter), a => {
             var group = (a as RebarGroupParameter).Value;
             return new AdSecRebarGroupGoo(group);
           }
-        },
-        {
-         typeof(RebarBundleParameter), a => new AdSecRebarBundleGoo((a as RebarBundleParameter).Value)
+        }, {
+          typeof(RebarBundleParameter), a => new AdSecRebarBundleGoo((a as RebarBundleParameter).Value)
         },
         { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
           typeof(LoadSurfaceParameter),
@@ -215,8 +219,7 @@ namespace Oasys.GH.Helpers {
             return curves;
           }
         },
-        { typeof(StringArrayParam), a => (a as StringArrayParam).Value },
-        {
+        { typeof(StringArrayParam), a => (a as StringArrayParam).Value }, {
           typeof(CrackParameter), a => {
             var crack = (a as CrackParameter).Value;
             return new AdSecCrackGoo(crack);
@@ -264,41 +267,44 @@ namespace Oasys.GH.Helpers {
           }
         }, {
           typeof(LengthParameter), a => { return (a as LengthParameter).Value; }
-        },{
+        }, {
           typeof(StrainParameter), a => {
             var value = (a as StrainParameter).Value;
             return new GH_UnitNumber(value.ToUnit(DefaultUnits.StrainUnitResult));
           }
-        },{
+        }, {
           typeof(PressureParameter), a => {
             var value = (a as PressureParameter).Value;
             return new GH_UnitNumber(value.ToUnit(DefaultUnits.StressUnitResult));
           }
-        },{
+        }, {
           typeof(StrainArrayParameter), a => {
             var strains = (a as StrainArrayParameter).Value;
             var quantityInRelevantUnit = new List<GH_UnitNumber>();
             foreach (var strain in strains) {
               quantityInRelevantUnit.Add(new GH_UnitNumber(strain.ToUnit(DefaultUnits.StrainUnitResult)));
             }
+
             return quantityInRelevantUnit;
           }
-        },{
+        }, {
           typeof(PressureArrayParameter), a => {
             var strsses = (a as PressureArrayParameter).Value;
             var quantityInRelevantUnit = new List<GH_UnitNumber>();
             foreach (var stress in strsses) {
               quantityInRelevantUnit.Add(new GH_UnitNumber(stress.ToUnit(DefaultUnits.StressUnitResult)));
             }
+
             return quantityInRelevantUnit;
           }
-        },{
+        }, {
           typeof(PointArrayParameter), a => {
             var points = (a as PointArrayParameter).Value;
-             var quantityGoo = new List<AdSecPointGoo>();
-            foreach(var point in points) {
+            var quantityGoo = new List<AdSecPointGoo>();
+            foreach (var point in points) {
               quantityGoo.Add(new AdSecPointGoo(point));
             }
+
             return quantityGoo;
           }
         },
@@ -336,9 +342,9 @@ namespace Oasys.GH.Helpers {
             var gooDynamic = goo as List<object>;
             return gooDynamic.Select(x => new AdSecRebarGroup((x as AdSecRebarGroupGoo).Value)).ToArray();
           }
-        },{
-          typeof(RebarGroupParameter), goo => {
-            return goo is AdSecRebarGroup value ? new AdSecRebarGroup(value) : null; }
+        }, {
+          typeof(RebarGroupParameter),
+          goo => { return goo is AdSecRebarGroup value ? new AdSecRebarGroup(value) : null; }
         }, {
           typeof(SubComponentArrayParameter), goo => {
             var gooDynamic = goo as List<object>;
@@ -362,6 +368,7 @@ namespace Oasys.GH.Helpers {
             if (goo is bool value) {
               return value;
             }
+
             return null;
           }
         }, {
@@ -369,6 +376,7 @@ namespace Oasys.GH.Helpers {
             if (goo is double value) {
               return value;
             }
+
             return null;
           }
         }, {
@@ -379,29 +387,22 @@ namespace Oasys.GH.Helpers {
               return (double)y.Value;
             }).ToArray();
           }
-        },{
-          typeof(CurvatureParameter), goo => {
-            return UnitHelpers.ParseToQuantity<Curvature>(goo, DefaultUnits.CurvatureUnit);
-          }
-        },{
-          typeof(StrainParameter), goo => {
-            return UnitHelpers.ParseToQuantity<Strain>(goo, DefaultUnits.StrainUnitResult);
-          }
-        },{
-          typeof(ForceParameter), goo => {
-            return UnitHelpers.ParseToQuantity<Force>(goo, DefaultUnits.ForceUnit);
-          }
-        },{
-          typeof(MomentParameter), goo => {
-            return UnitHelpers.ParseToQuantity<Moment>(goo, DefaultUnits.MomentUnit);
-          }
-        },{
+        }, {
+          typeof(CurvatureParameter),
+          goo => { return UnitHelpers.ParseToQuantity<Curvature>(goo, DefaultUnits.CurvatureUnit); }
+        }, {
+          typeof(StrainParameter),
+          goo => { return UnitHelpers.ParseToQuantity<Strain>(goo, DefaultUnits.StrainUnitResult); }
+        }, {
+          typeof(ForceParameter), goo => { return UnitHelpers.ParseToQuantity<Force>(goo, DefaultUnits.ForceUnit); }
+        }, {
+          typeof(MomentParameter), goo => { return UnitHelpers.ParseToQuantity<Moment>(goo, DefaultUnits.MomentUnit); }
+        }, {
           typeof(DesignCodeParameter), goo => {
-            return goo is AdSecDesignCode value
-              ? new DesignCode {
+            return goo is AdSecDesignCode value ? new DesignCode {
               IDesignCode = value.DesignCode,
               DesignCodeName = value.DesignCodeName
-            }: goo;
+            } : goo;
           }
         },
       };
@@ -503,6 +504,7 @@ namespace Oasys.GH.Helpers {
         coreFunction.ClearInputs();
         coreFunction.ClearOutputs();
       }
+
       foreach (var attribute in function.GetAllInputAttributes()) {
         int index = component.Params.IndexOfInputParam(attribute.Name);
         dynamic valueBasedParameter = attribute;

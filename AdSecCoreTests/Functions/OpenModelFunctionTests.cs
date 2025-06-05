@@ -68,5 +68,20 @@ namespace AdSecCoreTests.Functions {
       Assert.IsType<PlaneParameter>(attributes[1]);
     }
 
+    [Fact]
+    public void ShouldHaveOneOutput() {
+      Assert.Single(_function.GetAllOutputAttributes());
+    }
+
+    [Fact]
+    public void ShouldIncludeSectionWithName() {
+      Assert.Equal("Section", _function.Sections.Name);
+    }
+
+    [Fact]
+    public void ShouldIncludeOutputOfType() {
+      Assert.IsType<SectionArrayParameter>(_function.GetAllOutputAttributes()[0]);
+    }
+
   }
 }

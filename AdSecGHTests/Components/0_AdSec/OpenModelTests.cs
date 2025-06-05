@@ -30,4 +30,9 @@ public class OpenModelTests {
     _component.CreateAttributes();
     Assert.NotNull(_component.Attributes);
   }
+
+  [Fact]
+  public void ShouldHaveTwoInputs() {
+    Assert.Equal(2, _component.Params.Input.Count);
+  }
 }

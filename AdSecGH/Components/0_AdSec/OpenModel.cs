@@ -116,24 +116,6 @@ namespace AdSecGH.Components {
       panel.ExpireSolution(true);
     }
 
-    public override void SetSelected(int i, int j) { }
-
-    protected override void InitialiseDropdowns() { }
-
-    protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      pManager.AddGenericParameter("Filename and path", "File",
-        $"AdSec file to open and work with.{Environment.NewLine}Input either path component, a text string with path and {Environment.NewLine}filename or an existing AdSec File created in Grasshopper.",
-        GH_ParamAccess.item);
-      pManager.AddPlaneParameter("LocalPlane", "Pln",
-        "[Optional] Plane representing local coordinate system, by default a YZ-plane is used",
-        GH_ParamAccess.list, Plane.WorldYZ);
-      pManager[1].Optional = true;
-    }
-
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("Section", "Sec", "AdSec Sections", GH_ParamAccess.list);
-    }
-
     protected override void SolveInternal(IGH_DataAccess DA) {
       var objectWrapper = new GH_ObjectWrapper();
       DA.GetData(0, ref objectWrapper);
