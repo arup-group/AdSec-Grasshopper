@@ -131,6 +131,9 @@ namespace AdSecGHTests.Parameters {
         SectionDesign = new SectionDesign() {
           Section = section,
           LocalPlane = OasysPlane.PlaneXY,
+          DesignCode = new DesignCode() {
+            IDesignCode = IS456.Edition_2000,
+          },
         }
       };
       InstanceOfGoos.Add(new AdSecSubComponentGoo(subComponent));

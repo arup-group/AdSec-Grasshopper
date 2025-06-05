@@ -120,11 +120,14 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void TryCastToAdSecSubComponentsReturnsCorrectDataFromAdSecSubComponentGoo() {
-      var section = GetAdSecSectionGoo().Value.Section;
+      var section = new SectionBuilder().WithHeight(1).WithWidth(1).Build();
       var _subComponent = new SubComponent() {
         ISubComponent = ISubComponent.Create(section, Geometry.Zero()),
         SectionDesign = new SectionDesign() {
           Section = section,
+          DesignCode = new DesignCode() {
+            IDesignCode = IS456.Edition_2000,
+          },
           LocalPlane = OasysPlane.PlaneXY,
         }
       };
