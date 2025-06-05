@@ -121,8 +121,7 @@ namespace AdSecGH.Parameters {
       var rebarColor = isSelected ? Colour.UILightGrey : Color.Black;
       int rebarWidth = isSelected ? 2 : 1;
 
-      DrawInstructionsList.Add(new DrawPolyline()
-        { Color = edgeColor, Polyline = section.ProfileData.ProfileEdge, Thickness = mainEdgeWidth, });
+      DrawInstructionsList.Add(new DrawPolyline() { Color = edgeColor, Polyline = section.ProfileData.ProfileEdge, Thickness = mainEdgeWidth, });
 
       AddEdges(section.ProfileData.ProfileVoidEdges, edgeColor, voidEdgeWidth);
       AddEdges(section.SubProfilesData.SubEdges, edgeColor, voidEdgeWidth);
@@ -149,8 +148,7 @@ namespace AdSecGH.Parameters {
 
     internal void AddEdges(IEnumerable<Polyline> edges, Color color, int width) {
       if (edges != null) {
-        DrawInstructionsList.AddRange(edges.Select(item => new DrawPolyline()
-          { Polyline = item, Color = color, Thickness = width, }));
+        DrawInstructionsList.AddRange(edges.Select(item => new DrawPolyline() { Polyline = item, Color = color, Thickness = width, }));
       }
     }
 
@@ -160,8 +158,7 @@ namespace AdSecGH.Parameters {
       }
 
       foreach (var edgeList in nestedEdges) {
-        DrawInstructionsList.AddRange(edgeList.Select(item => new DrawPolyline()
-          { Polyline = item, Color = color, Thickness = width, }));
+        DrawInstructionsList.AddRange(edgeList.Select(item => new DrawPolyline() { Polyline = item, Color = color, Thickness = width, }));
       }
     }
 
@@ -170,8 +167,7 @@ namespace AdSecGH.Parameters {
         return;
       }
 
-      DrawInstructionsList.AddRange(circles.Select(item => new DrawCircle()
-        { Circle = item, Color = color, Thickness = width, }));
+      DrawInstructionsList.AddRange(circles.Select(item => new DrawCircle() { Circle = item, Color = color, Thickness = width, }));
     }
 
     private void DrawAll(DisplayPipeline pipeline) {

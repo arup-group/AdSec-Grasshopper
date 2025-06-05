@@ -32,12 +32,22 @@ namespace AdSecGHTests.Parameters {
   [Collection("GrasshopperFixture collection")]
   public class AdSecSubComponentGooTests {
     private readonly AdSecSubComponentGoo subComponentGoo;
+    private SubComponent _subComponent;
 
     public AdSecSubComponentGooTests() {
       var point = IPoint.Create(new Length(1, LengthUnit.Meter), new Length(2, LengthUnit.Meter));
-      var subComponent = ISubComponent.Create(GetAdSecSectionGoo().Value.Section, point);
-      subComponentGoo = new AdSecSubComponentGoo(subComponent, Plane.WorldXY, new AdSecDesignCode().DesignCode, "test",
-        string.Empty);
+      var section = new SectionBuilder().WithHeight(1).WithWidth(1).Build();
+      _subComponent = new SubComponent() {
+        ISubComponent = ISubComponent.Create(section, point),
+        SectionDesign = new SectionDesign() {
+          Section = section,
+          DesignCode = new DesignCode() {
+            IDesignCode = IS456.Edition_2000,
+          },
+          LocalPlane = OasysPlane.PlaneXY,
+        }
+      };
+      subComponentGoo = new AdSecSubComponentGoo(_subComponent);
     }
 
     [Fact]
@@ -50,9 +60,9 @@ namespace AdSecGHTests.Parameters {
 
     [Fact]
     public void ShouldHaveInvalidPlane() {
-      var local = new Plane(Point3d.Origin, Vector3d.ZAxis, Vector3d.YAxis);
-      var componentGoo = new AdSecSubComponentGoo(GetAdSecSectionGoo().Value.Section, local, Geometry.Zero(),
-        IS456.Edition_2000, string.Empty, string.Empty);
+      var localPlane = new OasysPlane() { Origin = OasysPoint.Zero, XAxis = OasysPoint.ZAxis, YAxis = OasysPoint.YAxis };
+      _subComponent.SectionDesign.LocalPlane = localPlane;
+      var componentGoo = new AdSecSubComponentGoo(_subComponent);
       Assert.True(componentGoo.previewXaxis.IsValid);
     }
 
