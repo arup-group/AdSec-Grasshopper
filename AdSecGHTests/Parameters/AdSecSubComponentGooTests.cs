@@ -8,6 +8,10 @@ using AdSecCore.Functions;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
+using AdSecGHTests.Helpers;
+
+using Grasshopper.Kernel;
+
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.StandardMaterials;
@@ -17,6 +21,7 @@ using Oasys.Taxonomy.Profiles;
 using OasysUnits;
 using OasysUnits.Units;
 
+using Rhino;
 using Rhino.Display;
 using Rhino.Geometry;
 using Rhino.Geometry.Morphs;
@@ -46,9 +51,8 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void ShouldHaveInvalidPlane() {
       var local = new Plane(Point3d.Origin, Vector3d.ZAxis, Vector3d.YAxis);
-      var componentGoo = new AdSecSubComponentGoo(GetAdSecSectionGoo().Value.Section,
-        local, Geometry.Zero(), IS456.Edition_2000, string.Empty,
-        string.Empty);
+      var componentGoo = new AdSecSubComponentGoo(GetAdSecSectionGoo().Value.Section, local, Geometry.Zero(),
+        IS456.Edition_2000, string.Empty, string.Empty);
       Assert.True(componentGoo.previewXaxis.IsValid);
     }
 
@@ -130,6 +134,27 @@ namespace AdSecGHTests.Parameters {
 
       Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
       Assert.Single(subComponentGoo.DrawInstructionsList);
+      // Assert.Contains( subComponentGoo.DrawInstructionsList.Any(x => x.GetType() == typeof()));
+    }
+
+    [Fact]
+    public void ShouldDrawWires() {
+      using var doc = RhinoDoc.Create(string.Empty);
+      GH_PreviewWireArgs ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White);
+
+      subComponentGoo.DrawViewportWires(ghPreviewWireArgs);
+
+      Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void ShouldDrawViewportMeshes() {
+      using var doc = RhinoDoc.Create(string.Empty);
+      var previewMeshArgs = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(Color.White));
+
+      subComponentGoo.DrawViewportMeshes(previewMeshArgs);
+
+      Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
     }
 
     [Fact]
