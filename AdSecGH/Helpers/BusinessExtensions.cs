@@ -61,7 +61,7 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(RebarLayerParameter), ParamGenericObject
         }, {
-          typeof(RebarLayersParameter), ParamGenericObject
+          typeof(RebarLayerArrayParameter), ParamGenericObject
         }, {
           typeof(RebarBundleParameter), ParamGenericObject
         }, {
@@ -339,7 +339,7 @@ namespace Oasys.GH.Helpers {
             return new AdSecRebarLayerGoo(gooDynamic);
           }
         }, {
-          typeof(RebarLayersParameter), goo => {
+          typeof(RebarLayerArrayParameter), goo => {
             var gooDynamic = goo as List<object>;
             return gooDynamic.Select(x => (x as AdSecRebarLayerGoo).Value).ToArray();
           }
