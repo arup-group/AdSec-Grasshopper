@@ -6,6 +6,7 @@ using AdSecGH.Parameters;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.StandardMaterials;
 using Oasys.Profiles;
 using Oasys.Taxonomy.Profiles;
@@ -72,6 +73,9 @@ namespace AdSecGHTests.Helpers {
         ISubComponent = ISubComponent.Create(section, IPoint.Create(length, length)),
         SectionDesign = new SectionDesign() {
           Section = section,
+          DesignCode = new DesignCode() {
+            IDesignCode = IS456.Edition_2000
+          },
           LocalPlane = OasysPlane.PlaneXY,
         }
       };
