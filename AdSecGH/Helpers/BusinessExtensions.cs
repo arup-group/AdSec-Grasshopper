@@ -198,7 +198,17 @@ namespace Oasys.GH.Helpers {
             return points?.ToList();
           }
         },
-        { typeof(AdSecPointParameter), a => (a as AdSecPointParameter).Value }, {
+        { typeof(AdSecPointParameter), a => (a as AdSecPointParameter).Value },{
+          typeof(PointArrayParameter), a => {
+           var points = (a as PointArrayParameter).Value;
+           return points.Select(point => new AdSecPointGoo(point)).ToList();
+          }
+        },{
+          typeof(PointParameter), a => {
+            var point = (a as PointParameter).Value;
+            return new AdSecPointGoo(point);
+         }
+        }, {
           typeof(AdSecMaterialArrayParam), a => {
             var materials = (a as AdSecMaterialArrayParam).Value;
             return materials?.ToList();
@@ -293,15 +303,6 @@ namespace Oasys.GH.Helpers {
               quantityInRelevantUnit.Add(new GH_UnitNumber(stress.ToUnit(DefaultUnits.StressUnitResult)));
             }
             return quantityInRelevantUnit;
-          }
-        },{
-          typeof(PointArrayParameter), a => {
-            var points = (a as PointArrayParameter).Value;
-             var quantityGoo = new List<AdSecPointGoo>();
-            foreach(var point in points) {
-              quantityGoo.Add(new AdSecPointGoo(point));
-            }
-            return quantityGoo;
           }
         },
       };

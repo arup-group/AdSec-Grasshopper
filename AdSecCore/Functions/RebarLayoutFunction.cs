@@ -239,11 +239,12 @@ namespace AdSecCore.Functions {
     }
 
     public IOptions[] Options() {
-      var options = new List<IOptions>();
-      options.Add(new EnumOptions() {
-        EnumType = typeof(RebarLayoutOption),
-        Description = "Layout Type",
-      });
+      var options = new List<IOptions> {
+        new EnumOptions() {
+          EnumType = typeof(RebarLayoutOption),
+          Description = "Layout Type",
+        }
+      };
       switch (RebarLayoutOption) {
         case RebarLayoutOption.Circle:
         case RebarLayoutOption.Arc:
