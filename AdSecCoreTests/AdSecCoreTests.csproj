@@ -33,4 +33,10 @@
     <ProjectReference Include="..\AdSecCore\AdSecCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="simple.ads">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

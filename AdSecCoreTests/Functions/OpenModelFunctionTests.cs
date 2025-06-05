@@ -60,6 +60,7 @@ namespace AdSecCoreTests.Functions {
     public void ShouldHaveAnArrayOfLocalPlane() {
       Assert.Equal(Access.List, _function.Plane.Access);
     }
+
     [Fact]
     public void ShouldHaveTwoInputs() {
       Assert.Equal(2, _function.GetAllInputAttributes().Length);
@@ -85,6 +86,13 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ShouldIncludeOutputOfType() {
       Assert.IsType<SectionArrayParameter>(_function.GetAllOutputAttributes()[0]);
+    }
+
+    [Fact(Skip = "Not implemented yet")]
+    public void ShouldLoadAnAdsJsonFile() {
+      _function.Path.Value = "simple.ads";
+      _function.Compute();
+      Assert.NotNull(_function.Sections.Value);
     }
 
   }

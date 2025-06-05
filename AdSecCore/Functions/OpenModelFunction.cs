@@ -1,8 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 using AdSecCore.Functions;
 
 using AdSecGHCore.Constants;
+
+using Oasys.AdSec;
+using Oasys.AdSec.IO.Serialization;
 
 using Attribute = AdSecCore.Functions.Attribute;
 
@@ -49,6 +55,18 @@ namespace AdSecGHCore.Functions {
       return new Attribute[] { Sections };
     }
 
-    public override void Compute() { }
+    public override void Compute() {
+      string json = File.ReadAllText(Path.Value);
+      var jsonParser = JsonParser.Deserialize(json);
+
+      var sections = new List<SectionDesign>();
+      for (int i = 0; i < jsonParser.Sections.Count; i++) {
+        sections.Add(new SectionDesign() {
+          Section = jsonParser.Sections[i],
+
+        });
+      }
+
+    }
   }
 }
