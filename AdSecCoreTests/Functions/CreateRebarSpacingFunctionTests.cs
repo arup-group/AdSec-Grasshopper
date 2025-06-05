@@ -147,5 +147,33 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(1, layer.Count);
     }
 
+    [Fact]
+    public void ShouldNotComputeIfCountIsZero() {
+      _function.SetMode(SpacingMode.Count);
+      _function.Count.Value = 0;
+      _function.Compute();
+      Assert.Single(_function.ErrorMessages);
+    }
+
+    [Fact]
+    public void ShouldNotComputeIfDistanceIsZero() {
+      _function.SetMode(SpacingMode.Distance);
+      _function.Spacing.Value = 0;
+      _function.Compute();
+      Assert.Single(_function.ErrorMessages);
+    }
+
+    [Fact]
+    public void ShouldNotUpdateDropdownOrVariableInputsIfIfSave() {
+      _function.SetMode(SpacingMode.Count);
+      bool variableChanged = false;
+      _function.OnVariableInputChanged += () => variableChanged = true;
+      bool dropdownChanged = false;
+      _function.OnDropdownChanged += () => dropdownChanged = true;
+      _function.SetMode(SpacingMode.Count);
+
+      Assert.False(variableChanged);
+      Assert.False(dropdownChanged);
+    }
   }
 }

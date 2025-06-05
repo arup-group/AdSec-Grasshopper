@@ -69,10 +69,12 @@ namespace AdSecCore.Functions {
     public override void Compute() {
       switch (Mode) {
         case SpacingMode.Distance:
-          if (Spacing.Value.HasValue) {
+          if (Spacing.Value.HasValue && Spacing.Value.Value > 0) {
             var length = Length.From(Spacing.Value.Value, LengthUnitGeometry);
             var layerByBarPitch = ILayerByBarPitch.Create(Rebar.Value, length);
             SpacedRebars.Value = layerByBarPitch;
+          } else {
+            ErrorMessages.Add("Spacing value is not set. Please provide a valid spacing value.");
           }
 
           break;
@@ -80,6 +82,8 @@ namespace AdSecCore.Functions {
         case SpacingMode.Count:
           if (Count.Value > 0) {
             SpacedRebars.Value = ILayerByBarCount.Create(Count.Value, Rebar.Value);
+          } else {
+            ErrorMessages.Add("Count value must be greater than zero. Please provide a valid count value.");
           }
 
           break;
@@ -116,10 +120,12 @@ namespace AdSecCore.Functions {
     }
 
     public void SetMode(SpacingMode mode) {
-      Mode = mode;
-      UpdateParameter();
-      OnVariableInputChanged?.Invoke();
-      OnDropdownChanged?.Invoke();
+      if (Mode != mode) {
+        Mode = mode;
+        UpdateParameter();
+        OnVariableInputChanged?.Invoke();
+        OnDropdownChanged?.Invoke();
+      }
     }
 
   }

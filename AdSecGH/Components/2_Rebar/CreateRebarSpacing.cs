@@ -41,8 +41,6 @@ namespace AdSecGH.Components {
       UpdateUnits();
     }
 
-    protected override void BeforeSolveInstance() { UpdateUnits(); }
-
     private void UpdateUnits() {
       UpdateDefaultUnits();
       if (_dropDownItems.Count > 1) {
@@ -51,6 +49,7 @@ namespace AdSecGH.Components {
         BusinessComponent.UpdateUnits();
       }
 
+      BusinessComponent.SetMode((SpacingMode)Enum.Parse(typeof(SpacingMode), _selectedItems[0]));
       RefreshParameter();
     }
   }
