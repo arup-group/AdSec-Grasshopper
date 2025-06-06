@@ -7,6 +7,8 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
+using AdSecGH.Components;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -66,7 +68,7 @@ namespace Oasys.GH.Helpers {
           typeof(RebarGroupParameter), ParamGenericObject
         }, {
           typeof(RebarLayerArrayParameter), ParamGenericObject
-        },{
+        }, {
           typeof(RebarLayerParameter), ParamGenericObject
         }, {
           typeof(RebarBundleParameter), ParamGenericObject
@@ -202,12 +204,12 @@ namespace Oasys.GH.Helpers {
             return points?.ToList();
           }
         },
-        { typeof(AdSecPointParameter), a => (a as AdSecPointParameter).Value },{
+        { typeof(AdSecPointParameter), a => (a as AdSecPointParameter).Value }, {
           typeof(PointArrayParameter), a => {
-           var points = (a as PointArrayParameter).Value;
-           return points.Select(point => new AdSecPointGoo(point)).ToList();
+            var points = (a as PointArrayParameter).Value;
+            return points.Select(point => new AdSecPointGoo(point)).ToList();
           }
-        },{
+        }, {
           typeof(AdSecMaterialArrayParam), a => {
             var materials = (a as AdSecMaterialArrayParam).Value;
             return materials?.ToList();
@@ -322,6 +324,12 @@ namespace Oasys.GH.Helpers {
     private static readonly Dictionary<Type, Func<object, object>> GooToParam
       = new Dictionary<Type, Func<object, object>> {
         {
+          typeof(PlaneParameter),
+          goo => {
+            var values = goo as List<object>;
+            return values.Select(x => (x as GH_Plane).Value.ToOasys()).ToArray();
+          }
+        }, {
           typeof(LengthParameter),
           goo => { return UnitHelpers.ParseToQuantity<Length>(goo, DefaultUnits.LengthUnitGeometry); }
         }, {
@@ -341,10 +349,10 @@ namespace Oasys.GH.Helpers {
           }
         }, {
           typeof(PointArrayParameter), goo => {
-           var gooDynamic = goo as List<object>;
+            var gooDynamic = goo as List<object>;
             return gooDynamic.Select(x => new AdSecPointGoo((x as AdSecPointGoo).Value).AdSecPoint).ToArray();
           }
-        },{
+        }, {
           typeof(RebarGroupArrayParameter), goo => {
             var gooDynamic = goo as List<object>;
             return gooDynamic.Select(x => new AdSecRebarGroup((x as AdSecRebarGroupGoo).Value)).ToArray();

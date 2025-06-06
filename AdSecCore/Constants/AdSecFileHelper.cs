@@ -16,7 +16,7 @@ namespace AdSecCore.Constants {
     private static Assembly AdSecAPI() {
       if (_adSecAPI == null) {
 #pragma warning disable S3885 // Avoid using Assembly.LoadFrom
-        _adSecAPI = Assembly.LoadFrom("AdSec_API.dll");
+        _adSecAPI = Assembly.Load("AdSec_API.dll");
 #pragma warning restore S3885
       }
 
