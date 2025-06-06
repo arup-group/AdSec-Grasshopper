@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -12,7 +13,9 @@ namespace AdSecCore.Constants {
 
     private static Assembly _adSecAPI;
 
-    public static Assembly AdSecAPI() {
+    [SuppressMessage("Major Code Smell", "csharpsquid:S3885: Avoid using Assembly.LoadFrom",
+      Justification = "This is the only way to load AdSec_API.dll Assembly.Load doesn't work")]
+    private static Assembly AdSecAPI() {
       if (_adSecAPI == null) {
         _adSecAPI = Assembly.LoadFrom("AdSec_API.dll");
       }
@@ -20,7 +23,7 @@ namespace AdSecCore.Constants {
       return _adSecAPI;
     }
 
-    public static Dictionary<string, Type> ReflectAdSecNamespace(string @namespace) {
+    private static Dictionary<string, Type> ReflectAdSecNamespace(string @namespace) {
       var adsecAPI = AdSecAPI();
       var q = from t in adsecAPI.GetTypes() where t.IsInterface && t.Namespace == @namespace select t;
       var dict = new Dictionary<string, Type>();
@@ -110,12 +113,13 @@ namespace AdSecCore.Constants {
         searchFor = $"{searchFor}{(i == 0 ? "." : "+")}{designCodeReflectedLevels[i]}";
       }
 
+      var availableFileds = from Type type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes()
+                            where type.IsInterface && type.Namespace == "Oasys.AdSec.DesignCode" from FieldInfo field in type.GetFields()
+                            where (fromDesignCode ? field.ReflectedType.FullName : $"{field.ReflectedType.FullName}+{field.Name}")
+                              == searchFor select field;
       foreach (var field in
         // loop through all types in Oasys.AdSec.IAdsec and cast to IDesignCode if match with above string
-        from Type type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes()
-        where type.IsInterface && type.Namespace == "Oasys.AdSec.DesignCode" from FieldInfo field in type.GetFields()
-        where (fromDesignCode ? field.ReflectedType.FullName : $"{field.ReflectedType.FullName}+{field.Name}")
-          == searchFor select field) {
+        availableFileds) {
         return (IDesignCode)field.GetValue(null);
       }
 
