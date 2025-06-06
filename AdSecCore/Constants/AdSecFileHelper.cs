@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -126,7 +125,7 @@ namespace AdSecCore.Constants {
       return (IDesignCode)listOfFields[0].GetValue(null);
     }
 
-    public static readonly Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>() {
+    public static Dictionary<string, IDesignCode> Codes { get; } = new Dictionary<string, IDesignCode>() {
       { "ACI318M_02", ACI318.Edition_2002.Metric },
       { "ACI318M_05", ACI318.Edition_2005.Metric },
       { "ACI318M_08", ACI318.Edition_2008.Metric },
@@ -187,7 +186,7 @@ namespace AdSecCore.Constants {
       { "IRC112_2011", IRC112.Edition_2011 }
     };
 
-    public static readonly Dictionary<string, string> CodesStrings = new Dictionary<string, string>() {
+    public static Dictionary<string, string> CodesStrings { get; } = new Dictionary<string, string>() {
       { "ACI318M_02", "ACI318+Edition_2002+Metric" },
       { "ACI318M_05", "ACI318+Edition_2005+Metric" },
       { "ACI318M_08", "ACI318+Edition_2008+Metric" },
