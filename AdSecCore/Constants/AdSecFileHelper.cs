@@ -13,8 +13,6 @@ namespace AdSecCore.Constants {
 
     private static Assembly _adSecAPI;
 
-    [SuppressMessage("Major Code Smell", "csharpsquid:S3885: Avoid using Assembly.LoadFrom",
-      Justification = "This is the only way to load AdSec_API.dll Assembly.Load doesn't work")]
     private static Assembly AdSecAPI() {
       if (_adSecAPI == null) {
 #pragma warning disable S3885 // Avoid using Assembly.LoadFrom
