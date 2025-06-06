@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 
 using AdSecCore;
 using AdSecCore.Builders;
@@ -8,7 +9,10 @@ using AdSecGH.Components;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
+using AdSecGHTests.Components._3_Rebar;
 using AdSecGHTests.Helpers;
+
+using Grasshopper.Kernel;
 
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
@@ -36,10 +40,12 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.SetInput(_component, new AdSecPointGoo(IPoint.Create(Length.FromMillimeters(100), Length.FromMillimeters(150))), 2);
     }
 
-    private void SetPointRebarInputs() {
-      _component.SetSelected(0, 1);
-      ComponentTestHelper.SetInput(_component, _layerGoo.Value.BarBundle, 0);
-      ComponentTestHelper.SetInput(_component, new AdSecPointGoo(IPoint.Create(Length.FromMillimeters(100), Length.FromMillimeters(150))), 1);
+    private void SetPointRebarInputs(CreateRebarLayout component, bool reselectDropDown = true) {
+      if (reselectDropDown) {
+        component.SetSelected(0, 1);
+      }
+      ComponentTestHelper.SetInput(component, _layerGoo.Value.BarBundle, 0);
+      ComponentTestHelper.SetInput(component, new AdSecPointGoo(IPoint.Create(Length.FromMillimeters(100), Length.FromMillimeters(150))), 1);
     }
 
     private void SetCircularRebarInputs() {
@@ -50,27 +56,48 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.SetInput(_component, 1.5, 3);
     }
 
-    private void SetArcRebarInputs() {
-      _component.SetSelected(0, 3);
-      ComponentTestHelper.SetInput(_component, _layerGoo, 0);
-      ComponentTestHelper.SetInput(_component, new AdSecPointGoo(IPoint.Create(Length.FromMillimeters(10), Length.FromMillimeters(11))), 1);
-      ComponentTestHelper.SetInput(_component, 2, 2);
-      ComponentTestHelper.SetInput(_component, Math.PI / 4, 3);
-      ComponentTestHelper.SetInput(_component, Math.PI / 2, 4);
+    private void SetArcRebarInputs(CreateRebarLayout component, bool reselectDropDown = true) {
+      if (reselectDropDown) {
+        _component.SetSelected(0, 3);
+      }
+      ComponentTestHelper.SetInput(component, _layerGoo, 0);
+      ComponentTestHelper.SetInput(component, new AdSecPointGoo(IPoint.Create(Length.FromMillimeters(10), Length.FromMillimeters(11))), 1);
+      ComponentTestHelper.SetInput(component, 2, 2);
+      ComponentTestHelper.SetInput(component, Math.PI / 4, 3);
+      ComponentTestHelper.SetInput(component, Math.PI / 2, 4);
     }
 
 
     [Fact]
     public void CanCreateSingleBarsLayout() {
-      SetPointRebarInputs();
-      ComponentTestHelper.ComputeData(_component);
-      var output = (AdSecRebarGroupGoo)ComponentTestHelper.GetOutput(_component, 0);
+      SetPointRebarInputs(_component);
+      AssertSingleBar(_component);
+    }
+
+    private void AssertSingleBar(CreateRebarLayout component) {
+      ComponentTestHelper.ComputeData(component);
+      var output = (AdSecRebarGroupGoo)ComponentTestHelper.GetOutput(component, 0);
       Assert.NotNull(output);
       var singleBarGroup = (ISingleBars)output.Value.Group;
       Assert.Equal(1, singleBarGroup.BarBundle.CountPerBundle);
       Assert.Equal(0.02, singleBarGroup.BarBundle.Diameter.As(LengthUnit.Meter), _comparer);
       Assert.Equal(100, singleBarGroup.Positions[0].Y.As(LengthUnit.Millimeter), _comparer);
       Assert.Equal(150, singleBarGroup.Positions[0].Z.As(LengthUnit.Millimeter), _comparer);
+    }
+
+    [Fact]
+    public void SingleBarsShouldUseSavedMode() {
+      SetPointRebarInputs(_component);
+      var doc = new GH_DocumentIO();
+      doc.Document = new GH_Document();
+      doc.Document.AddObject(_component, false);
+      var randomPath = CreateRebarGroupSaveLoadTests.GetRandomName();
+      doc.SaveQuiet(randomPath);
+      doc.Open(randomPath);
+      doc.Document.NewSolution(true);
+      var component = (CreateRebarLayout)doc.Document.FindComponent(_component.InstanceGuid);
+      SetPointRebarInputs(component, false);
+      AssertSingleBar(component);
     }
 
     [Fact]
@@ -110,9 +137,28 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void CanCreatesArcLayout() {
-      SetArcRebarInputs();
-      ComponentTestHelper.ComputeData(_component);
-      var output = (AdSecRebarGroupGoo)ComponentTestHelper.GetOutput(_component, 0);
+      SetArcRebarInputs(_component);
+      AssertArcLayout(_component);
+    }
+
+    [Fact]
+    public void ArcBarsShouldUseSavedMode() {
+      SetArcRebarInputs(_component);
+      var doc = new GH_DocumentIO();
+      doc.Document = new GH_Document();
+      doc.Document.AddObject(_component, false);
+      var randomPath = CreateRebarGroupSaveLoadTests.GetRandomName();
+      doc.SaveQuiet(randomPath);
+      doc.Open(randomPath);
+      doc.Document.NewSolution(true);
+      var component = (CreateRebarLayout)doc.Document.FindComponent(_component.InstanceGuid);
+      SetArcRebarInputs(component, false);
+      AssertArcLayout(component);
+    }
+
+    private void AssertArcLayout(CreateRebarLayout component) {
+      ComponentTestHelper.ComputeData(component);
+      var output = (AdSecRebarGroupGoo)ComponentTestHelper.GetOutput(component, 0);
       Assert.NotNull(output);
       var circleBarGroup = (IArcGroup)output.Value.Group;
       Assert.NotNull(circleBarGroup);
@@ -126,7 +172,6 @@ namespace AdSecGHTests.Components {
       Assert.Equal(Math.PI / 4, circleBarGroup.StartAngle.As(AngleUnit.Radian), _comparer);
       Assert.Equal(Math.PI / 2, circleBarGroup.SweepAngle.As(AngleUnit.Radian), _comparer);
     }
-
 
     [Fact]
     public void ShouldThrowExceptionWhenRebarGroupIsNull() {
