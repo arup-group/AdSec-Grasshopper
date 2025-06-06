@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 
 using Grasshopper.Kernel;
 
@@ -15,7 +16,7 @@ namespace AdSecGH.Helpers {
     public static void Draw(DisplayPipeline pipeline, DrawInstructions geometry) {
       switch (geometry) {
         case DrawPolyline drawPolyline:
-          pipeline.DrawPolyline(drawPolyline.Polyline, drawPolyline.Color, drawPolyline.Thickness);
+          pipeline.DrawPolyline(drawPolyline.Polyline.AsEnumerable(), drawPolyline.Color, drawPolyline.Thickness);
           break;
         case DrawCircle drawCircle:
           pipeline.DrawCircle(drawCircle.Circle, drawCircle.Color, drawCircle.Thickness);
@@ -28,6 +29,9 @@ namespace AdSecGH.Helpers {
           break;
         case DrawSolidLine drawSolidLine:
           pipeline.DrawLine(drawSolidLine.Curve, drawSolidLine.Color);
+          break;
+        case DrawBrepShaded drawBrepShaded:
+          pipeline.DrawBrepShaded(drawBrepShaded.Brep, drawBrepShaded.DisplayMaterial);
           break;
       }
     }
@@ -71,5 +75,10 @@ namespace AdSecGH.Helpers {
 
   public class DrawSolidLine : DrawInstructions {
     public Line Curve { get; set; }
+  }
+
+  public class DrawBrepShaded : DrawInstructions {
+    public Brep Brep { get; set; }
+    public DisplayMaterial DisplayMaterial { get; set; }
   }
 }
