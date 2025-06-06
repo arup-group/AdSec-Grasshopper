@@ -171,6 +171,11 @@ namespace Oasys.GH.Helpers {
             return new AdSecRebarGroupGoo(group);
           }
         }, {
+          typeof(SectionArrayParameter), a => {
+            var parameter = (a as SectionArrayParameter);
+            return parameter.Value.Select(x => new AdSecSectionGoo(new AdSecSection(x))).ToList();
+          }
+        }, {
           typeof(RebarBundleParameter), a => new AdSecRebarBundleGoo((a as RebarBundleParameter).Value)
         },
         { typeof(DoubleParameter), a => new GH_Number((a as DoubleParameter).Value) }, {
@@ -502,7 +507,8 @@ namespace Oasys.GH.Helpers {
 
     public static void SetDefaultValues(this IFunction function, GH_Component component) {
       function.SetDefaultValues();
-      foreach (var attribute in function.GetAllInputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
+      var allInputAttributes = function.GetAllInputAttributes();
+      foreach (var attribute in allInputAttributes.Where(x => ToGoo.ContainsKey(x.GetType()))) {
         var param = component.Params.GetInputParam(attribute.Name);
         object goo = ToGoo[attribute.GetType()](attribute);
         if (param.Access == GH_ParamAccess.item) {
@@ -558,7 +564,8 @@ namespace Oasys.GH.Helpers {
     }
 
     public static void SetOutputValues(this IFunction function, GH_Component component, IGH_DataAccess dataAccess) {
-      foreach (var attribute in function.GetAllOutputAttributes().Where(x => ToGoo.ContainsKey(x.GetType()))) {
+      var allOutputAttributes = function.GetAllOutputAttributes();
+      foreach (var attribute in allOutputAttributes.Where(x => ToGoo.ContainsKey(x.GetType()))) {
         int index = component.Params.IndexOfOutputParam(attribute.Name);
         var type = attribute.GetType();
         if (!ToGoo.ContainsKey(type)) {
