@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 using AdSecCore.Constants;
 using AdSecCore.Functions;
 
 using AdSecGHCore.Constants;
 
-using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.IO.Serialization;
 
 using Attribute = AdSecCore.Functions.Attribute;
@@ -79,6 +76,14 @@ namespace AdSecGHCore.Functions {
           Section = jsonParser.Sections[i],
           DesignCode = designCode,
         });
+      }
+
+      if (sections.Count == 0) {
+        WarningMessages.Add("File contains no valid sections");
+      }
+
+      foreach (var warning in jsonParser.Warnings) {
+        WarningMessages.Add(warning.Description);
       }
 
       Sections.Value = sections.ToArray();

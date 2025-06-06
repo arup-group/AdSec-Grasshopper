@@ -4,8 +4,6 @@ using AdSecCore.Functions;
 using AdSecGHCore.Constants;
 using AdSecGHCore.Functions;
 
-using Xunit;
-
 namespace AdSecCoreTests.Functions {
   public class OpenModelFunctionTests {
     private OpenModelFunction _function;
@@ -114,6 +112,22 @@ namespace AdSecCoreTests.Functions {
       _function.Compute();
       AdSecFileHelper.CodesStrings.Add("EC2_GB_04", "EN1992+Part1_1+Edition_2004+NationalAnnex+GB+Edition_2014");
       Assert.Equal("EC2_04", _function.Sections.Value[0].DesignCode.DesignCodeName);
+    }
+
+    [Fact]
+    public void ShouldAddWarningIfFileContainsNoSections() {
+      _function.Path.Value = "missing_sections.ads";
+      _function.Compute();
+      Assert.Empty(_function.Sections.Value);
+      Assert.Contains("File contains no valid sections", _function.WarningMessages);
+    }
+
+    [Fact]
+    public void ShouldExposeTheWarningsFromJsonParser() {
+      _function.Path.Value = "sections_with_warnings.ads";
+      _function.Compute();
+      Assert.Contains("At least one section has tasks which is not currently supported and have been ignored", _function.WarningMessages);
+
     }
   }
 }

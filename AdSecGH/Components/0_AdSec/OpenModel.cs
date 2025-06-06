@@ -10,7 +10,6 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using AdSecGHCore.Constants;
 using AdSecGHCore.Functions;
 
 using Grasshopper;
@@ -22,7 +21,6 @@ using Oasys.AdSec.IO.Serialization;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Components;
 using OasysGH.UI;
 
 using Rhino.Geometry;
