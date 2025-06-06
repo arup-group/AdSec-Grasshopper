@@ -113,17 +113,17 @@ namespace AdSecCore.Constants {
         searchFor = $"{searchFor}{(i == 0 ? "." : "+")}{designCodeReflectedLevels[i]}";
       }
 
-      var availableFileds = from Type type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes()
+      var availableFields = from Type type in Assembly.GetAssembly(typeof(IAdSec)).GetTypes()
                             where type.IsInterface && type.Namespace == "Oasys.AdSec.DesignCode" from FieldInfo field in type.GetFields()
                             where (fromDesignCode ? field.ReflectedType.FullName : $"{field.ReflectedType.FullName}+{field.Name}")
                               == searchFor select field;
-      foreach (var field in
-        // loop through all types in Oasys.AdSec.IAdsec and cast to IDesignCode if match with above string
-        availableFileds) {
-        return (IDesignCode)field.GetValue(null);
+
+      var listOfFields = availableFields.ToList();
+      if (!listOfFields.Any()) {
+        return null;
       }
 
-      return null;
+      return (IDesignCode)listOfFields[0].GetValue(null);
     }
 
     public static readonly Dictionary<string, IDesignCode> Codes = new Dictionary<string, IDesignCode>() {
