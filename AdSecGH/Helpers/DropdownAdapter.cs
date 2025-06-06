@@ -79,6 +79,10 @@ namespace Oasys.GH.Helpers {
         _spacerDescriptions = new List<string>();
         _dropDownItems = new List<List<string>>();
         _selectedItems = new List<string>();
+      } else {
+        _spacerDescriptions.Clear();
+        _dropDownItems.Clear();
+        _selectedItems.Clear();
       }
       UpdateDefaultUnits();
       if (BusinessComponent is IDropdownOptions dropdownOptions) {
@@ -98,15 +102,9 @@ namespace Oasys.GH.Helpers {
             items = UnitsHelper.GetFilteredAbbreviations(ToEngineeringUnits()[unitType]);
             selectedItem = UnitAbbreviation(unitType, unitValue);
           }
-          if (_isInitialised) {
-            _spacerDescriptions[i] = description;
-            _dropDownItems[i] = items;
-            _selectedItems[i] = selectedItem;
-          } else {
-            _spacerDescriptions.Add(description);
-            _dropDownItems.Add(items);
-            _selectedItems.Add(selectedItem);
-          }
+          _spacerDescriptions.Add(description);
+          _dropDownItems.Add(items);
+          _selectedItems.Add(selectedItem);
         }
       }
     }

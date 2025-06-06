@@ -10,7 +10,6 @@ using Grasshopper.Kernel;
 using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Units;
 using OasysGH.Units.Helpers;
 
 using OasysUnits.Units;
@@ -30,10 +29,12 @@ namespace AdSecGH.Components {
     protected override Bitmap Icon => Resources.Prestress;
 
     public override void SetSelected(int i, int j) {
-      _selectedItems[i] = _dropDownItems[i][j];
+      var selectedItem = _dropDownItems[i][j];
+      _selectedItems[i] = selectedItem;
       BusinessComponent.PreLoadType = (PreLoadType)Enum.Parse(typeof(PreLoadType), _selectedItems[0], true);
       if (i == 0) {
         ProcessDropdownItems();
+        _selectedItems[i] = selectedItem;
       }
       base.UpdateUI();
     }
