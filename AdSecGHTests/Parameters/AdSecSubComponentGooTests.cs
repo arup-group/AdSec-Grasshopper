@@ -59,9 +59,9 @@ namespace AdSecGHTests.Parameters {
     }
 
     [Fact]
-    public void ShouldHaveInvalidPlane() {
-      var localPlane = new OasysPlane() { Origin = OasysPoint.Zero, XAxis = OasysPoint.ZAxis, YAxis = OasysPoint.YAxis };
-      _subComponent.SectionDesign.LocalPlane = localPlane;
+    public void ShouldProduceAxisWhenPlaneIsNotXYZ() {
+      var nonXYZPlane = new OasysPlane() { Origin = OasysPoint.Zero, XAxis = OasysPoint.ZAxis, YAxis = OasysPoint.YAxis };
+      _subComponent.SectionDesign.LocalPlane = nonXYZPlane;
       var componentGoo = new AdSecSubComponentGoo(_subComponent);
       Assert.True(componentGoo.previewXaxis.IsValid);
     }
