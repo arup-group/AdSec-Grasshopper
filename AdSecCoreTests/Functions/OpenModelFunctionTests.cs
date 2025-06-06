@@ -96,7 +96,7 @@ namespace AdSecCoreTests.Functions {
       Assert.NotNull(_function.Sections.Value);
     }
 
-    [Fact(Skip = "doesn't work in CI, but works locally")]
+    [Fact]
     public void ShouldLoadWithDesignCode() {
       _function.Path.Value = "simple.ads";
       _function.Compute();

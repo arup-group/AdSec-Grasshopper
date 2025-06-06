@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
@@ -76,18 +77,40 @@ namespace AdSecCore.Constants {
       return designCodeType ?? null;
     }
 
+    public static bool TryGetConcreteCode(string json, out string codeName) {
+      codeName = null;
+      try {
+        using (var doc = JsonDocument.Parse(json)) {
+          if (doc.RootElement.TryGetProperty("codes", out var codes)
+            && codes.TryGetProperty("concrete", out var concrete)) {
+            codeName = concrete.GetString();
+            return true;
+          }
+        }
+      } catch {
+        // Ignore parsing errors
+      }
+
+      return false;
+    }
+
     public static bool ProcessJsonIntoDesignCodeParts(string json, out List<string> designCodeLevelsSplit) {
-      string[] jsonSplit = json.Split(new[] { "\"codes\": {\r\n        \"concrete\": \"" }, StringSplitOptions.None);
-      if (jsonSplit.Length == 1) {
-        jsonSplit = json.Split(new[] { "codes\":{\"concrete\":\"" }, StringSplitOptions.None);
-      }
+      string codeName;
+      if (TryGetConcreteCode(json, out var codeNameJson)) {
+        codeName = codeNameJson;
+      } else {
+        string[] jsonSplit = json.Split(new[] { "\"codes\": {\r\n        \"concrete\": \"" }, StringSplitOptions.None);
+        if (jsonSplit.Length == 1) {
+          jsonSplit = json.Split(new[] { "codes\":{\"concrete\":\"" }, StringSplitOptions.None);
+        }
 
-      if (jsonSplit.Length < 2) {
-        designCodeLevelsSplit = null;
-        return false;
-      }
+        if (jsonSplit.Length < 2) {
+          designCodeLevelsSplit = null;
+          return false;
+        }
 
-      string codeName = jsonSplit[1].Split('"')[0];
+        codeName = jsonSplit[1].Split('"')[0];
+      }
 
       if (!CodesStrings.TryGetValue(codeName, out string codeString)) {
         designCodeLevelsSplit = null;
