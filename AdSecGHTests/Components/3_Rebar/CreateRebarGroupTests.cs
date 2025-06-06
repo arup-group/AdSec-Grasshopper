@@ -59,7 +59,6 @@ namespace AdSecGHTests.Components._3_Rebar {
       Assert.Equal("mm", component.SelectedItems[1]);
       //restore original unit
       DefaultUnits.LengthUnitGeometry = originalUnit;
-
     }
 
     [Fact]
