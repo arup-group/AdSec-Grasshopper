@@ -1,9 +1,11 @@
 ﻿using AdSecCore.Builders;
 using AdSecCore.Functions;
 
+using AdSecGH;
 using AdSecGH.Components;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
@@ -60,6 +62,16 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.ComputeData(component);
       var data = component.GetOutputParamAt(0);
       Assert.NotNull(ComponentTestHelper.GetOutput(component));
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(PluginInfo.Instance, component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(component.MatchesExpectedIcon(Resources.SubComponent));
     }
   }
 }

@@ -1,7 +1,11 @@
-﻿using AdSecGH.Components;
+﻿using AdSecGH;
+using AdSecGH.Components;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
+
+using Oasys.GH.Helpers;
 
 using Xunit;
 
@@ -37,6 +41,16 @@ namespace AdSecGHTests.Components.Properties {
       var designFromDesignCode = ((AdSecDesignCodeGoo)ComponentTestHelper.GetOutput(_component)).Value;
       var designCodeFromMaterial = GetDesignCodeFromMaterial().Value.DesignCode;
       Assert.Equal(designCodeFromMaterial.DesignCodeName, designFromDesignCode.DesignCodeName);
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(_component.MatchesExpectedIcon(Resources.CreateDesignCode));
     }
 
   }

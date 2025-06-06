@@ -1,10 +1,14 @@
-﻿using AdSecGH.Components;
+﻿using AdSecGH;
+using AdSecGH.Components;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
+
+using Oasys.GH.Helpers;
 
 using OasysUnits;
 
@@ -228,6 +232,16 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.GetOutput(_component);
       var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
       Assert.Equal(2, runtimeMessages.Count);
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(_component.MatchesExpectedIcon(Resources.N_M));
     }
   }
 }

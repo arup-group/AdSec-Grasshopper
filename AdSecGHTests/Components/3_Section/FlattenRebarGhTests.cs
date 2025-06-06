@@ -3,9 +3,11 @@
 using AdSecCore.Builders;
 using AdSecCore.Functions;
 
+using AdSecGH;
 using AdSecGH.Components;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
@@ -163,6 +165,16 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldHaveNoErrors() {
       Assert.Empty(component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(PluginInfo.Instance, component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(component.MatchesExpectedIcon(Resources.FlattenRebar));
     }
   }
 }

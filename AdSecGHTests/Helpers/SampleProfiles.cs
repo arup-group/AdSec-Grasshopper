@@ -6,12 +6,11 @@ using Oasys.Taxonomy.Profiles;
 using OasysGH.Units;
 
 using OasysUnits;
-using OasysUnits.Units;
 
 namespace AdSecGHTests.Helpers {
   public static class SampleProfiles {
     public static Length GetThickness() {
-      return new Length(0.2, LengthUnit.Meter);
+      return new Length(0.2, DefaultUnits.LengthUnitGeometry);
     }
 
     public static Flange GetFlange() {
