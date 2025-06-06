@@ -115,46 +115,5 @@ namespace AdSecGH.Components {
       panel.UserText = fileName;
       panel.ExpireSolution(true);
     }
-
-    protected override void SolveInternal(IGH_DataAccess DA) {
-      var objectWrapper = new GH_ObjectWrapper();
-      DA.GetData(0, ref objectWrapper);
-      GH_Convert.ToString(objectWrapper, out string fileName, GH_Conversion.Both);
-      if (!fileName.EndsWith(".ads")) {
-        fileName += ".ads";
-      }
-
-      string json = File.ReadAllText(fileName);
-      var jsonParser = JsonParser.Deserialize(json);
-
-      var planes = new List<Plane>();
-      DA.GetDataList(1, planes);
-
-      var sections = new List<AdSecSectionGoo>();
-      var code = AdSecFile.GetDesignCode(json);
-      if (code == null) {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Unable to read DesignCode. DesignCode set to Eurocode.");
-        code = new AdSecDesignCode {
-          DesignCode = AdSecFileHelper.Codes["EC2_04"],
-          DesignCodeName = "EC2_04",
-        };
-      }
-
-      for (int i = 0; i < jsonParser.Sections.Count; i++) {
-        var section = jsonParser.Sections[i];
-        var plane = i > planes.Count - 1 ? planes[planes.Count - 1] : planes[i];
-        sections.Add(new AdSecSectionGoo(new AdSecSection(section, code.DesignCode, code.DesignCodeName, "", plane)));
-      }
-
-      if (sections.Count == 0) {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "File contains no valid sections");
-      }
-
-      foreach (var warning in jsonParser.Warnings) {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, warning.Description);
-      }
-
-      DA.SetDataList(0, sections);
-    }
   }
 }
