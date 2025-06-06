@@ -18,7 +18,6 @@ using Oasys.Profiles;
 
 using OasysGH.Units;
 
-using OasysUnits;
 using OasysUnits.Units;
 
 using Rhino.Display;
@@ -94,16 +93,11 @@ namespace AdSecGH.Parameters {
     }
 
     private void GenerateLocalPlanePreviewAxes() {
-      if (LocalPlane == Plane.WorldXY || LocalPlane == Plane.WorldYZ || LocalPlane == Plane.WorldZX) {
+      if (!PlaneHelper.IsNotParallelToWorldXYZ(LocalPlane)) {
         return;
       }
 
-      var area = Section.Profile.Area();
-      double sideSize = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-      var length = new Length(sideSize * 0.15, LengthUnit.Meter);
-      previewXaxis = new Line(LocalPlane.Origin, LocalPlane.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
-      previewYaxis = new Line(LocalPlane.Origin, LocalPlane.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
-      previewZaxis = new Line(LocalPlane.Origin, LocalPlane.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      (previewXaxis, previewYaxis, previewZaxis) = AxisHelper.GetLocalAxisLines(Section.Profile, LocalPlane);
     }
 
     private static Transform GetCombinedTransform(IPoint offset, Vector3d currentOffset) {
