@@ -230,13 +230,13 @@ namespace AdSecCore.Functions {
     }
 
     protected override void UpdateParameter() {
-      string lenhthUnitAbbreviation = Length.GetAbbreviation(LengthUnitGeometry);
+      string lengthUnitAbbreviation = Length.GetAbbreviation(LengthUnitGeometry);
       string angleUnitAbbreviation = Angle.GetAbbreviation(AngleUnit);
       SweepAngle.Name = $"SweepAngle [{angleUnitAbbreviation}]";
       SweepAngle.Description = $"The angle (in {angleUnitAbbreviation}) sweeped by the arc from its start angle. {PositiveAngleIsConsideredAntiClockwise}";
       StartAngle.Name = $"StartAngle [{angleUnitAbbreviation}]";
       StartAngle.Description = $"The starting angle (in {angleUnitAbbreviation}) of the circle. {PositiveAngleIsConsideredAntiClockwise} Default is 0";
-      RadiusOfCircle.Name = $"Radius [{lenhthUnitAbbreviation}]";
+      RadiusOfCircle.Name = $"Radius [{lengthUnitAbbreviation}]";
     }
 
     public void UpdateUnits() {
