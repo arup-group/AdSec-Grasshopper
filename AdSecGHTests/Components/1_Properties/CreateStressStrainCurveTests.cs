@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 
+using AdSecGH;
 using AdSecGH.Components;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
 using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.GH.Helpers;
 
 using OasysUnits;
 using OasysUnits.Units;
@@ -74,6 +77,16 @@ namespace AdSecGHTests.Components.Properties {
       var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
 
       Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(_component.MatchesExpectedIcon(Resources.StressStrainCrv));
     }
   }
 }

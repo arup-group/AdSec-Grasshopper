@@ -24,6 +24,7 @@ namespace AdSecGH.Parameters {
     public override BoundingBox Boundingbox
       => Value == null ? BoundingBox.Empty : section.SolidBrep.GetBoundingBox(false);
     public BoundingBox ClippingBox => Boundingbox;
+    public SubComponent SubComponent { get; set; }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "SubComponent";
     internal AdSecSection section;
@@ -35,33 +36,18 @@ namespace AdSecGH.Parameters {
     internal List<DrawInstructions> DrawInstructionsList { get; } = new List<DrawInstructions>();
 
     public AdSecSubComponentGoo(SubComponent subComponent) : base(subComponent.ISubComponent) {
+      SubComponent = subComponent;
       offset = subComponent.ISubComponent.Offset;
       var sectionDesign = subComponent.SectionDesign;
       plane = sectionDesign.LocalPlane.ToGh();
       section = new AdSecSection(sectionDesign.Section, sectionDesign.DesignCode.IDesignCode,
         sectionDesign.MaterialName, sectionDesign.CodeName, plane, offset);
-    }
-
-    public AdSecSubComponentGoo(
-      ISubComponent subComponent, Plane local, IDesignCode code, string codeName, string materialName) :
-      base(subComponent) {
-      offset = subComponent.Offset;
-      section = new AdSecSection(subComponent.Section, code, codeName, materialName, local, offset);
-      plane = local;
-    }
-
-    public AdSecSubComponentGoo(
-      ISection section, Plane local, IPoint point, IDesignCode code, string codeName, string materialName) {
-      m_value = ISubComponent.Create(section, point);
-      offset = point;
-      this.section = new AdSecSection(section, code, codeName, materialName, local, offset);
-      plane = local;
 
       if (!PlaneHelper.IsNotParallelToWorldXYZ(plane)) {
         return;
       }
 
-      (previewXaxis, previewYaxis, previewZaxis) = AxisHelper.GetLocalAxisLines(section.Profile, local);
+      (previewXaxis, previewYaxis, previewZaxis) = AxisHelper.GetLocalAxisLines(section.Section.Profile, plane);
     }
 
     public override bool CastFrom(object source) {
@@ -192,7 +178,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecSubComponentGoo(Value, plane, section.DesignCode, section._codeName, section._materialName);
+      return new AdSecSubComponentGoo(SubComponent);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {

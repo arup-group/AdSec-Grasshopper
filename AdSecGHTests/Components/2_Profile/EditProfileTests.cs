@@ -17,6 +17,7 @@ using Xunit;
 namespace AdSecGHTests.Components._2_Profile {
   [Collection("GrasshopperFixture collection")]
   public class EditProfileTests {
+
     private readonly EditProfile _component;
 
     public EditProfileTests() {

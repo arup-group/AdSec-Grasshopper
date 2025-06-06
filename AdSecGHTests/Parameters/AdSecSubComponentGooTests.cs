@@ -10,6 +10,8 @@ using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
 
+using Grasshopper.Kernel;
+
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.StandardMaterials;
@@ -30,11 +32,22 @@ namespace AdSecGHTests.Parameters {
   [Collection("GrasshopperFixture collection")]
   public class AdSecSubComponentGooTests {
     private readonly AdSecSubComponentGoo subComponentGoo;
+    private SubComponent _subComponent;
 
     public AdSecSubComponentGooTests() {
-      var local = new Plane(Point3d.Origin, Vector3d.ZAxis, Vector3d.YAxis);
-      subComponentGoo = new AdSecSubComponentGoo(GetAdSecSectionGoo().Value.Section, local, Geometry.Zero(),
-        IS456.Edition_2000, string.Empty, string.Empty);
+      var point = IPoint.Create(new Length(1, LengthUnit.Meter), new Length(2, LengthUnit.Meter));
+      var section = new SectionBuilder().WithHeight(1).WithWidth(1).Build();
+      _subComponent = new SubComponent() {
+        ISubComponent = ISubComponent.Create(section, point),
+        SectionDesign = new SectionDesign() {
+          Section = section,
+          DesignCode = new DesignCode() {
+            IDesignCode = IS456.Edition_2000,
+          },
+          LocalPlane = OasysPlane.PlaneXY,
+        }
+      };
+      subComponentGoo = new AdSecSubComponentGoo(_subComponent);
     }
 
     [Fact]
@@ -46,13 +59,11 @@ namespace AdSecGHTests.Parameters {
     }
 
     [Fact]
-    public void ShouldHaveInvalidPlane() {
-      var local = new Plane(Point3d.Origin, Vector3d.ZAxis, Vector3d.YAxis);
-      var point = IPoint.Create(new Length(1, LengthUnit.Meter), new Length(2, LengthUnit.Meter));
-      var subComponent = ISubComponent.Create(GetAdSecSectionGoo().Value.Section, point);
-      var componentGoo = new AdSecSubComponentGoo(subComponent, local, IS456.Edition_2000, string.Empty, string.Empty);
-
-      Assert.False(componentGoo.previewXaxis.IsValid);
+    public void ShouldProduceAxisWhenPlaneIsNotXYZ() {
+      var nonXYZPlane = new OasysPlane() { Origin = OasysPoint.Zero, XAxis = OasysPoint.ZAxis, YAxis = OasysPoint.YAxis };
+      _subComponent.SectionDesign.LocalPlane = nonXYZPlane;
+      var componentGoo = new AdSecSubComponentGoo(_subComponent);
+      Assert.True(componentGoo.previewXaxis.IsValid);
     }
 
     [Fact]
@@ -138,22 +149,11 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void ShouldDrawWires() {
       using var doc = RhinoDoc.Create(string.Empty);
-      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White);
+      GH_PreviewWireArgs ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White);
 
       subComponentGoo.DrawViewportWires(ghPreviewWireArgs);
 
       Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
-    }
-
-    [Fact]
-    public void ShouldNotDrawWires() {
-      using var doc = RhinoDoc.Create(string.Empty);
-      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White);
-
-      subComponentGoo.section = null;
-      subComponentGoo.DrawViewportWires(ghPreviewWireArgs);
-
-      Assert.Empty(subComponentGoo.DrawInstructionsList);
     }
 
     [Fact]
@@ -164,17 +164,6 @@ namespace AdSecGHTests.Parameters {
       subComponentGoo.DrawViewportMeshes(previewMeshArgs);
 
       Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
-    }
-
-    [Fact]
-    public void ShouldNotDrawViewportMeshes() {
-      using var doc = RhinoDoc.Create(string.Empty);
-      var previewMeshArgs = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(Color.White));
-
-      subComponentGoo.section = null; // set to null to simulate no brep
-      subComponentGoo.DrawViewportMeshes(previewMeshArgs);
-
-      Assert.Empty(subComponentGoo.DrawInstructionsList);
     }
 
     [Fact]

@@ -2,8 +2,10 @@
 using AdSecCore.Builders;
 using AdSecCore.Functions;
 
+using AdSecGH;
 using AdSecGH.Components;
 using AdSecGH.Parameters;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
@@ -12,8 +14,8 @@ using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
+using Oasys.GH.Helpers;
 
-using OasysGH.Helpers;
 using OasysGH.Units;
 
 using OasysUnits;
@@ -113,6 +115,16 @@ namespace AdSecGHTests.Components {
       var wrapper = (GH_ObjectWrapper)ComponentTestHelper.GetOutput(_component, 6);
       var offset = (Length)wrapper.Value;
       Assert.Equal(-0.707, offset.As(LengthUnit.Meter), comparer);
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(_component.MatchesExpectedIcon(Resources.ULS));
     }
 
   }
