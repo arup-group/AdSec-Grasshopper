@@ -1,4 +1,6 @@
-﻿using AdSecGH.Components;
+﻿using AdSecGH;
+using AdSecGH.Components;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
@@ -59,6 +61,16 @@ namespace AdSecGHTests.Components {
       component.SetSelected(0, 0); // mm
       ComponentTesting.ComputeOutputs(component);
       Assert.Empty(component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(PluginInfo.Instance, component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(component.MatchesExpectedIcon(Resources.VertexPoint));
     }
   }
 }
