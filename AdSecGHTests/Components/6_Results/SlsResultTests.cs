@@ -1,13 +1,16 @@
 ﻿using AdSecCore.Builders;
 using AdSecCore.Functions;
 
+using AdSecGH;
 using AdSecGH.Components;
+using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
 
 using Oasys.AdSec;
+using Oasys.GH.Helpers;
 
 using OasysUnits;
 
@@ -69,6 +72,16 @@ namespace AdSecGHTests.Components {
       SetDeformation();
       ComponentTestHelper.GetOutput(_component, 3);
       Assert.NotNull(ComponentTestHelper.GetOutput(_component, 3));
+    }
+
+    [Fact]
+    public void ShouldHavePluginInfoReferenced() {
+      Assert.Equal(PluginInfo.Instance, _component.PluginInfo);
+    }
+
+    [Fact]
+    public void ShouldHaveIconReferenced() {
+      Assert.True(_component.MatchesExpectedIcon(Resources.SLS));
     }
   }
 }

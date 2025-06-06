@@ -101,7 +101,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(component.MatchesExpectedIcon(Resources.CreateFlange));
+      Assert.True(component.MatchesExpectedIcon(Resources.CreateSection));
     }
   }
 }

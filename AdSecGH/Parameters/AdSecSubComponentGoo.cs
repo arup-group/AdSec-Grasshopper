@@ -1,6 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
+using AdSecCore;
 using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
@@ -14,72 +16,41 @@ using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.Profiles;
 
-using OasysGH.Units;
-
-using OasysUnits;
-using OasysUnits.Units;
-
+using Rhino.Display;
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
   public class AdSecSubComponentGoo : GH_GeometricGoo<ISubComponent>, IGH_PreviewData {
-    public override BoundingBox Boundingbox {
-      get {
-        if (Value == null) {
-          return BoundingBox.Empty;
-        }
-
-        return section.SolidBrep.GetBoundingBox(false);
-      }
-    }
+    public override BoundingBox Boundingbox
+      => Value == null ? BoundingBox.Empty : section.SolidBrep.GetBoundingBox(false);
     public BoundingBox ClippingBox => Boundingbox;
+    public SubComponent SubComponent { get; set; }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "SubComponent";
     internal AdSecSection section;
     private readonly IPoint offset;
     private readonly Plane plane;
-    private readonly Line previewXaxis;
-    private readonly Line previewYaxis;
-    private readonly Line previewZaxis;
+    public readonly Line previewXaxis;
+    public readonly Line previewYaxis;
+    public readonly Line previewZaxis;
+    internal List<DrawInstructions> DrawInstructionsList { get; } = new List<DrawInstructions>();
 
     public AdSecSubComponentGoo(SubComponent subComponent) : base(subComponent.ISubComponent) {
+      SubComponent = subComponent;
       offset = subComponent.ISubComponent.Offset;
       var sectionDesign = subComponent.SectionDesign;
       plane = sectionDesign.LocalPlane.ToGh();
       section = new AdSecSection(sectionDesign.Section, sectionDesign.DesignCode.IDesignCode,
         sectionDesign.MaterialName, sectionDesign.CodeName, plane, offset);
-    }
 
-    public AdSecSubComponentGoo(
-      ISubComponent subComponent, Plane local, IDesignCode code, string codeName, string materialName) :
-      base(subComponent) {
-      offset = subComponent.Offset;
-      section = new AdSecSection(subComponent.Section, code, codeName, materialName, local, offset);
-      plane = local;
-    }
-
-    public AdSecSubComponentGoo(
-      ISection section, Plane local, IPoint point, IDesignCode code, string codeName, string materialName) {
-      m_value = ISubComponent.Create(section, point);
-      offset = point;
-      this.section = new AdSecSection(section, code, codeName, materialName, local, offset);
-      plane = local;
-      // local axis
-      if (plane != null && plane != Plane.WorldXY && local != Plane.WorldYZ && local != Plane.WorldZX) {
-        var area = this.section.Section.Profile.Area();
-        double pythogoras = Math.Sqrt(area.As(AreaUnit.SquareMeter));
-        var length = new Length(pythogoras * 0.15, LengthUnit.Meter);
-        previewXaxis = new Line(local.Origin, local.XAxis, length.As(DefaultUnits.LengthUnitGeometry));
-        previewYaxis = new Line(local.Origin, local.YAxis, length.As(DefaultUnits.LengthUnitGeometry));
-        previewZaxis = new Line(local.Origin, local.ZAxis, length.As(DefaultUnits.LengthUnitGeometry));
+      if (!PlaneHelper.IsNotParallelToWorldXYZ(plane)) {
+        return;
       }
+
+      (previewXaxis, previewYaxis, previewZaxis) = AxisHelper.GetLocalAxisLines(section.Section.Profile, plane);
     }
 
     public override bool CastFrom(object source) {
-      if (source == null) {
-        return false;
-      }
-
       return false;
     }
 
@@ -99,88 +70,35 @@ namespace AdSecGH.Parameters {
     }
 
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
-      //Draw shape.
-      if (section.SolidBrep != null) {
-        // draw profile
-        args.Pipeline.DrawBrepShaded(section.SolidBrep, section.ProfileData.ProfileColour);
-        // draw subcomponents
-        var subComponentsPreviewData = section.SubProfilesData;
-        for (int i = 0; i < subComponentsPreviewData.SubProfiles.Count; i++) {
-          args.Pipeline.DrawBrepShaded(subComponentsPreviewData.SubProfiles[i], subComponentsPreviewData.SubColours[i]);
-        }
-
-        // draw rebars
-        var sectionReinforcementData = section.ReinforcementData;
-        for (int i = 0; i < sectionReinforcementData.Rebars.Count; i++) {
-          args.Pipeline.DrawBrepShaded(sectionReinforcementData.Rebars[i], sectionReinforcementData.RebarColours[i]);
-        }
-      }
-    }
-
-    public void DrawViewportWires(GH_PreviewWireArgs args) {
-      if (section == null) {
+      if (!TryPrepareDrawMeshesInstructions()) {
         return;
       }
 
-      var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
-      if (args.Color.R == defaultCol.R && args.Color.G == defaultCol.G && args.Color.B == defaultCol.B) // not selected
-      {
-        args.Pipeline.DrawPolyline(section.ProfileData.ProfileEdge, Colour.OasysBlue, 2);
-        if (section.ProfileData.ProfileVoidEdges != null) {
-          foreach (var crv in section.ProfileData.ProfileVoidEdges) {
-            args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
-          }
-        }
+      DrawAll(args.Pipeline);
+    }
 
-        if (section.SubProfilesData.SubEdges != null) {
-          foreach (var crv in section.SubProfilesData.SubEdges) {
-            args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
-          }
-        }
-
-        if (section.SubProfilesData.SubVoidEdges != null) {
-          foreach (var crvs in section.SubProfilesData.SubVoidEdges) {
-            foreach (var crv in crvs) {
-              args.Pipeline.DrawPolyline(crv, Colour.OasysBlue, 1);
-            }
-          }
-        }
-
-        if (section.ReinforcementData.RebarEdges != null) {
-          foreach (var crv in section.ReinforcementData.RebarEdges) {
-            args.Pipeline.DrawCircle(crv, Color.Black, 1);
-          }
-        }
-      } else {
-        args.Pipeline.DrawPolyline(section.ProfileData.ProfileEdge, Colour.OasysYellow, 3);
-        if (section.ProfileData.ProfileVoidEdges != null) {
-          foreach (var crv in section.ProfileData.ProfileVoidEdges) {
-            args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
-          }
-        }
-
-        if (section.SubProfilesData.SubEdges != null) {
-          foreach (var crv in section.SubProfilesData.SubEdges) {
-            args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
-          }
-        }
-
-        if (section.SubProfilesData.SubVoidEdges != null) {
-          foreach (var crvs in section.SubProfilesData.SubVoidEdges) {
-            foreach (var crv in crvs) {
-              args.Pipeline.DrawPolyline(crv, Colour.OasysYellow, 2);
-            }
-          }
-        }
-
-        if (section.ReinforcementData.RebarEdges != null) {
-          foreach (var crv in section.ReinforcementData.RebarEdges) {
-            args.Pipeline.DrawCircle(crv, Colour.UILightGrey, 2);
-          }
-        }
+    internal bool TryPrepareDrawMeshesInstructions() {
+      if (section?.SolidBrep == null) {
+        return false;
       }
 
-      // local axis
+      DrawInstructionsList.Clear();
+      AddBrepShaded(section.SolidBrep, section.ProfileData.ProfileColour);
+
+      var subComponentsPreviewData = section.SubProfilesData;
+      var sectionReinforcementData = section.ReinforcementData;
+
+      AddBrepsShaded(subComponentsPreviewData.SubProfiles, subComponentsPreviewData.SubColours);
+      AddBrepsShaded(sectionReinforcementData.Rebars, sectionReinforcementData.RebarColours);
+      return true;
+    }
+
+    public void DrawViewportWires(GH_PreviewWireArgs args) {
+      if (!TryPrepareDrawWiresInstructions(args.Color)) {
+        return;
+      }
+
+      DrawAll(args.Pipeline);
       if (!previewXaxis.IsValid) {
         return;
       }
@@ -188,8 +106,79 @@ namespace AdSecGH.Parameters {
       DrawingHelper.DrawLocalAxis(args, previewZaxis, previewXaxis, previewYaxis);
     }
 
+    internal bool TryPrepareDrawWiresInstructions(Color color) {
+      if (section == null || !section.IsValid) {
+        return false;
+      }
+
+      DrawInstructionsList.Clear();
+
+      var defaultCol = Instances.Settings.GetValue("DefaultPreviewColour", Color.White);
+      bool isSelected = !color.IsRgbEqualTo(defaultCol);
+      var edgeColor = isSelected ? Colour.OasysYellow : Colour.OasysBlue;
+      int mainEdgeWidth = isSelected ? 3 : 2;
+      int voidEdgeWidth = isSelected ? 2 : 1;
+      var rebarColor = isSelected ? Colour.UILightGrey : Color.Black;
+      int rebarWidth = isSelected ? 2 : 1;
+
+      DrawInstructionsList.Add(new DrawPolyline() { Color = edgeColor, Polyline = section.ProfileData.ProfileEdge, Thickness = mainEdgeWidth, });
+
+      AddEdges(section.ProfileData.ProfileVoidEdges, edgeColor, voidEdgeWidth);
+      AddEdges(section.SubProfilesData.SubEdges, edgeColor, voidEdgeWidth);
+      AddNestedEdges(section.SubProfilesData.SubVoidEdges, edgeColor, voidEdgeWidth);
+      AddCircles(section.ReinforcementData.RebarEdges, rebarColor, rebarWidth);
+
+      return true;
+    }
+
+    internal void AddBrepShaded(Brep brep, DisplayMaterial displayMaterial) {
+      DrawInstructionsList.Add(
+        new DrawBrepShaded() { Brep = brep, DisplayMaterial = displayMaterial, Geometry = brep, });
+    }
+
+    internal void AddBrepsShaded(IList<Brep> breps, IList<DisplayMaterial> displayMaterials) {
+      if (breps == null || displayMaterials == null) {
+        return;
+      }
+
+      for (int i = 0; i < breps.Count; i++) {
+        AddBrepShaded(breps[i], displayMaterials[i]);
+      }
+    }
+
+    internal void AddEdges(IEnumerable<Polyline> edges, Color color, int width) {
+      if (edges != null) {
+        DrawInstructionsList.AddRange(edges.Select(item => new DrawPolyline() { Polyline = item, Color = color, Thickness = width, }));
+      }
+    }
+
+    internal void AddNestedEdges(IEnumerable<IEnumerable<Polyline>> nestedEdges, Color color, int width) {
+      if (nestedEdges == null) {
+        return;
+      }
+
+      foreach (var edgeList in nestedEdges) {
+        DrawInstructionsList.AddRange(edgeList.Select(item => new DrawPolyline() { Polyline = item, Color = color, Thickness = width, }));
+      }
+    }
+
+    internal void AddCircles(IEnumerable<Circle> circles, Color color, int width) {
+      if (circles == null) {
+        return;
+      }
+
+      DrawInstructionsList.AddRange(circles.Select(item => new DrawCircle() { Circle = item, Color = color, Thickness = width, }));
+    }
+
+    private void DrawAll(DisplayPipeline pipeline) {
+      foreach (var drawInstruction in
+        DrawInstructionsList.Where(drawInstruction => drawInstruction?.Geometry != null)) {
+        DrawingHelper.Draw(pipeline, drawInstruction);
+      }
+    }
+
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecSubComponentGoo(Value, plane, section.DesignCode, section._codeName, section._materialName);
+      return new AdSecSubComponentGoo(SubComponent);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {

@@ -1,9 +1,12 @@
-﻿using AdSecGH.Helpers;
+﻿using AdSecCore.Functions;
+
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
+using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.StandardMaterials;
 using Oasys.Profiles;
 using Oasys.Taxonomy.Profiles;
@@ -66,8 +69,17 @@ namespace AdSecGHTests.Helpers {
       var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(thickness, length),
         new WebConstant(thickness)));
       var section = ISection.Create(profile, Concrete.ACI318.Edition_2002.Metric.MPa_20);
-      var input = new AdSecSubComponentGoo(section, Plane.WorldXY, IPoint.Create(length, length),
-        new AdSecDesignCode().DesignCode, "", "");
+      var subComponent = new SubComponent() {
+        ISubComponent = ISubComponent.Create(section, IPoint.Create(length, length)),
+        SectionDesign = new SectionDesign() {
+          Section = section,
+          DesignCode = new DesignCode() {
+            IDesignCode = IS456.Edition_2000
+          },
+          LocalPlane = OasysPlane.PlaneXY,
+        }
+      };
+      var input = new AdSecSubComponentGoo(subComponent);
 
       var objwrap = new GH_ObjectWrapper(input);
       bool castSuccessful = AdSecInput.TryCastToAdSecSection(objwrap, ref _section);
