@@ -144,7 +144,6 @@ namespace AdSecGHTests.Parameters {
 
       Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
       Assert.Single(subComponentGoo.DrawInstructionsList);
-      // Assert.Contains( subComponentGoo.DrawInstructionsList.Any(x => x.GetType() == typeof()));
     }
 
     [Fact]
