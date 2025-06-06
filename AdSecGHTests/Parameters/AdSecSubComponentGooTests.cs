@@ -32,10 +32,9 @@ namespace AdSecGHTests.Parameters {
     private readonly AdSecSubComponentGoo subComponentGoo;
 
     public AdSecSubComponentGooTests() {
-      var point = IPoint.Create(new Length(1, LengthUnit.Meter), new Length(2, LengthUnit.Meter));
-      var subComponent = ISubComponent.Create(GetAdSecSectionGoo().Value.Section, point);
-      subComponentGoo = new AdSecSubComponentGoo(subComponent, Plane.WorldXY, new AdSecDesignCode().DesignCode, "test",
-        string.Empty);
+      var local = new Plane(Point3d.Origin, Vector3d.ZAxis, Vector3d.YAxis);
+      subComponentGoo = new AdSecSubComponentGoo(GetAdSecSectionGoo().Value.Section, local, Geometry.Zero(),
+        IS456.Edition_2000, string.Empty, string.Empty);
     }
 
     [Fact]
@@ -49,9 +48,11 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void ShouldHaveInvalidPlane() {
       var local = new Plane(Point3d.Origin, Vector3d.ZAxis, Vector3d.YAxis);
-      var componentGoo = new AdSecSubComponentGoo(GetAdSecSectionGoo().Value.Section, local, Geometry.Zero(),
-        IS456.Edition_2000, string.Empty, string.Empty);
-      Assert.True(componentGoo.previewXaxis.IsValid);
+      var point = IPoint.Create(new Length(1, LengthUnit.Meter), new Length(2, LengthUnit.Meter));
+      var subComponent = ISubComponent.Create(GetAdSecSectionGoo().Value.Section, point);
+      var componentGoo = new AdSecSubComponentGoo(subComponent, local, IS456.Edition_2000, string.Empty, string.Empty);
+
+      Assert.False(componentGoo.previewXaxis.IsValid);
     }
 
     [Fact]

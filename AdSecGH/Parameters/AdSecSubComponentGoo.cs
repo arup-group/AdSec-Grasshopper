@@ -56,7 +56,6 @@ namespace AdSecGH.Parameters {
       offset = point;
       this.section = new AdSecSection(section, code, codeName, materialName, local, offset);
       plane = local;
-      // local axis
 
       if (!PlaneHelper.IsNotParallelToWorldXYZ(plane)) {
         return;
