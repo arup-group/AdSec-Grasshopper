@@ -11,7 +11,7 @@ using Rhino.Geometry;
 
 namespace AdSecGH.Helpers {
   public static class PlaneHelper {
-    public static bool IsValidPlane(Plane plane) {
+    public static bool IsNotParallelToWorldXYZ(Plane plane) {
       return plane.IsValid && !plane.Equals(Plane.WorldXY) && !plane.Equals(Plane.WorldYZ)
         && !plane.Equals(Plane.WorldZX);
     }

@@ -10,8 +10,6 @@ using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
 
-using Grasshopper.Kernel;
-
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.StandardMaterials;
@@ -134,17 +132,27 @@ namespace AdSecGHTests.Parameters {
 
       Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
       Assert.Single(subComponentGoo.DrawInstructionsList);
-      // Assert.Contains( subComponentGoo.DrawInstructionsList.Any(x => x.GetType() == typeof()));
     }
 
     [Fact]
     public void ShouldDrawWires() {
       using var doc = RhinoDoc.Create(string.Empty);
-      GH_PreviewWireArgs ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White);
+      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White);
 
       subComponentGoo.DrawViewportWires(ghPreviewWireArgs);
 
       Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void ShouldNotDrawWires() {
+      using var doc = RhinoDoc.Create(string.Empty);
+      var ghPreviewWireArgs = ComponentTestHelper.CreatePreviewArgs(doc, Color.White);
+
+      subComponentGoo.section = null;
+      subComponentGoo.DrawViewportWires(ghPreviewWireArgs);
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
     }
 
     [Fact]
@@ -155,6 +163,17 @@ namespace AdSecGHTests.Parameters {
       subComponentGoo.DrawViewportMeshes(previewMeshArgs);
 
       Assert.NotEmpty(subComponentGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void ShouldNotDrawViewportMeshes() {
+      using var doc = RhinoDoc.Create(string.Empty);
+      var previewMeshArgs = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(Color.White));
+
+      subComponentGoo.section = null; // set to null to simulate no brep
+      subComponentGoo.DrawViewportMeshes(previewMeshArgs);
+
+      Assert.Empty(subComponentGoo.DrawInstructionsList);
     }
 
     [Fact]

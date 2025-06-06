@@ -58,7 +58,7 @@ namespace AdSecGH.Parameters {
       plane = local;
       // local axis
 
-      if (!PlaneHelper.IsValidPlane(plane)) {
+      if (!PlaneHelper.IsNotParallelToWorldXYZ(plane)) {
         return;
       }
 

@@ -367,7 +367,7 @@ namespace AdSecGH.Parameters {
     }
 
     private void UpdatePreview() {
-      if (!PlaneHelper.IsValidPlane(_plane)) {
+      if (!PlaneHelper.IsNotParallelToWorldXYZ(_plane)) {
         return;
       }
 

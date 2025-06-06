@@ -93,7 +93,7 @@ namespace AdSecGH.Parameters {
     }
 
     private void GenerateLocalPlanePreviewAxes() {
-      if (!PlaneHelper.IsValidPlane(LocalPlane)) {
+      if (!PlaneHelper.IsNotParallelToWorldXYZ(LocalPlane)) {
         return;
       }
 
