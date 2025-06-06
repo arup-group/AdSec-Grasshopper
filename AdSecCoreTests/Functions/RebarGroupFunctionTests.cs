@@ -94,7 +94,7 @@ namespace AdSecCoreTests.Functions {
     public void ShouldHaveAnILayerInput() {
       function.SetMode(FoldMode.Template);
       var parameter = function.GetAllInputAttributes()[0];
-      Assert.Equal(typeof(RebarLayerParameter), parameter.GetType());
+      Assert.Equal(typeof(RebarLayerArrayParameter), parameter.GetType());
     }
 
     [Fact]

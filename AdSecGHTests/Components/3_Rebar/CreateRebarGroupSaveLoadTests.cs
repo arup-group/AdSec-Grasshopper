@@ -32,7 +32,7 @@ namespace AdSecGHTests.Components._3_Rebar {
       Assert.True(documentIo2.Open(randomPath));
     }
 
-    private static string GetRandomName() {
+    public static string GetRandomName() {
       return Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".gh");
     }
 
