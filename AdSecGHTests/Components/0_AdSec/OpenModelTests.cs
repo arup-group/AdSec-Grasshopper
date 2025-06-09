@@ -18,6 +18,24 @@ public class OpenModelTests {
     _component = new OpenModel();
   }
 
+  [Fact(Skip = "we need a way to mock the dialog in Grasshopper tests")]
+  public void ShouldOpenDialogWhenNull() {
+    var doc = new GH_DocumentIO();
+    doc.Document = new GH_Document();
+    doc.Document.AddObject(_component, true);
+    _component.OpenFile(null);
+  }
+
+  [Fact]
+  public void ShouldNotCreatePanelWhenEmpty() {
+    var doc = new GH_DocumentIO();
+    doc.Document = new GH_Document();
+    doc.Document.AddObject(_component, true);
+    _component.OpenFile("");
+    Assert.Single(doc.Document.Objects);
+    Assert.Empty(_component.Params.Input[0].Sources);
+  }
+
   [Fact]
   public void ShouldCretePanelWhenPathIsSpecified() {
     var doc = new GH_DocumentIO();
@@ -30,6 +48,23 @@ public class OpenModelTests {
     Assert.IsType<GH_Panel>(ghParam);
     var panel = (GH_Panel)ghParam;
     Assert.Equal("path/to/file.adsec", panel.UserText);
+  }
+
+  [Fact]
+  public void ShouldUpdateAndNoteDestroyIt() {
+    var doc = new GH_DocumentIO();
+    doc.Document = new GH_Document();
+    doc.Document.AddObject(_component, true);
+    _component.OpenFile("path/to/file.adsec");
+    var ghParam = _component.Params.Input[0].Sources[0];
+    var panel = (GH_Panel)ghParam;
+    var guid = panel.InstanceGuid;
+    _component.OpenFile("path/to/file2.adsec");
+    var ghParam2 = _component.Params.Input[0].Sources[0];
+    Assert.Single(_component.Params.Input[0].Sources);
+    var panel2 = (GH_Panel)ghParam;
+    Assert.Equal(guid, panel2.InstanceGuid);
+    Assert.Equal("path/to/file2.adsec", panel2.UserText);
   }
 
   [Fact]
