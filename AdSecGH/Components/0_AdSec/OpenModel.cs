@@ -25,7 +25,7 @@ namespace AdSecGH.Components {
   public class DialogGh : IShowDialog {
 
     public string FileName => _openFileDialog.FileName;
-    internal readonly OpenFileDialog _openFileDialog;
+    private readonly OpenFileDialog _openFileDialog;
 
     public DialogGh(OpenFileDialog openFileDialog = null) {
       if (openFileDialog == null) {
