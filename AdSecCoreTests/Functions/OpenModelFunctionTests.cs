@@ -9,6 +9,7 @@ namespace AdSecCoreTests.Functions {
     private OpenModelFunction _function;
 
     public OpenModelFunctionTests() {
+      AdSecFileHelper.LoadMode = AdSecDllLoader.LoadMode.LoadFrom;
       _function = new OpenModelFunction();
     }
 
