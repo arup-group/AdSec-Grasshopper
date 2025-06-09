@@ -7,6 +7,8 @@ using Grasshopper.Kernel.Special;
 
 using Oasys.GH.Helpers;
 
+using Rhino.UI;
+
 using Xunit;
 
 namespace AdSecGHTests.Components {
@@ -20,13 +22,21 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
+    public void ShouldReturnFileNameFromDialog() {
+      var dialog = new OpenFileDialog();
+      dialog.FileName = "test.adsec";
+      var _dialog = new DialogGh(dialog);
+      Assert.Equal("test.adsec", _dialog.FileName);
+    }
+
+    [Fact]
     public void ShouldOnlyWorkWithAdsFiles() {
-      Assert.Equal("AdSec Files(*.ads)|*.ads|All files (*.*)|*.*", _dialog.openFileDialog.Filter);
+      Assert.Equal("AdSec Files(*.ads)|*.ads|All files (*.*)|*.*", _dialog._openFileDialog.Filter);
     }
 
     [Fact]
     public void ShouldHaveATitle() {
-      Assert.Equal("Open AdSec Model", _dialog.openFileDialog.Title);
+      Assert.Equal("Open AdSec Model", _dialog._openFileDialog.Title);
     }
   }
 

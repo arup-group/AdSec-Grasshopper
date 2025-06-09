@@ -24,18 +24,22 @@ namespace AdSecGH.Components {
 
   public class DialogGh : IShowDialog {
 
-    public string FileName => openFileDialog.FileName;
-    internal readonly OpenFileDialog openFileDialog;
+    public string FileName => _openFileDialog.FileName;
+    internal readonly OpenFileDialog _openFileDialog;
 
-    public DialogGh() {
-      openFileDialog = new OpenFileDialog {
-        Filter = "AdSec Files(*.ads)|*.ads|All files (*.*)|*.*",
-        Title = "Open AdSec Model",
-      };
+    public DialogGh(OpenFileDialog openFileDialog = null) {
+      if (openFileDialog == null) {
+        _openFileDialog = new OpenFileDialog();
+      } else {
+        _openFileDialog = openFileDialog;
+      }
+
+      _openFileDialog.Filter = "AdSec Files(*.ads)|*.ads|All files (*.*)|*.*";
+      _openFileDialog.Title = "Open AdSec Model";
     }
 
     public bool ShowOpenDialog() {
-      return openFileDialog.ShowOpenDialog();
+      return _openFileDialog.ShowOpenDialog();
     }
   }
 
@@ -102,4 +106,5 @@ namespace AdSecGH.Components {
       Params.OnParametersChanged();
     }
   }
+
 }
