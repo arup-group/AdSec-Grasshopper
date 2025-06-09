@@ -18,13 +18,13 @@ using Rhino.UI;
 
 namespace AdSecGH.Components {
   interface IShowDialog {
-    string FileName { get; set; }
+    string FileName { get; }
     bool ShowOpenDialog();
   }
 
   public class DialogGh : IShowDialog {
 
-    public string FileName { get; set; }
+    public string FileName => openFileDialog.FileName;
     internal readonly OpenFileDialog openFileDialog;
 
     public DialogGh() {
