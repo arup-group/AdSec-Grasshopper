@@ -41,6 +41,23 @@ namespace AdSecGHTests.Components {
       AssertPanel(_filePath);
     }
 
+    private class TestUnsuccessfulDialog : IShowDialog {
+      public string FileName { get; set; }
+
+      public bool ShowOpenDialog() {
+        FileName = null;
+        return false;
+      }
+    }
+
+    [Fact]
+    public void ShouldNotCreatePanelIfUnsuccessful() {
+      _component.OpenFileDialog = new TestUnsuccessfulDialog();
+      doc.Document.AddObject(_component, true);
+      _component.OpenFile();
+      Assert.Single(doc.Document.Objects);
+    }
+
     [Fact]
     public void ShouldNotCreatePanelWhenEmpty() {
       doc.Document.AddObject(_component, true);
