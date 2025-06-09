@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 
-using AdSecCore.Constants;
-
-using AdSecGH.Helpers;
-using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using AdSecGHCore.Functions;
@@ -15,15 +9,12 @@ using AdSecGHCore.Functions;
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
-using Grasshopper.Kernel.Types;
 
-using Oasys.AdSec.IO.Serialization;
 using Oasys.GH.Helpers;
 
 using OasysGH;
 using OasysGH.UI;
 
-using Rhino.Geometry;
 using Rhino.UI;
 
 namespace AdSecGH.Components {
@@ -37,11 +28,11 @@ namespace AdSecGH.Components {
     private Guid _panelGuid = Guid.NewGuid();
 
     public override void CreateAttributes() {
-      m_attributes = new ButtonComponentAttributes(this, "Open", OpenFile, "Open AdSec file");
+      m_attributes = new ButtonComponentAttributes(this, "Open", () => OpenFile(), "Open AdSec file");
     }
 
-    public void OpenFile() {
-      string fileName = ShowOpenFileDialog();
+    public void OpenFile(string file = null) {
+      string fileName = file ?? ShowOpenFileDialog();
       if (string.IsNullOrEmpty(fileName)) {
         return;
       }
@@ -52,7 +43,7 @@ namespace AdSecGH.Components {
       UpdatePanelForExistingSources(panel, fileName);
 
       // Ensure the panel is real and added to the canvas
-      Instances.ActiveCanvas.Document.AddObject(panel, false);
+      OnPingDocument().AddObject(panel, false);
 
       // Connect the new panel to the component
       ConnectNewPanelToComponent(panel);
