@@ -26,7 +26,7 @@ namespace AdSecCore.Constants {
       return _adSecAPI;
     }
 
-    private LoadMode _Mode;
+    private readonly LoadMode _Mode;
 
     public enum LoadMode {
       LoadFrom,
