@@ -66,10 +66,10 @@ namespace Oasys.GH.Helpers {
           typeof(RebarGroupArrayParameter), ParamGenericObject
         }, {
           typeof(RebarGroupParameter), ParamGenericObject
+        },{
+          typeof(RebarLayerParameter), ParamGenericObject
         }, {
           typeof(RebarLayerArrayParameter), ParamGenericObject
-        }, {
-          typeof(RebarLayerParameter), ParamGenericObject
         }, {
           typeof(RebarBundleParameter), ParamGenericObject
         }, {
@@ -162,10 +162,16 @@ namespace Oasys.GH.Helpers {
     /// </summary>
     private static readonly Dictionary<Type, Func<Attribute, object>> ToGoo
       = new Dictionary<Type, Func<Attribute, object>> {
-        { typeof(SubComponentParameter), a => new AdSecSubComponentGoo((a as SubComponentParameter)?.Value) }, {
-          typeof(RebarGroupArrayParameter),
-          a => { return (a as RebarGroupArrayParameter).Value.Select(x => new AdSecRebarGroupGoo(x)).ToList(); }
-        }, {
+        { typeof(SubComponentParameter), a => new AdSecSubComponentGoo((a as SubComponentParameter)?.Value) },
+        { typeof(RebarGroupArrayParameter), a => {
+            return (a as RebarGroupArrayParameter).Value.Select(x=> new AdSecRebarGroupGoo(x)).ToList();
+          }
+        },{
+          typeof(RebarLayerParameter), a => {
+            var group = (a as RebarLayerParameter).Value;
+            return new AdSecRebarLayerGoo(group);
+          }
+        },{
           typeof(RebarGroupParameter), a => {
             var group = (a as RebarGroupParameter).Value;
             return new AdSecRebarGroupGoo(group);
