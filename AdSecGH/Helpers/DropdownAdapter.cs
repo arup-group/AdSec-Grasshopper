@@ -25,6 +25,10 @@ namespace Oasys.GH.Helpers {
         variableInput.OnVariableInputChanged += UpdateInputs;
         UpdateInputs();
       }
+
+      if (BusinessComponent is IDynamicDropdown dynamicDropdown) {
+        dynamicDropdown.OnDropdownChanged += ProcessDropdownItems;
+      }
     }
 
     private void UpdateInputs() {
@@ -79,11 +83,8 @@ namespace Oasys.GH.Helpers {
         _spacerDescriptions = new List<string>();
         _dropDownItems = new List<List<string>>();
         _selectedItems = new List<string>();
-      } else {
-        _spacerDescriptions.Clear();
-        _dropDownItems.Clear();
-        _selectedItems.Clear();
       }
+
       UpdateDefaultUnits();
       if (BusinessComponent is IDropdownOptions dropdownOptions) {
         var options = dropdownOptions.Options();
@@ -102,9 +103,23 @@ namespace Oasys.GH.Helpers {
             items = UnitsHelper.GetFilteredAbbreviations(ToEngineeringUnits()[unitType]);
             selectedItem = UnitAbbreviation(unitType, unitValue);
           }
-          _spacerDescriptions.Add(description);
-          _dropDownItems.Add(items);
-          _selectedItems.Add(selectedItem);
+
+          if (_isInitialised && i < _dropDownItems.Count) {
+            _spacerDescriptions[i] = description;
+            _dropDownItems[i] = items;
+            _selectedItems[i] = selectedItem;
+          } else {
+            _spacerDescriptions.Add(description);
+            _dropDownItems.Add(items);
+            _selectedItems.Add(selectedItem);
+          }
+        }
+
+        // Remove any extra dropdowns that are not needed
+        while (_dropDownItems.Count > options.Length) {
+          _dropDownItems.RemoveAt(_dropDownItems.Count - 1);
+          _selectedItems.RemoveAt(_selectedItems.Count - 1);
+          _spacerDescriptions.RemoveAt(_spacerDescriptions.Count - 1);
         }
       }
     }
@@ -134,7 +149,7 @@ namespace Oasys.GH.Helpers {
     }
 
     public static Dictionary<Type, EngineeringUnits> ToEngineeringUnits() {
-      return new Dictionary<Type, EngineeringUnits>{
+      return new Dictionary<Type, EngineeringUnits> {
         { typeof(LengthUnit), EngineeringUnits.Length },
         { typeof(AngleUnit), EngineeringUnits.Angle },
         { typeof(ForceUnit), EngineeringUnits.Force },
