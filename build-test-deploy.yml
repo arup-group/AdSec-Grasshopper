@@ -168,6 +168,7 @@ steps:
       # Save updated JSON back to file
       $json | ConvertTo-Json -Depth 10 | Set-Content $jsonPath -Encoding UTF8
     displayName: "Update stryker-config.json target branch"
+    condition: ne(variables['System.PullRequest.TargetBranch'], '')
 
   - powershell: |
       $output = dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
