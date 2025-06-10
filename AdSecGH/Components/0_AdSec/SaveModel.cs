@@ -11,9 +11,9 @@ using AdSecGHCore.Constants;
 
 using GH_IO.Serialization;
 
-using Grasshopper;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Special;
+
+using Oasys.GH.Helpers;
 
 using OasysGH;
 using OasysGH.Components;
@@ -76,39 +76,8 @@ namespace AdSecGH.Components {
 
     public void WriteFilePathToPanel(IGrasshopperDocumentContext context = null) {
       const int pathIndex = 3;
-      RemoveSourcesFrom(pathIndex);
-      AddNewPanelForInput(pathIndex, _fileName, context);
-    }
-
-    private void AddNewPanelForInput(int pathIndex, string text, IGrasshopperDocumentContext context = null) {
-      var panel = CreatePanel(text);
-
-      var canvaContext = context ?? new GrasshopperDocumentContext();
-      canvaContext.AddObject(panel, false);
-
-      Params.Input[pathIndex].AddSource(panel);
-      Params.OnParametersChanged();
-      ExpireSolution(true);
-    }
-
-    public GH_Panel CreatePanel(string text) {
-      var panel = new GH_Panel();
-      panel.CreateAttributes();
-
-      const int offset = 40;
-      var attributesBounds = Attributes.DocObject.Attributes.Bounds;
-      var panelBounds = panel.Attributes.Bounds;
-
-      panel.Attributes.Pivot = new PointF(attributesBounds.Left - panelBounds.Width - offset,
-        attributesBounds.Bottom - panelBounds.Height);
-
-      panel.UserText = text;
-
-      return panel;
-    }
-
-    private void RemoveSourcesFrom(int index) {
-      Params.Input[index].Sources?.Clear();
+      this.RemoveSourcesFromInputAt(pathIndex);
+      this.TryAddPanelForInputAt(pathIndex, _fileName, context);
     }
 
     public void SaveFile() {
@@ -176,16 +145,6 @@ namespace AdSecGH.Components {
       _fileName = null;
       canOpen = false;
       _jsonString = null;
-    }
-
-    public interface IGrasshopperDocumentContext {
-      void AddObject(IGH_DocumentObject obj, bool recordUndo = false);
-    }
-
-    public class GrasshopperDocumentContext : IGrasshopperDocumentContext {
-      public void AddObject(IGH_DocumentObject obj, bool recordUndo = false) {
-        Instances.ActiveCanvas.Document.AddObject(obj, recordUndo);
-      }
     }
   }
 }

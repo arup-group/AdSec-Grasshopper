@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
+
+using AdSecGH.Helpers;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
@@ -69,6 +69,27 @@ namespace Oasys.GH.Helpers {
       var icon = (Bitmap)propertyInfo?.GetValue(component, null);
       var expectedRawFormat = expected.RawFormat;
       return expectedRawFormat.Guid.Equals(icon?.RawFormat.Guid);
+    }
+
+    public static void RemoveSourcesFromInputAt(this GH_Component component, int index) {
+      component.Params.Input[index].Sources?.Clear();
+    }
+
+    public static bool TryAddPanelForInputAt(
+      this GH_Component component, int index, string text, IGrasshopperDocumentContext context = null) {
+      if (component.Params.Input[index].SourceCount > 0) {
+        return false;
+      }
+
+      var panel = RhinoHelper.CreatePanel(component.Attributes, text);
+
+      var canvaContext = context ?? new GrasshopperDocumentContext();
+      canvaContext.AddObject(panel, false);
+
+      component.Params.Input[index].AddSource(panel);
+      component.Params.OnParametersChanged();
+      component.ExpireSolution(true);
+      return true;
     }
   }
 }
