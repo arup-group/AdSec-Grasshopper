@@ -58,10 +58,10 @@ namespace Oasys.GH.Helpers {
           typeof(RebarGroupArrayParameter), ParamGenericObject
         },{
           typeof(RebarGroupParameter), ParamGenericObject
-        }, {
-          typeof(RebarLayerArrayParameter), ParamGenericObject
         },{
           typeof(RebarLayerParameter), ParamGenericObject
+        }, {
+          typeof(RebarLayerArrayParameter), ParamGenericObject
         }, {
           typeof(RebarBundleParameter), ParamGenericObject
         }, {
@@ -157,6 +157,11 @@ namespace Oasys.GH.Helpers {
         { typeof(SubComponentParameter), a => new AdSecSubComponentGoo((a as SubComponentParameter)?.Value) },
         { typeof(RebarGroupArrayParameter), a => {
             return (a as RebarGroupArrayParameter).Value.Select(x=> new AdSecRebarGroupGoo(x)).ToList();
+          }
+        },{
+          typeof(RebarLayerParameter), a => {
+            var group = (a as RebarLayerParameter).Value;
+            return new AdSecRebarLayerGoo(group);
           }
         },{
           typeof(RebarGroupParameter), a => {
