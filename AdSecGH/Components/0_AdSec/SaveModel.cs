@@ -13,8 +13,6 @@ using GH_IO.Serialization;
 
 using Grasshopper.Kernel;
 
-using Oasys.GH.Helpers;
-
 using OasysGH;
 using OasysGH.Components;
 using OasysGH.UI;
@@ -77,7 +75,7 @@ namespace AdSecGH.Components {
     public void WriteFilePathToPanel(IGrasshopperDocumentContext context = null) {
       const int pathIndex = 3;
       this.RemoveSourcesFromInputAt(pathIndex);
-      this.TryAddPanelForInputAt(pathIndex, _fileName, context);
+      this.AddPanelForInputAt(pathIndex, _fileName, context);
     }
 
     public void SaveFile() {

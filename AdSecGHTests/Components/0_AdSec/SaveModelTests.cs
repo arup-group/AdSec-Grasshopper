@@ -328,15 +328,9 @@ namespace AdSecGHTests.Components.AdSec {
 
       Assert.Empty(_component.Params.Input[index].Sources);
 
-      _component.WriteFilePathToPanel(new DummyContext());
+      _component.WriteFilePathToPanel(new Dummies.DummyContext());
 
       Assert.NotEmpty(_component.Params.Input[index].Sources);
-    }
-
-    private class DummyContext : SaveModel.IGrasshopperDocumentContext {
-      public void AddObject(IGH_DocumentObject obj, bool recordUndo = false) {
-        //only for tests, so can be empty
-      }
     }
   }
 }
