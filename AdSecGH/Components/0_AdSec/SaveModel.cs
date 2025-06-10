@@ -74,32 +74,41 @@ namespace AdSecGH.Components {
       }
     }
 
-    private void WriteFilePathToPanel() {
-      //add panel input with string
-      //delete existing inputs if any
-      while (Params.Input[3].Sources.Count > 0) {
-        Instances.ActiveCanvas.Document.RemoveObject(Params.Input[3].Sources[0], false);
-      }
+    public void WriteFilePathToPanel(IGrasshopperDocumentContext context = null) {
+      const int pathIndex = 3;
+      RemoveSourcesFrom(pathIndex);
+      AddNewPanelForInput(pathIndex, _fileName, context);
+    }
 
-      //instantiate  new panel
+    private void AddNewPanelForInput(int pathIndex, string text, IGrasshopperDocumentContext context = null) {
+      var panel = CreatePanel(text);
+
+      var canvaContext = context ?? new GrasshopperDocumentContext();
+      canvaContext.AddObject(panel, false);
+
+      Params.Input[pathIndex].AddSource(panel);
+      Params.OnParametersChanged();
+      ExpireSolution(true);
+    }
+
+    public GH_Panel CreatePanel(string text) {
       var panel = new GH_Panel();
       panel.CreateAttributes();
 
-      panel.Attributes.Pivot
-        = new PointF(Attributes.DocObject.Attributes.Bounds.Left - panel.Attributes.Bounds.Width - 40,
-          Attributes.DocObject.Attributes.Bounds.Bottom - panel.Attributes.Bounds.Height);
+      const int offset = 40;
+      var attributesBounds = Attributes.DocObject.Attributes.Bounds;
+      var panelBounds = panel.Attributes.Bounds;
 
-      //populate value list with our own data
-      panel.UserText = _fileName;
+      panel.Attributes.Pivot = new PointF(attributesBounds.Left - panelBounds.Width - offset,
+        attributesBounds.Bottom - panelBounds.Height);
 
-      //Until now, the panel is a hypothetical object.
-      // This command makes it 'real' and adds it to the canvas.
-      Instances.ActiveCanvas.Document.AddObject(panel, false);
+      panel.UserText = text;
 
-      //Connect the new slider to this component
-      Params.Input[3].AddSource(panel);
-      Params.OnParametersChanged();
-      ExpireSolution(true);
+      return panel;
+    }
+
+    private void RemoveSourcesFrom(int index) {
+      Params.Input[index].Sources?.Clear();
     }
 
     public void SaveFile() {
@@ -167,6 +176,16 @@ namespace AdSecGH.Components {
       _fileName = null;
       canOpen = false;
       _jsonString = null;
+    }
+
+    public interface IGrasshopperDocumentContext {
+      void AddObject(IGH_DocumentObject obj, bool recordUndo = false);
+    }
+
+    public class GrasshopperDocumentContext : IGrasshopperDocumentContext {
+      public void AddObject(IGH_DocumentObject obj, bool recordUndo = false) {
+        Instances.ActiveCanvas.Document.AddObject(obj, recordUndo);
+      }
     }
   }
 }

@@ -321,5 +321,22 @@ namespace AdSecGHTests.Components.AdSec {
     public void ShouldHaveIconReferenced() {
       Assert.True(_component.MatchesExpectedIcon(Resources.SaveAdSec));
     }
+
+    [Fact]
+    public void CreatesPanelWithFilePath() {
+      int index = 3;
+
+      Assert.Empty(_component.Params.Input[index].Sources);
+
+      _component.WriteFilePathToPanel(new DummyContext());
+
+      Assert.NotEmpty(_component.Params.Input[index].Sources);
+    }
+
+    private class DummyContext : SaveModel.IGrasshopperDocumentContext {
+      public void AddObject(IGH_DocumentObject obj, bool recordUndo = false) {
+        //only for tests, so can be empty
+      }
+    }
   }
 }
