@@ -68,11 +68,11 @@ namespace AdSecGH.Components {
       _fileName = AdSecFile.SaveFilePath();
       SaveJson();
       if (canOpen) {
-        WriteFilePathToPanel();
+        WriteFilePathToPanel(new GrasshopperDocumentContext());
       }
     }
 
-    public void WriteFilePathToPanel(IGrasshopperDocumentContext context = null) {
+    public void WriteFilePathToPanel(IGrasshopperDocumentContext context) {
       const int pathIndex = 3;
       this.RemoveSourcesFromInputAt(pathIndex);
       this.AddPanelForInputAt(pathIndex, _fileName, context);
