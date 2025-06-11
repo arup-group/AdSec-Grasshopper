@@ -321,5 +321,16 @@ namespace AdSecGHTests.Components.AdSec {
     public void ShouldHaveIconReferenced() {
       Assert.True(_component.MatchesExpectedIcon(Resources.SaveAdSec));
     }
+
+    [Fact]
+    public void CreatesPanelWithFilePath() {
+      int index = 3;
+
+      Assert.Empty(_component.Params.Input[index].Sources);
+
+      _component.WriteFilePathToPanel(new Dummies.DummyContext());
+
+      Assert.NotEmpty(_component.Params.Input[index].Sources);
+    }
   }
 }

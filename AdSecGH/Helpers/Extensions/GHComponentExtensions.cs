@@ -378,5 +378,20 @@ namespace AdSecGH.Helpers {
       return adSecloads;
     }
 
+    public static void RemoveSourcesFromInputAt(this GH_Component component, int index) {
+      component.Params.Input[index].Sources.Clear();
+    }
+
+    public static bool AddPanelForInputAt(
+      this GH_Component component, int index, string text, IGrasshopperDocumentContext context) {
+      var panel = RhinoHelper.CreatePanel(component.Attributes, text);
+
+      context.AddObject(panel, false);
+
+      component.Params.Input[index].AddSource(panel);
+      component.Params.OnParametersChanged();
+      component.ExpireSolution(true);
+      return true;
+    }
   }
 }
