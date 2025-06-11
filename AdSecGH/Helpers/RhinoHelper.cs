@@ -6,12 +6,12 @@ using Grasshopper.Kernel.Special;
 
 namespace AdSecGH.Helpers {
   public interface IGrasshopperDocumentContext {
-    void AddObject(IGH_DocumentObject obj, bool recordUndo = false);
+    void AddObject(object obj, bool recordUndo = false);
   }
 
   public class GrasshopperDocumentContext : IGrasshopperDocumentContext {
-    public void AddObject(IGH_DocumentObject obj, bool recordUndo = false) {
-      Instances.ActiveCanvas.Document.AddObject(obj, recordUndo);
+    public void AddObject(object obj, bool recordUndo = false) {
+      Instances.ActiveCanvas.Document.AddObject((IGH_DocumentObject)obj, recordUndo);
     }
   }
 
