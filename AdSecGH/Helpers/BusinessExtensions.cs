@@ -137,6 +137,10 @@ namespace Oasys.GH.Helpers {
           typeof(ForceParameter), ParamGenericObject
         },{
           typeof(MomentParameter), ParamGenericObject
+        },{
+          typeof(StressStrainPointParameter), ParamGenericObject
+        },{
+          typeof(StressStrainPointArrayParameter), ParamGenericObject
         },
       };
 
@@ -296,13 +300,18 @@ namespace Oasys.GH.Helpers {
             return quantityInRelevantUnit;
           }
         },{
-          typeof(PressureArrayParameter), a => {
-            var strsses = (a as PressureArrayParameter).Value;
-            var quantityInRelevantUnit = new List<GH_UnitNumber>();
-            foreach (var stress in strsses) {
-              quantityInRelevantUnit.Add(new GH_UnitNumber(stress.ToUnit(DefaultUnits.StressUnitResult)));
+          typeof(StressStrainPointParameter), a => {
+            var strainPoint = (a as StressStrainPointParameter).Value;
+            return new AdSecStressStrainPointGoo(strainPoint);
+          }
+        },{
+          typeof(StressStrainPointArrayParameter), a => {
+             var strainPoints = (a as StressStrainPointArrayParameter).Value;
+            var strainPointGoo = new List<AdSecStressStrainPointGoo>();
+            foreach (var points in strainPoints) {
+              strainPointGoo.Add(new AdSecStressStrainPointGoo(points));
             }
-            return quantityInRelevantUnit;
+            return strainPointGoo;
           }
         },
       };
@@ -416,7 +425,17 @@ namespace Oasys.GH.Helpers {
               DesignCodeName = value.DesignCodeName
             }: goo;
           }
-        },
+        },{
+          typeof(StressStrainPointParameter), goo => {
+            dynamic gooDynamic = goo;
+            return new AdSecStressStrainPointGoo(gooDynamic);
+          }
+        },{
+          typeof(StressStrainPointArrayParameter), goo => {
+           var gooDynamic = goo as List<object>;
+            return gooDynamic.Select(x => new AdSecStressStrainPointGoo((x as AdSecStressStrainPointGoo).Value)).ToArray();
+          }
+        }
       };
 
     private static SubComponent[] SubComponentCasting(List<object> gooDynamic) {
