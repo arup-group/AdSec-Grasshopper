@@ -220,11 +220,9 @@ namespace AdSecCore.Functions {
     private T _value;
     public T Value {
       get {
-        if (_value == null) {
-          var defValue = default(T);
-          if (Equals(_value, defValue) && !Equals(Default, defValue)) {
-            _value = Default;
-          }
+        var defValue = default(T);
+        if (Equals(_value, defValue) && !Equals(Default, defValue)) {
+          _value = Default;
         }
 
         return _value;
