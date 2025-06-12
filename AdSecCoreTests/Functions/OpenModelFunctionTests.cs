@@ -100,6 +100,7 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ShouldLoadWithDefaultPlane() {
       _function.Path.Value = "simple.ads";
+      _function.Plane.Value = null;
       _function.Compute();
       var sectionDesign = _function.Sections.Value[0];
       Assert.NotNull(sectionDesign.LocalPlane);
@@ -114,6 +115,17 @@ namespace AdSecCoreTests.Functions {
       var sectionDesign = _function.Sections.Value[0];
       Assert.NotNull(sectionDesign.LocalPlane);
       Assert.Equal(OasysPlane.PlaneXY, sectionDesign.LocalPlane);
+    }
+
+    [Fact]
+    public void ShouldUseMultiplePlaneProvided() {
+      _function.Path.Value = "simple_2_section.ads";
+      _function.Plane.Value = new[] { OasysPlane.PlaneXY, OasysPlane.PlaneYZ };
+      _function.Compute();
+      var sectionDesigns = _function.Sections.Value;
+      Assert.Equal(2, sectionDesigns.Length);
+      Assert.Equal(OasysPlane.PlaneXY, sectionDesigns[0].LocalPlane);
+      Assert.Equal(OasysPlane.PlaneYZ, sectionDesigns[1].LocalPlane);
     }
 
     [Fact]

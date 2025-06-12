@@ -71,11 +71,16 @@ namespace AdSecGHCore.Functions {
 
       var sections = new List<SectionDesign>();
 
+      var planeIndex = 0;
       for (int i = 0; i < jsonParser.Sections.Count; i++) {
+        if (i < Plane.Value.Length) {
+          planeIndex = i;
+        }
+
         sections.Add(new SectionDesign() {
           Section = jsonParser.Sections[i],
           DesignCode = designCode,
-          LocalPlane = Plane.Value[0],
+          LocalPlane = Plane.Value[planeIndex],
         });
       }
 
