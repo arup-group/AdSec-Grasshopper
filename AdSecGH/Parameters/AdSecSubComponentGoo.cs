@@ -13,7 +13,6 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
 using Oasys.Profiles;
 
 using Rhino.Display;
@@ -29,7 +28,6 @@ namespace AdSecGH.Parameters {
     public override string TypeName => "SubComponent";
     internal AdSecSection section;
     private readonly IPoint offset;
-    private readonly Plane plane;
     public readonly Line previewXaxis;
     public readonly Line previewYaxis;
     public readonly Line previewZaxis;
@@ -39,7 +37,7 @@ namespace AdSecGH.Parameters {
       SubComponent = subComponent;
       offset = subComponent.ISubComponent.Offset;
       var sectionDesign = subComponent.SectionDesign;
-      plane = sectionDesign.LocalPlane.ToGh();
+      var plane = sectionDesign.LocalPlane.ToGh();
       section = new AdSecSection(sectionDesign.Section, sectionDesign.DesignCode.IDesignCode,
         sectionDesign.MaterialName, sectionDesign.CodeName, plane, offset);
 
@@ -190,7 +188,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return $"AdSec {TypeName} {{{section} Offset: {offset}}}";
+      return $"AdSec {TypeName} {{{section} Offset: Y:{offset.Y} Z:{offset.Z}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {
