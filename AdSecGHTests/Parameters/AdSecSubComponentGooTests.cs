@@ -136,6 +136,9 @@ namespace AdSecGHTests.Parameters {
       Assert.Contains("Offset", subComponentGoo.ToString());
       Assert.Contains("Y:1", subComponentGoo.ToString());
       Assert.Contains("Z:2", subComponentGoo.ToString());
+      Assert.Contains("AdSec SubComponent", subComponentGoo.ToString());
+      Assert.Contains("STD R(m) 0.01 0.01", subComponentGoo.ToString());
+      Assert.Equal("AdSec SubComponent {STD R(m) 0.01 0.01 Offset: Y:1 m Z:2 m}", subComponentGoo.ToString());
     }
 
     [Fact]
