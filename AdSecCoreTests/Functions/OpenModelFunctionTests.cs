@@ -101,8 +101,19 @@ namespace AdSecCoreTests.Functions {
     public void ShouldLoadWithDefaultPlane() {
       _function.Path.Value = "simple.ads";
       _function.Compute();
-      Assert.NotNull(_function.Sections.Value);
-      Assert.NotNull(_function.Sections.Value[0].LocalPlane);
+      var sectionDesign = _function.Sections.Value[0];
+      Assert.NotNull(sectionDesign.LocalPlane);
+      Assert.Equal(OasysPlane.PlaneYZ, sectionDesign.LocalPlane);
+    }
+
+    [Fact]
+    public void ShouldUseTheProvidedPlane() {
+      _function.Path.Value = "simple.ads";
+      _function.Plane.Value = new[] { OasysPlane.PlaneXY };
+      _function.Compute();
+      var sectionDesign = _function.Sections.Value[0];
+      Assert.NotNull(sectionDesign.LocalPlane);
+      Assert.Equal(OasysPlane.PlaneXY, sectionDesign.LocalPlane);
     }
 
     [Fact]
