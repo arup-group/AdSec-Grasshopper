@@ -131,6 +131,7 @@ namespace AdSecCore.Functions {
           return false;
         }
       }
+
       return true;
     }
 
@@ -218,7 +219,13 @@ namespace AdSecCore.Functions {
   public class ParameterAttribute<T> : Attribute, IDefault, IAccessible {
     private T _value;
     public T Value {
-      get => _value;
+      get {
+        if (Equals(_value, default(T)) && !Equals(Default, default(T))) {
+          _value = Default;
+        }
+
+        return _value;
+      }
       set {
         _value = value;
         OnValueChanged?.Invoke(value);

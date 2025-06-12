@@ -75,6 +75,7 @@ namespace AdSecGHCore.Functions {
         sections.Add(new SectionDesign() {
           Section = jsonParser.Sections[i],
           DesignCode = designCode,
+          LocalPlane = Plane.Value[0],
         });
       }
 

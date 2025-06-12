@@ -98,6 +98,14 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void ShouldLoadWithDefaultPlane() {
+      _function.Path.Value = "simple.ads";
+      _function.Compute();
+      Assert.NotNull(_function.Sections.Value);
+      Assert.NotNull(_function.Sections.Value[0].LocalPlane);
+    }
+
+    [Fact]
     public void ShouldLoadWithDesignCode() {
       _function.Path.Value = "simple.ads";
       _function.Compute();
@@ -127,8 +135,8 @@ namespace AdSecCoreTests.Functions {
     public void ShouldExposeTheWarningsFromJsonParser() {
       _function.Path.Value = "sections_with_warnings.ads";
       _function.Compute();
-      Assert.Contains("At least one section has tasks which is not currently supported and have been ignored", _function.WarningMessages);
-
+      Assert.Contains("At least one section has tasks which is not currently supported and have been ignored",
+        _function.WarningMessages);
     }
   }
 }
