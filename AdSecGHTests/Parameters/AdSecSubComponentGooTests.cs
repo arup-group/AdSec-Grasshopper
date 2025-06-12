@@ -134,6 +134,8 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void ToStringContainsInfoAboutOffset() {
       Assert.Contains("Offset", subComponentGoo.ToString());
+      Assert.Contains("Y:1", subComponentGoo.ToString());
+      Assert.Contains("Z:2", subComponentGoo.ToString());
     }
 
     [Fact]

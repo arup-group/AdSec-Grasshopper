@@ -188,7 +188,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return $"AdSec {TypeName} {{{section} Offset: Y:{offset.Y} Z: {offset.Z}}}";
+      return $"AdSec {TypeName} {{{section} Offset: Y:{offset.Y} Z:{offset.Z}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {
