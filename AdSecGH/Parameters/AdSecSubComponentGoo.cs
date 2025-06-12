@@ -13,7 +13,6 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
 using Oasys.Profiles;
 
 using Rhino.Display;
@@ -190,7 +189,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
-      return $"AdSec {TypeName} {{{section} Offset: {offset}}}";
+      return $"AdSec {TypeName} {{{section} Offset: Y:{offset.Y} Z: {offset.Z}}}";
     }
 
     public override IGH_GeometricGoo Transform(Transform xform) {
