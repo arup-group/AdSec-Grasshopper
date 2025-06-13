@@ -123,8 +123,8 @@ namespace AdSecCore.Functions {
         case CurveType.FibModelCode:
           PeakPoint.Name = "Peak Point";
           PeakPoint.Description = $"{representingText}FIB model's Peak Point";
-          InitialModulus.Name = $"Initial Modus [{unitStressAbbreviation}]";
-          InitialModulus.Description = $"Initial Moduls from {fibModelCodeText}";
+          InitialModulus.Name = $"Initial Modulus [{unitStressAbbreviation}]";
+          InitialModulus.Description = $"Initial Modulus from {fibModelCodeText}";
           FailureStrain.Name = $"Failure Strain [{strainUnitAbbreviation}]";
           FailureStrain.Description = $"Failure strain from {fibModelCodeText}";
           break;
@@ -137,16 +137,16 @@ namespace AdSecCore.Functions {
           UnconfinedStrength.Description = $"Unconfined strength for {manderConfinedModelText}";
           ConfinedStrength.Name = $"Confined Strength [{unitStressAbbreviation}]"; ;
           ConfinedStrength.Description = $"Confined strength for {manderConfinedModelText}";
-          InitialModulus.Name = $"Initial Modus [{unitStressAbbreviation}]";
-          InitialModulus.Description = $"Initial Moduls from {manderConfinedModelText}";
+          InitialModulus.Name = $"Initial Modulus [{unitStressAbbreviation}]";
+          InitialModulus.Description = $"Initial Modulus from {manderConfinedModelText}";
           FailureStrain.Name = $"Failure Strain [{strainUnitAbbreviation}]";
           FailureStrain.Description = $"Failure strain from {manderConfinedModelText}";
           break;
         case CurveType.Mander:
           PeakPoint.Name = "Peak Point";
           PeakPoint.Description = $"{representingText}{manderModelText}'s Peak Point";
-          InitialModulus.Name = $"Initial Modus [{unitStressAbbreviation}]";
-          InitialModulus.Description = $"Initial Moduls from {manderModelText}";
+          InitialModulus.Name = $"Initial Modulus [{unitStressAbbreviation}]";
+          InitialModulus.Description = $"Initial Modulus from {manderModelText}";
           FailureStrain.Name = $"Failure Strain [{strainUnitAbbreviation}]";
           FailureStrain.Description = $"Failure strain from {manderModelText}";
           break;
