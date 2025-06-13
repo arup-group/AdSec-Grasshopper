@@ -145,6 +145,10 @@ namespace Oasys.GH.Helpers {
           typeof(ForceParameter), ParamGenericObject
         }, {
           typeof(MomentParameter), ParamGenericObject
+        },{
+          typeof(StressStrainPointParameter), ParamGenericObject
+        },{
+          typeof(StressStrainPointArrayParameter), ParamGenericObject
         },
       };
 
@@ -304,7 +308,6 @@ namespace Oasys.GH.Helpers {
             foreach (var strain in strains) {
               quantityInRelevantUnit.Add(new GH_UnitNumber(strain.ToUnit(DefaultUnits.StrainUnitResult)));
             }
-
             return quantityInRelevantUnit;
           }
         }, {
@@ -314,10 +317,23 @@ namespace Oasys.GH.Helpers {
             foreach (var stress in strsses) {
               quantityInRelevantUnit.Add(new GH_UnitNumber(stress.ToUnit(DefaultUnits.StressUnitResult)));
             }
-
             return quantityInRelevantUnit;
           }
-        },
+        },{
+          typeof(StressStrainPointParameter), a => {
+            var strainPoint = (a as StressStrainPointParameter).Value;
+            return new AdSecStressStrainPointGoo(strainPoint);
+          }
+        },{
+          typeof(StressStrainPointArrayParameter), a => {
+             var strainPoints = (a as StressStrainPointArrayParameter).Value;
+            var strainPointGoo = new List<AdSecStressStrainPointGoo>();
+            foreach (var points in strainPoints) {
+              strainPointGoo.Add(new AdSecStressStrainPointGoo(points));
+            }
+            return strainPointGoo;
+          }
+        }
       };
 
     /// <summary>
