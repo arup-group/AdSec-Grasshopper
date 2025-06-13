@@ -22,6 +22,8 @@ using Oasys.Profiles;
 using OasysUnits;
 using OasysUnits.Units;
 
+using Rhino.NodeInCode;
+
 using Xunit;
 namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
@@ -137,7 +139,20 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void CanCreatesArcLayout() {
+
       SetArcRebarInputs(_component);
+      AssertArcLayout(_component);
+    }
+
+    [Fact]
+    public void CanCreatesArcLayoutAtDegree() {
+      _component.SetSelected(0, 3);
+      _component.SetSelected(2, 1);
+      ComponentTestHelper.SetInput(_component, _layerGoo, 0);
+      ComponentTestHelper.SetInput(_component, new AdSecPointGoo(IPoint.Create(Length.FromMillimeters(10), Length.FromMillimeters(11))), 1);
+      ComponentTestHelper.SetInput(_component, 2, 2);
+      ComponentTestHelper.SetInput(_component, 45, 3);
+      ComponentTestHelper.SetInput(_component, 90, 4);
       AssertArcLayout(_component);
     }
 
