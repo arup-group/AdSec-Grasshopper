@@ -135,7 +135,7 @@ namespace AdSecCore.Functions {
         case CurveType.ManderConfined:
           UnconfinedStrength.Name = $"Unconfined Strength [{unitStressAbbreviation}]";
           UnconfinedStrength.Description = $"Unconfined strength for {manderConfinedModelText}";
-          ConfinedStrength.Name = $"Confined Strength [{unitStressAbbreviation}]"; ;
+          ConfinedStrength.Name = $"Confined Strength [{unitStressAbbreviation}]";
           ConfinedStrength.Description = $"Confined strength for {manderConfinedModelText}";
           InitialModulus.Name = $"Initial Modulus [{unitStressAbbreviation}]";
           InitialModulus.Description = $"Initial Modulus from {manderConfinedModelText}";
