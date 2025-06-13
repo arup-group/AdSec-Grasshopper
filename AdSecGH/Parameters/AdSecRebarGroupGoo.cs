@@ -110,15 +110,15 @@ namespace AdSecGH.Parameters {
 
     private static string GetPreLoad(ILongitudinalGroup longitudinal, DoubleComparer doubleComparer, string preLoad) {
       switch (longitudinal.Preload) {
-        case IPreForce force when doubleComparer.Equals(force.Force.Value, 0): {
+        case IPreForce force when !doubleComparer.Equals(force.Force.Value, 0): {
             preLoad = GetForcePreLoad(force);
             break;
           }
-        case IPreStress stress when doubleComparer.Equals(stress.Stress.Value, 0): {
+        case IPreStress stress when !doubleComparer.Equals(stress.Stress.Value, 0): {
             preLoad = GetStressPreLoad(stress);
             break;
           }
-        case IPreStrain strain when doubleComparer.Equals(strain.Strain.Value, 0): {
+        case IPreStrain strain when !doubleComparer.Equals(strain.Strain.Value, 0): {
             preLoad = GetStrainPreLoad(strain);
             break;
           }

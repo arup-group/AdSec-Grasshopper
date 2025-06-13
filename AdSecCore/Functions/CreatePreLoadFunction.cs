@@ -124,7 +124,7 @@ namespace AdSecCore.Functions {
 
 
     public override void Compute() {
-      // Get the rebar groupZz
+      // Get the rebar group
       var rebarGroup = RebarGroupInput.Value;
       var outRebarGroup = rebarGroup;
       if (outRebarGroup?.Group == null) {
