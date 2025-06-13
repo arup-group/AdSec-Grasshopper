@@ -32,4 +32,29 @@ public class CreateCustomMaterialFunctionTests {
     Assert.Equal(SubCategoryName.Cat1(), _function.Organisation.SubCategory);
   }
 
+  [Fact]
+  public void ShouldHaveSixInputs() {
+    Assert.Equal(6, _function.GetAllInputAttributes().Length);
+  }
+
+  [Fact]
+  public void ShouldHaveDesignCode() {
+    Assert.Equal("DesignCode", _function.DesignCode.Name);
+  }
+
+  [Fact]
+  public void ShouldExplainDesignCodeIsOptional() {
+    Assert.Equal("[Optional] Set the Material's DesignCode", _function.DesignCode.Description);
+  }
+
+  [Fact]
+  public void ShouldHaveDesignCodeOptional() {
+    Assert.True(_function.DesignCode.Optional);
+  }
+
+  [Fact]
+  public void ShouldHaveUlsCrv() {
+    Assert.Equal("ULS Comp. Crv", _function.UlsCurve.Name);
+  }
+
 }
