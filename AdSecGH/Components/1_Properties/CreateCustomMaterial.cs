@@ -113,16 +113,16 @@ namespace AdSecGH.Components {
       var designCode = this.GetAdSecDesignCode(DA, 0);
 
       // 1 StressStrain ULS Compression
-      var ulsCompCrv = this.GetStressStrainCurveGoo(DA, 1, true);
+      AdSecStressStrainCurveGoo ulsCompCrv = this.GetStressStrainCurveGoo(DA, 1, true);
 
       // 2 StressStrain ULS Tension
-      var ulsTensCrv = this.GetStressStrainCurveGoo(DA, 2, false);
+      AdSecStressStrainCurveGoo ulsTensCrv = this.GetStressStrainCurveGoo(DA, 2, false);
 
       // 3 StressStrain SLS Compression
-      var slsCompCrv = this.GetStressStrainCurveGoo(DA, 3, true);
+      AdSecStressStrainCurveGoo slsCompCrv = this.GetStressStrainCurveGoo(DA, 3, true);
 
       // 4 StressStrain SLS Tension
-      var slsTensCrv = this.GetStressStrainCurveGoo(DA, 4, false);
+      AdSecStressStrainCurveGoo slsTensCrv = this.GetStressStrainCurveGoo(DA, 4, false);
 
       // 5 Cracked params
       IConcreteCrackCalculationParameters concreteCrack = null;

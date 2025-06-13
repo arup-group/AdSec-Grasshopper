@@ -205,4 +205,5 @@ namespace AdSecCore.Functions {
   public class ForceParameter : ParameterAttribute<Force> { }
   public class MomentParameter : ParameterAttribute<Moment> { }
   public class StressStrainCurveParameter : ParameterAttribute<IStressStrainCurve> { }
+  public class CrackCalcParameter : ParameterAttribute<IConcreteCrackCalculationParameters> { }
 }

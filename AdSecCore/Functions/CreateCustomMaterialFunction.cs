@@ -18,20 +18,44 @@ public class CreateCustomMaterialFunction : Function {
   public DesignCodeParameter DesignCode { get; set; }
     = Default.DesignCode(optional: true, description: "[Optional] Set the Material's DesignCode");
 
-  public StressStrainCurveParameter UlsCurve { get; set; } = new StressStrainCurveParameter() {
+  public StressStrainCurveParameter UlsCompressionCurve { get; set; } = new StressStrainCurveParameter() {
     Name = "ULS Comp. Crv",
     NickName = "U_C",
     Description = "ULS Stress Strain Curve for Compression",
   };
 
+  public StressStrainCurveParameter UlsTensionCurve { get; set; } = new StressStrainCurveParameter() {
+    Name = "ULS Tens. Crv",
+    NickName = "U_T",
+    Description = "ULS Stress Strain Curve for Tension",
+  };
+
+  public StressStrainCurveParameter SlsCompressionCurve { get; set; } = new StressStrainCurveParameter() {
+    Name = "SLS Comp. Crv",
+    NickName = "S_C",
+    Description = "SLS Stress Strain Curve for Compression",
+  };
+
+  public StressStrainCurveParameter SlsTensionCurve { get; set; } = new StressStrainCurveParameter() {
+    Name = "SLS Tens. Crv",
+    NickName = "S_T",
+    Description = "SLS Stress Strain Curve for Tension",
+  };
+  public CrackCalcParameter CrackCalcParams { get; set; } = new CrackCalcParameter() {
+    Name = "Crack Calc Params",
+    NickName = "CCP",
+    Description = "[Optional] Material's Crack Calculation Parameters",
+    Optional = true,
+  };
+
   public override Attribute[] GetAllInputAttributes() {
     return new Attribute[] {
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
+      DesignCode,
+      UlsCompressionCurve,
+      UlsTensionCurve,
+      SlsCompressionCurve,
+      SlsTensionCurve,
+      CrackCalcParams,
     };
   }
 
