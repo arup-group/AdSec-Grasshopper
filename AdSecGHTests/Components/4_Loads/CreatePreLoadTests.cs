@@ -12,11 +12,14 @@ using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
 
+using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
 using Oasys.GH.Helpers;
 
 using OasysGH.Units;
+
+using OasysUnits;
 
 using Xunit;
 
@@ -30,6 +33,7 @@ namespace AdSecGHTests.Components {
     private readonly AdSecRebarGroupGoo _rebarGroup = new AdSecRebarGroupGoo(new AdSecRebarGroup(new BuilderTemplateGroup().AtFace(ITemplateGroup.Face.Top).Build()));
     public CreatePreLoadTests() {
       _component = new CreatePreLoad();
+      _rebarGroup.Cover = ICover.Create(Length.FromMillimeters(25));
     }
 
     private void SetDefaultInputs() {
@@ -38,16 +42,42 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
-    public void ShouldCreatePreLoadCorrectly() {
+    public void ShouldCreatePreForceCorrectly() {
       SetDefaultInputs();
       ComponentTestHelper.ComputeData(_component);
       var output = ((AdSecRebarGroupGoo)ComponentTestHelper.GetOutput(_component, 0));
       var outPreLoad = (IPreForce)((ILongitudinalGroup)output.Value.Group).Preload;
       Assert.NotNull(output);
+      Assert.Contains("prestress", output.ToString());
       Assert.NotNull(output.Value.Group as ILongitudinalGroup);
       Assert.Equal(10, outPreLoad.Force.As(DefaultUnits.ForceUnit), _comparer);
     }
 
+    [Fact]
+    public void ShouldCreatePreStrainCorrectly() {
+      _component.SetSelected(0, 1);
+      SetDefaultInputs();
+      ComponentTestHelper.ComputeData(_component);
+      var output = ((AdSecRebarGroupGoo)ComponentTestHelper.GetOutput(_component, 0));
+      var outPreLoad = (IPreStrain)((ILongitudinalGroup)output.Value.Group).Preload;
+      Assert.NotNull(output);
+      Assert.Contains("prestress", output.ToString());
+      Assert.NotNull(output.Value.Group as ILongitudinalGroup);
+      Assert.Equal(10, outPreLoad.Strain.As(DefaultUnits.StrainUnitResult), _comparer);
+    }
+
+    [Fact]
+    public void ShouldCreatePreStressCorrectly() {
+      _component.SetSelected(0, 2);
+      SetDefaultInputs();
+      ComponentTestHelper.ComputeData(_component);
+      var output = ((AdSecRebarGroupGoo)ComponentTestHelper.GetOutput(_component, 0));
+      var outPreLoad = (IPreStress)((ILongitudinalGroup)output.Value.Group).Preload;
+      Assert.NotNull(output);
+      Assert.Contains("prestress", output.ToString());
+      Assert.NotNull(output.Value.Group as ILongitudinalGroup);
+      Assert.Equal(10, outPreLoad.Stress.As(DefaultUnits.StressUnitResult), _comparer);
+    }
 
     [Fact]
     public void ShouldThrowExceptionWhenRebarGroupIsNull() {
