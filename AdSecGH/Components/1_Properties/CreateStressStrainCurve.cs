@@ -37,16 +37,14 @@ namespace AdSecGH.Components {
 
     protected override void UpdateUIFromSelectedItems() {
       base.UpdateUIFromSelectedItems();
+      SetSelectedCurveType();
       UpdateUnits();
     }
 
     public override void SetSelected(int i, int j) {
       var selectedItem = _dropDownItems[i][j];
+      SetSelectedCurveType();
       _selectedItems[i] = selectedItem;
-      if (i == 0) {
-        //update with last selection
-        _selectedItems[i] = selectedItem;
-      }
       UpdateUnits();
       base.UpdateUI();
     }
@@ -56,7 +54,6 @@ namespace AdSecGH.Components {
     }
 
     private void UpdateUnits() {
-      SetSelectedCurveType();
       if (_selectedItems.Count > 1) {
         BusinessComponent.LocalStrainUnit = (StrainUnit)UnitsHelper.Parse(typeof(StrainUnit), _selectedItems[1]);
       }
