@@ -182,9 +182,6 @@ namespace AdSecCore.Functions {
       } catch (ArgumentNullException) {
         ErrorMessages.Add("Input value like rebar and position can not be null");
         return;
-      } catch (ArgumentOutOfRangeException) {
-        ErrorMessages.Add("Radius should be positive value and greater than zero");
-        return;
       }
       RebarGroup.Value = new AdSecRebarGroup(group);
     }
