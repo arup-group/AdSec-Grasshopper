@@ -126,8 +126,7 @@ namespace AdSecCoreTests.Functions {
       function.RadiusOfCircle.Value = -2;
       function.StartAngle.Value = Math.PI / 4;
       function.SweepAngle.Value = Math.PI / 2;
-      function.Compute();
-      Assert.Single(function.ErrorMessages);
+      Assert.Throws<ArgumentOutOfRangeException>(() => function.Compute());
     }
 
     [Fact]
