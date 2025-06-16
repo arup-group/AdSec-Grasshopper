@@ -1,36 +1,36 @@
 ﻿using AdSecGHCore.Constants;
 
 namespace AdSecCore.Functions {
-  internal class CreateProfileFunction : Function {
+  public class CreateProfileFunction : Function {
     public CreateProfileFunction() {
       UpdateParameter();
     }
 
-    public override FuncAttribute Metadata { get; set; } = new() {
+    public override FuncAttribute Metadata { get; set; } = new FuncAttribute() {
       Description = "Create a Profile for an AdSec Section",
       Name = "Create Profile",
       NickName = "Profile",
     };
-    public override Organisation Organisation { get; set; } = new() {
+    public override Organisation Organisation { get; set; } = new Organisation() {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat2(),
     };
 
-    public LengthParameter Width { get; set; } = new() {
+    public LengthParameter Width { get; set; } = new LengthParameter() {
       Name = "Width",
       NickName = "B",
       Description = "Profile width",
       Access = Access.Item,
     };
 
-    public LengthParameter Depth { get; set; } = new() {
+    public LengthParameter Depth { get; set; } = new LengthParameter() {
       Name = "Depth",
       NickName = "H",
       Description = "Profile depth",
       Access = Access.Item,
     };
 
-    public PlaneParameter Plane { get; set; } = new() {
+    public PlaneParameter Plane { get; set; } = new PlaneParameter() {
       Name = "LocalPlane",
       NickName = "P",
       Description = "[Optional] Plane representing local coordinate system, by default a YZ - plane is used",
@@ -39,7 +39,7 @@ namespace AdSecCore.Functions {
       Optional = true,
     };
 
-    public ProfileParameter ProfileOutput { get; set; } = new() {
+    public ProfileParameter ProfileOutput { get; set; } = new ProfileParameter() {
       Name = "Profile",
       NickName = "Pf",
       Description = "Profile for AdSec Section",

@@ -2,17 +2,18 @@ using System;
 using System.Drawing;
 using System.IO;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using AdSecGHCore.Constants;
-
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
+using Oasys.GH.Helpers;
+
 using OasysGH;
-using OasysGH.Components;
 
 using Rhino.Geometry;
 
@@ -20,12 +21,7 @@ namespace AdSecGH.Components {
   /// <summary>
   ///   Component to create AdSec profile
   /// </summary>
-  public class CreateProfile : CreateOasysProfile {
-
-    public CreateProfile() : base("Create Profile", "Profile", "Create Profile for AdSec Section", CategoryName.Name(),
-      SubCategoryName.Cat2()) {
-      Hidden = false; // sets the initial state of the component to hidden
-    }
+  public class CreateProfile : ProfileAdapter<CreateProfileFunction> {
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("ea0741e5-905e-4ecb-8270-a584e3f99aa3");
