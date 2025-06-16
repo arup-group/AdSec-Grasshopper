@@ -14,8 +14,6 @@ using Grasshopper.Kernel.Parameters;
 using OasysGH;
 using OasysGH.Components;
 
-using OasysUnits;
-
 using Rhino.Geometry;
 
 namespace AdSecGH.Components {
@@ -89,19 +87,21 @@ namespace AdSecGH.Components {
       ExpireSolution(true);
     }
 
-    protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      pManager.AddGenericParameter($"Width [{unitAbbreviation}]", "B", "Profile width", GH_ParamAccess.item);
-      pManager.AddGenericParameter($"Depth [{unitAbbreviation}]", "H", "Profile depth", GH_ParamAccess.item);
-      pManager.AddPlaneParameter("LocalPlane", "P",
-        "[Optional] Plane representing local coordinate system, by default a YZ-plane is used", GH_ParamAccess.item,
-        Plane.WorldYZ);
-      pManager.HideParameter(2);
-    }
+    //protected override void RegisterInputParams(GH_InputParamManager pManager) {
+    //  string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
+    //  pManager.AddGenericParameter($"Width [{unitAbbreviation}]", "B", "Profile width", GH_ParamAccess.item);
 
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("Profile", "Pf", "Profile for AdSec Section", GH_ParamAccess.item);
-    }
+    //  pManager.AddGenericParameter($"Depth [{unitAbbreviation}]", "H", "Profile depth", GH_ParamAccess.item);
+
+    //  pManager.AddPlaneParameter("LocalPlane", "P",
+    //    "[Optional] Plane representing local coordinate system, by default a YZ-plane is used", GH_ParamAccess.item,
+    //    Plane.WorldYZ);
+    //  pManager.HideParameter(2);
+    //}
+
+    //protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
+    //  pManager.AddGenericParameter("Profile", "Pf", "Profile for AdSec Section", GH_ParamAccess.item);
+    //}
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       ClearRuntimeMessages();
