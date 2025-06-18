@@ -206,4 +206,11 @@ namespace AdSecCore.Functions {
   public class MomentParameter : ParameterAttribute<Moment> { }
   public class StressStrainPointParameter : ParameterAttribute<IStressStrainPoint> { }
   public class StressStrainPointArrayParameter : BaseArrayParameter<IStressStrainPoint> { }
+  public class StressStrainCurveParameter : ParameterAttribute<StressStrainCurve> { }
+
+  public class StressStrainCurve {
+    public IStressStrainCurve IStressStrainCurve { get; set; }
+    public StressStrainCurveType CurveType { get; set; }
+    public bool IsCompression { get; set; }
+  }
 }

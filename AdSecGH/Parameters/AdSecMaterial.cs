@@ -7,6 +7,8 @@ using AdSecCore.Functions;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
 
+
+
 namespace AdSecGH.Parameters {
   /// <summary>
   ///   AdSec Material class, this class defines the basic properties and methods for any AdSec Material
@@ -45,16 +47,16 @@ namespace AdSecGH.Parameters {
 
       var ulsCompression = AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Compression, true);
       var ulsCompressionCurve = new AdSecStressStrainCurveGoo(ulsCompression.Item1, material.Strength.Compression,
-        AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsCompression.Item2);
+        StressStrainCurveType.StressStrainDefault, ulsCompression.Item2);
       var ulsTension = AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Tension, false);
       var ulsTensionCurve = new AdSecStressStrainCurveGoo(ulsTension.Item1, material.Strength.Tension,
-        AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsTension.Item2);
+        StressStrainCurveType.StressStrainDefault, ulsTension.Item2);
       var slsCompression = AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Compression, true);
       var slsComprssionCurve = new AdSecStressStrainCurveGoo(slsCompression.Item1, material.Serviceability.Compression,
-        AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsCompression.Item2);
+        StressStrainCurveType.StressStrainDefault, slsCompression.Item2);
       var slsTension = AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Tension, false);
       var slsTensionCurve = new AdSecStressStrainCurveGoo(slsTension.Item1, material.Serviceability.Tension,
-        AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsTension.Item2);
+        StressStrainCurveType.StressStrainDefault, slsTension.Item2);
       var ulsTensionCompression
         = ITensionCompressionCurve.Create(ulsTensionCurve.StressStrainCurve, ulsCompressionCurve.StressStrainCurve);
       var slsTensionCompression

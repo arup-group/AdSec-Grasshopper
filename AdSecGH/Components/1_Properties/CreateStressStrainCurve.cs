@@ -22,6 +22,7 @@ using OasysGH.Units.Helpers;
 
 using OasysUnits.Units;
 
+
 using static AdSecGH.Parameters.AdSecStressStrainCurveGoo;
 
 namespace AdSecGH.Components {
@@ -43,14 +44,14 @@ namespace AdSecGH.Components {
 
     public override void SetSelected(int i, int j) {
       var selectedItem = _dropDownItems[i][j];
-      SetSelectedCurveType();
       _selectedItems[i] = selectedItem;
+      SetSelectedCurveType();
       UpdateUnits();
       base.UpdateUI();
     }
 
     private void SetSelectedCurveType() {
-      BusinessComponent.SelectedCurveType = (StressStrainCurveFunction.CurveType)Enum.Parse(typeof(StressStrainCurveType), _selectedItems[0], true);
+      BusinessComponent.SelectedCurveType = (StressStrainCurveType)Enum.Parse(typeof(StressStrainCurveType), _selectedItems[0], true);
     }
 
     private void UpdateUnits() {

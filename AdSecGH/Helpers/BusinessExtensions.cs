@@ -19,6 +19,7 @@ using Grasshopper.Kernel.Types;
 using Microsoft.CSharp.RuntimeBinder;
 
 using Oasys.AdSec;
+using Oasys.AdSec.Materials.StressStrainCurves;
 
 using OasysGH.Parameters;
 using OasysGH.Units;
@@ -149,6 +150,8 @@ namespace Oasys.GH.Helpers {
           typeof(StressStrainPointParameter), ParamGenericObject
         },{
           typeof(StressStrainPointArrayParameter), ParamGenericObject
+        },{
+          typeof(StressStrainCurveParameter), ParamGenericObject
         },
       };
 
@@ -308,6 +311,7 @@ namespace Oasys.GH.Helpers {
             foreach (var strain in strains) {
               quantityInRelevantUnit.Add(new GH_UnitNumber(strain.ToUnit(DefaultUnits.StrainUnitResult)));
             }
+
             return quantityInRelevantUnit;
           }
         }, {
@@ -317,21 +321,14 @@ namespace Oasys.GH.Helpers {
             foreach (var stress in strsses) {
               quantityInRelevantUnit.Add(new GH_UnitNumber(stress.ToUnit(DefaultUnits.StressUnitResult)));
             }
+
             return quantityInRelevantUnit;
           }
         },{
-          typeof(StressStrainPointParameter), a => {
-            var strainPoint = (a as StressStrainPointParameter).Value;
-            return new AdSecStressStrainPointGoo(strainPoint);
-          }
-        },{
-          typeof(StressStrainPointArrayParameter), a => {
-             var strainPoints = (a as StressStrainPointArrayParameter).Value;
-            var strainPointGoo = new List<AdSecStressStrainPointGoo>();
-            foreach (var points in strainPoints) {
-              strainPointGoo.Add(new AdSecStressStrainPointGoo(points));
-            }
-            return strainPointGoo;
+          typeof(StressStrainCurveParameter), a => {
+            var stressStrainCurve = (a as StressStrainCurveParameter).Value;
+            var tuple = AdSecStressStrainCurveGoo.Create(stressStrainCurve.IStressStrainCurve,stressStrainCurve.CurveType,stressStrainCurve.IsCompression);
+            return new AdSecStressStrainCurveGoo(tuple.Item1,stressStrainCurve.IStressStrainCurve,stressStrainCurve.CurveType,tuple.Item2);
           }
         }
       };
@@ -446,8 +443,36 @@ namespace Oasys.GH.Helpers {
               DesignCodeName = value.DesignCodeName
             } : goo;
           }
+        },{
+          typeof(StressStrainPointParameter), goo =>
+          {
+            return ConvertToStressStrainPoint(goo);
+          }
+        },{
+          typeof(StressStrainPointArrayParameter), goo => {
+           var list = goo as List<object>;
+            return list.Select(x => {
+              dynamic y = x;
+             return (IStressStrainPoint)ConvertToStressStrainPoint(y.Value);
+            }).ToArray();
+          }
         },
       };
+
+    private static object ConvertToStressStrainPoint(dynamic goo) {
+      IStressStrainPoint stressStrainPoint = null;
+      var point3d = new Point3d();
+      if (goo is IStressStrainPoint point) {
+        stressStrainPoint = point;
+      } else if (goo is AdSecStressStrainPointGoo pointGoo) {
+        stressStrainPoint = pointGoo.StressStrainPoint;
+      } else if (GH_Convert.ToPoint3d(goo, ref point3d, GH_Conversion.Both)) {
+        stressStrainPoint = AdSecStressStrainPointGoo.CreateFromPoint3d(point3d);
+      } else {
+        throw new RuntimeBinderException("Input type mismatch");
+      }
+      return new AdSecStressStrainPointGoo(stressStrainPoint).StressStrainPoint;
+    }
 
     private static SubComponent[] SubComponentCasting(List<object> gooDynamic) {
       return gooDynamic.Select(x => {
@@ -554,32 +579,32 @@ namespace Oasys.GH.Helpers {
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           dynamic inputs = null;
           if (dataAccess.GetData(index, ref inputs)) {
-            if (GooToParam.ContainsKey(attribute.GetType())) {
-              dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
-              valueBasedParameter.Value = newValue;
-            } else {
-              try {
+            try {
+              if (GooToParam.ContainsKey(attribute.GetType())) {
+                dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
+                valueBasedParameter.Value = newValue;
+              } else {
                 valueBasedParameter.Value = inputs.Value;
-              } catch (RuntimeBinderException) {
-                component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
-                return;
               }
+            } catch (RuntimeBinderException) {
+              component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
+              return;
             }
           }
         } else if (attribute.GetAccess() == GH_ParamAccess.list) {
           var inputs = new List<object>();
-          if (dataAccess.GetDataList(index, inputs)) {
-            if (GooToParam.ContainsKey(attribute.GetType())) {
-              dynamic newValue = GooToParam[attribute.GetType()](inputs);
-              valueBasedParameter.Value = newValue;
-            } else {
-              try {
+          try {
+            if (dataAccess.GetDataList(index, inputs)) {
+              if (GooToParam.ContainsKey(attribute.GetType())) {
+                dynamic newValue = GooToParam[attribute.GetType()](inputs);
+                valueBasedParameter.Value = newValue;
+              } else {
                 valueBasedParameter.Value = inputs.Select(x => ((dynamic)x).Value).ToArray();
-              } catch (RuntimeBinderException) {
-                component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
-                return;
               }
             }
+          } catch (RuntimeBinderException) {
+            component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
+            return;
           }
         }
       }

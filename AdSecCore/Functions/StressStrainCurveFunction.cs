@@ -9,30 +9,32 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
+  public enum StressStrainCurveType {
+    Bilinear,
+    Explicit,
+    FibModelCode,
+    Linear,
+    ManderConfined,
+    Mander,
+    ParabolaRectangle,
+    Park,
+    Popovics,
+    Rectangular,
+    StressStrainDefault
+  }
   public class StressStrainCurveFunction : Function, IVariableInput, IDropdownOptions, ILocalUnits, IDynamicDropdown {
-    public enum CurveType {
-      Bilinear,
-      Explicit,
-      FibModelCode,
-      Linear,
-      ManderConfined,
-      Mander,
-      ParabolaRectangle,
-      Park,
-      Popovics,
-      Rectangular
-    }
+
     const string representingText = "AdSec Stress Strain Point representing the ";
     const string failurePointText = "Failure Point";
     const string fibModelCodeText = "FIB model code";
     const string manderModelText = "Mander model";
     const string manderConfinedModelText = "Mander Confined Model";
     const string yieldPointText = "Yield Point";
-    private CurveType selectedCurveType = CurveType.Bilinear;
+    private StressStrainCurveType selectedCurveType = StressStrainCurveType.Bilinear;
     public event Action OnVariableInputChanged;
     public event Action OnDropdownChanged;
 
-    public CurveType SelectedCurveType {
+    public StressStrainCurveType SelectedCurveType {
       get { return selectedCurveType; }
       set {
         if (selectedCurveType == value) {
@@ -61,6 +63,7 @@ namespace AdSecCore.Functions {
     public StressStrainPointArrayParameter StressStrainPoints { get; set; } = new StressStrainPointArrayParameter {
       NickName = "SPs",
       Optional = false,
+      Access = Access.List,
     };
 
     public StressStrainPointParameter PeakPoint { get; set; } = new StressStrainPointParameter {
@@ -88,7 +91,7 @@ namespace AdSecCore.Functions {
       Optional = false,
     };
 
-    public GenericParameter OutputCurve { get; set; } = new GenericParameter {
+    public StressStrainCurveParameter OutputCurve { get; set; } = new StressStrainCurveParameter {
       Name = "StressStrainCrv",
       NickName = "SCv",
       Description = "AdSec Stress Strain Curve",
@@ -110,17 +113,17 @@ namespace AdSecCore.Functions {
       string strainUnitAbbreviation = Strain.GetAbbreviation(StrainUnitResult);
 
       switch (SelectedCurveType) {
-        case CurveType.Bilinear:
+        case StressStrainCurveType.Bilinear:
           YieldPoint.Name = yieldPointText;
           YieldPoint.Description = $"{representingText}{YieldPoint.Name}";
           FailurePoint.Name = failurePointText;
           FailurePoint.Description = $"{representingText}{failurePointText}";
           break;
-        case CurveType.Explicit:
+        case StressStrainCurveType.Explicit:
           StressStrainPoints.Name = "StressStrainPoints";
           StressStrainPoints.Description = $"{representingText}StressStrainCurve as a Polyline";
           break;
-        case CurveType.FibModelCode:
+        case StressStrainCurveType.FibModelCode:
           PeakPoint.Name = "Peak Point";
           PeakPoint.Description = $"{representingText}FIB model's Peak Point";
           InitialModulus.Name = $"Initial Modulus [{unitStressAbbreviation}]";
@@ -128,11 +131,11 @@ namespace AdSecCore.Functions {
           FailureStrain.Name = $"Failure Strain [{strainUnitAbbreviation}]";
           FailureStrain.Description = $"Failure strain from {fibModelCodeText}";
           break;
-        case CurveType.Linear:
+        case StressStrainCurveType.Linear:
           FailurePoint.Name = failurePointText;
           FailurePoint.Description = $"{representingText}{failurePointText}";
           break;
-        case CurveType.ManderConfined:
+        case StressStrainCurveType.ManderConfined:
           UnconfinedStrength.Name = $"Unconfined Strength [{unitStressAbbreviation}]";
           UnconfinedStrength.Description = $"Unconfined strength for {manderConfinedModelText}";
           ConfinedStrength.Name = $"Confined Strength [{unitStressAbbreviation}]";
@@ -142,7 +145,7 @@ namespace AdSecCore.Functions {
           FailureStrain.Name = $"Failure Strain [{strainUnitAbbreviation}]";
           FailureStrain.Description = $"Failure strain from {manderConfinedModelText}";
           break;
-        case CurveType.Mander:
+        case StressStrainCurveType.Mander:
           PeakPoint.Name = "Peak Point";
           PeakPoint.Description = $"{representingText}{manderModelText}'s Peak Point";
           InitialModulus.Name = $"Initial Modulus [{unitStressAbbreviation}]";
@@ -150,15 +153,15 @@ namespace AdSecCore.Functions {
           FailureStrain.Name = $"Failure Strain [{strainUnitAbbreviation}]";
           FailureStrain.Description = $"Failure strain from {manderModelText}";
           break;
-        case CurveType.ParabolaRectangle:
-        case CurveType.Park:
-        case CurveType.Rectangular:
+        case StressStrainCurveType.ParabolaRectangle:
+        case StressStrainCurveType.Park:
+        case StressStrainCurveType.Rectangular:
           YieldPoint.Name = yieldPointText;
           YieldPoint.Description = $"{representingText}{yieldPointText}";
           FailureStrain.Name = $"Failure Strain [{strainUnitAbbreviation}]";
           FailureStrain.Description = $"Failure strain";
           break;
-        case CurveType.Popovics:
+        case StressStrainCurveType.Popovics:
           PeakPoint.Name = "Peak Point";
           PeakPoint.Description = $"{representingText}Peak Point";
           FailureStrain.Name = $"Failure Strain [{strainUnitAbbreviation}]";
@@ -170,37 +173,37 @@ namespace AdSecCore.Functions {
     public override Attribute[] GetAllInputAttributes() {
       var attrs = new List<Attribute>();
       switch (SelectedCurveType) {
-        case CurveType.Bilinear:
+        case StressStrainCurveType.Bilinear:
           attrs.Add(YieldPoint);
           attrs.Add(FailurePoint);
           break;
-        case CurveType.Explicit:
+        case StressStrainCurveType.Explicit:
           attrs.Add(StressStrainPoints);
           break;
-        case CurveType.FibModelCode:
-        case CurveType.Mander:
+        case StressStrainCurveType.FibModelCode:
+        case StressStrainCurveType.Mander:
           attrs.Add(PeakPoint);
           attrs.Add(InitialModulus);
           attrs.Add(FailureStrain);
           break;
-        case CurveType.Linear:
+        case StressStrainCurveType.Linear:
           attrs.Add(FailurePoint);
           break;
-        case CurveType.ManderConfined:
+        case StressStrainCurveType.ManderConfined:
           attrs.Add(UnconfinedStrength);
           attrs.Add(ConfinedStrength);
           attrs.Add(InitialModulus);
           attrs.Add(FailureStrain);
           break;
-        case CurveType.ParabolaRectangle:
-        case CurveType.Rectangular:
+        case StressStrainCurveType.ParabolaRectangle:
+        case StressStrainCurveType.Rectangular:
           attrs.Add(YieldPoint);
           attrs.Add(FailureStrain);
           break;
-        case CurveType.Park:
+        case StressStrainCurveType.Park:
           attrs.Add(YieldPoint);
           break;
-        case CurveType.Popovics:
+        case StressStrainCurveType.Popovics:
           attrs.Add(PeakPoint);
           attrs.Add(FailureStrain);
           break;
@@ -215,60 +218,64 @@ namespace AdSecCore.Functions {
     }
 
     public override void Compute() {
-
+      IStressStrainCurve curve = null;
       try {
         switch (SelectedCurveType) {
-          case CurveType.Bilinear:
-            OutputCurve.Value = IBilinearStressStrainCurve.Create(YieldPoint.Value, FailurePoint.Value);
+          case StressStrainCurveType.Bilinear:
+            curve = IBilinearStressStrainCurve.Create(YieldPoint.Value, FailurePoint.Value);
             break;
-          case CurveType.Explicit:
+          case StressStrainCurveType.Explicit:
             var explicitCurve = IExplicitStressStrainCurve.Create();
             foreach (var point in StressStrainPoints.Value) {
               explicitCurve.Points.Add(point);
             }
-            OutputCurve.Value = explicitCurve;
+#pragma warning disable S1481
+            var failureStrain = explicitCurve.FailureStrain;
+#pragma warning restore S1481
+            curve = explicitCurve;
             break;
-          case CurveType.FibModelCode:
-            OutputCurve.Value = IFibModelCodeStressStrainCurve.Create(InitialModulus.Value, PeakPoint.Value, FailureStrain.Value);
+          case StressStrainCurveType.FibModelCode:
+            curve = IFibModelCodeStressStrainCurve.Create(InitialModulus.Value, PeakPoint.Value, FailureStrain.Value);
             break;
-          case CurveType.Linear:
-            OutputCurve.Value = ILinearStressStrainCurve.Create(FailurePoint.Value);
+          case StressStrainCurveType.Linear:
+            curve = ILinearStressStrainCurve.Create(FailurePoint.Value);
             break;
-          case CurveType.ManderConfined:
-            OutputCurve.Value = IManderConfinedStressStrainCurve.Create(UnconfinedStrength.Value, ConfinedStrength.Value, InitialModulus.Value, FailureStrain.Value);
+          case StressStrainCurveType.ManderConfined:
+            curve = IManderConfinedStressStrainCurve.Create(UnconfinedStrength.Value, ConfinedStrength.Value, InitialModulus.Value, FailureStrain.Value);
             break;
-          case CurveType.Mander:
-            OutputCurve.Value = IManderStressStrainCurve.Create(InitialModulus.Value, PeakPoint.Value, FailureStrain.Value);
+          case StressStrainCurveType.Mander:
+            curve = IManderStressStrainCurve.Create(InitialModulus.Value, PeakPoint.Value, FailureStrain.Value);
             break;
-          case CurveType.ParabolaRectangle:
-            OutputCurve.Value = IParabolaRectangleStressStrainCurve.Create(YieldPoint.Value, FailureStrain.Value);
+          case StressStrainCurveType.ParabolaRectangle:
+            curve = IParabolaRectangleStressStrainCurve.Create(YieldPoint.Value, FailureStrain.Value);
             break;
-          case CurveType.Park:
-            OutputCurve.Value = IParkStressStrainCurve.Create(YieldPoint.Value);
+          case StressStrainCurveType.Park:
+            curve = IParkStressStrainCurve.Create(YieldPoint.Value);
             break;
-          case CurveType.Popovics:
-            OutputCurve.Value = IPopovicsStressStrainCurve.Create(PeakPoint.Value, FailureStrain.Value);
+          case StressStrainCurveType.Popovics:
+            curve = IPopovicsStressStrainCurve.Create(PeakPoint.Value, FailureStrain.Value);
             break;
-          case CurveType.Rectangular:
-            OutputCurve.Value = IRectangularStressStrainCurve.Create(YieldPoint.Value, FailureStrain.Value);
+          case StressStrainCurveType.Rectangular:
+            curve = IRectangularStressStrainCurve.Create(YieldPoint.Value, FailureStrain.Value);
             break;
         }
       } catch (ArgumentNullException) {
         ErrorMessages.Add("Input value can not be null");
       }
-
+      OutputCurve.Value = new StressStrainCurve() { IStressStrainCurve = curve, CurveType = SelectedCurveType, IsCompression = true };
     }
 
     public IOptions[] Options() {
       var options = new List<IOptions> {
         new EnumOptions() {
-          EnumType = typeof(CurveType),
+          EnumType = typeof(StressStrainCurveType),
           Description = "Curve Type",
+          Selected= SelectedCurveType,
         }
       };
       switch (SelectedCurveType) {
-        case CurveType.FibModelCode:
-        case CurveType.ManderConfined:
+        case StressStrainCurveType.FibModelCode:
+        case StressStrainCurveType.ManderConfined:
           options.Add(new UnitOptions() {
             Description = "Strain Unit",
             UnitType = typeof(StrainUnit),
@@ -281,9 +288,9 @@ namespace AdSecCore.Functions {
           });
 
           break;
-        case CurveType.ParabolaRectangle:
-        case CurveType.Popovics:
-        case CurveType.Rectangular:
+        case StressStrainCurveType.ParabolaRectangle:
+        case StressStrainCurveType.Popovics:
+        case StressStrainCurveType.Rectangular:
           options.Add(new UnitOptions() {
             Description = "Strain Unit",
             UnitType = typeof(StrainUnit),

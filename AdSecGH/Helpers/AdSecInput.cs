@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -19,6 +21,8 @@ using OasysGH.Parameters;
 using OasysUnits;
 
 using Rhino.Geometry;
+
+
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
@@ -327,10 +331,10 @@ namespace AdSecGH.Helpers {
         var pts = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
         var exCrv = IExplicitStressStrainCurve.Create();
         exCrv.Points = pts;
-        var tuple = AdSecStressStrainCurveGoo.Create(exCrv, AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit,
+        var tuple = AdSecStressStrainCurveGoo.Create(exCrv, StressStrainCurveType.Explicit,
           compression);
         curveGoo = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv,
-          AdSecStressStrainCurveGoo.StressStrainCurveType.Explicit, tuple.Item2);
+          StressStrainCurveType.Explicit, tuple.Item2);
       } else {
         castSuccess = false;
       }

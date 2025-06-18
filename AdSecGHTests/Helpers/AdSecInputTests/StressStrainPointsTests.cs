@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
@@ -123,7 +125,7 @@ namespace AdSecGHTests.Helpers {
     public void TryCastToStressStrainPointsReturnsStressPointsFromCurves() {
       IStressStrainCurve curve = ILinearStressStrainCurve.Create(
         IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
-      var tuple = AdSecStressStrainCurveGoo.Create(curve, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear,
+      var tuple = AdSecStressStrainCurveGoo.Create(curve, StressStrainCurveType.Linear,
         false);
 
       var objectWrapper = new GH_ObjectWrapper(tuple.Item1);

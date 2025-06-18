@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using AdSecCore.Functions;
+
 using AdSecGH.UI;
 
 using Grasshopper.Kernel;
@@ -15,21 +17,10 @@ using OasysUnits;
 
 using Rhino.Geometry;
 
+
+
 namespace AdSecGH.Parameters {
   public class AdSecStressStrainCurveGoo : GH_GeometricGoo<Curve>, IGH_PreviewData {
-    public enum StressStrainCurveType {
-      Bilinear,
-      Explicit,
-      FibModelCode,
-      Linear,
-      ManderConfined,
-      Mander,
-      ParabolaRectangle,
-      Park,
-      Popovics,
-      Rectangular,
-      StressStrainDefault,
-    }
 
     public List<AdSecStressStrainPointGoo> AdSecStressStrainPoints {
       get {
