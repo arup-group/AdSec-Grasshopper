@@ -219,6 +219,16 @@ namespace AdSecCore.Functions {
 
     public override void Compute() {
       IStressStrainCurve curve = null;
+      Strain failureStrain = Strain.Zero;
+      if (FailureStrain != null) {
+        failureStrain = Strain.From(FailureStrain.Value.As(FailureStrain.Value.Unit), StrainUnitResult);
+      }
+
+      Pressure pressure = Pressure.Zero;
+      if (InitialModulus != null) {
+        pressure = Pressure.From(InitialModulus.Value.As(InitialModulus.Value.Unit), StressUnitResult);
+      }
+
       try {
         switch (SelectedCurveType) {
           case StressStrainCurveType.Bilinear:
@@ -230,33 +240,34 @@ namespace AdSecCore.Functions {
               explicitCurve.Points.Add(point);
             }
 #pragma warning disable S1481
-            var failureStrain = explicitCurve.FailureStrain;
+            var explicitFailureStrain = explicitCurve.FailureStrain;
 #pragma warning restore S1481
             curve = explicitCurve;
             break;
           case StressStrainCurveType.FibModelCode:
-            curve = IFibModelCodeStressStrainCurve.Create(InitialModulus.Value, PeakPoint.Value, FailureStrain.Value);
+            curve = IFibModelCodeStressStrainCurve.Create(pressure, PeakPoint.Value, failureStrain);
             break;
           case StressStrainCurveType.Linear:
             curve = ILinearStressStrainCurve.Create(FailurePoint.Value);
             break;
           case StressStrainCurveType.ManderConfined:
-            curve = IManderConfinedStressStrainCurve.Create(UnconfinedStrength.Value, ConfinedStrength.Value, InitialModulus.Value, FailureStrain.Value);
+            curve = IManderConfinedStressStrainCurve.Create(UnconfinedStrength.Value, ConfinedStrength.Value, pressure, FailureStrain.Value);
             break;
           case StressStrainCurveType.Mander:
-            curve = IManderStressStrainCurve.Create(InitialModulus.Value, PeakPoint.Value, FailureStrain.Value);
+            curve = IManderStressStrainCurve.Create(pressure, PeakPoint.Value, failureStrain);
             break;
           case StressStrainCurveType.ParabolaRectangle:
-            curve = IParabolaRectangleStressStrainCurve.Create(YieldPoint.Value, FailureStrain.Value);
+            curve = IParabolaRectangleStressStrainCurve.Create(YieldPoint.Value, failureStrain);
             break;
           case StressStrainCurveType.Park:
             curve = IParkStressStrainCurve.Create(YieldPoint.Value);
             break;
           case StressStrainCurveType.Popovics:
-            curve = IPopovicsStressStrainCurve.Create(PeakPoint.Value, FailureStrain.Value);
+
+            curve = IPopovicsStressStrainCurve.Create(PeakPoint.Value, failureStrain);
             break;
           case StressStrainCurveType.Rectangular:
-            curve = IRectangularStressStrainCurve.Create(YieldPoint.Value, FailureStrain.Value);
+            curve = IRectangularStressStrainCurve.Create(YieldPoint.Value, failureStrain);
             break;
         }
       } catch (ArgumentNullException) {
