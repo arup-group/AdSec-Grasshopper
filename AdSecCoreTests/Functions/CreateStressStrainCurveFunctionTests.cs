@@ -34,12 +34,19 @@ namespace AdSecCoreTests.Functions {
     }
 
     private double CreateInitialModulus() {
-      _function.InitialModulus.Value = 8;
-      return _function.InitialModulus.Value;
+      return _function.InitialModulus.Value = 8;
     }
 
     private double CreateFailureStrain() {
       return _function.FailureStrain.Value = 0.0035;
+    }
+
+    private double CreateConfinedStress() {
+      return _function.ConfinedStrength.Value = 2;
+    }
+
+    private double CreateUnConfinedStress() {
+      return _function.UnconfinedStrength.Value = 1.5;
     }
 
     private IStressStrainPoint CreatePeakPoint() {
@@ -103,6 +110,24 @@ namespace AdSecCoreTests.Functions {
       AssertStressAndStrain(peakPoint, fibCurve.PeakPoint);
       Assert.Equal(Pressure.From(initialModulus, _function.StressUnitResult).Value, fibCurve.InitialModulus.As(_function.StressUnitResult));
       Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, fibCurve.FailureStrain.As(_function.StrainUnitResult));
+    }
+
+    [Fact]
+    public void TestManderConfinedModelCurve() {
+      _function.SelectedCurveType = StressStrainCurveType.ManderConfined;
+      var initialModulus = CreateInitialModulus();
+      var failureStrain = 1;
+      var confined = CreateConfinedStress();
+      var unconfined = CreateUnConfinedStress();
+      _function.FailureStrain.Value = failureStrain;
+      _function.Compute();
+      var outputCurve = _function.OutputCurve.Value;
+      Assert.NotNull(outputCurve);
+      var manderCurve = (IManderConfinedStressStrainCurve)outputCurve.IStressStrainCurve;
+      Assert.Equal(Pressure.From(confined, _function.StressUnitResult).Value, manderCurve.ConfinedStrength.As(_function.StressUnitResult));
+      Assert.Equal(Pressure.From(unconfined, _function.StressUnitResult).Value, manderCurve.UnconfinedStrength.As(_function.StressUnitResult));
+      Assert.Equal(Pressure.From(initialModulus, _function.StressUnitResult).Value, manderCurve.InitialModulus.As(_function.StressUnitResult));
+      Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, manderCurve.FailureStrain.As(_function.StrainUnitResult));
     }
   }
 }
