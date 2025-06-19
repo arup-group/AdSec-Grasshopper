@@ -22,9 +22,6 @@ using OasysGH.Units.Helpers;
 
 using OasysUnits.Units;
 
-
-using static AdSecGH.Parameters.AdSecStressStrainCurveGoo;
-
 namespace AdSecGH.Components {
   public class CreateStressStrainCurveGh : StressStrainCurveFunction {
     public CreateStressStrainCurveGh() { }

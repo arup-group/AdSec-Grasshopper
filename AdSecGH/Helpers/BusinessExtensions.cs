@@ -7,7 +7,6 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
-using AdSecGH.Components;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 

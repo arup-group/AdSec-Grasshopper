@@ -71,22 +71,22 @@ namespace AdSecCore.Functions {
       Optional = false,
     };
 
-    public PressureParameter InitialModulus { get; set; } = new PressureParameter {
+    public DoubleParameter InitialModulus { get; set; } = new DoubleParameter {
       NickName = "Ei",
       Optional = false,
     };
 
-    public StrainParameter FailureStrain { get; set; } = new StrainParameter {
+    public DoubleParameter FailureStrain { get; set; } = new DoubleParameter {
       NickName = "εu",
       Optional = false,
     };
 
-    public PressureParameter UnconfinedStrength { get; set; } = new PressureParameter {
+    public DoubleParameter UnconfinedStrength { get; set; } = new DoubleParameter {
       NickName = "σU",
       Optional = false,
     };
 
-    public PressureParameter ConfinedStrength { get; set; } = new PressureParameter {
+    public DoubleParameter ConfinedStrength { get; set; } = new DoubleParameter {
       NickName = "σC",
       Optional = false,
     };
@@ -219,15 +219,10 @@ namespace AdSecCore.Functions {
 
     public override void Compute() {
       IStressStrainCurve curve = null;
-      Strain failureStrain = Strain.Zero;
-      if (FailureStrain != null) {
-        failureStrain = Strain.From(FailureStrain.Value.As(FailureStrain.Value.Unit), StrainUnitResult);
-      }
-
-      Pressure pressure = Pressure.Zero;
-      if (InitialModulus != null) {
-        pressure = Pressure.From(InitialModulus.Value.As(InitialModulus.Value.Unit), StressUnitResult);
-      }
+      var failureStrain = Strain.From(FailureStrain.Value, StrainUnitResult);
+      var initialModulus = Pressure.From(InitialModulus.Value, StressUnitResult);
+      var unconfinedStrength = Pressure.From(UnconfinedStrength.Value, StressUnitResult);
+      var confinedStrength = Pressure.From(ConfinedStrength.Value, StressUnitResult);
 
       try {
         switch (SelectedCurveType) {
@@ -245,16 +240,16 @@ namespace AdSecCore.Functions {
             curve = explicitCurve;
             break;
           case StressStrainCurveType.FibModelCode:
-            curve = IFibModelCodeStressStrainCurve.Create(pressure, PeakPoint.Value, failureStrain);
+            curve = IFibModelCodeStressStrainCurve.Create(initialModulus, PeakPoint.Value, failureStrain);
             break;
           case StressStrainCurveType.Linear:
             curve = ILinearStressStrainCurve.Create(FailurePoint.Value);
             break;
           case StressStrainCurveType.ManderConfined:
-            curve = IManderConfinedStressStrainCurve.Create(UnconfinedStrength.Value, ConfinedStrength.Value, pressure, FailureStrain.Value);
+            curve = IManderConfinedStressStrainCurve.Create(unconfinedStrength, confinedStrength, initialModulus, failureStrain);
             break;
           case StressStrainCurveType.Mander:
-            curve = IManderStressStrainCurve.Create(pressure, PeakPoint.Value, failureStrain);
+            curve = IManderStressStrainCurve.Create(initialModulus, PeakPoint.Value, failureStrain);
             break;
           case StressStrainCurveType.ParabolaRectangle:
             curve = IParabolaRectangleStressStrainCurve.Create(YieldPoint.Value, failureStrain);
