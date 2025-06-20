@@ -5,7 +5,7 @@ using AdSecGHCore.Constants;
 namespace AdSecCoreTests.Functions {
 
   public class CreateCustomMaterialFunctionTests {
-    CreateCustomMaterialFunction _function;
+    private readonly CreateCustomMaterialFunction _function;
 
     public CreateCustomMaterialFunctionTests() {
       _function = new CreateCustomMaterialFunction();
@@ -101,6 +101,27 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(_function.SlsCompressionCurve, inputs[3]);
       Assert.Equal(_function.SlsTensionCurve, inputs[4]);
       Assert.Equal(_function.CrackCalcParams, inputs[5]);
+    }
+
+    [Fact]
+    public void ShouldHaveMaterialOutput() {
+      Assert.Equal("Material", _function.Material.Name);
+    }
+
+    [Fact]
+    public void ShouldDescribeThatItIsCustomTheMaterial() {
+      Assert.Equal("Custom AdSec Material", _function.Material.Description);
+    }
+
+    [Fact]
+    public void ShouldHaveOneOutput() {
+      Assert.Single(_function.GetAllOutputAttributes());
+    }
+
+    [Fact]
+    public void ShouldHaveOutputAtFirstPosition() {
+      var outputs = _function.GetAllOutputAttributes();
+      Assert.Equal(_function.Material, outputs[0]);
     }
   }
 }

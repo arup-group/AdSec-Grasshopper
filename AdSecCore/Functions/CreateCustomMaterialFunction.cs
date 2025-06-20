@@ -49,6 +49,7 @@ namespace AdSecCore.Functions {
       Description = "[Optional] Material's Crack Calculation Parameters",
       Optional = true,
     };
+    public MaterialParameter Material { get; set; } = Default.Material(description: "Custom AdSec Material");
 
     public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
@@ -59,6 +60,10 @@ namespace AdSecCore.Functions {
         SlsTensionCurve,
         CrackCalcParams,
       };
+    }
+
+    public override Attribute[] GetAllOutputAttributes() {
+      return new Attribute[] { Material };
     }
 
     public override void Compute() { throw new System.NotImplementedException(); }
