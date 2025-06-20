@@ -1,6 +1,9 @@
 ﻿using AdSecCore.Functions;
 
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.AdSec.Mesh;
+using Oasys.AdSec.StandardMaterials;
 
 using OasysUnits;
 using OasysUnits.Units;
@@ -69,6 +72,7 @@ namespace AdSecCoreTests.Functions {
       Assert.NotNull(outputCurve);
       var linearCurve = (ILinearStressStrainCurve)outputCurve.IStressStrainCurve;
       AssertStressAndStrain(failurePoint, linearCurve.FailurePoint);
+      Assert.Equal("Linear", StressStrainCurveFunction.GetCurveTypeFromInterface(linearCurve));
     }
 
     [Fact]
@@ -80,7 +84,7 @@ namespace AdSecCoreTests.Functions {
       var outputCurve = _function.OutputCurve.Value;
       Assert.NotNull(_function.OutputCurve.Value);
       var biLinearCurve = (IBilinearStressStrainCurve)outputCurve.IStressStrainCurve;
-
+      Assert.Equal("Bilinear", StressStrainCurveFunction.GetCurveTypeFromInterface(biLinearCurve));
       AssertStressAndStrain(failurePoint, biLinearCurve.FailurePoint);
       AssertStressAndStrain(yieldPoint, biLinearCurve.YieldPoint);
     }
@@ -93,6 +97,7 @@ namespace AdSecCoreTests.Functions {
       var outputCurve = _function.OutputCurve.Value;
       Assert.NotNull(_function.OutputCurve.Value);
       var explicitCurve = (IExplicitStressStrainCurve)outputCurve.IStressStrainCurve;
+      Assert.Equal("Explicit", StressStrainCurveFunction.GetCurveTypeFromInterface(explicitCurve));
       AssertStressAndStrain(stressStressPoints[0], explicitCurve.Points[0]);
       AssertStressAndStrain(stressStressPoints[1], explicitCurve.Points[1]);
     }
@@ -107,6 +112,7 @@ namespace AdSecCoreTests.Functions {
       var outputCurve = _function.OutputCurve.Value;
       Assert.NotNull(outputCurve);
       var fibCurve = (IFibModelCodeStressStrainCurve)outputCurve.IStressStrainCurve;
+      Assert.Equal("FibModelCode", StressStrainCurveFunction.GetCurveTypeFromInterface(fibCurve));
       AssertStressAndStrain(peakPoint, fibCurve.PeakPoint);
       Assert.Equal(Pressure.From(initialModulus, _function.StressUnitResult).Value, fibCurve.InitialModulus.As(_function.StressUnitResult));
       Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, fibCurve.FailureStrain.As(_function.StrainUnitResult));
@@ -124,6 +130,7 @@ namespace AdSecCoreTests.Functions {
       var outputCurve = _function.OutputCurve.Value;
       Assert.NotNull(outputCurve);
       var manderCurve = (IManderConfinedStressStrainCurve)outputCurve.IStressStrainCurve;
+      Assert.Equal("ManderConfined", StressStrainCurveFunction.GetCurveTypeFromInterface(manderCurve));
       Assert.Equal(Pressure.From(confined, _function.StressUnitResult).Value, manderCurve.ConfinedStrength.As(_function.StressUnitResult));
       Assert.Equal(Pressure.From(unconfined, _function.StressUnitResult).Value, manderCurve.UnconfinedStrength.As(_function.StressUnitResult));
       Assert.Equal(Pressure.From(initialModulus, _function.StressUnitResult).Value, manderCurve.InitialModulus.As(_function.StressUnitResult));
@@ -139,6 +146,7 @@ namespace AdSecCoreTests.Functions {
       var outputCurve = _function.OutputCurve.Value;
       Assert.NotNull(outputCurve);
       var parabolaCurve = (IParabolaRectangleStressStrainCurve)outputCurve.IStressStrainCurve;
+      Assert.Equal("ParabolaRectangle", StressStrainCurveFunction.GetCurveTypeFromInterface(parabolaCurve));
       AssertStressAndStrain(yieldPoint, parabolaCurve.YieldPoint);
       Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, parabolaCurve.FailureStrain.As(_function.StrainUnitResult));
     }
@@ -150,8 +158,9 @@ namespace AdSecCoreTests.Functions {
       _function.Compute();
       var outputCurve = _function.OutputCurve.Value;
       Assert.NotNull(outputCurve);
-      var parabolaCurve = (IParkStressStrainCurve)outputCurve.IStressStrainCurve;
-      AssertStressAndStrain(yieldPoint, parabolaCurve.YieldPoint);
+      var ParkCurve = (IParkStressStrainCurve)outputCurve.IStressStrainCurve;
+      Assert.Equal("Park", StressStrainCurveFunction.GetCurveTypeFromInterface(ParkCurve));
+      AssertStressAndStrain(yieldPoint, ParkCurve.YieldPoint);
     }
 
     [Fact]
@@ -163,6 +172,7 @@ namespace AdSecCoreTests.Functions {
       var outputCurve = _function.OutputCurve.Value;
       Assert.NotNull(outputCurve);
       var popovicsCurve = (IPopovicsStressStrainCurve)outputCurve.IStressStrainCurve;
+      Assert.Equal("Popovics", StressStrainCurveFunction.GetCurveTypeFromInterface(popovicsCurve));
       AssertStressAndStrain(peakPoint, popovicsCurve.PeakPoint);
       Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, popovicsCurve.FailureStrain.As(_function.StrainUnitResult));
 
@@ -177,6 +187,7 @@ namespace AdSecCoreTests.Functions {
       var outputCurve = _function.OutputCurve.Value;
       Assert.NotNull(outputCurve);
       var rectangularCurve = (IRectangularStressStrainCurve)outputCurve.IStressStrainCurve;
+      Assert.Equal("Rectangular", StressStrainCurveFunction.GetCurveTypeFromInterface(rectangularCurve));
       AssertStressAndStrain(yieldPoint, rectangularCurve.YieldPoint);
       Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, rectangularCurve.FailureStrain.As(_function.StrainUnitResult));
 
@@ -270,7 +281,7 @@ namespace AdSecCoreTests.Functions {
     [InlineData(StressStrainCurveType.Park, 1)]
     [InlineData(StressStrainCurveType.Popovics, 2)]
     [InlineData(StressStrainCurveType.Rectangular, 2)]
-    public void GetAllInputAttributes_ReturnsExpectedCount(StressStrainCurveType type, int expectedCount) {
+    public void GetAllInputAttributesReturnsExpectedCount(StressStrainCurveType type, int expectedCount) {
       var function = new StressStrainCurveFunction();
       function.SelectedCurveType = type;
       var attrs = function.GetAllInputAttributes();
@@ -285,6 +296,7 @@ namespace AdSecCoreTests.Functions {
         var attrs = function.GetAllOutputAttributes();
         Assert.Single(attrs);
       }
+
     }
 
     [Fact]
@@ -306,6 +318,11 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal("Create StressStrainCrv", meta.Name);
       Assert.Equal("StressStrainCrv", meta.NickName);
       Assert.Equal("Create a Stress Strain Curve for AdSec Material", meta.Description);
+    }
+    [Fact]
+    public void TestDefaultCurveType() {
+      IReinforcement material = Reinforcement.Steel.IS456.Edition_2000.S415;
+      Assert.Equal("DefaultCurve", StressStrainCurveFunction.GetCurveTypeFromInterface(material.Strength.Compression));
     }
   }
 }

@@ -210,7 +210,6 @@ namespace AdSecCore.Functions {
 
   public class StressStrainCurve {
     public IStressStrainCurve IStressStrainCurve { get; set; }
-    public StressStrainCurveType CurveType { get; set; }
     public bool IsCompression { get; set; }
   }
 }

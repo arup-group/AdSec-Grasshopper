@@ -90,8 +90,7 @@ namespace AdSecGH.Components {
         } else {
           // rebuild from existing material
           var ulsComp = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Compression, true);
-          ulsCompCrv = new AdSecStressStrainCurveGoo(ulsComp.Item1, editMat.Material.Strength.Compression,
-            StressStrainCurveType.StressStrainDefault, ulsComp.Item2);
+          ulsCompCrv = new AdSecStressStrainCurveGoo(ulsComp.Item1, editMat.Material.Strength.Compression, ulsComp.Item2);
         }
 
         // 3 StressStrain ULS Tension
@@ -103,8 +102,7 @@ namespace AdSecGH.Components {
         } else {
           // rebuild from existing material
           var ulsTens = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Tension, false);
-          ulsTensCrv = new AdSecStressStrainCurveGoo(ulsTens.Item1, editMat.Material.Strength.Tension,
-            StressStrainCurveType.StressStrainDefault, ulsTens.Item2);
+          ulsTensCrv = new AdSecStressStrainCurveGoo(ulsTens.Item1, editMat.Material.Strength.Tension, ulsTens.Item2);
         }
 
         // 4 StressStrain SLS Compression
@@ -116,8 +114,7 @@ namespace AdSecGH.Components {
         } else {
           // rebuild from existing material
           var slsComp = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Compression, true);
-          slsCompCrv = new AdSecStressStrainCurveGoo(slsComp.Item1, editMat.Material.Serviceability.Compression,
-            StressStrainCurveType.StressStrainDefault, slsComp.Item2);
+          slsCompCrv = new AdSecStressStrainCurveGoo(slsComp.Item1, editMat.Material.Serviceability.Compression, slsComp.Item2);
         }
 
         // 5 StressStrain SLS Tension
@@ -129,8 +126,7 @@ namespace AdSecGH.Components {
         } else {
           // rebuild from existing material
           var slsTens = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Tension, false);
-          slsTensCrv = new AdSecStressStrainCurveGoo(slsTens.Item1, editMat.Material.Serviceability.Tension,
-            StressStrainCurveType.StressStrainDefault, slsTens.Item2);
+          slsTensCrv = new AdSecStressStrainCurveGoo(slsTens.Item1, editMat.Material.Serviceability.Tension, slsTens.Item2);
         }
 
         // 6 Cracked params
@@ -149,10 +145,8 @@ namespace AdSecGH.Components {
               $"ULS Stress Strain Curve for Tension has zero failure strain.{Environment.NewLine}The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
             IStressStrainCurve crv = ILinearStressStrainCurve.Create(
               IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
-            var tuple = AdSecStressStrainCurveGoo.Create(crv, StressStrainCurveType.Linear,
-              false);
-            ulsTensCrv = new AdSecStressStrainCurveGoo(tuple.Item1, crv,
-              StressStrainCurveType.Linear, tuple.Item2);
+            var tuple = AdSecStressStrainCurveGoo.Create(crv, false);
+            ulsTensCrv = new AdSecStressStrainCurveGoo(tuple.Item1, crv, tuple.Item2);
           }
 
           if (comparer.Equals(ulsCompCrv.StressStrainCurve.FailureStrain.Value, 0)) {

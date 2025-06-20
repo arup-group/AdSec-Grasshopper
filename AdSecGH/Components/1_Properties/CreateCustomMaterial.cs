@@ -146,10 +146,8 @@ namespace AdSecGH.Components {
           $"ULS Stress Strain Curve for Tension has zero failure strain.{Environment.NewLine}The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
         IStressStrainCurve crv = ILinearStressStrainCurve.Create(
           IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
-        var tuple = AdSecStressStrainCurveGoo.Create(crv, StressStrainCurveType.Linear,
-          false);
-        ulsTensCrv = new AdSecStressStrainCurveGoo(tuple.Item1, crv,
-          StressStrainCurveType.Linear, tuple.Item2);
+        var tuple = AdSecStressStrainCurveGoo.Create(crv, false);
+        ulsTensCrv = new AdSecStressStrainCurveGoo(tuple.Item1, crv, tuple.Item2);
       }
 
       if (comparer.Equals(ulsCompCrv.StressStrainCurve.FailureStrain.Value, 0)) {

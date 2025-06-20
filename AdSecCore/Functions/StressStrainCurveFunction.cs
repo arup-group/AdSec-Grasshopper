@@ -20,7 +20,6 @@ namespace AdSecCore.Functions {
     Park,
     Popovics,
     Rectangular,
-    StressStrainDefault
   }
   public class StressStrainCurveFunction : Function, IVariableInput, IDropdownOptions, ILocalUnits, IDynamicDropdown {
 
@@ -258,7 +257,6 @@ namespace AdSecCore.Functions {
             curve = IParkStressStrainCurve.Create(YieldPoint.Value);
             break;
           case StressStrainCurveType.Popovics:
-
             curve = IPopovicsStressStrainCurve.Create(PeakPoint.Value, failureStrain);
             break;
           case StressStrainCurveType.Rectangular:
@@ -268,7 +266,7 @@ namespace AdSecCore.Functions {
       } catch (ArgumentNullException) {
         ErrorMessages.Add("Input value can not be null");
       }
-      OutputCurve.Value = new StressStrainCurve() { IStressStrainCurve = curve, CurveType = SelectedCurveType, IsCompression = true };
+      OutputCurve.Value = new StressStrainCurve() { IStressStrainCurve = curve, IsCompression = true };
     }
 
     public IOptions[] Options() {
@@ -311,5 +309,22 @@ namespace AdSecCore.Functions {
       StressUnitResult = LocalStressUnit;
       StrainUnitResult = LocalStrainUnit;
     }
+
+    public static string GetCurveTypeFromInterface(IStressStrainCurve curve) {
+      switch (curve) {
+        case IBilinearStressStrainCurve _: return "Bilinear";
+        case IExplicitStressStrainCurve _: return "Explicit";
+        case IFibModelCodeStressStrainCurve _: return "FibModelCode";
+        case ILinearStressStrainCurve _: return "Linear";
+        case IManderConfinedStressStrainCurve _: return "ManderConfined";
+        case IManderStressStrainCurve _: return "Mander";
+        case IParabolaRectangleStressStrainCurve _: return "ParabolaRectangle";
+        case IParkStressStrainCurve _: return "Park";
+        case IPopovicsStressStrainCurve _: return "Popovics";
+        case IRectangularStressStrainCurve _: return "Rectangular";
+        default: return "DefaultCurve";
+      }
+    }
+
   }
 }

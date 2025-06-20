@@ -123,8 +123,7 @@ namespace AdSecGHTests.Parameters {
       InstanceOfGoos.Add(new AdSecRebarLayerGoo(ILayerByBarCount.Create(1, barBundle)));
       InstanceOfGoos.Add(new AdSecSectionGoo(adSecSection));
       InstanceOfGoos.Add(new AdSecSolutionGoo(solution, adSecSection));
-      InstanceOfGoos.Add(new AdSecStressStrainCurveGoo(new PolylineCurve(), curve,
-        StressStrainCurveType.Explicit, new List<Point3d>()));
+      InstanceOfGoos.Add(new AdSecStressStrainCurveGoo(new PolylineCurve(), curve, new List<Point3d>()));
       InstanceOfGoos.Add(new AdSecStressStrainPointGoo(stressStrainPoint));
       var subComponent = new SubComponent() {
         ISubComponent = ISubComponent.Create(section, Geometry.Zero()),

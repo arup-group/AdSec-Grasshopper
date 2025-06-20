@@ -46,17 +46,16 @@ namespace AdSecGH.Parameters {
       }
 
       var ulsCompression = AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Compression, true);
-      var ulsCompressionCurve = new AdSecStressStrainCurveGoo(ulsCompression.Item1, material.Strength.Compression,
-        StressStrainCurveType.StressStrainDefault, ulsCompression.Item2);
+      var ulsCompressionCurve = new AdSecStressStrainCurveGoo(ulsCompression.Item1, material.Strength.Compression, ulsCompression.Item2);
       var ulsTension = AdSecStressStrainCurveGoo.CreateFromCode(material.Strength.Tension, false);
       var ulsTensionCurve = new AdSecStressStrainCurveGoo(ulsTension.Item1, material.Strength.Tension,
-        StressStrainCurveType.StressStrainDefault, ulsTension.Item2);
+         ulsTension.Item2);
       var slsCompression = AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Compression, true);
       var slsComprssionCurve = new AdSecStressStrainCurveGoo(slsCompression.Item1, material.Serviceability.Compression,
-        StressStrainCurveType.StressStrainDefault, slsCompression.Item2);
+         slsCompression.Item2);
       var slsTension = AdSecStressStrainCurveGoo.CreateFromCode(material.Serviceability.Tension, false);
       var slsTensionCurve = new AdSecStressStrainCurveGoo(slsTension.Item1, material.Serviceability.Tension,
-        StressStrainCurveType.StressStrainDefault, slsTension.Item2);
+         slsTension.Item2);
       var ulsTensionCompression
         = ITensionCompressionCurve.Create(ulsTensionCurve.StressStrainCurve, ulsCompressionCurve.StressStrainCurve);
       var slsTensionCompression

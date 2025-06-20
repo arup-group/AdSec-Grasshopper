@@ -36,7 +36,7 @@ namespace AdSecGHTests.Helpers {
     public void TryCastToStressStrainCurveReturnsGooFromPolylineCompressionIs(bool compression) {
       IStressStrainCurve crv = ILinearStressStrainCurve.Create(
         IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
-      var tuple = AdSecStressStrainCurveGoo.Create(crv, StressStrainCurveType.Linear, false);
+      var tuple = AdSecStressStrainCurveGoo.Create(crv, false);
 
       var objectWrapper = new GH_ObjectWrapper(tuple.Item1);
       bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(compression, objectWrapper, ref _curveGoo);
@@ -50,10 +50,8 @@ namespace AdSecGHTests.Helpers {
     [Fact]
     public void TryCastToStressStrainCurveReturnsGooFromAnotherGoo() {
       var curve = IExplicitStressStrainCurve.Create();
-      var tuple = AdSecStressStrainCurveGoo.Create(curve, StressStrainCurveType.Explicit,
-        false);
-      var goo = new AdSecStressStrainCurveGoo(tuple.Item1, curve,
-        StressStrainCurveType.Explicit, tuple.Item2);
+      var tuple = AdSecStressStrainCurveGoo.Create(curve, false);
+      var goo = new AdSecStressStrainCurveGoo(tuple.Item1, curve, tuple.Item2);
 
       var objectWrapper = new GH_ObjectWrapper(goo);
       bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(false, objectWrapper, ref _curveGoo);

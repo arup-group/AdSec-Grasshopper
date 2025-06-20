@@ -326,8 +326,8 @@ namespace Oasys.GH.Helpers {
         },{
           typeof(StressStrainCurveParameter), a => {
             var stressStrainCurve = (a as StressStrainCurveParameter).Value;
-            var tuple = AdSecStressStrainCurveGoo.Create(stressStrainCurve.IStressStrainCurve,stressStrainCurve.CurveType,stressStrainCurve.IsCompression);
-            return new AdSecStressStrainCurveGoo(tuple.Item1,stressStrainCurve.IStressStrainCurve,stressStrainCurve.CurveType,tuple.Item2);
+            var tuple = AdSecStressStrainCurveGoo.Create(stressStrainCurve.IStressStrainCurve,stressStrainCurve.IsCompression);
+            return new AdSecStressStrainCurveGoo(tuple.Item1,stressStrainCurve.IStressStrainCurve,tuple.Item2);
           }
         }
       };
