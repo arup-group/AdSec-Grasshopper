@@ -19,24 +19,18 @@ using Grasshopper.Kernel.Parameters;
 
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Components;
 
 using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
-  public class CreateCustomMaterial : GH_OasysDropDownComponent {
+  public class CreateCustomMaterial : DropdownAdapter<CreateCustomMaterialFunction> {
     private bool isConcrete = true;
     private AdSecMaterial.AdSecMaterialType _type = AdSecMaterial.AdSecMaterialType.Concrete;
 
-    public CreateCustomMaterial() : base("Custom Material", "CustomMaterial", "Create a custom AdSec Material",
-      CategoryName.Name(), SubCategoryName.Cat1()) {
-      Hidden = true; // sets the initial state of the component to hidden
-    }
-
-    // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("29f87bee-c84c-5d11-9b30-492190df2910");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
@@ -87,25 +81,6 @@ namespace AdSecGH.Components {
       _selectedItems.Add(AdSecMaterial.AdSecMaterialType.Concrete.ToString());
 
       _isInitialised = true;
-    }
-
-    protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      pManager.AddGenericParameter("DesignCode", "Code", "[Optional] Set the Material's DesignCode",
-        GH_ParamAccess.item);
-      pManager[0].Optional = true;
-      pManager.AddGenericParameter("ULS Comp. Crv", "U_C", "ULS Stress Strain Curve for Compression",
-        GH_ParamAccess.item);
-      pManager.AddGenericParameter("ULS Tens. Crv", "U_T", "ULS Stress Strain Curve for Tension", GH_ParamAccess.item);
-      pManager.AddGenericParameter("SLS Comp. Crv", "S_C", "SLS Stress Strain Curve for Compression",
-        GH_ParamAccess.item);
-      pManager.AddGenericParameter("SLS Tens. Crv", "S_T", "SLS Stress Strain Curve for Tension", GH_ParamAccess.item);
-      pManager.AddGenericParameter("Crack Calc Params", "CCP", "[Optional] Material's Crack Calculation Parameters",
-        GH_ParamAccess.item);
-      pManager[5].Optional = true;
-    }
-
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("Material", "Mat", "Custom AdSec Material", GH_ParamAccess.item);
     }
 
     protected override void SolveInternal(IGH_DataAccess DA) {
