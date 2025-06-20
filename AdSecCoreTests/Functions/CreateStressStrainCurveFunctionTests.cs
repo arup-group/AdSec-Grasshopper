@@ -129,5 +129,183 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(Pressure.From(initialModulus, _function.StressUnitResult).Value, manderCurve.InitialModulus.As(_function.StressUnitResult));
       Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, manderCurve.FailureStrain.As(_function.StrainUnitResult));
     }
+
+    [Fact]
+    public void TestParabolaRectangleCurve() {
+      _function.SelectedCurveType = StressStrainCurveType.ParabolaRectangle;
+      var yieldPoint = CreateYieldPoint();
+      var failureStrain = CreateFailureStrain();
+      _function.Compute();
+      var outputCurve = _function.OutputCurve.Value;
+      Assert.NotNull(outputCurve);
+      var parabolaCurve = (IParabolaRectangleStressStrainCurve)outputCurve.IStressStrainCurve;
+      AssertStressAndStrain(yieldPoint, parabolaCurve.YieldPoint);
+      Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, parabolaCurve.FailureStrain.As(_function.StrainUnitResult));
+    }
+
+    [Fact]
+    public void TestParkCurve() {
+      _function.SelectedCurveType = StressStrainCurveType.Park;
+      var yieldPoint = CreateYieldPoint();
+      _function.Compute();
+      var outputCurve = _function.OutputCurve.Value;
+      Assert.NotNull(outputCurve);
+      var parabolaCurve = (IParkStressStrainCurve)outputCurve.IStressStrainCurve;
+      AssertStressAndStrain(yieldPoint, parabolaCurve.YieldPoint);
+    }
+
+    [Fact]
+    public void TestPopovicsCurve() {
+      _function.SelectedCurveType = StressStrainCurveType.Popovics;
+      var peakPoint = CreatePeakPoint();
+      var failureStrain = CreateFailureStrain();
+      _function.Compute();
+      var outputCurve = _function.OutputCurve.Value;
+      Assert.NotNull(outputCurve);
+      var popovicsCurve = (IPopovicsStressStrainCurve)outputCurve.IStressStrainCurve;
+      AssertStressAndStrain(peakPoint, popovicsCurve.PeakPoint);
+      Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, popovicsCurve.FailureStrain.As(_function.StrainUnitResult));
+
+    }
+
+    [Fact]
+    public void TestRectangularCurve() {
+      _function.SelectedCurveType = StressStrainCurveType.Rectangular;
+      var yieldPoint = CreateYieldPoint();
+      var failureStrain = CreateFailureStrain();
+      _function.Compute();
+      var outputCurve = _function.OutputCurve.Value;
+      Assert.NotNull(outputCurve);
+      var rectangularCurve = (IRectangularStressStrainCurve)outputCurve.IStressStrainCurve;
+      AssertStressAndStrain(yieldPoint, rectangularCurve.YieldPoint);
+      Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, rectangularCurve.FailureStrain.As(_function.StrainUnitResult));
+
+    }
+
+    [Theory]
+    [InlineData(StressStrainCurveType.Bilinear, "Yield Point", "AdSec Stress Strain Point representing the Yield Point", "Failure Point", "AdSec Stress Strain Point representing the Failure Point")]
+    [InlineData(StressStrainCurveType.Explicit, "StressStrainPoints", "AdSec Stress Strain Point representing the StressStrainCurve as a Polyline", "", "")]
+    [InlineData(StressStrainCurveType.FibModelCode, "Peak Point", "AdSec Stress Strain Point representing the FIB model's Peak Point", "Initial Modulus [Pa]", "Initial Modulus")]
+    [InlineData(StressStrainCurveType.Linear, "Failure Point", "AdSec Stress Strain Point representing the Failure Point", "", "")]
+    [InlineData(StressStrainCurveType.ManderConfined, "Unconfined Strength [Pa]", "Unconfined strength for Mander Confined Model", "Confined Strength [Pa]", "Confined strength for Mander Confined Model")]
+    [InlineData(StressStrainCurveType.Mander, "Peak Point", "AdSec Stress Strain Point representing the Mander model's Peak Point", "Initial Modulus [Pa]", "Initial Modulus from Mander")]
+    [InlineData(StressStrainCurveType.ParabolaRectangle, "Yield Point", "AdSec Stress Strain Point representing the Yield Point", "Failure Strain [%]", "Failure Strain")]
+    [InlineData(StressStrainCurveType.Park, "Yield Point", "AdSec Stress Strain Point representing the Yield Point", "Failure Strain [%]", "Failure Strain")]
+    [InlineData(StressStrainCurveType.Popovics, "Peak Point", "AdSec Stress Strain Point representing the Peak Point", "Failure Strain [%]", "Failure strain from Popovic model")]
+    [InlineData(StressStrainCurveType.Rectangular, "Yield Point", "AdSec Stress Strain Point representing the Yield Point", "Failure Strain [%]", "Failure Strain")]
+    public void UpdateParameter_SetsParameterNamesAndDescriptions(
+      StressStrainCurveType type,
+      string expectedName1, string expectedDesc1,
+      string expectedName2, string expectedDesc2) {
+
+      var function = new StressStrainCurveFunction();
+      function.SelectedCurveType = type;
+      function.StressUnitResult = PressureUnit.Pascal;
+      function.StrainUnitResult = StrainUnit.Percent;
+      switch (type) {
+        case StressStrainCurveType.Bilinear:
+          Assert.Equal(expectedName1, function.YieldPoint.Name);
+          Assert.Equal(expectedDesc1, function.YieldPoint.Description);
+          Assert.Equal(expectedName2, function.FailurePoint.Name);
+          Assert.Equal(expectedDesc2, function.FailurePoint.Description);
+          break;
+        case StressStrainCurveType.Explicit:
+          Assert.Equal(expectedName1, function.StressStrainPoints.Name);
+          Assert.Equal(expectedDesc1, function.StressStrainPoints.Description);
+          break;
+        case StressStrainCurveType.FibModelCode:
+          Assert.Equal(expectedName1, function.PeakPoint.Name);
+          Assert.Equal(expectedDesc1, function.PeakPoint.Description);
+          Assert.Contains(expectedName2, function.InitialModulus.Name);
+          Assert.Contains(expectedDesc2, function.InitialModulus.Description);
+          Assert.Contains("Failure strain from FIB model code", function.FailureStrain.Description);
+          Assert.Contains("Failure Strain [%]", function.FailureStrain.Name);
+          break;
+        case StressStrainCurveType.Linear:
+          Assert.Equal(expectedName1, function.FailurePoint.Name);
+          Assert.Equal(expectedDesc1, function.FailurePoint.Description);
+          break;
+        case StressStrainCurveType.ManderConfined:
+          Assert.StartsWith(expectedName1, function.UnconfinedStrength.Name);
+          Assert.Equal(expectedDesc1, function.UnconfinedStrength.Description);
+          Assert.StartsWith(expectedName2, function.ConfinedStrength.Name);
+          Assert.Equal(expectedDesc2, function.ConfinedStrength.Description);
+          Assert.Contains("Initial Modulus [Pa]", function.InitialModulus.Name);
+          Assert.Contains("Initial Modulus from Mander Confined Model", function.InitialModulus.Description);
+          Assert.Contains("Failure Strain [%]", function.FailureStrain.Name);
+          Assert.Contains("Failure strain from Mander Confined Model", function.FailureStrain.Description);
+          break;
+        case StressStrainCurveType.Mander:
+          Assert.Equal(expectedName1, function.PeakPoint.Name);
+          Assert.Equal(expectedDesc1, function.PeakPoint.Description);
+          Assert.Contains(expectedName2, function.InitialModulus.Name);
+          Assert.Contains(expectedDesc2, function.InitialModulus.Description);
+          Assert.Contains("Failure Strain [%]", function.FailureStrain.Name);
+          Assert.Contains("Failure strain from Mander", function.FailureStrain.Description);
+          break;
+        case StressStrainCurveType.ParabolaRectangle:
+        case StressStrainCurveType.Park:
+        case StressStrainCurveType.Rectangular:
+          Assert.Equal(expectedName1, function.YieldPoint.Name);
+          Assert.Equal(expectedDesc1, function.YieldPoint.Description);
+          Assert.Contains("Failure Strain [%]", function.FailureStrain.Name);
+          break;
+        case StressStrainCurveType.Popovics:
+          Assert.Equal(expectedName1, function.PeakPoint.Name);
+          Assert.Equal(expectedDesc1, function.PeakPoint.Description);
+          Assert.Contains(expectedName2, function.FailureStrain.Name);
+          Assert.Contains(expectedDesc2, function.FailureStrain.Description);
+          break;
+      }
+    }
+
+    [Theory]
+    [InlineData(StressStrainCurveType.Bilinear, 2)]
+    [InlineData(StressStrainCurveType.Explicit, 1)]
+    [InlineData(StressStrainCurveType.FibModelCode, 3)]
+    [InlineData(StressStrainCurveType.Linear, 1)]
+    [InlineData(StressStrainCurveType.ManderConfined, 4)]
+    [InlineData(StressStrainCurveType.Mander, 3)]
+    [InlineData(StressStrainCurveType.ParabolaRectangle, 2)]
+    [InlineData(StressStrainCurveType.Park, 1)]
+    [InlineData(StressStrainCurveType.Popovics, 2)]
+    [InlineData(StressStrainCurveType.Rectangular, 2)]
+    public void GetAllInputAttributes_ReturnsExpectedCount(StressStrainCurveType type, int expectedCount) {
+      var function = new StressStrainCurveFunction();
+      function.SelectedCurveType = type;
+      var attrs = function.GetAllInputAttributes();
+      Assert.Equal(expectedCount, attrs.Length);
+    }
+
+    [Fact]
+    public void ShouldHaveOneOutputAttribute() {
+      var function = new StressStrainCurveFunction();
+      foreach (StressStrainCurveType type in System.Enum.GetValues(typeof(StressStrainCurveType))) {
+        function.SelectedCurveType = type;
+        var attrs = function.GetAllOutputAttributes();
+        Assert.Single(attrs);
+      }
+    }
+
+    [Fact]
+    public void OutputCurveHasExpectedProperties() {
+      var function = new StressStrainCurveFunction();
+      var output = function.OutputCurve;
+      Assert.NotNull(output);
+      Assert.Equal("StressStrainCrv", output.Name);
+      Assert.Equal("SCv", output.NickName);
+      Assert.Equal("AdSec Stress Strain Curve", output.Description);
+      Assert.False(output.Optional);
+    }
+
+    [Fact]
+    public void MetadataHasExpectedProperties() {
+      var function = new StressStrainCurveFunction();
+      var meta = function.Metadata;
+      Assert.NotNull(meta);
+      Assert.Equal("Create StressStrainCrv", meta.Name);
+      Assert.Equal("StressStrainCrv", meta.NickName);
+      Assert.Equal("Create a Stress Strain Curve for AdSec Material", meta.Description);
+    }
   }
 }
