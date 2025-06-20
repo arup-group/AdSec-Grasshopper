@@ -123,5 +123,29 @@ namespace AdSecCoreTests.Functions {
       var outputs = _function.GetAllOutputAttributes();
       Assert.Equal(_function.Material, outputs[0]);
     }
+
+    [Fact]
+    public void ShouldHaveASingleDropdown() {
+      Assert.Single(_function.Options());
+    }
+
+    [Fact]
+    public void ShouldHaveDropdownOfTypeEnum() {
+      var enumOption = _function.Options()[0] as EnumOptions;
+      Assert.IsType<EnumOptions>(enumOption);
+      Assert.Equal("Material Type", enumOption.Description);
+      Assert.Equal(typeof(MaterialType), enumOption.EnumType);
+    }
+
+    [Theory]
+    [InlineData(MaterialType.Concrete, 6)]
+    [InlineData(MaterialType.Steel, 5)]
+    [InlineData(MaterialType.Rebar, 5)]
+    [InlineData(MaterialType.Tendon, 5)]
+    [InlineData(MaterialType.FRP, 5)]
+    public void ShouldHaveCrackCalcOnlyForConcrete(MaterialType type, int expectedInputCount) {
+      _function.SetMaterialType(type);
+      Assert.Equal(expectedInputCount, _function.GetAllInputAttributes().Length);
+    }
   }
 }

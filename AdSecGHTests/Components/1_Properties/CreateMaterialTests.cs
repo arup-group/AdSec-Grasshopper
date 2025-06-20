@@ -15,10 +15,17 @@ namespace AdSecGHTests.Components._1_Properties {
     public void ShouldHaveOneOutput() {
       Assert.Single(_component.Params.Output);
     }
-    
+
     [Fact]
     public void ShouldHaveSixInputs() {
       Assert.Equal(6, _component.Params.Input.Count);
+    }
+
+    [Fact]
+    public void ShouldUpdateInputsTo5OnNonConcrete() {
+      _component.SetSelected(0, 1);
+      _component.VariableParameterMaintenance();
+      Assert.Equal(5, _component.Params.Input.Count);
     }
   }
 }

@@ -1,12 +1,14 @@
-using AdSecCore.Functions;
+using System;
+
 using AdSecCore.Parameters;
 
 using AdSecGHCore.Constants;
 
 namespace AdSecCore.Functions {
 
-  public class CreateCustomMaterialFunction : Function {
+  public class CreateCustomMaterialFunction : Function, IVariableInput, IDropdownOptions {
 
+    public MaterialType CurrentMaterialType { get; set; }
     public override FuncAttribute Metadata { get; set; } = new FuncAttribute() {
       Name = "Custom Material",
       NickName = "CustomMaterial",
@@ -52,13 +54,23 @@ namespace AdSecCore.Functions {
     public MaterialParameter Material { get; set; } = Default.Material(description: "Custom AdSec Material");
 
     public override Attribute[] GetAllInputAttributes() {
+      if (CurrentMaterialType == MaterialType.Concrete) {
+        return new Attribute[] {
+          DesignCode,
+          UlsCompressionCurve,
+          UlsTensionCurve,
+          SlsCompressionCurve,
+          SlsTensionCurve,
+          CrackCalcParams,
+        };
+      }
+
       return new Attribute[] {
         DesignCode,
         UlsCompressionCurve,
         UlsTensionCurve,
         SlsCompressionCurve,
         SlsTensionCurve,
-        CrackCalcParams,
       };
     }
 
@@ -66,6 +78,28 @@ namespace AdSecCore.Functions {
       return new Attribute[] { Material };
     }
 
-    public override void Compute() { throw new System.NotImplementedException(); }
+    public override void Compute() { throw new NotImplementedException(); }
+    public event Action OnVariableInputChanged;
+
+    public IOptions[] Options() {
+      return new IOptions[] {
+        new EnumOptions() {
+          Description = "Material Type",
+          EnumType = typeof(MaterialType),
+        }
+      };
+    }
+
+    public void SetMaterialType(MaterialType rebar) {
+      CurrentMaterialType = rebar;
+    }
+  }
+
+  public enum MaterialType {
+    Concrete,
+    Rebar,
+    Tendon,
+    Steel,
+    FRP,
   }
 }

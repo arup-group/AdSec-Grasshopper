@@ -10,8 +10,6 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using AdSecGHCore.Constants;
-
 using GH_IO.Serialization;
 
 using Grasshopper.Kernel;
@@ -50,18 +48,6 @@ namespace AdSecGH.Components {
 
       ChangeMode();
       base.UpdateUI();
-    }
-
-    public override void VariableParameterMaintenance() {
-      if (!isConcrete) {
-        return;
-      }
-
-      Params.Input[5].Name = "Yield PointCrack Calc Params";
-      Params.Input[5].NickName = "CCP";
-      Params.Input[5].Description = "[Optional] Material's Crack Calculation Parameters";
-      Params.Input[5].Access = GH_ParamAccess.item;
-      Params.Input[5].Optional = true;
     }
 
     public override bool Write(GH_IWriter writer) {
