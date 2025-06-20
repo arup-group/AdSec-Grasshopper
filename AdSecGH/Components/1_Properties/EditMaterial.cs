@@ -164,24 +164,24 @@ namespace AdSecGH.Components {
           var ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.StressStrainCurve, ulsCompCrv.StressStrainCurve);
           var slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
           switch (editMat.Type) {
-            case AdSecMaterial.AdSecMaterialType.Concrete:
+            case MaterialType.Concrete:
               editMat.Material = concreteCrack == null ? IConcrete.Create(ulsTC, slsTC) :
                 (IMaterial)IConcrete.Create(ulsTC, slsTC, concreteCrack);
               break;
 
-            case AdSecMaterial.AdSecMaterialType.FRP:
+            case MaterialType.FRP:
               editMat.Material = IFrp.Create(ulsTC, slsTC);
               break;
 
-            case AdSecMaterial.AdSecMaterialType.Rebar:
+            case MaterialType.Rebar:
               editMat.Material = IReinforcement.Create(ulsTC, slsTC);
               break;
 
-            case AdSecMaterial.AdSecMaterialType.Tendon:
+            case MaterialType.Tendon:
               editMat.Material = IReinforcement.Create(ulsTC, slsTC);
               break;
 
-            case AdSecMaterial.AdSecMaterialType.Steel:
+            case MaterialType.Steel:
               editMat.Material = ISteel.Create(ulsTC, slsTC);
               break;
           }
@@ -202,7 +202,7 @@ namespace AdSecGH.Components {
         DA.SetData(3, ulsTensCrv);
         DA.SetData(4, slsCompCrv);
         DA.SetData(5, slsTensCrv);
-        if (editMat.Type == AdSecMaterial.AdSecMaterialType.Concrete) {
+        if (editMat.Type == MaterialType.Concrete) {
           var concrete = (IConcrete)editMat.Material;
           DA.SetData(6, new AdSecConcreteCrackCalculationParametersGoo(concrete.ConcreteCrackCalculationParameters));
         }

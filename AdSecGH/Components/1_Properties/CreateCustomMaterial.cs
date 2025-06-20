@@ -27,7 +27,7 @@ using OasysUnits.Units;
 namespace AdSecGH.Components {
   public class CreateCustomMaterial : DropdownAdapter<CreateCustomMaterialFunction> {
     private bool isConcrete = true;
-    private AdSecMaterial.AdSecMaterialType _type = AdSecMaterial.AdSecMaterialType.Concrete;
+    private MaterialType _type = MaterialType.Concrete;
 
     public override Guid ComponentGuid => new Guid("29f87bee-c84c-5d11-9b30-492190df2910");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
@@ -44,7 +44,7 @@ namespace AdSecGH.Components {
 
       Enum.TryParse(_selectedItems[0], out _type);
 
-      isConcrete = _selectedItems[i] == AdSecMaterial.AdSecMaterialType.Concrete.ToString();
+      isConcrete = _selectedItems[i] == MaterialType.Concrete.ToString();
 
       ChangeMode();
       base.UpdateUI();
@@ -63,8 +63,8 @@ namespace AdSecGH.Components {
       _dropDownItems = new List<List<string>>();
       _selectedItems = new List<string>();
 
-      _dropDownItems.Add(Enum.GetNames(typeof(AdSecMaterial.AdSecMaterialType)).ToList());
-      _selectedItems.Add(AdSecMaterial.AdSecMaterialType.Concrete.ToString());
+      _dropDownItems.Add(Enum.GetNames(typeof(MaterialType)).ToList());
+      _selectedItems.Add(MaterialType.Concrete.ToString());
 
       _isInitialised = true;
     }
@@ -124,22 +124,22 @@ namespace AdSecGH.Components {
 
       // create api material based on type
       switch (_type) {
-        case AdSecMaterial.AdSecMaterialType.Concrete:
+        case MaterialType.Concrete:
           material.Material = concreteCrack == null ? IConcrete.Create(ulsTC, slsTC) :
             (IMaterial)IConcrete.Create(ulsTC, slsTC, concreteCrack);
 
           break;
 
-        case AdSecMaterial.AdSecMaterialType.FRP:
+        case MaterialType.FRP:
           material.Material = IFrp.Create(ulsTC, slsTC);
           break;
 
-        case AdSecMaterial.AdSecMaterialType.Rebar:
-        case AdSecMaterial.AdSecMaterialType.Tendon:
+        case MaterialType.Rebar:
+        case MaterialType.Tendon:
           material.Material = IReinforcement.Create(ulsTC, slsTC);
           break;
 
-        case AdSecMaterial.AdSecMaterialType.Steel:
+        case MaterialType.Steel:
           material.Material = ISteel.Create(ulsTC, slsTC);
           break;
       }
