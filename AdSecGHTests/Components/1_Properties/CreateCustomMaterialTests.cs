@@ -42,12 +42,12 @@ namespace AdSecGHTests.Components._02_Properties {
 
     [Fact]
     public void ShouldUndoDropdownChange() {
-      GH_Document doc = new GH_Document();
-      bool undoStateChanged = false;
+      var doc = new GH_Document();
+      var undoStateChanged = false;
       doc.UndoStateChanged += (sender, args) => {
         undoStateChanged = true;
       };
-      doc.AddObject(_component, false);
+      doc.AddObject(_component, true);
       _component.SetSelected(0, 1);
       doc.Undo();
       Assert.True(undoStateChanged);
