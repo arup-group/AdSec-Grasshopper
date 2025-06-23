@@ -4,6 +4,9 @@ using AdSecCore.Parameters;
 
 using AdSecGHCore.Constants;
 
+using Oasys.AdSec.Materials;
+using Oasys.AdSec.Materials.StressStrainCurves;
+
 namespace AdSecCore.Functions {
 
   public class CreateCustomMaterialFunction : Function, IVariableInput, IDropdownOptions {
@@ -78,7 +81,18 @@ namespace AdSecCore.Functions {
       return new Attribute[] { Material };
     }
 
-    public override void Compute() { throw new NotImplementedException(); }
+    public override void Compute() {
+      var uls_tensionCompressionCurve
+        = ITensionCompressionCurve.Create(UlsTensionCurve.Value, UlsCompressionCurve.Value);
+      var sls_tensionCompressionCurve
+        = ITensionCompressionCurve.Create(SlsTensionCurve.Value, SlsCompressionCurve.Value);
+      Material.Value = new MaterialDesign() {
+        DesignCode = DesignCode.Value,
+        Material = ISteel.Create(uls_tensionCompressionCurve, sls_tensionCompressionCurve),
+        GradeName = DesignCode.Value.DesignCodeName,
+      };
+    }
+
     public event Action OnVariableInputChanged;
 
     public IOptions[] Options() {

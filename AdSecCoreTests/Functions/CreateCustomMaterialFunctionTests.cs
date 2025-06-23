@@ -2,6 +2,14 @@
 
 using AdSecGHCore.Constants;
 
+using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
+using Oasys.AdSec.Materials.StressStrainCurves;
+using Oasys.AdSec.StandardMaterials;
+
+using OasysUnits;
+using OasysUnits.Units;
+
 namespace AdSecCoreTests.Functions {
 
   public class CreateCustomMaterialFunctionTests {
@@ -163,6 +171,20 @@ namespace AdSecCoreTests.Functions {
       _function.SetMaterialType(MaterialType.Steel);
       _function.SetMaterialType(MaterialType.Steel);
       Assert.Equal(1, timesTriggered);
+    }
+
+    [Fact]
+    public void ShouldCreateACustomSteel() {
+      _function.SetMaterialType(MaterialType.Steel);
+      _function.DesignCode.Value = new DesignCode() { IDesignCode = IS456.Edition_2000 };
+      var linearStressStrainCurve = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
+      _function.UlsCompressionCurve.Value = linearStressStrainCurve;
+      _function.UlsTensionCurve.Value = linearStressStrainCurve;
+      _function.SlsCompressionCurve.Value = linearStressStrainCurve;
+      _function.SlsTensionCurve.Value = linearStressStrainCurve;
+      _function.Compute();
+      Assert.NotNull(_function.Material.Value);
+      Assert.IsAssignableFrom<ISteel>(_function.Material.Value.Material);
     }
   }
 }
