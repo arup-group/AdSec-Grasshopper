@@ -48,7 +48,7 @@ namespace AdSecGH.Components {
         BusinessComponent.LocalLengthUnit = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
       }
       if (_selectedItems.Count > 2) {
-        BusinessComponent.AngleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), _selectedItems[2]);
+        BusinessComponent.LocalAngleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), _selectedItems[2]);
       }
     }
   }
