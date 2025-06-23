@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 using AdSecCore;
 using AdSecCore.Functions;
@@ -13,7 +11,6 @@ using AdSecGH.Properties;
 using GH_IO.Serialization;
 
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Parameters;
 
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
@@ -46,27 +43,14 @@ namespace AdSecGH.Components {
 
       isConcrete = _selectedItems[i] == MaterialType.Concrete.ToString();
 
-      ChangeMode();
+      BusinessComponent.SetMaterialType(_type);
+      // RecordUndoEvent("Changed dropdown");
       base.UpdateUI();
     }
 
     public override bool Write(GH_IWriter writer) {
       writer.SetBoolean("isConcrete", isConcrete);
       return base.Write(writer);
-    }
-
-    protected override void InitialiseDropdowns() {
-      _spacerDescriptions = new List<string>(new[] {
-        "Material Type",
-      });
-
-      _dropDownItems = new List<List<string>>();
-      _selectedItems = new List<string>();
-
-      _dropDownItems.Add(Enum.GetNames(typeof(MaterialType)).ToList());
-      _selectedItems.Add(MaterialType.Concrete.ToString());
-
-      _isInitialised = true;
     }
 
     protected override void SolveInternal(IGH_DataAccess DA) {
@@ -160,25 +144,9 @@ namespace AdSecGH.Components {
       Enum.TryParse(_selectedItems[0], out _type);
       CreateAttributes();
 
-      ChangeMode();
+      BusinessComponent.SetMaterialType(_type);
 
       UpdateUI();
-    }
-
-    private void ChangeMode() {
-      if ((isConcrete && Params.Input.Count == 6) || (!isConcrete && Params.Input.Count == 5)) {
-        return;
-      }
-
-      RecordUndoEvent("Changed dropdown");
-
-      if (isConcrete) {
-        Params.RegisterInputParam(new Param_GenericObject());
-      } else {
-        Params.UnregisterInputParameter(Params.Input[5], true);
-      }
-
-      (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
     }
   }
 }

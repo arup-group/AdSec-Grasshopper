@@ -91,7 +91,10 @@ namespace AdSecCore.Functions {
     }
 
     public void SetMaterialType(MaterialType rebar) {
-      CurrentMaterialType = rebar;
+      if (CurrentMaterialType != rebar) {
+        CurrentMaterialType = rebar;
+        OnVariableInputChanged?.Invoke();
+      }
     }
   }
 

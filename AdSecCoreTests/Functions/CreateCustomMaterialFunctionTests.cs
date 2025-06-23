@@ -147,5 +147,22 @@ namespace AdSecCoreTests.Functions {
       _function.SetMaterialType(type);
       Assert.Equal(expectedInputCount, _function.GetAllInputAttributes().Length);
     }
+
+    [Fact]
+    public void ShouldTriggerEventWhenMaterialChanged() {
+      bool eventTriggered = false;
+      _function.OnVariableInputChanged += () => { eventTriggered = true; };
+      _function.SetMaterialType(MaterialType.Steel);
+      Assert.True(eventTriggered);
+    }
+
+    [Fact]
+    public void ShouldOnlyTriggerOnceForTheSameType() {
+      int timesTriggered = 0;
+      _function.OnVariableInputChanged += () => { timesTriggered++; };
+      _function.SetMaterialType(MaterialType.Steel);
+      _function.SetMaterialType(MaterialType.Steel);
+      Assert.Equal(1, timesTriggered);
+    }
   }
 }
