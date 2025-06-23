@@ -197,7 +197,6 @@ namespace AdSecCoreTests.Functions {
     public void ShouldCreateACustomSteel() {
       _function.SetMaterialType(MaterialType.Steel);
       _function.Compute();
-      Assert.NotNull(_function.Material.Value);
       Assert.IsAssignableFrom<ISteel>(_function.Material.Value.Material);
     }
 
@@ -205,7 +204,6 @@ namespace AdSecCoreTests.Functions {
     public void ShouldCreateACustomConcrete() {
       _function.SetMaterialType(MaterialType.Concrete);
       _function.Compute();
-      Assert.NotNull(_function.Material.Value);
       Assert.IsAssignableFrom<IConcrete>(_function.Material.Value.Material);
     }
 
@@ -214,8 +212,32 @@ namespace AdSecCoreTests.Functions {
       _function.CrackCalcParams.Value = null;
       _function.SetMaterialType(MaterialType.Concrete);
       _function.Compute();
-      Assert.NotNull(_function.Material.Value);
       Assert.IsAssignableFrom<IConcrete>(_function.Material.Value.Material);
+    }
+
+    [Fact]
+    public void ShouldCreateACustomRebar() {
+      _function.CrackCalcParams.Value = null;
+      _function.SetMaterialType(MaterialType.Rebar);
+      _function.Compute();
+      Assert.NotNull(_function.Material.Value);
+      Assert.IsAssignableFrom<IReinforcement>(_function.Material.Value.Material);
+    }
+
+    [Fact]
+    public void ShouldCreateACustomTendon() {
+      _function.CrackCalcParams.Value = null;
+      _function.SetMaterialType(MaterialType.Tendon);
+      _function.Compute();
+      Assert.IsAssignableFrom<IReinforcement>(_function.Material.Value.Material);
+    }
+
+    [Fact]
+    public void ShouldCreateACustomFRP() {
+      _function.CrackCalcParams.Value = null;
+      _function.SetMaterialType(MaterialType.FRP);
+      _function.Compute();
+      Assert.IsAssignableFrom<IFrp>(_function.Material.Value.Material);
     }
   }
 }

@@ -82,10 +82,8 @@ namespace AdSecCore.Functions {
     }
 
     public override void Compute() {
-      var uls_tensionCompressionCurve
-        = ITensionCompressionCurve.Create(UlsTensionCurve.Value, UlsCompressionCurve.Value);
-      var sls_tensionCompressionCurve
-        = ITensionCompressionCurve.Create(SlsTensionCurve.Value, SlsCompressionCurve.Value);
+      var strength = ITensionCompressionCurve.Create(UlsTensionCurve.Value, UlsCompressionCurve.Value);
+      var serviceability = ITensionCompressionCurve.Create(SlsTensionCurve.Value, SlsCompressionCurve.Value);
 
       Material.Value = new MaterialDesign() {
         DesignCode = DesignCode.Value,
@@ -95,19 +93,22 @@ namespace AdSecCore.Functions {
       switch (CurrentMaterialType) {
         case MaterialType.Concrete:
           if (CrackCalcParams.Value == null) {
-            Material.Value.Material = IConcrete.Create(uls_tensionCompressionCurve, sls_tensionCompressionCurve);
+            Material.Value.Material = IConcrete.Create(strength, serviceability);
             break;
           }
 
-          Material.Value.Material = IConcrete.Create(uls_tensionCompressionCurve, sls_tensionCompressionCurve,
-            CrackCalcParams.Value);
+          Material.Value.Material = IConcrete.Create(strength, serviceability, CrackCalcParams.Value);
           break;
-        case MaterialType.Rebar: break;
-        case MaterialType.Tendon: break;
+        case MaterialType.Tendon:
+        case MaterialType.Rebar:
+          Material.Value.Material = IReinforcement.Create(strength, serviceability);
+          break;
         case MaterialType.Steel:
-          Material.Value.Material = ISteel.Create(uls_tensionCompressionCurve, sls_tensionCompressionCurve);
+          Material.Value.Material = ISteel.Create(strength, serviceability);
           break;
-        case MaterialType.FRP: break;
+        case MaterialType.FRP:
+          Material.Value.Material = IFrp.Create(strength, serviceability);
+          break;
       }
     }
 
