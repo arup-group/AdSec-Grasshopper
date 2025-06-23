@@ -53,7 +53,7 @@ namespace AdSecCoreTests.Functions {
     }
 
     private IStressStrainPoint CreatePeakPoint() {
-      var strain = Strain.FromRatio(0.002);
+      var strain = Strain.FromRatio(0.001);
       var stress = Pressure.FromPascals(10);
       return _function.PeakPoint.Value = IStressStrainPoint.Create(stress, strain);
     }
@@ -133,6 +133,22 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal("ManderConfined", StressStrainCurveFunction.GetCurveTypeFromInterface(manderCurve));
       Assert.Equal(Pressure.From(confined, _function.StressUnitResult).Value, manderCurve.ConfinedStrength.As(_function.StressUnitResult));
       Assert.Equal(Pressure.From(unconfined, _function.StressUnitResult).Value, manderCurve.UnconfinedStrength.As(_function.StressUnitResult));
+      Assert.Equal(Pressure.From(initialModulus, _function.StressUnitResult).Value, manderCurve.InitialModulus.As(_function.StressUnitResult));
+      Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, manderCurve.FailureStrain.As(_function.StrainUnitResult));
+    }
+
+    [Fact]
+    public void TestManderModelCurve() {
+      _function.SelectedCurveType = StressStrainCurveType.Mander;
+      var initialModulus = CreateInitialModulus();
+      var failureStrain = CreateFailureStrain();
+      var peakPoint = CreatePeakPoint();
+      _function.Compute();
+      var outputCurve = _function.OutputCurve.Value;
+      Assert.NotNull(outputCurve);
+      var manderCurve = (IManderStressStrainCurve)outputCurve.IStressStrainCurve;
+      Assert.Equal("Mander", StressStrainCurveFunction.GetCurveTypeFromInterface(manderCurve));
+      AssertStressAndStrain(peakPoint, manderCurve.PeakPoint);
       Assert.Equal(Pressure.From(initialModulus, _function.StressUnitResult).Value, manderCurve.InitialModulus.As(_function.StressUnitResult));
       Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, manderCurve.FailureStrain.As(_function.StrainUnitResult));
     }

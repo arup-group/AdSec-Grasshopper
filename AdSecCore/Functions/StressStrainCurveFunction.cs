@@ -222,50 +222,46 @@ namespace AdSecCore.Functions {
       var initialModulus = Pressure.From(InitialModulus.Value, StressUnitResult);
       var unconfinedStrength = Pressure.From(UnconfinedStrength.Value, StressUnitResult);
       var confinedStrength = Pressure.From(ConfinedStrength.Value, StressUnitResult);
-
-      try {
-        switch (SelectedCurveType) {
-          case StressStrainCurveType.Bilinear:
-            curve = IBilinearStressStrainCurve.Create(YieldPoint.Value, FailurePoint.Value);
-            break;
-          case StressStrainCurveType.Explicit:
-            var explicitCurve = IExplicitStressStrainCurve.Create();
-            foreach (var point in StressStrainPoints.Value) {
-              explicitCurve.Points.Add(point);
-            }
+      switch (SelectedCurveType) {
+        case StressStrainCurveType.Bilinear:
+          curve = IBilinearStressStrainCurve.Create(YieldPoint.Value, FailurePoint.Value);
+          break;
+        case StressStrainCurveType.Explicit:
+          var explicitCurve = IExplicitStressStrainCurve.Create();
+          foreach (var point in StressStrainPoints.Value) {
+            explicitCurve.Points.Add(point);
+          }
 #pragma warning disable S1481
-            var explicitFailureStrain = explicitCurve.FailureStrain;
+          var explicitFailureStrain = explicitCurve.FailureStrain;
 #pragma warning restore S1481
-            curve = explicitCurve;
-            break;
-          case StressStrainCurveType.FibModelCode:
-            curve = IFibModelCodeStressStrainCurve.Create(initialModulus, PeakPoint.Value, failureStrain);
-            break;
-          case StressStrainCurveType.Linear:
-            curve = ILinearStressStrainCurve.Create(FailurePoint.Value);
-            break;
-          case StressStrainCurveType.ManderConfined:
-            curve = IManderConfinedStressStrainCurve.Create(unconfinedStrength, confinedStrength, initialModulus, failureStrain);
-            break;
-          case StressStrainCurveType.Mander:
-            curve = IManderStressStrainCurve.Create(initialModulus, PeakPoint.Value, failureStrain);
-            break;
-          case StressStrainCurveType.ParabolaRectangle:
-            curve = IParabolaRectangleStressStrainCurve.Create(YieldPoint.Value, failureStrain);
-            break;
-          case StressStrainCurveType.Park:
-            curve = IParkStressStrainCurve.Create(YieldPoint.Value);
-            break;
-          case StressStrainCurveType.Popovics:
-            curve = IPopovicsStressStrainCurve.Create(PeakPoint.Value, failureStrain);
-            break;
-          case StressStrainCurveType.Rectangular:
-            curve = IRectangularStressStrainCurve.Create(YieldPoint.Value, failureStrain);
-            break;
-        }
-      } catch (ArgumentNullException) {
-        ErrorMessages.Add("Input value can not be null");
+          curve = explicitCurve;
+          break;
+        case StressStrainCurveType.FibModelCode:
+          curve = IFibModelCodeStressStrainCurve.Create(initialModulus, PeakPoint.Value, failureStrain);
+          break;
+        case StressStrainCurveType.Linear:
+          curve = ILinearStressStrainCurve.Create(FailurePoint.Value);
+          break;
+        case StressStrainCurveType.ManderConfined:
+          curve = IManderConfinedStressStrainCurve.Create(unconfinedStrength, confinedStrength, initialModulus, failureStrain);
+          break;
+        case StressStrainCurveType.Mander:
+          curve = IManderStressStrainCurve.Create(initialModulus, PeakPoint.Value, failureStrain);
+          break;
+        case StressStrainCurveType.ParabolaRectangle:
+          curve = IParabolaRectangleStressStrainCurve.Create(YieldPoint.Value, failureStrain);
+          break;
+        case StressStrainCurveType.Park:
+          curve = IParkStressStrainCurve.Create(YieldPoint.Value);
+          break;
+        case StressStrainCurveType.Popovics:
+          curve = IPopovicsStressStrainCurve.Create(PeakPoint.Value, failureStrain);
+          break;
+        case StressStrainCurveType.Rectangular:
+          curve = IRectangularStressStrainCurve.Create(YieldPoint.Value, failureStrain);
+          break;
       }
+
       OutputCurve.Value = new StressStrainCurve() { IStressStrainCurve = curve, IsCompression = true };
     }
 
@@ -280,6 +276,7 @@ namespace AdSecCore.Functions {
       switch (SelectedCurveType) {
         case StressStrainCurveType.FibModelCode:
         case StressStrainCurveType.ManderConfined:
+        case StressStrainCurveType.Mander:
           options.Add(new UnitOptions() {
             Description = "Strain Unit",
             UnitType = typeof(StrainUnit),

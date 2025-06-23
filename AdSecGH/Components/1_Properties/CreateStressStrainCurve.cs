@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
-using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using AdSecGHCore.Constants;
-
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Parameters;
 
-using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.GH.Helpers;
 
 using OasysGH;
