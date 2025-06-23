@@ -463,8 +463,6 @@ namespace Oasys.GH.Helpers {
       var point3d = new Point3d();
       if (goo is IStressStrainPoint point) {
         stressStrainPoint = point;
-      } else if (goo is AdSecStressStrainPointGoo pointGoo) {
-        stressStrainPoint = pointGoo.StressStrainPoint;
       } else if (GH_Convert.ToPoint3d(goo, ref point3d, GH_Conversion.Both)) {
         stressStrainPoint = AdSecStressStrainPointGoo.CreateFromPoint3d(point3d);
       } else {

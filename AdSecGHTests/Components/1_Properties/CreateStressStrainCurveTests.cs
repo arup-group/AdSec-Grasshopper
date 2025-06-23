@@ -39,6 +39,12 @@ namespace AdSecGHTests.Components.Properties {
       return IStressStrainPoint.Create(stress, strain);
     }
 
+    private static AdSecStressStrainPointGoo CreateYieldPointGoo() {
+      var strain = Strain.FromRatio(0.002);
+      var stress = Pressure.FromPascals(10);
+      return new AdSecStressStrainPointGoo(IStressStrainPoint.Create(stress, strain));
+    }
+
     private static List<object> CreateStressStressPoints() {
       var strain = Strain.FromRatio(0.002);
       var stress = Pressure.FromPascals(10);
@@ -82,7 +88,7 @@ namespace AdSecGHTests.Components.Properties {
     [Fact]
     public void BilinearModeReturnNullOutputWhenInputIsIsNotCorrect() {
       _component.SetSelected(0, 0);
-      ComponentTestHelper.SetInput(_component, CreateYieldPoint(), 0);
+      ComponentTestHelper.SetInput(_component, CreateYieldPointGoo(), 0);
       ComponentTestHelper.SetInput(_component, CreateInitialModulus(), 1);
       var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
       Assert.Contains("Input type mismatch", _component.RuntimeMessages(Grasshopper.Kernel.GH_RuntimeMessageLevel.Error)[0]);

@@ -8,6 +8,8 @@ using Oasys.AdSec.StandardMaterials;
 using OasysUnits;
 using OasysUnits.Units;
 
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace AdSecCoreTests.Functions {
   public class StressStrainCurveFunctionTests {
@@ -335,6 +337,23 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal("StressStrainCrv", meta.NickName);
       Assert.Equal("Create a Stress Strain Curve for AdSec Material", meta.Description);
     }
+
+    [Fact]
+    public void ShouldTriggerOnVariableInputChanged() {
+      bool hasRun = false;
+      _function.OnVariableInputChanged += () => { hasRun = true; };
+      _function.SelectedCurveType = StressStrainCurveType.Explicit;
+      Assert.True(hasRun);
+    }
+
+    [Fact]
+    public void ShouldTriggerOnDropdownChanged() {
+      bool hasRun = false;
+      _function.OnDropdownChanged += () => { hasRun = true; };
+      _function.SelectedCurveType = StressStrainCurveType.Explicit;
+      Assert.True(hasRun);
+    }
+
     [Fact]
     public void TestDefaultCurveType() {
       IReinforcement material = Reinforcement.Steel.IS456.Edition_2000.S415;
