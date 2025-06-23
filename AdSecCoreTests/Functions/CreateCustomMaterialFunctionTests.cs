@@ -239,5 +239,27 @@ namespace AdSecCoreTests.Functions {
       _function.Compute();
       Assert.IsAssignableFrom<IFrp>(_function.Material.Value.Material);
     }
+
+    [Fact]
+    public void ShouldAddWarningWhenFailureStrainIsZero() {
+      var linearStressStrainCurve
+        = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal),
+          new Strain(0, StrainUnit.Ratio)));
+      _function.UlsTensionCurve.Value = linearStressStrainCurve;
+      _function.Compute();
+      Assert.Single(_function.WarningMessages);
+      Assert.Equal($"ULS Stress Strain Curve for Tension has zero failure strain.{Environment.NewLine}The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)", _function.WarningMessages[0]);
+    }
+
+    [Fact]
+    public void ShouldReplaceInvalidCurveWithAValidOne() {
+      var linearStressStrainCurve
+        = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal),
+          new Strain(0, StrainUnit.Ratio)));
+      _function.UlsTensionCurve.Value = linearStressStrainCurve;
+      _function.Compute();
+      var valueMaterial = _function.Material.Value.Material;
+      Assert.Equal(1, valueMaterial.Strength.Tension.FailureStrain.As(StrainUnit.Ratio));
+    }
   }
 }

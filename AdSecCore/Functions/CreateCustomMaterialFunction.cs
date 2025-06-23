@@ -7,6 +7,9 @@ using AdSecGHCore.Constants;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
 
+using OasysUnits;
+using OasysUnits.Units;
+
 namespace AdSecCore.Functions {
 
   public class CreateCustomMaterialFunction : Function, IVariableInput, IDropdownOptions {
@@ -82,7 +85,15 @@ namespace AdSecCore.Functions {
     }
 
     public override void Compute() {
-      var strength = ITensionCompressionCurve.Create(UlsTensionCurve.Value, UlsCompressionCurve.Value);
+      DoubleComparer comparer = new DoubleComparer();
+      var stressStrainCurve = UlsTensionCurve.Value;
+      if (comparer.Equals(0, stressStrainCurve.FailureStrain.Value)) {
+        WarningMessages.Add($"ULS Stress Strain Curve for Tension has zero failure strain.{Environment.NewLine}The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
+        stressStrainCurve = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal),
+          new Strain(1, StrainUnit.Ratio)));
+      }
+
+      var strength = ITensionCompressionCurve.Create(stressStrainCurve, UlsCompressionCurve.Value);
       var serviceability = ITensionCompressionCurve.Create(SlsTensionCurve.Value, SlsCompressionCurve.Value);
 
       Material.Value = new MaterialDesign() {
