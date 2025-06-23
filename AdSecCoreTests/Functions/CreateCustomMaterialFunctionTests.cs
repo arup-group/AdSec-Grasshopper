@@ -172,19 +172,37 @@ namespace AdSecCoreTests.Functions {
       _function.SetMaterialType(MaterialType.Steel);
       Assert.Equal(1, timesTriggered);
     }
+  }
 
-    [Fact]
-    public void ShouldCreateACustomSteel() {
-      _function.SetMaterialType(MaterialType.Steel);
+  public class CustomMaterialFunctionComputeTests {
+    private readonly CreateCustomMaterialFunction _function;
+
+    public CustomMaterialFunctionComputeTests() {
+      _function = new CreateCustomMaterialFunction();
       _function.DesignCode.Value = new DesignCode() { IDesignCode = IS456.Edition_2000 };
-      var linearStressStrainCurve = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
+      var linearStressStrainCurve
+        = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal),
+          new Strain(1, StrainUnit.Ratio)));
       _function.UlsCompressionCurve.Value = linearStressStrainCurve;
       _function.UlsTensionCurve.Value = linearStressStrainCurve;
       _function.SlsCompressionCurve.Value = linearStressStrainCurve;
       _function.SlsTensionCurve.Value = linearStressStrainCurve;
+    }
+
+    [Fact]
+    public void ShouldCreateACustomSteel() {
+      _function.SetMaterialType(MaterialType.Steel);
       _function.Compute();
       Assert.NotNull(_function.Material.Value);
       Assert.IsAssignableFrom<ISteel>(_function.Material.Value.Material);
+    }
+
+    [Fact(Skip = "Concrete not implemented yet")]
+    public void ShouldCreateACustomConcrete() {
+      _function.SetMaterialType(MaterialType.Concrete);
+      _function.Compute();
+      Assert.NotNull(_function.Material.Value);
+      Assert.IsAssignableFrom<IConcrete>(_function.Material.Value.Material);
     }
   }
 }

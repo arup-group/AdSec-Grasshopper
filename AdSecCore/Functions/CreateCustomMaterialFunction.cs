@@ -86,11 +86,20 @@ namespace AdSecCore.Functions {
         = ITensionCompressionCurve.Create(UlsTensionCurve.Value, UlsCompressionCurve.Value);
       var sls_tensionCompressionCurve
         = ITensionCompressionCurve.Create(SlsTensionCurve.Value, SlsCompressionCurve.Value);
-      Material.Value = new MaterialDesign() {
-        DesignCode = DesignCode.Value,
-        Material = ISteel.Create(uls_tensionCompressionCurve, sls_tensionCompressionCurve),
-        GradeName = DesignCode.Value.DesignCodeName,
-      };
+
+      switch (CurrentMaterialType) {
+        case MaterialType.Concrete: break;
+        case MaterialType.Rebar: break;
+        case MaterialType.Tendon: break;
+        case MaterialType.Steel:
+          Material.Value = new MaterialDesign() {
+            DesignCode = DesignCode.Value,
+            Material = ISteel.Create(uls_tensionCompressionCurve, sls_tensionCompressionCurve),
+            GradeName = DesignCode.Value.DesignCodeName,
+          };
+          break;
+        case MaterialType.FRP: break;
+      }
     }
 
     public event Action OnVariableInputChanged;
