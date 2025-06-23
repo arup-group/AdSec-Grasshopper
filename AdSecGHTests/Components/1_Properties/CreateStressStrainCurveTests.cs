@@ -8,7 +8,10 @@ using AdSecGH.Components;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
+using AdSecGHTests.Components._3_Rebar;
 using AdSecGHTests.Helpers;
+
+using Grasshopper.Kernel;
 
 using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.GH.Helpers;
@@ -210,6 +213,27 @@ namespace AdSecGHTests.Components.Properties {
       var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
       Assert.Equal(StressStrainCurveType.Rectangular, _component.BusinessComponent.SelectedCurveType);
       Assert.NotNull(result);
+    }
+
+    void SetRectangularInput(CreateStressStrainCurve component) {
+      ComponentTestHelper.SetInput(component, CreateYieldPoint(), 0);
+      ComponentTestHelper.SetInput(component, CreateFailureStrain(), 1);
+    }
+
+    [Fact]
+    public void RectangleModelShouldUseSavedMode() {
+      _component.SetSelected(0, 9);
+      SetRectangularInput(_component);
+      var doc = new GH_DocumentIO();
+      doc.Document = new GH_Document();
+      doc.Document.AddObject(_component, false);
+      var randomPath = CreateRebarGroupSaveLoadTests.GetRandomName();
+      doc.SaveQuiet(randomPath);
+      doc.Open(randomPath);
+      doc.Document.NewSolution(true);
+      var component = (CreateStressStrainCurve)doc.Document.FindComponent(_component.InstanceGuid);
+      SetRectangularInput(component);
+      Assert.Equal(StressStrainCurveType.Rectangular, _component.BusinessComponent.SelectedCurveType);
     }
 
     [Fact]
