@@ -187,6 +187,10 @@ namespace AdSecCoreTests.Functions {
       _function.UlsTensionCurve.Value = linearStressStrainCurve;
       _function.SlsCompressionCurve.Value = linearStressStrainCurve;
       _function.SlsTensionCurve.Value = linearStressStrainCurve;
+
+      var pressure = new Pressure(-0.5, PressureUnit.Bar);
+      var pressure2 = new Pressure(1, PressureUnit.Bar);
+      _function.CrackCalcParams.Value = IConcreteCrackCalculationParameters.Create(pressure2, pressure, pressure2);
     }
 
     [Fact]
@@ -197,8 +201,17 @@ namespace AdSecCoreTests.Functions {
       Assert.IsAssignableFrom<ISteel>(_function.Material.Value.Material);
     }
 
-    [Fact(Skip = "Concrete not implemented yet")]
+    [Fact]
     public void ShouldCreateACustomConcrete() {
+      _function.SetMaterialType(MaterialType.Concrete);
+      _function.Compute();
+      Assert.NotNull(_function.Material.Value);
+      Assert.IsAssignableFrom<IConcrete>(_function.Material.Value.Material);
+    }
+
+    [Fact]
+    public void ShouldCreateACustomConcreteWithNullCrack() {
+      _function.CrackCalcParams.Value = null;
       _function.SetMaterialType(MaterialType.Concrete);
       _function.Compute();
       Assert.NotNull(_function.Material.Value);
