@@ -266,6 +266,7 @@ namespace AdSecCore.Functions {
     }
 
     public IOptions[] Options() {
+      UpdateUnits();
       var options = new List<IOptions> {
         new EnumOptions() {
           EnumType = typeof(StressStrainCurveType),

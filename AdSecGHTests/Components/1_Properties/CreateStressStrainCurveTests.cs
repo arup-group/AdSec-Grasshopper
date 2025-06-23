@@ -81,6 +81,7 @@ namespace AdSecGHTests.Components.Properties {
       ComponentTestHelper.SetInput(_component, CreateYieldPoint(), 0);
       ComponentTestHelper.SetInput(_component, CreateFailurePoint(), 1);
       var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal(3, result.ControlPoints.Count);
       Assert.Equal(StressStrainCurveType.Bilinear, _component.BusinessComponent.SelectedCurveType);
       Assert.NotNull(result);
     }
@@ -109,7 +110,7 @@ namespace AdSecGHTests.Components.Properties {
       _component.SetSelected(0, 1);
       ComponentTestHelper.SetInput(_component, CreateStressStressPoints());
       var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
-      var v1 = _component.RuntimeMessages(Grasshopper.Kernel.GH_RuntimeMessageLevel.Error);
+      Assert.Equal(2, result.ControlPoints.Count);
       Assert.NotNull(result);
     }
 
@@ -177,6 +178,7 @@ namespace AdSecGHTests.Components.Properties {
       ComponentTestHelper.SetInput(_component, CreateYieldPoint(), 0);
       ComponentTestHelper.SetInput(_component, CreateFailureStrain(), 1);
       var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Empty(result.ControlPoints);
       Assert.Equal(StressStrainCurveType.ParabolaRectangle, _component.BusinessComponent.SelectedCurveType);
       Assert.NotNull(result);
     }

@@ -159,19 +159,20 @@ namespace AdSecGH.Parameters {
         default:
           double maxStrain = stressStrainCurve.FailureStrain.As(DefaultUnits.StrainUnitResult);
           var polypoints = new List<Point3d>();
-          for (int i = 0; i < 250; i++) {
-            var strain = new Strain(i / 100.0 * maxStrain, DefaultUnits.StrainUnitResult);
+          for (int i = 0; i <= 100; i++) {
+            var strain = new Strain(Math.Min(i / 100.0 * maxStrain, maxStrain), DefaultUnits.StrainUnitResult);
             Pressure stress;
             try {
               stress = stressStrainCurve.StressAt(strain);
             } catch (Exception) {
               stress = Pressure.Zero;
             }
+
             polypoints.Add(new Point3d(strain.As(DefaultUnits.StrainUnitResult) * direction,
               stress.As(DefaultUnits.StressUnitResult) * direction, 0));
           }
+
           curveOut = new Polyline(polypoints).ToPolylineCurve();
-          point3ds = polypoints;
           break;
       }
       return new Tuple<Curve, List<Point3d>>(curveOut, point3ds);
@@ -205,7 +206,6 @@ namespace AdSecGH.Parameters {
           new Strain(point3d.X, DefaultUnits.StrainUnitResult));
         strainPoints.Add(point);
       }
-
       return strainPoints;
     }
   }
