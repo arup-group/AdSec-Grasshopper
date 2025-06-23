@@ -12,14 +12,6 @@ namespace AdSecGH.Parameters {
   ///   AdSec Material class, this class defines the basic properties and methods for any AdSec Material
   /// </summary>
   public class AdSecMaterial {
-    // internal enum AdSecMaterialType {
-    //   Concrete,
-    //   Rebar,
-    //   Tendon,
-    //   Steel,
-    //   FRP,
-    // }
-
     public AdSecDesignCode DesignCode { get; set; }
     public string DesignCodeName => DesignCode?.DesignCodeName;
     public string GradeName { get; set; }

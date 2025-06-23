@@ -31,6 +31,12 @@ namespace AdSecGH.Components {
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
     protected override Bitmap Icon => Resources.CreateCustomMaterial;
 
+    public CreateCustomMaterial() {
+      BusinessComponent.OnVariableInputChanged += () => {
+        RecordUndoEvent("Changed dropdown");
+      };
+    }
+
     public override bool Read(GH_IReader reader) {
       isConcrete = reader.GetBoolean("isConcrete");
       return base.Read(reader);
@@ -44,7 +50,7 @@ namespace AdSecGH.Components {
       isConcrete = _selectedItems[i] == MaterialType.Concrete.ToString();
 
       BusinessComponent.SetMaterialType(_type);
-      // RecordUndoEvent("Changed dropdown");
+
       base.UpdateUI();
     }
 
