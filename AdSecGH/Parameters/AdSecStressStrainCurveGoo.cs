@@ -31,7 +31,7 @@ namespace AdSecGH.Parameters {
       StressStrainDefault,
     }
 
-    public Curve Curve;
+    public Curve Curve { get; private set; }
 
     public List<AdSecStressStrainPointGoo> AdSecStressStrainPoints {
       get {
@@ -53,13 +53,15 @@ namespace AdSecGH.Parameters {
         throw new InvalidCastException("Unable to cast to internal IStressStrainCurve to IExplicitStressStrainCurve");
       }
     }
-    // public IStressStrainCurve StressStrainCurve { get; }
+
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "StressStrainCurve";
 
     private readonly StressStrainCurveType _type;
 
-    public AdSecStressStrainCurveGoo(Curve curve, IStressStrainCurve stressStrainCurve, StressStrainCurveType type, List<Point3d> points) : base(stressStrainCurve) {
+    public AdSecStressStrainCurveGoo(
+      Curve curve, IStressStrainCurve stressStrainCurve, StressStrainCurveType type,
+      List<Point3d> points) : base(stressStrainCurve) {
       Curve = curve;
       ControlPoints = points;
       _type = type;
@@ -73,13 +75,13 @@ namespace AdSecGH.Parameters {
           Curve = Create(stressStrainCurve, _type, false).Item1;
           return true;
       }
+
       return false;
     }
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecStressStrainCurveGoo))) {
-        target = (Q)(object)new AdSecStressStrainCurveGoo(Curve.DuplicateCurve(), Value, _type,
-          ControlPoints.ToList());
+        target = (Q)(object)new AdSecStressStrainCurveGoo(Curve.DuplicateCurve(), Value, _type, ControlPoints.ToList());
         return true;
       }
 
@@ -97,8 +99,7 @@ namespace AdSecGH.Parameters {
       return false;
     }
 
-    public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
-    }
+    public void DrawViewportMeshes(GH_PreviewMeshArgs args) { }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
       if (Value == null) {
@@ -131,7 +132,8 @@ namespace AdSecGH.Parameters {
       return null;
     }
 
-    internal static Tuple<Curve, List<Point3d>> Create(IStressStrainCurve stressStrainCurve, StressStrainCurveType type, bool isCompression) {
+    internal static Tuple<Curve, List<Point3d>> Create(
+      IStressStrainCurve stressStrainCurve, StressStrainCurveType type, bool isCompression) {
       int direction = isCompression ? 1 : -1;
       Curve curveOut;
       var point3ds = new List<Point3d>();
@@ -190,7 +192,8 @@ namespace AdSecGH.Parameters {
       return new Tuple<Curve, List<Point3d>>(curveOut, point3ds);
     }
 
-    internal static Tuple<Curve, List<Point3d>> CreateFromCode(IStressStrainCurve stressStrainCurve, bool isCompression) {
+    internal static Tuple<Curve, List<Point3d>> CreateFromCode(
+      IStressStrainCurve stressStrainCurve, bool isCompression) {
       int direction = isCompression ? 1 : -1;
       var point3ds = new List<Point3d>();
 
