@@ -16,7 +16,7 @@ using OasysUnits;
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
-  public class AdSecStressStrainCurveGoo : GH_GeometricGoo<Curve>, IGH_PreviewData {
+  public class AdSecStressStrainCurveGoo : GH_GeometricGoo<IStressStrainCurve>, IGH_PreviewData {
     public enum StressStrainCurveType {
       Bilinear,
       Explicit,
@@ -31,6 +31,8 @@ namespace AdSecGH.Parameters {
       StressStrainDefault,
     }
 
+    public Curve Curve;
+
     public List<AdSecStressStrainPointGoo> AdSecStressStrainPoints {
       get {
         var outPts = new List<AdSecStressStrainPointGoo>();
@@ -39,53 +41,44 @@ namespace AdSecGH.Parameters {
         return outPts;
       }
     }
-    public override BoundingBox Boundingbox => Value == null ? BoundingBox.Empty : Value.GetBoundingBox(false);
+    public override BoundingBox Boundingbox => Value == null ? BoundingBox.Empty : Curve.GetBoundingBox(false);
     public BoundingBox ClippingBox => Boundingbox;
     public List<Point3d> ControlPoints { get; }
 
     public Oasys.Collections.IList<IStressStrainPoint> GetIStressStrainPoints() {
       try {
-        var explicitStressStrainCurve = (IExplicitStressStrainCurve)StressStrainCurve;
+        var explicitStressStrainCurve = (IExplicitStressStrainCurve)Value;
         return explicitStressStrainCurve.Points;
       } catch (Exception) {
         throw new InvalidCastException("Unable to cast to internal IStressStrainCurve to IExplicitStressStrainCurve");
       }
     }
-    public IStressStrainCurve StressStrainCurve { get; }
+    // public IStressStrainCurve StressStrainCurve { get; }
     public override string TypeDescription => $"AdSec {TypeName} Parameter";
     public override string TypeName => "StressStrainCurve";
 
     private readonly StressStrainCurveType _type;
 
-    public AdSecStressStrainCurveGoo(Curve curve, IStressStrainCurve stressStrainCurve, StressStrainCurveType type, List<Point3d> points) : base(curve) {
+    public AdSecStressStrainCurveGoo(Curve curve, IStressStrainCurve stressStrainCurve, StressStrainCurveType type, List<Point3d> points) : base(stressStrainCurve) {
+      Curve = curve;
       ControlPoints = points;
       _type = type;
-      StressStrainCurve = stressStrainCurve;
     }
 
     public override bool CastFrom(object source) {
       switch (source) {
         case null: return false;
-        case Curve curve:
-          Value = curve;
-          return true;
-        case GH_Curve lineGoo:
-          Value = lineGoo.Value;
+        case IStressStrainCurve stressStrainCurve:
+          Value = stressStrainCurve;
+          Curve = Create(stressStrainCurve, _type, false).Item1;
           return true;
       }
-
-      Curve line = null;
-      if (!GH_Convert.ToCurve(source, ref line, GH_Conversion.Both)) {
-        return false;
-      }
-
-      Value = line;
-      return true;
+      return false;
     }
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecStressStrainCurveGoo))) {
-        target = (Q)(object)new AdSecStressStrainCurveGoo(m_value.DuplicateCurve(), StressStrainCurve, _type,
+        target = (Q)(object)new AdSecStressStrainCurveGoo(Curve.DuplicateCurve(), Value, _type,
           ControlPoints.ToList());
         return true;
       }
@@ -96,7 +89,7 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(GH_Curve))) {
-        target = (Q)(object)new GH_Curve(Value);
+        target = (Q)(object)new GH_Curve(Curve);
         return true;
       }
 
@@ -112,18 +105,18 @@ namespace AdSecGH.Parameters {
         return;
       }
 
-      args.Pipeline.DrawCurve(Value, Colour.OasysBlue, 2);
+      args.Pipeline.DrawCurve(Curve, Colour.OasysBlue, 2);
       foreach (var point3d in ControlPoints) {
         args.Pipeline.DrawCircle(new Circle(point3d, 0.5), Colour.OasysYellow, 1);
       }
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecStressStrainCurveGoo(Value.DuplicateCurve(), StressStrainCurve, _type, ControlPoints);
+      return new AdSecStressStrainCurveGoo(Curve.DuplicateCurve(), Value, _type, ControlPoints);
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
-      return Value.GetBoundingBox(false);
+      return Curve.GetBoundingBox(false);
     }
 
     public override IGH_GeometricGoo Morph(SpaceMorph xmorph) {

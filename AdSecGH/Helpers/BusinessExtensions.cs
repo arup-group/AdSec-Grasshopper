@@ -18,6 +18,7 @@ using Grasshopper.Kernel.Types;
 using Microsoft.CSharp.RuntimeBinder;
 
 using Oasys.AdSec;
+using Oasys.AdSec.Materials.StressStrainCurves;
 
 using OasysGH.Parameters;
 using OasysGH.Units;

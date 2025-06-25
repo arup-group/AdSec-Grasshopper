@@ -48,9 +48,9 @@ namespace AdSecGH.Parameters {
       var slsTensionCurve = new AdSecStressStrainCurveGoo(slsTension.Item1, material.Serviceability.Tension,
         AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsTension.Item2);
       var ulsTensionCompression
-        = ITensionCompressionCurve.Create(ulsTensionCurve.StressStrainCurve, ulsCompressionCurve.StressStrainCurve);
+        = ITensionCompressionCurve.Create(ulsTensionCurve.Value, ulsCompressionCurve.Value);
       var slsTensionCompression
-        = ITensionCompressionCurve.Create(slsTensionCurve.StressStrainCurve, slsComprssionCurve.StressStrainCurve);
+        = ITensionCompressionCurve.Create(slsTensionCurve.Value, slsComprssionCurve.Value);
 
       //Create methods throws exception when material is not of the correct type, so cannot use if's here
       try {

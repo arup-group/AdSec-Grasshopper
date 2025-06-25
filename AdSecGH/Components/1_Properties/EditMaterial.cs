@@ -144,7 +144,7 @@ namespace AdSecGH.Components {
         var comparer = new DoubleComparer();
 
         if (rebuildCurves) {
-          if (comparer.Equals(ulsTensCrv.StressStrainCurve.FailureStrain.Value, 0)) {
+          if (comparer.Equals(ulsTensCrv.Value.FailureStrain.Value, 0)) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
               $"ULS Stress Strain Curve for Tension has zero failure strain.{Environment.NewLine}The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
             IStressStrainCurve crv = ILinearStressStrainCurve.Create(
@@ -155,14 +155,14 @@ namespace AdSecGH.Components {
               AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, tuple.Item2);
           }
 
-          if (comparer.Equals(ulsCompCrv.StressStrainCurve.FailureStrain.Value, 0)) {
+          if (comparer.Equals(ulsCompCrv.Value.FailureStrain.Value, 0)) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
               "ULS Stress Strain Curve for Compression has zero failure strain.");
             return;
           }
 
-          var ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.StressStrainCurve, ulsCompCrv.StressStrainCurve);
-          var slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
+          var ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.Value, ulsCompCrv.Value);
+          var slsTC = ITensionCompressionCurve.Create(slsTensCrv.Value, slsCompCrv.Value);
           switch (editMat.Type) {
             case MaterialType.Concrete:
               editMat.Material = concreteCrack == null ? IConcrete.Create(ulsTC, slsTC) :

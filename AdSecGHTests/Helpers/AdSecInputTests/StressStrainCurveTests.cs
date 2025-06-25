@@ -41,7 +41,7 @@ namespace AdSecGHTests.Helpers {
 
       Assert.True(castSuccessful);
       Assert.NotNull(_curveGoo);
-      Assert.True(_curveGoo.Value.IsPolyline());
+      Assert.True(_curveGoo.Curve.IsPolyline());
       Assert.Equal(2, _curveGoo.ControlPoints.Count);
     }
 
