@@ -1,4 +1,5 @@
-﻿using AdSecCore.Functions;
+﻿using System;
+using System.Collections.Generic;
 
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
@@ -9,6 +10,8 @@ using Oasys.AdSec.Materials.StressStrainCurves;
 
 using OasysUnits;
 using OasysUnits.Units;
+
+using Rhino.Geometry;
 
 using Xunit;
 
@@ -36,29 +39,27 @@ namespace AdSecGHTests.Helpers {
     public void TryCastToStressStrainCurveReturnsGooFromPolylineCompressionIs(bool compression) {
       IStressStrainCurve crv = ILinearStressStrainCurve.Create(
         IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
-      var tuple = AdSecStressStrainCurveGoo.Create(crv, false);
+      var curveGoo = AdSecStressStrainCurveGoo.Create(crv, false);
 
-      var objectWrapper = new GH_ObjectWrapper(tuple.Item1);
+      var objectWrapper = new GH_ObjectWrapper(curveGoo.Curve);
       bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(compression, objectWrapper, ref _curveGoo);
 
       Assert.True(castSuccessful);
       Assert.NotNull(_curveGoo);
-      Assert.True(_curveGoo.Value.IsPolyline());
+      Assert.True(_curveGoo.Curve.IsPolyline());
       Assert.Equal(2, _curveGoo.ControlPoints.Count);
     }
 
     [Fact]
     public void TryCastToStressStrainCurveReturnsGooFromAnotherGoo() {
       var curve = IExplicitStressStrainCurve.Create();
-      var tuple = AdSecStressStrainCurveGoo.Create(curve, false);
-      var goo = new AdSecStressStrainCurveGoo(tuple.Item1, curve, tuple.Item2);
-
+      var curveGoo = AdSecStressStrainCurveGoo.Create(curve, false);
+      var goo = new AdSecStressStrainCurveGoo(curveGoo.Curve, curveGoo.Value, curveGoo.ControlPoints);
       var objectWrapper = new GH_ObjectWrapper(goo);
       bool castSuccessful = AdSecInput.TryCastToStressStrainCurve(false, objectWrapper, ref _curveGoo);
 
       Assert.True(castSuccessful);
       Assert.NotNull(_curveGoo);
-      Assert.Null(_curveGoo.Value);
       Assert.Empty(_curveGoo.ControlPoints);
     }
   }

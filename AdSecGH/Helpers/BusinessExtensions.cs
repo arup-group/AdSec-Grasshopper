@@ -53,6 +53,10 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(SubComponentArrayParameter), ParamGenericObject
         }, {
+          typeof(StressStrainCurveParameter), ParamGenericObject
+        }, {
+          typeof(CrackCalcParameter), ParamGenericObject
+        }, {
           typeof(DesignCodeParameter), ParamGenericObject
         }, {
           typeof(MaterialParameter), ParamGenericObject
@@ -149,8 +153,6 @@ namespace Oasys.GH.Helpers {
           typeof(StressStrainPointParameter), ParamGenericObject
         },{
           typeof(StressStrainPointArrayParameter), ParamGenericObject
-        },{
-          typeof(StressStrainCurveParameter), ParamGenericObject
         },
       };
 
@@ -326,8 +328,7 @@ namespace Oasys.GH.Helpers {
         },{
           typeof(StressStrainCurveParameter), a => {
             var stressStrainCurve = (a as StressStrainCurveParameter).Value;
-            var tuple = AdSecStressStrainCurveGoo.Create(stressStrainCurve.IStressStrainCurve,stressStrainCurve.IsCompression);
-            return new AdSecStressStrainCurveGoo(tuple.Item1,stressStrainCurve.IStressStrainCurve,tuple.Item2);
+            return AdSecStressStrainCurveGoo.Create(stressStrainCurve.IStressStrainCurve,stressStrainCurve.IsCompression);
           }
         }
       };

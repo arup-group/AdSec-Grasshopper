@@ -331,8 +331,7 @@ namespace AdSecGH.Helpers {
         var pts = AdSecStressStrainCurveGoo.StressStrainPtsFromPolyline(curve);
         var exCrv = IExplicitStressStrainCurve.Create();
         exCrv.Points = pts;
-        var tuple = AdSecStressStrainCurveGoo.Create(exCrv, compression);
-        curveGoo = new AdSecStressStrainCurveGoo(tuple.Item1, exCrv, tuple.Item2);
+        curveGoo = AdSecStressStrainCurveGoo.Create(exCrv, compression);
       } else {
         castSuccess = false;
       }

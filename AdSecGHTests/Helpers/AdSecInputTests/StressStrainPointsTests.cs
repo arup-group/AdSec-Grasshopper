@@ -125,9 +125,9 @@ namespace AdSecGHTests.Helpers {
     public void TryCastToStressStrainPointsReturnsStressPointsFromCurves() {
       IStressStrainCurve curve = ILinearStressStrainCurve.Create(
         IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
-      var tuple = AdSecStressStrainCurveGoo.Create(curve, false);
+      var curveGoo = AdSecStressStrainCurveGoo.Create(curve, false);
 
-      var objectWrapper = new GH_ObjectWrapper(tuple.Item1);
+      var objectWrapper = new GH_ObjectWrapper(curveGoo.Curve);
       var objectWrappers = new List<GH_ObjectWrapper>() {
         objectWrapper,
       };

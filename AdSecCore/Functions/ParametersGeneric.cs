@@ -204,10 +204,10 @@ namespace AdSecCore.Functions {
   public class CurvatureParameter : ParameterAttribute<Curvature> { }
   public class ForceParameter : ParameterAttribute<Force> { }
   public class MomentParameter : ParameterAttribute<Moment> { }
+  public class CrackCalcParameter : ParameterAttribute<IConcreteCrackCalculationParameters> { }
   public class StressStrainPointParameter : ParameterAttribute<IStressStrainPoint> { }
   public class StressStrainPointArrayParameter : BaseArrayParameter<IStressStrainPoint> { }
   public class StressStrainCurveParameter : ParameterAttribute<StressStrainCurve> { }
-
   public class StressStrainCurve {
     public IStressStrainCurve IStressStrainCurve { get; set; }
     public bool IsCompression { get; set; }

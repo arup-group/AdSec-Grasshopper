@@ -7,15 +7,14 @@ using Grasshopper.Kernel;
 using Xunit;
 
 namespace IntegrationTests.Components {
-
   [Collection("GrasshopperFixture collection")]
-  public class AdSecGH_Example4_LoadWrite {
+  public class AdSecGH_Example5_CustomMaterial {
 
     private static GH_Document _document;
     public static GH_Document Document {
       get {
         if (_document == null) {
-          _document = OpenDocument("AdSecGH_Example4_LoadWrite.gh");
+          _document = OpenDocument("AdSecGH_Example5_CustomMaterial.gh");
         }
 
         return _document;
