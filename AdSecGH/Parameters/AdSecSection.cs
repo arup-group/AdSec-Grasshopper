@@ -110,19 +110,19 @@ namespace AdSecGH.Parameters {
     public static void MapMaterialToProfileColour(IMaterial material, out DisplayMaterial profileColour) {
       string materialString = material.ToString();
       materialString = materialString.Replace("Oasys.AdSec.Materials.I", "").Replace("_Implementation", "");
-      Enum.TryParse(materialString, out AdSecMaterial.AdSecMaterialType profileType);
+      Enum.TryParse(materialString, out MaterialType profileType);
 
       switch (profileType) {
-        case AdSecMaterial.AdSecMaterialType.Concrete:
+        case MaterialType.Concrete:
           profileColour = Colour.Concrete;
           break;
 
-        case AdSecMaterial.AdSecMaterialType.Steel:
+        case MaterialType.Steel:
           profileColour = Colour.Steel;
           break;
-        case AdSecMaterial.AdSecMaterialType.FRP:
-        case AdSecMaterial.AdSecMaterialType.Tendon:
-        case AdSecMaterial.AdSecMaterialType.Rebar:
+        case MaterialType.FRP:
+        case MaterialType.Tendon:
+        case MaterialType.Rebar:
           profileColour = Colour.Reinforcement;
           break;
         default:
