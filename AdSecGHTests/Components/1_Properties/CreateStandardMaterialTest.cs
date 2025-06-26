@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using AdSecCore.Functions;
+
 using AdSecGH;
 using AdSecGH.Components;
 using AdSecGH.Helpers;
@@ -168,7 +170,7 @@ namespace AdSecGHTests.Components.Properties {
     [InlineData(3, 7)]
     [InlineData(5, 0)]
     public void ShouldReturnNullForMissingValues(int materialType, int expectedSize) {
-      var designCodes = ReflectionHelper.StandardCodes((AdSecMaterial.AdSecMaterialType)materialType);
+      var designCodes = ReflectionHelper.StandardCodes((MaterialType)materialType);
       Assert.Equal(expectedSize, designCodes.Count);
     }
 

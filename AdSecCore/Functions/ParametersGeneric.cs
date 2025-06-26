@@ -6,6 +6,7 @@ using AdSecGH.Parameters;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
+using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.AdSec.Mesh;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Layers;
@@ -203,4 +204,6 @@ namespace AdSecCore.Functions {
   public class CurvatureParameter : ParameterAttribute<Curvature> { }
   public class ForceParameter : ParameterAttribute<Force> { }
   public class MomentParameter : ParameterAttribute<Moment> { }
+  public class StressStrainCurveParameter : ParameterAttribute<IStressStrainCurve> { }
+  public class CrackCalcParameter : ParameterAttribute<IConcreteCrackCalculationParameters> { }
 }

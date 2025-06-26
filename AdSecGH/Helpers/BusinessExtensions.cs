@@ -7,7 +7,6 @@ using System.Linq;
 using AdSecCore;
 using AdSecCore.Functions;
 
-using AdSecGH.Components;
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
@@ -19,6 +18,7 @@ using Grasshopper.Kernel.Types;
 using Microsoft.CSharp.RuntimeBinder;
 
 using Oasys.AdSec;
+using Oasys.AdSec.Materials.StressStrainCurves;
 
 using OasysGH.Parameters;
 using OasysGH.Units;
@@ -52,6 +52,10 @@ namespace Oasys.GH.Helpers {
           typeof(BooleanParameter), ConfigureParam<Param_Boolean>
         }, {
           typeof(SubComponentArrayParameter), ParamGenericObject
+        }, {
+          typeof(StressStrainCurveParameter), ParamGenericObject
+        }, {
+          typeof(CrackCalcParameter), ParamGenericObject
         }, {
           typeof(DesignCodeParameter), ParamGenericObject
         }, {
