@@ -181,8 +181,10 @@ namespace AdSecCoreTests.Functions {
       _function = new CreateCustomMaterialFunction();
       _function.DesignCode.Value = new DesignCode() { IDesignCode = IS456.Edition_2000 };
       var linearStressStrainCurve
-        = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal),
-          new Strain(1, StrainUnit.Ratio)));
+        = new StressStrainCurve() {
+          IStressStrainCurve = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal),
+          new Strain(1, StrainUnit.Ratio)))
+        };
       _function.UlsCompressionCurve.Value = linearStressStrainCurve;
       _function.UlsTensionCurve.Value = linearStressStrainCurve;
       _function.SlsCompressionCurve.Value = linearStressStrainCurve;
@@ -243,8 +245,10 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ShouldAddWarningWhenFailureStrainIsZero() {
       var linearStressStrainCurve
-        = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal),
-          new Strain(0, StrainUnit.Ratio)));
+         = new StressStrainCurve() {
+           IStressStrainCurve = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal),
+          new Strain(0, StrainUnit.Ratio)))
+         };
       _function.UlsTensionCurve.Value = linearStressStrainCurve;
       _function.Compute();
       Assert.Single(_function.WarningMessages);
@@ -254,8 +258,10 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ShouldReplaceInvalidCurveWithAValidOne() {
       var linearStressStrainCurve
-        = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal),
-          new Strain(0, StrainUnit.Ratio)));
+         = new StressStrainCurve() {
+           IStressStrainCurve = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal),
+          new Strain(0, StrainUnit.Ratio)))
+         };
       _function.UlsTensionCurve.Value = linearStressStrainCurve;
       _function.Compute();
       var valueMaterial = _function.Material.Value.Material;

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 
@@ -138,9 +140,9 @@ namespace AdSecGHTests.Helpers {
     public void TryCastToIPointsReturnsCorrectDataFromCurve() {
       IStressStrainCurve crv = ILinearStressStrainCurve.Create(
         IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
-      var tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, false);
+      var curveGoo = AdSecStressStrainCurveGoo.Create(crv, false);
 
-      var objectWrapper = new GH_ObjectWrapper(tuple.Item1);
+      var objectWrapper = new GH_ObjectWrapper(curveGoo.Curve);
       var objwrap = new List<GH_ObjectWrapper>() {
         objectWrapper,
       };
@@ -196,9 +198,9 @@ namespace AdSecGHTests.Helpers {
     public void TryCastToCurveReturnsTrueWhenDataIsCorrect() {
       IStressStrainCurve crv = ILinearStressStrainCurve.Create(
         IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
-      var tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, false);
+      var curveGoo = AdSecStressStrainCurveGoo.Create(crv, false);
 
-      var objectWrapper = new GH_ObjectWrapper(tuple.Item1);
+      var objectWrapper = new GH_ObjectWrapper(curveGoo.Curve);
       Curve curve = null;
       bool castSuccessful = AdSecInput.TryCastToCurve(objectWrapper, ref curve);
 

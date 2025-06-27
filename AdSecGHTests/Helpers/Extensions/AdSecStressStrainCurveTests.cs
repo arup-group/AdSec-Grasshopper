@@ -1,4 +1,6 @@
-﻿using AdSecGH.Parameters;
+﻿using AdSecCore.Functions;
+
+using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
 
@@ -89,9 +91,9 @@ namespace AdSecGHTests.Helpers.Extensions {
     public void ReturnsCurveWhenDataCorrect() {
       IStressStrainCurve crv = ILinearStressStrainCurve.Create(
         IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
-      var tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, false);
+      var curveGoo = AdSecStressStrainCurveGoo.Create(crv, false);
 
-      ComponentTestHelper.SetInput(_component, tuple.Item1);
+      ComponentTestHelper.SetInput(_component, curveGoo.Curve);
 
       object result = ComponentTestHelper.GetOutput(_component);
       Assert.True(result is AdSecStressStrainCurveGoo);

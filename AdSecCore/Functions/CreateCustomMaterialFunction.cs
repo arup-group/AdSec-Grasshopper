@@ -87,14 +87,14 @@ namespace AdSecCore.Functions {
     public override void Compute() {
       DoubleComparer comparer = new DoubleComparer();
       var stressStrainCurve = UlsTensionCurve.Value;
-      if (comparer.Equals(0, stressStrainCurve.FailureStrain.Value)) {
+      if (comparer.Equals(0, stressStrainCurve.IStressStrainCurve.FailureStrain.Value)) {
         WarningMessages.Add($"ULS Stress Strain Curve for Tension has zero failure strain.{Environment.NewLine}The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
-        stressStrainCurve = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal),
+        stressStrainCurve.IStressStrainCurve = ILinearStressStrainCurve.Create(IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal),
           new Strain(1, StrainUnit.Ratio)));
       }
 
-      var strength = ITensionCompressionCurve.Create(stressStrainCurve, UlsCompressionCurve.Value);
-      var serviceability = ITensionCompressionCurve.Create(SlsTensionCurve.Value, SlsCompressionCurve.Value);
+      var strength = ITensionCompressionCurve.Create(stressStrainCurve.IStressStrainCurve, UlsCompressionCurve.Value.IStressStrainCurve);
+      var serviceability = ITensionCompressionCurve.Create(SlsTensionCurve.Value.IStressStrainCurve, SlsCompressionCurve.Value.IStressStrainCurve);
 
       Material.Value = new MaterialDesign() {
         DesignCode = DesignCode.Value,

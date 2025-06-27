@@ -1,11 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+
+using AdSecCore.Functions;
 
 using AdSecGH;
 using AdSecGH.Components;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
+using AdSecGHTests.Components._3_Rebar;
 using AdSecGHTests.Helpers;
+
+using Grasshopper.Kernel;
 
 using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.GH.Helpers;
@@ -24,59 +30,210 @@ namespace AdSecGHTests.Components.Properties {
       _component = new CreateStressStrainCurve();
     }
 
+    private static IStressStrainPoint CreateFailurePoint() {
+      var strain = Strain.FromRatio(0.0035);
+      var stress = Pressure.FromPascals(10);
+      return IStressStrainPoint.Create(stress, strain);
+    }
+
+    private static IStressStrainPoint CreateYieldPoint() {
+      var strain = Strain.FromRatio(0.002);
+      var stress = Pressure.FromPascals(10);
+      return IStressStrainPoint.Create(stress, strain);
+    }
+
+    private static AdSecStressStrainPointGoo CreateYieldPointGoo() {
+      var strain = Strain.FromRatio(0.002);
+      var stress = Pressure.FromPascals(10);
+      return new AdSecStressStrainPointGoo(IStressStrainPoint.Create(stress, strain));
+    }
+
+    private static List<object> CreateStressStressPoints() {
+      var strain = Strain.FromRatio(0.002);
+      var stress = Pressure.FromPascals(10);
+      var list = new List<IStressStrainPoint>() { IStressStrainPoint.Create(Pressure.Zero, Strain.Zero), IStressStrainPoint.Create(stress, strain) };
+      return list.Cast<object>().ToList();
+    }
+
+    private static double CreateInitialModulus() {
+      return 8;
+    }
+
+    private double CreateFailureStrain() {
+      _component.SetSelected(1, 2);
+      return 0.0035;
+    }
+
+    private static double CreateConfinedStress() {
+      return 2;
+    }
+
+    private static double CreateUnConfinedStress() {
+      return 1.5;
+    }
+
+    private static IStressStrainPoint CreatePeakPoint() {
+      var strain = Strain.FromRatio(0.001);
+      var stress = Pressure.FromPascals(11);
+      return IStressStrainPoint.Create(stress, strain);
+    }
+
     [Fact]
-    public void SolveInternalWhereBilinearModeWhereInputIsItemReturnsNotNullValues() {
+    public void TestBilinearModelForInputAndOutput() {
       _component.SetSelected(0, 0);
-      var point1 = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
-      var point2 = IStressStrainPoint.Create(new Pressure(2, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
-
-      ComponentTestHelper.SetInput(_component, point1, 0);
-      ComponentTestHelper.SetInput(_component, point2, 1);
+      ComponentTestHelper.SetInput(_component, CreateYieldPoint(), 0);
+      ComponentTestHelper.SetInput(_component, CreateFailurePoint(), 1);
       var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
-
+      Assert.Equal(3, result.ControlPoints.Count);
+      Assert.Equal(StressStrainCurveType.Bilinear, _component.BusinessComponent.SelectedCurveType);
       Assert.NotNull(result);
     }
 
     [Fact]
-    public void SolveInternalWhereExplicitModeWhereInputIsItemReturnsNull() {
-      _component.SetSelected(0, 1);
-      var point1 = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
-
-      ComponentTestHelper.SetInput(_component, point1, 0);
-      var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
-
-      Assert.Null(result);
-    }
-
-    [Fact]
-    public void SolveInternalWhereBilinearModeWhereInputIsItemReturnsNull() {
+    public void BilinearModeReturnNullOutputWhenInputIsIsNotCorrect() {
       _component.SetSelected(0, 0);
-      var point1 = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
-      var point2 = IStressStrainPoint.Create(new Pressure(2, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
-
-      ComponentTestHelper.SetInput(_component, new List<IStressStrainPoint>() {
-        point1,
-      }, 0);
-      ComponentTestHelper.SetInput(_component, point2, 1);
+      ComponentTestHelper.SetInput(_component, CreateYieldPointGoo(), 0);
+      ComponentTestHelper.SetInput(_component, CreateInitialModulus(), 1);
       var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
-
+      Assert.Contains("Input type mismatch", _component.RuntimeMessages(Grasshopper.Kernel.GH_RuntimeMessageLevel.Error)[0]);
       Assert.Null(result);
     }
 
     [Fact]
-    public void SolveInternalWhereExplicitModeWhereInputIsItemReturnsNotNullValues() {
+    public void TestExplicitModelForInputAndOutput() {
       _component.SetSelected(0, 1);
-      var point1 = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
+      var point = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
+      ComponentTestHelper.SetInput(_component, point, 0);
+      ComponentTestHelper.ComputeData(_component);
+      Assert.Contains("Stress-strain points list must have at least two points", _component.RuntimeMessages(Grasshopper.Kernel.GH_RuntimeMessageLevel.Error)[0]);
+    }
+
+    [Fact]
+    public void ExplicitCurveReturnNotNullValueWhenInputIsCorrect() {
+      _component.SetSelected(0, 1);
+      ComponentTestHelper.SetInput(_component, CreateStressStressPoints());
+      var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal(2, result.ControlPoints.Count);
+      Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void ExplicitCurveReportErrorWhenInputIsNotCorrectToFormCurve() {
+      _component.SetSelected(0, 1);
+      var point1 = IStressStrainPoint.Create(new Pressure(1, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio));
       var point2 = IStressStrainPoint.Create(new Pressure(2, PressureUnit.Pascal), new Strain(2, StrainUnit.Ratio));
       var points = new List<object>() {
         point1,
         point2,
       };
-
       ComponentTestHelper.SetInput(_component, points, 0);
-      var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
+      ComponentTestHelper.ComputeData(_component);
+      Assert.Contains("The first point in the stress-strain points list must be (0, 0)", _component.RuntimeMessages(Grasshopper.Kernel.GH_RuntimeMessageLevel.Error)[0]);
+    }
 
+    [Fact]
+    public void TestFibModelForInputAndOutput() {
+      _component.SetSelected(0, 2);
+      ComponentTestHelper.SetInput(_component, CreatePeakPoint(), 0);
+      ComponentTestHelper.SetInput(_component, CreateInitialModulus(), 1);
+      ComponentTestHelper.SetInput(_component, CreateFailureStrain(), 2);
+      var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal(StressStrainCurveType.FibModelCode, _component.BusinessComponent.SelectedCurveType);
       Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void TestLinearModelForInputAndOutput() {
+      _component.SetSelected(0, 3);
+      ComponentTestHelper.SetInput(_component, CreateFailurePoint(), 0);
+      var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal(StressStrainCurveType.Linear, _component.BusinessComponent.SelectedCurveType);
+      Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void TestManderConfinedModelForInputAndOutput() {
+      _component.SetSelected(0, 4);
+      _component.SetSelected(1, 2);
+      ComponentTestHelper.SetInput(_component, CreateUnConfinedStress(), 0);
+      ComponentTestHelper.SetInput(_component, CreateConfinedStress(), 1);
+      ComponentTestHelper.SetInput(_component, CreateInitialModulus(), 2);
+      ComponentTestHelper.SetInput(_component, 1, 3);
+      var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal(StressStrainCurveType.ManderConfined, _component.BusinessComponent.SelectedCurveType);
+      Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void TestManderModelForInputAndOutput() {
+      _component.SetSelected(0, 5);
+      ComponentTestHelper.SetInput(_component, CreatePeakPoint(), 0);
+      ComponentTestHelper.SetInput(_component, CreateInitialModulus(), 1);
+      ComponentTestHelper.SetInput(_component, CreateFailureStrain(), 2);
+      var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal(StressStrainCurveType.Mander, _component.BusinessComponent.SelectedCurveType);
+      Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void TestParabolaRectangleModelForInputAndOutput() {
+      _component.SetSelected(0, 6);
+      ComponentTestHelper.SetInput(_component, CreateYieldPoint(), 0);
+      ComponentTestHelper.SetInput(_component, CreateFailureStrain(), 1);
+      var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Empty(result.ControlPoints);
+      Assert.Equal(StressStrainCurveType.ParabolaRectangle, _component.BusinessComponent.SelectedCurveType);
+      Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void TestParkModelForInputAndOutput() {
+      _component.SetSelected(0, 7);
+      ComponentTestHelper.SetInput(_component, CreateYieldPoint(), 0);
+      var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal(StressStrainCurveType.Park, _component.BusinessComponent.SelectedCurveType);
+      Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void TestPopovicsModelForInputAndOutput() {
+      _component.SetSelected(0, 8);
+      ComponentTestHelper.SetInput(_component, CreatePeakPoint(), 0);
+      ComponentTestHelper.SetInput(_component, CreateFailureStrain(), 1);
+      var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal(StressStrainCurveType.Popovics, _component.BusinessComponent.SelectedCurveType);
+      Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void TestRectangleModelForInputAndOutput() {
+      _component.SetSelected(0, 9);
+      ComponentTestHelper.SetInput(_component, CreateYieldPoint(), 0);
+      ComponentTestHelper.SetInput(_component, CreateFailureStrain(), 1);
+      var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal(StressStrainCurveType.Rectangular, _component.BusinessComponent.SelectedCurveType);
+      Assert.NotNull(result);
+    }
+
+    void SetRectangularInput(CreateStressStrainCurve component) {
+      ComponentTestHelper.SetInput(component, CreateYieldPoint(), 0);
+      ComponentTestHelper.SetInput(component, CreateFailureStrain(), 1);
+    }
+
+    [Fact]
+    public void RectangleModelShouldUseSavedMode() {
+      _component.SetSelected(0, 9);
+      SetRectangularInput(_component);
+      var doc = new GH_DocumentIO();
+      doc.Document = new GH_Document();
+      doc.Document.AddObject(_component, false);
+      var randomPath = CreateRebarGroupSaveLoadTests.GetRandomName();
+      doc.SaveQuiet(randomPath);
+      doc.Open(randomPath);
+      doc.Document.NewSolution(true);
+      var component = (CreateStressStrainCurve)doc.Document.FindComponent(_component.InstanceGuid);
+      SetRectangularInput(component);
+      Assert.Equal(StressStrainCurveType.Rectangular, _component.BusinessComponent.SelectedCurveType);
     }
 
     [Fact]
