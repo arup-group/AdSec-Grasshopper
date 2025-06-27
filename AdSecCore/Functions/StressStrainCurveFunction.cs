@@ -231,7 +231,7 @@ namespace AdSecCore.Functions {
           foreach (var point in StressStrainPoints.Value) {
             explicitCurve.Points.Add(point);
           }
-          if (ValidateFailureStrainOfExplicitCurve(explicitCurve)) {
+          if (!ValidateFailureStrainOfExplicitCurve(explicitCurve)) {
             return;
           }
           curve = explicitCurve;
