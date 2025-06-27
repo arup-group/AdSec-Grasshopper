@@ -231,9 +231,7 @@ namespace AdSecCore.Functions {
           foreach (var point in StressStrainPoints.Value) {
             explicitCurve.Points.Add(point);
           }
-#pragma warning disable S1481
-          var explicitFailureStrain = explicitCurve.FailureStrain;
-#pragma warning restore S1481
+          ValidateFailureStrainOfExplicitCurve(explicitCurve);
           curve = explicitCurve;
           break;
         case StressStrainCurveType.FibModelCode:
@@ -263,6 +261,11 @@ namespace AdSecCore.Functions {
       }
 
       OutputCurve.Value = new StressStrainCurve() { IStressStrainCurve = curve, IsCompression = true };
+    }
+
+    private static bool ValidateFailureStrainOfExplicitCurve(IExplicitStressStrainCurve explicitCurve) {
+      //explict curve throw exception only when It is accessed
+      return explicitCurve.FailureStrain.Value > 0;
     }
 
     public IOptions[] Options() {

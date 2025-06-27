@@ -38,6 +38,13 @@ namespace AdSecCoreTests.Functions {
       return _function.StressStrainPoints.Value = list.ToArray();
     }
 
+    private IStressStrainPoint[] CreateWrongStressStressPoints() {
+      var strain = Strain.FromRatio(0.002);
+      var stress = Pressure.FromPascals(10);
+      var list = new List<IStressStrainPoint>() { IStressStrainPoint.Create(Pressure.Zero, Strain.Zero), IStressStrainPoint.Create(stress, strain), IStressStrainPoint.Create(stress, Strain.Zero) };
+      return _function.StressStrainPoints.Value = list.ToArray();
+    }
+
     private double CreateInitialModulus() {
       return _function.InitialModulus.Value = 8;
     }
@@ -102,6 +109,13 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal("Explicit", StressStrainCurveFunction.GetCurveTypeFromInterface(explicitCurve));
       AssertStressAndStrain(stressStressPoints[0], explicitCurve.Points[0]);
       AssertStressAndStrain(stressStressPoints[1], explicitCurve.Points[1]);
+    }
+
+    [Fact]
+    public void ValidateExplicitCurve() {
+      _function.SelectedCurveType = StressStrainCurveType.Explicit;
+      var stressStressPoints = CreateWrongStressStressPoints();
+      Assert.Throws<ArgumentException>(() => _function.Compute());
     }
 
     [Fact]
