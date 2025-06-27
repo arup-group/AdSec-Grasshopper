@@ -149,6 +149,10 @@ namespace Oasys.GH.Helpers {
           typeof(ForceParameter), ParamGenericObject
         }, {
           typeof(MomentParameter), ParamGenericObject
+        },{
+          typeof(StressStrainPointParameter), ParamGenericObject
+        },{
+          typeof(StressStrainPointArrayParameter), ParamGenericObject
         },
       };
 
@@ -321,7 +325,12 @@ namespace Oasys.GH.Helpers {
 
             return quantityInRelevantUnit;
           }
-        },
+        },{
+          typeof(StressStrainCurveParameter), a => {
+            var stressStrainCurve = (a as StressStrainCurveParameter).Value;
+            return AdSecStressStrainCurveGoo.Create(stressStrainCurve.IStressStrainCurve,stressStrainCurve.IsCompression);
+          }
+        }
       };
 
     /// <summary>
@@ -434,8 +443,34 @@ namespace Oasys.GH.Helpers {
               DesignCodeName = value.DesignCodeName
             } : goo;
           }
+        },{
+          typeof(StressStrainPointParameter), goo =>
+          {
+            return ConvertToStressStrainPoint(goo);
+          }
+        },{
+          typeof(StressStrainPointArrayParameter), goo => {
+           var list = goo as List<object>;
+            return list.Select(x => {
+              dynamic y = x;
+             return (IStressStrainPoint)ConvertToStressStrainPoint(y.Value);
+            }).ToArray();
+          }
         },
       };
+
+    private static object ConvertToStressStrainPoint(dynamic goo) {
+      IStressStrainPoint stressStrainPoint = null;
+      var point3d = new Point3d();
+      if (goo is IStressStrainPoint point) {
+        stressStrainPoint = point;
+      } else if (GH_Convert.ToPoint3d(goo, ref point3d, GH_Conversion.Both)) {
+        stressStrainPoint = AdSecStressStrainPointGoo.CreateFromPoint3d(point3d);
+      } else {
+        throw new RuntimeBinderException("Input type mismatch");
+      }
+      return new AdSecStressStrainPointGoo(stressStrainPoint).StressStrainPoint;
+    }
 
     private static SubComponent[] SubComponentCasting(List<object> gooDynamic) {
       return gooDynamic.Select(x => {
@@ -542,32 +577,32 @@ namespace Oasys.GH.Helpers {
         if (attribute.GetAccess() == GH_ParamAccess.item) {
           dynamic inputs = null;
           if (dataAccess.GetData(index, ref inputs)) {
-            if (GooToParam.ContainsKey(attribute.GetType())) {
-              dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
-              valueBasedParameter.Value = newValue;
-            } else {
-              try {
+            try {
+              if (GooToParam.ContainsKey(attribute.GetType())) {
+                dynamic newValue = GooToParam[attribute.GetType()](inputs.Value);
+                valueBasedParameter.Value = newValue;
+              } else {
                 valueBasedParameter.Value = inputs.Value;
-              } catch (RuntimeBinderException) {
-                component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
-                return;
               }
+            } catch (RuntimeBinderException) {
+              component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
+              return;
             }
           }
         } else if (attribute.GetAccess() == GH_ParamAccess.list) {
           var inputs = new List<object>();
-          if (dataAccess.GetDataList(index, inputs)) {
-            if (GooToParam.ContainsKey(attribute.GetType())) {
-              dynamic newValue = GooToParam[attribute.GetType()](inputs);
-              valueBasedParameter.Value = newValue;
-            } else {
-              try {
+          try {
+            if (dataAccess.GetDataList(index, inputs)) {
+              if (GooToParam.ContainsKey(attribute.GetType())) {
+                dynamic newValue = GooToParam[attribute.GetType()](inputs);
+                valueBasedParameter.Value = newValue;
+              } else {
                 valueBasedParameter.Value = inputs.Select(x => ((dynamic)x).Value).ToArray();
-              } catch (RuntimeBinderException) {
-                component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
-                return;
               }
             }
+          } catch (RuntimeBinderException) {
+            component.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Input type mismatch for {attribute.Name}");
+            return;
           }
         }
       }
