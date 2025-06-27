@@ -231,7 +231,9 @@ namespace AdSecCore.Functions {
           foreach (var point in StressStrainPoints.Value) {
             explicitCurve.Points.Add(point);
           }
-          ValidateFailureStrainOfExplicitCurve(explicitCurve);
+          if (ValidateFailureStrainOfExplicitCurve(explicitCurve)) {
+            return;
+          }
           curve = explicitCurve;
           break;
         case StressStrainCurveType.FibModelCode:
