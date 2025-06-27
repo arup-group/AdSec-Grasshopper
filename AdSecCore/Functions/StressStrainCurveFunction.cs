@@ -267,7 +267,7 @@ namespace AdSecCore.Functions {
 
     private static bool ValidateFailureStrainOfExplicitCurve(IExplicitStressStrainCurve explicitCurve) {
       //explict curve throw exception only when It is accessed
-      return explicitCurve.FailureStrain.Value > 0;
+      return Math.Abs(explicitCurve.FailureStrain.Value) > 0;
     }
 
     public IOptions[] Options() {
