@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 
 using AdSecCore.Constants;
+using AdSecCore.Functions;
 
 using AdSecGH.Parameters;
 
@@ -44,18 +45,18 @@ namespace AdSecGH.Helpers {
       return dict;
     }
 
-    internal static Dictionary<string, Type> StandardCodes(AdSecMaterial.AdSecMaterialType materialType) {
+    internal static Dictionary<string, Type> StandardCodes(MaterialType materialType) {
       switch (materialType) {
-        case AdSecMaterial.AdSecMaterialType.Concrete: return AdSecFileHelper.ReflectNestedTypes(typeof(Concrete));
+        case MaterialType.Concrete: return AdSecFileHelper.ReflectNestedTypes(typeof(Concrete));
 
-        case AdSecMaterial.AdSecMaterialType.Steel: return AdSecFileHelper.ReflectNestedTypes(typeof(Steel));
+        case MaterialType.Steel: return AdSecFileHelper.ReflectNestedTypes(typeof(Steel));
 
-        case AdSecMaterial.AdSecMaterialType.FRP: return AdSecFileHelper.ReflectNestedTypes(typeof(FRP));
+        case MaterialType.FRP: return AdSecFileHelper.ReflectNestedTypes(typeof(FRP));
 
-        case AdSecMaterial.AdSecMaterialType.Rebar:
+        case MaterialType.Rebar:
           return AdSecFileHelper.ReflectNestedTypes(typeof(Reinforcement.Steel));
 
-        case AdSecMaterial.AdSecMaterialType.Tendon:
+        case MaterialType.Tendon:
           return AdSecFileHelper.ReflectNestedTypes(typeof(Reinforcement.Tendon));
       }
 

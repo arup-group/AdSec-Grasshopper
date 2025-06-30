@@ -89,9 +89,7 @@ namespace AdSecGH.Components {
           rebuildCurves = true;
         } else {
           // rebuild from existing material
-          var ulsComp = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Compression, true);
-          ulsCompCrv = new AdSecStressStrainCurveGoo(ulsComp.Item1, editMat.Material.Strength.Compression,
-            AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsComp.Item2);
+          ulsCompCrv = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Compression, true);
         }
 
         // 3 StressStrain ULS Tension
@@ -102,9 +100,7 @@ namespace AdSecGH.Components {
           rebuildCurves = true;
         } else {
           // rebuild from existing material
-          var ulsTens = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Tension, false);
-          ulsTensCrv = new AdSecStressStrainCurveGoo(ulsTens.Item1, editMat.Material.Strength.Tension,
-            AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, ulsTens.Item2);
+          ulsTensCrv = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Strength.Tension, false);
         }
 
         // 4 StressStrain SLS Compression
@@ -115,9 +111,7 @@ namespace AdSecGH.Components {
           rebuildCurves = true;
         } else {
           // rebuild from existing material
-          var slsComp = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Compression, true);
-          slsCompCrv = new AdSecStressStrainCurveGoo(slsComp.Item1, editMat.Material.Serviceability.Compression,
-            AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsComp.Item2);
+          slsCompCrv = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Compression, true);
         }
 
         // 5 StressStrain SLS Tension
@@ -128,9 +122,7 @@ namespace AdSecGH.Components {
           rebuildCurves = true;
         } else {
           // rebuild from existing material
-          var slsTens = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Tension, false);
-          slsTensCrv = new AdSecStressStrainCurveGoo(slsTens.Item1, editMat.Material.Serviceability.Tension,
-            AdSecStressStrainCurveGoo.StressStrainCurveType.StressStrainDefault, slsTens.Item2);
+          slsTensCrv = AdSecStressStrainCurveGoo.CreateFromCode(editMat.Material.Serviceability.Tension, false);
         }
 
         // 6 Cracked params
@@ -144,44 +136,41 @@ namespace AdSecGH.Components {
         var comparer = new DoubleComparer();
 
         if (rebuildCurves) {
-          if (comparer.Equals(ulsTensCrv.StressStrainCurve.FailureStrain.Value, 0)) {
+          if (comparer.Equals(ulsTensCrv.Value.IStressStrainCurve.FailureStrain.Value, 0)) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Remark,
               $"ULS Stress Strain Curve for Tension has zero failure strain.{Environment.NewLine}The curve has been changed to a simulate a material with no tension capacity (ε = 1, σ = 0)");
-            IStressStrainCurve crv = ILinearStressStrainCurve.Create(
+            IStressStrainCurve tensionCurve = ILinearStressStrainCurve.Create(
               IStressStrainPoint.Create(new Pressure(0, PressureUnit.Pascal), new Strain(1, StrainUnit.Ratio)));
-            var tuple = AdSecStressStrainCurveGoo.Create(crv, AdSecStressStrainCurveGoo.StressStrainCurveType.Linear,
-              false);
-            ulsTensCrv = new AdSecStressStrainCurveGoo(tuple.Item1, crv,
-              AdSecStressStrainCurveGoo.StressStrainCurveType.Linear, tuple.Item2);
+            ulsTensCrv = AdSecStressStrainCurveGoo.Create(tensionCurve, false);
           }
 
-          if (comparer.Equals(ulsCompCrv.StressStrainCurve.FailureStrain.Value, 0)) {
+          if (comparer.Equals(ulsCompCrv.Value.IStressStrainCurve.FailureStrain.Value, 0)) {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
               "ULS Stress Strain Curve for Compression has zero failure strain.");
             return;
           }
 
-          var ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.StressStrainCurve, ulsCompCrv.StressStrainCurve);
-          var slsTC = ITensionCompressionCurve.Create(slsTensCrv.StressStrainCurve, slsCompCrv.StressStrainCurve);
+          var ulsTC = ITensionCompressionCurve.Create(ulsTensCrv.Value.IStressStrainCurve, ulsCompCrv.Value.IStressStrainCurve);
+          var slsTC = ITensionCompressionCurve.Create(slsTensCrv.Value.IStressStrainCurve, slsCompCrv.Value.IStressStrainCurve);
           switch (editMat.Type) {
-            case AdSecMaterial.AdSecMaterialType.Concrete:
+            case MaterialType.Concrete:
               editMat.Material = concreteCrack == null ? IConcrete.Create(ulsTC, slsTC) :
                 (IMaterial)IConcrete.Create(ulsTC, slsTC, concreteCrack);
               break;
 
-            case AdSecMaterial.AdSecMaterialType.FRP:
+            case MaterialType.FRP:
               editMat.Material = IFrp.Create(ulsTC, slsTC);
               break;
 
-            case AdSecMaterial.AdSecMaterialType.Rebar:
+            case MaterialType.Rebar:
               editMat.Material = IReinforcement.Create(ulsTC, slsTC);
               break;
 
-            case AdSecMaterial.AdSecMaterialType.Tendon:
+            case MaterialType.Tendon:
               editMat.Material = IReinforcement.Create(ulsTC, slsTC);
               break;
 
-            case AdSecMaterial.AdSecMaterialType.Steel:
+            case MaterialType.Steel:
               editMat.Material = ISteel.Create(ulsTC, slsTC);
               break;
           }
@@ -202,7 +191,7 @@ namespace AdSecGH.Components {
         DA.SetData(3, ulsTensCrv);
         DA.SetData(4, slsCompCrv);
         DA.SetData(5, slsTensCrv);
-        if (editMat.Type == AdSecMaterial.AdSecMaterialType.Concrete) {
+        if (editMat.Type == MaterialType.Concrete) {
           var concrete = (IConcrete)editMat.Material;
           DA.SetData(6, new AdSecConcreteCrackCalculationParametersGoo(concrete.ConcreteCrackCalculationParameters));
         }

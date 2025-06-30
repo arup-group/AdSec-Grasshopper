@@ -110,10 +110,10 @@ namespace AdSecGH.Components {
     }
 
     private string GetDefaultMaterialGrade() {
-      Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
+      Enum.TryParse(_selectedItems[0], out MaterialType materialType);
       if (_selectedItems[1].StartsWith(_euroCodeText)) {
 
-        if (materialType == AdSecMaterial.AdSecMaterialType.Steel) {
+        if (materialType == MaterialType.Steel) {
           return _materials.Keys.ElementAt(2); // S355
         }
 
@@ -133,7 +133,7 @@ namespace AdSecGH.Components {
         string prevSelectedNA = _selectedItems[2];
         ResetDropdowns(i);
 
-        Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
+        Enum.TryParse(_selectedItems[0], out MaterialType materialType);
         var designCodeKVP = ReflectionHelper.StandardCodes(materialType);
         _dropDownItems.Add(designCodeKVP.Keys.ToList());
 
@@ -188,13 +188,13 @@ namespace AdSecGH.Components {
       _selectedItems = new List<string>();
 
       // get list of material types defined in material parameter
-      var materialTypes = Enum.GetNames(typeof(AdSecMaterial.AdSecMaterialType)).ToList();
+      var materialTypes = Enum.GetNames(typeof(MaterialType)).ToList();
 
       _dropDownItems.Add(materialTypes);
       _selectedItems.Add(materialTypes[0]);
 
       if (_dropDownItems.Count == 1) {
-        var designCodeKVP = ReflectionHelper.StandardCodes(AdSecMaterial.AdSecMaterialType.Concrete);
+        var designCodeKVP = ReflectionHelper.StandardCodes(MaterialType.Concrete);
         _dropDownItems.Add(designCodeKVP.Keys.ToList());
         // select default code to EN1992
         _selectedItems.Add(designCodeKVP.Keys.ElementAt(4));
@@ -329,7 +329,7 @@ namespace AdSecGH.Components {
 
     protected override void UpdateUIFromSelectedItems() {
       // get the selected material and parse it to type enum
-      Enum.TryParse(_selectedItems[0], out AdSecMaterial.AdSecMaterialType materialType);
+      Enum.TryParse(_selectedItems[0], out MaterialType materialType);
       // get list of standard codes for the selected material
       var designCodeKVP = ReflectionHelper.StandardCodes(materialType);
       // add codes for selected material to list of dropdowns
