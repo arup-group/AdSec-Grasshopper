@@ -1,12 +1,8 @@
 ﻿
 using AdSecCore.Functions;
 
-using Oasys.AdSec.Materials.StressStrainCurves;
-
 using OasysUnits;
 using OasysUnits.Units;
-
-using Xunit;
 
 namespace AdSecCore.Tests.Functions {
   public class StressStrainPointFunctionTests {
@@ -51,7 +47,7 @@ namespace AdSecCore.Tests.Functions {
     }
 
     [Fact]
-    public void UpdateUnits_ShouldUpdateUnitResults() {
+    public void UpdateUnitsShouldUpdateUnitResults() {
       _function.LocalStrainUnit = StrainUnit.Percent;
       _function.LocalStressUnit = PressureUnit.Kilopascal;
       _function.UpdateUnits();
@@ -77,5 +73,39 @@ namespace AdSecCore.Tests.Functions {
       Assert.Equal(typeof(StrainUnit), options[0].UnitType);
       Assert.Equal(typeof(PressureUnit), options[1].UnitType);
     }
+
+    [Fact]
+    public void GetAllInputAttributesReturnsTwoParameters() {
+      var inputs = _function.GetAllInputAttributes();
+      Assert.Equal(2, inputs.Length);
+    }
+
+    [Fact]
+    public void GetAllOutputAttributesReturnsOneParameter() {
+      var outputs = _function.GetAllOutputAttributes();
+      Assert.Single(outputs);
+    }
+
+    [Fact]
+    public void ParametersHaveCorrectNames() {
+      Assert.Equal("Strain", _function.StrainInput.Name);
+      Assert.Equal("Stress", _function.StressInput.Name);
+      Assert.Equal("StressStrainPt", _function.StressAndStrainOutput.Name);
+    }
+
+    [Fact]
+    public void ParametersHaveCorrectNickNames() {
+      Assert.Equal("ε", _function.StrainInput.NickName);
+      Assert.Equal("σ", _function.StressInput.NickName);
+      Assert.Equal("SPt", _function.StressAndStrainOutput.NickName);
+    }
+
+    [Fact]
+    public void ParametersHaveCorrectDescriptions() {
+      Assert.Contains("Value for strain (X-axis)", _function.StrainInput.Description);
+      Assert.Contains("Value for stress (Y-axis)", _function.StressInput.Description);
+      Assert.Contains("AdSec Stress Strain Point", _function.StressAndStrainOutput.Description);
+    }
+
   }
 }

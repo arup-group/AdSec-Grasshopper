@@ -12,14 +12,11 @@ using Grasshopper.Kernel;
 
 using Oasys.GH.Helpers;
 
-using OasysUnits;
 using OasysUnits.Units;
-
-using Rhino.Commands;
 
 using Xunit;
 
-namespace AdSecGHTests.Components._02_Properties {
+namespace AdSecGHTests.Components._01_Properties {
   [Collection("GrasshopperFixture collection")]
   public class CreateStressStrainPointTests {
     private readonly CreateStressStrainPoint _component;
@@ -76,7 +73,7 @@ namespace AdSecGHTests.Components._02_Properties {
     }
 
     private void SetStrainInput() {
-      //millistrain
+      //ratio
       _component.SetSelected(0, 2);
       ComponentTestHelper.SetInput(_component, 0.002, 0);
     }
