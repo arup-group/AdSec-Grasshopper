@@ -330,6 +330,11 @@ namespace Oasys.GH.Helpers {
             var stressStrainCurve = (a as StressStrainCurveParameter).Value;
             return AdSecStressStrainCurveGoo.Create(stressStrainCurve.IStressStrainCurve,stressStrainCurve.IsCompression);
           }
+        },{
+          typeof(StressStrainPointParameter), a => {
+            var stressStrainPoint = (a as StressStrainPointParameter).Value;
+            return new AdSecStressStrainPointGoo(stressStrainPoint);
+          }
         }
       };
 
