@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-using AdSecCore;
 using AdSecCore.Functions;
 
 using AdSecGH.Parameters;
@@ -52,7 +51,7 @@ namespace AdSecGH.Components {
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
       _lengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
-      UpdateUnits();
+      UpdateLocalUnitsAndRefreshParams();
       base.UpdateUI();
     }
 
@@ -77,14 +76,14 @@ namespace AdSecGH.Components {
     }
 
     protected override void BeforeSolveInstance() {
-      UpdateUnits();
+      UpdateLocalUnitsAndRefreshParams();
     }
 
-    private void UpdateUnits() {
-      UpdateDefaultUnits();
+    private void UpdateLocalUnitsAndRefreshParams() {
+      UpdateUnits();
       //update local unit if any
       BusinessComponent.LengthUnitGeometry = _lengthUnitGeometry;
-      RefreshParameter();
+      RefreshParameter(this);
     }
   }
 }

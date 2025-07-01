@@ -43,7 +43,8 @@ namespace AdSecGH.Components {
           _momentUnit = (MomentUnit)UnitsHelper.Parse(typeof(MomentUnit), _selectedItems[i]);
           break;
       }
-      UpdateUnits();
+
+      UpdateLocalUnitsAndRefreshParams();
       base.UpdateUI();
     }
 
@@ -68,15 +69,15 @@ namespace AdSecGH.Components {
     }
 
     protected override void BeforeSolveInstance() {
-      UpdateUnits();
+      UpdateLocalUnitsAndRefreshParams();
     }
 
-    private void UpdateUnits() {
-      UpdateDefaultUnits();
+    private void UpdateLocalUnitsAndRefreshParams() {
+      UpdateUnits();
       //update local unit if any
       BusinessComponent.ForceUnit = _forceUnit;
       BusinessComponent.MomentUnit = _momentUnit;
-      RefreshParameter();
+      RefreshParameter(this);
     }
   }
 }

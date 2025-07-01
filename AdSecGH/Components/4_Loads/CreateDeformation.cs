@@ -44,7 +44,8 @@ namespace AdSecGH.Components {
           _curvatureUnit = (CurvatureUnit)UnitsHelper.Parse(typeof(CurvatureUnit), _selectedItems[i]);
           break;
       }
-      UpdateUnits();
+
+      UpdateLocalUnitsAndRefreshParams();
       base.UpdateUI();
     }
 
@@ -69,15 +70,14 @@ namespace AdSecGH.Components {
     }
 
     protected override void BeforeSolveInstance() {
-      UpdateUnits();
+      UpdateLocalUnitsAndRefreshParams();
     }
 
-    private void UpdateUnits() {
-      UpdateDefaultUnits();
-      //update local unit if any
+    private void UpdateLocalUnitsAndRefreshParams() {
+      UpdateUnits();
       BusinessComponent.StrainUnitResult = _strainUnit;
       BusinessComponent.CurvatureUnit = _curvatureUnit;
-      RefreshParameter();
+      RefreshParameter(this);
     }
 
   }

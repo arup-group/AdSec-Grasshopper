@@ -26,14 +26,14 @@ namespace AdSecGH.Components {
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];
       _angleUnit = (AngleUnit)UnitsHelper.Parse(typeof(AngleUnit), _selectedItems[i]);
-      UpdateUnits();
+      UpdateLocalUnitsAndRefreshParams();
       base.UpdateUI();
     }
 
-    private void UpdateUnits() {
-      UpdateDefaultUnits();
+    private void UpdateLocalUnitsAndRefreshParams() {
+      UpdateUnits();
       BusinessComponent.AngleUnit = _angleUnit;
-      RefreshParameter();
+      RefreshParameter(this);
     }
   }
 }

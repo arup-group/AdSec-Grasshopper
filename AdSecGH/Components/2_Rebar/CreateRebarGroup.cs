@@ -32,7 +32,8 @@ namespace AdSecGH.Components {
       } else {
         _lengthUnitGeometry = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[i]);
       }
-      UpdateUnits();
+
+      UpdateLocalUnitsAndRefreshParams();
       base.UpdateUI();
     }
 
@@ -73,14 +74,14 @@ namespace AdSecGH.Components {
     }
 
     protected override void BeforeSolveInstance() {
-      UpdateUnits();
+      UpdateLocalUnitsAndRefreshParams();
     }
 
-    private void UpdateUnits() {
-      UpdateDefaultUnits();
+    private void UpdateLocalUnitsAndRefreshParams() {
+      UpdateUnits();
       //update local unit if any
       BusinessComponent.LengthUnitGeometry = _lengthUnitGeometry;
-      RefreshParameter();
+      RefreshParameter(this);
     }
   }
 }
