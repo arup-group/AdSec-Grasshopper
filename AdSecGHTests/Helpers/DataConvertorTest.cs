@@ -11,41 +11,41 @@ namespace AdSecGHTests.Helpers {
 
   [Collection("GrasshopperFixture collection")]
   public class DataConvertorTest {
-    private readonly FakeComponent component;
+    private readonly FakeDropdownComponent _dropdownComponent;
     private readonly FakeBusiness fakeBusiness;
 
     public DataConvertorTest() {
       fakeBusiness = new FakeBusiness();
-      component = new FakeComponent();
-      component.SetDefaultValues();
-      ComponentTesting.ComputeOutputs(component);
+      _dropdownComponent = new FakeDropdownComponent();
+      _dropdownComponent.SetDefaultValues();
+      ComponentTesting.ComputeOutputs(_dropdownComponent);
     }
 
     [Fact]
     public void ShouldNotReturnResultForInvalidInput() {
-      component.ClearInputs();
+      _dropdownComponent.ClearInputs();
       var invalidInput = new Point();
-      bool result1 = component.SetInputParamAt(0, invalidInput);
-      bool result2 = component.SetInputParamAt(1, invalidInput);
+      bool result1 = _dropdownComponent.SetInputParamAt(0, invalidInput);
+      bool result2 = _dropdownComponent.SetInputParamAt(1, invalidInput);
       Assert.False(result1 && result2);
-      ComponentTesting.ComputeOutputs(component);
-      Assert.Throws<ArgumentOutOfRangeException>(() => GetFirstOutput(component));
+      ComponentTesting.ComputeOutputs(_dropdownComponent);
+      Assert.Throws<ArgumentOutOfRangeException>(() => GetFirstOutput(_dropdownComponent));
     }
 
     [Fact]
     public void ShouldHaveTheSameNumberOfInputs() {
-      Assert.Equal(fakeBusiness.GetAllInputAttributes().Length, component.Params.Input.Count);
+      Assert.Equal(fakeBusiness.GetAllInputAttributes().Length, _dropdownComponent.Params.Input.Count);
     }
 
     [Fact]
     public void ShouldHaveNoWarning() {
-      var runtimeMessages = component.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
+      var runtimeMessages = _dropdownComponent.RuntimeMessages(GH_RuntimeMessageLevel.Warning);
       Assert.Empty(runtimeMessages);
     }
 
     [Fact]
     public void ShouldHaveNoErrors() {
-      var runtimeMessages = component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      var runtimeMessages = _dropdownComponent.RuntimeMessages(GH_RuntimeMessageLevel.Error);
       foreach (string message in runtimeMessages) {
         Assert.Equal(string.Empty, message);
       }
@@ -59,11 +59,11 @@ namespace AdSecGHTests.Helpers {
     }
 
     private IGH_Param GetFirstInput() {
-      return component.GetInputParamAt(0);
+      return _dropdownComponent.GetInputParamAt(0);
     }
 
     private IGH_Param GetSecondInput() {
-      return component.GetInputParamAt(1);
+      return _dropdownComponent.GetInputParamAt(1);
     }
 
     [Fact]
@@ -78,13 +78,13 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void ShouldComputeAndAssignOutputs() {
-      dynamic output = GetFirstOutput(component);
+      dynamic output = GetFirstOutput(_dropdownComponent);
       Assert.NotNull(output.Value);
     }
 
     [Fact]
     public void ShouldComputeTheRightResult() {
-      dynamic output = GetFirstOutput(component);
+      dynamic output = GetFirstOutput(_dropdownComponent);
       Assert.Equal(12, output.Value);
     }
 
@@ -98,8 +98,8 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void ShouldHaveDefaultValues() {
-      component.SetDefaultValues();
-      component.CollectData();
+      _dropdownComponent.SetDefaultValues();
+      _dropdownComponent.CollectData();
       dynamic actual = GetFirstInput().VolatileData.get_Branch(0)[0];
       Assert.Equal((float)fakeBusiness.Alpha.Default, actual.Value, 0.01f);
     }
@@ -111,7 +111,7 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void ShouldStoreGuid() {
-      Assert.Equal("caa08c9e-417c-42ae-b704-91f214c8c871", component.ComponentGuid.ToString());
+      Assert.Equal("caa08c9e-417c-42ae-b704-91f214c8c871", _dropdownComponent.ComponentGuid.ToString());
     }
   }
 
