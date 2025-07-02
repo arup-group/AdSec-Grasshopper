@@ -216,19 +216,17 @@ namespace AdSecCore.Builders {
     }
 
     public static List<(double y, double z)> ParseCoordinatesRegex(string input) {
-      var coordinates = new List<(double x, double y)>();
-
+      var coordinates = new List<(double y, double z)>();
       // Pattern to match numbers before and after |
       var pattern = @"\(([-\d.]+)\|([-\d.]+)\)";
-      var matches = Regex.Matches(input, pattern);
-
+      var regex = new Regex(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(100));
+      var matches = regex.Matches(input);
       foreach (Match match in matches) {
         if (double.TryParse(match.Groups[1].Value, out double y) &&
             double.TryParse(match.Groups[2].Value, out double z)) {
           coordinates.Add((y, z));
         }
       }
-
       return coordinates;
     }
 
