@@ -56,5 +56,16 @@ namespace AdSecCoreTests.Builder {
       var group = rebar.First().Group as ILineGroup;
       Assert.Equal(lineBars, group);
     }
+
+    [Theory]
+    [InlineData("GEO P(m) M(1|2) L(3|4)", 2)]
+    [InlineData("GEO P(m) M(-1|-2) L(-3|-4)", 2)]
+    [InlineData("GEO P(m)", 0)]
+    [InlineData("", 0)]
+    public void ShouldHandleDifferentInputPatterns(string input, int expectedCount) {
+      var coordinates = SectionBuilder.ParseCoordinatesRegex(input);
+      Assert.Equal(expectedCount, coordinates.Count);
+      Assert.NotNull(coordinates);
+    }
   }
 }
