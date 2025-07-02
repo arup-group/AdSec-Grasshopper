@@ -63,7 +63,7 @@ namespace AdSecCoreTests.Builder {
     [InlineData("GEO P(m)", 0)]
     [InlineData("", 0)]
     public void ShouldHandleDifferentInputPatterns(string input, int expectedCount) {
-      var coordinates = SectionBuilder.ParseCoordinatesRegex(input);
+      var coordinates = SectionBuilder.ParseCoordinates(input);
       Assert.Equal(expectedCount, coordinates.Count);
       Assert.NotNull(coordinates);
     }

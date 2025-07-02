@@ -215,7 +215,7 @@ namespace AdSecCore.Builders {
       return adSecRebarGroup;
     }
 
-    public static List<(double y, double z)> ParseCoordinatesRegex(string input) {
+    public static List<(double y, double z)> ParseCoordinates(string input) {
       var coordinates = new List<(double y, double z)>();
       // Pattern to match numbers before and after |
       var pattern = @"\(([-\d.]+)\|([-\d.]+)\)";
@@ -231,7 +231,7 @@ namespace AdSecCore.Builders {
     }
 
     private static void MaxYZ(string description, out double maxY, out double maxZ) {
-      var coordinates = ParseCoordinatesRegex(description);
+      var coordinates = ParseCoordinates(description);
       maxY = double.MinValue;
       maxZ = double.MinValue;
       foreach (var coordinate in coordinates) {
