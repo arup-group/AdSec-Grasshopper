@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 using AdSecGH.Parameters;
 
@@ -214,16 +215,28 @@ namespace AdSecCore.Builders {
       return adSecRebarGroup;
     }
 
+    public static List<(double y, double z)> ParseCoordinates(string input) {
+      var coordinates = new List<(double y, double z)>();
+      // Pattern to match numbers before and after |
+      var pattern = @"\(([-\d.]+)\|([-\d.]+)\)";
+      var regex = new Regex(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(100));
+      var matches = regex.Matches(input);
+      foreach (Match match in matches) {
+        if (double.TryParse(match.Groups[1].Value, out double y) &&
+            double.TryParse(match.Groups[2].Value, out double z)) {
+          coordinates.Add((y, z));
+        }
+      }
+      return coordinates;
+    }
+
     private static void MaxYZ(string description, out double maxY, out double maxZ) {
-      string[] coordinates = description.Remove(0, 11).Split(new[] {
-        ") L(",
-      }, StringSplitOptions.None);
+      var coordinates = ParseCoordinates(description);
       maxY = double.MinValue;
       maxZ = double.MinValue;
-      foreach (string c in coordinates) {
-        string[] value = c.Split('|');
-        double y = double.Parse(value[0]);
-        double z = double.Parse(value[1].Remove(value[1].Length - 2));
+      foreach (var coordinate in coordinates) {
+        double y = coordinate.y;
+        double z = coordinate.z;
 
         if (y > maxY) {
           maxY = y;
