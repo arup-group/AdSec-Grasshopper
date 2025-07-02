@@ -34,74 +34,53 @@ namespace AdSecGH.Components {
     }
 
     protected override void Mode1Clicked() {
-      // remove plane
-      var plane = Params.Input[Params.Input.Count - 1];
-      Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
+      var planeInputCache = UnregisterPlaneInput();
+      UnregisterAllInputs();
 
-      // remove input parameters
-      while (Params.Input.Count > 0) {
-        Params.UnregisterInputParameter(Params.Input[0], true);
-      }
-
-      // register input parameter
       Params.RegisterInputParam(new Param_String());
       Params.RegisterInputParam(new Param_Boolean());
 
-      // add plane
-      Params.RegisterInputParam(plane);
-
+      // add cached plane
+      Params.RegisterInputParam(planeInputCache);
       _mode = FoldMode.Catalogue;
 
       base.UpdateUI();
     }
 
     protected override void Mode2Clicked() {
-      var plane = Params.Input[Params.Input.Count - 1];
-      // remove plane
-      Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
+      var planeInputCache = UnregisterPlaneInput();
 
       // check if mode is correct
       if (_mode != FoldMode.Other) {
         // if we come from catalogue mode remove all input parameters
-        while (Params.Input.Count > 0) {
-          Params.UnregisterInputParameter(Params.Input[0], true);
-        }
-
-        // set mode to other
+        UnregisterAllInputs();
         _mode = FoldMode.Other;
       }
 
       UpdateParameters();
 
-      // add plane
-      Params.RegisterInputParam(plane);
+      Params.RegisterInputParam(planeInputCache);
 
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
       Params.OnParametersChanged();
       ExpireSolution(true);
     }
 
-    //protected override void RegisterInputParams(GH_InputParamManager pManager) {
-    //  string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-    //  pManager.AddGenericParameter($"Width [{unitAbbreviation}]", "B", "Profile width", GH_ParamAccess.item);
+    private void UnregisterAllInputs() {
+      while (Params.Input.Count > 0) {
+        Params.UnregisterInputParameter(Params.Input[0], true);
+      }
+    }
 
-    //  pManager.AddGenericParameter($"Depth [{unitAbbreviation}]", "H", "Profile depth", GH_ParamAccess.item);
-
-    //  pManager.AddPlaneParameter("LocalPlane", "P",
-    //    "[Optional] Plane representing local coordinate system, by default a YZ-plane is used", GH_ParamAccess.item,
-    //    Plane.WorldYZ);
-    //  pManager.HideParameter(2);
-    //}
-
-    //protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-    //  pManager.AddGenericParameter("Profile", "Pf", "Profile for AdSec Section", GH_ParamAccess.item);
-    //}
+    private IGH_Param UnregisterPlaneInput() {
+      var plane = Params.Input[Params.Input.Count - 1];
+      Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
+      return plane;
+    }
 
     protected override void SolveInternal(IGH_DataAccess DA) {
       ClearRuntimeMessages();
-      for (int i = 0; i < Params.Input.Count; i++) {
-        Params.Input[i].ClearRuntimeMessages();
-      }
+      Params.Input.ForEach(input => input.ClearRuntimeMessages());
 
       var local = Plane.WorldYZ;
       var temp = Plane.Unset;
@@ -109,14 +88,24 @@ namespace AdSecGH.Components {
         local = temp;
       }
 
-      if (_mode == FoldMode.Catalogue) {
-        var profiles = SolveInstanceForCatalogueProfile(DA);
-        var adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
-      } else if (_mode == FoldMode.Other) {
-        var profile = SolveInstanceForStandardProfile(DA);
-        var adSecProfile = AdSecProfiles.CreateProfile(profile);
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
+      switch (_mode) {
+        case FoldMode.Catalogue: {
+            var profiles = SolveInstanceForCatalogueProfile(DA);
+            var adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
+            DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
+            break;
+          }
+
+        case FoldMode.Other: {
+            var profile = SolveInstanceForStandardProfile(DA);
+            var adSecProfile = AdSecProfiles.CreateProfile(profile);
+            DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
+            break;
+          }
+
+        default:
+          this.AddRuntimeRemark($"Unable to create AdSec profile for fold mode: {_mode}.");
+          break;
       }
     }
   }
