@@ -60,6 +60,7 @@ namespace AdSecCoreTests.Builder {
     [Theory]
     [InlineData("GEO P(m) M(1|2) L(3|4)", 2)]
     [InlineData("GEO P(m) M(-1|-2) L(-3|-4)", 2)]
+    [InlineData("GEO P(m) M(-1|-2) L(-3|-4)[ R(90) ]", 2)]
     [InlineData("GEO P(m)", 0)]
     [InlineData("", 0)]
     public void ShouldHandleDifferentInputPatterns(string input, int expectedCount) {
