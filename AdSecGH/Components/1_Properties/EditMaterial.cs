@@ -3,14 +3,11 @@ using System.Drawing;
 
 using AdSecCore.Functions;
 
-using AdSecGH.Parameters;
-
 using Grasshopper.Kernel;
 
 using Oasys.GH.Helpers;
 
 using OasysGH;
-using OasysGH.Components;
 
 namespace AdSecGH.Components {
   public class EditMaterialGh : EditMaterialFunction {

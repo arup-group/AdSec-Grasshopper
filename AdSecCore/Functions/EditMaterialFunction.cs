@@ -228,7 +228,7 @@ namespace AdSecCore.Functions {
       UlsCompressionCurveOutput.Value = new StressStrainCurve() { IStressStrainCurve = duplicateMaterial.Material.Strength.Compression, IsCompression = true };
       UlsTensionCurveOutput.Value = new StressStrainCurve() { IStressStrainCurve = duplicateMaterial.Material.Strength.Tension, IsCompression = false };
       SlsCompressionCurveOutput.Value = new StressStrainCurve() { IStressStrainCurve = duplicateMaterial.Material.Serviceability.Compression, IsCompression = true }; ;
-      SlsTensionCurveOutput.Value = new StressStrainCurve() { IStressStrainCurve = duplicateMaterial.Material.Serviceability.Compression, IsCompression = false }; ;
+      SlsTensionCurveOutput.Value = new StressStrainCurve() { IStressStrainCurve = duplicateMaterial.Material.Serviceability.Tension, IsCompression = false }; ;
       if (duplicateMaterial is IConcrete concrete) {
         CrackCalcParamsOutput.Value = concrete.ConcreteCrackCalculationParameters;
       }
