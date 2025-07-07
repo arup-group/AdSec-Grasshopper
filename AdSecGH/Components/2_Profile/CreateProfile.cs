@@ -66,13 +66,13 @@ namespace AdSecGH.Components {
       ExpireSolution(true);
     }
 
-    private void UnregisterAllInputs() {
+    protected void UnregisterAllInputs() {
       while (Params.Input.Count > 0) {
         Params.UnregisterInputParameter(Params.Input[0], true);
       }
     }
 
-    private IGH_Param UnregisterPlaneInput() {
+    protected IGH_Param UnregisterPlaneInput() {
       var plane = Params.Input[Params.Input.Count - 1];
       Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
       return plane;
