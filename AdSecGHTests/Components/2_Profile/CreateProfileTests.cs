@@ -36,7 +36,7 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
-    public void ShouldHaveFourInputs() {
+    public void ShouldHaveThreeInputs() {
       Assert.Equal(3, _component.Params.Input.Count);
     }
 
