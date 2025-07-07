@@ -51,15 +51,15 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
-    public void ShouldUnregisteAllInputs() {
+    public void ShouldUnregisterAllInputs() {
       var dummyCreateProfile = new DummyCreateProfile();
-      dummyCreateProfile.DummyUnregiterAllInputs();
+      dummyCreateProfile.DummyUnregisterAllInputs();
 
       Assert.Empty(dummyCreateProfile.Params.Input);
     }
 
     [Fact]
-    public void ShouldUnregistePlaneInput() {
+    public void ShouldUnregisterPlaneInput() {
       var dummyCreateProfile = new DummyCreateProfile();
       var planeInput = dummyCreateProfile.Params.Input[2];
       Assert.Equal(3, dummyCreateProfile.Params.Input.Count);
@@ -105,7 +105,7 @@ namespace AdSecGHTests.Components {
         base.Mode2Clicked();
       }
 
-      public void DummyUnregiterAllInputs() {
+      public void DummyUnregisterAllInputs() {
         UnregisterAllInputs();
       }
 
