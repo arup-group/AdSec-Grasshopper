@@ -88,24 +88,14 @@ namespace AdSecGH.Components {
         local = temp;
       }
 
-      switch (_mode) {
-        case FoldMode.Catalogue: {
-            var profiles = SolveInstanceForCatalogueProfile(DA);
-            var adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
-            DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
-            break;
-          }
-
-        case FoldMode.Other: {
-            var profile = SolveInstanceForStandardProfile(DA);
-            var adSecProfile = AdSecProfiles.CreateProfile(profile);
-            DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
-            break;
-          }
-
-        default:
-          this.AddRuntimeRemark($"Unable to create AdSec profile for fold mode: {_mode}.");
-          break;
+      if (_mode == FoldMode.Catalogue) {
+        var profiles = SolveInstanceForCatalogueProfile(DA);
+        var adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
+      } else if (_mode == FoldMode.Other) {
+        var profile = SolveInstanceForStandardProfile(DA);
+        var adSecProfile = AdSecProfiles.CreateProfile(profile);
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
       }
     }
   }
