@@ -6,9 +6,7 @@ using AdSecGH.Components;
 
 using Grasshopper.Kernel;
 
-using Oasys.GH.Helpers;
-
-namespace AdSecGH.Helpers {
+namespace Oasys.GH.Helpers {
   public class FunctionHandler<T> where T : IFunction {
     public readonly T BusinessComponent;
 

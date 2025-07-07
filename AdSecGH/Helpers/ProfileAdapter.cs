@@ -4,12 +4,10 @@ using AdSecCore.Functions;
 
 using Grasshopper.Kernel;
 
-using Oasys.GH.Helpers;
-
 using OasysGH;
 using OasysGH.Components;
 
-namespace AdSecGH.Helpers {
+namespace Oasys.GH.Helpers {
   public abstract class ProfileAdapter<T> : CreateOasysProfile, IDefaultValues where T : IFunction {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
     private FunctionHandler<T> _handler;
