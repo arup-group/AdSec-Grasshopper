@@ -34,7 +34,7 @@ namespace AdSecCoreTests.Functions {
     private IStressStrainPoint CreateYieldPoint() {
       var strain = Strain.FromRatio(0.002);
       var stress = Pressure.FromPascals(10);
-      return _StressStrainfunction.YieldPoint.Value = IStressStrainPoint.Create(stress, strain); ;
+      return _StressStrainfunction.YieldPoint.Value = IStressStrainPoint.Create(stress, strain);
     }
 
     private IStressStrainPoint CreatePeakPoint() {
@@ -102,7 +102,7 @@ namespace AdSecCoreTests.Functions {
     [Fact]
     public void ComputeWithNewDesignCodeShouldUpdateDesignCode() {
       SetMaterialAndCode();
-      _function.DesignCodeInput.Value = new DesignCode() { DesignCodeName = "IRS", IDesignCode = IRS.Edition_1997 }; ;
+      _function.DesignCodeInput.Value = new DesignCode() { DesignCodeName = "IRS", IDesignCode = IRS.Edition_1997 };
       _function.Compute();
       Assert.Equal(_function.DesignCodeInput.Value.DesignCodeName, _function.DesignCodeOutput.Value.DesignCodeName);
       Assert.True(ReferenceEquals(_function.DesignCodeInput.Value.IDesignCode, _function.DesignCodeInput.Value.IDesignCode));
