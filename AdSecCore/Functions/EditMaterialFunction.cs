@@ -150,7 +150,9 @@ namespace AdSecCore.Functions {
     private MaterialDesign GetDuplicateMaterial(MaterialDesign material) {
       var duplicateMaterial = new MaterialDesign();
       duplicateMaterial.GradeName = material.GradeName;
-      duplicateMaterial.DesignCode = material.DesignCode;
+
+      //design code
+      duplicateMaterial.DesignCode = DesignCodeInput.Value ?? material.DesignCode;
 
       //ULS Curve
       var ulsCompressionCurve = material.Material.Strength.Compression;
@@ -218,9 +220,6 @@ namespace AdSecCore.Functions {
 
       //Read input and create duplicate material
       var duplicateMaterial = GetDuplicateMaterial(material);
-      if (DesignCodeInput.Value != null) {
-        duplicateMaterial.DesignCode = DesignCodeInput.Value;
-      }
 
       // Set output values
       MaterialOutput.Value = duplicateMaterial;
