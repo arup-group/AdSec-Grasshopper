@@ -178,7 +178,7 @@ namespace AdSecCore.Functions {
 
       //Crack Calculation Parameters
       IConcreteCrackCalculationParameters crackCalcParams = null;
-      if (material is IConcrete concrete) {
+      if (material.Material is IConcrete concrete) {
         crackCalcParams = concrete.ConcreteCrackCalculationParameters;
       }
 
@@ -228,7 +228,7 @@ namespace AdSecCore.Functions {
       UlsTensionCurveOutput.Value = new StressStrainCurve() { IStressStrainCurve = duplicateMaterial.Material.Strength.Tension, IsCompression = false };
       SlsCompressionCurveOutput.Value = new StressStrainCurve() { IStressStrainCurve = duplicateMaterial.Material.Serviceability.Compression, IsCompression = true };
       SlsTensionCurveOutput.Value = new StressStrainCurve() { IStressStrainCurve = duplicateMaterial.Material.Serviceability.Tension, IsCompression = false };
-      if (duplicateMaterial is IConcrete concrete) {
+      if (duplicateMaterial.Material is IConcrete concrete) {
         CrackCalcParamsOutput.Value = concrete.ConcreteCrackCalculationParameters;
       }
     }
