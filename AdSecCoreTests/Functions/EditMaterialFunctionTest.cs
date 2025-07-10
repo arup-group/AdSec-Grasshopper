@@ -5,11 +5,14 @@ using AdSecCore;
 using AdSecCore.Functions;
 
 using Oasys.AdSec.DesignCode;
+using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.AdSec.StandardMaterials;
 
 using OasysUnits;
 using OasysUnits.Units;
+
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AdSecCoreTests.Functions {
   public class EditMaterialFunctionTests {
@@ -25,6 +28,7 @@ namespace AdSecCoreTests.Functions {
         Material = Concrete.IS456.Edition_2000.M10,
         DesignCode = new DesignCode() { IDesignCode = IS456.Edition_2000 },
       };
+      _function.CrackCalcParamsInput.Value = IConcreteCrackCalculationParameters.Create(Pressure.FromMegapascals(10), Pressure.FromPascals(-10), Pressure.FromPascals(4));
       _function.MaterialInput.Value = inputMaterial;
       _function.DesignCodeInput.Value = inputMaterial.DesignCode;
     }
@@ -143,31 +147,31 @@ namespace AdSecCoreTests.Functions {
     public void ShouldEditConcreteMaterial() {
       SetConcreMaterialAndCode();
       AssignCurve();
-      AssertConcreteMaterial();
+      AssertMaterialProperties(true);
     }
 
     [Fact]
     public void ShouldEditReinforcementMaterial() {
       SetReinforcementMaterialAndCode();
       AssignCurve();
-      AssertConcreteMaterial();
+      AssertMaterialProperties();
     }
 
     [Fact]
     public void ShouldEditFrpMaterial() {
       SetFrpMaterialAndCode();
       AssignCurve();
-      AssertConcreteMaterial();
+      AssertMaterialProperties();
     }
 
     [Fact]
     public void ShouldEditSteelMaterial() {
       SetSteelMaterialAndCode();
       AssignCurve();
-      AssertConcreteMaterial();
+      AssertMaterialProperties();
     }
 
-    private void AssertConcreteMaterial() {
+    private void AssertMaterialProperties(bool crackParameter = false) {
       var outputMaterial = _function.MaterialOutput.Value;
       var compressionCurveUls = CreateExplicitCompressionCurve();
       var compressionCurveSls = CreateExplicitCompressionCurve(true);
@@ -178,6 +182,14 @@ namespace AdSecCoreTests.Functions {
       Assert.Equal(tensionCurveSls.IStressStrainCurve.FailureStrain.ToUnit(StrainUnit.Ratio), outputMaterial.Material.Serviceability.Tension.FailureStrain.ToUnit(StrainUnit.Ratio));
       Assert.Equal(compressionCurveUls.IStressStrainCurve.FailureStrain.ToUnit(StrainUnit.Ratio), outputMaterial.Material.Strength.Compression.FailureStrain.ToUnit(StrainUnit.Ratio));
       Assert.Equal(tensionCurveUls.IStressStrainCurve.FailureStrain.ToUnit(StrainUnit.Ratio), outputMaterial.Material.Strength.Tension.FailureStrain.ToUnit(StrainUnit.Ratio));
+      if (crackParameter) {
+        var concreteMaterial = outputMaterial.Material as IConcrete;
+        Assert.NotNull(concreteMaterial);
+        Assert.NotNull(concreteMaterial.ConcreteCrackCalculationParameters);
+        Assert.Equal(Pressure.FromMegapascals(10), concreteMaterial.ConcreteCrackCalculationParameters.ElasticModulus.ToUnit(PressureUnit.Megapascal));
+        Assert.Equal(Pressure.FromPascals(-10), concreteMaterial.ConcreteCrackCalculationParameters.CharacteristicCompressiveStrength.ToUnit(PressureUnit.Pascal));
+        Assert.Equal(Pressure.FromPascals(4), concreteMaterial.ConcreteCrackCalculationParameters.CharacteristicTensileStrength.ToUnit(PressureUnit.Pascal));
+      }
     }
 
     [Fact]
