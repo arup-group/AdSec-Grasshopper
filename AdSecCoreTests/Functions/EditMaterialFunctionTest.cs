@@ -23,12 +23,21 @@ namespace AdSecCoreTests.Functions {
       _stressStrainfunction = new StressStrainCurveFunction();
     }
 
-    private void SetConcreMaterialAndCode() {
+    private void SetConcreMaterialAndCode(bool withoutCrackParameter = false) {
       var inputMaterial = new MaterialDesign() {
         Material = Concrete.IS456.Edition_2000.M10,
         DesignCode = new DesignCode() { IDesignCode = IS456.Edition_2000 },
       };
-      _function.CrackCalcParamsInput.Value = IConcreteCrackCalculationParameters.Create(Pressure.FromMegapascals(10), Pressure.FromPascals(-10), Pressure.FromPascals(4));
+      if (withoutCrackParameter) {
+        var concreteMaterial = inputMaterial.Material as IConcrete;
+        if (concreteMaterial != null) {
+          var strength = ITensionCompressionCurve.Create(concreteMaterial.Strength.Tension, concreteMaterial.Strength.Compression);
+          var serviceability = ITensionCompressionCurve.Create(concreteMaterial.Serviceability.Tension, concreteMaterial.Serviceability.Compression);
+          inputMaterial.Material = IConcrete.Create(strength, serviceability);
+        }
+      } else {
+        _function.CrackCalcParamsInput.Value = IConcreteCrackCalculationParameters.Create(Pressure.FromMegapascals(10), Pressure.FromPascals(-10), Pressure.FromPascals(4));
+      }
       _function.MaterialInput.Value = inputMaterial;
       _function.DesignCodeInput.Value = inputMaterial.DesignCode;
     }
@@ -151,6 +160,14 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void ShouldEditConcreteMaterialWithoutCrackParameter() {
+      bool withoutCrackParameter = true;
+      SetConcreMaterialAndCode(withoutCrackParameter);
+      AssignCurve();
+      AssertMaterialProperties(!withoutCrackParameter);
+    }
+
+    [Fact]
     public void ShouldEditReinforcementMaterial() {
       SetReinforcementMaterialAndCode();
       AssignCurve();
@@ -229,7 +246,7 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
-    public void MaterialInput_Properties_ShouldBeCorrect() {
+    public void MaterialInputPropertiesShouldBeCorrect() {
       Assert.Equal("Material", _function.MaterialInput.Name);
       Assert.Equal("Mat", _function.MaterialInput.NickName);
       Assert.Equal("AdSet Material to Edit or get information from", _function.MaterialInput.Description);
@@ -238,7 +255,7 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
-    public void DesignCodeInput_Properties_ShouldBeCorrect() {
+    public void DesignCodeInputPropertiesShouldBeCorrect() {
       Assert.Equal("DesignCode", _function.DesignCodeInput.Name);
       Assert.Equal("Code", _function.DesignCodeInput.NickName);
       Assert.Equal("Overwrite the Material's DesignCode", _function.DesignCodeInput.Description);
@@ -251,7 +268,7 @@ namespace AdSecCoreTests.Functions {
     [InlineData("ULS Tens. Crv", "U_T", "ULS Stress Strain Curve for Tension")]
     [InlineData("SLS Comp. Crv", "S_C", "SLS Stress Strain Curve for Compression")]
     [InlineData("SLS Tens. Crv", "S_T", "SLS Stress Strain Curve for Tension")]
-    public void StressStrainCurveInputs_Properties_ShouldBeCorrect(string name, string nickname, string description) {
+    public void StressStrainCurveInputsPropertiesShouldBeCorrect(string name, string nickname, string description) {
       var parameter = GetParameterByName(name);
       Assert.Equal(name, parameter.Name);
       Assert.Equal(nickname, parameter.NickName);
@@ -261,7 +278,7 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
-    public void CrackCalcParamsInput_Properties_ShouldBeCorrect() {
+    public void CrackCalcParamsInputPropertiesShouldBeCorrect() {
       Assert.Equal("Crack Calc Params", _function.CrackCalcParamsInput.Name);
       Assert.Equal("CCP", _function.CrackCalcParamsInput.NickName);
       Assert.Equal("Overwrite the Material's ConcreteCrackCalculationParameters", _function.CrackCalcParamsInput.Description);
@@ -270,7 +287,7 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
-    public void MaterialOutput_Properties_ShouldBeCorrect() {
+    public void MaterialOutputPropertiesShouldBeCorrect() {
       Assert.Equal("Material", _function.MaterialOutput.Name);
       Assert.Equal("Mat", _function.MaterialOutput.NickName);
       Assert.Equal("Modified AdSec Material", _function.MaterialOutput.Description);
@@ -282,7 +299,7 @@ namespace AdSecCoreTests.Functions {
     [InlineData("ULS Tens. Crv", "U_T", "ULS Stress Strain Curve for Tension")]
     [InlineData("SLS Comp. Crv", "S_C", "SLS Stress Strain Curve for Compression")]
     [InlineData("SLS Tens. Crv", "S_T", "SLS Stress Strain Curve for Tension")]
-    public void StressStrainCurveOutputs_Properties_ShouldBeCorrect(string name, string nickname, string description) {
+    public void StressStrainCurveOutputsPropertiesShouldBeCorrect(string name, string nickname, string description) {
       var parameter = GetOutputParameterByName(name);
       Assert.Equal(name, parameter.Name);
       Assert.Equal(nickname, parameter.NickName);
