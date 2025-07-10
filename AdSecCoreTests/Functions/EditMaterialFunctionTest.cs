@@ -1,22 +1,26 @@
-﻿using AdSecCore.Functions;
+﻿using System.Drawing;
+using System.Security.Cryptography;
+
+using AdSecCore;
+using AdSecCore.Functions;
 
 using Oasys.AdSec.DesignCode;
-using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
 using Oasys.AdSec.StandardMaterials;
 
 using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecCoreTests.Functions {
   public class EditMaterialFunctionTests {
     private readonly EditMaterialFunction _function;
-    private readonly StressStrainCurveFunction _StressStrainfunction;
+    private readonly StressStrainCurveFunction _stressStrainfunction;
     public EditMaterialFunctionTests() {
       _function = new EditMaterialFunction();
-      _StressStrainfunction = new StressStrainCurveFunction();
+      _stressStrainfunction = new StressStrainCurveFunction();
     }
 
-    private void SetMaterialAndCode() {
+    private void SetConcreMaterialAndCode() {
       var inputMaterial = new MaterialDesign() {
         Material = Concrete.IS456.Edition_2000.M10,
         DesignCode = new DesignCode() { IDesignCode = IS456.Edition_2000 },
@@ -25,47 +29,98 @@ namespace AdSecCoreTests.Functions {
       _function.DesignCodeInput.Value = inputMaterial.DesignCode;
     }
 
+    private void SetReinforcementMaterialAndCode() {
+      var inputMaterial = new MaterialDesign() {
+        Material = Reinforcement.Steel.IS456.Edition_2000.S500,
+        DesignCode = new DesignCode() { IDesignCode = IS456.Edition_2000 },
+      };
+      _function.MaterialInput.Value = inputMaterial;
+      _function.DesignCodeInput.Value = inputMaterial.DesignCode;
+    }
+
+    private void SetFrpMaterialAndCode() {
+      var inputMaterial = new MaterialDesign() {
+        Material = FRP.SikaCarboDur.M,
+        DesignCode = new DesignCode() { IDesignCode = IS456.Edition_2000 },
+      };
+      _function.MaterialInput.Value = inputMaterial;
+      _function.DesignCodeInput.Value = inputMaterial.DesignCode;
+    }
+
+    private void SetSteelMaterialAndCode() {
+      var inputMaterial = new MaterialDesign() {
+        Material = Steel.ASTM.A913_70,
+        DesignCode = new DesignCode() { IDesignCode = IS456.Edition_2000 },
+      };
+      _function.MaterialInput.Value = inputMaterial;
+      _function.DesignCodeInput.Value = inputMaterial.DesignCode;
+    }
+
+    private StressStrainCurve CreateExplicitCompressionCurve(bool uls = true) {
+      var explicitCurve = IExplicitStressStrainCurve.Create();
+      explicitCurve.Points.Add(IStressStrainPoint.Create(Pressure.Zero, Strain.Zero));
+      explicitCurve.Points.Add(IStressStrainPoint.Create(Pressure.FromPascals(10), Strain.FromRatio(uls ? 0.0018 : 0.0021)));
+      explicitCurve.Points.Add(IStressStrainPoint.Create(Pressure.FromPascals(10), Strain.FromRatio(uls ? 0.0036 : 0.0042)));
+      return new StressStrainCurve() { IStressStrainCurve = explicitCurve, IsCompression = true };
+    }
+
+    private StressStrainCurve CreateExplicitTensionCurve(bool uls = true) {
+      var explicitCurve = IExplicitStressStrainCurve.Create();
+      explicitCurve.Points.Add(IStressStrainPoint.Create(Pressure.Zero, Strain.Zero));
+      explicitCurve.Points.Add(IStressStrainPoint.Create(Pressure.FromPascals(12), Strain.FromRatio(uls ? 0.002 : 0.0022)));
+      explicitCurve.Points.Add(IStressStrainPoint.Create(Pressure.FromPascals(24), Strain.FromRatio(uls ? 0.004 : 0.0044)));
+      return new StressStrainCurve() { IStressStrainCurve = explicitCurve, IsCompression = false };
+    }
+
     private IStressStrainPoint CreateFailurePoint() {
       var strain = Strain.FromRatio(0.0034);
       var stress = Pressure.FromPascals(10);
-      return _StressStrainfunction.FailurePoint.Value = IStressStrainPoint.Create(stress, strain);
+      return _stressStrainfunction.FailurePoint.Value = IStressStrainPoint.Create(stress, strain);
     }
 
     private IStressStrainPoint CreateYieldPoint() {
       var strain = Strain.FromRatio(0.002);
       var stress = Pressure.FromPascals(10);
-      return _StressStrainfunction.YieldPoint.Value = IStressStrainPoint.Create(stress, strain);
+      return _stressStrainfunction.YieldPoint.Value = IStressStrainPoint.Create(stress, strain);
     }
 
     private IStressStrainPoint CreatePeakPoint() {
       var strain = Strain.FromRatio(0.001);
       var stress = Pressure.FromPascals(10);
-      return _StressStrainfunction.PeakPoint.Value = IStressStrainPoint.Create(stress, strain);
+      return _stressStrainfunction.PeakPoint.Value = IStressStrainPoint.Create(stress, strain);
     }
 
     private double CreateInitialModulus() {
-      return _StressStrainfunction.InitialModulus.Value = 8;
+      return _stressStrainfunction.InitialModulus.Value = 8;
     }
 
     private double CreateFailureStrain() {
-      return _StressStrainfunction.FailureStrain.Value = 0.0034;
+      return _stressStrainfunction.FailureStrain.Value = 0.0034;
     }
 
     private void CreateFibSlsCurve() {
-      _StressStrainfunction.SelectedCurveType = StressStrainCurveType.FibModelCode;
+      _stressStrainfunction.SelectedCurveType = StressStrainCurveType.FibModelCode;
       CreateInitialModulus();
       CreatePeakPoint();
       CreateFailureStrain();
-      _StressStrainfunction.Compute();
-      _function.SlsCompressionCurveInput.Value = _StressStrainfunction.OutputCurve.Value;
+      _stressStrainfunction.Compute();
+      _function.SlsCompressionCurveInput.Value = _stressStrainfunction.OutputCurve.Value;
     }
 
     private void CreateBiLinearUlsCurve() {
-      _StressStrainfunction.SelectedCurveType = StressStrainCurveType.Bilinear;
+      _stressStrainfunction.SelectedCurveType = StressStrainCurveType.Bilinear;
       CreateFailurePoint();
       CreateYieldPoint();
-      _StressStrainfunction.Compute();
-      _function.UlsCompressionCurveInput.Value = _StressStrainfunction.OutputCurve.Value;
+      _stressStrainfunction.Compute();
+      _function.UlsCompressionCurveInput.Value = _stressStrainfunction.OutputCurve.Value;
+    }
+
+    private void AssignCurve() {
+      _function.UlsCompressionCurveInput.Value = CreateExplicitCompressionCurve();
+      _function.SlsCompressionCurveInput.Value = CreateExplicitCompressionCurve(true);
+      _function.UlsTensionCurveInput.Value = CreateExplicitTensionCurve();
+      _function.SlsTensionCurveInput.Value = CreateExplicitTensionCurve(true);
+      _function.Compute();
     }
 
     [Fact]
@@ -85,8 +140,49 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void ShouldEditConcreteMaterial() {
+      SetConcreMaterialAndCode();
+      AssignCurve();
+      AssertConcreteMaterial();
+    }
+
+    [Fact]
+    public void ShouldEditReinforcementMaterial() {
+      SetReinforcementMaterialAndCode();
+      AssignCurve();
+      AssertConcreteMaterial();
+    }
+
+    [Fact]
+    public void ShouldEditFrpMaterial() {
+      SetFrpMaterialAndCode();
+      AssignCurve();
+      AssertConcreteMaterial();
+    }
+
+    [Fact]
+    public void ShouldEditSteelMaterial() {
+      SetSteelMaterialAndCode();
+      AssignCurve();
+      AssertConcreteMaterial();
+    }
+
+    private void AssertConcreteMaterial() {
+      var outputMaterial = _function.MaterialOutput.Value;
+      var compressionCurveUls = CreateExplicitCompressionCurve();
+      var compressionCurveSls = CreateExplicitCompressionCurve(true);
+      var tensionCurveUls = CreateExplicitTensionCurve();
+      var tensionCurveSls = CreateExplicitTensionCurve(true);
+      Assert.NotNull(outputMaterial);
+      Assert.Equal(compressionCurveSls.IStressStrainCurve.FailureStrain.ToUnit(StrainUnit.Ratio), outputMaterial.Material.Serviceability.Compression.FailureStrain.ToUnit(StrainUnit.Ratio));
+      Assert.Equal(tensionCurveSls.IStressStrainCurve.FailureStrain.ToUnit(StrainUnit.Ratio), outputMaterial.Material.Serviceability.Tension.FailureStrain.ToUnit(StrainUnit.Ratio));
+      Assert.Equal(compressionCurveUls.IStressStrainCurve.FailureStrain.ToUnit(StrainUnit.Ratio), outputMaterial.Material.Strength.Compression.FailureStrain.ToUnit(StrainUnit.Ratio));
+      Assert.Equal(tensionCurveUls.IStressStrainCurve.FailureStrain.ToUnit(StrainUnit.Ratio), outputMaterial.Material.Strength.Tension.FailureStrain.ToUnit(StrainUnit.Ratio));
+    }
+
+    [Fact]
     public void ShouldNotModifyUpstreamObject() {
-      SetMaterialAndCode();
+      SetConcreMaterialAndCode();
       CreateFibSlsCurve();
       CreateBiLinearUlsCurve();
       _function.DesignCodeInput.Value = new DesignCode() { IDesignCode = IRS.Edition_1997 };
@@ -94,14 +190,14 @@ namespace AdSecCoreTests.Functions {
       var inputMaterial = _function.MaterialInput.Value;
       var outputMaterial = _function.MaterialOutput.Value;
       Assert.NotNull(outputMaterial);
-      Assert.NotEqual(inputMaterial.Material.Serviceability.Compression.FailureStrain, outputMaterial.Material.Serviceability.Compression.FailureStrain);
-      Assert.NotEqual(inputMaterial.Material.Strength.Compression.FailureStrain, outputMaterial.Material.Strength.Compression.FailureStrain);
+      Assert.NotEqual(inputMaterial.Material.Serviceability.Compression.FailureStrain.ToUnit(StrainUnit.Ratio), outputMaterial.Material.Serviceability.Compression.FailureStrain.ToUnit(StrainUnit.Ratio));
+      Assert.NotEqual(inputMaterial.Material.Strength.Compression.FailureStrain.ToUnit(StrainUnit.Ratio), outputMaterial.Material.Strength.Compression.FailureStrain.ToUnit(StrainUnit.Ratio));
       Assert.False(ReferenceEquals(inputMaterial.DesignCode.IDesignCode, outputMaterial.DesignCode.IDesignCode));
     }
 
     [Fact]
     public void ComputeWithNewDesignCodeShouldUpdateDesignCode() {
-      SetMaterialAndCode();
+      SetConcreMaterialAndCode();
       _function.DesignCodeInput.Value = new DesignCode() { DesignCodeName = "IRS", IDesignCode = IRS.Edition_1997 };
       _function.Compute();
       Assert.Equal(_function.DesignCodeInput.Value.DesignCodeName, _function.DesignCodeOutput.Value.DesignCodeName);
