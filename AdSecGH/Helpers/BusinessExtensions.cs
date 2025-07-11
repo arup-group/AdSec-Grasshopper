@@ -330,6 +330,11 @@ namespace Oasys.GH.Helpers {
             var stressStrainCurve = (a as StressStrainCurveParameter).Value;
             return AdSecStressStrainCurveGoo.Create(stressStrainCurve.IStressStrainCurve,stressStrainCurve.IsCompression);
           }
+        },{
+          typeof(CrackCalcParameter), a => {
+            var crackParameter = (a as CrackCalcParameter).Value;
+            return new AdSecConcreteCrackCalculationParametersGoo(crackParameter);
+          }
         }
       };
 
