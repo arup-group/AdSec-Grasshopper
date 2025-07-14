@@ -4,7 +4,7 @@ using System.Linq;
 
 using AdSecCore.Functions;
 
-using AdSecGH.Helpers;
+using AdSecGH.Components;
 
 using Grasshopper.Kernel;
 
@@ -18,11 +18,9 @@ using OasysUnits.Units;
 namespace Oasys.GH.Helpers {
   public abstract class DropdownAdapter<T> : GH_OasysDropDownComponent, IDefaultValues where T : IFunction {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
-    private FunctionHandler<T> _handler;
 
     protected DropdownAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
-      InitHandler();
-
+      BusinessComponent.UpdateProperties(this);
       if (BusinessComponent is IVariableInput variableInput) {
         variableInput.OnVariableInputChanged += UpdateInputs;
         UpdateInputs();
@@ -30,12 +28,6 @@ namespace Oasys.GH.Helpers {
 
       if (BusinessComponent is IDynamicDropdown dynamicDropdown) {
         dynamicDropdown.OnDropdownChanged += ProcessDropdownItems;
-      }
-    }
-
-    private void InitHandler() {
-      if (_handler == null) {
-        _handler = new FunctionHandler<T>(BusinessComponent, this);
       }
     }
 
@@ -47,45 +39,41 @@ namespace Oasys.GH.Helpers {
         Params.UnregisterInputParameter(Params.Input[i], false);
       }
 
-      _handler.PopulateInputParams(this, previous);
+      BusinessComponent.PopulateInputParams(this, previous);
     }
 
     public override OasysPluginInfo PluginInfo { get; } = AdSecGH.PluginInfo.Instance;
-
-    public void SetDefaultValues() {
-      _handler.SetDefaultValues(this);
-    }
+    public void SetDefaultValues() { BusinessComponent.SetDefaultValues(this); }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      InitHandler();
-      _handler.PopulateInputParams(this);
+      BusinessComponent.PopulateInputParams(this);
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      InitHandler();
-      _handler.PopulateOutputParams(this);
+      BusinessComponent.PopulateOutputParams(this);
     }
 
     public override void SetSelected(int i, int j) { }
 
     protected override void SolveInternal(IGH_DataAccess da) {
-      _handler.UpdateInputValues(this, da);
+      BusinessComponent.UpdateInputValues(this, da);
       if (RuntimeMessages(GH_RuntimeMessageLevel.Error).Count > 0) {
         return;
       }
 
-      _handler.Compute();
-      _handler.UpdateMessages(this);
+      BusinessComponent.Compute();
+      if (BusinessComponent is Function function) {
+        AdapterBase.UpdateMessages(function, this);
 
-      if (_handler.HasErrors()) {
-        return;
+        if (function.ErrorMessages.Count > 0) {
+          return;
+        }
       }
 
-      _handler.SetOutputValues(this, da);
+      BusinessComponent.SetOutputValues(this, da);
     }
 
     protected override void InitialiseDropdowns() {
-      InitHandler();
       ProcessDropdownItems();
       _isInitialised = true;
     }
@@ -97,7 +85,7 @@ namespace Oasys.GH.Helpers {
         _selectedItems = new List<string>();
       }
 
-      _handler.UpdateDefaultUnits();
+      UpdateDefaultUnits();
       if (BusinessComponent is IDropdownOptions dropdownOptions) {
         var options = dropdownOptions.Options();
         for (int i = 0; i < options.Length; i++) {
@@ -143,7 +131,21 @@ namespace Oasys.GH.Helpers {
     }
 
     protected override void BeforeSolveInstance() {
-      _handler.UpdateUnitsAndParameters(this);
+      UpdateDefaultUnits(); // In Case the user has updated units from the settings dialogue
+      UpdateFromLocalUnits();
+      RefreshParameter(); // Simply passing the function names into the GH names. As we have the logic to update the names on the Core
+    }
+
+    private void UpdateFromLocalUnits() {
+      AdapterBase.UpdateFromLocalUnits(BusinessComponent);
+    }
+
+    public void UpdateDefaultUnits() {
+      AdapterBase.UpdateDefaultUnits(BusinessComponent);
+    }
+
+    public void RefreshParameter() {
+      AdapterBase.RefreshParameter(BusinessComponent, this.Params);
     }
 
     public static Dictionary<Type, EngineeringUnits> ToEngineeringUnits() {
@@ -158,14 +160,6 @@ namespace Oasys.GH.Helpers {
 
     public string UnitAbbreviation(Type unitType, int unitValue) {
       return OasysUnitsSetup.Default.UnitAbbreviations.GetDefaultAbbreviation(unitType, unitValue);
-    }
-
-    public void UpdateUnits() {
-      _handler.UpdateDefaultUnits();
-    }
-
-    public void RefreshParameter(GH_Component component) {
-      _handler.RefreshParameter(component);
     }
   }
 }
