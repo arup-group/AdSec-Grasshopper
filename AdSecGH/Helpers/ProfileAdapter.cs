@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using AdSecCore.Functions;
 
@@ -9,10 +8,6 @@ using Grasshopper.Kernel;
 
 using OasysGH;
 using OasysGH.Components;
-using OasysGH.Units.Helpers;
-
-using OasysUnits;
-using OasysUnits.Units;
 
 namespace Oasys.GH.Helpers {
 
@@ -75,20 +70,6 @@ namespace Oasys.GH.Helpers {
 
     public void RefreshParameter() {
       AdapterBase.RefreshParameter(BusinessComponent, Params);
-    }
-
-    public static Dictionary<Type, EngineeringUnits> ToEngineeringUnits() {
-      return new Dictionary<Type, EngineeringUnits> {
-        { typeof(LengthUnit), EngineeringUnits.Length },
-        { typeof(AngleUnit), EngineeringUnits.Angle },
-        { typeof(ForceUnit), EngineeringUnits.Force },
-        { typeof(StrainUnit), EngineeringUnits.Strain },
-        { typeof(PressureUnit), EngineeringUnits.Stress },
-      };
-    }
-
-    public string UnitAbbreviation(Type unitType, int unitValue) {
-      return OasysUnitsSetup.Default.UnitAbbreviations.GetDefaultAbbreviation(unitType, unitValue);
     }
   }
 }
