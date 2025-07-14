@@ -77,12 +77,7 @@ namespace AdSecGH.Parameters {
       if (!IsValid) {
         return;
       }
-
       args.Pipeline.DrawBrepShaded(Value.SolidBrep, Value.ProfileData.ProfileColour);
-      var subProfiles = Value.SubProfilesData.SubProfiles;
-      for (int i = 0; i < subProfiles.Count; i++) {
-        args.Pipeline.DrawBrepShaded(subProfiles[i], Value.SubProfilesData.SubColours[i]);
-      }
 
       var reinforcementDataRebars = Value.ReinforcementData.Rebars;
       for (int i = 0; i < reinforcementDataRebars.Count; i++) {
