@@ -28,9 +28,7 @@ namespace AdSecGH.Components {
 
     protected override void UpdateUIFromSelectedItems() {
       base.UpdateUIFromSelectedItems();
-      //update unit
       UpdateUnits();
-      //update curve type
       SetSelectedCurveType();
     }
 
