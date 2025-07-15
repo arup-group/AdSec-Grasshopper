@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Security.Cryptography;
 
 using AdSecCore;
 using AdSecCore.Functions;
