@@ -115,7 +115,7 @@ namespace AdSecCoreTests.Functions {
     [InlineData("Stress")]
     [InlineData("Strain")]
     public void CanUpdateParameterNameAndNickName(string forceType) {
-      _function.PreLoadType = (PreLoadType)Enum.Parse(typeof(PreLoadType), forceType, true); ;
+      _function.PreLoadType = (PreLoadType)Enum.Parse(typeof(PreLoadType), forceType, true);
       Assert.Contains(forceType, _function.PreloadInput.Name);
     }
 
