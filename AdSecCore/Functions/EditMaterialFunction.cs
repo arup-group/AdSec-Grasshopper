@@ -9,7 +9,7 @@ namespace AdSecCore.Functions {
     public MaterialParameter MaterialInput { get; set; } = new MaterialParameter {
       Name = "Material",
       NickName = "Mat",
-      Description = "AdSet Material to Edit or get information from",
+      Description = "AdSec Material to Edit or get information from",
       Access = Access.Item,
       Optional = false
     };
