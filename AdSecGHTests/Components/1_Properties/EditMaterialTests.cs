@@ -25,6 +25,7 @@ namespace AdSecGHTests.Components._01_Properties {
 
     public EditMaterialTests() {
       _component = new EditMaterial();
+      SetEditMaterialInputs();
     }
 
     private MaterialDesign CreateMaterialAndCode() {
@@ -67,7 +68,6 @@ namespace AdSecGHTests.Components._01_Properties {
 
     [Fact]
     public void ShouldEditMaterialUlsCompression() {
-      SetEditMaterialInputs();
       var expectedStrain = CreateExplicitCompressionCurve().IStressStrainCurve.FailureStrain;
       var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component, 2);
       AssertFailureStrainEqual(expectedStrain, result);
@@ -75,7 +75,6 @@ namespace AdSecGHTests.Components._01_Properties {
 
     [Fact]
     public void ShouldEditMaterialUlstension() {
-      SetEditMaterialInputs();
       var expectedStrain = CreateExplicitTensionCurve().IStressStrainCurve.FailureStrain;
       var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component, 3);
       AssertFailureStrainEqual(expectedStrain, result);
@@ -83,7 +82,6 @@ namespace AdSecGHTests.Components._01_Properties {
 
     [Fact]
     public void ShouldEditMaterialSlsCompression() {
-      SetEditMaterialInputs();
       var expectedStrain = CreateExplicitCompressionCurve(false).IStressStrainCurve.FailureStrain;
       var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component, 4);
       AssertFailureStrainEqual(expectedStrain, result);
@@ -91,7 +89,6 @@ namespace AdSecGHTests.Components._01_Properties {
 
     [Fact]
     public void ShouldEditMaterialSlstension() {
-      SetEditMaterialInputs();
       var expectedStrain = CreateExplicitTensionCurve(false).IStressStrainCurve.FailureStrain;
       var result = (AdSecStressStrainCurveGoo)ComponentTestHelper.GetOutput(_component, 5);
       AssertFailureStrainEqual(expectedStrain, result);
@@ -103,7 +100,6 @@ namespace AdSecGHTests.Components._01_Properties {
 
     [Fact]
     public void ShouldEditCrackParameter() {
-      SetEditMaterialInputs();
       var result = (AdSecConcreteCrackCalculationParametersGoo)ComponentTestHelper.GetOutput(_component, 6);
       Assert.Equal(Pressure.FromMegapascals(10), result.Value.ElasticModulus.ToUnit(PressureUnit.Megapascal));
       Assert.Equal(Pressure.FromPascals(-10), result.Value.CharacteristicCompressiveStrength.ToUnit(PressureUnit.Pascal));
@@ -112,7 +108,6 @@ namespace AdSecGHTests.Components._01_Properties {
 
     [Fact]
     public void ShouldEditDesignCode() {
-      SetEditMaterialInputs();
       var result = (AdSecDesignCodeGoo)ComponentTestHelper.GetOutput(_component, 1);
       Assert.Equal("IS456.Edition_2000", result.Value.DesignCodeName);
     }
