@@ -23,8 +23,11 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
+      if (Value == null) {
+        return string.Empty;
+      }
       return
-        $"AdSec {TypeName} {{E:{Value.ElasticModulus}, fc:{Value.CharacteristicCompressiveStrength}, ft: {Value.CharacteristicTensileStrength}}}";
+        $"AdSec {TypeName} {{E: {Value.ElasticModulus}, fc: {Value.CharacteristicCompressiveStrength}, ft: {Value.CharacteristicTensileStrength}}}";
     }
   }
 }

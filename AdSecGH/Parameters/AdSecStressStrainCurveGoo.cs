@@ -14,6 +14,7 @@ using Oasys.AdSec.Materials.StressStrainCurves;
 using OasysGH.Units;
 
 using OasysUnits;
+using OasysUnits.Units;
 
 using Rhino.Geometry;
 
@@ -147,10 +148,12 @@ namespace AdSecGH.Parameters {
           break;
 
         default:
-          double maxStrain = stressStrainCurve.FailureStrain.As(DefaultUnits.StrainUnitResult);
+          double maxStrain = stressStrainCurve.FailureStrain.As(StrainUnit.MilliStrain);
+          //limit this to 2.5% strain(probably no tension material)
+          maxStrain = maxStrain > 99 ? 2.5 : maxStrain;
           var polypoints = new List<Point3d>();
           for (int i = 0; i <= 100; i++) {
-            var strain = new Strain(Math.Min(i / 100.0 * maxStrain, maxStrain), DefaultUnits.StrainUnitResult);
+            var strain = new Strain(Math.Min(i / 100.0 * maxStrain, maxStrain), StrainUnit.MilliStrain);
             Pressure stress;
             try {
               stress = stressStrainCurve.StressAt(strain);
@@ -173,10 +176,14 @@ namespace AdSecGH.Parameters {
       int direction = isCompression ? 1 : -1;
       var point3ds = new List<Point3d>();
 
-      double maxStrain = stressStrainCurve.FailureStrain.As(DefaultUnits.StrainUnitResult);
+      double maxStrain = stressStrainCurve.FailureStrain.As(StrainUnit.MilliStrain);
+      if (maxStrain > 99) {
+        //limit this to 2.5% strain
+        maxStrain = 2.5;
+      }
       var polypoints = new List<Point3d>();
       for (int i = 0; i < 100; i++) {
-        var strain = new Strain(i / 100.0 * maxStrain, DefaultUnits.StrainUnitResult);
+        var strain = new Strain(i / 100.0 * maxStrain, StrainUnit.MilliStrain);
         var stress = stressStrainCurve.StressAt(strain);
         polypoints.Add(new Point3d(strain.As(DefaultUnits.StrainUnitResult) * direction,
           stress.As(DefaultUnits.StressUnitResult) * direction, 0));
