@@ -184,10 +184,10 @@ namespace AdSecCoreTests.Functions {
 
     private void AssertMaterialProperties(bool crackParameter = false) {
       var outputMaterial = _function.MaterialOutput.Value;
-      var compressionCurveUls = CreateExplicitCompressionCurve();
-      var compressionCurveSls = CreateExplicitCompressionCurve(true);
-      var tensionCurveUls = CreateExplicitTensionCurve();
-      var tensionCurveSls = CreateExplicitTensionCurve(true);
+      var compressionCurveUls = _function.UlsCompressionCurveInput.Value;
+      var compressionCurveSls = _function.SlsCompressionCurveInput.Value;
+      var tensionCurveUls = _function.SlsTensionCurveInput.Value;
+      var tensionCurveSls = _function.SlsTensionCurveInput.Value;
       Assert.NotNull(outputMaterial);
       Assert.Equal(compressionCurveSls.IStressStrainCurve.FailureStrain.ToUnit(StrainUnit.Ratio), outputMaterial.Material.Serviceability.Compression.FailureStrain.ToUnit(StrainUnit.Ratio));
       Assert.Equal(tensionCurveSls.IStressStrainCurve.FailureStrain.ToUnit(StrainUnit.Ratio), outputMaterial.Material.Serviceability.Tension.FailureStrain.ToUnit(StrainUnit.Ratio));
