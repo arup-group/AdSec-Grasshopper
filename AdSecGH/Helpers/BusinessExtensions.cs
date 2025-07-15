@@ -458,7 +458,7 @@ namespace Oasys.GH.Helpers {
           }
         }, {
           typeof(ProfileParameter), goo => {
-           return goo is Oasys.Taxonomy.Profiles.IProfile profile ? new ProfileDesign() {Profile=AdSecProfiles.CreateProfile(profile) }  : goo;
+           return goo is Oasys.Taxonomy.Profiles.IProfile profile ? new ProfileDesign() { Profile = AdSecProfiles.CreateProfile(profile) }  : goo;
           }
         },
       };
