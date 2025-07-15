@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-
-using AdSecCore;
-using AdSecCore.Functions;
+﻿using AdSecCore.Functions;
 
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
@@ -10,8 +7,6 @@ using Oasys.AdSec.StandardMaterials;
 
 using OasysUnits;
 using OasysUnits.Units;
-
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AdSecCoreTests.Functions {
   public class EditMaterialFunctionTests {
@@ -248,7 +243,7 @@ namespace AdSecCoreTests.Functions {
     public void MaterialInputPropertiesShouldBeCorrect() {
       Assert.Equal("Material", _function.MaterialInput.Name);
       Assert.Equal("Mat", _function.MaterialInput.NickName);
-      Assert.Equal("AdSet Material to Edit or get information from", _function.MaterialInput.Description);
+      Assert.Equal("AdSec Material to Edit or get information from", _function.MaterialInput.Description);
       Assert.Equal(Access.Item, _function.MaterialInput.Access);
       Assert.False(_function.MaterialInput.Optional);
     }

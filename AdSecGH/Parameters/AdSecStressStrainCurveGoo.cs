@@ -149,10 +149,8 @@ namespace AdSecGH.Parameters {
 
         default:
           double maxStrain = stressStrainCurve.FailureStrain.As(StrainUnit.MilliStrain);
-          if (maxStrain > 99) {
-            //limit this to 2.5% strain
-            maxStrain = 2.5;
-          }
+          //limit this to 2.5% strain(probably no tension material)
+          maxStrain = maxStrain > 99 ? 2.5 : maxStrain;
           var polypoints = new List<Point3d>();
           for (int i = 0; i <= 100; i++) {
             var strain = new Strain(Math.Min(i / 100.0 * maxStrain, maxStrain), StrainUnit.MilliStrain);
