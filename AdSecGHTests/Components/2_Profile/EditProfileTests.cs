@@ -66,6 +66,7 @@ namespace AdSecGHTests.Components._2_Profile {
     [Fact]
     public void ShouldUpdateNameWhenChangingDropdownToRad() {
       _component.SetSelected(0, 1);
+      ComponentTestHelper.ComputeData(_component);
       Assert.Contains("°", _component.Params.Input[1].Name);
     }
 
