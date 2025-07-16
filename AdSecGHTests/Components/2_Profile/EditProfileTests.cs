@@ -97,7 +97,7 @@ namespace AdSecGHTests.Components._2_Profile {
       doc.Document.NewSolution(true);
       var component = (EditProfile)doc.Document.FindComponent(_component.InstanceGuid);
       InitializeComponent(component);
-      Assert.Equal(AngleUnit.Degree, _component.BusinessComponent.LocalAngleUnit);
+      Assert.Equal(AngleUnit.Degree, component.BusinessComponent.LocalAngleUnit);
     }
 
     [Fact]
