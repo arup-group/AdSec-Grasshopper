@@ -75,16 +75,13 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldUseCustomPlane() {
-      // Given a new profile with a specific plane
       var profileDesign = ProfileDesign.From(SampleData.GetSectionDesign());
       var plane = OasysPlane.PlaneXZ;
       profileDesign.LocalPlane = plane;
       var profile = new AdSecProfileGoo(profileDesign);
       _component.SetInputParamAt(1, profile);
       ComponentTesting.ComputeOutputs(_component);
-      // Process Component
       var profileOut = _component.GetOutputParamAt(1).GetValue<AdSecProfileGoo>(0, 0);
-      // Confirm the new Section has that plane
       var inputPlane = profileDesign.LocalPlane;
       var localPlane = profileOut.Value.LocalPlane;
       Assert.Equal(inputPlane.XAxis.X, localPlane.XAxis.X);
@@ -94,17 +91,14 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldStoreNormalisedPlane() {
-      // Given a new profile with a non-normalised plane
       var profileDesign = ProfileDesign.From(SampleData.GetSectionDesign());
       var plane = OasysPlane.PlaneXZ;
       plane.XAxis = new OasysPoint(1, 2, 3); // Non-Normalised plane
       profileDesign.LocalPlane = plane;
-      // Process Component
       var profile = new AdSecProfileGoo(profileDesign);
       _component.SetInputParamAt(1, profile);
       ComponentTesting.ComputeOutputs(_component);
       var profileOut = _component.GetOutputParamAt(1).GetValue<AdSecProfileGoo>(0, 0);
-      // Confirm the new Section has a normalised plane
       var localPlane = profileOut.Value.LocalPlane;
       Assert.True(localPlane.XAxis.X <= 1);
       Assert.True(localPlane.XAxis.Y <= 1);
