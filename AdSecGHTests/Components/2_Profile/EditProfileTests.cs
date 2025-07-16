@@ -19,9 +19,8 @@ using Oasys.Taxonomy.Profiles;
 using OasysGH.Parameters;
 
 using OasysUnits;
-using OasysUnits.Units;
-
 using OasysUnits;
+using OasysUnits.Units;
 using OasysUnits.Units;
 
 using Xunit;
