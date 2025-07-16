@@ -458,8 +458,12 @@ namespace Oasys.GH.Helpers {
           }
         }, {
           typeof(ProfileParameter), goo => {
-           return goo is Oasys.Taxonomy.Profiles.IProfile profile ? new ProfileDesign() {Profile=AdSecProfiles.CreateProfile(profile) }  : goo;
-          }
+            var profileDesign = goo is Oasys.Taxonomy.Profiles.IProfile profile
+              ? new ProfileDesign() { Profile = AdSecProfiles.CreateProfile(profile) }
+              : goo as ProfileDesign;
+            var profileGoo = new AdSecProfileGoo(profileDesign);
+            return new ProfileDesign(){ Profile = profileGoo.Clone(), LocalPlane = profileGoo.LocalPlane.ToOasys() };
+           }
         },
       };
 
