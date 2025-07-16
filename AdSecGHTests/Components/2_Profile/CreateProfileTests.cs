@@ -13,8 +13,9 @@ using Xunit;
 namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
   public class CreateProfileTests {
-
     private readonly CreateProfile _component;
+    private const string _catalogueMode = "Catalogue";
+    private const string _otherMode = "Other";
 
     public CreateProfileTests() {
       _component = new CreateProfile();
@@ -51,49 +52,39 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
-    public void ShouldUnregisterAllInputs() {
+    public void ShouldSetMode1WhenOtherMode() {
       var dummyCreateProfile = new DummyCreateProfile();
-      dummyCreateProfile.DummyUnregisterAllInputs();
-
-      Assert.Empty(dummyCreateProfile.Params.Input);
-    }
-
-    [Fact]
-    public void ShouldUnregisterPlaneInput() {
-      var dummyCreateProfile = new DummyCreateProfile();
-      var planeInput = dummyCreateProfile.Params.Input[2];
-      Assert.Equal(3, dummyCreateProfile.Params.Input.Count);
-
-      dummyCreateProfile.DummyUnregisterPlaneInput();
-      var inputsAfterRemoval = dummyCreateProfile.Params.Input;
-      Assert.Equal(2, inputsAfterRemoval.Count);
-      Assert.DoesNotContain(planeInput, inputsAfterRemoval);
-    }
-
-    [Fact]
-    public void ShouldSetMode1() {
-      var dummyCreateProfile = new DummyCreateProfile();
+      dummyCreateProfile.SetModeByName(_otherMode);
       dummyCreateProfile.Mode1Click();
 
-      Assert.Equal("Catalogue", dummyCreateProfile.GetModeString());
+      Assert.Equal(_catalogueMode, dummyCreateProfile.GetModeString());
+    }
+
+    [Fact]
+    public void ShouldSetMode1WhenCatalogueMode() {
+      var dummyCreateProfile = new DummyCreateProfile();
+      dummyCreateProfile.SetModeByName(_catalogueMode);
+      dummyCreateProfile.Mode1Click();
+
+      Assert.Equal(_catalogueMode, dummyCreateProfile.GetModeString());
     }
 
     [Fact]
     public void ShouldSetMode2WhenCatalogueMode() {
       var dummyCreateProfile = new DummyCreateProfile();
-      dummyCreateProfile.SetModeByName("Catalogue");
+      dummyCreateProfile.SetModeByName(_catalogueMode);
       dummyCreateProfile.Mode2Click();
 
-      Assert.Equal("Other", dummyCreateProfile.GetModeString());
+      Assert.Equal(_otherMode, dummyCreateProfile.GetModeString());
     }
 
     [Fact]
     public void ShouldSetMode2WhenOtherMode() {
       var dummyCreateProfile = new DummyCreateProfile();
-      dummyCreateProfile.SetModeByName("Other");
+      dummyCreateProfile.SetModeByName(_otherMode);
       dummyCreateProfile.Mode2Click();
 
-      Assert.Equal("Other", dummyCreateProfile.GetModeString());
+      Assert.Equal(_otherMode, dummyCreateProfile.GetModeString());
     }
 
     internal class DummyCreateProfile : CreateProfile {
@@ -103,14 +94,6 @@ namespace AdSecGHTests.Components {
 
       public void Mode2Click() {
         base.Mode2Clicked();
-      }
-
-      public void DummyUnregisterAllInputs() {
-        UnregisterAllInputs();
-      }
-
-      public void DummyUnregisterPlaneInput() {
-        UnregisterPlaneInput();
       }
 
       public string GetModeString() {

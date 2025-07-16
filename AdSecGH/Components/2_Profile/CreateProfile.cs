@@ -9,7 +9,6 @@ using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Parameters;
 
 using Oasys.GH.Helpers;
 
@@ -36,48 +35,18 @@ namespace AdSecGH.Components {
     }
 
     protected override void Mode1Clicked() {
-      var planeInputCache = UnregisterPlaneInput();
-      UnregisterAllInputs();
-
-      Params.RegisterInputParam(new Param_String());
-      Params.RegisterInputParam(new Param_Boolean());
-
-      // add cached plane
-      Params.RegisterInputParam(planeInputCache);
-      _mode = FoldMode.Catalogue;
-
-      base.UpdateUI();
+      HandleModeClick(base.Mode1Clicked);
     }
 
     protected override void Mode2Clicked() {
-      var planeInputCache = UnregisterPlaneInput();
-
-      // check if mode is correct
-      if (_mode != FoldMode.Other) {
-        // if we come from catalogue mode remove all input parameters
-        UnregisterAllInputs();
-        _mode = FoldMode.Other;
-      }
-
-      UpdateParameters();
-
-      Params.RegisterInputParam(planeInputCache);
-
-      (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
-      Params.OnParametersChanged();
-      ExpireSolution(true);
+      HandleModeClick(base.Mode2Clicked);
     }
 
-    protected void UnregisterAllInputs() {
-      while (Params.Input.Count > 0) {
-        Params.UnregisterInputParameter(Params.Input[0], true);
-      }
-    }
-
-    protected IGH_Param UnregisterPlaneInput() {
+    private void HandleModeClick(Action baseAction) {
       var plane = Params.Input[Params.Input.Count - 1];
       Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
-      return plane;
+      baseAction();
+      Params.RegisterInputParam(plane);
     }
 
     protected override void SolveInternal(IGH_DataAccess DA) {

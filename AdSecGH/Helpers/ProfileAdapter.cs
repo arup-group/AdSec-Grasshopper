@@ -11,7 +11,7 @@ using OasysGH.Components;
 
 namespace Oasys.GH.Helpers {
 
-  public abstract class ProfileAdapter<T> : CreateOasysProfile, IDefaultValues where T : IFunction {
+  public abstract class ProfileAdapter<T> : CreateOasysProfile where T : IFunction {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
 
     protected ProfileAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
@@ -19,7 +19,6 @@ namespace Oasys.GH.Helpers {
     }
 
     public override OasysPluginInfo PluginInfo { get; } = AdSecGH.PluginInfo.Instance;
-    public void SetDefaultValues() { BusinessComponent.SetDefaultValues(this); }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       BusinessComponent.PopulateInputParams(this);
