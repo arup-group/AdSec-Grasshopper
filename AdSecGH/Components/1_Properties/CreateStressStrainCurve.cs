@@ -1,5 +1,5 @@
 ﻿using System;
-using System.DirectoryServices.AccountManagement;
+
 using System.Drawing;
 
 using AdSecCore.Functions;
@@ -28,9 +28,7 @@ namespace AdSecGH.Components {
 
     protected override void UpdateUIFromSelectedItems() {
       base.UpdateUIFromSelectedItems();
-      //update unit first
       UpdateUnits();
-      //then update curve type
       SetSelectedCurveType();
     }
 

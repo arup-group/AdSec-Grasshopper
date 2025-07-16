@@ -325,10 +325,20 @@ namespace Oasys.GH.Helpers {
 
             return quantityInRelevantUnit;
           }
-        },{
+        }, {
           typeof(StressStrainCurveParameter), a => {
             var stressStrainCurve = (a as StressStrainCurveParameter).Value;
             return AdSecStressStrainCurveGoo.Create(stressStrainCurve.IStressStrainCurve,stressStrainCurve.IsCompression);
+          }
+        }, {
+          typeof(StressStrainPointParameter), a => {
+            var stressStrainPoint = (a as StressStrainPointParameter).Value;
+            return new AdSecStressStrainPointGoo(stressStrainPoint);
+          }
+        }, {
+          typeof(CrackCalcParameter), a => {
+            var crackParameter = (a as CrackCalcParameter).Value;
+            return new AdSecConcreteCrackCalculationParametersGoo(crackParameter);
           }
         }
       };
