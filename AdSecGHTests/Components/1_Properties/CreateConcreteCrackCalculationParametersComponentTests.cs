@@ -5,9 +5,12 @@ using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
+using Oasys.AdSec.Materials;
 using Oasys.GH.Helpers;
 
 using OasysGH.Components;
+
+using OasysUnits;
 
 using Xunit;
 
@@ -26,6 +29,19 @@ namespace AdSecGHTests.Properties {
       ComponentTestHelper.SetInput(comp, 1200, 2);
 
       return comp;
+    }
+
+    [Fact]
+    public void ToStringIsEmptyWhenCrackParameterIsNull() {
+      var gooObject = new AdSecConcreteCrackCalculationParametersGoo(null);
+      Assert.Empty(gooObject.ToString());
+    }
+
+    [Fact]
+    public void ToStringShouldNotBeEmptyForValidParameter() {
+      var crackParameter = IConcreteCrackCalculationParameters.Create(Pressure.FromMegapascals(10), Pressure.FromPascals(-10), Pressure.FromPascals(4));
+      var gooObject = new AdSecConcreteCrackCalculationParametersGoo(crackParameter);
+      Assert.NotEmpty(gooObject.ToString());
     }
 
     [Fact]
