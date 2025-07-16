@@ -14,6 +14,12 @@ using AdSecGHTests.Helpers;
 using Grasshopper.Kernel;
 
 using Oasys.GH.Helpers;
+using Oasys.Taxonomy.Profiles;
+
+using OasysGH.Parameters;
+
+using OasysUnits;
+using OasysUnits.Units;
 
 using OasysUnits;
 using OasysUnits.Units;
@@ -41,6 +47,16 @@ namespace AdSecGHTests.Components._2_Profile {
         Section = new SectionBuilder().WithHeight(1).WithWidth(1).Build()
       });
       return new AdSecProfileGoo(profile);
+    }
+
+    [Fact]
+    public void ShouldParseOasysTaxonomy() {
+      var component = new EditProfile();
+      var length = new Length(1, LengthUnit.Meter);
+      var profile = new OasysProfileGoo(new RectangleProfile(length, length));
+      component.SetInputParamAt(0, profile);
+      var result = (AdSecProfileGoo)ComponentTestHelper.GetOutput(component);
+      Assert.NotNull(result);
     }
 
     [Fact]
