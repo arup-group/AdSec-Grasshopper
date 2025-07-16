@@ -466,6 +466,14 @@ namespace Oasys.GH.Helpers {
              return (IStressStrainPoint)ConvertToStressStrainPoint(y.Value);
             }).ToArray();
           }
+        }, {
+          typeof(ProfileParameter), goo => {
+            var profileDesign = goo is Oasys.Taxonomy.Profiles.IProfile profile
+              ? new ProfileDesign() { Profile = AdSecProfiles.CreateProfile(profile) }
+              : goo as ProfileDesign;
+            var profileGoo = new AdSecProfileGoo(profileDesign);
+            return new ProfileDesign(){ Profile = profileGoo.Clone(), LocalPlane = profileGoo.LocalPlane.ToOasys() };
+           }
         },
       };
 
