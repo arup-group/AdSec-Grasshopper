@@ -13,7 +13,7 @@ namespace AdSecGHTests.Helpers {
     public override Guid ComponentGuid => new Guid("D3A8C9E-417C-42AE-B704-91F214C8C873");
   }
 
-  public class AllParameters : IFunction {
+  public class AllParameters : Function {
 
     public AdSecPointArrayParameter Points { get; set; } = new AdSecPointArrayParameter {
       Name = "Points",
@@ -43,21 +43,21 @@ namespace AdSecGHTests.Helpers {
       NickName = "BC",
       Description = "Bundle Count description",
     };
-    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
+    public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Name = "All Parameters",
       NickName = "AP",
       Description = "Get all parameters",
     };
-    public Organisation Organisation { get; set; } = new Organisation {
+    public override Organisation Organisation { get; set; } = new Organisation {
       Category = "Test",
       SubCategory = "Test",
     };
 
-    public void Compute() { }
+    public override void Compute() { }
 
-    public Attribute[] GetAllInputAttributes() { return GetAllParams(); }
+    public override Attribute[] GetAllInputAttributes() { return GetAllParams(); }
 
-    public Attribute[] GetAllOutputAttributes() { return GetAllParams(); }
+    public override Attribute[] GetAllOutputAttributes() { return GetAllParams(); }
 
     private Attribute[] GetAllParams() {
       return new Attribute[] {
