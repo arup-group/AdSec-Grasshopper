@@ -1,6 +1,4 @@
-﻿using System;
-
-using AdSecCore.Functions;
+﻿using AdSecCore.Functions;
 
 using AdSecGH;
 using AdSecGH.Components;
@@ -74,19 +72,35 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
-    public void ShouldOverrideTheProfile() {
+    public void ShouldUseCustomPlane() {
       var profileDesign = ProfileDesign.From(SampleData.GetSectionDesign());
-      var plane = OasysPlane.PlaneYZ;
-      plane.XAxis = new OasysPoint { X = 1, Z = 2, Y = 3, };
+      var plane = OasysPlane.PlaneXZ;
       profileDesign.LocalPlane = plane;
       var profile = new AdSecProfileGoo(profileDesign);
       _component.SetInputParamAt(1, profile);
       ComponentTesting.ComputeOutputs(_component);
       var profileOut = _component.GetOutputParamAt(1).GetValue<AdSecProfileGoo>(0, 0);
-      Assert.NotNull(profileOut);
-      Assert.Equal(profileDesign.LocalPlane.XAxis.X, profileOut.Value.LocalPlane.XAxis.X);
-      Assert.Equal(profileDesign.LocalPlane.XAxis.Y, profileOut.Value.LocalPlane.XAxis.Y);
-      Assert.Equal(profileDesign.LocalPlane.XAxis.Z, profileOut.Value.LocalPlane.XAxis.Z);
+      var inputPlane = profileDesign.LocalPlane;
+      var localPlane = profileOut.Value.LocalPlane;
+      Assert.Equal(inputPlane.XAxis.X, localPlane.XAxis.X);
+      Assert.Equal(inputPlane.XAxis.Y, localPlane.XAxis.Y);
+      Assert.Equal(inputPlane.XAxis.Z, localPlane.XAxis.Z);
+    }
+
+    [Fact]
+    public void ShouldStoreNormalisedPlane() {
+      var profileDesign = ProfileDesign.From(SampleData.GetSectionDesign());
+      var plane = OasysPlane.PlaneXZ;
+      plane.XAxis = new OasysPoint(1, 2, 3); // Non-Normalised plane
+      profileDesign.LocalPlane = plane;
+      var profile = new AdSecProfileGoo(profileDesign);
+      _component.SetInputParamAt(1, profile);
+      ComponentTesting.ComputeOutputs(_component);
+      var profileOut = _component.GetOutputParamAt(1).GetValue<AdSecProfileGoo>(0, 0);
+      var localPlane = profileOut.Value.LocalPlane;
+      Assert.True(localPlane.XAxis.X <= 1);
+      Assert.True(localPlane.XAxis.Y <= 1);
+      Assert.True(localPlane.XAxis.Z <= 1);
     }
 
     [Fact]

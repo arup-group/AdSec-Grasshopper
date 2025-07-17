@@ -32,6 +32,10 @@ namespace AdSecCore.Functions {
       XAxis = OasysPoint.XAxis,
       YAxis = OasysPoint.YAxis,
     };
+    public static readonly OasysPlane PlaneXZ = new OasysPlane {
+      XAxis = OasysPoint.XAxis,
+      YAxis = OasysPoint.ZAxis,
+    };
     public OasysPoint Origin { get; set; } = new OasysPoint { };
     public OasysPoint XAxis { get; set; }
     public OasysPoint YAxis { get; set; }
