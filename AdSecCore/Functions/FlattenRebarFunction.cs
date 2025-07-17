@@ -8,7 +8,7 @@ using Oasys.AdSec.Reinforcement.Preloads;
 using Oasys.Profiles;
 
 namespace AdSecCore.Functions {
-  public class FlattenRebarFunction : IFunction {
+  public class FlattenRebarFunction : Function {
 
     public SectionParameter Section { get; set; } = new SectionParameter {
       Name = "Section",
@@ -51,23 +51,23 @@ namespace AdSecCore.Functions {
       NickName = "Mat",
       Description = "Material Type",
     };
-    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
+    public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Name = "FlattenRebar",
       NickName = "FRb",
       Description = "Flatten all rebars in a section into single bars.",
     };
-    public Organisation Organisation { get; set; } = new Organisation {
+    public override Organisation Organisation { get; set; } = new Organisation {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat4(),
     };
 
-    public virtual Attribute[] GetAllInputAttributes() {
+    public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
         Section,
       };
     }
 
-    public virtual Attribute[] GetAllOutputAttributes() {
+    public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
         Position,
         Diameter,
@@ -77,7 +77,7 @@ namespace AdSecCore.Functions {
       };
     }
 
-    public void Compute() {
+    public override void Compute() {
       var flattenSection = Section.Value.FlattenSection();
       var lengthUnitGeometry = ContextUnits.Instance.LengthUnitGeometry;
       // Output process
