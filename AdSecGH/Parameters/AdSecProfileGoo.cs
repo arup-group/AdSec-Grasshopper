@@ -308,8 +308,7 @@ namespace AdSecGH.Parameters {
     }
 
     internal static Tuple<Polyline, List<Polyline>> PolylinesFromAdSecProfile(IProfile profile, Plane local) {
-      var perimeter = IPerimeterProfile.Create(profile);
-
+      var perimeter = profile is IPerimeterProfile perimeterProfile ? perimeterProfile : IPerimeterProfile.Create(profile);
       var pointsFromAdSecPermiter = PointsFromAdSecPermiter(perimeter, local);
 
       var solid = new Polyline(pointsFromAdSecPermiter.Item1);

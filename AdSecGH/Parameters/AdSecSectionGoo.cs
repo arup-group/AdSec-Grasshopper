@@ -78,10 +78,15 @@ namespace AdSecGH.Parameters {
         return;
       }
       args.Pipeline.DrawBrepShaded(Value.SolidBrep, Value.ProfileData.ProfileColour);
-
-      var reinforcementDataRebars = Value.ReinforcementData.Rebars;
-      for (int i = 0; i < reinforcementDataRebars.Count; i++) {
-        args.Pipeline.DrawBrepShaded(reinforcementDataRebars[i], Value.ReinforcementData.RebarColours[i]);
+      var subProfiles = Value.SubProfilesData.SubProfiles;
+      for (int i = 0; i < subProfiles.Count; i++) {
+        args.Pipeline.DrawBrepShaded(subProfiles[i], Value.SubProfilesData.SubColours[i]);
+      }
+      foreach (var preview in Value.ReinforcementData) {
+        var reinforcementDataRebars = preview.Rebars;
+        for (int i = 0; i < reinforcementDataRebars.Count; i++) {
+          args.Pipeline.DrawBrepShaded(reinforcementDataRebars[i], preview.RebarColours[i]);
+        }
       }
     }
 
@@ -118,14 +123,14 @@ namespace AdSecGH.Parameters {
 
       drawInstructions.AddRange(Value.ProfileData.ProfileVoidEdges.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness, }));
 
-      drawInstructions.AddRange(Value.SubProfilesData.SubEdges.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = primaryColor, Thickness = secondaryThickness, }));
+      drawInstructions.AddRange(Value.SubProfilesData.SubEdges.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = primaryColor, Thickness = primaryThickness, }));
 
       drawInstructions.AddRange(Value.SubProfilesData.SubVoidEdges.SelectMany(voids
         => voids.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness, })));
-
-      drawInstructions.AddRange(Value.ReinforcementData.RebarEdges.Select(circle => new DrawCircle() { Circle = circle, Color = secondaryColor, Thickness = secondaryThickness, }));
-
-      drawInstructions.AddRange(Value.ReinforcementData.LinkEdges.Select(curve => new DrawCurve() { Curve = curve, Color = secondaryColor, Thickness = secondaryThickness, }));
+      foreach (var preview in Value.ReinforcementData) {
+        drawInstructions.AddRange(preview.RebarEdges.Select(circle => new DrawCircle() { Circle = circle, Color = secondaryColor, Thickness = secondaryThickness, }));
+        drawInstructions.AddRange(preview.LinkEdges.Select(curve => new DrawCurve() { Curve = curve, Color = secondaryColor, Thickness = secondaryThickness, }));
+      }
 
       return drawInstructions;
     }
