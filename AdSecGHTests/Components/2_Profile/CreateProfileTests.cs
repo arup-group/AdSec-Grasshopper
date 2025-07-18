@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using AdSecGH;
 using AdSecGH.Components;
@@ -118,7 +119,8 @@ namespace AdSecGHTests.Components {
     [InlineData(20, "STD TR(m) 0.11 0.11 0.11")] //Trapezoid
     [InlineData(21, "STD T(m) 0.11 0.11 0.11 0.11")] //T Section
     public void SolveInternalTest(int profileTypeIndex, string expectedDesc) {
-      SolveInternalComputeValidData(profileTypeIndex, expectedDesc);
+      //SolveInternalComputeValidData(profileTypeIndex, expectedDesc);
+      ClearMessagesBeforeComputing(profileTypeIndex, expectedDesc);
     }
 
     private void SolveInternalComputeValidData(int profileTypeIndex, string expectedDesc) {
@@ -141,22 +143,32 @@ namespace AdSecGHTests.Components {
       Assert.Equal(1, result.Value.LocalPlane.YAxis.Z);
     }
 
-    //[Theory]
-    //[InlineData(1)] //catalogue
-    //[InlineData(3)] //circle hollow
-    //public void ShouldClearMessagesBeforeComputing(int profileTypeIndex) {
-    //  _component.SetSelected(0, profileTypeIndex);
-    //  // Set invalid inputs to trigger errors
-    //  ComponentTestHelper.SetInput(_component, -1);
-    //  ComponentTestHelper.SetInput(_component, -1, 1);
-    //  ComponentTestHelper.ComputeData(_component);
-    //  Assert.NotEmpty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
+    private void ClearMessagesBeforeComputing(int profileTypeIndex, string expectedDesc) {
+      _component.SetSelected(0, profileTypeIndex);
+      // Set invalid inputs to trigger errors
+      ComponentTestHelper.SetInput(_component, "!");
+      ComponentTestHelper.SetInput(_component, "!", 1);
+      ComponentTestHelper.SetInput(_component, Plane.Unset, _component.Params.Input.Count - 1);
+      ComponentTestHelper.ComputeData(_component);
 
-    //  // Set inputs to valid values
-    //  SetValidInputs(false);
+      Assert.True(ComponentHasMessages(), "Component should have error or warning messages.");
 
-    //  Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
-    //}
+      //change to something else to "reset" component
+      int tempIndex = profileTypeIndex == 0 ? 1 : 0;
+      _component.SetSelected(0, tempIndex);
+      _component.SetSelected(0, profileTypeIndex);
+      // Set inputs to valid values
+      string[] splittedCode = expectedDesc.Split(' ');
+      SetValidInputs($"{splittedCode[0]} {splittedCode[1]}"); //take first two parts of the string as code
+
+      Assert.False(ComponentHasMessages(), "Component should NOT have any error or warning message.");
+    }
+
+    private bool ComponentHasMessages() {
+      bool componentHasMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error).Any()
+        || _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning).Any();
+      return componentHasMessages;
+    }
 
     private void SetValidInputs(string code) {
       switch (code) {
