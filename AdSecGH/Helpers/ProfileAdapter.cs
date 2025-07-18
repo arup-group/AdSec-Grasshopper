@@ -11,7 +11,7 @@ using OasysGH.Components;
 
 namespace Oasys.GH.Helpers {
 
-  public abstract class ProfileAdapter<T> : CreateOasysProfile where T : IFunction {
+  public abstract class ProfileAdapter<T> : CreateOasysProfile where T : Function {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
 
     protected ProfileAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {
