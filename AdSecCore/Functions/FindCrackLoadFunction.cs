@@ -8,7 +8,7 @@ using Oasys.AdSec;
 using OasysUnits;
 
 namespace AdSecCore.Functions {
-  public class FindCrackLoadFunction : IFunction {
+  public class FindCrackLoadFunction : Function {
 
 
     public SectionSolutionParameter Solution { get; set; } = new SectionSolutionParameter {
@@ -64,19 +64,19 @@ namespace AdSecCore.Functions {
       Access = Access.Item,
     };
 
-    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
+    public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Name = "Find Crack Load",
       NickName = "CrackLd",
       Description = "Increases the load until set crack width is reached",
     };
 
-    public Organisation Organisation { get; set; } = new Organisation {
+    public override Organisation Organisation { get; set; } = new Organisation {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat7(),
     };
 
 
-    public virtual Attribute[] GetAllInputAttributes() {
+    public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
        Solution,
        BaseLoad,
@@ -87,7 +87,7 @@ namespace AdSecCore.Functions {
 
     }
 
-    public virtual Attribute[] GetAllOutputAttributes() {
+    public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
        SectionLoad,
        MaximumCracking,
@@ -147,7 +147,7 @@ namespace AdSecCore.Functions {
       }
     }
 
-    public void Compute() {
+    public override void Compute() {
       var solution = Solution.Value;
       var baseLoad = BaseLoad.Value;
       var loadComponent = OptimisedLoad.Value;

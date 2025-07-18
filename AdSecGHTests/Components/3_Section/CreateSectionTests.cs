@@ -1,4 +1,6 @@
-﻿using AdSecCore.Builders;
+﻿using System.Linq;
+
+using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using AdSecGH;
@@ -82,6 +84,23 @@ namespace AdSecGHTests.Components {
       component.SetInputParamAt(3, subComponentGoo);
       ComponentTesting.ComputeOutputs(component);
       Assert.NotNull(component.GetOutputParamAt(0));
+    }
+
+    [Fact]
+    public void ShouldRemoveSubComponentIfDisconnected() {
+      var sectionDesign = SampleData.GetSectionDesign(DesignCode, iBeamMat);
+      var subComponent = new SubComponent {
+        SectionDesign = sectionDesign,
+        ISubComponent = ISubComponent.Create(sectionDesign.Section, Geometry.Zero()),
+      };
+      var subComponentGoo = new AdSecSubComponentGoo(subComponent);
+      component.SetInputParamAt(3, subComponentGoo);
+      var sectionOutWithSubComponent = (AdSecSectionGoo)ComponentTestHelper.GetOutput(component);
+      Assert.Single(sectionOutWithSubComponent.Value.Section.SubComponents);
+      ComponentTestHelper.DisconnectInput(component, 3);
+      ComponentTesting.ComputeOutputs(component);
+      var sectionOut = (AdSecSectionGoo)ComponentTestHelper.GetOutput(component);
+      Assert.Empty(sectionOut.Value.Section.SubComponents);
     }
 
     [Fact]

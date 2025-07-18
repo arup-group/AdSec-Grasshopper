@@ -14,7 +14,7 @@ using Attribute = AdSecCore.Functions.Attribute;
 
 namespace Oasys.GH.Helpers {
 
-  public abstract class ComponentAdapter<T> : GH_OasysComponent, IDefaultValues where T : IFunction {
+  public abstract class ComponentAdapter<T> : GH_OasysComponent, IDefaultValues where T : Function {
 
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
 

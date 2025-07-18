@@ -7,7 +7,7 @@ using AdSecGHCore.Constants;
 using Oasys.Profiles;
 
 namespace AdSecCore.Functions {
-  public class CreateSectionFunction : IFunction {
+  public class CreateSectionFunction : Function {
     public ProfileParameter Profile { get; set; } = new ProfileParameter {
       Name = "Profile",
       NickName = "Pf",
@@ -42,23 +42,23 @@ namespace AdSecCore.Functions {
       Access = Access.Item,
     };
 
-    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
+    public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Name = "Create Section",
       NickName = "Section",
       Description = "Create an AdSec Section",
     };
-    public Organisation Organisation { get; set; } = new Organisation {
+    public override Organisation Organisation { get; set; } = new Organisation {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat4(),
     };
 
-    public virtual Attribute[] GetAllInputAttributes() {
+    public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] { Profile, Material, RebarGroup, SubComponent, };
     }
 
-    public virtual Attribute[] GetAllOutputAttributes() { return new Attribute[] { Section, }; }
+    public override Attribute[] GetAllOutputAttributes() { return new Attribute[] { Section, }; }
 
-    public void Compute() {
+    public override void Compute() {
       var sectionBuilder = new SectionBuilder();
       sectionBuilder.WithProfile(Profile.Value.Profile);
       if (RebarGroup.Value != null) {
