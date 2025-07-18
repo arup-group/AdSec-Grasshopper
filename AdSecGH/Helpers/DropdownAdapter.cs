@@ -16,7 +16,7 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace Oasys.GH.Helpers {
-  public abstract class DropdownAdapter<T> : GH_OasysDropDownComponent, IDefaultValues where T : IFunction {
+  public abstract class DropdownAdapter<T> : GH_OasysDropDownComponent, IDefaultValues where T : Function {
     public readonly T BusinessComponent = Activator.CreateInstance<T>();
 
     protected DropdownAdapter() : base(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty) {

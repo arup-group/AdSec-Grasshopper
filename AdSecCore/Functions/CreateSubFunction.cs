@@ -8,7 +8,7 @@ using Oasys.Profiles;
 using OasysUnits;
 
 namespace AdSecCore.Functions {
-  public class CreateSubComponentFunction : IFunction {
+  public class CreateSubComponentFunction : Function {
 
     public SectionParameter Section { get; set; } = new SectionParameter {
       Name = "Section",
@@ -32,20 +32,20 @@ namespace AdSecCore.Functions {
       Optional = true,
     };
 
-    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
+    public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Name = "SubComponent",
       NickName = "SubComponent",
       Description = "Create an AdSec Subcomponent from a Section",
     };
-    public Organisation Organisation { get; set; } = new Organisation {
+    public override Organisation Organisation { get; set; } = new Organisation {
       Category = CategoryName.Name(),
       SubCategory = SubCategoryName.Cat4(),
     };
-    public virtual Attribute[] GetAllInputAttributes() { return new Attribute[] { Section, Offset, }; }
+    public override Attribute[] GetAllInputAttributes() { return new Attribute[] { Section, Offset, }; }
 
-    public virtual Attribute[] GetAllOutputAttributes() { return new Attribute[] { SubComponent, }; }
+    public override Attribute[] GetAllOutputAttributes() { return new Attribute[] { SubComponent, }; }
 
-    public void Compute() {
+    public override void Compute() {
       if (Offset.Value == null) {
         Offset.Value = IPoint.Create(Length.Zero, Length.Zero);
       }

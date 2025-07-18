@@ -15,22 +15,22 @@ namespace AdSecCoreTests {
       Assert.True(spyCalled);
     }
 
-    public class FakeFunc : IFunction {
+    public class FakeFunc : Function {
 
       public DoubleParameter Diameter { get; set; } = new DoubleParameter();
 
-      public FuncAttribute Metadata { get; set; } = new FuncAttribute();
-      public Organisation Organisation { get; set; } = new Organisation();
+      public override FuncAttribute Metadata { get; set; } = new FuncAttribute();
+      public override Organisation Organisation { get; set; } = new Organisation();
 
-      public Attribute[] GetAllInputAttributes() {
+      public override Attribute[] GetAllInputAttributes() {
         return new Attribute[] {
           Diameter,
         };
       }
 
-      public Attribute[] GetAllOutputAttributes() { throw new NotImplementedException(); }
+      public override Attribute[] GetAllOutputAttributes() { throw new NotImplementedException(); }
 
-      public void Compute() { }
+      public override void Compute() { }
     }
   }
 }

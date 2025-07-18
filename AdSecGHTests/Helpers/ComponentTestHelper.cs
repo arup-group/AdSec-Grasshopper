@@ -22,6 +22,13 @@ namespace AdSecGHTests.Helpers {
       return component.Params.Output[index].VolatileData.get_Branch(branch)[item];
     }
 
+    public static void DisconnectInput(GH_Component component, int index = 0) {
+      var param = component.Params.Input[index];
+      param.RemoveAllSources();
+      param.VolatileData.Clear();
+      component.ExpireSolution(true);
+    }
+
     public static void CheckOutputIsNotNull(GH_Component component) {
       for (int i = 0; i < component.Params.Output.Count; i++) {
         var output = GetOutput(component, i);
