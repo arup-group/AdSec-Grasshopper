@@ -6,9 +6,8 @@ using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
 
-using Grasshopper.Kernel;
-
 using Rhino;
+using Rhino.Display;
 using Rhino.DocObjects;
 using Rhino.Geometry;
 using Rhino.Geometry.Morphs;
@@ -74,6 +73,15 @@ namespace AdSecGHTests.Parameters {
       sectionGoo.DrawInstructionsList.Clear();
       using var doc = RhinoDoc.Create(string.Empty);
       sectionGoo.DrawViewportWires(ComponentTestHelper.CreatePreviewArgs(doc, Color.White));
+      Assert.NotEmpty(sectionGoo.DrawInstructionsList);
+    }
+
+    [Fact]
+    public void ShouldDrawOnViewPortMesh() {
+      sectionGoo.DrawInstructionsList.Clear();
+      using var doc = RhinoDoc.Create(string.Empty);
+      var previewMeshArgs = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(Color.White));
+      sectionGoo.DrawViewportMeshes(previewMeshArgs);
       Assert.NotEmpty(sectionGoo.DrawInstructionsList);
     }
 
