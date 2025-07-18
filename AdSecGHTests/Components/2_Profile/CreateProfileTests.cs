@@ -117,7 +117,11 @@ namespace AdSecGHTests.Components {
     [InlineData(19, "STD SHT(m) 0.11 0.11 0.11 0.11 0.22 0.22")] //Sheet Pile
     [InlineData(20, "STD TR(m) 0.11 0.11 0.11")] //Trapezoid
     [InlineData(21, "STD T(m) 0.11 0.11 0.11 0.11")] //T Section
-    public void SolveInternalShouldUpdateOutputsFor(int profileTypeIndex, string expectedDesc) {
+    public void SolveInternalTest(int profileTypeIndex, string expectedDesc) {
+      SolveInternalComputeValidData(profileTypeIndex, expectedDesc);
+    }
+
+    private void SolveInternalComputeValidData(int profileTypeIndex, string expectedDesc) {
       _component.SetSelected(0, profileTypeIndex);
       string[] splittedCode = expectedDesc.Split(' ');
       SetValidInputs($"{splittedCode[0]} {splittedCode[1]}"); //take first two parts of the string as code
@@ -129,6 +133,12 @@ namespace AdSecGHTests.Components {
       Assert.Equal(0, result.Value.LocalPlane.Origin.X);
       Assert.Equal(0, result.Value.LocalPlane.Origin.Y);
       Assert.Equal(0, result.Value.LocalPlane.Origin.Z);
+      Assert.Equal(0, result.Value.LocalPlane.XAxis.X);
+      Assert.Equal(1, result.Value.LocalPlane.XAxis.Y);
+      Assert.Equal(0, result.Value.LocalPlane.XAxis.Z);
+      Assert.Equal(0, result.Value.LocalPlane.YAxis.X);
+      Assert.Equal(0, result.Value.LocalPlane.YAxis.Y);
+      Assert.Equal(1, result.Value.LocalPlane.YAxis.Z);
     }
 
     //[Theory]
@@ -164,6 +174,8 @@ namespace AdSecGHTests.Components {
           SetInputIfNotLocalPlane();
           break;
       }
+
+      ComponentTestHelper.SetInput(_component, Plane.WorldYZ, _component.Params.Input.Count - 1);
 
       ComponentTestHelper.ComputeData(_component);
     }
