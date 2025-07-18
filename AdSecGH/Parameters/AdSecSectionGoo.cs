@@ -72,25 +72,42 @@ namespace AdSecGH.Parameters {
       target = default;
       return false;
     }
+    public List<DrawInstructions> DrawInstructionsList { get; private set; } = new List<DrawInstructions>();
+
 
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
       if (!IsValid) {
         return;
       }
-      args.Pipeline.DrawBrepShaded(Value.SolidBrep, Value.ProfileData.ProfileColour);
+      UpdateDrawInstructionsForMeshes();
+    }
+
+    private void UpdateDrawInstructionsForMeshes() {
+      DrawInstructionsList.Clear();
+      DrawInstructionsList.Add(new DrawBrepShaded() {
+        Brep = Value.SolidBrep,
+        DisplayMaterial = Value.ProfileData.ProfileColour
+      });
+
+
       var subProfiles = Value.SubProfilesData.SubProfiles;
       for (int i = 0; i < subProfiles.Count; i++) {
-        args.Pipeline.DrawBrepShaded(subProfiles[i], Value.SubProfilesData.SubColours[i]);
+        DrawInstructionsList.Add(new DrawBrepShaded() {
+          Brep = subProfiles[i],
+          DisplayMaterial = Value.SubProfilesData.SubColours[i]
+        });
+
       }
       foreach (var preview in Value.ReinforcementData) {
         var reinforcementDataRebars = preview.Rebars;
         for (int i = 0; i < reinforcementDataRebars.Count; i++) {
-          args.Pipeline.DrawBrepShaded(reinforcementDataRebars[i], preview.RebarColours[i]);
+          DrawInstructionsList.Add(new DrawBrepShaded() {
+            Brep = reinforcementDataRebars[i],
+            DisplayMaterial = preview.RebarColours[i]
+          });
         }
       }
     }
-
-    public List<DrawInstructions> DrawInstructionsList { get; private set; } = new List<DrawInstructions>();
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
       if (!IsValid) {
