@@ -9,6 +9,7 @@ using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
 
 using Oasys.GH.Helpers;
 
@@ -34,19 +35,67 @@ namespace AdSecGH.Components {
       return help;
     }
 
+    //protected override void Mode1Clicked() {
+    //  HandleModeClick(base.Mode1Clicked);
+    //}
+
+    //protected override void Mode2Clicked() {
+    //  HandleModeClick(base.Mode2Clicked);
+    //}
+
     protected override void Mode1Clicked() {
-      HandleModeClick(base.Mode1Clicked);
+      // remove plane
+      var plane = Params.Input[Params.Input.Count - 1];
+      Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
+
+      // remove input parameters
+      while (Params.Input.Count > 0) {
+        Params.UnregisterInputParameter(Params.Input[0], true);
+      }
+
+      // register input parameter
+      Params.RegisterInputParam(new Param_String());
+      Params.RegisterInputParam(new Param_Boolean());
+
+      // add plane
+      Params.RegisterInputParam(plane);
+
+      _mode = FoldMode.Catalogue;
+
+      base.UpdateUI();
     }
 
     protected override void Mode2Clicked() {
-      HandleModeClick(base.Mode2Clicked);
+      var plane = Params.Input[Params.Input.Count - 1];
+      // remove plane
+      Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
+
+      // check if mode is correct
+      if (_mode != FoldMode.Other) {
+        // if we come from catalogue mode remove all input parameters
+        while (Params.Input.Count > 0) {
+          Params.UnregisterInputParameter(Params.Input[0], true);
+        }
+
+        // set mode to other
+        _mode = FoldMode.Other;
+      }
+
+      UpdateParameters();
+
+      // add plane
+      Params.RegisterInputParam(plane);
+
+      (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
+      Params.OnParametersChanged();
+      ExpireSolution(true);
     }
 
     private void HandleModeClick(Action baseAction) {
       var plane = Params.Input[Params.Input.Count - 1];
-      Params.UnregisterInputParameter(Params.Input[Params.Input.Count - 1], false);
       baseAction();
       Params.RegisterInputParam(plane);
+      base.UpdateUI();
     }
 
     protected override void SolveInternal(IGH_DataAccess DA) {
