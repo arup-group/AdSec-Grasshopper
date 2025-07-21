@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 using AdSecCore;
 using AdSecCore.Functions;
@@ -177,14 +178,19 @@ namespace AdSecGH.Parameters {
       return false;
     }
 
+    public static string RemoveSquareBracketContents(string input) {
+      var modifiedString = string.IsNullOrEmpty(input) ? input : Regex.Replace(input, @"\[[^\]]*\]", string.Empty);
+      return modifiedString?.Trim();
+    }
+
     public IProfile Clone() {
       IProfile duplicated = null;
-
       if (Profile.GetType().ToString().Equals($"{typeof(IAngleProfile)}_Implementation")) {
         var angle = (IAngleProfile)Profile;
         duplicated = IAngleProfile.Create(angle.Depth, angle.Flange, angle.Web);
       } else if (Profile.GetType().ToString().Equals($"{typeof(ICatalogueProfile)}_Implementation")) {
-        duplicated = ICatalogueProfile.Create(Profile.Description());
+        var profileDescription = RemoveSquareBracketContents(Profile.Description());
+        duplicated = ICatalogueProfile.Create(profileDescription);
       } else if (Profile.GetType().ToString().Equals($"{typeof(IChannelProfile)}_Implementation")) {
         var channel = (IChannelProfile)Profile;
         duplicated = IChannelProfile.Create(channel.Depth, channel.Flanges, channel.Web);
