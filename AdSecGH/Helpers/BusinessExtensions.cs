@@ -404,8 +404,7 @@ namespace Oasys.GH.Helpers {
             dynamic gooDynamic = goo;
             return new AdSecPointGoo(gooDynamic);
           }
-        },
-        {
+        }, {
           typeof(DoubleArrayParameter), goo => {
             var list = goo as List<object>;
             return list.Select(x => {
