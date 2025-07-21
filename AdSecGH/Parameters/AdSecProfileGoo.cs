@@ -179,7 +179,7 @@ namespace AdSecGH.Parameters {
     }
 
     public static string RemoveSquareBracketContents(string input) {
-      var modifiedString = string.IsNullOrEmpty(input) ? input : Regex.Replace(input, @"\[[^\]]*\]", string.Empty);
+      var modifiedString = string.IsNullOrEmpty(input) ? input : Regex.Replace(input, @"\[[^\]]*\]", string.Empty, RegexOptions.None, TimeSpan.FromMilliseconds(100));
       return modifiedString?.Trim();
     }
 
