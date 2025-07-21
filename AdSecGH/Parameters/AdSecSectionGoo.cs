@@ -73,6 +73,7 @@ namespace AdSecGH.Parameters {
       return false;
     }
     public List<DrawInstructions> DrawInstructionsList { get; private set; } = new List<DrawInstructions>();
+    public List<DrawInstructions> DrawInstructionsListMesh { get; private set; } = new List<DrawInstructions>();
 
 
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
@@ -80,11 +81,14 @@ namespace AdSecGH.Parameters {
         return;
       }
       UpdateDrawInstructionsForMeshes();
+      foreach (var instruction in DrawInstructionsListMesh) {
+        DrawingHelper.Draw(args.Pipeline, instruction);
+      }
     }
 
     private void UpdateDrawInstructionsForMeshes() {
-      DrawInstructionsList.Clear();
-      DrawInstructionsList.Add(new DrawBrepShaded() {
+      DrawInstructionsListMesh.Clear();
+      DrawInstructionsListMesh.Add(new DrawBrepShaded() {
         Brep = Value.SolidBrep,
         DisplayMaterial = Value.ProfileData.ProfileColour
       });
@@ -92,7 +96,7 @@ namespace AdSecGH.Parameters {
 
       var subProfiles = Value.SubProfilesData.SubProfiles;
       for (int i = 0; i < subProfiles.Count; i++) {
-        DrawInstructionsList.Add(new DrawBrepShaded() {
+        DrawInstructionsListMesh.Add(new DrawBrepShaded() {
           Brep = subProfiles[i],
           DisplayMaterial = Value.SubProfilesData.SubColours[i]
         });
@@ -101,7 +105,7 @@ namespace AdSecGH.Parameters {
       foreach (var preview in Value.ReinforcementData) {
         var reinforcementDataRebars = preview.Rebars;
         for (int i = 0; i < reinforcementDataRebars.Count; i++) {
-          DrawInstructionsList.Add(new DrawBrepShaded() {
+          DrawInstructionsListMesh.Add(new DrawBrepShaded() {
             Brep = reinforcementDataRebars[i],
             DisplayMaterial = preview.RebarColours[i]
           });

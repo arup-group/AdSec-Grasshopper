@@ -82,7 +82,7 @@ namespace AdSecGHTests.Parameters {
       using var doc = RhinoDoc.Create(string.Empty);
       var previewMeshArgs = ComponentTestHelper.CreatePreviewMeshArgs(doc, new DisplayMaterial(Color.White));
       sectionGoo.DrawViewportMeshes(previewMeshArgs);
-      Assert.NotEmpty(sectionGoo.DrawInstructionsList);
+      Assert.NotEmpty(sectionGoo.DrawInstructionsListMesh);
     }
 
     [Fact]
