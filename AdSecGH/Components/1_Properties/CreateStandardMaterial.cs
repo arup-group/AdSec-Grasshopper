@@ -317,13 +317,11 @@ namespace AdSecGH.Components {
     }
 
     public static DesignCode GetDesignCode(AdSecMaterial material) {
-      var designCode = new DesignCode();
+      var designCode = MaterialHelper.DefaultDesignCode();
       if (material.DesignCode.DesignCode != null) {
         designCode.IDesignCode = material.DesignCode.DesignCode;
-      } else {
-        designCode.IDesignCode = EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014;
+        designCode.DesignCodeName = MaterialHelper.DesignCodeName(designCode.IDesignCode);
       }
-      designCode.DesignCodeName = MaterialHelper.DesignCodeName(designCode.IDesignCode);
       return designCode;
     }
 
