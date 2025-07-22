@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-using AdSecCore.Builders;
+﻿using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using AdSecGH;
@@ -13,14 +11,11 @@ using AdSecGHTests.Helpers;
 using Grasshopper.Kernel;
 
 using Oasys.AdSec.Reinforcement;
-using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.GH.Helpers;
 
 using OasysUnits;
 using OasysUnits.Units;
-
-using Rhino.NodeInCode;
 
 using Xunit;
 
@@ -55,6 +50,7 @@ namespace AdSecGHTests.Components._3_Rebar {
     public void ShouldUpdateNameWithUnitsWithNonDefaultUnits() {
       _component.SetSelected(0, 0); // Distance
       _component.SetSelected(1, 0); // mm
+      ComponentTestHelper.ComputeData(_component);
       Assert.Contains("[mm]", _component.BusinessComponent.Spacing.Name);
     }
 
