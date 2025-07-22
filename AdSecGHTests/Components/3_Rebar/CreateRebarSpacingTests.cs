@@ -10,6 +10,7 @@ using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
 
+using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.GH.Helpers;
 
@@ -22,11 +23,11 @@ namespace AdSecGHTests.Components._3_Rebar {
   [Collection("GrasshopperFixture collection")]
   public class CreateRebarSpacingTests {
     private readonly CreateRebarSpacing _component;
+    private readonly IBarBundle _singleBars = new BuilderSingleBar().AtPosition(Geometry.Zero()).Build().BarBundle;
 
     public CreateRebarSpacingTests() {
       _component = new CreateRebarSpacing();
-      var singleBars = new BuilderSingleBar().AtPosition(Geometry.Zero()).Build().BarBundle;
-      _component.SetInputParamAt(0, new AdSecRebarBundleGoo(singleBars));
+      _component.SetInputParamAt(0, new AdSecRebarBundleGoo(_singleBars));
     }
 
     [Fact]
@@ -49,6 +50,7 @@ namespace AdSecGHTests.Components._3_Rebar {
     public void ShouldUpdateNameWithUnitsWithNonDefaultUnits() {
       _component.SetSelected(0, 0); // Distance
       _component.SetSelected(1, 0); // mm
+      ComponentTestHelper.ComputeData(_component);
       Assert.Contains("[mm]", _component.BusinessComponent.Spacing.Name);
     }
 
@@ -94,7 +96,11 @@ namespace AdSecGHTests.Components._3_Rebar {
       doc.SaveQuiet(randomPath);
       doc.Open(randomPath);
       var loadedComponent = (CreateRebarSpacing)doc.Document.FindComponent(_component.InstanceGuid);
-      ComponentTestHelper.ComputeData(loadedComponent);
+      ComponentTestHelper.SetInput(loadedComponent, new AdSecRebarBundleGoo(_singleBars));
+      ComponentTestHelper.SetInput(loadedComponent, 2, 1);
+      var result = (AdSecRebarLayerGoo)ComponentTestHelper.GetOutput(loadedComponent);
+      var layer = result.Value as ILayerByBarCount;
+      Assert.Equal(2, layer.Count);
       Assert.Equal(SpacingMode.Count, loadedComponent.BusinessComponent.Mode);
     }
 
