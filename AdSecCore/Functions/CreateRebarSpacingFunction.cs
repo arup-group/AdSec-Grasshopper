@@ -101,7 +101,8 @@ namespace AdSecCore.Functions {
     public IOptions[] Options() {
       var enumOptions = new EnumOptions() {
         Description = "Spacing method",
-        EnumType = typeof(SpacingMode)
+        EnumType = typeof(SpacingMode),
+        Selected = Mode
       };
 
       if (Mode == SpacingMode.Count) {
