@@ -405,6 +405,15 @@ namespace Oasys.GH.Helpers {
             return new AdSecPointGoo(gooDynamic);
           }
         }, {
+          typeof(DoubleParameter), goo => {
+            return double.TryParse(goo.ToString(), out double value) ? value : (object)null; }
+        }, {
+          typeof(BooleanParameter), goo => {
+            return bool.TryParse(goo.ToString(), out bool value) ? value : (object)null; }
+        }, {
+          typeof(NullableDoubleParameter), goo => {
+            return double.TryParse(goo.ToString(), out double value) ? value : (object)null; }
+        }, {
           typeof(DoubleArrayParameter), goo => {
             var list = goo as List<object>;
             return list.Select(x => {
