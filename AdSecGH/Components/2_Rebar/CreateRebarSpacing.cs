@@ -26,13 +26,7 @@ namespace AdSecGH.Components {
     public override void SetSelected(int i, int j) {
       string selectedItem = _dropDownItems[i][j];
       _selectedItems[i] = selectedItem;
-      if (i == 0) {
-        BusinessComponent.SetMode((SpacingMode)Enum.Parse(typeof(SpacingMode), _selectedItems[i]));
-        _selectedItems[i] = selectedItem;
-      } else {
-        UpdateUnits();
-      }
-
+      UpdateUnits();
       base.UpdateUI();
     }
 
@@ -42,15 +36,11 @@ namespace AdSecGH.Components {
     }
 
     private void UpdateUnits() {
-      UpdateDefaultUnits();
       if (_dropDownItems.Count > 1) {
         BusinessComponent.LocalLengthUnitGeometry
           = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
-        BusinessComponent.UpdateUnits();
       }
-
       BusinessComponent.SetMode((SpacingMode)Enum.Parse(typeof(SpacingMode), _selectedItems[0]));
-      RefreshParameter();
     }
   }
 }

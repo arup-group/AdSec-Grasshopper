@@ -87,7 +87,9 @@ namespace AdSecGH.Parameters {
       var sectionReinforcementData = section.ReinforcementData;
 
       AddBrepsShaded(subComponentsPreviewData.SubProfiles, subComponentsPreviewData.SubColours);
-      AddBrepsShaded(sectionReinforcementData.Rebars, sectionReinforcementData.RebarColours);
+      foreach (var rebarPreview in sectionReinforcementData) {
+        AddBrepsShaded(rebarPreview.Rebars, rebarPreview.RebarColours);
+      }
       return true;
     }
 
@@ -124,7 +126,9 @@ namespace AdSecGH.Parameters {
       AddEdges(section.ProfileData.ProfileVoidEdges, edgeColor, voidEdgeWidth);
       AddEdges(section.SubProfilesData.SubEdges, edgeColor, voidEdgeWidth);
       AddNestedEdges(section.SubProfilesData.SubVoidEdges, edgeColor, voidEdgeWidth);
-      AddCircles(section.ReinforcementData.RebarEdges, rebarColor, rebarWidth);
+      foreach (var rebarPreview in section.ReinforcementData) {
+        AddCircles(rebarPreview.RebarEdges, rebarColor, rebarWidth);
+      }
 
       return true;
     }
