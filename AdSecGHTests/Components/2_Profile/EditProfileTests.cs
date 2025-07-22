@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-using AdSecCore.Builders;
+﻿using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using AdSecGH;
@@ -19,8 +17,6 @@ using Oasys.Taxonomy.Profiles;
 using OasysGH.Parameters;
 
 using OasysUnits;
-using OasysUnits;
-using OasysUnits.Units;
 using OasysUnits.Units;
 
 using Xunit;
