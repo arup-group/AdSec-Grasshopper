@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
+using AdSecCore.Functions;
+
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.StandardMaterials;
@@ -56,6 +58,12 @@ namespace AdSecGHCore {
 
         dictionary.Add($"{type.FullName}.{field.Name}", value);
       }
+    }
+
+    public static DesignCode DefaultDesignCode() {
+      var designCode = EN1992.Part1_1.Edition_2004.NationalAnnex.GB.Edition_2014;
+      var designCodeName = DesignCodeName(designCode);
+      return new DesignCode() { IDesignCode = designCode, DesignCodeName = designCodeName };
     }
 
     public static string DesignCodeName(IDesignCode code) {
