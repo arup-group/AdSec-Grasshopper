@@ -1,4 +1,6 @@
-﻿using AdSecCore.Builders;
+﻿using System.ComponentModel;
+
+using AdSecCore.Builders;
 using AdSecCore.Functions;
 
 using AdSecGH;
@@ -19,6 +21,8 @@ using OasysGH.Parameters;
 using OasysUnits;
 using OasysUnits.Units;
 
+using Rhino.NodeInCode;
+
 using Xunit;
 
 namespace AdSecGHTests.Components._2_Profile {
@@ -29,12 +33,7 @@ namespace AdSecGHTests.Components._2_Profile {
     private readonly AdSecProfileGoo _profileGoo = CreateProfileGoo();
     public EditProfileTests() {
       _component = new EditProfile();
-      InitializeComponent(_component);
-    }
-
-    private void InitializeComponent(EditProfile component) {
-      component.SetInputParamAt(0, _profileGoo);
-      ComponentTestHelper.ComputeData(_component);
+      _component.SetInputParamAt(0, _profileGoo);
     }
 
     private static AdSecProfileGoo CreateProfileGoo() {
@@ -107,7 +106,8 @@ namespace AdSecGHTests.Components._2_Profile {
       doc.Open(randomPath);
       doc.Document.NewSolution(true);
       var component = (EditProfile)doc.Document.FindComponent(_component.InstanceGuid);
-      InitializeComponent(component);
+      component.SetInputParamAt(0, _profileGoo);
+      ComponentTestHelper.ComputeData(component);
       Assert.Equal(AngleUnit.Degree, component.BusinessComponent.LocalAngleUnit);
     }
 
@@ -117,6 +117,26 @@ namespace AdSecGHTests.Components._2_Profile {
       ComponentTestHelper.ComputeData(_component);
       var extractedProfileGoo = (AdSecProfileGoo)ComponentTestHelper.GetOutput(_component);
       Assert.NotEqual(_profileGoo.Rotation, extractedProfileGoo.Rotation);
+    }
+
+    [Fact]
+    public void ShouldRotateAndReflectProfile() {
+      _component.SetSelected(0, 1);
+      _component.SetInputParamAt(1, 45);
+      _component.SetInputParamAt(2, true);
+      _component.SetInputParamAt(3, true);
+      var extractedProfileGoo = (AdSecProfileGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal("STD R(m) 0.01 0.01 [ R(45) H V ]", extractedProfileGoo.Value.Profile.Description());
+    }
+
+    [Fact]
+    public void ShouldNotRotateAndReflectProfileWithWrongInput() {
+      _component.SetSelected(0, 1);
+      _component.SetInputParamAt(1, "x");
+      _component.SetInputParamAt(2, "x");
+      _component.SetInputParamAt(3, "x");
+      var extractedProfileGoo = (AdSecProfileGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal("STD R(m) 0.01 0.01", extractedProfileGoo.Value.Profile.Description());
     }
   }
 }
