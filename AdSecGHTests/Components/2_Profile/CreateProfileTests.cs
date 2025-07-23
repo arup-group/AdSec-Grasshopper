@@ -150,21 +150,21 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.SetInput(_component, -11, 1);
       ComponentTestHelper.SetInput(_component, Plane.Unset, _component.Params.Input.Count - 1);
       ComponentTestHelper.ComputeData(_component);
-      //Assert.True(ComponentHasMessages(), "Component should have error or warning messages.");
       try {
         var result = (AdSecProfileGoo)ComponentTestHelper.GetOutput(_component);
         Assert.Fail($"We expect to have incorrect data, so it shouldn't have any result! But we got: {result.Value}");
       } catch {
-        // works well, we can continue
+        // no result found so we can continue
       }
 
       //change to something else to "reset" component
       int tempIndex = profileTypeIndex == 0 ? 1 : 0;
       _component.SetSelected(0, tempIndex);
+
       // Set inputs to valid values
+      _component.SetSelected(0, profileTypeIndex);
       string[] splittedCode = expectedDesc.Split(' ');
       SetValidInputs($"{splittedCode[0]} {splittedCode[1]}"); //take first two parts of the string as code
-      _component.SetSelected(0, profileTypeIndex);
 
       Assert.False(ComponentHasMessages(), "Component should NOT have any error or warning message.");
     }
@@ -222,6 +222,10 @@ namespace AdSecGHTests.Components {
 
     private void SetInputsForPerimiter() {
       int input = _component.Params.Input.FindIndex(x => x.Name == "Boundary");
+      if (input < 0) {
+        Assert.Fail("Cannot find boundary input");
+      }
+
       ComponentTestHelper.SetInput(_component,
         Surface.CreateExtrusionToPoint(new LineCurve(new Line(0, 0, 0, 2, 2, 2)), new Point3d(3, 3, 3)), input);
     }
