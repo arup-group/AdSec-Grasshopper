@@ -1,11 +1,13 @@
-﻿using AdSecCore.Functions;
-
-using AdSecGH;
+﻿using AdSecGH;
 using AdSecGH.Components;
+using AdSecGH.Parameters;
 using AdSecGH.Properties;
+
+using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
 
+using Oasys.AdSec.StandardMaterials;
 using Oasys.GH.Helpers;
 
 using Xunit;
@@ -17,6 +19,16 @@ namespace AdSecGHTests.Components._02_Properties {
 
     public CreateCustomMaterialTests() {
       _component = new CreateCustomMaterial();
+    }
+
+    private void SetupComponentInputs() {
+      _component.SetSelected(0, 1);
+      var material = Reinforcement.Steel.IS456.Edition_2000.S415;
+      var stressStrain = AdSecStressStrainCurveGoo.Create(material.Strength.Compression, true);
+      ComponentTestHelper.SetInput(_component, stressStrain, 1);
+      ComponentTestHelper.SetInput(_component, stressStrain, 2);
+      ComponentTestHelper.SetInput(_component, stressStrain, 3);
+      ComponentTestHelper.SetInput(_component, stressStrain, 4);
     }
 
     [Fact]
@@ -51,6 +63,14 @@ namespace AdSecGHTests.Components._02_Properties {
       _component.SetSelected(0, 1);
       doc.Undo();
       Assert.True(undoStateChanged);
+    }
+
+    [Fact]
+    public void ShouldHaveDefaultDesignCodeIfNotAssigned() {
+      SetupComponentInputs();
+      ComponentTestHelper.ComputeData(_component);
+      var result = (AdSecMaterialGoo)ComponentTestHelper.GetOutput(_component);
+      Assert.Equal("EN1992+Part1_1+Edition_2004+NationalAnnex+GB+Edition_2014", result.Material.DesignCodeName);
     }
   }
 }

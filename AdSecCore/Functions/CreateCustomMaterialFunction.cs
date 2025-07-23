@@ -2,6 +2,7 @@ using System;
 
 using AdSecCore.Parameters;
 
+using AdSecGHCore;
 using AdSecGHCore.Constants;
 
 using Oasys.AdSec.Materials;
@@ -96,9 +97,14 @@ namespace AdSecCore.Functions {
       var strength = ITensionCompressionCurve.Create(stressStrainCurve.IStressStrainCurve, UlsCompressionCurve.Value.IStressStrainCurve);
       var serviceability = ITensionCompressionCurve.Create(SlsTensionCurve.Value.IStressStrainCurve, SlsCompressionCurve.Value.IStressStrainCurve);
 
+      var designCode = MaterialHelper.DefaultDesignCode();
+      if (DesignCode.Value != null) {
+        designCode = DesignCode.Value;
+      }
+
       Material.Value = new MaterialDesign() {
-        DesignCode = DesignCode.Value,
-        GradeName = DesignCode.Value.DesignCodeName,
+        DesignCode = designCode,
+        GradeName = designCode.DesignCodeName,
       };
 
       switch (CurrentMaterialType) {
