@@ -35,14 +35,6 @@ namespace AdSecGH.Components {
       return help;
     }
 
-    //protected override void Mode1Clicked() {
-    //  HandleModeClick(base.Mode1Clicked);
-    //}
-
-    //protected override void Mode2Clicked() {
-    //  HandleModeClick(base.Mode2Clicked);
-    //}
-
     protected override void Mode1Clicked() {
       // remove plane
       var plane = Params.Input[Params.Input.Count - 1];
@@ -89,13 +81,6 @@ namespace AdSecGH.Components {
       (this as IGH_VariableParameterComponent).VariableParameterMaintenance();
       Params.OnParametersChanged();
       ExpireSolution(true);
-    }
-
-    private void HandleModeClick(Action baseAction) {
-      var plane = Params.Input[Params.Input.Count - 1];
-      baseAction();
-      Params.RegisterInputParam(plane);
-      base.UpdateUI();
     }
 
     protected override void SolveInternal(IGH_DataAccess DA) {

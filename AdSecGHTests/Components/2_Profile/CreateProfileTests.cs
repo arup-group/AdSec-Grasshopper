@@ -118,12 +118,7 @@ namespace AdSecGHTests.Components {
     [InlineData(19, "STD SHT(m) 0.11 0.11 0.11 0.11 0.22 0.22")] //Sheet Pile
     [InlineData(20, "STD TR(m) 0.11 0.11 0.11")] //Trapezoid
     [InlineData(21, "STD T(m) 0.11 0.11 0.11 0.11")] //T Section
-    public void SolveInternalTest(int profileTypeIndex, string expectedDesc) {
-      //SolveInternalComputeValidData(profileTypeIndex, expectedDesc);
-      ClearMessagesBeforeComputing(profileTypeIndex, expectedDesc);
-    }
-
-    private void SolveInternalComputeValidData(int profileTypeIndex, string expectedDesc) {
+    public void SolveInternalComputeValidData(int profileTypeIndex, string expectedDesc) {
       _component.SetSelected(0, profileTypeIndex);
       string[] splittedCode = expectedDesc.Split(' ');
       SetValidInputs($"{splittedCode[0]} {splittedCode[1]}"); //take first two parts of the string as code
@@ -143,7 +138,31 @@ namespace AdSecGHTests.Components {
       Assert.Equal(1, result.Value.LocalPlane.YAxis.Z);
     }
 
-    private void ClearMessagesBeforeComputing(int profileTypeIndex, string expectedDesc) {
+    [Theory]
+    [InlineData(0, "STD A(m) 0.11 0.11 0.11 0.11")] //angle
+    [InlineData(1, "CAT 2CHB2B 2CHB2B381x102x110")] //catalogue
+    [InlineData(2, "STD CH(m) 0.11 0.11 0.11 0.11")] //channel
+    [InlineData(3, "STD CHS(m) 0.11 0.11")] //circle hollow
+    [InlineData(4, "STD C(m) 0.11")] //circle
+    [InlineData(5, "STD X(m) 0.11 0.11 0.11 0.11")] //Cruciform Symmetrical
+    [InlineData(6, "STD OVAL(m) 0.11 0.11 0.11")] //Ellipse Hollow
+    [InlineData(7, "STD E(m) 0.11 0.11 2")] //Ellipse
+    [InlineData(8, "STD GC(m) 0.11 0.11 0.11 0.11")] //General C
+    [InlineData(9, "STD GZ(m) 0.11 0.11 0.11 0.11 0.11 0.11")] //General Z
+    [InlineData(10, "STD GI(m) 0.11 0.11 0.11 0.11 0.11 0.11")] //I Beam Asymmetrical
+    [InlineData(11, "STD CB(m) 0.11 0.11 0.11 0.11 0.11 0.121")] //I Beam Cellular
+    [InlineData(12, "STD I(m) 0.11 0.11 0.11 0.11")] //I Beam Symmetrical
+    [InlineData(13,
+      "GEO P(m) M(0.021213203435596|0.015) L(-0.021213203435596|-0.015) L(-0.0070710678118655|-0.005) ")] //Perimeter
+    [InlineData(14, "STD RHS(m) 0.11 0.11 0.11 0.11")] //Rectangle Hollow
+    [InlineData(15, "STD R(m) 0.11 0.11")] //Rectangle
+    [InlineData(16, "STD RE(m) 0.11 0.11 0.11 0.11 2")] //Recto Ellipse
+    [InlineData(17, "STD RC(m) 0.11 0.11")] //Recto Circle
+    [InlineData(18, "STD SPW(m) 0.11 0.11 11")] //Secant Pile
+    [InlineData(19, "STD SHT(m) 0.11 0.11 0.11 0.11 0.22 0.22")] //Sheet Pile
+    [InlineData(20, "STD TR(m) 0.11 0.11 0.11")] //Trapezoid
+    [InlineData(21, "STD T(m) 0.11 0.11 0.11 0.11")] //T Section
+    public void ClearMessagesBeforeComputing(int profileTypeIndex, string expectedDesc) {
       _component.SetSelected(0, profileTypeIndex);
       // Set invalid inputs to trigger errors
       ComponentTestHelper.SetInput(_component, "!");
@@ -216,8 +235,8 @@ namespace AdSecGHTests.Components {
 
     private void SetInputsForSheetPile() {
       SetInputIfNotLocalPlane(4);
-      const int inputIndex = 22;
-      ComponentTestHelper.SetInput(_component, inputIndex, 4);
+      ComponentTestHelper.SetInput(_component, 22, 4);
+      ComponentTestHelper.SetInput(_component, 22, 5);
     }
 
     private void SetInputsForPerimiter() {
