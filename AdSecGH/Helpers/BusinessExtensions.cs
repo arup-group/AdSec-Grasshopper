@@ -406,28 +406,13 @@ namespace Oasys.GH.Helpers {
           }
         }, {
           typeof(DoubleParameter), goo => {
-            if (goo is double value) {
-              return value;
-            }
-
-            return null;
-          }
+            return double.TryParse(goo.ToString(), out double value) ? value : (object)null; }
         }, {
           typeof(BooleanParameter), goo => {
-            if (goo is bool value) {
-              return value;
-            }
-
-            return null;
-          }
+            return bool.TryParse(goo.ToString(), out bool value) ? value : (object)null; }
         }, {
           typeof(NullableDoubleParameter), goo => {
-            if (goo is double value) {
-              return value;
-            }
-
-            return null;
-          }
+            return double.TryParse(goo.ToString(), out double value) ? value : (object)null; }
         }, {
           typeof(DoubleArrayParameter), goo => {
             var list = goo as List<object>;
