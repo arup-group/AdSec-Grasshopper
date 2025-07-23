@@ -5,7 +5,6 @@ using AdSecGHCore.Constants;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Materials.StressStrainCurves;
-using Oasys.AdSec.StandardMaterials;
 
 using OasysUnits;
 using OasysUnits.Units;
