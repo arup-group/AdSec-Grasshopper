@@ -4,8 +4,6 @@ using AdSecCore.Functions;
 
 using AdSecGH.Components;
 
-using Grasshopper.Kernel;
-
 using OasysGH;
 using OasysGH.Components;
 
@@ -26,24 +24,6 @@ namespace Oasys.GH.Helpers {
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
       BusinessComponent.PopulateOutputParams(this);
-    }
-
-    protected override void SolveInternal(IGH_DataAccess da) {
-      BusinessComponent.UpdateInputValues(this, da);
-      if (RuntimeMessages(GH_RuntimeMessageLevel.Error).Count > 0) {
-        return;
-      }
-
-      BusinessComponent.Compute();
-      if (BusinessComponent is Function function) {
-        AdapterBase.UpdateMessages(function, this);
-
-        if (function.ErrorMessages.Count > 0) {
-          return;
-        }
-      }
-
-      BusinessComponent.SetOutputValues(this, da);
     }
 
     internal virtual void SetLocalUnits() { }
