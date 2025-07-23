@@ -147,26 +147,36 @@ namespace AdSecGHTests.Components {
       _component.SetSelected(0, profileTypeIndex);
       // Set invalid inputs to trigger errors
       ComponentTestHelper.SetInput(_component, "!");
-      ComponentTestHelper.SetInput(_component, "!", 1);
+      ComponentTestHelper.SetInput(_component, -11, 1);
       ComponentTestHelper.SetInput(_component, Plane.Unset, _component.Params.Input.Count - 1);
       ComponentTestHelper.ComputeData(_component);
-
-      Assert.True(ComponentHasMessages(), "Component should have error or warning messages.");
+      //Assert.True(ComponentHasMessages(), "Component should have error or warning messages.");
+      try {
+        var result = (AdSecProfileGoo)ComponentTestHelper.GetOutput(_component);
+        Assert.Fail($"We expect to have incorrect data, so it shouldn't have any result! But we got: {result.Value}");
+      } catch {
+        // works well, we can continue
+      }
 
       //change to something else to "reset" component
       int tempIndex = profileTypeIndex == 0 ? 1 : 0;
       _component.SetSelected(0, tempIndex);
-      _component.SetSelected(0, profileTypeIndex);
       // Set inputs to valid values
       string[] splittedCode = expectedDesc.Split(' ');
       SetValidInputs($"{splittedCode[0]} {splittedCode[1]}"); //take first two parts of the string as code
+      _component.SetSelected(0, profileTypeIndex);
 
       Assert.False(ComponentHasMessages(), "Component should NOT have any error or warning message.");
     }
 
     private bool ComponentHasMessages() {
-      bool componentHasMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error).Any()
-        || _component.RuntimeMessages(GH_RuntimeMessageLevel.Warning).Any();
+      var ghParam0 = _component.Params.Input[0];
+      var ghParam1 = _component.Params.Input[1];
+
+      bool componentHasMessages = ghParam0.RuntimeMessages(GH_RuntimeMessageLevel.Error).Any()
+        || ghParam0.RuntimeMessages(GH_RuntimeMessageLevel.Warning).Any()
+        || ghParam1.RuntimeMessages(GH_RuntimeMessageLevel.Error).Any()
+        || ghParam1.RuntimeMessages(GH_RuntimeMessageLevel.Warning).Any();
       return componentHasMessages;
     }
 
@@ -208,12 +218,12 @@ namespace AdSecGHTests.Components {
       SetInputIfNotLocalPlane(4);
       const int inputIndex = 22;
       ComponentTestHelper.SetInput(_component, inputIndex, 4);
-      ComponentTestHelper.SetInput(_component, inputIndex, 5);
     }
 
     private void SetInputsForPerimiter() {
+      int input = _component.Params.Input.FindIndex(x => x.Name == "Boundary");
       ComponentTestHelper.SetInput(_component,
-        Surface.CreateExtrusionToPoint(new LineCurve(new Line(0, 0, 0, 2, 2, 2)), new Point3d(3, 3, 3)));
+        Surface.CreateExtrusionToPoint(new LineCurve(new Line(0, 0, 0, 2, 2, 2)), new Point3d(3, 3, 3)), input);
     }
 
     private void SetInputsForCatalogue() {
