@@ -72,25 +72,46 @@ namespace AdSecGH.Parameters {
       target = default;
       return false;
     }
+    public List<DrawInstructions> DrawInstructionsList { get; private set; } = new List<DrawInstructions>();
+    public List<DrawInstructions> DrawInstructionsListMesh { get; private set; } = new List<DrawInstructions>();
+
 
     public void DrawViewportMeshes(GH_PreviewMeshArgs args) {
       if (!IsValid) {
         return;
       }
-
-      args.Pipeline.DrawBrepShaded(Value.SolidBrep, Value.ProfileData.ProfileColour);
-      var subProfiles = Value.SubProfilesData.SubProfiles;
-      for (int i = 0; i < subProfiles.Count; i++) {
-        args.Pipeline.DrawBrepShaded(subProfiles[i], Value.SubProfilesData.SubColours[i]);
-      }
-
-      var reinforcementDataRebars = Value.ReinforcementData.Rebars;
-      for (int i = 0; i < reinforcementDataRebars.Count; i++) {
-        args.Pipeline.DrawBrepShaded(reinforcementDataRebars[i], Value.ReinforcementData.RebarColours[i]);
+      UpdateDrawInstructionsForMeshes();
+      foreach (var instruction in DrawInstructionsListMesh) {
+        DrawingHelper.Draw(args.Pipeline, instruction);
       }
     }
 
-    public List<DrawInstructions> DrawInstructionsList { get; private set; } = new List<DrawInstructions>();
+    private void UpdateDrawInstructionsForMeshes() {
+      DrawInstructionsListMesh.Clear();
+      DrawInstructionsListMesh.Add(new DrawBrepShaded() {
+        Brep = Value.SolidBrep,
+        DisplayMaterial = Value.ProfileData.ProfileColour
+      });
+
+
+      var subProfiles = Value.SubProfilesData.SubProfiles;
+      for (int i = 0; i < subProfiles.Count; i++) {
+        DrawInstructionsListMesh.Add(new DrawBrepShaded() {
+          Brep = subProfiles[i],
+          DisplayMaterial = Value.SubProfilesData.SubColours[i]
+        });
+
+      }
+      foreach (var preview in Value.ReinforcementData) {
+        var reinforcementDataRebars = preview.Rebars;
+        for (int i = 0; i < reinforcementDataRebars.Count; i++) {
+          DrawInstructionsListMesh.Add(new DrawBrepShaded() {
+            Brep = reinforcementDataRebars[i],
+            DisplayMaterial = preview.RebarColours[i]
+          });
+        }
+      }
+    }
 
     public void DrawViewportWires(GH_PreviewWireArgs args) {
       if (!IsValid) {
@@ -123,14 +144,14 @@ namespace AdSecGH.Parameters {
 
       drawInstructions.AddRange(Value.ProfileData.ProfileVoidEdges.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness, }));
 
-      drawInstructions.AddRange(Value.SubProfilesData.SubEdges.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = primaryColor, Thickness = secondaryThickness, }));
+      drawInstructions.AddRange(Value.SubProfilesData.SubEdges.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = primaryColor, Thickness = primaryThickness, }));
 
       drawInstructions.AddRange(Value.SubProfilesData.SubVoidEdges.SelectMany(voids
         => voids.Select(polyline => new DrawPolyline() { Polyline = polyline, Color = secondaryColor, Thickness = secondaryThickness, })));
-
-      drawInstructions.AddRange(Value.ReinforcementData.RebarEdges.Select(circle => new DrawCircle() { Circle = circle, Color = secondaryColor, Thickness = secondaryThickness, }));
-
-      drawInstructions.AddRange(Value.ReinforcementData.LinkEdges.Select(curve => new DrawCurve() { Curve = curve, Color = secondaryColor, Thickness = secondaryThickness, }));
+      foreach (var preview in Value.ReinforcementData) {
+        drawInstructions.AddRange(preview.RebarEdges.Select(circle => new DrawCircle() { Circle = circle, Color = secondaryColor, Thickness = secondaryThickness, }));
+        drawInstructions.AddRange(preview.LinkEdges.Select(curve => new DrawCurve() { Curve = curve, Color = secondaryColor, Thickness = secondaryThickness, }));
+      }
 
       return drawInstructions;
     }

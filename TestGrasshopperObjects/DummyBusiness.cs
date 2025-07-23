@@ -6,7 +6,7 @@ using Attribute = AdSecCore.Functions.Attribute;
 
 namespace AdSecGHTests.Helpers {
 
-  public class FakeBusiness : IFunction {
+  public class FakeBusiness : Function {
 
     public DoubleParameter Alpha { get; set; } = new DoubleParameter {
       Name = "Alpha",
@@ -33,26 +33,26 @@ namespace AdSecGHTests.Helpers {
       Default = 2,
     };
 
-    public FuncAttribute Metadata { get; set; } = new FuncAttribute {
+    public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Name = "Dummy Business",
       NickName = "DB",
       Description = "Dummy Business Description",
     };
-    public Organisation Organisation { get; set; } = new Organisation {
+    public override Organisation Organisation { get; set; } = new Organisation {
       Category = "Dummy Category",
       SubCategory = "Dummy SubCategory",
     };
 
-    public void Compute() { Beta.Value = (Alpha.Value * 2) + 10; }
+    public override void Compute() { Beta.Value = (Alpha.Value * 2) + 10; }
 
-    public Attribute[] GetAllInputAttributes() {
+    public override Attribute[] GetAllInputAttributes() {
       return new Attribute[] {
         Alpha,
         Gama,
       };
     }
 
-    public Attribute[] GetAllOutputAttributes() {
+    public override Attribute[] GetAllOutputAttributes() {
       return new Attribute[] {
         Beta,
       };

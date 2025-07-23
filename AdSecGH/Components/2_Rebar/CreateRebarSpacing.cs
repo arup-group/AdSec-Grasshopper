@@ -5,6 +5,8 @@ using AdSecCore.Functions;
 
 using AdSecGH.Properties;
 
+using GH_IO.Serialization;
+
 using Grasshopper.Kernel;
 
 using Oasys.GH.Helpers;
@@ -24,31 +26,21 @@ namespace AdSecGH.Components {
     public override void SetSelected(int i, int j) {
       string selectedItem = _dropDownItems[i][j];
       _selectedItems[i] = selectedItem;
-      if (i == 0) {
-        BusinessComponent.SetMode((SpacingMode)Enum.Parse(typeof(SpacingMode), _selectedItems[i]));
-        _selectedItems[i] = selectedItem;
-      } else {
-        UpdateLocalUnitsAndRefreshParams();
-      }
-
+      UpdateUnits();
       base.UpdateUI();
     }
 
     protected override void UpdateUIFromSelectedItems() {
       base.UpdateUIFromSelectedItems();
-      UpdateLocalUnitsAndRefreshParams();
+      UpdateUnits();
     }
 
-    private void UpdateLocalUnitsAndRefreshParams() {
-      UpdateUnits();
+    private void UpdateUnits() {
       if (_dropDownItems.Count > 1) {
         BusinessComponent.LocalLengthUnitGeometry
           = (LengthUnit)UnitsHelper.Parse(typeof(LengthUnit), _selectedItems[1]);
-        BusinessComponent.UpdateUnits();
       }
-
       BusinessComponent.SetMode((SpacingMode)Enum.Parse(typeof(SpacingMode), _selectedItems[0]));
-      RefreshParameter(this);
     }
   }
 }

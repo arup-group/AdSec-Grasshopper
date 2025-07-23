@@ -325,10 +325,20 @@ namespace Oasys.GH.Helpers {
 
             return quantityInRelevantUnit;
           }
-        },{
+        }, {
           typeof(StressStrainCurveParameter), a => {
             var stressStrainCurve = (a as StressStrainCurveParameter).Value;
             return AdSecStressStrainCurveGoo.Create(stressStrainCurve.IStressStrainCurve,stressStrainCurve.IsCompression);
+          }
+        }, {
+          typeof(StressStrainPointParameter), a => {
+            var stressStrainPoint = (a as StressStrainPointParameter).Value;
+            return new AdSecStressStrainPointGoo(stressStrainPoint);
+          }
+        }, {
+          typeof(CrackCalcParameter), a => {
+            var crackParameter = (a as CrackCalcParameter).Value;
+            return new AdSecConcreteCrackCalculationParametersGoo(crackParameter);
           }
         }
       };
@@ -396,28 +406,13 @@ namespace Oasys.GH.Helpers {
           }
         }, {
           typeof(DoubleParameter), goo => {
-            if (goo is double value) {
-              return value;
-            }
-
-            return null;
-          }
+            return double.TryParse(goo.ToString(), out double value) ? value : (object)null; }
         }, {
           typeof(BooleanParameter), goo => {
-            if (goo is bool value) {
-              return value;
-            }
-
-            return null;
-          }
+            return bool.TryParse(goo.ToString(), out bool value) ? value : (object)null; }
         }, {
           typeof(NullableDoubleParameter), goo => {
-            if (goo is double value) {
-              return value;
-            }
-
-            return null;
-          }
+            return double.TryParse(goo.ToString(), out double value) ? value : (object)null; }
         }, {
           typeof(DoubleArrayParameter), goo => {
             var list = goo as List<object>;
@@ -456,6 +451,14 @@ namespace Oasys.GH.Helpers {
              return (IStressStrainPoint)ConvertToStressStrainPoint(y.Value);
             }).ToArray();
           }
+        }, {
+          typeof(ProfileParameter), goo => {
+            var profileDesign = goo is Oasys.Taxonomy.Profiles.IProfile profile
+              ? new ProfileDesign() { Profile = AdSecProfiles.CreateProfile(profile) }
+              : goo as ProfileDesign;
+            var profileGoo = new AdSecProfileGoo(profileDesign);
+            return new ProfileDesign(){ Profile = profileGoo.Clone(), LocalPlane = profileGoo.LocalPlane.ToOasys() };
+           }
         },
       };
 

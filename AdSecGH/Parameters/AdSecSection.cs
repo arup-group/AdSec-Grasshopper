@@ -32,7 +32,7 @@ namespace AdSecGH.Parameters {
     internal Line previewYaxis;
     internal Line previewZaxis;
     internal ProfilePreviewData ProfileData { get; private set; }
-    internal ReinforcementPreviewData ReinforcementData { get; private set; }
+    internal List<ReinforcementPreviewData> ReinforcementData { get; private set; }
     internal SubComponentsPreviewData SubProfilesData { get; private set; }
 
     public AdSecSection(SectionDesign sectionDesign) {
@@ -177,7 +177,7 @@ namespace AdSecGH.Parameters {
 
       ProfileData = GenerateProfilePreview(flat, currentOffset);
       SubProfilesData = GenerateSubComponentsPreview(flat, currentOffset);
-      ReinforcementData = GenerateReinforcementPreview(flat, currentOffset);
+      ReinforcementData = GenerateReinforcementPreviews(flat, currentOffset);
 
       GenerateLocalPlanePreviewAxes();
     }
@@ -232,6 +232,19 @@ namespace AdSecGH.Parameters {
       };
     }
 
+    private List<ReinforcementPreviewData> GenerateReinforcementPreviews(ISection flat, Vector3d currentOffset) {
+      var previews = new List<ReinforcementPreviewData>();
+      GenerateReinforcementPreviews(flat, currentOffset, previews);
+      return previews;
+    }
+
+    private void GenerateReinforcementPreviews(ISection flat, Vector3d currentOffset, List<ReinforcementPreviewData> previews) {
+      previews.Add(GenerateReinforcementPreview(flat, currentOffset));
+      foreach (var subComponent in flat.SubComponents) {
+        GenerateReinforcementPreviews(subComponent.Section, currentOffset, previews);
+      }
+    }
+
     private ReinforcementPreviewData GenerateReinforcementPreview(ISection flat, Vector3d currentOffset) {
       var rebars = new List<Brep>();
       var rebarColours = new List<DisplayMaterial>();
@@ -257,7 +270,6 @@ namespace AdSecGH.Parameters {
             }
         }
       }
-
       return new ReinforcementPreviewData {
         Rebars = rebars,
         RebarEdges = rebarEdges,

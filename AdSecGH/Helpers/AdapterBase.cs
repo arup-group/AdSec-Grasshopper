@@ -57,7 +57,7 @@ namespace AdSecGH.Components {
       }
     }
 
-    public static void UpdateFromLocalUnits<T>(T businessComponent) where T : IFunction {
+    public static void UpdateFromLocalUnits<T>(T businessComponent) where T : Function {
       if (businessComponent is ILocalUnits localUnits) {
         localUnits.UpdateUnits();
       }
