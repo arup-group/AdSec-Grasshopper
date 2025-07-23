@@ -101,5 +101,23 @@ namespace AdSecGHTests.Parameters {
       Assert.Equal(_testGoo.Profile.Description(), result);
     }
 
+    [Fact]
+    public void CloneToCatalogueProfileDoesNotThrowException() {
+      var catologueSection = Oasys.Profiles.ICatalogueProfile.Create("CAT W W44x335");
+      var profileGoo = new AdSecProfileGoo(catologueSection, Plane.WorldXY);
+      Assert.Contains("CAT W W44x335", profileGoo.Clone().Description());
+    }
+
+    [Theory]
+    [InlineData("CAT A-PFC 250PFC [ V ]", "CAT A-PFC 250PFC")]
+    [InlineData("CAT A-PFC 250PFC [ R(45) V ]", "CAT A-PFC 250PFC")]
+    [InlineData("CAT A-PFC 250PFC [ R(45) H V ]", "CAT A-PFC 250PFC")]
+    [InlineData(null, null)]
+    public void RemoveSquareBracketContents(string input, string expected) {
+
+      var result = AdSecProfileGoo.RemoveSquareBracketContents(input);
+      Assert.Equal(expected, result);
+    }
+
   }
 }
