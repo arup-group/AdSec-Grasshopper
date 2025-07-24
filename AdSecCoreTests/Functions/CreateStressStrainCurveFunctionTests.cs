@@ -115,8 +115,7 @@ namespace AdSecCoreTests.Functions {
     public void ValidateExplicitCurve() {
       _function.SelectedCurveType = StressStrainCurveType.Explicit;
       var stressStressPoints = CreateWrongStressStressPoints();
-      _function.Compute();
-      Assert.True(_function.ErrorMessages.Count > 0);
+      Assert.Throws<ArgumentException>(() => _function.Compute());
     }
 
     [Fact]
@@ -126,7 +125,6 @@ namespace AdSecCoreTests.Functions {
       var peakPoint = CreatePeakPoint();
       var failureStrain = CreateFailureStrain();
       _function.Compute();
-      Assert.True(_function.ErrorMessages.Count > 0);
       var outputCurve = _function.OutputCurve.Value;
       Assert.NotNull(outputCurve);
       var fibCurve = (IFibModelCodeStressStrainCurve)outputCurve.IStressStrainCurve;
