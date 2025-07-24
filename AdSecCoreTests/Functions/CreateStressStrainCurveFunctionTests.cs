@@ -135,6 +135,19 @@ namespace AdSecCoreTests.Functions {
     }
 
     [Fact]
+    public void TestFibModelCurveForWrongInput() {
+      _function.SelectedCurveType = StressStrainCurveType.FibModelCode;
+      _function.InitialModulus.Value = 5000;
+      var strain = Strain.FromRatio(0.002);
+      var stress = Pressure.FromMegapascals(12);
+      _function.PeakPoint.Value = IStressStrainPoint.Create(stress, strain);
+      _function.FailureStrain.Value = 0.0035;
+      _function.Compute();
+      Assert.True(_function.ErrorMessages.Count > 0);
+      Assert.Contains("plasticity number", _function.ErrorMessages[0]);
+    }
+
+    [Fact]
     public void TestManderConfinedModelCurve() {
       _function.SelectedCurveType = StressStrainCurveType.ManderConfined;
       var initialModulus = CreateInitialModulus();
