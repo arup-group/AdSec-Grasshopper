@@ -115,7 +115,8 @@ namespace AdSecCoreTests.Functions {
     public void ValidateExplicitCurve() {
       _function.SelectedCurveType = StressStrainCurveType.Explicit;
       var stressStressPoints = CreateWrongStressStressPoints();
-      Assert.Throws<ArgumentException>(() => _function.Compute());
+      _function.Compute();
+      Assert.True(_function.ErrorMessages.Count > 0);
     }
 
     [Fact]
@@ -125,6 +126,7 @@ namespace AdSecCoreTests.Functions {
       var peakPoint = CreatePeakPoint();
       var failureStrain = CreateFailureStrain();
       _function.Compute();
+      Assert.True(_function.ErrorMessages.Count > 0);
       var outputCurve = _function.OutputCurve.Value;
       Assert.NotNull(outputCurve);
       var fibCurve = (IFibModelCodeStressStrainCurve)outputCurve.IStressStrainCurve;
@@ -132,6 +134,19 @@ namespace AdSecCoreTests.Functions {
       AssertStressAndStrain(peakPoint, fibCurve.PeakPoint);
       Assert.Equal(Pressure.From(initialModulus, _function.StressUnitResult).Value, fibCurve.InitialModulus.As(_function.StressUnitResult));
       Assert.Equal(Strain.From(failureStrain, _function.StrainUnitResult).Value, fibCurve.FailureStrain.As(_function.StrainUnitResult));
+    }
+
+    [Fact]
+    public void TestFibModelCurveForWrongInput() {
+      _function.SelectedCurveType = StressStrainCurveType.FibModelCode;
+      _function.InitialModulus.Value = 5000;
+      var strain = Strain.FromRatio(0.002);
+      var stress = Pressure.FromMegapascals(12);
+      _function.PeakPoint.Value = IStressStrainPoint.Create(stress, strain);
+      _function.FailureStrain.Value = 0.0035;
+      _function.Compute();
+      Assert.True(_function.ErrorMessages.Count > 0);
+      Assert.Contains("plasticity number", _function.ErrorMessages[0]);
     }
 
     [Fact]
