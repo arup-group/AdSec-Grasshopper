@@ -2,19 +2,18 @@ using System;
 using System.Drawing;
 using System.IO;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using AdSecGHCore.Constants;
-
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
-using OasysGH;
-using OasysGH.Components;
+using Oasys.GH.Helpers;
 
-using OasysUnits;
+using OasysGH;
 
 using Rhino.Geometry;
 
@@ -22,12 +21,7 @@ namespace AdSecGH.Components {
   /// <summary>
   ///   Component to create AdSec profile
   /// </summary>
-  public class CreateProfile : CreateOasysProfile {
-
-    public CreateProfile() : base("Create Profile", "Profile", "Create Profile for AdSec Section", CategoryName.Name(),
-      SubCategoryName.Cat2()) {
-      Hidden = false; // sets the initial state of the component to hidden
-    }
+  public class CreateProfile : ProfileAdapter<CreateProfileFunction> {
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("ea0741e5-905e-4ecb-8270-a584e3f99aa3");
@@ -89,25 +83,9 @@ namespace AdSecGH.Components {
       ExpireSolution(true);
     }
 
-    protected override void RegisterInputParams(GH_InputParamManager pManager) {
-      string unitAbbreviation = Length.GetAbbreviation(_lengthUnit);
-      pManager.AddGenericParameter($"Width [{unitAbbreviation}]", "B", "Profile width", GH_ParamAccess.item);
-      pManager.AddGenericParameter($"Depth [{unitAbbreviation}]", "H", "Profile depth", GH_ParamAccess.item);
-      pManager.AddPlaneParameter("LocalPlane", "P",
-        "[Optional] Plane representing local coordinate system, by default a YZ-plane is used", GH_ParamAccess.item,
-        Plane.WorldYZ);
-      pManager.HideParameter(2);
-    }
-
-    protected override void RegisterOutputParams(GH_OutputParamManager pManager) {
-      pManager.AddGenericParameter("Profile", "Pf", "Profile for AdSec Section", GH_ParamAccess.item);
-    }
-
     protected override void SolveInternal(IGH_DataAccess DA) {
       ClearRuntimeMessages();
-      for (int i = 0; i < Params.Input.Count; i++) {
-        Params.Input[i].ClearRuntimeMessages();
-      }
+      Params.Input.ForEach(input => input.ClearRuntimeMessages());
 
       var local = Plane.WorldYZ;
       var temp = Plane.Unset;
