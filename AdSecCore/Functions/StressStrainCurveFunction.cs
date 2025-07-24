@@ -237,6 +237,11 @@ namespace AdSecCore.Functions {
           curve = explicitCurve;
           break;
         case StressStrainCurveType.FibModelCode:
+          var plasticityNumberK = initialModulus.As(PressureUnit.Pascal) * PeakPoint.Value.Strain.As(StrainUnit.Ratio) / PeakPoint.Value.Stress.As(PressureUnit.Pascal);
+          if (plasticityNumberK < 1.001) {
+            ErrorMessages.Add("The plasticity number, k, for the schematic curve should be more than 1. Try increasing initial modulus");
+            return;
+          }
           curve = IFibModelCodeStressStrainCurve.Create(initialModulus, PeakPoint.Value, failureStrain);
           break;
         case StressStrainCurveType.Linear:
