@@ -38,6 +38,28 @@ namespace Oasys.GH.Helpers {
 
   public static class BusinessExtensions {
 
+    private static AdSecPointGoo ParsePoint(dynamic point) {
+      string pointString = null;
+      if (point is string str) {
+        pointString = str;
+      } else if (point is GH_String ghStr) {
+        pointString = ghStr.Value;
+      }
+
+      if (pointString != null) {
+        var values = ParsePointCoordinates(pointString);
+        return new AdSecPointGoo(new Point3d(0, values[0], values[1]));
+      }
+
+      return new AdSecPointGoo(point);
+    }
+
+    private static List<double> ParsePointCoordinates(string pointString) {
+      return pointString.Split(',')
+             .Select(s => double.Parse(s.Trim()))
+             .ToList();
+    }
+
     private static readonly Dictionary<Type, Func<Attribute, IGH_Param>> ToGhParam
       = new Dictionary<Type, Func<Attribute, IGH_Param>> {
         {
@@ -379,12 +401,12 @@ namespace Oasys.GH.Helpers {
         }, {
           typeof(PointParameter), goo => {
             dynamic gooDynamic = goo;
-            return new AdSecPointGoo(gooDynamic).AdSecPoint;
+            return ParsePoint(gooDynamic).AdSecPoint;
           }
         }, {
           typeof(PointArrayParameter), goo => {
             var gooDynamic = goo as List<object>;
-            return gooDynamic.Select(x => new AdSecPointGoo((x as AdSecPointGoo).Value).AdSecPoint).ToArray();
+            return gooDynamic.Select(x => ParsePoint(x).AdSecPoint).ToArray();
           }
         }, {
           typeof(RebarGroupArrayParameter), goo => {
@@ -417,8 +439,9 @@ namespace Oasys.GH.Helpers {
           typeof(DoubleArrayParameter), goo => {
             var list = goo as List<object>;
             return list.Select(x => {
-              dynamic y = x;
-              return (double)y.Value;
+             dynamic y = x;
+             double.TryParse(y.Value.ToString(), out double value);
+             return value;
             }).ToArray();
           }
         }, {
