@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 
 using AdSecCore;
 using AdSecCore.Builders;
@@ -13,6 +12,7 @@ using AdSecGHTests.Components._3_Rebar;
 using AdSecGHTests.Helpers;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Layers;
@@ -21,8 +21,6 @@ using Oasys.Profiles;
 
 using OasysUnits;
 using OasysUnits.Units;
-
-using Rhino.NodeInCode;
 
 using Xunit;
 namespace AdSecGHTests.Components {
@@ -42,12 +40,24 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.SetInput(_component, new AdSecPointGoo(IPoint.Create(Length.FromMillimeters(100), Length.FromMillimeters(150))), 2);
     }
 
+    private void SetLineRebarInputsAsString() {
+      ComponentTestHelper.SetInput(_component, _layerGoo, 0);
+      ComponentTestHelper.SetInput(_component, "0,0", 1);
+      ComponentTestHelper.SetInput(_component, "0.1, 0.15", 2);
+    }
+
     private void SetPointRebarInputs(CreateRebarLayout component, bool reselectDropDown = true) {
       if (reselectDropDown) {
         component.SetSelected(0, 1);
       }
       ComponentTestHelper.SetInput(component, _layerGoo.Value.BarBundle, 0);
       ComponentTestHelper.SetInput(component, new AdSecPointGoo(IPoint.Create(Length.FromMillimeters(100), Length.FromMillimeters(150))), 1);
+    }
+
+    private void SetPointRebarAsGHString(CreateRebarLayout component) {
+      component.SetSelected(0, 1);
+      ComponentTestHelper.SetInput(component, _layerGoo.Value.BarBundle, 0);
+      ComponentTestHelper.SetInput(component, new GH_String("0.1, 0.15"), 1);
     }
 
     private void SetCircularRebarInputs() {
@@ -76,6 +86,12 @@ namespace AdSecGHTests.Components {
       AssertSingleBar(_component);
     }
 
+    [Fact]
+    public void CanCreateSingleBarsUsingGHString() {
+      SetPointRebarAsGHString(_component);
+      AssertSingleBar(_component);
+    }
+
     private void AssertSingleBar(CreateRebarLayout component) {
       ComponentTestHelper.ComputeData(component);
       var output = (AdSecRebarGroupGoo)ComponentTestHelper.GetOutput(component, 0);
@@ -100,6 +116,13 @@ namespace AdSecGHTests.Components {
       var component = (CreateRebarLayout)doc.Document.FindComponent(_component.InstanceGuid);
       SetPointRebarInputs(component, false);
       AssertSingleBar(component);
+    }
+
+    [Fact]
+    public void CanCreatesLineLayoutUsingStringInput() {
+      SetLineRebarInputsAsString();
+      ComponentTestHelper.ComputeData(_component);
+      Assert.NotNull(ComponentTestHelper.GetOutput(_component));
     }
 
     [Fact]

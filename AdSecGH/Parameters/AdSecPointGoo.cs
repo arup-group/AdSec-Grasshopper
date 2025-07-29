@@ -36,6 +36,7 @@ namespace AdSecGH.Parameters {
         new Length(m_value.Z, DefaultUnits.LengthUnitGeometry));
     }
 
+
     public AdSecPointGoo(AdSecPointGoo adsecPoint) {
       if (adsecPoint == null) {
         const string error = "AdSec Point cannot be null";

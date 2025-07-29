@@ -2,6 +2,7 @@
 
 using AdSecGH;
 using AdSecGH.Components;
+using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
@@ -95,6 +96,15 @@ namespace AdSecGHTests.Components._3_Rebar {
       slider.Slider.Maximum = 10;
       slider.Slider.Value = 1;
       return slider;
+    }
+
+    [Fact]
+    public void ShouldComputeWhenCoverInputIsString() {
+      component.SetSelected(0, 0);
+      ComponentTestHelper.SetInput(component, new AdSecRebarLayerGoo(new BuilderLayer().Build()), 0);
+      ComponentTestHelper.SetInput(component, "4", 4);
+      ComponentTestHelper.ComputeData(component);
+      Assert.NotNull(ComponentTestHelper.GetOutput(component));
     }
   }
 }
