@@ -1,4 +1,5 @@
-﻿using System.Linq;
+
+using System.Linq;
 
 using AdSecCore.Builders;
 using AdSecCore.Parameters;

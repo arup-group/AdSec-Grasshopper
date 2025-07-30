@@ -1,4 +1,5 @@
-﻿using AdSecCore.Functions;
+
+using AdSecCore.Functions;
 
 using Oasys.AdSec;
 

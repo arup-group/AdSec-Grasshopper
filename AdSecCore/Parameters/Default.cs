@@ -1,3 +1,4 @@
+
 using AdSecCore.Functions;
 
 namespace AdSecCore.Parameters {

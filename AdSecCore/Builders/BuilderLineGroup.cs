@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+
+using System.Collections.Generic;
 
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement;

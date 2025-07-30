@@ -1,4 +1,5 @@
-﻿using OasysUnits.Units;
+
+using OasysUnits.Units;
 
 namespace AdSecGHCore.Constants {
   // A Singleton That Holds all the LengthUnit

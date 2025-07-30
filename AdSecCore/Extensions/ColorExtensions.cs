@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+
+using System.Drawing;
 
 namespace AdSecCore {
   public static class ColorExtensions {

@@ -1,4 +1,5 @@
-﻿using AdSecCore.Parameters;
+
+using AdSecCore.Parameters;
 
 using AdSecGHCore.Constants;
 

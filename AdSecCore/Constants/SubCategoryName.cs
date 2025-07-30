@@ -1,4 +1,5 @@
-﻿namespace AdSecGHCore.Constants {
+
+namespace AdSecGHCore.Constants {
 
   /// <summary>
   ///   Class containing ribbon category names

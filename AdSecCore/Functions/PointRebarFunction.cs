@@ -1,4 +1,5 @@
-﻿using AdSecGHCore.Constants;
+
+using AdSecGHCore.Constants;
 
 using Oasys.Profiles;
 

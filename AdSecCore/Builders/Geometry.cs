@@ -1,4 +1,5 @@
-﻿using Oasys.Profiles;
+
+using Oasys.Profiles;
 
 using OasysUnits;
 

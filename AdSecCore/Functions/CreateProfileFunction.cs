@@ -1,4 +1,5 @@
-﻿using AdSecGHCore.Constants;
+
+using AdSecGHCore.Constants;
 
 namespace AdSecCore.Functions {
   public class CreateProfileFunction : Function {

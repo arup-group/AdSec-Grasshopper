@@ -1,4 +1,5 @@
-﻿using Oasys.AdSec.Reinforcement;
+
+using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 
 namespace AdSecGH.Parameters {
