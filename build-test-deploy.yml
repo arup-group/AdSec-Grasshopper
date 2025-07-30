@@ -171,7 +171,7 @@ steps:
     condition: ne(variables['System.PullRequest.TargetBranch'], '')
 
   - powershell: |
-      $output = dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
+      $output = dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced --dev-mode
       $scoreLine = $output | Select-String -Pattern 'final mutation score is (\d+(\.\d+)?) ?%'
       if ($scoreLine) {
         $matches = [regex]::Match($scoreLine.Line, 'final mutation score is (\d+(\.\d+)?) ?%')
