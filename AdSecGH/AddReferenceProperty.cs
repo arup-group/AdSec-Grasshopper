@@ -3,6 +3,8 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
+using AdSecCore.Constants;
+
 using AdSecGH.Graphics.Menu;
 using AdSecGH.Properties;
 
@@ -59,6 +61,8 @@ namespace AdSecGH {
 #pragma warning disable S2696 // Instance members should not write to "static" fields
 #pragma warning disable S3885 // "Assembly.Load" should be used - we must use LoadFile to load the dll from the plugin folder, without that our tests will not work
         AdSecAPI = Assembly.LoadFile($"{PluginPath}\\AdSec_API.dll");
+        AdSecFileHelper.LoadMode = AdSecDllLoader.LoadMode.Custom;
+        AdSecFileHelper.Custom = AdSecAPI;
 #pragma warning restore S3885 // "Assembly.Load" should be used
 #pragma warning restore S2696 // Instance members should not write to "static" fields
       } catch (Exception ex) {

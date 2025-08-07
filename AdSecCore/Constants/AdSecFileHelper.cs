@@ -12,14 +12,22 @@ namespace AdSecCore.Constants {
   public class AdSecDllLoader {
 
     private Assembly _adSecAPI;
+    public Assembly Custom { get; set; }
 
     public Assembly AdSecAPI() {
       if (_adSecAPI == null) {
         switch (_Mode) {
 #pragma warning disable S3885 // Avoid using Assembly.LoadFrom
-          case LoadMode.LoadFrom: _adSecAPI = Assembly.LoadFrom("AdSec_API.dll"); break;
+          case LoadMode.LoadFrom:
+            _adSecAPI = Assembly.LoadFrom("AdSec_API.dll");
+            break;
 #pragma warning restore S3885
-          case LoadMode.Load: _adSecAPI = Assembly.Load("AdSec_API.dll"); break;
+          case LoadMode.Load:
+            _adSecAPI = Assembly.Load("AdSec_API.dll");
+            break;
+          case LoadMode.Custom:
+            _adSecAPI = Custom;
+            break;
         }
       }
 
@@ -30,7 +38,8 @@ namespace AdSecCore.Constants {
 
     public enum LoadMode {
       LoadFrom,
-      Load
+      Load,
+      Custom,
     }
 
     public AdSecDllLoader(LoadMode mode) {
@@ -42,9 +51,12 @@ namespace AdSecCore.Constants {
 
     // This needs to be changed on Tests
     public static AdSecDllLoader.LoadMode LoadMode { get; set; } = AdSecDllLoader.LoadMode.Load;
+    public static Assembly Custom { get; set; } = null;
 
     private static Dictionary<string, Type> ReflectAdSecNamespace(string @namespace) {
-      var adsecAPI = new AdSecDllLoader(LoadMode).AdSecAPI();
+      var adSecDllLoader = new AdSecDllLoader(LoadMode);
+      adSecDllLoader.Custom = Custom;
+      var adsecAPI = adSecDllLoader.AdSecAPI();
       var q = from t in adsecAPI.GetTypes() where t.IsInterface && t.Namespace == @namespace select t;
       var dict = new Dictionary<string, Type>();
       foreach (var typ in q) {
