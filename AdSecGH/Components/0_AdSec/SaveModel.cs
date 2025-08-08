@@ -46,7 +46,13 @@ namespace AdSecGH.Components {
     }
 
     public Process OpenAdSecExe() {
-      return canOpen ? Process.Start(_fileName) : null;
+      return canOpen ? RunAdSec(_fileName) : null;
+    }
+
+    internal Process RunAdSec(string file) {
+      string programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+      string fullPath = Path.Combine(programFiles, @"Oasys\AdSec 10.0\AdSec.exe");
+      return Process.Start(fullPath, file);
     }
 
     public override bool Read(GH_IReader reader) {
