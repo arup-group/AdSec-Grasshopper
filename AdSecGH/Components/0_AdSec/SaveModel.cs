@@ -52,6 +52,9 @@ namespace AdSecGH.Components {
     internal static Process RunAdSec(string file) {
       string programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
       string fullPath = Path.Combine(programFiles, @"Oasys\AdSec 10.0\AdSec.exe");
+      if (!File.Exists(fullPath)) {
+        return null;
+      }
       return Process.Start(fullPath, file);
     }
 
