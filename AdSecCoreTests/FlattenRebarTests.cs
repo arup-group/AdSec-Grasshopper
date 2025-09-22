@@ -104,6 +104,10 @@ namespace AdSecCoreTests {
       Assert.Equal(rebarSize * 10, operation.Diameter.Value[0]);
     }
 
-    private class DummyPreload : IPreload { }
+    private class DummyPreload : IPreload {
+      public IPreload Clone() {
+        throw new NotImplementedException();
+      }
+    }
   }
 }

@@ -42,6 +42,16 @@ namespace AdSecGHTests.Components {
     }
 
     [Fact]
+    public void ShouldNotModifyUpStreamRebarGroup() {
+      SetDefaultInputs();
+      ComponentTestHelper.ComputeData(_component);
+      var output = ((AdSecRebarGroupGoo)ComponentTestHelper.GetOutput(_component, 0));
+      var inputPreLoad = (IPreForce)((ILongitudinalGroup)_rebarGroup.Value.Group).Preload;
+      var outPreLoad = (IPreForce)((ILongitudinalGroup)output.Value.Group).Preload;
+      Assert.NotEqual(inputPreLoad.Force.As(DefaultUnits.ForceUnit), outPreLoad.Force.As(DefaultUnits.ForceUnit), _comparer);
+    }
+
+    [Fact]
     public void ShouldCreatePreForceCorrectly() {
       SetDefaultInputs();
       ComponentTestHelper.ComputeData(_component);
