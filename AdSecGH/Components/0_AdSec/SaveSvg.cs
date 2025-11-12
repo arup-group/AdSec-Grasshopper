@@ -38,7 +38,7 @@ namespace AdSecGH.Components {
     public override Guid ComponentGuid => new Guid("baf1ad7d-efca-4851-a6a3-21a65471a041");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.SVG;
+    protected override Bitmap Icon => Resources.SectionSvg;
 
     public override void CreateAttributes() {
       m_attributes = new ThreeButtonComponentAttributes(this, "Save", "Save As", "Open SVG", SaveFile, SaveAsFile,

@@ -24,7 +24,7 @@ namespace AdSecGH.Components {
     public override Guid ComponentGuid => new Guid("69a789d4-c11b-4396-b237-a10efdd6d0c4");
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.StressStrainPt;
+    protected override Bitmap Icon => Resources.CreateStressStrainPoint;
 
     protected override void UpdateUIFromSelectedItems() {
       base.UpdateUIFromSelectedItems();
