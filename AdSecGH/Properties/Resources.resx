@@ -191,13 +191,13 @@
     <value>Icons\OpenAdSec.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CreatePreStressLoad" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\CreatePrestressLoad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\CreatePreStressLoad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ProfileInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\ProfileInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Rebar" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Rebar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="CreateRebar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\CreateRebar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="RebarGroup" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\RebarGroup.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

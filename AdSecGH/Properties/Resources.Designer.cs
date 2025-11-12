@@ -343,9 +343,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Rebar {
+        internal static System.Drawing.Bitmap CreateRebar {
             get {
-                object obj = ResourceManager.GetObject("Rebar", resourceCulture);
+                object obj = ResourceManager.GetObject("CreateRebar", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
