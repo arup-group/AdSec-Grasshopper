@@ -323,9 +323,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Prestress {
+        internal static System.Drawing.Bitmap CreatePreStressLoad {
             get {
-                object obj = ResourceManager.GetObject("Prestress", resourceCulture);
+                object obj = ResourceManager.GetObject("CreatePreStressLoad", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
