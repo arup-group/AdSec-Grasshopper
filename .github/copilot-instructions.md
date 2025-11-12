@@ -106,11 +106,39 @@ Grasshopper components are organized by category in `AdSecGH/Components/`:
 - Category 6: Results and visualization
 - Lab: Experimental features
 
+### Component Architecture Pattern
+
+Components follow a specific inheritance hierarchy with business logic in `AdSecCore` and Grasshopper adapters in `AdSecGH`:
+
+1. **Core Function Layer** (`AdSecCore/Functions/`):
+   - Base class: `Function` (abstract class in `IFunction.cs`)
+   - Example: `CreateRebarFunction : Function`
+   - Contains business logic, parameters, and computation
+   - Defines `Metadata.Name` property for component identification
+
+2. **Grasshopper Adapter Layer** (`AdSecGH/Components/`):
+   - **Direct inheritance** (preferred): `CreateRebar : DropdownAdapter<CreateRebarFunction>`
+   - **With shim** (when parameter translation needed): `CreateRebarGh : CreateRebarFunction` then `CreateRebar : DropdownAdapter<CreateRebarGh>`
+   - Handles Grasshopper-specific UI, dropdowns, and unit conversions
+   - Translates between Grasshopper parameters and AdSecCore simple parameters
+
+3. **Inheritance Priority**:
+   - **DO**: Inherit from `Function` base classes (e.g., `CreateRebarFunction`)
+   - **DON'T**: Inherit directly from `GH_Component`
+   - Use shim classes only when Grasshopper parameter translation is required
+
+### Icon Naming Convention
+
+Icons must be named based on the Function's `Metadata.Name` property using PascalCase:
+- `Metadata.Name = "Create Rebar"` → Icon: `Rebar.png` or `CreateRebar.png`
+- `Metadata.Name = "Create Section"` → Icon: `CreateSection.png`
+- `Metadata.Name = "Create Deformation Load"` → Icon: `CreateDeformationLoad.png`
+
 Each component should:
-- Inherit from appropriate base classes (e.g., `GH_OasysComponent`)
-- Implement proper input/output parameter registration
-- Include appropriate icons from `Properties/Icons/`
+- Follow the Function inheritance pattern described above
+- Include appropriate icons from `Properties/Icons/` with correct PascalCase naming
 - Handle units consistently using OasysUnits
+- Implement proper input/output parameter registration
 
 ## Important Notes
 
