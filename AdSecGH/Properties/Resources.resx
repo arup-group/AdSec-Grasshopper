@@ -157,8 +157,8 @@
   <data name="CreateUnitNumber" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\CreateUnitNumber.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="DeformationLoad" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\DeformationLoad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="CreateDeformationLoad" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\CreateDeformationLoad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="DesignCodeParameter" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\DesignCodeParameter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -190,8 +190,8 @@
   <data name="OpenAdSec" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\OpenAdSec.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Prestress" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Prestress.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="CreatePreStressLoad" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\CreatePrestressLoad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ProfileInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\ProfileInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -214,14 +214,14 @@
   <data name="SaveAdSec" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\SaveAdSec.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SectionParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\SectionParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="AdSecSectionParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\AdSecSectionParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SLS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\SLS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Solution" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Solution.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="AnalyseSection" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\AnalyseSection.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SolutionParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\SolutionParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

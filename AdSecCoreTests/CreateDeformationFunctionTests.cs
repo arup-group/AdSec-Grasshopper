@@ -6,28 +6,28 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecCoreTests.Functions {
-  public class CreateDeformationFunctionTests {
-    private readonly CreateDeformationFunction _function;
+  public class CreateDeformationLoadFunctionTests {
+    private readonly CreateDeformationLoadFunction loadFunction;
 
-    public CreateDeformationFunctionTests() {
-      _function = new CreateDeformationFunction();
+    public CreateDeformationLoadFunctionTests() {
+      loadFunction = new CreateDeformationLoadFunction();
     }
 
     private void AssertName() {
-      Assert.Contains("εx [ε]", _function.StrainInput.Name);
-      Assert.Contains("κyy [m⁻¹]", _function.CurvatureYInput.Name);
-      Assert.Contains("κzz [m⁻¹]", _function.CurvatureZInput.Name);
+      Assert.Contains("εx [ε]", loadFunction.StrainInput.Name);
+      Assert.Contains("κyy [m⁻¹]", loadFunction.CurvatureYInput.Name);
+      Assert.Contains("κzz [m⁻¹]", loadFunction.CurvatureZInput.Name);
     }
 
     [Fact]
     public void ComputeWithValidInputsCreatesDeformation() {
-      _function.StrainInput.Value = Strain.FromRatio(0.002);
-      _function.CurvatureYInput.Value = Curvature.FromPerMeters(0.001);
-      _function.CurvatureZInput.Value = Curvature.FromPerMeters(0.001);
+      loadFunction.StrainInput.Value = Strain.FromRatio(0.002);
+      loadFunction.CurvatureYInput.Value = Curvature.FromPerMeters(0.001);
+      loadFunction.CurvatureZInput.Value = Curvature.FromPerMeters(0.001);
 
-      _function.Compute();
+      loadFunction.Compute();
 
-      var result = _function.DeformationOutput.Value as IDeformation;
+      var result = loadFunction.DeformationOutput.Value as IDeformation;
       Assert.NotNull(result);
       Assert.Equal(0.002, result.X.As(StrainUnit.Ratio));
       Assert.Equal(0.001, result.YY.As(CurvatureUnit.PerMeter));
@@ -36,7 +36,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void GetAllInputAttributesReturnsThreeParameters() {
-      var inputs = _function.GetAllInputAttributes();
+      var inputs = loadFunction.GetAllInputAttributes();
 
       Assert.Equal(3, inputs.Length);
       Assert.Contains(inputs, x => x.Name.Contains("εx"));
@@ -46,54 +46,54 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void GetAllOutputAttributesReturnsOneParameters() {
-      var outputs = _function.GetAllOutputAttributes();
+      var outputs = loadFunction.GetAllOutputAttributes();
       Assert.Single(outputs);
       Assert.Contains(outputs, x => x.Name.Contains("Load"));
     }
 
     [Fact]
     public void UpdateParameterUpdatesUnitDisplayNamesCorrectly() {
-      _function.StrainUnitResult = StrainUnit.MicroStrain;
-      _function.CurvatureUnit = CurvatureUnit.PerMillimeter;
+      loadFunction.StrainUnitResult = StrainUnit.MicroStrain;
+      loadFunction.CurvatureUnit = CurvatureUnit.PerMillimeter;
 
-      Assert.Contains("εx [µε]", _function.StrainInput.Name);
-      Assert.Contains("κyy [mm⁻¹]", _function.CurvatureYInput.Name);
-      Assert.Contains("κzz [mm⁻¹]", _function.CurvatureZInput.Name);
+      Assert.Contains("εx [µε]", loadFunction.StrainInput.Name);
+      Assert.Contains("κyy [mm⁻¹]", loadFunction.CurvatureYInput.Name);
+      Assert.Contains("κzz [mm⁻¹]", loadFunction.CurvatureZInput.Name);
     }
 
     [Fact]
     public void ParameterShouldDisplayDefaultNamesWhenLengthUnitGeometryIsSet() {
-      _function.LengthUnitGeometry = LengthUnit.Meter;
+      loadFunction.LengthUnitGeometry = LengthUnit.Meter;
       AssertName();
     }
 
     [Fact]
     public void ParameterShouldDisplayDefaultNamesWhenLengthUnitResultIsSet() {
-      _function.LengthUnitResult = LengthUnit.Millimeter;
+      loadFunction.LengthUnitResult = LengthUnit.Millimeter;
       AssertName();
     }
 
     [Fact]
     public void ParameterShouldDisplayDefaultNamesWhenMomentUnitIsSet() {
-      _function.MomentUnit = MomentUnit.NewtonMeter;
+      loadFunction.MomentUnit = MomentUnit.NewtonMeter;
       AssertName();
     }
 
     [Fact]
     public void ParameterShouldDisplayDefaultNamesWhenAxialStiffnessUnitIsSet() {
-      _function.AxialStiffnessUnit = AxialStiffnessUnit.Newton;
+      loadFunction.AxialStiffnessUnit = AxialStiffnessUnit.Newton;
       AssertName();
     }
 
     [Fact]
     public void ParameterShouldDisplayDefaultNamesWhenBendingStiffnessUnitIsSet() {
-      _function.BendingStiffnessUnit = BendingStiffnessUnit.NewtonSquareMeter;
+      loadFunction.BendingStiffnessUnit = BendingStiffnessUnit.NewtonSquareMeter;
       AssertName();
     }
 
     [Fact]
     public void ParameterShouldDisplayDefaultNamesWhenStressUnitResultIsSet() {
-      _function.StressUnitResult = PressureUnit.Megapascal;
+      loadFunction.StressUnitResult = PressureUnit.Megapascal;
       AssertName();
     }
 
@@ -104,13 +104,13 @@ namespace AdSecCoreTests.Functions {
     public void ComputeWithDifferentValuesCreatesCorrectDeformation(
       double strain, double curvY, double curvZ) {
 
-      _function.StrainInput.Value = Strain.FromRatio(strain);
-      _function.CurvatureYInput.Value = Curvature.FromPerMeters(curvY);
-      _function.CurvatureZInput.Value = Curvature.FromPerMeters(curvZ);
+      loadFunction.StrainInput.Value = Strain.FromRatio(strain);
+      loadFunction.CurvatureYInput.Value = Curvature.FromPerMeters(curvY);
+      loadFunction.CurvatureZInput.Value = Curvature.FromPerMeters(curvZ);
 
-      _function.Compute();
+      loadFunction.Compute();
 
-      var result = _function.DeformationOutput.Value as IDeformation;
+      var result = loadFunction.DeformationOutput.Value as IDeformation;
       Assert.NotNull(result);
       Assert.Equal(strain, result.X.As(StrainUnit.Ratio), 6);
       Assert.Equal(curvY, result.YY.As(CurvatureUnit.PerMeter), 6);

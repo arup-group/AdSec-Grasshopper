@@ -23,7 +23,7 @@ namespace AdSecGH.Parameters {
 
     public override Guid ComponentGuid => new Guid("fa647c2d-4767-49f1-a574-32bf66a66568");
     public override GH_Exposure Exposure => GH_Exposure.primary;
-    protected override Bitmap Icon => Resources.SectionParam;
+    protected override Bitmap Icon => Resources.AdSecSectionParam;
     public BoundingBox ClippingBox => Preview_ComputeClippingBox();
     public bool Hidden { get; set; }
     public bool IsPreviewCapable => true;
