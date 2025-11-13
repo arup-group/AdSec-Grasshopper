@@ -14,13 +14,13 @@ using Oasys.GH.Helpers;
 using OasysGH;
 
 namespace AdSecGH.Components {
-  public class UlsResultGh : UlsResultFunction {
-    public UlsResultGh() {
+  public class UltimateLimitStateResultGh : UltimateLimitStateResultFunction {
+    public UltimateLimitStateResultGh() {
     }
   }
 
-  public class UlsResult : ComponentAdapter<UlsResultGh> {
-    public UlsResult() {
+  public class UltimateLimitStateResult : ComponentAdapter<UltimateLimitStateResultGh> {
+    public UltimateLimitStateResult() {
       Hidden = true;
       Category = CategoryName.Name();
       SubCategory = SubCategoryName.Cat7();

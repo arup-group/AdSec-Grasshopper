@@ -303,9 +303,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap N_M {
+        internal static System.Drawing.Bitmap NMDiagram {
             get {
-                object obj = ResourceManager.GetObject("N_M", resourceCulture);
+                object obj = ResourceManager.GetObject("NMDiagram", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -483,9 +483,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap StressStrainRebar {
+        internal static System.Drawing.Bitmap RebarStressStrain {
             get {
-                object obj = ResourceManager.GetObject("StressStrainRebar", resourceCulture);
+                object obj = ResourceManager.GetObject("RebarStressStrain", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

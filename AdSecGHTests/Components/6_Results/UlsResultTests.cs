@@ -26,11 +26,11 @@ using Xunit;
 namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
   public class UlsResultTests {
-    private readonly UlsResult _component;
+    private readonly UltimateLimitStateResult _component;
     private static SectionSolution Solution { get; set; } = null;
     private readonly DoubleComparer comparer = new DoubleComparer();
     public UlsResultTests() {
-      _component = new UlsResult();
+      _component = new UltimateLimitStateResult();
       if (Solution == null) {
         Solution = new SolutionBuilder().Build();
       }

@@ -184,8 +184,8 @@
   <data name="MaterialParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\MaterialParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="N_M" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\N-M.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="NMDiagram" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\NMDiagram.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="OpenModel" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\OpenModel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -238,8 +238,8 @@
   <data name="CreateStressStrainPoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\CreateStressStrainPoint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="StressStrainRebar" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\StressStrainRebar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="RebarStressStrain" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\RebarStressStrain.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SubComponent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\SubComponent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
