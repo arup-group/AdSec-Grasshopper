@@ -28,6 +28,6 @@ namespace AdSecGH.Components {
     public override Guid ComponentGuid => new Guid("146bd264-66ac-4484-856f-8557be762a33");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.ULS;
+    protected override Bitmap Icon => Resources.UltimateLimitStateResult;
   }
 }

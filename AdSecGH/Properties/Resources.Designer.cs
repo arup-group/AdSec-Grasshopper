@@ -303,9 +303,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap NMDiagram {
+        internal static System.Drawing.Bitmap NmDiagram {
             get {
-                object obj = ResourceManager.GetObject("NMDiagram", resourceCulture);
+                object obj = ResourceManager.GetObject("NmDiagram", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -413,9 +413,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap SLS {
+        internal static System.Drawing.Bitmap ServiceabilityLimitStateResult {
             get {
-                object obj = ResourceManager.GetObject("SLS", resourceCulture);
+                object obj = ResourceManager.GetObject("ServiceabilityLimitStateResult", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -513,9 +513,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ULS {
+        internal static System.Drawing.Bitmap UltimateLimitStateResult {
             get {
-                object obj = ResourceManager.GetObject("ULS", resourceCulture);
+                object obj = ResourceManager.GetObject("UltimateLimitStateResult", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

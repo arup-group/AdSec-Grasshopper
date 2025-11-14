@@ -124,7 +124,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(_component.MatchesExpectedIcon(Resources.ULS));
+      Assert.True(_component.MatchesExpectedIcon(Resources.UltimateLimitStateResult));
     }
 
   }
