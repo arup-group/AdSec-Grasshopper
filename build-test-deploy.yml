@@ -63,7 +63,7 @@ steps:
   - task: UseDotNet@2
     inputs:
       packageType: 'sdk'
-      version: '7.x'  # Specify the version you need, e.g., '7.0.100'
+      version: '8.0.319'  # Specify the version you need, e.g., '7.0.100'
 
   - task: NuGetCommand@2
     displayName: 'Restoring NuGet packages'
@@ -99,7 +99,7 @@ steps:
       MSBUILDDISABLENODEREUSE: 1
 
   - powershell: |
-      dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecCore .\AdSecCoreTests\bin\x64\Release\net7.0\AdSecCoreTests.dll
+      dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecCore .\AdSecCoreTests\bin\x64\Release\net8.0\AdSecCoreTests.dll
     displayName: dotnet tests AdSecCore
     failOnStderr: false
 
