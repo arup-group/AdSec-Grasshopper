@@ -217,7 +217,7 @@
   <data name="AdSecSectionParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\AdSecSectionParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SLS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="ServiceabilityLimitStateResult" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\ServiceabilityLimitStateResult.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="AnalyseSection" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -247,7 +247,7 @@
   <data name="SectionSvg" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\SectionSvg.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ULS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="UltimateLimitStateResult" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\UltimateLimitStateResult.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="UnitParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
