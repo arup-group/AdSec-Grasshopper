@@ -70,7 +70,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(component.MatchesExpectedIcon(Resources.VertexPoint));
+      Assert.True(component.MatchesExpectedIcon(Resources.CreateVertexPoint));
     }
   }
 }

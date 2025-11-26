@@ -23,7 +23,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(_component.MatchesExpectedIcon(Resources.ProfileInfo));
+      Assert.True(_component.MatchesExpectedIcon(Resources.ProfileProperties));
     }
   }
 }
