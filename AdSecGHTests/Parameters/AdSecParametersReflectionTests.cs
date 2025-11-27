@@ -29,9 +29,6 @@ using Rhino.Geometry;
 
 using Xunit;
 
-using IFlange = Oasys.Profiles.IFlange;
-using IWebConstant = Oasys.Profiles.IWebConstant;
-
 namespace AdSecGHTests.Parameters {
   [Collection("GrasshopperFixture collection")]
   public class AdSecParametersReflectionTests {
@@ -112,9 +109,7 @@ namespace AdSecGHTests.Parameters {
       InstanceOfGoos.Add(new AdSecInteractionDiagramGoo(
         solution.Strength.GetForceMomentInteractionCurve(new Angle())[0], Angle.FromRadians(0), new Rectangle3d()));
       InstanceOfGoos.Add(new AdSecPointGoo(length, length));
-      InstanceOfGoos.Add(new AdSecProfileFlangeGoo(IFlange.Create(length, thickness)));
       InstanceOfGoos.Add(new AdSecProfileGoo(profile, Plane.WorldXY));
-      InstanceOfGoos.Add(new AdSecProfileWebGoo(IWebConstant.Create(thickness)));
       var barBundle
         = IBarBundle.Create(IReinforcement.Create(tensionCompressionCurve, tensionCompressionCurve), length);
       InstanceOfGoos.Add(new AdSecRebarBundleGoo(barBundle));
