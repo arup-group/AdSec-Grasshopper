@@ -17,8 +17,8 @@ namespace AdSecCore.Functions {
 
     public MaterialType CurrentMaterialType { get; set; }
     public override FuncAttribute Metadata { get; set; } = new FuncAttribute() {
-      Name = "Custom Material",
-      NickName = "CustomMaterial",
+      Name = "Create Custom Material",
+      NickName = "CreateCustomMaterial",
       Description = "Create a custom AdSec Material",
     };
     public override Organisation Organisation { get; set; } = new Organisation() {

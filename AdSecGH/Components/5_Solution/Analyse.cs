@@ -17,10 +17,10 @@ using Attribute = AdSecCore.Functions.Attribute;
 
 namespace AdSecGH.Components {
 
-  public class AnalyseGh : AnalyseFunction {
+  public class AnalyseSectionSectionGh : AnalyseSectionFunction {
     public AdSecSectionParameter AdSecSection { get; set; } = new AdSecSectionParameter();
 
-    public AnalyseGh() {
+    public AnalyseSectionSectionGh() {
       var adSecSection = AdSecSection as Attribute;
       Section.Update(ref adSecSection);
       AdSecSection.OnValueChanged += goo => {
@@ -44,12 +44,12 @@ namespace AdSecGH.Components {
     }
   }
 
-  public class Analyse : ComponentAdapter<AnalyseGh> {
+  public class AnalyseSection : ComponentAdapter<AnalyseSectionSectionGh> {
 
     // This region handles how the component in displayed on the ribbon including name, exposure level and icon
     public override Guid ComponentGuid => new Guid("4621cc01-0b76-4f58-b24e-81e32ae24f92");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.Solution;
+    protected override Bitmap Icon => Resources.AnalyseSection;
   }
 }

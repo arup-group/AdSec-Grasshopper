@@ -7,11 +7,11 @@ using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.Reinforcement.Preloads;
 
 namespace AdSecCoreTests.Functions {
-  public class CreatePreLoadFunctionTests {
-    private readonly CreatePreLoadFunction _function;
+  public class CreatePreStressLoadFunctionTests {
+    private readonly CreatePreStressLoadFunction _function;
 
-    public CreatePreLoadFunctionTests() {
-      _function = new CreatePreLoadFunction();
+    public CreatePreStressLoadFunctionTests() {
+      _function = new CreatePreStressLoadFunction();
       _function.PreLoadType = (PreLoadType)100;
       _function.RebarGroupInput.Value = new AdSecRebarGroup(new BuilderTemplateGroup().Build());
       _function.PreloadInput.Value = 10;

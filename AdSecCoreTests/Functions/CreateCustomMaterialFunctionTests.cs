@@ -20,12 +20,12 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveAName() {
-      Assert.Equal("Custom Material", _function.Metadata.Name);
+      Assert.Equal("Create Custom Material", _function.Metadata.Name);
     }
 
     [Fact]
     public void ShouldHaveANickName() {
-      Assert.Equal("CustomMaterial", _function.Metadata.NickName);
+      Assert.Equal("CreateCustomMaterial", _function.Metadata.NickName);
     }
 
     [Fact]

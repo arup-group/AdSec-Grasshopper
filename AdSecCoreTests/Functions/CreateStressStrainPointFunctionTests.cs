@@ -14,7 +14,7 @@ namespace AdSecCore.Tests.Functions {
 
     [Fact]
     public void DefaultPropertiesShouldBeCorrect() {
-      Assert.Equal("Create Stress-Strain Point", _function.Metadata.Name);
+      Assert.Equal("Create Stress Strain Point", _function.Metadata.Name);
       Assert.Equal("SSPoint", _function.Metadata.NickName);
       Assert.Equal(StrainUnit.MilliStrain, _function.LocalStrainUnit);
       Assert.Equal(PressureUnit.Megapascal, _function.LocalStressUnit);

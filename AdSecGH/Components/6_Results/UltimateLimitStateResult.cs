@@ -14,13 +14,13 @@ using Oasys.GH.Helpers;
 using OasysGH;
 
 namespace AdSecGH.Components {
-  public class UlsResultGh : UlsResultFunction {
-    public UlsResultGh() {
+  public class UltimateLimitStateResultGh : UltimateLimitStateResultFunction {
+    public UltimateLimitStateResultGh() {
     }
   }
 
-  public class UlsResult : ComponentAdapter<UlsResultGh> {
-    public UlsResult() {
+  public class UltimateLimitStateResult : ComponentAdapter<UltimateLimitStateResultGh> {
+    public UltimateLimitStateResult() {
       Hidden = true;
       Category = CategoryName.Name();
       SubCategory = SubCategoryName.Cat7();
@@ -28,6 +28,6 @@ namespace AdSecGH.Components {
     public override Guid ComponentGuid => new Guid("146bd264-66ac-4484-856f-8557be762a33");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.ULS;
+    protected override Bitmap Icon => Resources.UltimateLimitStateResult;
   }
 }

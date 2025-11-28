@@ -27,7 +27,7 @@ namespace AdSecGH.Components {
     private ForceUnit _forceUnit = DefaultUnits.ForceUnit;
     private FoldMode _mode = FoldMode.NM;
 
-    public NMDiagram() : base("N-M Diagram", "N-M",
+    public NMDiagram() : base("NM Diagram", "N-M",
       "Calculates a force-moment (N-M) or moment-moment (M-M) interaction curve.", CategoryName.Name(),
       SubCategoryName.Cat7()) {
       Hidden = false; // sets the initial state of the component to hidden
@@ -37,7 +37,7 @@ namespace AdSecGH.Components {
     public override Guid ComponentGuid => new Guid("21cd9e4c-6c85-4077-b575-1e04127f2998");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.N_M;
+    protected override Bitmap Icon => Resources.NmDiagram;
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];

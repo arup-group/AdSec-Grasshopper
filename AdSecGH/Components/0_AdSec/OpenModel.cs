@@ -49,7 +49,7 @@ namespace AdSecGH.Components {
     public override Guid ComponentGuid => new Guid("42135d0f-bf55-40c0-8f6f-5dc2ad5f7741");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.OpenAdSec;
+    protected override Bitmap Icon => Resources.OpenModel;
     private GH_Panel _panel;
 
     public override void CreateAttributes() {

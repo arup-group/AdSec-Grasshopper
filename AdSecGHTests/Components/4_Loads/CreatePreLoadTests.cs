@@ -27,12 +27,12 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
-  public class CreatePreLoadTests {
-    private readonly CreatePreLoad _component;
+  public class CreatePreStressLoadTests {
+    private readonly CreatePreStressLoad _component;
     private readonly DoubleComparer _comparer = new DoubleComparer();
     private readonly AdSecRebarGroupGoo _rebarGroup = new AdSecRebarGroupGoo(new AdSecRebarGroup(new BuilderTemplateGroup().AtFace(ITemplateGroup.Face.Top).Build()));
-    public CreatePreLoadTests() {
-      _component = new CreatePreLoad();
+    public CreatePreStressLoadTests() {
+      _component = new CreatePreStressLoad();
       _rebarGroup.Cover = ICover.Create(Length.FromMillimeters(25));
     }
 
@@ -145,7 +145,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(_component.MatchesExpectedIcon(Resources.Prestress));
+      Assert.True(_component.MatchesExpectedIcon(Resources.CreatePreStressLoad));
     }
 
     [Fact]
