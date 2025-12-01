@@ -10,11 +10,11 @@ using OasysUnits.Units;
 
 namespace AdSecCoreTests.Functions {
   public class SlsResultFunctionTest {
-    private readonly SlsResultFunction _component;
+    private readonly ServiceabilityLimitStateResultFunction _component;
     private static SectionSolution? Solution { get; set; } = null;
     private readonly DoubleComparer comparer = new DoubleComparer();
     public SlsResultFunctionTest() {
-      _component = new SlsResultFunction();
+      _component = new ServiceabilityLimitStateResultFunction();
       if (Solution == null) {
         Solution = new SolutionBuilder().Build();
       }
@@ -24,7 +24,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveCorrectMetadata() {
-      Assert.Equal("Serviceability Result", _component.Metadata.Name);
+      Assert.Equal("Serviceability Limit State Result", _component.Metadata.Name);
       Assert.Equal("SLS", _component.Metadata.NickName);
       Assert.Equal("Performs serviceability analysis (SLS), for a given Load or Deformation.", _component.Metadata.Description);
     }

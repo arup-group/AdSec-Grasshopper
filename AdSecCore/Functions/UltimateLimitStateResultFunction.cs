@@ -10,11 +10,11 @@ using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
 
-  public class UlsResultFunction : ResultFunction {
+  public class UltimateLimitStateResultFunction : ResultFunction {
     private IStrengthResult Uls { get; set; }
     private IStrengthResult Failure { get; set; }
     public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
-      Name = "Strength Result",
+      Name = "Ultimate Limit State Result",
       NickName = "ULS",
       Description = "Performs strength checks (ULS), for a given Load or Deformation",
     };

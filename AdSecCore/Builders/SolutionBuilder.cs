@@ -13,7 +13,7 @@ namespace AdSecCore.Builders {
     private IDesignCode DesignCode { get; set; } = IS456.Edition_2000;
 
     public SectionSolution Build() {
-      var analyseFunction = new AnalyseFunction();
+      var analyseFunction = new AnalyseSectionFunction();
       analyseFunction.Section = new SectionParameter {
         Value = new SectionDesign {
           DesignCode = new DesignCode() {
