@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 
 using AdSecCore.Functions;
 
@@ -10,10 +11,13 @@ using AdSecGH.Properties;
 
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
+using Grasshopper.Kernel.Types;
 
 using Oasys.GH.Helpers;
+using Oasys.Profiles;
 
 using OasysGH;
+using OasysGH.Units;
 
 using Rhino.Geometry;
 
@@ -87,21 +91,96 @@ namespace AdSecGH.Components {
       ClearRuntimeMessages();
       Params.Input.ForEach(input => input.ClearRuntimeMessages());
 
-      var local = Plane.WorldYZ;
-      var temp = Plane.Unset;
-      if (DA.GetData(Params.Input.Count - 1, ref temp)) {
-        local = temp;
-      }
+      var localPlan = GetLocalPlane(DA);
 
       if (_mode == FoldMode.Catalogue) {
         var profiles = SolveInstanceForCatalogueProfile(DA);
         var adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, localPlan));
       } else if (_mode == FoldMode.Other) {
         var profile = SolveInstanceForStandardProfile(DA);
         var adSecProfile = AdSecProfiles.CreateProfile(profile);
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
+        if (profile.ProfileType == Oasys.Taxonomy.Profiles.ProfileType.Perimeter) {
+          //AdSec API makes polyline anticlockwise and gives coordinate relative to its own centre
+          //So, we need to shift it back to the original base curve origin
+          var polylines = AdSecProfileGoo.PolylinesFromAdSecProfile(AdSecProfiles.CreateProfile(profile), localPlan);
+          var outerPolyLine = polylines.Item1;
+          if (TryGetCurveCentreFromInput(DA, out Polyline basePolyLine)) {
+            if (IsClockwise(basePolyLine)) {
+              AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid curve orientation detected. Perimeter profiles expect anti-clockwise curves. Please use the Flip Curve component to correct the orientation.");
+              return;
+            }
+            var baseCurveOrigin = basePolyLine.CenterPoint();
+            outerPolyLine = ShiftPolyLineGivenByAdSecApiRelativeToTheOriginOfBasePolyLine(baseCurveOrigin, outerPolyLine);
+            for (int i = 0; i < polylines.Item2.Count; i++) {
+              var voidPolyLine = polylines.Item2[i];
+              voidPolyLine = ShiftPolyLineGivenByAdSecApiRelativeToTheOriginOfBasePolyLine(baseCurveOrigin, voidPolyLine);
+              polylines.Item2[i] = voidPolyLine;
+            }
+            adSecProfile = BuildPerimeterProfile(polylines, outerPolyLine);
+          }
+        }
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, localPlan));
       }
+    }
+
+    public static bool IsClockwise(Polyline polyline) {
+      double signedArea = 0;
+      for (int i = 0; i < polyline.Count - 1; i++) {
+        Point3d p1 = polyline[i];
+        Point3d p2 = polyline[i + 1];
+        signedArea += (p2.X - p1.X) * (p2.Y + p1.Y);
+      }
+      return signedArea > 0;
+    }
+
+    private Plane GetLocalPlane(IGH_DataAccess DA) {
+      var localPlane = Plane.WorldYZ;
+      var tempPlane = Plane.Unset;
+
+      if (DA.GetData(Params.Input.Count - 1, ref tempPlane)) {
+        localPlane = tempPlane;
+      }
+
+      return localPlane;
+    }
+
+    private static IProfile BuildPerimeterProfile(Tuple<Polyline, System.Collections.Generic.List<Polyline>> polylines, Polyline outerPolyLine) {
+      var adSecProfile = IPerimeterProfile.Create();
+      Plane.FitPlaneToPoints(outerPolyLine.ToList(), out var plane);
+      adSecProfile.SolidPolygon = AdSecProfileGoo.PolygonFromRhinoPolyline(outerPolyLine, DefaultUnits.LengthUnitGeometry, plane);
+
+      for (int i = 0; i < polylines.Item2.Count; i++) {
+        var voidPolyLine = polylines.Item2[i];
+        var voidPolygon = AdSecProfileGoo.PolygonFromRhinoPolyline(voidPolyLine, DefaultUnits.LengthUnitGeometry, plane);
+        adSecProfile.VoidPolygons.Add(voidPolygon);
+      }
+      return adSecProfile;
+    }
+
+    private static Polyline ShiftPolyLineGivenByAdSecApiRelativeToTheOriginOfBasePolyLine(Point3d baseCurveOrigin, Polyline solid) {
+      if (!solid.CenterPoint().Equals(baseCurveOrigin)) {
+        Vector3d offset = baseCurveOrigin - solid.CenterPoint();
+        for (int i = 0; i < solid.Count; i++) {
+          solid[i] = solid[i] + offset;
+        }
+      }
+      return solid;
+    }
+
+    private bool TryGetCurveCentreFromInput(IGH_DataAccess DA, out Polyline basePolyLine) {
+      Brep brep = null;
+      var gh_typ = new GH_ObjectWrapper();
+      basePolyLine = new Polyline();
+      if (DA.GetData(0, ref gh_typ) &&
+             GH_Convert.ToBrep(gh_typ.Value, ref brep, GH_Conversion.Both)) {
+        var edgeSegments = brep.DuplicateEdgeCurves();
+        var edges = Curve.JoinCurves(edgeSegments);
+        if (edges.Length > 0 && edges[0].TryGetPolyline(out basePolyLine)) {
+          return true;
+        }
+      }
+      return false;
     }
   }
 }

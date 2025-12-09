@@ -76,14 +76,14 @@ namespace AdSecCore.Functions {
 
       var section = sectionBuilder.Build();
 
-      if (Profile.Value.Profile is IPerimeterProfile && RebarGroup.Value != null) {
-        var reinforcements = RebarGroup.Value;
-        var recalibrated = SectionBuilder.CalibrateReinforcementGroupsForSection(
-          reinforcements.ToList(), Material.Value.DesignCode.IDesignCode, section);
+      //if (Profile.Value.Profile is IPerimeterProfile && RebarGroup.Value != null) {
+      //  var reinforcements = RebarGroup.Value;
+      //  var recalibrated = SectionBuilder.CalibrateReinforcementGroupsForSection(
+      //    reinforcements.ToList(), Material.Value.DesignCode.IDesignCode, section);
 
-        sectionBuilder.WithReinforcementGroups(recalibrated.Select(x => x.Group).ToList());
-        section = sectionBuilder.Build();
-      }
+      //  sectionBuilder.WithReinforcementGroups(recalibrated.Select(x => x.Group).ToList());
+      //  section = sectionBuilder.Build();
+      //}
 
       Section.Value = new SectionDesign {
         Section = section,

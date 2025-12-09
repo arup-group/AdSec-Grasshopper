@@ -41,7 +41,7 @@ namespace AdSecGH.Parameters {
         Profile.IsReflectedZ = value;
       }
     }
-    public Plane LocalPlane => _plane;
+
     public IProfile Profile { get; private set; }
     public Angle Rotation {
       get => Profile.Rotation;
@@ -54,7 +54,8 @@ namespace AdSecGH.Parameters {
     public override string TypeName => "Profile";
     public List<Polyline> VoidEdges { get; private set; }
     public Polyline Polyline { get; private set; }
-    private Plane _plane;
+    public Plane LocalPlane { get; private set; }
+
     private Line previewXaxis;
     private Line previewYaxis;
     private Line previewZaxis;
@@ -66,8 +67,8 @@ namespace AdSecGH.Parameters {
       }
 
       Profile = profileDesign.Profile;
-      _plane = profileDesign.LocalPlane.ToGh();
-      var edges = PolylinesFromAdSecProfile(Profile, _plane);
+      LocalPlane = profileDesign.LocalPlane.ToGh();
+      var edges = PolylinesFromAdSecProfile(Profile, LocalPlane);
       Polyline = edges.Item1;
       VoidEdges = edges.Item2;
       UpdatePreview();
@@ -84,10 +85,10 @@ namespace AdSecGH.Parameters {
         LocalPlane = local.ToOasys(),
       };
       Profile = profile;
-      var edges = PolylinesFromAdSecProfile(profile, local);
+      LocalPlane = local;
+      var edges = PolylinesFromAdSecProfile(profile, LocalPlane);
       Polyline = edges.Item1;
       VoidEdges = edges.Item2;
-      _plane = local;
       UpdatePreview();
     }
 
@@ -103,7 +104,7 @@ namespace AdSecGH.Parameters {
       perimprofile.SolidPolygon = PolygonFromRhinoPolyline(polygon, lengthUnit, plane);
       Profile = perimprofile;
       VoidEdges = null;
-      _plane = plane;
+      LocalPlane = plane;
       Profile = perimprofile;
 
       Value = new ProfileDesign() {
@@ -259,7 +260,7 @@ namespace AdSecGH.Parameters {
         var tSection = (ITSectionProfile)Profile;
         duplicated = ITSectionProfile.Create(tSection.Depth, tSection.Flange, tSection.Web);
       } else {
-        duplicated = IPerimeterProfile.Create(Profile);
+        duplicated = ClonePerimeterProfile();
       }
 
       duplicated.IsReflectedY = Profile.IsReflectedY;
@@ -269,8 +270,22 @@ namespace AdSecGH.Parameters {
       return duplicated;
     }
 
+    private IProfile ClonePerimeterProfile() {
+      IProfile duplicated;
+      var perimeterProfile = (IPerimeterProfile)Profile;
+      var duplicatedPolygon = IPolygon.Create();
+      foreach (var point in perimeterProfile.SolidPolygon.Points) {
+        var duplicatedPoint = IPoint.Create(point.Y, point.Z);
+        duplicatedPolygon.Points.Add(duplicatedPoint);
+      }
+
+      duplicated = IPerimeterProfile.Create();
+      ((IPerimeterProfile)duplicated).SolidPolygon = duplicatedPolygon;
+      return duplicated;
+    }
+
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecProfileGoo(Clone(), new Plane(_plane));
+      return new AdSecProfileGoo(Clone(), new Plane(LocalPlane));
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
@@ -372,11 +387,11 @@ namespace AdSecGH.Parameters {
     }
 
     private void UpdatePreview() {
-      if (!PlaneHelper.IsNotParallelToWorldXYZ(_plane)) {
+      if (!PlaneHelper.IsNotParallelToWorldXYZ(LocalPlane)) {
         return;
       }
 
-      (previewXaxis, previewYaxis, previewZaxis) = AxisHelper.GetLocalAxisLines(Profile, _plane);
+      (previewXaxis, previewYaxis, previewZaxis) = AxisHelper.GetLocalAxisLines(Profile, LocalPlane);
     }
   }
 }

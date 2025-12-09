@@ -41,7 +41,6 @@ namespace AdSecGH.Parameters {
       _codeName = sectionDesign.DesignCode.DesignCodeName;
       _materialName = sectionDesign.MaterialName;
       LocalPlane = sectionDesign.LocalPlane.ToGh();
-
       CreatePreview();
     }
 
@@ -142,12 +141,13 @@ namespace AdSecGH.Parameters {
       profileVoidEdges = edges.Item2;
     }
 
-    private static Vector3d ApplyOffsetToVector(IPoint offsetPoint, Vector3d currentOffset) {
+    private static Vector3d ApplyOffsetToVector(IPoint offsetPoint, Vector3d currentOffset, Plane localPlane) {
       if (offsetPoint != null) {
         currentOffset = new Vector3d(0, offsetPoint.Y.As(DefaultUnits.LengthUnitGeometry),
           offsetPoint.Z.As(DefaultUnits.LengthUnitGeometry));
       }
-
+      var maptToLocal = Transform.PlaneToPlane(Plane.WorldYZ, localPlane);
+      currentOffset.Transform(maptToLocal);
       return currentOffset;
     }
 
@@ -173,13 +173,33 @@ namespace AdSecGH.Parameters {
 
     private void CreatePreview(IPoint pointOffset = null) {
       var flat = SetFlattenSection();
-      var currentOffset = ApplyOffsetToVector(pointOffset, Vector3d.Zero);
+      var currentOffset = ApplyOffsetToVector(pointOffset, Vector3d.Zero, LocalPlane);
+      var centroidOffset = CalculateCentroidOffset(flat);
+      currentOffset += centroidOffset;
 
       ProfileData = GenerateProfilePreview(flat, currentOffset);
       SubProfilesData = GenerateSubComponentsPreview(flat, currentOffset);
       ReinforcementData = GenerateReinforcementPreviews(flat, currentOffset);
 
       GenerateLocalPlanePreviewAxes();
+    }
+
+    private Vector3d CalculateCentroidOffset(ISection flat) {
+      var maptToLocal = Transform.PlaneToPlane(Plane.WorldYZ, LocalPlane);
+
+      var point = Section.Profile.ElasticCentroid();
+      var point3dOriginalCG = new Point3d(0, point.Y.As(DefaultUnits.LengthUnitGeometry),
+          point.Z.As(DefaultUnits.LengthUnitGeometry));
+      point3dOriginalCG.Transform(maptToLocal);
+
+      point = flat.Profile.ElasticCentroid();
+      var point3dFlattenCG = new Point3d(0, point.Y.As(DefaultUnits.LengthUnitGeometry),
+          point.Z.As(DefaultUnits.LengthUnitGeometry));
+      point3dFlattenCG.Transform(maptToLocal);
+
+      return new Vector3d(
+         point3dOriginalCG.X - point3dFlattenCG.X,
+          point3dOriginalCG.Y - point3dFlattenCG.Y, point3dOriginalCG.Z - point3dFlattenCG.Z);
     }
 
     private ProfilePreviewData GenerateProfilePreview(ISection flat, Vector3d currentOffset) {
@@ -265,7 +285,7 @@ namespace AdSecGH.Parameters {
               break;
             }
           case IPerimeterLinkGroup linkGroup: {
-              CreateCurvesFromLinkGroup(linkGroup, ref linkEdges, LocalPlane);
+              CreateCurvesFromLinkGroup(linkGroup, ref linkEdges, LocalPlane, currentOffset);
               break;
             }
         }
@@ -299,8 +319,8 @@ namespace AdSecGH.Parameters {
       foreach (var position in bars.Positions) {
         var center = new Point3d(0, position.Y.As(DefaultUnits.LengthUnitGeometry),
           position.Z.As(DefaultUnits.LengthUnitGeometry));
-        center.Transform(Transform.Translation(offset));
         center.Transform(mapToLocal);
+        center.Transform(Transform.Translation(offset));
         var localCenter = new Plane(center, local.Normal);
         var edgeCurve = new Circle(localCenter, bars.BarBundle.Diameter.As(DefaultUnits.LengthUnitGeometry) / 2);
         edgeCurves.Add(edgeCurve);
@@ -314,11 +334,12 @@ namespace AdSecGH.Parameters {
     }
 
     private static void CreateCurvesFromLinkGroup(
-      IPerimeterLinkGroup linkGroup, ref List<Curve> linkEdges, Plane local) {
+      IPerimeterLinkGroup linkGroup, ref List<Curve> linkEdges, Plane local, Vector3d offset) {
       var mapToLocal = Transform.PlaneToPlane(Plane.WorldYZ, local);
       var startPoint = new Point3d(0, linkGroup.LinkPath.StartPoint.Y.As(DefaultUnits.LengthUnitGeometry),
         linkGroup.LinkPath.StartPoint.Z.As(DefaultUnits.LengthUnitGeometry));
       startPoint.Transform(mapToLocal);
+      startPoint.Transform(Transform.Translation(offset));
 
       var centreLine = new PolyCurve();
       foreach (var path in linkGroup.LinkPath.Segments) {
@@ -327,6 +348,7 @@ namespace AdSecGH.Parameters {
           var nextPoint = new Point3d(0, line.NextPoint.Y.As(DefaultUnits.LengthUnitGeometry),
             line.NextPoint.Z.As(DefaultUnits.LengthUnitGeometry));
           nextPoint.Transform(mapToLocal);
+          nextPoint.Transform(Transform.Translation(offset));
 
           var rhinoLine = new Line(startPoint, nextPoint);
           startPoint = nextPoint;
@@ -336,7 +358,7 @@ namespace AdSecGH.Parameters {
           var centrePoint = new Point3d(0, arc.Centre.Y.As(DefaultUnits.LengthUnitGeometry),
             arc.Centre.Z.As(DefaultUnits.LengthUnitGeometry));
           centrePoint.Transform(mapToLocal);
-
+          centrePoint.Transform(Transform.Translation(offset));
           double radius = startPoint.DistanceTo(centrePoint);
           var xAxis = new Vector3d(startPoint - centrePoint);
           var yAxis = Vector3d.CrossProduct(local.ZAxis, xAxis);
