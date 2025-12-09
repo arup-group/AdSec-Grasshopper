@@ -273,15 +273,26 @@ namespace AdSecGH.Parameters {
     private IProfile ClonePerimeterProfile() {
       IProfile duplicated;
       var perimeterProfile = (IPerimeterProfile)Profile;
-      var duplicatedPolygon = IPolygon.Create();
-      foreach (var point in perimeterProfile.SolidPolygon.Points) {
-        var duplicatedPoint = IPoint.Create(point.Y, point.Z);
-        duplicatedPolygon.Points.Add(duplicatedPoint);
+      var duplicatedPolygon = CloneSolidPolygon(perimeterProfile.SolidPolygon);
+
+      var duplicatedVoidPolygons = Oasys.Collections.IList<IPolygon>.Create();
+      foreach (var voidPolygon in perimeterProfile.VoidPolygons) {
+        duplicatedVoidPolygons.Add(CloneSolidPolygon(voidPolygon));
       }
 
       duplicated = IPerimeterProfile.Create();
       ((IPerimeterProfile)duplicated).SolidPolygon = duplicatedPolygon;
+      ((IPerimeterProfile)duplicated).VoidPolygons = duplicatedVoidPolygons;
       return duplicated;
+    }
+
+    private static IPolygon CloneSolidPolygon(IPolygon polygon) {
+      var duplicatedPolygon = IPolygon.Create();
+      foreach (var point in polygon.Points) {
+        var duplicatedPoint = IPoint.Create(point.Y, point.Z);
+        duplicatedPolygon.Points.Add(duplicatedPoint);
+      }
+      return duplicatedPolygon;
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
