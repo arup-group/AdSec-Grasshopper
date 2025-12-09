@@ -19,6 +19,8 @@ using Oasys.Profiles;
 using OasysGH;
 using OasysGH.Units;
 
+using OasysUnits;
+
 using Rhino.Geometry;
 
 namespace AdSecGH.Components {
@@ -90,9 +92,7 @@ namespace AdSecGH.Components {
     protected override void SolveInternal(IGH_DataAccess DA) {
       ClearRuntimeMessages();
       Params.Input.ForEach(input => input.ClearRuntimeMessages());
-
       var localPlan = GetLocalPlane(DA);
-
       if (_mode == FoldMode.Catalogue) {
         var profiles = SolveInstanceForCatalogueProfile(DA);
         var adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
@@ -110,7 +110,9 @@ namespace AdSecGH.Components {
               AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid curve orientation detected. Perimeter profiles expect anti-clockwise curves. Please use the Flip Curve component to correct the orientation.");
               return;
             }
-            var baseCurveOrigin = basePolyLine.CenterPoint();
+
+            var baseCurveOrigin = GetBaseCurveOrigin(basePolyLine);
+
             outerPolyLine = ShiftPolyLineGivenByAdSecApiRelativeToTheOriginOfBasePolyLine(baseCurveOrigin, outerPolyLine);
             for (int i = 0; i < polylines.Item2.Count; i++) {
               var voidPolyLine = polylines.Item2[i];
@@ -122,6 +124,15 @@ namespace AdSecGH.Components {
         }
         DA.SetData(0, new AdSecProfileGoo(adSecProfile, localPlan));
       }
+    }
+
+    private Point3d GetBaseCurveOrigin(Polyline basePolyLine) {
+      var baseCurveOrigin = basePolyLine.CenterPoint();
+      baseCurveOrigin = new Point3d(
+        Length.From(baseCurveOrigin.X, _lengthUnit).As(DefaultUnits.LengthUnitGeometry),
+        Length.From(baseCurveOrigin.Y, _lengthUnit).As(DefaultUnits.LengthUnitGeometry),
+        Length.From(baseCurveOrigin.Z, _lengthUnit).As(DefaultUnits.LengthUnitGeometry));
+      return baseCurveOrigin;
     }
 
     public static bool IsClockwise(Polyline polyline) {
