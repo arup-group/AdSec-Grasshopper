@@ -168,7 +168,7 @@ namespace AdSecGH.Components {
       return solid;
     }
 
-    private bool TryGetCurveCentreFromInput(IGH_DataAccess DA, out Polyline basePolyLine) {
+    private static bool TryGetCurveCentreFromInput(IGH_DataAccess DA, out Polyline basePolyLine) {
       Brep brep = null;
       var gh_typ = new GH_ObjectWrapper();
       basePolyLine = new Polyline();
