@@ -1,4 +1,6 @@
 name: Push AdSecGH NuGet
+permissions:
+  contents: read
 
 # On run when release is published
 on:

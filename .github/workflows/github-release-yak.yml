@@ -1,4 +1,6 @@
 name: Push AdSecGH yak package
+permissions:
+  contents: read
 
 # On run when release is published
 on:
