@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -9,17 +10,23 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
+using GH_IO.Types;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
 using Oasys.GH.Helpers;
 using Oasys.Profiles;
+using Oasys.Taxonomy.Geometry;
+using Oasys.Taxonomy.Profiles;
 
 using OasysGH;
 using OasysGH.Units;
+using OasysGH.Units.Helpers;
 
 using OasysUnits;
+using OasysUnits.Units;
 
 using Rhino.Geometry;
 
@@ -105,34 +112,72 @@ namespace AdSecGH.Components {
           //So, we need to shift it back to the original base curve origin
           var polylines = AdSecProfileGoo.PolylinesFromAdSecProfile(AdSecProfiles.CreateProfile(profile), localPlan);
           var outerPolyLine = polylines.Item1;
-          if (TryGetCurveCentreFromInput(DA, out Polyline basePolyLine)) {
-            if (IsClockwise(basePolyLine)) {
-              AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid curve orientation detected. Perimeter profiles expect anti-clockwise curves. Please use the Flip Curve component to correct the orientation.");
-              return;
+
+          var gh_typ = new GH_ObjectWrapper();
+          if (DA.GetData(0, ref gh_typ)) {
+            Brep brep = null;
+            if (GH_Convert.ToBrep(gh_typ.Value, ref brep, GH_Conversion.Both)) {
+              // get edge curves from brep
+              Curve[] edgeSegments = brep.DuplicateEdgeCurves();
+              Curve[] edges = Curve.JoinCurves(edgeSegments);
+
+              // find the best fit plane
+              List<Point3d> ctrlPts;
+              if (edges[0].TryGetPolyline(out Polyline tempCrv)) {
+                ctrlPts = tempCrv.ToList();
+              } else {
+                throw new Exception("Data conversion failed to create a polyline from input geometry. Please input a polyline approximation of your Brep/outline.");
+              }
+
+              if (IsClockwise(tempCrv)) {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid curve orientation detected. Perimeter profiles expect anti-clockwise curves. Please use the Flip Curve component to correct the orientation.");
+                return;
+              }
+
+              Plane.FitPlaneToPoints(ctrlPts, out Plane plane);
+
+
+              var solidpts = new List<Point3d>();
+              foreach (Point3d pt3d in ctrlPts) {
+                solidpts.Add(pt3d);
+              }
+              var solid = new Polyline(solidpts);
+
+              Oasys.Taxonomy.Geometry.IPolygon perimeter = PolygonFromRhinoPolyline(solid, _lengthUnit, plane);
+              IList<Oasys.Taxonomy.Geometry.IPolygon> voidPolygons = new List<Oasys.Taxonomy.Geometry.IPolygon>();
+              if (edges.Length > 1) {
+                for (int i = 1; i < edges.Length; i++) {
+                  ctrlPts.Clear();
+                  var voidpts = new List<Point3d>();
+                  if (!edges[i].IsPlanar()) {
+                    for (int j = 0; j < edges.Length; j++) {
+                      edges[j] = Curve.ProjectToPlane(edges[j], plane);
+                    }
+                  }
+
+                  if (edges[i].TryGetPolyline(out tempCrv)) {
+                    ctrlPts = tempCrv.ToList();
+
+                    foreach (Point3d pt3d in ctrlPts) {
+                      //pt3d.Transform(xform);
+                      voidpts.Add(pt3d);
+                    }
+                  } else {
+                    throw new Exception("Cannot convert internal edge to polyline.");
+                  }
+
+                  var voidCrv = new Polyline(voidpts);
+                  voidPolygons.Add(PolygonFromRhinoPolyline(voidCrv, _lengthUnit, plane));
+                }
+              }
+              profile = new PerimeterProfile(perimeter, voidPolygons);
+              adSecProfile = AdSecProfiles.CreateProfile(profile);
             }
 
-            var baseCurveOrigin = GetBaseCurveOrigin(basePolyLine);
-
-            outerPolyLine = ShiftPolyLineGivenByAdSecApiRelativeToTheOriginOfBasePolyLine(baseCurveOrigin, outerPolyLine);
-            for (int i = 0; i < polylines.Item2.Count; i++) {
-              var voidPolyLine = polylines.Item2[i];
-              voidPolyLine = ShiftPolyLineGivenByAdSecApiRelativeToTheOriginOfBasePolyLine(baseCurveOrigin, voidPolyLine);
-              polylines.Item2[i] = voidPolyLine;
-            }
-            adSecProfile = BuildPerimeterProfile(polylines, outerPolyLine);
           }
         }
         DA.SetData(0, new AdSecProfileGoo(adSecProfile, localPlan));
       }
-    }
-
-    private Point3d GetBaseCurveOrigin(Polyline basePolyLine) {
-      var baseCurveOrigin = basePolyLine.CenterPoint();
-      baseCurveOrigin = new Point3d(
-        Length.From(baseCurveOrigin.X, _lengthUnit).As(DefaultUnits.LengthUnitGeometry),
-        Length.From(baseCurveOrigin.Y, _lengthUnit).As(DefaultUnits.LengthUnitGeometry),
-        Length.From(baseCurveOrigin.Z, _lengthUnit).As(DefaultUnits.LengthUnitGeometry));
-      return baseCurveOrigin;
     }
 
     public static bool IsClockwise(Polyline polyline) {
@@ -156,42 +201,36 @@ namespace AdSecGH.Components {
       return localPlane;
     }
 
-    private static IProfile BuildPerimeterProfile(Tuple<Polyline, System.Collections.Generic.List<Polyline>> polylines, Polyline outerPolyLine) {
-      var adSecProfile = IPerimeterProfile.Create();
-      Plane.FitPlaneToPoints(outerPolyLine.ToList(), out var plane);
-      adSecProfile.SolidPolygon = AdSecProfileGoo.PolygonFromRhinoPolyline(outerPolyLine, DefaultUnits.LengthUnitGeometry, plane);
-
-      for (int i = 0; i < polylines.Item2.Count; i++) {
-        var voidPolyLine = polylines.Item2[i];
-        var voidPolygon = AdSecProfileGoo.PolygonFromRhinoPolyline(voidPolyLine, DefaultUnits.LengthUnitGeometry, plane);
-        adSecProfile.VoidPolygons.Add(voidPolygon);
+    public static List<IPoint2d> PointsFromRhinoPolyline(Polyline polyline, LengthUnit lengthUnit, Plane local) {
+      if (polyline.First() != polyline.Last()) {
+        polyline.Add(polyline.First());
       }
-      return adSecProfile;
+
+      var points = new List<IPoint2d>();
+
+      // map points to XY plane so we can create local points from x and y coordinates
+      var xform = Transform.PlaneToPlane(local, Plane.WorldXY);
+
+      for (int i = 0; i < polyline.Count - 1; i++)
+      // -1 on count because the profile is always closed and thus doesn´t
+      // need the last point being equal to first as a rhino polyline needs
+      {
+        Point3d point3d = polyline[i];
+        point3d.Transform(xform);
+        IPoint2d point2d = new Oasys.Taxonomy.Geometry.Point2d(
+          new Length(point3d.X, lengthUnit),
+          new Length(point3d.Y, lengthUnit));
+        points.Add(point2d);
+      }
+
+      return points;
     }
 
-    private static Polyline ShiftPolyLineGivenByAdSecApiRelativeToTheOriginOfBasePolyLine(Point3d baseCurveOrigin, Polyline solid) {
-      if (!solid.CenterPoint().Equals(baseCurveOrigin)) {
-        Vector3d offset = baseCurveOrigin - solid.CenterPoint();
-        for (int i = 0; i < solid.Count; i++) {
-          solid[i] = solid[i] + offset;
-        }
-      }
-      return solid;
-    }
-
-    private static bool TryGetCurveCentreFromInput(IGH_DataAccess DA, out Polyline basePolyLine) {
-      Brep brep = null;
-      var gh_typ = new GH_ObjectWrapper();
-      basePolyLine = new Polyline();
-      if (DA.GetData(0, ref gh_typ) &&
-             GH_Convert.ToBrep(gh_typ.Value, ref brep, GH_Conversion.Both)) {
-        var edgeSegments = brep.DuplicateEdgeCurves();
-        var edges = Curve.JoinCurves(edgeSegments);
-        if (edges.Length > 0 && edges[0].TryGetPolyline(out basePolyLine)) {
-          return true;
-        }
-      }
-      return false;
+    public static Oasys.Taxonomy.Geometry.IPolygon PolygonFromRhinoPolyline(Polyline polyline, LengthUnit lengthUnit, Plane local) {
+      var polygon = new Polygon() {
+        Points = PointsFromRhinoPolyline(polyline, lengthUnit, local)
+      };
+      return polygon;
     }
   }
 }
