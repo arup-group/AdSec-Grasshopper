@@ -126,6 +126,12 @@ namespace AdSecGH.Components {
 
               RhinoHelper.TryFitPlaneToPolyline(tempCrv, out Plane plane);
 
+              plane = GetCorrectedPlane(plane);
+
+              if (localPlan == Plane.Unset) {
+                localPlan = plane;
+              }
+
               Oasys.Taxonomy.Geometry.IPolygon perimeter = PolygonFromRhinoPolyline(tempCrv, _lengthUnit, plane);
               IList<Oasys.Taxonomy.Geometry.IPolygon> voidPolygons = new List<Oasys.Taxonomy.Geometry.IPolygon>();
 
@@ -158,11 +164,9 @@ namespace AdSecGH.Components {
     }
 
     private Plane GetLocalPlane(IGH_DataAccess DA) {
-      var localPlane = Plane.WorldYZ;
-      var tempPlane = Plane.Unset;
-
-      if (DA.GetData(Params.Input.Count - 1, ref tempPlane)) {
-        localPlane = tempPlane;
+      var localPlane = Plane.Unset;
+      if (DA.GetData(Params.Input.Count - 1, ref localPlane)) {
+        return localPlane;
       }
       return localPlane;
     }
@@ -179,6 +183,24 @@ namespace AdSecGH.Components {
         polyline.Add(polyline.First());
       }
 
+      var points = new List<IPoint2d>();
+
+      var xform = Rhino.Geometry.Transform.PlaneToPlane(LocalPlane, Plane.WorldXY);
+
+      for (int i = 0; i < polyline.Count - 1; i++) {
+        Point3d point3d = polyline[i];
+        point3d.Transform(xform);
+
+        IPoint2d point2d = new Oasys.Taxonomy.Geometry.Point2d(
+            new Length(point3d.X, lengthUnit),
+            new Length(point3d.Y, lengthUnit));
+        points.Add(point2d);
+      }
+
+      return points;
+    }
+
+    private static Plane GetCorrectedPlane(Plane LocalPlane) {
       Vector3d xAxis = LocalPlane.XAxis;
       Vector3d yAxis = LocalPlane.YAxis;
       Vector3d zAxis = Vector3d.CrossProduct(xAxis, yAxis);
@@ -198,22 +220,7 @@ namespace AdSecGH.Components {
       }
 
       var correctedPlane = new Plane(LocalPlane.Origin, xAxis, yAxis);
-
-      var points = new List<IPoint2d>();
-
-      var xform = Rhino.Geometry.Transform.PlaneToPlane(correctedPlane, Plane.WorldXY);
-
-      for (int i = 0; i < polyline.Count - 1; i++) {
-        Point3d point3d = polyline[i];
-        point3d.Transform(xform);
-
-        IPoint2d point2d = new Oasys.Taxonomy.Geometry.Point2d(
-            new Length(point3d.X, lengthUnit),
-            new Length(point3d.Y, lengthUnit));
-        points.Add(point2d);
-      }
-
-      return points;
+      return correctedPlane;
     }
   }
 }
