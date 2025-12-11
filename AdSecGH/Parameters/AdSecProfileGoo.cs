@@ -99,8 +99,7 @@ namespace AdSecGH.Parameters {
       }
 
       var perimprofile = IPerimeterProfile.Create();
-      Plane.FitPlaneToPoints(polygon.ToList(), out var plane);
-
+      RhinoHelper.TryFitPlaneToPolyline(polygon, out var plane);
       perimprofile.SolidPolygon = PolygonFromRhinoPolyline(polygon, lengthUnit, plane);
       Profile = perimprofile;
       VoidEdges = null;
