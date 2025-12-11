@@ -189,7 +189,7 @@ namespace AdSecGH.Helpers {
       if (temporaryPoints.Count == 1) {
         iPoints.Add(AdSecPointGoo.CreateFromPoint3d(temporaryPoints[0], Plane.WorldYZ));
       } else if (temporaryPoints.Count > 1) {
-        Plane.FitPlaneToPoints(temporaryPoints, out var plane);
+        RhinoHelper.TryFitPlaneToPolyline(new Polyline(temporaryPoints), out var plane);
         foreach (var point in temporaryPoints) {
           iPoints.Add(AdSecPointGoo.CreateFromPoint3d(point, plane));
         }

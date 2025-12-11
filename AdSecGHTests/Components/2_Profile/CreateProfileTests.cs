@@ -108,8 +108,7 @@ namespace AdSecGHTests.Components {
     [InlineData(10, "STD GI(m) 0.11 0.11 0.11 0.11 0.11 0.11")] //I Beam Asymmetrical
     [InlineData(11, "STD CB(m) 0.11 0.11 0.11 0.11 0.11 0.121")] //I Beam Cellular
     [InlineData(12, "STD I(m) 0.11 0.11 0.11 0.11")] //I Beam Symmetrical
-    [InlineData(13,
-      "GEO P(m) M(0.021213203435596|0.015) L(-0.021213203435596|-0.015) L(-0.0070710678118655|-0.005) ")] //Perimeter
+    [InlineData(13, "GEO P(m) M(0|0) L(0.042426406871193|-0.03) L(0.028284271247462|-0.02) ")] //Perimeter
     [InlineData(14, "STD RHS(m) 0.11 0.11 0.11 0.11")] //Rectangle Hollow
     [InlineData(15, "STD R(m) 0.11 0.11")] //Rectangle
     [InlineData(16, "STD RE(m) 0.11 0.11 0.11 0.11 2")] //Recto Ellipse

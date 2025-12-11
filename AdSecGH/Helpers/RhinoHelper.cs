@@ -1,8 +1,12 @@
 ﻿using System.Drawing;
+using System.Linq;
 
 using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
+
+using Rhino;
+using Rhino.Geometry;
 
 namespace AdSecGH.Helpers {
   public interface IGrasshopperDocumentContext {
@@ -31,5 +35,15 @@ namespace AdSecGH.Helpers {
 
       return panel;
     }
+
+    public static bool TryFitPlaneToPolyline(Polyline polyline, out Plane plane) {
+      plane = Plane.Unset;
+      var points = polyline.ToList();
+      if (points.First().DistanceTo(points.Last()) < 1e-6) {
+        points.RemoveAt(points.Count - 1);
+      }
+      return Plane.FitPlaneToPoints(points, out plane) == PlaneFitResult.Success;
+    }
+
   }
 }

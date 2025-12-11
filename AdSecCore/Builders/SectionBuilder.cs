@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-
-using AdSecGH.Parameters;
+﻿using System.Collections.Generic;
 
 using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
@@ -13,7 +8,6 @@ using Oasys.AdSec.StandardMaterials;
 using Oasys.Profiles;
 
 using OasysUnits;
-using OasysUnits.Units;
 
 namespace AdSecCore.Builders {
 
@@ -166,86 +160,6 @@ namespace AdSecCore.Builders {
     public SectionBuilder WithProfile(IProfile profile) {
       _profile = profile;
       return this;
-    }
-
-    public static List<AdSecRebarGroup> CalibrateReinforcementGroupsForSection(
-      List<AdSecRebarGroup> reinforcements, IDesignCode designCode, ISection sectionSection) {
-      var adSec = IAdSec.Create(designCode);
-
-      string description = sectionSection.Profile.Description();
-      MaxYZ(description, out double maxY1, out double maxZ1);
-
-      var flattened = adSec.Flatten(sectionSection);
-      string description2 = flattened.Profile.Description();
-      MaxYZ(description2, out double maxY2, out double maxZ2);
-
-      double deltaY = maxY2 - maxY1;
-      double deltaZ = maxZ2 - maxZ1;
-
-      return UpdateRebarGroups(reinforcements, deltaY, deltaZ);
-    }
-
-    private static List<AdSecRebarGroup> UpdateRebarGroups(
-      List<AdSecRebarGroup> reinforcements, double deltaY, double deltaZ) {
-      var updatedReinforcement = new List<AdSecRebarGroup>();
-      foreach (var group in reinforcements) {
-        updatedReinforcement.Add(RepositionSingleRebars(deltaY, deltaZ, group));
-      }
-
-      return updatedReinforcement;
-    }
-
-    private static AdSecRebarGroup RepositionSingleRebars(double deltaY, double deltaZ, AdSecRebarGroup group) {
-      var adSecRebarGroup = new AdSecRebarGroup(group);
-
-      if (!(group.Group is ISingleBars bars)) {
-        return adSecRebarGroup;
-      }
-
-      var bundle = IBarBundle.Create(bars.BarBundle.Material, bars.BarBundle.Diameter, bars.BarBundle.CountPerBundle);
-      var singleBars = ISingleBars.Create(bundle);
-
-      foreach (var point in bars.Positions) {
-        var y = new Length(point.Y.As(LengthUnit.Meter) - deltaY, LengthUnit.Meter);
-        var z = new Length(point.Z.As(LengthUnit.Meter) - deltaZ, LengthUnit.Meter);
-        singleBars.Positions.Add(IPoint.Create(y, z));
-      }
-
-      adSecRebarGroup.Group = singleBars;
-      return adSecRebarGroup;
-    }
-
-    public static List<(double y, double z)> ParseCoordinates(string input) {
-      var coordinates = new List<(double y, double z)>();
-      // Pattern to match numbers before and after |
-      var pattern = @"\(([-\d.]+)\|([-\d.]+)\)";
-      var regex = new Regex(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(100));
-      var matches = regex.Matches(input);
-      foreach (Match match in matches) {
-        if (double.TryParse(match.Groups[1].Value, out double y) &&
-            double.TryParse(match.Groups[2].Value, out double z)) {
-          coordinates.Add((y, z));
-        }
-      }
-      return coordinates;
-    }
-
-    private static void MaxYZ(string description, out double maxY, out double maxZ) {
-      var coordinates = ParseCoordinates(description);
-      maxY = double.MinValue;
-      maxZ = double.MinValue;
-      foreach (var coordinate in coordinates) {
-        double y = coordinate.y;
-        double z = coordinate.z;
-
-        if (y > maxY) {
-          maxY = y;
-        }
-
-        if (z > maxZ) {
-          maxZ = z;
-        }
-      }
     }
 
     internal enum SectionType {
