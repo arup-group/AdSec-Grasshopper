@@ -52,9 +52,12 @@ namespace AdSecCoreTests.Builder {
        .WithReinforcementGroup(lineBars).Build();
 
       var rebar = SectionBuilder.CalibrateReinforcementGroupsForSection(rebarOriginal, designCode, section);
-
       var group = rebar.First().Group as ILineGroup;
-      Assert.Equal(lineBars, group);
+      Assert.NotNull(group);
+      Assert.Equal(lineBars.FirstBarPosition.Y, group.FirstBarPosition.Y);
+      Assert.Equal(lineBars.FirstBarPosition.Z, group.FirstBarPosition.Z);
+      Assert.Equal(lineBars.LastBarPosition.Y, group.LastBarPosition.Y);
+      Assert.Equal(lineBars.LastBarPosition.Z, group.LastBarPosition.Z);
     }
 
     [Theory]
