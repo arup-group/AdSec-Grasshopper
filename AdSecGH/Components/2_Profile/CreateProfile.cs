@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -10,26 +10,21 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
-using GH_IO.Types;
-
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 
 using Oasys.GH.Helpers;
-using Oasys.Profiles;
 using Oasys.Taxonomy.Geometry;
 using Oasys.Taxonomy.Profiles;
 
 using OasysGH;
-using OasysGH.Units;
-using OasysGH.Units.Helpers;
 
 using OasysUnits;
 using OasysUnits.Units;
 
-using Rhino;
 using Rhino.Geometry;
+
 
 namespace AdSecGH.Components {
   /// <summary>
@@ -100,66 +95,137 @@ namespace AdSecGH.Components {
     protected override void SolveInternal(IGH_DataAccess DA) {
       ClearRuntimeMessages();
       Params.Input.ForEach(input => input.ClearRuntimeMessages());
-      var localPlan = GetLocalPlane(DA);
+
+      var local = GetLocalPlane(DA);
+      Plane globalPlane = Plane.WorldYZ;
       if (_mode == FoldMode.Catalogue) {
         var profiles = SolveInstanceForCatalogueProfile(DA);
         var adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, localPlan));
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, globalPlane, local));
       } else if (_mode == FoldMode.Other) {
         var profile = SolveInstanceForStandardProfile(DA);
-        var adSecProfile = AdSecProfiles.CreateProfile(profile);
         if (profile.ProfileType == Oasys.Taxonomy.Profiles.ProfileType.Perimeter) {
-          var polylines = AdSecProfileGoo.PolylinesFromAdSecProfile(AdSecProfiles.CreateProfile(profile), localPlan);
-          var outerPolyLine = polylines.Item1;
-
           var gh_typ = new GH_ObjectWrapper();
           if (DA.GetData(0, ref gh_typ)) {
             Brep brep = null;
+            Curve crv = null;
             if (GH_Convert.ToBrep(gh_typ.Value, ref brep, GH_Conversion.Both)) {
-              // get edge curves from brep
-              Curve[] edgeSegments = brep.DuplicateEdgeCurves();
-              Curve[] edges = Curve.JoinCurves(edgeSegments);
+              BrepPolylineResult brepInfo = PolyLineFromBrep(brep);
+              globalPlane = brepInfo.Plane;
+              IPolygon perimeter = PolygonFromRhinoPolyline(brepInfo.Boundary, _lengthUnit, globalPlane);
 
-              if (!edges[0].TryGetPolyline(out Polyline tempCrv)) {
-                throw new Exception("Data conversion failed to create a polyline from input geometry. Please input a polyline approximation of your Brep/outline.");
+              IList<IPolygon> voidPolygons = new List<IPolygon>();
+              foreach (Polyline voids in brepInfo.Voids) {
+                voidPolygons.Add(PolygonFromRhinoPolyline(voids, _lengthUnit, globalPlane));
               }
 
-              RhinoHelper.TryFitPlaneToPolyline(tempCrv, out Plane plane);
-
-              plane = GetCorrectedPlane(plane);
-
-              if (localPlan == Plane.Unset) {
-                localPlan = plane;
-              }
-
-              Oasys.Taxonomy.Geometry.IPolygon perimeter = PolygonFromRhinoPolyline(tempCrv, _lengthUnit, plane);
-              IList<Oasys.Taxonomy.Geometry.IPolygon> voidPolygons = new List<Oasys.Taxonomy.Geometry.IPolygon>();
-
-              List<Point3d> ctrlPts = new List<Point3d>();
-              if (edges.Length > 1) {
-                for (int i = 1; i < edges.Length; i++) {
-                  ctrlPts.Clear();
-                  var voidpts = new List<Point3d>();
-                  if (!edges[i].IsPlanar()) {
-                    for (int j = 0; j < edges.Length; j++) {
-                      edges[j] = Curve.ProjectToPlane(edges[j], plane);
-                    }
-                  }
-
-                  if (edges[i].TryGetPolyline(out tempCrv)) {
-                    voidPolygons.Add(PolygonFromRhinoPolyline(tempCrv, _lengthUnit, plane));
-                  } else {
-                    throw new Exception("Cannot convert internal edge to polyline.");
-                  }
-                }
-              }
               profile = new PerimeterProfile(perimeter, voidPolygons);
-              adSecProfile = AdSecProfiles.CreateProfile(profile);
+
+            } else if (GH_Convert.ToCurve(gh_typ.Value, ref crv, GH_Conversion.Both)) {
+              if (crv.TryGetPolyline(out Polyline solid)) {
+                // get local plane
+                Plane.FitPlaneToPoints(solid.ToList(), out globalPlane);
+
+                IPolygon perimeter = PolygonFromRhinoPolyline(solid, _lengthUnit, globalPlane);
+                IList<IPolygon> voidPolygons = new List<IPolygon>();
+
+                profile = new PerimeterProfile(perimeter, voidPolygons);
+
+              }
             }
 
           }
         }
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, localPlan));
+        var adSecProfile = AdSecProfiles.CreateProfile(profile);
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, globalPlane, local));
+      }
+    }
+
+    public static List<IPoint2d> PointsFromRhinoPolyline(Polyline polyline, LengthUnit lengthUnit, Plane local) {
+      if (polyline.First() != polyline.Last()) {
+        polyline.Add(polyline.First());
+      }
+
+      var points = new List<IPoint2d>();
+
+      // map points to XY plane so we can create local points from x and y coordinates
+      var xform = Transform.PlaneToPlane(local, Plane.WorldXY);
+
+      for (int i = 0; i < polyline.Count - 1; i++)
+      // -1 on count because the profile is always closed and thus doesn�t
+      // need the last point being equal to first as a rhino polyline needs
+      {
+        Point3d point3d = polyline[i];
+        point3d.Transform(xform);
+        IPoint2d point2d = new Oasys.Taxonomy.Geometry.Point2d(
+          new Length(point3d.X, lengthUnit),
+          new Length(point3d.Y, lengthUnit));
+        points.Add(point2d);
+      }
+
+      return points;
+    }
+
+    public static IPolygon PolygonFromRhinoPolyline(Polyline polyline, LengthUnit lengthUnit, Plane local) {
+      var polygon = new Polygon() {
+        Points = PointsFromRhinoPolyline(polyline, lengthUnit, local)
+      };
+      return polygon;
+    }
+
+
+    public static BrepPolylineResult PolyLineFromBrep(Brep brep) {
+
+      BrepFace mainFace = brep.Faces.OrderByDescending(face => {
+        BoundingBox bbox = face.GetBoundingBox(true);
+        return bbox.Area;
+      }).FirstOrDefault();
+
+      if (!mainFace.OuterLoop.To3dCurve().TryGetPolyline(out Polyline polyline)) {
+        throw new Exception("Cannot extract polyline from Brep surface.");
+      }
+
+      List<Polyline> voids = ExtractInnerVoids(mainFace);
+
+      Plane plane = PlaneFromFace(mainFace);
+
+      return new BrepPolylineResult(polyline, voids, plane);
+    }
+
+    private static Plane PlaneFromFace(BrepFace mainFace) {
+      mainFace.TryGetPlane(out Plane plane);
+      // planer normal should point upwards
+      // for consistent profile creation
+      if (plane.Normal.Z < 0) {
+        plane = new Plane(plane.Origin, -plane.Normal);
+      }
+      return plane;
+    }
+
+    private static List<Polyline> ExtractInnerVoids(BrepFace mainFace) {
+      var voids = new List<Polyline>();
+      foreach (BrepLoop loop in mainFace.Loops) {
+        if (loop.LoopType == BrepLoopType.Inner) {
+          Curve voidCurve = loop.To3dCurve();
+          if (voidCurve.TryGetPolyline(out Polyline voidPolyline)) {
+            voids.Add(voidPolyline);
+          } else {
+            throw new Exception("Cannot extract polyline from Brep inner loop.");
+          }
+        }
+      }
+      return voids;
+    }
+
+    public readonly struct BrepPolylineResult {
+      public Polyline Boundary { get; }
+      public List<Polyline> Voids { get; }
+      public Plane Plane { get; }
+
+      public BrepPolylineResult(Polyline boundary, List<Polyline> voids, Plane plane) {
+        Boundary = boundary;
+        Voids = voids ?? new List<Polyline>();
+        Plane = plane;
       }
     }
 
@@ -171,56 +237,5 @@ namespace AdSecGH.Components {
       return localPlane;
     }
 
-    public static Oasys.Taxonomy.Geometry.IPolygon PolygonFromRhinoPolyline(Polyline polyline, LengthUnit lengthUnit, Plane LocalPlane) {
-      var polygon = new Polygon() {
-        Points = PointsFromRhinoPolyline(polyline, lengthUnit, LocalPlane)
-      };
-      return polygon;
-    }
-
-    public static List<IPoint2d> PointsFromRhinoPolyline(Polyline polyline, LengthUnit lengthUnit, Plane LocalPlane) {
-      if (polyline.First() != polyline.Last()) {
-        polyline.Add(polyline.First());
-      }
-
-      var points = new List<IPoint2d>();
-
-      var xform = Rhino.Geometry.Transform.PlaneToPlane(LocalPlane, Plane.WorldXY);
-
-      for (int i = 0; i < polyline.Count - 1; i++) {
-        Point3d point3d = polyline[i];
-        point3d.Transform(xform);
-
-        IPoint2d point2d = new Oasys.Taxonomy.Geometry.Point2d(
-            new Length(point3d.X, lengthUnit),
-            new Length(point3d.Y, lengthUnit));
-        points.Add(point2d);
-      }
-
-      return points;
-    }
-
-    private static Plane GetCorrectedPlane(Plane LocalPlane) {
-      Vector3d xAxis = LocalPlane.XAxis;
-      Vector3d yAxis = LocalPlane.YAxis;
-      Vector3d zAxis = Vector3d.CrossProduct(xAxis, yAxis);
-
-      if (zAxis.Z < 0) {
-        // flip Y-axis as well to ensure right-hand rule and positive Z
-        yAxis = -yAxis;
-        zAxis = -zAxis;
-      }
-
-      if (xAxis.X < 0) {
-        xAxis = -xAxis;
-      }
-
-      if (yAxis.Y < 0) {
-        yAxis = -yAxis;
-      }
-
-      var correctedPlane = new Plane(LocalPlane.Origin, xAxis, yAxis);
-      return correctedPlane;
-    }
   }
 }

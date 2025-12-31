@@ -480,7 +480,28 @@ namespace Oasys.GH.Helpers {
               ? new ProfileDesign() { Profile = AdSecProfiles.CreateProfile(profile) }
               : goo as ProfileDesign;
             var profileGoo = new AdSecProfileGoo(profileDesign);
-            return new ProfileDesign(){ Profile = profileGoo.Clone(), LocalPlane = profileGoo.LocalPlane.ToOasys() };
+
+            // Calculate coordinate offsets using PlaneToPlane transformation
+            var originalPlane = profileGoo.GlobalPlane;
+            var newPlane = Plane.WorldYZ;
+
+            if (!newPlane.Equals(originalPlane)) {
+              var transformation = Rhino.Geometry.Transform.PlaneToPlane(originalPlane, newPlane);
+              var barPosition = new Rhino.Geometry.Point3d(0, 1, 1);
+              barPosition.Transform(transformation);
+
+              // Calculate offsets (difference from original position)
+              profileDesign.OffsetY = new Length(barPosition.Y - 1.0, DefaultUnits.LengthUnitGeometry);
+              profileDesign.OffsetZ = new Length(barPosition.Z - 1.0, DefaultUnits.LengthUnitGeometry);
+            }
+
+            return new ProfileDesign(){
+              Profile = profileGoo.Clone(),
+              GlobalPlane = profileGoo.GlobalPlane.ToOasys(),
+              LocalPlane = profileGoo.LocalPlane.ToOasys(),
+              OffsetY = profileDesign.OffsetY,
+              OffsetZ = profileDesign.OffsetZ
+            };
            }
         },
       };

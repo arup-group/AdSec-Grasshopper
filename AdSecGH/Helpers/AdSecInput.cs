@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using AdSecCore.Functions;
-
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -21,8 +19,6 @@ using OasysGH.Parameters;
 using OasysUnits;
 
 using Rhino.Geometry;
-
-
 
 namespace AdSecGH.Helpers {
   internal static class AdSecInput {
@@ -69,7 +65,7 @@ namespace AdSecGH.Helpers {
         profileGoo = adsecGoo;
       } else if (ghType.Value is OasysProfileGoo oasysGoo) {
         var profile = AdSecProfiles.CreateProfile(oasysGoo.Value);
-        profileGoo = new AdSecProfileGoo(profile, Plane.WorldYZ);
+        profileGoo = new AdSecProfileGoo(profile, Plane.WorldYZ, Plane.WorldYZ);
       } else {
         castSuccessful = false;
       }
@@ -149,51 +145,6 @@ namespace AdSecGH.Helpers {
       }
 
       return castSuccessful;
-    }
-
-    public static bool TryCastToIPoints(
-      List<GH_ObjectWrapper> ghTypes, IList<IPoint> iPoints, List<int> invalidIds, ref int pointsConverted) {
-      invalidIds = invalidIds ?? new List<int>();
-      IPoint point = null;
-      if (ghTypes == null || ghTypes.Count == 0) {
-        return false;
-      }
-
-      var temporaryPoints = new List<Point3d>();
-
-      for (int i = 0; i < ghTypes.Count; i++) {
-        Curve curve = null;
-        var ghpt = new Point3d();
-
-        if (TryCastToIPoint(ghTypes[i], ref point)) {
-          iPoints.Add(point);
-        } else if (TryCastToPoint3d(ghTypes[i], ref ghpt)) {
-          temporaryPoints.Add(ghpt);
-        } else if (TryCastToCurve(ghTypes[i], ref curve)) {
-          iPoints = AdSecPointGoo.PtsFromPolylineCurve((PolylineCurve)curve);
-        } else {
-          invalidIds.Add(i);
-        }
-      }
-
-      ProcessTemporaryPoints(ref iPoints, ref temporaryPoints);
-
-      pointsConverted = temporaryPoints.Count;
-      return !invalidIds.Any();
-    }
-
-    public static void ProcessTemporaryPoints(ref IList<IPoint> iPoints, ref List<Point3d> temporaryPoints) {
-      iPoints = iPoints ?? new List<IPoint>();
-      temporaryPoints = temporaryPoints ?? new List<Point3d>();
-
-      if (temporaryPoints.Count == 1) {
-        iPoints.Add(AdSecPointGoo.CreateFromPoint3d(temporaryPoints[0], Plane.WorldYZ));
-      } else if (temporaryPoints.Count > 1) {
-        RhinoHelper.TryFitPlaneToPolyline(new Polyline(temporaryPoints), out var plane);
-        foreach (var point in temporaryPoints) {
-          iPoints.Add(AdSecPointGoo.CreateFromPoint3d(point, plane));
-        }
-      }
     }
 
     public static bool TryCastToPoint3d(GH_ObjectWrapper ghType, ref Point3d point) {

@@ -4,6 +4,7 @@ using AdSecCore.Builders;
 
 using AdSecGHCore.Constants;
 
+using Oasys.AdSec;
 using Oasys.Profiles;
 
 namespace AdSecCore.Functions {
@@ -63,7 +64,9 @@ namespace AdSecCore.Functions {
       sectionBuilder.WithProfile(Profile.Value.Profile);
       if (RebarGroup.Value != null) {
         var groups = RebarGroup.Value.Select(x => x.Group).ToList();
-        sectionBuilder.WithReinforcementGroups(groups);
+
+        sectionBuilder.WithReinforcementGroupsOffset(groups, Profile.Value.OffsetY, Profile.Value.OffsetZ);
+
 
         sectionBuilder.WithCover(RebarGroup.Value.FirstOrDefault(x => x.Cover != null)?.Cover);
       }
@@ -75,11 +78,11 @@ namespace AdSecCore.Functions {
       }
 
       var section = sectionBuilder.Build();
-
       Section.Value = new SectionDesign {
         Section = section,
         DesignCode = Material.Value.DesignCode,
         LocalPlane = Profile.Value.LocalPlane,
+        GlobalPlane = Profile.Value.GlobalPlane,
       };
     }
   }

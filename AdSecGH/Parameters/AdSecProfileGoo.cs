@@ -55,7 +55,7 @@ namespace AdSecGH.Parameters {
     public List<Polyline> VoidEdges { get; private set; }
     public Polyline Polyline { get; private set; }
     public Plane LocalPlane { get; private set; }
-
+    public Plane GlobalPlane { get; private set; }
     private Line previewXaxis;
     private Line previewYaxis;
     private Line previewZaxis;
@@ -68,13 +68,14 @@ namespace AdSecGH.Parameters {
 
       Profile = profileDesign.Profile;
       LocalPlane = profileDesign.LocalPlane.ToGh();
-      var edges = PolylinesFromAdSecProfile(Profile, LocalPlane);
+      GlobalPlane = profileDesign.GlobalPlane.ToGh();
+      var edges = PolylinesFromAdSecProfile(Profile, GlobalPlane, LocalPlane);
       Polyline = edges.Item1;
       VoidEdges = edges.Item2;
       UpdatePreview();
     }
 
-    public AdSecProfileGoo(IProfile profile, Plane local) {
+    public AdSecProfileGoo(IProfile profile, Plane globalPlane, Plane local) {
       if (profile == null) {
         const string error = "Profile cannot be null";
         throw new ArgumentNullException(nameof(profile), error);
@@ -83,33 +84,14 @@ namespace AdSecGH.Parameters {
       Value = new ProfileDesign() {
         Profile = profile,
         LocalPlane = local.ToOasys(),
+        GlobalPlane = globalPlane.ToOasys(),
       };
       Profile = profile;
       LocalPlane = local;
-      var edges = PolylinesFromAdSecProfile(profile, LocalPlane);
+      GlobalPlane = globalPlane;
+      var edges = PolylinesFromAdSecProfile(profile, GlobalPlane, LocalPlane);
       Polyline = edges.Item1;
       VoidEdges = edges.Item2;
-      UpdatePreview();
-    }
-
-    public AdSecProfileGoo(Polyline polygon, LengthUnit lengthUnit) {
-      if (polygon == null) {
-        const string error = "Polygon cannot be null";
-        throw new ArgumentNullException(nameof(polygon), error);
-      }
-
-      var perimprofile = IPerimeterProfile.Create();
-      RhinoHelper.TryFitPlaneToPolyline(polygon, out var plane);
-      perimprofile.SolidPolygon = PolygonFromRhinoPolyline(polygon, lengthUnit, plane);
-      Profile = perimprofile;
-      VoidEdges = null;
-      LocalPlane = plane;
-      Profile = perimprofile;
-
-      Value = new ProfileDesign() {
-        Profile = Profile,
-        LocalPlane = plane.ToOasys(),
-      };
       UpdatePreview();
     }
 
@@ -140,23 +122,6 @@ namespace AdSecGH.Parameters {
       DrawingHelper.DrawLocalAxis(args, previewZaxis, previewXaxis, previewYaxis);
     }
 
-    public override bool CastFrom(object source) {
-      if (source == null) {
-        return false;
-      }
-
-      // try cast using GH_Convert, if that doesnt work we are doomed
-      Curve curve = null;
-      if (!GH_Convert.ToCurve(source, ref curve, GH_Conversion.Both) || !curve.TryGetPolyline(out var poly)) {
-        return false;
-      }
-
-      var adSecProfileGoo = new AdSecProfileGoo(poly, DefaultUnits.LengthUnitGeometry);
-      m_value = adSecProfileGoo.m_value;
-      Profile = adSecProfileGoo.Profile;
-      VoidEdges = adSecProfileGoo.VoidEdges;
-      return true;
-    }
 
     public override bool CastTo<Q>(out Q target) {
       if (typeof(Q).IsAssignableFrom(typeof(AdSecProfileGoo))) {
@@ -295,7 +260,7 @@ namespace AdSecGH.Parameters {
     }
 
     public override IGH_GeometricGoo DuplicateGeometry() {
-      return new AdSecProfileGoo(Clone(), new Plane(LocalPlane));
+      return new AdSecProfileGoo(Clone(), new Plane(GlobalPlane), new Plane(LocalPlane));
     }
 
     public override BoundingBox GetBoundingBox(Transform xform) {
@@ -319,81 +284,44 @@ namespace AdSecGH.Parameters {
     }
 
     internal static Tuple<List<Point3d>, List<List<Point3d>>> PointsFromAdSecPermiter(
-      IPerimeterProfile perimeterProfile, Plane local) {
+      IPerimeterProfile perimeterProfile, Plane globalPlane, Plane local) {
       if (perimeterProfile == null) {
         return null;
       }
 
       var solid = perimeterProfile.SolidPolygon;
-      var rhinoEdgePoints = PtsFromAdSecPolygon(solid, local);
+      var rhinoEdgePoints = PtsFromAdSecPolygon(solid, globalPlane, local);
 
       var rhinoVoidPoints
-        = perimeterProfile.VoidPolygons.Select(polygon => PtsFromAdSecPolygon(polygon, local)).ToList();
+        = perimeterProfile.VoidPolygons.Select(polygon => PtsFromAdSecPolygon(polygon, globalPlane, local)).ToList();
       return new Tuple<List<Point3d>, List<List<Point3d>>>(rhinoEdgePoints, rhinoVoidPoints);
     }
 
-    internal static IPolygon PolygonFromRhinoPolyline(Polyline polyline, LengthUnit lengthUnit, Plane local) {
-      var polygon = IPolygon.Create();
-      polygon.Points = PtsFromRhinoPolyline(polyline, lengthUnit, local);
-      return polygon;
-    }
-
-    internal static Tuple<Polyline, List<Polyline>> PolylinesFromAdSecProfile(IProfile profile, Plane local) {
+    internal static Tuple<Polyline, List<Polyline>> PolylinesFromAdSecProfile(IProfile profile, Plane profileGlobalPlane, Plane local) {
       var perimeter = profile is IPerimeterProfile perimeterProfile ? perimeterProfile : IPerimeterProfile.Create(profile);
-      var pointsFromAdSecPermiter = PointsFromAdSecPermiter(perimeter, local);
+      var pointsFromAdSecPermiter = PointsFromAdSecPermiter(perimeter, profileGlobalPlane, local);
 
       var solid = new Polyline(pointsFromAdSecPermiter.Item1);
       var voids = pointsFromAdSecPermiter.Item2.Select(point3ds => new Polyline(point3ds)).ToList();
       return new Tuple<Polyline, List<Polyline>>(solid, voids);
     }
 
-    internal static List<Point3d> PtsFromAdSecPolygon(IPolygon polygon, Plane local) {
+
+    internal static List<Point3d> PtsFromAdSecPolygon(IPolygon polygon, Plane globalPlane, Plane local) {
       if (polygon == null) {
         return null;
       }
-
-      var maptToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldYZ, local);
       var rhinoPoints = new List<Point3d>();
-
       foreach (var point in polygon.Points) {
         var point3d = new Point3d(0, point.Y.As(DefaultUnits.LengthUnitGeometry),
           point.Z.As(DefaultUnits.LengthUnitGeometry));
-        point3d.Transform(maptToLocal);
+        point3d.GlobalToLocal(local, globalPlane);
         rhinoPoints.Add(point3d);
       }
-
       // add first point to end of list for closed polyline
       rhinoPoints.Add(rhinoPoints[0]);
 
       return rhinoPoints;
-    }
-
-    internal static Oasys.Collections.IList<IPoint> PtsFromRhinoPolyline(
-      Polyline polyline, LengthUnit lengthUnit, Plane local) {
-      if (polyline == null) {
-        return null;
-      }
-
-      if (polyline[0] != polyline[polyline.Count - 1]) {
-        polyline.Add(polyline[0]);
-      }
-
-      var points = Oasys.Collections.IList<IPoint>.Create();
-
-      // map points to XY plane so we can create local points from x and y coordinates
-      var xform = Rhino.Geometry.Transform.PlaneToPlane(local, Plane.WorldXY);
-
-      for (int i = 0; i < polyline.Count - 1; i++)
-      // -1 on count because the profile is always closed and thus doesnt
-      // need the last point being equal to first as a rhino polyline needs
-      {
-        var point3d = polyline[i];
-        point3d.Transform(xform);
-        var point = IPoint.Create(new Length(point3d.X, lengthUnit), new Length(point3d.Y, lengthUnit));
-        points.Add(point);
-      }
-
-      return points;
     }
 
     private void UpdatePreview() {

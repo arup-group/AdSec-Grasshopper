@@ -11,7 +11,6 @@ using AdSecGH.UI;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
-using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.Geometry.Paths2D;
 using Oasys.Profiles;
@@ -41,45 +40,15 @@ namespace AdSecGH.Parameters {
       _codeName = sectionDesign.DesignCode.DesignCodeName;
       _materialName = sectionDesign.MaterialName;
       LocalPlane = sectionDesign.LocalPlane.ToGh();
-      CreatePreview();
+      GlobalPlane = sectionDesign.GlobalPlane.ToGh();
+      var offset = sectionDesign.SubComponentOffset;
+      CreatePreview(offset);
     }
-
-    public AdSecSection(
-      ISection section, IDesignCode code, string codeName, string materialName, Plane local,
-      IPoint subComponentOffset = null) {
-      _materialName = materialName;
-      Section = section;
-      DesignCode = code;
-      _codeName = codeName;
-      LocalPlane = local;
-      CreatePreview(subComponentOffset);
-    }
-
-    public AdSecSection(
-      IProfile profile, Plane local, AdSecMaterial material, List<AdSecRebarGroup> reinforcement, Oasys.Collections.IList<ISubComponent> subComponents) {
-      DesignCode = material.DesignCode.Duplicate().DesignCode;
-      _codeName = material.DesignCodeName;
-      _materialName = material.GradeName;
-      Section = ISection.Create(profile, material.Material);
-      var rebarAndCover = CreateReinforcementGroupsWithMaxCover(reinforcement);
-      Section.ReinforcementGroups = rebarAndCover.Item1;
-      if (rebarAndCover.Item2 != null) {
-        Section.Cover = rebarAndCover.Item2;
-      }
-
-      if (subComponents != null) {
-        Section.SubComponents = subComponents;
-      }
-
-      LocalPlane = local;
-      CreatePreview();
-    }
-
-    internal AdSecSection() { }
 
     public IDesignCode DesignCode { get; set; }
     public bool IsValid => SolidBrep != null && SolidBrep.IsValid;
     public Plane LocalPlane { get; set; }
+    public Plane GlobalPlane { get; set; }
     public ISection Section { get; set; }
     internal Brep SolidBrep => ProfileData?.Profile;
 
@@ -133,21 +102,25 @@ namespace AdSecGH.Parameters {
     private void GenerateProfileGeometryWithOffset(
       out Brep profile, out Polyline profileEdge, out List<Polyline> profileVoidEdges, ISection flat,
       Vector3d currentOffset) {
-      profile = CreateBrepFromProfile(new AdSecProfileGoo(flat.Profile, LocalPlane));
+      profile = CreateBrepFromProfile(new AdSecProfileGoo(flat.Profile, GlobalPlane, LocalPlane));
       profile.Transform(Transform.Translation(currentOffset));
-      var edges = AdSecProfileGoo.PolylinesFromAdSecProfile(flat.Profile, LocalPlane);
+      var edges = AdSecProfileGoo.PolylinesFromAdSecProfile(flat.Profile, GlobalPlane, LocalPlane);
       profileEdge = edges.Item1;
       profileEdge.Transform(Transform.Translation(currentOffset));
       profileVoidEdges = edges.Item2;
+      for (int i = 0; i < profileVoidEdges.Count; i++) {
+        var voidEdge = profileVoidEdges[i];
+        voidEdge.Transform(Transform.Translation(currentOffset));
+      }
+
     }
 
-    private static Vector3d ApplyOffsetToVector(IPoint offsetPoint, Vector3d currentOffset, Plane localPlane) {
+    private Vector3d ApplyOffsetToVector(IPoint offsetPoint, Vector3d currentOffset) {
       if (offsetPoint != null) {
         currentOffset = new Vector3d(0, offsetPoint.Y.As(DefaultUnits.LengthUnitGeometry),
           offsetPoint.Z.As(DefaultUnits.LengthUnitGeometry));
       }
-      var maptToLocal = Transform.PlaneToPlane(Plane.WorldYZ, localPlane);
-      currentOffset.Transform(maptToLocal);
+      currentOffset.GlobalToLocal(LocalPlane, GlobalPlane);
       return currentOffset;
     }
 
@@ -173,7 +146,7 @@ namespace AdSecGH.Parameters {
 
     private void CreatePreview(IPoint pointOffset = null) {
       var flat = SetFlattenSection();
-      var currentOffset = ApplyOffsetToVector(pointOffset, Vector3d.Zero, LocalPlane);
+      var currentOffset = ApplyOffsetToVector(pointOffset, Vector3d.Zero);
       var centroidOffset = CalculateCentroidOffset(flat);
       currentOffset += centroidOffset;
 
@@ -185,17 +158,16 @@ namespace AdSecGH.Parameters {
     }
 
     private Vector3d CalculateCentroidOffset(ISection flat) {
-      var maptToLocal = Transform.PlaneToPlane(Plane.WorldYZ, LocalPlane);
 
       var point = Section.Profile.ElasticCentroid();
       var point3dOriginalCG = new Point3d(0, point.Y.As(DefaultUnits.LengthUnitGeometry),
           point.Z.As(DefaultUnits.LengthUnitGeometry));
-      point3dOriginalCG.Transform(maptToLocal);
+      point3dOriginalCG.GlobalToLocal(LocalPlane, GlobalPlane);
 
       point = flat.Profile.ElasticCentroid();
       var point3dFlattenCG = new Point3d(0, point.Y.As(DefaultUnits.LengthUnitGeometry),
           point.Z.As(DefaultUnits.LengthUnitGeometry));
-      point3dFlattenCG.Transform(maptToLocal);
+      point3dFlattenCG.GlobalToLocal(LocalPlane, GlobalPlane);
 
       return new Vector3d(
          point3dOriginalCG.X - point3dFlattenCG.X,
@@ -224,11 +196,11 @@ namespace AdSecGH.Parameters {
         var subProfile = subComponent.Section.Profile;
         var transform = GetCombinedTransform(subComponent.Offset, currentOffset);
 
-        var brepFromProfile = CreateBrepFromProfile(new AdSecProfileGoo(subProfile, LocalPlane));
+        var brepFromProfile = CreateBrepFromProfile(new AdSecProfileGoo(subProfile, GlobalPlane, LocalPlane));
         brepFromProfile.Transform(transform);
         subProfiles.Add(brepFromProfile);
 
-        var edges = AdSecProfileGoo.PolylinesFromAdSecProfile(subProfile, LocalPlane);
+        var edges = AdSecProfileGoo.PolylinesFromAdSecProfile(subProfile, GlobalPlane, LocalPlane);
         var mainEdge = edges.Item1;
         var voidEdges = edges.Item2;
 
@@ -275,7 +247,7 @@ namespace AdSecGH.Parameters {
         switch (group) {
           case ISingleBars singleBars: {
               var barEdges = new List<Circle>();
-              var barBreps = CreateBrepsFromSingleRebar(singleBars, currentOffset, ref barEdges, LocalPlane);
+              var barBreps = CreateBrepsFromSingleRebar(singleBars, currentOffset, ref barEdges);
 
               rebars.AddRange(barBreps);
               rebarEdges.AddRange(barEdges);
@@ -285,7 +257,7 @@ namespace AdSecGH.Parameters {
               break;
             }
           case IPerimeterLinkGroup linkGroup: {
-              CreateCurvesFromLinkGroup(linkGroup, ref linkEdges, LocalPlane, currentOffset);
+              CreateCurvesFromLinkGroup(linkGroup, ref linkEdges, currentOffset);
               break;
             }
         }
@@ -312,16 +284,17 @@ namespace AdSecGH.Parameters {
       return breps[0];
     }
 
-    private static List<Brep> CreateBrepsFromSingleRebar(
-      ISingleBars bars, Vector3d offset, ref List<Circle> edgeCurves, Plane local) {
-      var mapToLocal = Transform.PlaneToPlane(Plane.WorldYZ, local);
+    private List<Brep> CreateBrepsFromSingleRebar(
+      ISingleBars bars, Vector3d offset, ref List<Circle> edgeCurves) {
+
+
       var rebarBreps = new List<Brep>();
       foreach (var position in bars.Positions) {
         var center = new Point3d(0, position.Y.As(DefaultUnits.LengthUnitGeometry),
           position.Z.As(DefaultUnits.LengthUnitGeometry));
-        center.Transform(mapToLocal);
+        center.GlobalToLocal(LocalPlane, GlobalPlane);
         center.Transform(Transform.Translation(offset));
-        var localCenter = new Plane(center, local.Normal);
+        var localCenter = CreatePlaneAtPoint(center);
         var edgeCurve = new Circle(localCenter, bars.BarBundle.Diameter.As(DefaultUnits.LengthUnitGeometry) / 2);
         edgeCurves.Add(edgeCurve);
         var curves = new List<Curve> {
@@ -333,12 +306,20 @@ namespace AdSecGH.Parameters {
       return rebarBreps;
     }
 
-    private static void CreateCurvesFromLinkGroup(
-      IPerimeterLinkGroup linkGroup, ref List<Curve> linkEdges, Plane local, Vector3d offset) {
-      var mapToLocal = Transform.PlaneToPlane(Plane.WorldYZ, local);
+    private Plane CreatePlaneAtPoint(Point3d center) {
+      if (LocalPlane.Origin == Point3d.Unset) {
+        return new Plane(center, new Vector3d(0, 0, 1));
+      }
+      return new Plane(center, LocalPlane.Normal);
+    }
+
+
+
+    private void CreateCurvesFromLinkGroup(
+      IPerimeterLinkGroup linkGroup, ref List<Curve> linkEdges, Vector3d offset) {
       var startPoint = new Point3d(0, linkGroup.LinkPath.StartPoint.Y.As(DefaultUnits.LengthUnitGeometry),
         linkGroup.LinkPath.StartPoint.Z.As(DefaultUnits.LengthUnitGeometry));
-      startPoint.Transform(mapToLocal);
+      startPoint.GlobalToLocal(LocalPlane, GlobalPlane);
       startPoint.Transform(Transform.Translation(offset));
 
       var centreLine = new PolyCurve();
@@ -347,7 +328,7 @@ namespace AdSecGH.Parameters {
           var line = (ILineSegment<IPoint>)path;
           var nextPoint = new Point3d(0, line.NextPoint.Y.As(DefaultUnits.LengthUnitGeometry),
             line.NextPoint.Z.As(DefaultUnits.LengthUnitGeometry));
-          nextPoint.Transform(mapToLocal);
+          nextPoint.GlobalToLocal(LocalPlane, GlobalPlane);
           nextPoint.Transform(Transform.Translation(offset));
 
           var rhinoLine = new Line(startPoint, nextPoint);
@@ -357,11 +338,12 @@ namespace AdSecGH.Parameters {
           var arc = (IArcSegment<IPoint>)path;
           var centrePoint = new Point3d(0, arc.Centre.Y.As(DefaultUnits.LengthUnitGeometry),
             arc.Centre.Z.As(DefaultUnits.LengthUnitGeometry));
-          centrePoint.Transform(mapToLocal);
+          centrePoint.GlobalToLocal(LocalPlane, GlobalPlane);
           centrePoint.Transform(Transform.Translation(offset));
+
           double radius = startPoint.DistanceTo(centrePoint);
           var xAxis = new Vector3d(startPoint - centrePoint);
-          var yAxis = Vector3d.CrossProduct(local.ZAxis, xAxis);
+          var yAxis = Vector3d.CrossProduct(LocalPlane.ZAxis, xAxis);
           var arcPlane = new Plane(centrePoint, xAxis, yAxis);
           double sweepAngle = arc.SweepAngle.As(AngleUnit.Radian);
           var rhinoArc = new Arc(arcPlane, radius, sweepAngle);
@@ -371,8 +353,8 @@ namespace AdSecGH.Parameters {
       }
 
       double barDiameter = linkGroup.BarBundle.Diameter.As(DefaultUnits.LengthUnitGeometry);
-      var offset1 = centreLine.Offset(local, barDiameter / 2, tolerance, CurveOffsetCornerStyle.Sharp);
-      var offset2 = centreLine.Offset(local, barDiameter / 2 * -1, tolerance, CurveOffsetCornerStyle.Sharp);
+      var offset1 = centreLine.Offset(LocalPlane, barDiameter / 2, tolerance, CurveOffsetCornerStyle.Sharp);
+      var offset2 = centreLine.Offset(LocalPlane, barDiameter / 2 * -1, tolerance, CurveOffsetCornerStyle.Sharp);
 
       if (linkEdges == null) {
         linkEdges = new List<Curve>();
@@ -382,28 +364,6 @@ namespace AdSecGH.Parameters {
         offset1[0],
         offset2[0],
       });
-    }
-
-    private static Tuple<Oasys.Collections.IList<IGroup>, ICover> CreateReinforcementGroupsWithMaxCover(
-      List<AdSecRebarGroup> reinforcements) {
-      var groups = Oasys.Collections.IList<IGroup>.Create();
-      ICover cover = null;
-      foreach (var reinforcement in reinforcements) {
-        groups.Add(reinforcement.Group);
-
-        if (reinforcement.Group is ILinkGroup || reinforcement.Group is IPerimeterGroup
-          || reinforcement.Group is ITemplateGroup) {
-          GetCover(reinforcement, ref cover);
-        }
-      }
-
-      return new Tuple<Oasys.Collections.IList<IGroup>, ICover>(groups, cover);
-    }
-
-    private static void GetCover(AdSecRebarGroup reinforcement, ref ICover cover) {
-      if (reinforcement.Cover != null && (cover == null || reinforcement.Cover.UniformCover > cover.UniformCover)) {
-        cover = reinforcement.Cover;
-      }
     }
   }
 }

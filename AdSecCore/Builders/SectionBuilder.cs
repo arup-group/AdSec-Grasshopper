@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Oasys.AdSec;
 using Oasys.AdSec.Materials;
@@ -8,6 +9,7 @@ using Oasys.AdSec.StandardMaterials;
 using Oasys.Profiles;
 
 using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecCore.Builders {
 
@@ -157,6 +159,16 @@ namespace AdSecCore.Builders {
       return this;
     }
 
+    public SectionBuilder WithReinforcementGroupsOffset(List<IGroup> groups, Length deltaY, Length deltaZ) {
+
+      foreach (var group in groups) {
+        var offsetGroup = OffsetReinforcementGroup(group, deltaY, deltaZ);
+        ReinforcementGroups.Add(offsetGroup);
+      }
+
+      return this;
+    }
+
     public SectionBuilder WithProfile(IProfile profile) {
       _profile = profile;
       return this;
@@ -171,6 +183,88 @@ namespace AdSecCore.Builders {
     public SectionBuilder WithSubComponents(List<ISubComponent> subComponents) {
       _subComponents = subComponents;
       return this;
+    }
+
+
+    private static IGroup OffsetReinforcementGroup(IGroup originalGroup, Length deltaY, Length deltaZ) {
+      switch (originalGroup) {
+        case ISingleBars singleBars:
+          return OffsetSingleBars(singleBars, deltaY, deltaZ);
+
+        case ILineGroup lineGroup:
+          return OffsetLineGroup(lineGroup, deltaY, deltaZ);
+
+        case IArcGroup arcGroup:
+          return OffsetArcGroup(arcGroup, deltaY, deltaZ);
+
+        case ICircleGroup circleGroup:
+          return OffsetCircleGroup(circleGroup, deltaY, deltaZ);
+
+        // Template, Perimeter, and Link groups typically don't need coordinate offsets
+        // as they are positioned automatically relative to section geometry
+        default:
+          return originalGroup;
+      }
+    }
+
+
+    private static ISingleBars OffsetSingleBars(ISingleBars originalBars, Length deltaY, Length deltaZ) {
+      var offsetBars = ISingleBars.Create(originalBars.BarBundle);
+      double maxy = 0;
+      foreach (var position in originalBars.Positions) {
+        var newY = position.Y + deltaY;
+        var newZ = position.Z + deltaZ;
+        offsetBars.Positions.Add(IPoint.Create(newY, newZ));
+        if (Math.Abs(newY.Value) > Math.Abs(maxy)) {
+          maxy = newY.Value;
+        }
+      }
+
+      if (originalBars.Preload != null) {
+        offsetBars.Preload = originalBars.Preload;
+      }
+
+      return offsetBars;
+    }
+
+
+    private static ILineGroup OffsetLineGroup(ILineGroup originalGroup, Length deltaY, Length deltaZ) {
+      var startY = originalGroup.FirstBarPosition.Y + deltaY;
+      var startZ = originalGroup.FirstBarPosition.Z + deltaZ;
+      var endY = originalGroup.LastBarPosition.Y + deltaY;
+      var endZ = originalGroup.LastBarPosition.Z + deltaZ;
+
+      return ILineGroup.Create(
+        IPoint.Create(startY, startZ),
+        IPoint.Create(endY, endZ),
+        originalGroup.Layer
+      );
+    }
+
+
+    private static IArcGroup OffsetArcGroup(IArcGroup originalGroup, Length deltaY, Length deltaZ) {
+      var centerY = originalGroup.Centre.Y + deltaY;
+      var centerZ = originalGroup.Centre.Z + deltaZ;
+
+      return IArcGroup.Create(
+        IPoint.Create(centerY, centerZ),
+        originalGroup.Radius,
+        originalGroup.StartAngle,
+        originalGroup.SweepAngle,
+        originalGroup.Layer
+      );
+    }
+
+    private static ICircleGroup OffsetCircleGroup(ICircleGroup originalGroup, Length deltaY, Length deltaZ) {
+      var centerY = originalGroup.Centre.Y + deltaY;
+      var centerZ = originalGroup.Centre.Z + deltaZ;
+
+      return ICircleGroup.Create(
+        IPoint.Create(centerY, centerZ),
+        originalGroup.Radius,
+        originalGroup.StartAngle,
+        originalGroup.Layer
+      );
     }
   }
 }

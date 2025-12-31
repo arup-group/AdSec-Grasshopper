@@ -167,21 +167,5 @@ namespace AdSecGH.Parameters {
       return null;
     }
 
-    internal static IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve) {
-      curve.TryGetPolyline(out var tempCurve);
-      RhinoHelper.TryFitPlaneToPolyline(tempCurve, out var plane);
-      var mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
-
-      var points = IList<IPoint>.Create();
-      for (int j = 0; j < curve.PointCount; j++) {
-        var point3d = curve.Point(j);
-        point3d.Transform(mapToLocal);
-        var point = IPoint.Create(new Length(point3d.X, DefaultUnits.LengthUnitGeometry),
-          new Length(point3d.Y, DefaultUnits.LengthUnitGeometry));
-        points.Add(point);
-      }
-
-      return points;
-    }
   }
 }
