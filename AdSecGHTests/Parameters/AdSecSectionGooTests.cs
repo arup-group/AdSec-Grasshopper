@@ -117,7 +117,7 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void CastFrom_ReturnFalse_Always() {
       Assert.False(sectionGoo.CastFrom(null));
-      Assert.False(sectionGoo.CastFrom(new AdSecSection(new SectionDesign())));
+      Assert.False(sectionGoo.CastFrom(new AdSecSection()));
     }
 
     [Fact]

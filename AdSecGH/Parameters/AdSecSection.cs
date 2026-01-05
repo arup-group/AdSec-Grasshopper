@@ -34,6 +34,8 @@ namespace AdSecGH.Parameters {
     internal List<ReinforcementPreviewData> ReinforcementData { get; private set; }
     internal SubComponentsPreviewData SubProfilesData { get; private set; }
 
+    public AdSecSection() { }
+
     public AdSecSection(SectionDesign sectionDesign) {
       Section = sectionDesign.Section;
       DesignCode = sectionDesign.DesignCode.IDesignCode;

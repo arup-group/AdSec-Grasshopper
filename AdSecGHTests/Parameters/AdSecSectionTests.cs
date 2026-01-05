@@ -97,7 +97,7 @@ namespace AdSecGHTests.Parameters {
 
     [Fact]
     public void Duplicate_ReturnNull_WhenIsValidIsFalse() {
-      var duplicate = new AdSecSectionDummy(new SectionDesign()).Duplicate();
+      var duplicate = new AdSecSectionDummy().Duplicate();
       Assert.Null(duplicate);
     }
 
@@ -206,9 +206,6 @@ namespace AdSecGHTests.Parameters {
       return section;
     }
 
-    private class AdSecSectionDummy : AdSecSection {
-      public AdSecSectionDummy(SectionDesign sectionDesign) : base(sectionDesign) {
-      }
-    }
+    private class AdSecSectionDummy : AdSecSection { }
   }
 }

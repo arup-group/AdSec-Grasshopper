@@ -47,7 +47,7 @@ namespace AdSecGHTests.Components {
     public void ShouldTakePlaneFromSectionInput() {
       ComponentTestHelper.ComputeData(component);
       var data = component.GetValue<AdSecSubComponentGoo>();
-      Assert.Equal(OasysPlane.PlaneXY, data.section.LocalPlane.ToOasys());
+      Assert.Equal(OasysPlane.PlaneYZ, data.section.LocalPlane.ToOasys());
     }
 
     [Fact]
