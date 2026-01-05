@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
+using AdSecCore.Functions;
+
 using AdSecGH.Parameters;
 
 using AdSecGHTests.Helpers;
@@ -115,7 +117,7 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void CastFrom_ReturnFalse_Always() {
       Assert.False(sectionGoo.CastFrom(null));
-      Assert.False(sectionGoo.CastFrom(new AdSecSection()));
+      Assert.False(sectionGoo.CastFrom(new AdSecSection(new SectionDesign())));
     }
 
     [Fact]

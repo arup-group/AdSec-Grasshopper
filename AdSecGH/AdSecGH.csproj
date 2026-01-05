@@ -60,7 +60,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="OasysGH" Version="1.2.5" />
+    <PackageReference Include="OasysGH" Version="1.2.4" />
     <PackageReference Include="OasysUnits" Version="1.2.1" />
   </ItemGroup>
   <ItemGroup>

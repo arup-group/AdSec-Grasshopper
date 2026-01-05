@@ -45,6 +45,18 @@ namespace AdSecGH.Parameters {
       CreatePreview(offset);
     }
 
+    public AdSecSection(
+       ISection section, IDesignCode code, string codeName, string materialName, Plane plane, IPoint subComponentOffset = null)
+       : this(new SectionDesign() {
+         Section = section,
+         DesignCode = new DesignCode() { IDesignCode = code, DesignCodeName = codeName },
+         MaterialName = materialName,
+         LocalPlane = plane.ToOasys(),
+         GlobalPlane = plane.ToOasys(),
+         SubComponentOffset = subComponentOffset
+       }) {
+    }
+
     public IDesignCode DesignCode { get; set; }
     public bool IsValid => SolidBrep != null && SolidBrep.IsValid;
     public Plane LocalPlane { get; set; }

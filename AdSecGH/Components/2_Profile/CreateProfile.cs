@@ -193,7 +193,8 @@ namespace AdSecGH.Components {
     }
 
     private static Plane PlaneFromFace(BrepFace mainFace) {
-      mainFace.TryGetPlane(out Plane plane);
+
+      var b = mainFace.TryGetPlane(out Plane plane);
       // planer normal should point upwards
       // for consistent profile creation
       if (plane.Normal.Z < 0) {

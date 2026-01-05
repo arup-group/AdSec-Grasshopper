@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using AdSecCore;
+using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;
@@ -96,7 +97,7 @@ namespace AdSecGHTests.Parameters {
 
     [Fact]
     public void Duplicate_ReturnNull_WhenIsValidIsFalse() {
-      var duplicate = new AdSecSectionDummy().Duplicate();
+      var duplicate = new AdSecSectionDummy(new SectionDesign()).Duplicate();
       Assert.Null(duplicate);
     }
 
@@ -205,6 +206,9 @@ namespace AdSecGHTests.Parameters {
       return section;
     }
 
-    private class AdSecSectionDummy : AdSecSection { }
+    private class AdSecSectionDummy : AdSecSection {
+      public AdSecSectionDummy(SectionDesign sectionDesign) : base(sectionDesign) {
+      }
+    }
   }
 }

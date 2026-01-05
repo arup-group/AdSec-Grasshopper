@@ -481,12 +481,12 @@ namespace Oasys.GH.Helpers {
               : goo as ProfileDesign;
             var profileGoo = new AdSecProfileGoo(profileDesign);
 
-            // Calculate coordinate offsets using PlaneToPlane transformation
-            var originalPlane = profileGoo.GlobalPlane;
-            var newPlane = Plane.WorldYZ;
+            // reinforcemnt are in global and need to be converted to local
+            var globalPlane = profileGoo.GlobalPlane;
+            var reinforcementDefaultPlane = Plane.WorldYZ;
 
-            if (!newPlane.Equals(originalPlane)) {
-              var transformation = Rhino.Geometry.Transform.PlaneToPlane(originalPlane, newPlane);
+            if (!reinforcementDefaultPlane.Equals(globalPlane)) {
+              var transformation = Rhino.Geometry.Transform.PlaneToPlane(globalPlane, reinforcementDefaultPlane);
               var barPosition = new Rhino.Geometry.Point3d(0, 1, 1);
               barPosition.Transform(transformation);
 

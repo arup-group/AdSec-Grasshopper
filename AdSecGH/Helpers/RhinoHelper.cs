@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Linq;
 
 using Grasshopper;
 using Grasshopper.Kernel;
@@ -32,6 +33,15 @@ namespace AdSecGH.Helpers {
       panel.UserText = text;
 
       return panel;
+    }
+
+    public static bool TryFitPlaneToPolyline(Polyline polyline, out Plane plane) {
+      plane = Plane.Unset;
+      var points = polyline.ToList();
+      if (points.First().DistanceTo(points.Last()) < 1e-6) {
+        points.RemoveAt(points.Count - 1);
+      }
+      return Plane.FitPlaneToPoints(points, out plane) == PlaneFitResult.Success;
     }
 
     private static Transform GlobalToLocal(Plane localPlane, Plane globalPlane) {
