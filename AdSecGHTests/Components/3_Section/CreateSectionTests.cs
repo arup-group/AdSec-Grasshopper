@@ -5,6 +5,7 @@ using AdSecCore.Functions;
 
 using AdSecGH;
 using AdSecGH.Components;
+using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
@@ -15,8 +16,15 @@ using Grasshopper.Kernel;
 using Oasys.AdSec;
 using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
+using Oasys.AdSec.Reinforcement.Groups;
 using Oasys.AdSec.StandardMaterials;
 using Oasys.GH.Helpers;
+using Oasys.Profiles;
+
+using OasysUnits;
+using OasysUnits.Units;
+
+using Rhino.Geometry;
 
 using Xunit;
 
@@ -121,6 +129,48 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldHaveIconReferenced() {
       Assert.True(component.MatchesExpectedIcon(Resources.CreateSection));
+    }
+
+    [Fact]
+    public void ShouldCalculateOffsetsWhenProfilePlaneAndRebarPlaneNotSame() {
+
+      var profile = new ProfileBuilder().WidthDepth(400).WithWidth(300).Build();
+      var globalPlane = Plane.WorldYZ;
+      globalPlane.Origin = new Point3d(0, -150, -200);
+
+      var profileDesign = new ProfileDesign {
+        Profile = profile,
+        GlobalPlane = globalPlane.ToOasys(),
+        LocalPlane = globalPlane.ToOasys()
+      };
+
+      var profileGoo = new AdSecProfileGoo(profileDesign);
+      var component = new CreateSection();
+
+      ComponentTestHelper.SetInput(component, profileGoo);
+      var adSecMaterial = new AdSecMaterialGoo(new MaterialDesign {
+        Material = SectionMat,
+        DesignCode = new DesignCode { IDesignCode = DesignCode, DesignCodeName = string.Empty }
+      });
+
+      ComponentTestHelper.SetInput(component, adSecMaterial, 1);
+
+      var barBuilder = new BuilderSingleBar();
+      var singleBar = barBuilder.WithSize(16).AtPosition(IPoint.Create(new Length(150, LengthUnit.Millimeter), new Length(200, LengthUnit.Millimeter))).Build();
+
+      ComponentTestHelper.SetInput(component, new AdSecRebarGroupGoo(singleBar), 2);
+
+      AdSecSectionGoo section = (AdSecSectionGoo)ComponentTestHelper.GetOutput(component);
+
+      Assert.NotNull(section);
+      Assert.Empty(component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
+      section.Value.Section.ReinforcementGroups.ToList().ForEach(group => {
+        var singleBars = group as ISingleBars;
+        Assert.NotNull(singleBars);
+        Assert.Single(singleBars.Positions);
+        Assert.Equal(300, singleBars.Positions[0].Y.ToUnit(LengthUnit.Millimeter).Value, 1);
+        Assert.Equal(400, singleBars.Positions[0].Z.ToUnit(LengthUnit.Millimeter).Value, 1);
+      });
     }
   }
 }
