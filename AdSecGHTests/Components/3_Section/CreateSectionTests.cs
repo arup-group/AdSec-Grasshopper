@@ -21,6 +21,8 @@ using Oasys.AdSec.StandardMaterials;
 using Oasys.GH.Helpers;
 using Oasys.Profiles;
 
+using OasysGH.Units;
+
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -136,7 +138,9 @@ namespace AdSecGHTests.Components {
 
       var profile = new ProfileBuilder().WidthDepth(400).WithWidth(300).Build();
       var globalPlane = Plane.WorldYZ;
-      globalPlane.Origin = new Point3d(0, -150, -200);
+      var Y = new Length(.15, DefaultUnits.LengthUnitGeometry);
+      var Z = new Length(0.2, DefaultUnits.LengthUnitGeometry);
+      globalPlane.Origin = new Point3d(0, -Y.Value, -Z.Value);
 
       var profileDesign = new ProfileDesign {
         Profile = profile,
@@ -156,7 +160,7 @@ namespace AdSecGHTests.Components {
       ComponentTestHelper.SetInput(component, adSecMaterial, 1);
 
       var barBuilder = new BuilderSingleBar();
-      var singleBar = barBuilder.WithSize(16).AtPosition(IPoint.Create(new Length(150, LengthUnit.Millimeter), new Length(200, LengthUnit.Millimeter))).Build();
+      var singleBar = barBuilder.WithSize(16).AtPosition(IPoint.Create(Y, Z)).Build();
 
       ComponentTestHelper.SetInput(component, new AdSecRebarGroupGoo(singleBar), 2);
 
