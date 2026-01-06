@@ -11,6 +11,9 @@ using AdSecGHCore.Constants;
 using Grasshopper.Kernel;
 
 namespace AdSecGH.Parameters {
+  /// <summary>
+  ///   This class provides a parameter interface for the <see cref="AdSecRebarGroupGoo" /> type.
+  /// </summary>
   public class AdSecRebarGroupParameter : GH_PersistentParam<AdSecRebarGroupGoo> {
 
     public AdSecRebarGroupParameter() : base(new GH_InstanceDescription("RebarGroup", "RbG",

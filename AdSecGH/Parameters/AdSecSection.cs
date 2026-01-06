@@ -24,6 +24,9 @@ using Rhino.Display;
 using Rhino.Geometry;
 
 namespace AdSecGH.Parameters {
+  /// <summary>
+  ///   This class provides a parameter interface for the <see cref="AdSecSectionGoo" /> type.
+  /// </summary>
   public class AdSecSection {
     private const double tolerance = 0.001;
     internal string _codeName;

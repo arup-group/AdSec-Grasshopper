@@ -103,6 +103,10 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DocumentationFile>bin\x64\Debug\AdSecGH.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DocumentationFile>bin\x64\Release\AdSecGH.xml</DocumentationFile>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;$(TargetDir)AdSec.gha&quot;&#xD;&#xA;Copy &quot;$(ProjectDir)obj\OasysUnits.dll&quot; &quot;$(TargetDir)OasysUnits.dll&quot;&#xD;&#xA;Copy &quot;Properties\Icons\AdSecLogo64.png&quot; &quot;$(TargetDir)AdSecIcon.png&quot;" />
