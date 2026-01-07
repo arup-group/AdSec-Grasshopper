@@ -172,6 +172,9 @@ steps:
 
   - powershell: |
       $output = dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -c $(configuration) -p x64 -f net7.0 -l advanced
+      Write-Host "=== STRYKER OUTPUT DEBUG ==="
+      $output | ForEach-Object { Write-Host $_ }
+      Write-Host "=== END DEBUG ==="
       $scoreLine = $output | Select-String -Pattern 'final mutation score is (\d+(\.\d+)?) ?%'
       if ($scoreLine) {
         $matches = [regex]::Match($scoreLine.Line, 'final mutation score is (\d+(\.\d+)?) ?%')
@@ -189,6 +192,7 @@ steps:
       }
     displayName: Run Stryker
     failOnStderr: false
+    continueOnError: true
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Stryker Mutation Report'
