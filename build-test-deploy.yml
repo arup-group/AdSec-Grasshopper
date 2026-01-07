@@ -171,7 +171,7 @@ steps:
     condition: ne(variables['System.PullRequest.TargetBranch'], '')
 
   - powershell: |
-      $output = dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj --configuration $(configuration) -p x64 --config-file stryker-config.json -l advanced
+      $output = dotnet stryker --project AdSecCore/AdSecCore.csproj --test-project AdSecCoreTests/AdSecCoreTests.csproj --configuration $(configuration) -p x64 --config-file stryker-config.json -l advanced
       Write-Host "=== STRYKER OUTPUT DEBUG ==="
       $output | ForEach-Object { Write-Host $_ }
       Write-Host "=== END DEBUG ==="
