@@ -96,7 +96,7 @@ namespace AdSecGH.Components {
       ClearRuntimeMessages();
       Params.Input.ForEach(input => input.ClearRuntimeMessages());
 
-      var local = GetLocalPlane(DA);
+      var local = GetLocalPlane(DA, Plane.WorldYZ);
       Plane globalPlane = Plane.WorldYZ;
       if (_mode == FoldMode.Catalogue) {
         var profiles = SolveInstanceForCatalogueProfile(DA);
@@ -105,6 +105,7 @@ namespace AdSecGH.Components {
       } else if (_mode == FoldMode.Other) {
         var profile = SolveInstanceForStandardProfile(DA);
         if (profile.ProfileType == Oasys.Taxonomy.Profiles.ProfileType.Perimeter) {
+          local = GetLocalPlane(DA, Plane.Unset);
           var gh_typ = new GH_ObjectWrapper();
           if (DA.GetData(0, ref gh_typ)) {
             Brep brep = null;
@@ -230,8 +231,8 @@ namespace AdSecGH.Components {
       }
     }
 
-    private Plane GetLocalPlane(IGH_DataAccess DA) {
-      var localPlane = Plane.Unset;
+    private Plane GetLocalPlane(IGH_DataAccess DA, Plane plane) {
+      var localPlane = plane;
       if (DA.GetData(Params.Input.Count - 1, ref localPlane)) {
         return localPlane;
       }
