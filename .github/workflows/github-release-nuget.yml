@@ -1,9 +1,12 @@
 name: Push AdSecGH NuGet
+permissions:
+  contents: read
 
 # On run when release is published
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   pushNuGetPackage:
@@ -27,6 +30,6 @@ jobs:
           file: /.*\.snupkg/
           token: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: Push nupkg file to nuget.org
-#        run: |
-#          dotnet nuget push "*.nupkg" --api-key ${{ SECRETS.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      - name: Push nupkg file to nuget.org
+        run: |
+           dotnet nuget push "*.nupkg" --api-key ${{ SECRETS.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
