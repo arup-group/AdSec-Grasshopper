@@ -74,9 +74,10 @@ namespace AdSecCore.Functions {
             Plane = plane
           });
         }
-        CrackOutput.Value = cracks.ToArray();
       }
-      //maximum crck width
+      CrackOutput.Value = cracks.ToArray();
+
+      //maximum crack width
       MaximumCrackOutput.Value = new CrackLoad {
         Load = Sls.MaximumWidthCrack,
         Plane = plane
