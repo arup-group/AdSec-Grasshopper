@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 using AdSecGH;
@@ -29,6 +30,7 @@ namespace AdSecGHTests.Components.AdSec {
   public class SaveModelTests {
     private static string tempPath = string.Empty;
     private static SaveModel _component;
+
     public SaveModelTests() {
       _component = ComponentMother();
       SetSections(new List<object> { AdSecUtility.SectionObject(), AdSecUtility.SectionObject() });
@@ -160,34 +162,84 @@ namespace AdSecGHTests.Components.AdSec {
     }
 
     [Fact]
-    public void ShouldLaunchProcessWhenEverythingIsSet() {
-      SetLoadAndPath();
-      ComponentTestHelper.ComputeData(_component);
+    public void OpenAdSecExeDoesNotCallLauncherWhenCannotOpen() {
+      var fakeLauncher = new FakeAdSecLauncher {
+        Result = new Process(),
+      };
+
+      _component = ComponentMother();
+      _component.AdSecLauncher = fakeLauncher;
+
       var process = _component.OpenAdSecExe();
-      if (process == null) {
-        return;
-      }
-      try {
-        Assert.Contains("AdSec", process.ProcessName);
-      } finally {
-        process.Kill();
-      }
+
+      Assert.Null(process);
+      Assert.Equal(0, fakeLauncher.CallCount);
     }
 
     [Fact]
-    public void ShouldLaunchProcessWhenSectionAndPathIsSet() {
+    public void OpenAdSecExeCallsLauncherWhenCanOpenAndReturnsProcess() {
+      var fakeProcess = new Process();
+      var fakeLauncher = new FakeAdSecLauncher {
+        Result = fakeProcess,
+      };
+
+      _component = ComponentMother();
+      _component.AdSecLauncher = fakeLauncher;
+      SetSections(new List<object> { AdSecUtility.SectionObject(), AdSecUtility.SectionObject() });
       SetFilePath();
       ComponentTestHelper.ComputeData(_component);
-      var process = _component.OpenAdSecExe();
-      if (process == null) {
-        return;
-      }
 
-      try {
-        Assert.Contains("AdSec", process.ProcessName);
-      } finally {
-        process.Kill();
-      }
+      var process = _component.OpenAdSecExe();
+
+      Assert.Same(fakeProcess, process);
+      Assert.Equal(1, fakeLauncher.CallCount);
+      Assert.Equal(tempPath, fakeLauncher.LastFilePath);
+    }
+
+    [Fact]
+    public void SolveInternalShowsErrorWhenOpenFails() {
+      var fakeLauncher = new FakeAdSecLauncher {
+        Result = null,
+      };
+
+      _component = ComponentMother();
+      _component.AdSecLauncher = fakeLauncher;
+      SetSections(new List<object> { AdSecUtility.SectionObject(), AdSecUtility.SectionObject() });
+      SetFilePath();
+      ComponentTestHelper.ComputeData(_component);
+
+      var process = _component.OpenAdSecExe();
+      Assert.Null(process);
+
+      ComponentTestHelper.ComputeData(_component);
+
+      var runtimeMessages = _component.RuntimeMessages(GH_RuntimeMessageLevel.Error);
+      Assert.Contains(runtimeMessages, x => x.Contains("Could not open AdSec. No AdSec installation was found."));
+    }
+
+    [Fact]
+    public void SolveInternalClearsOpenErrorAfterSuccessfulRetry() {
+      var fakeLauncher = new FakeAdSecLauncher {
+        Result = null,
+      };
+
+      _component = ComponentMother();
+      _component.AdSecLauncher = fakeLauncher;
+      SetSections(new List<object> { AdSecUtility.SectionObject(), AdSecUtility.SectionObject() });
+      SetFilePath();
+      ComponentTestHelper.ComputeData(_component);
+
+      _component.OpenAdSecExe();
+      ComponentTestHelper.ComputeData(_component);
+      Assert.Contains(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error),
+        x => x.Contains("Could not open AdSec. No AdSec installation was found."));
+
+      fakeLauncher.Result = new Process();
+      _component.OpenAdSecExe();
+      ComponentTestHelper.ComputeData(_component);
+
+      Assert.DoesNotContain(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error),
+        x => x.Contains("Could not open AdSec. No AdSec installation was found."));
     }
 
     [Fact]
@@ -246,7 +298,6 @@ namespace AdSecGHTests.Components.AdSec {
       Assert.True(castSuccessful);
       Assert.Equal(1, path);
       Assert.Equal(1, index);
-
     }
 
     [Fact]
@@ -324,13 +375,25 @@ namespace AdSecGHTests.Components.AdSec {
 
     [Fact]
     public void CreatesPanelWithFilePath() {
-      int index = 3;
+      const int index = 3;
 
       Assert.Empty(_component.Params.Input[index].Sources);
 
       _component.WriteFilePathToPanel(new Dummies.DummyContext());
 
       Assert.NotEmpty(_component.Params.Input[index].Sources);
+    }
+
+    private class FakeAdSecLauncher : IAdSecLauncher {
+      public int CallCount { get; private set; }
+      public string LastFilePath { get; private set; }
+      public Process Result { get; set; }
+
+      public Process StartLatest(string filePath) {
+        CallCount++;
+        LastFilePath = filePath;
+        return Result;
+      }
     }
   }
 }

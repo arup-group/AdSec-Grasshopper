@@ -22,6 +22,10 @@ namespace AdSecGH.Components {
     private string _jsonString;
     private string _fileName;
     private bool canOpen;
+    private bool failedToOpen = false;
+    internal IAdSecLauncher AdSecLauncher { get; set; } = new AdSecLauncher(
+    new AdSecExecutableLocator(),
+    new ProcessStarter());
 
     public SaveModel() : base("Save AdSec", "Save",
       "Saves your AdSec Section with loads from this parametric nightmare", CategoryName.Name(),
@@ -46,16 +50,13 @@ namespace AdSecGH.Components {
     }
 
     public Process OpenAdSecExe() {
-      return canOpen ? RunAdSec(_fileName) : null;
-    }
-
-    internal static Process RunAdSec(string file) {
-      string programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-      string fullPath = Path.Combine(programFiles, @"Oasys\AdSec 10.0\AdSec.exe");
-      if (!File.Exists(fullPath)) {
+      if (!canOpen) {
         return null;
       }
-      return Process.Start(fullPath, file);
+
+      var process = AdSecLauncher.StartLatest(_fileName);
+      failedToOpen = process == null;
+      return process;
     }
 
     public override bool Read(GH_IReader reader) {
@@ -119,6 +120,9 @@ namespace AdSecGH.Components {
     protected override void RegisterOutputParams(GH_OutputParamManager pManager) { }
 
     protected override void SolveInternal(IGH_DataAccess DA) {
+      if (failedToOpen) {
+        this.AddRuntimeError("Could not open AdSec. No AdSec installation was found.");
+      }
       var sections = this.GetAdSecSections(DA, 0);
       if (!sections.Any()) {
         return;
@@ -152,6 +156,7 @@ namespace AdSecGH.Components {
       _fileName = null;
       canOpen = false;
       _jsonString = null;
+      failedToOpen = false; // Reset the flag when the input changes - someone could install AdSec in the meantime and then open it.
     }
   }
 }
