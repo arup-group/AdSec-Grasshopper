@@ -2,6 +2,9 @@
 using Oasys.AdSec.Reinforcement.Groups;
 
 namespace AdSecGH.Parameters {
+  /// <summary>
+  ///   This class provides a parameter interface for the <see cref="AdSecRebarGroupGoo" /> type.
+  /// </summary>
   public class AdSecRebarGroup {
 
     public AdSecRebarGroup() { }

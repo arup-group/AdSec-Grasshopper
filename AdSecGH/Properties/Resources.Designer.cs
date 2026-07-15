@@ -223,9 +223,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap DesignCodeParameter {
+        internal static System.Drawing.Bitmap DesignCodeParam {
             get {
-                object obj = ResourceManager.GetObject("DesignCodeParameter", resourceCulture);
+                object obj = ResourceManager.GetObject("DesignCodeParam", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -403,9 +403,9 @@ namespace AdSecGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap AdSecSectionParam {
+        internal static System.Drawing.Bitmap SectionParam {
             get {
-                object obj = ResourceManager.GetObject("AdSecSectionParam", resourceCulture);
+                object obj = ResourceManager.GetObject("SectionParam", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -160,8 +160,8 @@
   <data name="CreateDeformationLoad" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\CreateDeformationLoad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="DesignCodeParameter" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\DesignCodeParameter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="DesignCodeParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\DesignCodeParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="EditCrackCalcParams" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\EditCrackCalcParams.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -214,8 +214,8 @@
   <data name="SaveAdSec" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\SaveAdSec.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="AdSecSectionParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\AdSecSectionParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SectionParam" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\SectionParam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ServiceabilityLimitStateResult" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\ServiceabilityLimitStateResult.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
