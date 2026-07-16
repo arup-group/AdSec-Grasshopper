@@ -7,6 +7,7 @@
     "ignore-mutations": [
       "string"
     ],
+	"target-framework": "net8.0",
     "since": {
       "target": "origin/main"
     },
