@@ -82,9 +82,21 @@ steps:
     env:
       MSBUILDDISABLENODEREUSE: 1
 
+  # CHANGED: pinned local tool version compatible with net7
   - powershell: |
-      dotnet tool install --global dotnet-stryker
-    displayName: Install Stryker
+      if (-not (Test-Path ".config/dotnet-tools.json")) {
+        dotnet new tool-manifest
+      }
+
+      $strykerVersion = "4.8.1"
+
+      $installed = dotnet tool list --local | Select-String "dotnet-stryker"
+      if ($installed) {
+        dotnet tool update --local dotnet-stryker --version $strykerVersion
+      } else {
+        dotnet tool install --local dotnet-stryker --version $strykerVersion
+      }
+    displayName: Install Stryker 4.8.1
     failOnStderr: false
 
   - task: VSBuild@1
@@ -164,14 +176,16 @@ steps:
       # Load and modify JSON
       $json = Get-Content $jsonPath | ConvertFrom-Json
       $json."stryker-config".since.target = $originBranch
+      $json."stryker-config"."target-framework" = "net7.0"
 
       # Save updated JSON back to file
       $json | ConvertTo-Json -Depth 10 | Set-Content $jsonPath -Encoding UTF8
     displayName: "Update stryker-config.json target branch"
     condition: ne(variables['System.PullRequest.TargetBranch'], '')
 
+  # CHANGED: run local tool instead of global
   - powershell: |
-      $output = dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
+      $output = dotnet tool run stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
       $scoreLine = $output | Select-String -Pattern 'final mutation score is (\d+(\.\d+)?) ?%'
       if ($scoreLine) {
         $matches = [regex]::Match($scoreLine.Line, 'final mutation score is (\d+(\.\d+)?) ?%')
@@ -182,10 +196,10 @@ steps:
         # Set both variables
         Write-Host "##vso[task.setvariable variable=mutationScore]$score"
         Write-Host "##vso[task.setvariable variable=mutationStatus]$status"
-        } else {
-          Write-Host "No score found"
-          Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
-          Write-Host "##vso[task.setvariable variable=mutationStatus]➖"
+      } else {
+        Write-Host "No score found"
+        Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
+        Write-Host "##vso[task.setvariable variable=mutationStatus]➖"
       }
     displayName: Run Stryker
     failOnStderr: false
