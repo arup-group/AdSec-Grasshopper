@@ -22,41 +22,48 @@ namespace AdSecGH.Helpers {
       return FindLatestExePath(GetStandardInstallationPaths());
     }
 
-    internal string FindLatestExePath(IEnumerable<string> roots) {
+    internal static string FindLatestExePath(IEnumerable<string> roots) {
       Version latest = null;
       string latestExe = null;
 
       foreach (string root in roots.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct()) {
-        string oasys = Path.Combine(root, "Oasys");
-        if (!Directory.Exists(oasys)) {
-          continue;
-        }
-
-        string[] dirs;
-        try {
-          dirs = Directory.GetDirectories(oasys, "AdSec *");
-        } catch {
-          continue;
-        }
+        string[] dirs = GetAdSecDirectories(root);
 
         foreach (string dir in dirs) {
-          if (!TryGetVersion(dir, out Version version)) {
-            continue;
-          }
-
-          string exe = Path.Combine(dir, "AdSec.exe");
-          if (!File.Exists(exe)) {
-            continue;
-          }
-
-          if (latest == null || version > latest) {
-            latest = version;
-            latestExe = exe;
-          }
+          TryUpdateLatestExecutable(dir, ref latest, ref latestExe);
         }
       }
 
       return latestExe;
+    }
+
+    private static void TryUpdateLatestExecutable(string dir, ref Version latest, ref string latestExe) {
+      if (!TryGetVersion(dir, out Version version)) {
+        return;
+      }
+
+      string exe = Path.Combine(dir, "AdSec.exe");
+      if (!File.Exists(exe)) {
+        return;
+      }
+
+      if (latest == null || version > latest) {
+        latest = version;
+        latestExe = exe;
+      }
+    }
+
+    private static string[] GetAdSecDirectories(string root) {
+      string oasys = Path.Combine(root, "Oasys");
+      if (!Directory.Exists(oasys)) {
+        return new string[0];
+      }
+
+      try {
+        return Directory.GetDirectories(oasys, "AdSec *");
+      } catch {
+        return new string[0];
+      }
     }
 
     private static IEnumerable<string> GetStandardInstallationPaths() {

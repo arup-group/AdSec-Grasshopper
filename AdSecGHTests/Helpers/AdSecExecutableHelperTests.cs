@@ -24,30 +24,25 @@ namespace AdSecGHTests.Helpers {
 
     [Fact]
     public void FindLatestExePath_ReturnsNull_WhenNoInstallationsExist() {
-      var locator = new AdSecExecutableLocator();
-
-      var result = locator.FindLatestExePath(new[] { _tempRoot });
+      var result = AdSecExecutableLocator.FindLatestExePath(new[] { _tempRoot });
 
       Assert.Null(result);
     }
 
     [Fact]
     public void FindLatestExePath_ReturnsHighestVersion_WhenMultipleVersionsExist() {
-      var locator = new AdSecExecutableLocator();
-
       string rootA = Path.Combine(_tempRoot, "A");
       string rootB = Path.Combine(_tempRoot, "B");
       string exe100 = CreateInstall(rootA, "10.0", true);
       string exe102 = CreateInstall(rootB, "10.2", true);
 
-      var result = locator.FindLatestExePath(new[] { rootA, rootB });
+      var result = AdSecExecutableLocator.FindLatestExePath(new[] { rootA, rootB });
 
       Assert.Equal(exe102, result);
     }
 
     [Fact]
     public void FindLatestExePath_IgnoresInvalidAndMissingExeFolders() {
-      var locator = new AdSecExecutableLocator();
       string root = Path.Combine(_tempRoot, "R");
 
       Directory.CreateDirectory(Path.Combine(root, "Oasys", "AdSec Beta"));
@@ -55,18 +50,17 @@ namespace AdSecGHTests.Helpers {
 
       string validExe = CreateInstall(root, "10.5", true);
 
-      var result = locator.FindLatestExePath(new[] { root });
+      var result = AdSecExecutableLocator.FindLatestExePath(new[] { root });
 
       Assert.Equal(validExe, result);
     }
 
     [Fact]
     public void FindLatestExePath_HandlesDuplicateAndEmptyRoots() {
-      var locator = new AdSecExecutableLocator();
       string root = Path.Combine(_tempRoot, "R");
       string exe = CreateInstall(root, "10.1", true);
 
-      var result = locator.FindLatestExePath(new[] { root, root, "", " ", null });
+      var result = AdSecExecutableLocator.FindLatestExePath(new[] { root, root, "", " ", null });
 
       Assert.Equal(exe, result);
     }
