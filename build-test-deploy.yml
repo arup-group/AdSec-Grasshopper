@@ -6,7 +6,7 @@ trigger:
 
 variables:
   - group: s3PushInstallers
-  - group: pipeline-tokens
+  - group: grasshopper-public-repos
   - name: configuration
     value: Release
 
@@ -83,7 +83,7 @@ steps:
       MSBUILDDISABLENODEREUSE: 1
 
   - powershell: |
-      dotnet tool install --global dotnet-stryker
+      dotnet tool install --global dotnet-stryker --version 3.12.0
     displayName: Install Stryker
     failOnStderr: false
 
@@ -98,25 +98,38 @@ steps:
     env:
       MSBUILDDISABLENODEREUSE: 1
 
-  - powershell: |
-      dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecCore .\AdSecCoreTests\bin\x64\Release\net7.0\AdSecCoreTests.dll
-    displayName: dotnet tests AdSecCore
-    failOnStderr: false
+  - task: VSTest@3
+    displayName: 'dotnet tests AdSecCore'
+    inputs:
+      testSelector: 'testAssemblies'
+      testAssemblyVer2: |
+        AdSecCoreTests\bin\x64\Release\net7.0\AdSecCoreTests.dll
+      resultsFolder: '$(System.DefaultWorkingDirectory)\results\adsecCore'
+      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(USERPROFILE)\.nuget\packages\coverlet.collector\6.0.2\build"'
+
+  - task: VSTest@3
+    displayName: 'dotnet tests AdSecGh'
+    inputs:
+      testSelector: 'testAssemblies'
+      testAssemblyVer2: |
+        AdSecGHTests\bin\x64\Release\net48\AdSecGHTests.dll
+      resultsFolder: '$(System.DefaultWorkingDirectory)\results\adsecgh'
+      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(USERPROFILE)\.nuget\packages\coverlet.collector\6.0.2\build"'
+
+  - task: VSTest@3
+    displayName: 'dotnet tests Integration'
+    inputs:
+      testSelector: 'testAssemblies'
+      testAssemblyVer2: |
+        IntegrationTests\bin\x64\Release\net48\IntegrationTests.dll
+      resultsFolder: '$(System.DefaultWorkingDirectory)\results\integration'
+      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(USERPROFILE)\.nuget\packages\coverlet.collector\6.0.2\build"'
+
 
   - powershell: |
-      dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecgh .\AdSecGHTests\bin\x64\Release\net48\AdSecGHTests.dll
-    displayName: dotnet tests AdSecGh
-    failOnStderr: false
-
-  - powershell: |
-      dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\integration  .\IntegrationTests\bin\x64\Release\net48\IntegrationTests.dll
-    displayName: dotnet tests Integration
-    failOnStderr: false
-
-  - powershell: |
-      if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post | Select-Object StatusCode).StatusCode) {
+      if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post -UseBasicParsing | Select-Object StatusCode).StatusCode) {
         Write-Output "codecov.yml is invalid"
-        Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post
+        Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post -UseBasicParsing
         exit(1)
       } else {
         Write-Output "codecov.yml is valid"
