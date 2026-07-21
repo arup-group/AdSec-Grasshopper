@@ -173,14 +173,20 @@ steps:
 
       Write-Host "Using Stryker since target: $originBranch"
 
-      # Load and modify JSON
+      # Load and modify JSON safely
       $json = Get-Content $jsonPath | ConvertFrom-Json
-      $json."stryker-config".since.target = $originBranch
 
-      # Save updated JSON back to file
-      $json | ConvertTo-Json -Depth 10 | Set-Content $jsonPath -Encoding UTF8
+      # FIX: Only update if the 'since' property exists in the JSON file
+      if ($json."stryker-config".since) {
+        $json."stryker-config".since.target = $originBranch
+        # Save updated JSON back to file
+        $json | ConvertTo-Json -Depth 10 | Set-Content $jsonPath -Encoding UTF8
+      } else {
+        Write-Host "Skipping target injection because 'since' block is removed."
+      }
     displayName: "Update stryker-config.json target branch"
     condition: ne(variables['System.PullRequest.TargetBranch'], '')
+
 
   - powershell: |
       # 1. Get the target branch name safely from Azure DevOps metadata
