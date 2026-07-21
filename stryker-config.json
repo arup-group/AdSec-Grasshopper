@@ -4,7 +4,10 @@
     "ignore-mutations": ["String"],
     "since": {
       "target": "origin/main",
-      "diff": true
+      "ignore-changes-in": [
+        "**/bin/**/*",
+        "**/obj/**/*"
+      ]
     },
     "thresholds": { "high": 80, "low": 60, "break": 0 }
   }
