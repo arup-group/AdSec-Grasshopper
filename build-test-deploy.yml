@@ -193,7 +193,7 @@ steps:
 
   - powershell: |
 
-     dotnet stryker -s AdSecCore.sln --project AdSecCore/AdSecCore.csproj --test-project AdSecCoreTests/AdSecCoreTests.csproj --mutate "AdSecCore/**/*" -l advanced *>&1 | Tee-Object -FilePath "stryker_output.log"
+     dotnet stryker -s AdSecCore.sln --project AdSecCore/AdSecCore.csproj -l advanced *>&1 | Tee-Object -FilePath "stryker_output.log"
 
      if ($LASTEXITCODE -ne 0) {
         Write-Error "Stryker crashed during code compilation!"
