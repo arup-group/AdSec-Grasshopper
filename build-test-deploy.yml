@@ -184,7 +184,13 @@ steps:
     condition: ne(variables['System.PullRequest.TargetBranch'], '')
 
   - powershell: |
-      $output = dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
+      $output = dotnet stryker --project AdSecCore.csproj --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
+      if ($LASTEXITCODE -ne 0) {
+        Write-Error "Stryker crashed during code compilation!"
+        Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
+        Write-Host "##vso[task.setvariable variable=mutationStatus]💥"
+        exit 1
+      }
       $scoreLine = $output | Select-String -Pattern 'final mutation score is (\d+(\.\d+)?) ?%'
       if ($scoreLine) {
         $matches = [regex]::Match($scoreLine.Line, 'final mutation score is (\d+(\.\d+)?) ?%')
