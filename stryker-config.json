@@ -7,9 +7,6 @@
     "ignore-mutations": [
       "String"
     ],
-    "since": {
-      "target": "origin/main"
-    },
     "thresholds": {
       "high": 80,
       "low": 60,
