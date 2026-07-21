@@ -3,9 +3,9 @@
     "reporters": ["html", "progress"],
     "ignore-mutations": ["String"],
     "since": {
-      "target": "origin/main"
+      "target": "origin/main",
+      "diff": true
     },
-    "diff": true,
     "thresholds": { "high": 80, "low": 60, "break": 0 }
   }
 }
