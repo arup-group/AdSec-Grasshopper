@@ -237,15 +237,16 @@ steps:
     displayName: Run Stryker
     failOnStderr: false
 
-
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Stryker Mutation Report'
+    condition: and(succeeded(), ne(variables['mutationStatus'], '➖'), ne(variables['mutationStatus'], '💥'))
     inputs:
-      pathToPublish: '$(System.DefaultWorkingDirectory)/StrykerOutput'
+      pathToPublish: '$(System.DefaultWorkingDirectory)/StrykerOutput/'
       artifactName: 'StrykerReport'
 
   - task: PublishMutationReport@2
     displayName: 'Publish Mutation Test Report'
+    condition: and(succeeded(), ne(variables['mutationStatus'], '➖'), ne(variables['mutationStatus'], '💥'))
     inputs:
       reportPattern: '$(System.DefaultWorkingDirectory)/StrykerOutput/**/mutation-report.html'
       reportDisplayName: 'Mutation Report'
