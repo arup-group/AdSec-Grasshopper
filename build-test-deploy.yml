@@ -183,9 +183,14 @@ steps:
     condition: ne(variables['System.PullRequest.TargetBranch'], '')
 
   - powershell: |
+      # Stash untracked/unstaged build agent artifacts to prevent LibGit2SharpException
+      git stash -u
+
       dotnet stryker -s AdSecCore.sln --project AdSecCore/AdSecCore.csproj --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced *>&1 | Tee-Object -FilePath "stryker.log"
 
-      # MODIFIED: Check for a compilation crash up front
+      # Pop the stash back afterwards to restore any work files if needed
+      git stash pop 2>$null
+
       if ($LASTEXITCODE -ne 0) {
         Write-Error "Stryker crashed during code compilation!"
         Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
@@ -198,7 +203,7 @@ steps:
 
       if ($scoreLine) {
         $matches = [regex]::Match($scoreLine.Line, 'final mutation score is (\d+(\.\d+)?) ?%')
-        $score = [double]$matches.Groups[1].Value
+        $score = [double]$matches.Groups.Value
 
         $status = if ($score -ge 50) { "✅" } else { "❌" }
 
@@ -212,6 +217,7 @@ steps:
       }
     displayName: Run Stryker
     failOnStderr: false
+
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Stryker Mutation Report'

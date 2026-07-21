@@ -3,11 +3,7 @@
     "reporters": ["html", "progress"],
     "ignore-mutations": ["String"],
     "since": {
-      "target": "origin/main",
-      "ignore-changes-in": [
-        "**/bin/**/*",
-        "**/obj/**/*"
-      ]
+      "target": "origin/main"
     },
     "thresholds": { "high": 80, "low": 60, "break": 0 }
   }
