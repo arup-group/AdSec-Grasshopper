@@ -88,6 +88,13 @@ namespace AdSecCoreTests {
     }
 
     [Fact]
+    public void Preloadcountok() {
+      singleBars.Preload = IPreStress.Create(Pressure.FromMegapascals(1));
+      operation.Compute();
+      Assert.Single(operation.PreLoad.Value);
+    }
+
+    [Fact]
     public void ShouldAddOutputsAsManyMaterialsAsRebars() {
       Assert.Single(operation.Material.Value);
     }
