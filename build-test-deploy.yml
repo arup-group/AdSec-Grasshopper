@@ -176,7 +176,15 @@ steps:
 
       # Load and modify JSON
       $json = Get-Content $jsonPath | ConvertFrom-Json
-      $json."stryker-config".since.target = $originBranch
+      if ($json."stryker-config".since) {
+        $json."stryker-config".since.target = $originBranch
+
+        # Save updated JSON back to file only if it was modified
+        $json | ConvertTo-Json -Depth 10 | Set-Content $jsonPath -Encoding UTF8
+        Write-Host "Successfully updated stryker-config.json with target branch."
+        } else {
+            Write-Warning "The 'since' feature block is not present in stryker-config.json. Skipping branch target injection."
+        }
 
       # Save updated JSON back to file
       $json | ConvertTo-Json -Depth 10 | Set-Content $jsonPath -Encoding UTF8
