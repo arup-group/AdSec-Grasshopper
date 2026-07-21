@@ -103,7 +103,7 @@ steps:
     inputs:
       testSelector: 'testAssemblies'
       testAssemblyVer2: |
-        AdSecCoreTests\bin\x64\Release\net7.0\AdSecCoreTests.dll
+        AdSecCoreTests\bin\x64\Release\net8.0\AdSecCoreTests.dll
       resultsFolder: '$(System.DefaultWorkingDirectory)\results\adsecCore'
       otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(USERPROFILE)\.nuget\packages\coverlet.collector\6.0.2\build"'
 
