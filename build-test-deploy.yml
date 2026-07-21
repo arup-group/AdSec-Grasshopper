@@ -184,7 +184,7 @@ steps:
     condition: ne(variables['System.PullRequest.TargetBranch'], '')
 
   - powershell: |
-     dotnet stryker --project AdSecCore/AdSecCore.csproj --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced *>&1 | Tee-Object -FilePath "stryker_output.log"
+     dotnet stryker -s AdSecCore.sln --project AdSecCore/AdSecCore.csproj --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced *>&1 | Tee-Object -FilePath "stryker_output.log"
      if ($LASTEXITCODE -ne 0) {
         Write-Error "Stryker crashed during code compilation!"
         Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
