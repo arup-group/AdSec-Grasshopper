@@ -1,16 +1,11 @@
 {
   "stryker-config": {
-    "reporters": [
-      "html",
-      "progress"
-    ],
-    "ignore-mutations": [
-      "String"
-    ],
-    "thresholds": {
-      "high": 80,
-      "low": 60,
-      "break": 0
-    }
+    "reporters": ["html", "progress"],
+    "ignore-mutations": ["String"],
+    "since": {
+      "target": "origin/main"
+    },
+    "diff": true,
+    "thresholds": { "high": 80, "low": 60, "break": 0 }
   }
 }

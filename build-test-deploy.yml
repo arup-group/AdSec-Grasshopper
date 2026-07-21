@@ -125,7 +125,6 @@ steps:
       resultsFolder: '$(System.DefaultWorkingDirectory)\results\integration'
       otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(USERPROFILE)\.nuget\packages\coverlet.collector\6.0.2\build"'
 
-
   - powershell: |
       if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post -UseBasicParsing | Select-Object StatusCode).StatusCode) {
         Write-Output "codecov.yml is invalid"
@@ -176,15 +175,7 @@ steps:
 
       # Load and modify JSON
       $json = Get-Content $jsonPath | ConvertFrom-Json
-      if ($json."stryker-config".since) {
-        $json."stryker-config".since.target = $originBranch
-
-        # Save updated JSON back to file only if it was modified
-        $json | ConvertTo-Json -Depth 10 | Set-Content $jsonPath -Encoding UTF8
-        Write-Host "Successfully updated stryker-config.json with target branch."
-        } else {
-            Write-Warning "The 'since' feature block is not present in stryker-config.json. Skipping branch target injection."
-        }
+      $json."stryker-config".since.target = $originBranch
 
       # Save updated JSON back to file
       $json | ConvertTo-Json -Depth 10 | Set-Content $jsonPath -Encoding UTF8
@@ -192,17 +183,19 @@ steps:
     condition: ne(variables['System.PullRequest.TargetBranch'], '')
 
   - powershell: |
+      dotnet stryker -s AdSecCore.sln --project AdSecCore/AdSecCore.csproj --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced *>&1 | Tee-Object -FilePath "stryker.log"
 
-     dotnet stryker -s AdSecCore.sln --project AdSecCore/AdSecCore.csproj -l advanced *>&1 | Tee-Object -FilePath "stryker_output.log"
-
-     if ($LASTEXITCODE -ne 0) {
+      # MODIFIED: Check for a compilation crash up front
+      if ($LASTEXITCODE -ne 0) {
         Write-Error "Stryker crashed during code compilation!"
         Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
         Write-Host "##vso[task.setvariable variable=mutationStatus]💥"
         exit 1
       }
-      $logContent = Get-Content -Path "stryker_output.log" -Raw
-      $scoreLine = $output | Select-String -Pattern 'final mutation score is (\d+(\.\d+)?) ?%'
+
+      $logContent = Get-Content -Path "stryker.log" -Raw
+      $scoreLine = $logContent | Select-String -Pattern 'final mutation score is (\d+(\.\d+)?) ?%'
+
       if ($scoreLine) {
         $matches = [regex]::Match($scoreLine.Line, 'final mutation score is (\d+(\.\d+)?) ?%')
         $score = [double]$matches.Groups[1].Value
