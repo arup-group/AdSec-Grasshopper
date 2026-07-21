@@ -4,12 +4,16 @@
       "html",
       "progress"
     ],
-    "ignored-mutations": [
-      "string"
+    "ignore-mutations": [
+      "String"
     ],
     "since": {
       "target": "origin/main"
     },
-    "thresholds": { "high": 80, "low": 60, "break": 0 }
+    "thresholds": {
+      "high": 80,
+      "low": 60,
+      "break": 0
+    }
   }
 }
