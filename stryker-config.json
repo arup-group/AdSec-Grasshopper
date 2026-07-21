@@ -4,7 +4,7 @@
       "html",
       "progress"
     ],
-    "ignore-mutations": [
+    "ignored-mutations": [
       "string"
     ],
     "since": {
