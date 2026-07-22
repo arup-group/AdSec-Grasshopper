@@ -152,18 +152,19 @@ namespace AdSecCore.Functions {
       var baseLoad = BaseLoad.Value;
       var loadComponent = OptimisedLoad.Value;
       var increment = LoadIncrement.Value;
-      var sls = solution.Solution.Serviceability.Check(baseLoad);
+      var slsResult = solution.Solution.Serviceability;
+      var sls = slsResult.Check(baseLoad);
       var maxCrack = MaximumCrack.Value.ToUnit(sls.MaximumWidthCrack.Width.Unit);
       while (sls.MaximumWidthCrack.Width <= maxCrack) {
         // update load
         UpdatedLoad(loadComponent, ref baseLoad, increment);
-        sls = solution.Solution.Serviceability.Check(baseLoad);
+        sls = slsResult.Check(baseLoad);
       }
 
       // update load to one step back
       UpdatedLoad(loadComponent, ref baseLoad, -increment);
 
-      sls = solution.Solution.Serviceability.Check(baseLoad);
+      sls = slsResult.Check(baseLoad);
 
       SectionLoad.Value = sls.Load;
       MaximumCracking.Value = new CrackLoad() { Load = sls.MaximumWidthCrack, Plane = solution.SectionDesign.LocalPlane };
