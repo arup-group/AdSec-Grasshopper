@@ -228,13 +228,19 @@ steps:
 
       Write-Host "Calculating PR modifications against origin/$targetBranch..."
 
-      # Extract changed C# files and format paths for Windows agent compatibility
-      $changedFiles = git diff --name-only origin/$targetBranch...HEAD -- "*.cs" | ForEach-Object { $_ -replace '\\', '/' }
+      # Extract changed AdSecCore C# files and format paths for Stryker.
+      # Stryker expects mutate paths relative to the mutated project's root, not the repo root.
+      $changedFiles = git diff --name-only origin/$targetBranch...HEAD -- "*.cs" |
+        ForEach-Object { $_ -replace '\\', '/' } |
+        Where-Object { $_ -like 'AdSecCore/*.cs' }
 
       if ($changedFiles) {
+          $mutateFiles = $changedFiles | ForEach-Object { $_ -replace '^AdSecCore/', '' }
+
           # Format multiple files into a clean comma-separated list
-          $mutateArg = $changedFiles -join ','
-          Write-Host "Fast PR Optimization Active. Targeted files: $mutateArg"
+          $mutateArg = $mutateFiles -join ','
+          Write-Host "Fast PR Optimization Active. Targeted repo files: $($changedFiles -join ',')"
+          Write-Host "Stryker mutate filter: $mutateArg"
 
           # Execute Stryker focusing ONLY on the PR modifications
           dotnet stryker -s AdSecCore.sln --project AdSecCore/AdSecCore.csproj --test-project AdSecCoreTests/AdSecCoreTests.csproj --mutate "$mutateArg" -l advanced *>&1 | Tee-Object -FilePath "stryker.log"
@@ -263,8 +269,8 @@ steps:
             Write-Host "##vso[task.setvariable variable=mutationStatus]➖"
           }
       } else {
-          # If no C# code changed, skip execution instantly to prevent long runs!
-          Write-Warning "No C# file changes detected in this PR. Skipping mutation testing execution entirely."
+          # If no AdSecCore C# code changed, skip execution instantly to prevent long runs.
+          Write-Warning "No AdSecCore C# file changes detected in this PR. Skipping mutation testing execution entirely."
           Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
           Write-Host "##vso[task.setvariable variable=mutationStatus]➖"
       }
