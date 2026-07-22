@@ -258,7 +258,7 @@ steps:
 
           if ($scoreLine) {
             $matches = [regex]::Match($scoreLine.Line, 'final mutation score is (\d+(\.\d+)?) ?%')
-            $score = [double]$matches.Groups.Value
+            $score = [double]$matches.Groups[1].Value
             $status = if ($score -ge 50) { "✅" } else { "❌" }
 
             Write-Host "##vso[task.setvariable variable=mutationScore]$score"
