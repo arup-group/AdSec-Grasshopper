@@ -278,7 +278,7 @@ steps:
       pathToPublish: '$(STRYKER_OUTPUT_DIRECTORY)/'
       artifactName: 'StrykerReport'
 
-  - task: PublishMutationReport@2.4.0
+  - task: PublishMutationReport@2
     displayName: 'Publish Mutation Test Report'
     condition: and(succeeded(), ne(variables['mutationStatus'], '➖'), ne(variables['mutationStatus'], '💥'))
     inputs:
