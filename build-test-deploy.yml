@@ -175,8 +175,6 @@ steps:
 
       # Load and modify JSON safely
       $json = Get-Content $jsonPath | ConvertFrom-Json
-
-      # FIX: Only update if the 'since' property exists in the JSON file
       if ($json."stryker-config".since) {
         $json."stryker-config".since.target = $originBranch
         # Save updated JSON back to file
