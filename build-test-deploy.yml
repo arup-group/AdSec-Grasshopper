@@ -6,9 +6,33 @@ trigger:
 
 variables:
   - group: s3PushInstallers
-  - group: pipeline-tokens
+  - group: grasshopper-public-repos
   - name: configuration
     value: Release
+  - name: DEFAULT_WORKING_DIRECTORY
+    value: $(System.DefaultWorkingDirectory)
+  - name: PIPELINE_WORKSPACE
+    value: $(Pipeline.Workspace)
+  - name: SOURCE_BRANCH
+    value: $(Build.SourceBranch)
+  - name: TARGET_BRANCH
+    value: $(System.PullRequest.TargetBranch)
+  - name: APPX_PACKAGE_DIRECTORY
+    value: $(build.artifactStagingDirectory)\AppxPackages
+  - name: RESULTS_DIRECTORY
+    value: $(DEFAULT_WORKING_DIRECTORY)\results
+  - name: ADSEC_CORE_RESULTS_DIRECTORY
+    value: $(RESULTS_DIRECTORY)\adsecCore
+  - name: ADSEC_GH_RESULTS_DIRECTORY
+    value: $(RESULTS_DIRECTORY)\adsecgh
+  - name: INTEGRATION_RESULTS_DIRECTORY
+    value: $(RESULTS_DIRECTORY)\integration
+  - name: YAK_RESULTS_DIRECTORY
+    value: $(RESULTS_DIRECTORY)\yak
+  - name: STRYKER_OUTPUT_DIRECTORY
+    value: $(DEFAULT_WORKING_DIRECTORY)/StrykerOutput
+  - name: COVERLET_ADAPTER_PATH
+    value: $(USERPROFILE)\.nuget\packages\coverlet.collector\6.0.2\build
 
 pool: 'rhino-compute'
 
@@ -21,7 +45,7 @@ steps:
     failOnStderr: true
 
   - powershell: |
-      $installerPath = $(ls -r $(Pipeline.Workspace)\gsa.msi)
+      $installerPath = Get-ChildItem -Path $env:PIPELINE_WORKSPACE\gsa.msi -Recurse
       Write-output "Installer Path: ${installerPath}"
       Write-output "GSA Version:"
       if (!(Test-Path $installerPath.FullName)) {
@@ -63,7 +87,7 @@ steps:
   - task: UseDotNet@2
     inputs:
       packageType: 'sdk'
-      version: '7.x'  # Specify the version you need, e.g., '7.0.100'
+      version: '8.x'
 
   - task: NuGetCommand@2
     displayName: 'Restoring NuGet packages'
@@ -75,7 +99,7 @@ steps:
     displayName: 'Building project in $(configuration)'
     inputs:
       solution: 'AdSecGH.sln'
-      msbuildArgs: '/p:AppxBundlePlatforms="x64" /p:AppxPackageDir="$(build.artifactStagingDirectory)\AppxPackages" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload /m /nr:false'
+      msbuildArgs: '/p:AppxBundlePlatforms="x64" /p:AppxPackageDir="$(APPX_PACKAGE_DIRECTORY)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload /m /nr:false'
       platform: 'x64'
       configuration: '$(configuration)'
       clean: true
@@ -91,32 +115,44 @@ steps:
     displayName: 'Re-Building project in $(configuration)'
     inputs:
       solution: 'AdSecGH.sln'
-      msbuildArgs: '/p:AppxBundlePlatforms="x64" /p:AppxPackageDir="$(build.artifactStagingDirectory)\AppxPackages" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload /m /nr:false'
+      msbuildArgs: '/p:AppxBundlePlatforms="x64" /p:AppxPackageDir="$(APPX_PACKAGE_DIRECTORY)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload /m /nr:false'
       platform: 'x64'
       configuration: '$(configuration)'
       clean: true
     env:
       MSBUILDDISABLENODEREUSE: 1
 
-  - powershell: |
-      dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecCore .\AdSecCoreTests\bin\x64\Release\net7.0\AdSecCoreTests.dll
-    displayName: dotnet tests AdSecCore
-    failOnStderr: false
+  - task: VSTest@3
+    displayName: 'dotnet tests AdSecCore'
+    inputs:
+      testSelector: 'testAssemblies'
+      testAssemblyVer2: |
+        AdSecCoreTests\bin\x64\Release\net8.0\AdSecCoreTests.dll
+      resultsFolder: '$(ADSEC_CORE_RESULTS_DIRECTORY)'
+      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)"'
+
+  - task: VSTest@3
+    displayName: 'dotnet tests AdSecGh'
+    inputs:
+      testSelector: 'testAssemblies'
+      testAssemblyVer2: |
+        AdSecGHTests\bin\x64\Release\net48\AdSecGHTests.dll
+      resultsFolder: '$(ADSEC_GH_RESULTS_DIRECTORY)'
+      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)"'
+
+  - task: VSTest@3
+    displayName: 'dotnet tests Integration'
+    inputs:
+      testSelector: 'testAssemblies'
+      testAssemblyVer2: |
+        IntegrationTests\bin\x64\Release\net48\IntegrationTests.dll
+      resultsFolder: '$(INTEGRATION_RESULTS_DIRECTORY)'
+      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)"'
 
   - powershell: |
-      dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\adsecgh .\AdSecGHTests\bin\x64\Release\net48\AdSecGHTests.dll
-    displayName: dotnet tests AdSecGh
-    failOnStderr: false
-
-  - powershell: |
-      dotnet test --collect:"XPlat Code Coverage" /TestAdapterPath:$env:UserProfile\.nuget\packages\coverlet.collector\6.0.2\build --results-directory .\results\integration  .\IntegrationTests\bin\x64\Release\net48\IntegrationTests.dll
-    displayName: dotnet tests Integration
-    failOnStderr: false
-
-  - powershell: |
-      if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post | Select-Object StatusCode).StatusCode) {
+      if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post -UseBasicParsing | Select-Object StatusCode).StatusCode) {
         Write-Output "codecov.yml is invalid"
-        Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post
+        Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post -UseBasicParsing
         exit(1)
       } else {
         Write-Output "codecov.yml is valid"
@@ -125,23 +161,23 @@ steps:
     failOnStderr: true
 
   - powershell: |
-      $coverage_file_adsecCore = (Resolve-Path $(System.DefaultWorkingDirectory)/results/adsecCore/*/coverage.cobertura.xml).Path
+      $coverage_file_adsecCore = (Resolve-Path (Join-Path $env:RESULTS_DIRECTORY 'adsecCore/*/coverage.cobertura.xml')).Path
       echo $coverage_file_adsecCore
-      $coverage_file_adsecgh = (Resolve-Path $(System.DefaultWorkingDirectory)/results/adsecgh/*/coverage.cobertura.xml).Path
+      $coverage_file_adsecgh = (Resolve-Path (Join-Path $env:RESULTS_DIRECTORY 'adsecgh/*/coverage.cobertura.xml')).Path
       echo $coverage_file_adsecgh
-      $coverage_file_integration = (Resolve-Path $(System.DefaultWorkingDirectory)/results/integration/*/coverage.cobertura.xml).Path
+      $coverage_file_integration = (Resolve-Path (Join-Path $env:RESULTS_DIRECTORY 'integration/*/coverage.cobertura.xml')).Path
       echo $coverage_file_integration
 
-      Copy-Item $coverage_file_adsecCore $(System.DefaultWorkingDirectory)\results\coverage_adsecCore.xml
-      Copy-Item $coverage_file_adsecgh $(System.DefaultWorkingDirectory)\results\coverage_adsecgh.xml
-      Copy-Item $coverage_file_integration $(System.DefaultWorkingDirectory)\results\coverage_integration.xml
+      Copy-Item $coverage_file_adsecCore (Join-Path $env:RESULTS_DIRECTORY 'coverage_adsecCore.xml')
+      Copy-Item $coverage_file_adsecgh (Join-Path $env:RESULTS_DIRECTORY 'coverage_adsecgh.xml')
+      Copy-Item $coverage_file_integration (Join-Path $env:RESULTS_DIRECTORY 'coverage_integration.xml')
       $ProgressPreference = 'SilentlyContinue'
       Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
-      ls $(System.DefaultWorkingDirectory)\
-      cd $(System.DefaultWorkingDirectory)\
-      .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_adsecCore.xml -F adsecCore
-      .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_adsecgh.xml -F adsecgh
-      .\codecov -t $env:CODECOV_TOKEN --dir $(System.DefaultWorkingDirectory)\results --file coverage_integration.xml -F adsecgh_integration
+      Get-ChildItem $env:DEFAULT_WORKING_DIRECTORY
+      Set-Location $env:DEFAULT_WORKING_DIRECTORY
+      .\codecov -t $env:CODECOV_TOKEN --dir $env:RESULTS_DIRECTORY --file coverage_adsecCore.xml -F adsecCore
+      .\codecov -t $env:CODECOV_TOKEN --dir $env:RESULTS_DIRECTORY --file coverage_adsecgh.xml -F adsecgh
+      .\codecov -t $env:CODECOV_TOKEN --dir $env:RESULTS_DIRECTORY --file coverage_integration.xml -F adsecgh_integration
     env:
       CODECOV_TOKEN: $(CODECOV_TOKEN)
     displayName: Upload Code Coverage to codecovio
@@ -149,11 +185,16 @@ steps:
 
   - powershell: |
       $jsonPath = "stryker-config.json"
+      $branchPattern = '^(refs/heads/[0-9A-Za-z._/-]+|[0-9A-Za-z._/-]+)$'
 
       # Get PR target or fallback
-      $fullBranch = "$(System.PullRequest.TargetBranch)"
+      $fullBranch = $env:TARGET_BRANCH
       if (-not $fullBranch) {
-        $fullBranch = "$(Build.SourceBranch)"
+        $fullBranch = $env:SOURCE_BRANCH
+      }
+
+      if ($fullBranch -notmatch $branchPattern) {
+        throw "Unexpected branch ref format: $fullBranch"
       }
 
       $branchName = $fullBranch -replace '^refs/heads/', ''
@@ -161,29 +202,75 @@ steps:
 
       Write-Host "Using Stryker since target: $originBranch"
 
-      # Load and modify JSON
+      # Load and modify JSON safely
       $json = Get-Content $jsonPath | ConvertFrom-Json
-      $json."stryker-config".since.target = $originBranch
-
-      # Save updated JSON back to file
-      $json | ConvertTo-Json -Depth 10 | Set-Content $jsonPath -Encoding UTF8
+      if ($json."stryker-config".since) {
+        $json."stryker-config".since.target = $originBranch
+        # Save updated JSON back to file
+        $json | ConvertTo-Json -Depth 10 | Set-Content $jsonPath -Encoding UTF8
+      } else {
+        Write-Host "Skipping target injection because 'since' block is removed."
+      }
     displayName: "Update stryker-config.json target branch"
     condition: ne(variables['System.PullRequest.TargetBranch'], '')
 
   - powershell: |
-      $output = dotnet stryker -s AdSecCore.sln --test-project AdSecCoreTests/AdSecCoreTests.csproj -l advanced
-      $scoreLine = $output | Select-String -Pattern 'final mutation score is (\d+(\.\d+)?) ?%'
-      if ($scoreLine) {
-        $matches = [regex]::Match($scoreLine.Line, 'final mutation score is (\d+(\.\d+)?) ?%')
-        $score = [double]$matches.Groups[1].Value
+      $branchPattern = '^(refs/heads/[0-9A-Za-z._/-]+|[0-9A-Za-z._/-]+)$'
 
-        $status = if ($score -ge 50) { "✅" } else { "❌" }
+      # Get the target branch name from Azure DevOps metadata
+      $targetBranch = if ($env:TARGET_BRANCH) { $env:TARGET_BRANCH } else { 'main' }
 
-        # Set both variables
-        Write-Host "##vso[task.setvariable variable=mutationScore]$score"
-        Write-Host "##vso[task.setvariable variable=mutationStatus]$status"
-        } else {
-          Write-Host "No score found"
+      if ($targetBranch -notmatch $branchPattern) {
+        throw "Unexpected branch ref format: $targetBranch"
+      }
+
+      $targetBranch = $targetBranch -replace '^refs/heads/', ''
+
+      Write-Host "Calculating PR modifications against origin/$targetBranch..."
+
+      # Extract changed AdSecCore C# files and format paths for Stryker.
+      # Stryker expects mutate paths relative to the mutated project's root, not the repo root.
+      $changedFiles = git diff --name-only origin/$targetBranch...HEAD -- "*.cs" |
+        ForEach-Object { $_ -replace '\\', '/' } |
+        Where-Object { $_ -like 'AdSecCore/*.cs' }
+
+      if ($changedFiles) {
+          $mutateFiles = $changedFiles | ForEach-Object { $_ -replace '^AdSecCore/', '' }
+
+          # Format multiple files into a clean comma-separated list
+          $mutateArg = $mutateFiles -join ','
+          Write-Host "Fast PR Optimization Active. Targeted repo files: $($changedFiles -join ',')"
+          Write-Host "Stryker mutate filter: $mutateArg"
+
+          # Execute Stryker focusing ONLY on the PR modifications
+          dotnet stryker -s AdSecCore.sln --project AdSecCore/AdSecCore.csproj --test-project AdSecCoreTests/AdSecCoreTests.csproj --mutate "$mutateArg" -l advanced *>&1 | Tee-Object -FilePath "stryker.log"
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Stryker task failed!"
+            Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
+            Write-Host "##vso[task.setvariable variable=mutationStatus]💥"
+            exit 1
+          }
+
+          # Parse out the mutation score from the recorded log file
+          $logContent = Get-Content -Path "stryker.log" -Raw
+          $scoreLine = $logContent | Select-String -Pattern 'final mutation score is (\d+(\.\d+)?) ?%'
+
+          if ($scoreLine) {
+            $matches = [regex]::Match($scoreLine.Line, 'final mutation score is (\d+(\.\d+)?) ?%')
+            $score = [double]$matches.Groups[1].Value
+            $status = if ($score -ge 50) { "✅" } else { "❌" }
+
+            Write-Host "##vso[task.setvariable variable=mutationScore]$score"
+            Write-Host "##vso[task.setvariable variable=mutationStatus]$status"
+          } else {
+            Write-Host "No score found"
+            Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
+            Write-Host "##vso[task.setvariable variable=mutationStatus]➖"
+          }
+      } else {
+          # If no AdSecCore C# code changed, skip execution instantly to prevent long runs.
+          Write-Warning "No AdSecCore C# file changes detected in this PR. Skipping mutation testing execution entirely."
           Write-Host "##vso[task.setvariable variable=mutationScore]N/A"
           Write-Host "##vso[task.setvariable variable=mutationStatus]➖"
       }
@@ -192,14 +279,16 @@ steps:
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Stryker Mutation Report'
+    condition: and(succeeded(), ne(variables['mutationStatus'], '➖'), ne(variables['mutationStatus'], '💥'))
     inputs:
-      pathToPublish: '$(System.DefaultWorkingDirectory)/StrykerOutput'
+      pathToPublish: '$(STRYKER_OUTPUT_DIRECTORY)/'
       artifactName: 'StrykerReport'
 
   - task: PublishMutationReport@2
     displayName: 'Publish Mutation Test Report'
+    condition: and(succeeded(), ne(variables['mutationStatus'], '➖'), ne(variables['mutationStatus'], '💥'))
     inputs:
-      reportPattern: '$(System.DefaultWorkingDirectory)/StrykerOutput/**/mutation-report.html'
+      reportPattern: '$(STRYKER_OUTPUT_DIRECTORY)/**/mutation-report.html'
       reportDisplayName: 'Mutation Report'
 
   - task: GitHubComment@0
@@ -242,7 +331,7 @@ steps:
           echo $tagExists
         }
       errorActionPreference: 'continue'
-      workingDirectory: '$(System.DefaultWorkingDirectory)'
+      workingDirectory: '$(DEFAULT_WORKING_DIRECTORY)'
       ignoreLASTEXITCODE: true
 
   - powershell: |
@@ -268,18 +357,18 @@ steps:
       Rename-Item -Path $yakCurrentVersName -NewName $yakRh7Name
       ..\yak build --platform win
 
-      New-Item -ItemType Directory -Path $(System.DefaultWorkingDirectory)\results\yak
-      Copy-Item $yakCurrentVersName $(System.DefaultWorkingDirectory)\results\yak\$yakCurrentVersName
-      Copy-Item $yakRh7Name $(System.DefaultWorkingDirectory)\results\yak\$yakRh7Name
+      New-Item -ItemType Directory -Path $env:YAK_RESULTS_DIRECTORY
+      Copy-Item $yakCurrentVersName (Join-Path $env:YAK_RESULTS_DIRECTORY $yakCurrentVersName)
+      Copy-Item $yakRh7Name (Join-Path $env:YAK_RESULTS_DIRECTORY $yakRh7Name)
     displayName: Package yak
 
-  - publish: $(System.DefaultWorkingDirectory)\results\yak
+  - publish: $(YAK_RESULTS_DIRECTORY)
     displayName: Publish Yak Package to Azure
     artifact: Yak Package
     continueOnError: false
 
   - powershell: |
-      Remove-Item $(System.DefaultWorkingDirectory)\results\yak -Recurse -Force
+      Remove-Item $env:YAK_RESULTS_DIRECTORY -Recurse -Force
     displayName: Remove Yak from Results
 
   - powershell: |
@@ -300,9 +389,9 @@ steps:
       releaseNotesInline: |
         Created from commit https://github.com/arup-group/AdSec-Grasshopper/commit/$(Build.SourceVersion)
       assets: |
-        $(System.DefaultWorkingDirectory)/**/*.yak
-        $(System.DefaultWorkingDirectory)/**/*.nupkg
-        $(System.DefaultWorkingDirectory)/**/*.snupkg
+        $(DEFAULT_WORKING_DIRECTORY)/**/*.yak
+        $(DEFAULT_WORKING_DIRECTORY)/**/*.nupkg
+        $(DEFAULT_WORKING_DIRECTORY)/**/*.snupkg
       assetUploadMode: 'replace'
       isDraft: true
       isPreRelease: true
