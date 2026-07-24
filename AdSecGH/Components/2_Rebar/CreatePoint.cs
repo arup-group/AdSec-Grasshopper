@@ -47,7 +47,7 @@ namespace AdSecGH.Components {
     public CreatePoint() { Hidden = false; }
     public override Guid ComponentGuid => new Guid("1a0cdb3c-d66d-420e-a9d8-35d31587a122");
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
-    protected override Bitmap Icon => Resources.VertexPoint;
+    protected override Bitmap Icon => Resources.CreateVertexPoint;
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];

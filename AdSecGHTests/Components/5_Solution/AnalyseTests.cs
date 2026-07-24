@@ -20,15 +20,15 @@ using Xunit;
 
 namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
-  public class AnalyseTests {
+  public class AnalyseSectionTests {
     private readonly AdSecSectionGoo adSecSectionGoo;
-    private static Analyse component;
+    private static AnalyseSection component;
     private readonly IDesignCode designCode = IS456.Edition_2000;
     private readonly ISection Section;
 
-    public AnalyseTests() {
+    public AnalyseSectionTests() {
       if (component == null) {
-        component = new Analyse();
+        component = new AnalyseSection();
 
         var singleBars = new BuilderSingleBar().WithSize(2).AtPosition(Geometry.Zero()).Build();
         Section = new SectionBuilder().WithWidth(40).CreateSquareSection().WithReinforcementGroup(singleBars).Build();
@@ -81,7 +81,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(component.MatchesExpectedIcon(Resources.Solution));
+      Assert.True(component.MatchesExpectedIcon(Resources.AnalyseSection));
     }
   }
 }

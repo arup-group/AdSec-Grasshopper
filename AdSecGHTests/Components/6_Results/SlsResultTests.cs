@@ -19,11 +19,11 @@ using Xunit;
 namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
   public class SlsResultTests {
-    private readonly SlsResult _component;
+    private readonly ServiceabilityLimitStateResult _component;
     private static SectionSolution Solution { get; set; } = null;
 
     public SlsResultTests() {
-      _component = new SlsResult();
+      _component = new ServiceabilityLimitStateResult();
       if (Solution == null) {
         Solution = new SolutionBuilder().Build();
       }
@@ -81,7 +81,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(_component.MatchesExpectedIcon(Resources.SLS));
+      Assert.True(_component.MatchesExpectedIcon(Resources.ServiceabilityLimitStateResult));
     }
   }
 }

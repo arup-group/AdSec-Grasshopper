@@ -118,7 +118,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(_component.MatchesExpectedIcon(Resources.OpenAdSec));
+      Assert.True(_component.MatchesExpectedIcon(Resources.OpenModel));
     }
 
     [Fact]

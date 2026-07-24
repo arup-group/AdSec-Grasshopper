@@ -9,11 +9,11 @@ using OasysUnits.Units;
 
 namespace AdSecCoreTests.Functions {
   public class UlsResultFunctionTest {
-    private readonly UlsResultFunction _component;
+    private readonly UltimateLimitStateResultFunction _component;
     private static SectionSolution? Solution { get; set; } = null;
     private readonly DoubleComparer comparer = new DoubleComparer();
     public UlsResultFunctionTest() {
-      _component = new UlsResultFunction();
+      _component = new UltimateLimitStateResultFunction();
       if (Solution == null) {
         Solution = new SolutionBuilder().Build();
       }
@@ -23,7 +23,7 @@ namespace AdSecCoreTests.Functions {
 
     [Fact]
     public void ShouldHaveCorrectMetadata() {
-      Assert.Equal("Strength Result", _component.Metadata.Name);
+      Assert.Equal("Ultimate Limit State Result", _component.Metadata.Name);
       Assert.Equal("ULS", _component.Metadata.NickName);
       Assert.Equal("Performs strength checks (ULS), for a given Load or Deformation", _component.Metadata.Description);
     }

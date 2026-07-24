@@ -18,20 +18,20 @@ using OasysUnits;
 using OasysUnits.Units;
 
 namespace AdSecGH.Components {
-  public class CreateDeformationGh : CreateDeformationFunction {
-    public CreateDeformationGh() {
+  public class CreateDeformationLoadGh : CreateDeformationLoadFunction {
+    public CreateDeformationLoadGh() {
     }
   }
 
-  public class CreateDeformation : DropdownAdapter<CreateDeformationGh> {
+  public class CreateDeformationLoad : DropdownAdapter<CreateDeformationLoadGh> {
     private CurvatureUnit _curvatureUnit = DefaultUnits.CurvatureUnit;
     private StrainUnit _strainUnit = DefaultUnits.StrainUnitResult;
 
-    public CreateDeformation() : base() { Hidden = true; }
+    public CreateDeformationLoad() : base() { Hidden = true; }
     public override Guid ComponentGuid => new Guid("cbab2b58-2a01-4f05-ba24-2c79827c7415");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.DeformationLoad;
+    protected override Bitmap Icon => Resources.CreateDeformationLoad;
 
     public override void SetSelected(int i, int j) {
       _selectedItems[i] = _dropDownItems[i][j];

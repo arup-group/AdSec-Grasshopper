@@ -22,7 +22,7 @@ namespace AdSecGHTests.Components._0_AdSec {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(_component.MatchesExpectedIcon(Resources.SVG));
+      Assert.True(_component.MatchesExpectedIcon(Resources.SectionSvg));
     }
   }
 }

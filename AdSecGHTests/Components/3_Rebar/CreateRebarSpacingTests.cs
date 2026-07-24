@@ -37,7 +37,7 @@ namespace AdSecGHTests.Components._3_Rebar {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(_component.MatchesExpectedIcon(Resources.RebarSpacing));
+      Assert.True(_component.MatchesExpectedIcon(Resources.CreateRebarSpacing));
     }
 
     [Fact]

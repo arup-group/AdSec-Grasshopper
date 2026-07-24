@@ -23,7 +23,7 @@ namespace AdSecGH.Components {
     public override Guid ComponentGuid => new Guid("f0b27be7-f367-4a2c-b90c-3ba0f66ae584");
     public override GH_Exposure Exposure => GH_Exposure.quarternary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.CrackLoad;
+    protected override Bitmap Icon => Resources.FindCrackLoad;
 
   }
 }

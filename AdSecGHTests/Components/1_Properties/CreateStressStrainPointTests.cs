@@ -32,7 +32,7 @@ namespace AdSecGHTests.Components._01_Properties {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(_component.MatchesExpectedIcon(Resources.StressStrainPt));
+      Assert.True(_component.MatchesExpectedIcon(Resources.CreateStressStrainPoint));
     }
 
     [Fact]

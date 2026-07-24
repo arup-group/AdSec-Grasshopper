@@ -28,7 +28,7 @@ namespace AdSecGH.Components {
     public override Guid ComponentGuid => new Guid("bb540a8e-7e7e-4299-933f-08689d7b2af8");
     public override GH_Exposure Exposure => GH_Exposure.tertiary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.ProfileInfo;
+    protected override Bitmap Icon => Resources.ProfileProperties;
 
     protected override void RegisterInputParams(GH_InputParamManager pManager) {
       pManager.AddGenericParameter("Profile", "Pf", "AdSec Profile defining the Section solid boundary",

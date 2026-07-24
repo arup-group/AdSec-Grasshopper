@@ -8,10 +8,10 @@ using Oasys.AdSec.DesignCode;
 namespace AdSecCoreTests.Functions {
   public class AnalyseFunctionTests {
 
-    private readonly AnalyseFunction analyseFunction;
+    private readonly AnalyseSectionFunction analyseFunction;
 
     public AnalyseFunctionTests() {
-      analyseFunction = new AnalyseFunction();
+      analyseFunction = new AnalyseSectionFunction();
     }
 
     [Fact]

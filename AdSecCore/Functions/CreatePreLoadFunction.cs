@@ -14,7 +14,7 @@ namespace AdSecCore.Functions {
     Strain,
     Stress,
   }
-  public class CreatePreLoadFunction : Function, IDropdownOptions, ILocalUnits {
+  public class CreatePreStressLoadFunction : Function, IDropdownOptions, ILocalUnits {
     public object LocalUnit { get; set; } = ForceUnit.Newton;
     private PreLoadType _preLoadType = PreLoadType.Force;
     public PreLoadType PreLoadType {

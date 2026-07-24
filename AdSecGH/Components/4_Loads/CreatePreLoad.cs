@@ -16,17 +16,17 @@ using OasysUnits.Units;
 
 namespace AdSecGH.Components {
 
-  public class CreatePreLoadGh : CreatePreLoadFunction {
-    public CreatePreLoadGh() {
+  public class CreatePreStressLoadGh : CreatePreStressLoadFunction {
+    public CreatePreStressLoadGh() {
     }
   }
 
-  public class CreatePreLoad : DropdownAdapter<CreatePreLoadGh> {
+  public class CreatePreStressLoad : DropdownAdapter<CreatePreStressLoadGh> {
 
     public override Guid ComponentGuid => new Guid("cbab2b12-2a01-4f05-ba24-2c79827c7415");
     public override GH_Exposure Exposure => GH_Exposure.secondary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.Prestress;
+    protected override Bitmap Icon => Resources.CreatePreStressLoad;
 
     public override void SetSelected(int i, int j) {
       var selectedItem = _dropDownItems[i][j];
