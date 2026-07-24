@@ -11,7 +11,7 @@
   <ItemGroup>
     <PackageReference Include="AdSec" Version="2.0.4.234" />
     <PackageReference Include="Grasshopper" Version="7.38.24338.17001" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.3" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.10" />
     <PackageReference Include="Rhino.Inside" Version="7.0.0" />
     <PackageReference Include="RhinoCommon" Version="7.38.24338.17001" />
     <PackageReference Include="RhinoWindows" Version="7.38.24338.17001" />
