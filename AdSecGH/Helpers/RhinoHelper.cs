@@ -38,7 +38,7 @@ namespace AdSecGH.Helpers {
     public static bool TryFitPlaneToPolyline(Polyline polyline, out Plane plane) {
       plane = Plane.Unset;
       var points = polyline.ToList();
-      if (points.First().DistanceTo(points.Last()) < 1e-6) {
+      if (points[0].DistanceTo(points[points.Count - 1]) < 1e-6) {
         points.RemoveAt(points.Count - 1);
       }
       return Plane.FitPlaneToPoints(points, out plane) == PlaneFitResult.Success;
