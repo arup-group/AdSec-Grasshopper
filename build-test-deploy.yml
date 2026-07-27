@@ -228,6 +228,20 @@ steps:
 
       Write-Host "Calculating PR modifications against origin/$targetBranch..."
 
+      $mutationBuildPaths = @(
+        'AdSecCore/bin',
+        'AdSecCore/obj',
+        'AdSecCoreTests/bin',
+        'AdSecCoreTests/obj'
+      )
+
+      foreach ($path in $mutationBuildPaths) {
+        if (Test-Path $path) {
+          Write-Host "Removing stale mutation build path: $path"
+          Remove-Item -Path $path -Recurse -Force
+        }
+      }
+
       # Extract changed AdSecCore C# files and format paths for Stryker.
       # Stryker expects mutate paths relative to the mutated project's root, not the repo root.
       $changedFiles = git diff --name-only origin/$targetBranch...HEAD -- "*.cs" |
