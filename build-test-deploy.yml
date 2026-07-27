@@ -267,6 +267,8 @@ steps:
               'AdSecCore/AdSecCore.csproj'
               '--test-project'
               'AdSecCoreTests/AdSecCoreTests.csproj'
+                '--concurrency'
+                '1'
             ) + $mutateArgs + @(
               '-l'
               'advanced'
