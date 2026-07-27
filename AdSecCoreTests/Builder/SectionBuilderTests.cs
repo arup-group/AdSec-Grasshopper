@@ -4,6 +4,7 @@ using Oasys.AdSec;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
+using Oasys.AdSec.Reinforcement.Preloads;
 using Oasys.AdSec.StandardMaterials;
 using Oasys.Profiles;
 
@@ -68,6 +69,40 @@ namespace AdSecCoreTests.Builder {
       AssertPositionEquals(offsetGroup.Positions[0], expectedY: 150, expectedZ: 225);
     }
 
+    [Fact]
+    public void WithReinforcementGroupsOffset_ShouldPreserveSingleBarsPreload() {
+      var originalBars = CreateSingleBars(16, 200, 300);
+      originalBars.Preload = IPreForce.Create(Force.FromKilonewtons(10));
+
+      var section = BuildSectionWithOffset(new List<IGroup> { originalBars }, deltaY: 25, deltaZ: 50);
+      var offsetGroup = GetSingleBarsFromSection(section);
+
+      var preload = Assert.IsAssignableFrom<IPreForce>(offsetGroup.Preload);
+      Assert.Equal(10, preload.Force.Kilonewtons, 6);
+    }
+
+    [Fact]
+    public void WithReinforcementGroupsOffset_ShouldAddOffsetToArcGroupCentre() {
+      var arcGroup = CreateArcGroup(100, 200, 250);
+
+      var section = BuildSectionWithOffset(new List<IGroup> { arcGroup }, deltaY: 40, deltaZ: -20);
+      var offsetGroup = GetArcGroupFromSection(section);
+
+      AssertPositionEquals(offsetGroup.Centre, expectedY: 140, expectedZ: 180);
+      Assert.Equal(250, offsetGroup.Radius.Millimeters, 6);
+    }
+
+    [Fact]
+    public void WithReinforcementGroupsOffset_ShouldAddOffsetToCircleGroupCentre() {
+      var circleGroup = CreateCircleGroup(120, 180, 300);
+
+      var section = BuildSectionWithOffset(new List<IGroup> { circleGroup }, deltaY: -30, deltaZ: 45);
+      var offsetGroup = GetCircleGroupFromSection(section);
+
+      AssertPositionEquals(offsetGroup.Centre, expectedY: 90, expectedZ: 225);
+      Assert.Equal(300, offsetGroup.Radius.Millimeters, 6);
+    }
+
 
     private static ISingleBars CreateSingleBars(double barDiameterMm, double y, double z) {
       var barBundle = IBarBundle.Create(DefaultSteel, new Length(barDiameterMm, LengthUnit.Millimeter));
@@ -96,6 +131,27 @@ namespace AdSecCoreTests.Builder {
       );
     }
 
+    private static IArcGroup CreateArcGroup(double centerY, double centerZ, double radius) {
+      var layer = new BuilderLayer().Build();
+      return IArcGroup.Create(
+        IPoint.Create(new Length(centerY, LengthUnit.Millimeter), new Length(centerZ, LengthUnit.Millimeter)),
+        new Length(radius, LengthUnit.Millimeter),
+        Angle.FromDegrees(0),
+        Angle.FromDegrees(90),
+        layer
+      );
+    }
+
+    private static ICircleGroup CreateCircleGroup(double centerY, double centerZ, double radius) {
+      var layer = new BuilderLayer().Build();
+      return ICircleGroup.Create(
+        IPoint.Create(new Length(centerY, LengthUnit.Millimeter), new Length(centerZ, LengthUnit.Millimeter)),
+        new Length(radius, LengthUnit.Millimeter),
+        Angle.FromDegrees(0),
+        layer
+      );
+    }
+
     private static ISection BuildSectionWithOffset(List<IGroup> groups, double deltaY, double deltaZ) {
       return new SectionBuilder()
         .WithReinforcementGroupsOffset(groups, new Length(deltaY, LengthUnit.Millimeter), new Length(deltaZ, LengthUnit.Millimeter))
@@ -116,6 +172,20 @@ namespace AdSecCoreTests.Builder {
       var lineGroup = section.ReinforcementGroups[0] as ILineGroup;
       Assert.NotNull(lineGroup);
       return lineGroup;
+    }
+
+    private static IArcGroup GetArcGroupFromSection(ISection section) {
+      Assert.Single(section.ReinforcementGroups);
+      var arcGroup = section.ReinforcementGroups[0] as IArcGroup;
+      Assert.NotNull(arcGroup);
+      return arcGroup;
+    }
+
+    private static ICircleGroup GetCircleGroupFromSection(ISection section) {
+      Assert.Single(section.ReinforcementGroups);
+      var circleGroup = section.ReinforcementGroups[0] as ICircleGroup;
+      Assert.NotNull(circleGroup);
+      return circleGroup;
     }
 
     private static void AssertPositionEquals(IPoint position, double expectedY, double expectedZ) {
