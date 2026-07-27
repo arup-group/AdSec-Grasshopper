@@ -87,16 +87,16 @@ namespace AdSecGH.Components {
       ClearRuntimeMessages();
       Params.Input.ForEach(input => input.ClearRuntimeMessages());
 
-      var local = GetLocalPlane(DA, Plane.WorldYZ);
+      var localPlane = GetLocalPlane(DA, Plane.WorldYZ);
       if (_mode == FoldMode.Catalogue) {
         var profiles = SolveInstanceForCatalogueProfile(DA);
         var adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, Plane.WorldYZ, local));
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, Plane.WorldYZ, localPlane));
       } else if (_mode == FoldMode.Other) {
-        local = GetLocalPlane(DA, Plane.Unset);
+        localPlane = GetLocalPlane(DA, Plane.Unset);
         var profile = SolveInstanceForStandardProfile(DA);
         var adSecProfile = AdSecProfiles.CreateProfile(profile);
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, PerimeterProfilePlane, local));
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, PerimeterProfilePlane, localPlane));
       }
     }
 
