@@ -5,11 +5,8 @@
       "progress"
     ],
     "ignore-mutations": [
-      "string"
+      "String"
     ],
-    "since": {
-      "target": "origin/main"
-    },
     "thresholds": { "high": 80, "low": 60, "break": 0 }
   }
 }
