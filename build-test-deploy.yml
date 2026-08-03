@@ -228,6 +228,20 @@ steps:
 
       Write-Host "Calculating PR modifications against origin/$targetBranch..."
 
+      $mutationBuildPaths = @(
+        'AdSecCore/bin',
+        'AdSecCore/obj',
+        'AdSecCoreTests/bin',
+        'AdSecCoreTests/obj'
+      )
+
+      foreach ($path in $mutationBuildPaths) {
+        if (Test-Path $path) {
+          Write-Host "Removing stale mutation build path: $path"
+          Remove-Item -Path $path -Recurse -Force
+        }
+      }
+
       # Extract changed AdSecCore C# files and format paths for Stryker.
       # Stryker expects mutate paths relative to the mutated project's root, not the repo root.
       $changedFiles = git diff --name-only origin/$targetBranch...HEAD -- "*.cs" |
@@ -237,13 +251,31 @@ steps:
       if ($changedFiles) {
           $mutateFiles = $changedFiles | ForEach-Object { $_ -replace '^AdSecCore/', '' }
 
-          # Format multiple files into a clean comma-separated list
-          $mutateArg = $mutateFiles -join ','
-          Write-Host "Fast PR Optimization Active. Targeted repo files: $($changedFiles -join ',')"
-          Write-Host "Stryker mutate filter: $mutateArg"
+            $mutateArgs = foreach ($mutateFile in $mutateFiles) {
+              '--mutate'
+              $mutateFile
+            }
 
-          # Execute Stryker focusing ONLY on the PR modifications
-          dotnet stryker -s AdSecCore.sln --project AdSecCore/AdSecCore.csproj --test-project AdSecCoreTests/AdSecCoreTests.csproj --mutate "$mutateArg" -l advanced *>&1 | Tee-Object -FilePath "stryker.log"
+            Write-Host "Targeted repo files: $($changedFiles -join ',')"
+            Write-Host "Stryker mutate filters: $($mutateFiles -join ',')"
+
+            $strykerArgs = @(
+              'stryker'
+              '-s'
+              'AdSecCore.sln'
+              '--project'
+              'AdSecCore/AdSecCore.csproj'
+              '--test-project'
+              'AdSecCoreTests/AdSecCoreTests.csproj'
+                '--concurrency'
+                '1'
+            ) + $mutateArgs + @(
+              '-l'
+              'advanced'
+            )
+
+            # Execute Stryker focusing only on the PR modifications
+            & dotnet @strykerArgs 2>&1 | Tee-Object -FilePath "stryker.log"
 
           if ($LASTEXITCODE -ne 0) {
             Write-Error "Stryker task failed!"
