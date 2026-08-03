@@ -122,6 +122,16 @@ steps:
     env:
       MSBUILDDISABLENODEREUSE: 1
 
+  - powershell: |
+      $testOutputPaths = @(
+        "$(DEFAULT_WORKING_DIRECTORY)\AdSecCoreTests\bin\x64\Release\net8.0",
+        "$(DEFAULT_WORKING_DIRECTORY)\AdSecGHTests\bin\x64\Release\net48",
+        "$(DEFAULT_WORKING_DIRECTORY)\IntegrationTests\bin\x64\Release\net48"
+      )
+      $newPath = ($testOutputPaths + $env:PATH.Split(';') | Select-Object -Unique) -join ';'
+      Write-Host "##vso[task.setvariable variable=PATH]$newPath"
+    displayName: 'Add test output directories to PATH for native DLL resolution'
+
   - task: DotNetCoreCLI@2
     displayName: 'dotnet tests AdSecCore'
     inputs:
