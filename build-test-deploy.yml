@@ -128,7 +128,7 @@ steps:
       command: 'test'
       projects: 'AdSecCoreTests/**/*.csproj'
       arguments: '--configuration $(configuration) --no-build --framework net8.0 /p:Platform=x64 --collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)" --results-directory "$(ADSEC_CORE_RESULTS_DIRECTORY)"'
-      publishTestResults: true
+      publishTestResults: false
 
   - task: DotNetCoreCLI@2
     displayName: 'dotnet tests AdSecGh'
@@ -136,7 +136,7 @@ steps:
       command: 'test'
       projects: 'AdSecGHTests/**/*.csproj'
       arguments: '--configuration $(configuration) --no-build --framework net48 /p:Platform=x64 --collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)" --results-directory "$(ADSEC_GH_RESULTS_DIRECTORY)"'
-      publishTestResults: true
+      publishTestResults: false
 
   - task: DotNetCoreCLI@2
     displayName: 'dotnet tests Integration'
@@ -144,7 +144,7 @@ steps:
       command: 'test'
       projects: 'IntegrationTests/**/*.csproj'
       arguments: '--configuration $(configuration) --no-build --framework net48 /p:Platform=x64 --collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)" --results-directory "$(INTEGRATION_RESULTS_DIRECTORY)"'
-      publishTestResults: true
+      publishTestResults: false
 
   - powershell: |
       if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post -UseBasicParsing | Select-Object StatusCode).StatusCode) {
