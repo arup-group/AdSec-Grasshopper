@@ -8,6 +8,8 @@ using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
+using GH_IO.Serialization;
+
 using Grasshopper.Kernel;
 
 using Oasys.GH.Helpers;
@@ -56,6 +58,31 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldHaveNoErrors() {
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
+    }
+
+    [Fact]
+    public void ReadShouldSyncPlaneParameterMetadata() {
+      int planeIndex = _component.Params.Input.Count - 1;
+      var expectedPlaneAttribute = _component.BusinessComponent.GetAllInputAttributes().Last();
+
+      // Seed the reader with a valid component serialization payload.
+      var chunk = new GH_LooseChunk("root");
+      bool wrote = _component.Write(chunk);
+      Assert.True(wrote);
+
+      // Simulate stale metadata restored from an older GH file.
+      _component.Params.Input[planeIndex].Name = "LegacyName";
+      _component.Params.Input[planeIndex].NickName = "LegacyNick";
+      _component.Params.Input[planeIndex].Description = "LegacyDescription";
+
+      GH_IReader reader = chunk;
+      bool result = _component.Read(reader);
+      var planeParamAfterRead = _component.Params.Input[_component.Params.Input.Count - 1];
+
+      Assert.True(result);
+      Assert.Equal(expectedPlaneAttribute.Name, planeParamAfterRead.Name);
+      Assert.Equal(expectedPlaneAttribute.NickName, planeParamAfterRead.NickName);
+      Assert.Equal(expectedPlaneAttribute.Description, planeParamAfterRead.Description);
     }
 
     [Fact]

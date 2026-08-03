@@ -8,6 +8,8 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
+using GH_IO.Serialization;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
@@ -33,6 +35,12 @@ namespace AdSecGH.Components {
     protected override string HtmlHelp_Source() {
       string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.Profiles.html";
       return help;
+    }
+
+    public override bool Read(GH_IReader reader) {
+      bool result = base.Read(reader);
+      SyncPlaneParameterMetadata();
+      return result;
     }
 
     protected override void Mode1Clicked() {
@@ -106,6 +114,16 @@ namespace AdSecGH.Components {
         return localPlane;
       }
       return localPlane;
+    }
+
+    private void SyncPlaneParameterMetadata() {
+      var attributes = BusinessComponent.GetAllInputAttributes();
+      // Plane is always the trailing input for this component in both modes.
+      var planeParam = Params.Input[Params.Input.Count - 1];
+      var planeAttribute = attributes[attributes.Length - 1];
+      planeParam.Name = planeAttribute.Name;
+      planeParam.NickName = planeAttribute.NickName;
+      planeParam.Description = planeAttribute.Description;
     }
   }
 }
