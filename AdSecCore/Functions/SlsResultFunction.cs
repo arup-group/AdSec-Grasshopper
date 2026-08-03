@@ -65,15 +65,19 @@ namespace AdSecCore.Functions {
 
       // crack load
       var cracks = new List<CrackLoad>();
-      foreach (var crack in Sls.Cracks) {
-        cracks.Add(new CrackLoad {
-          Load = crack,
-          Plane = plane
-        });
+      if (Sls.Cracks.Count == 0) {
+        RemarkMessages.Add("The section is uncracked");
+      } else {
+        foreach (var crack in Sls.Cracks) {
+          cracks.Add(new CrackLoad {
+            Load = crack,
+            Plane = plane
+          });
+        }
       }
       CrackOutput.Value = cracks.ToArray();
 
-      //maximum crck width
+      //maximum crack width
       MaximumCrackOutput.Value = new CrackLoad {
         Load = Sls.MaximumWidthCrack,
         Plane = plane

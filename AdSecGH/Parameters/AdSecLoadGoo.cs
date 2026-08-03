@@ -29,6 +29,10 @@ namespace AdSecGH.Parameters {
     private Point3d _point;
 
     public AdSecLoadGoo(ILoad load, Plane? local = null) {
+      if (load == null) {
+        return;
+      }
+
       m_value = load ?? throw new ArgumentNullException(nameof(load), "Load cannot be null");
       var point = new Point3d(load.ZZ.As(DefaultUnits.MomentUnit), load.YY.As(DefaultUnits.MomentUnit),
         load.X.As(DefaultUnits.ForceUnit));
