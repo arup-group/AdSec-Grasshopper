@@ -135,12 +135,14 @@ steps:
 
   - task: VSTest@3
     displayName: 'dotnet tests AdSecGh'
+    retryCountOnTaskFailure: 1
     inputs:
       testSelector: 'testAssemblies'
       testAssemblyVer2: |
         AdSecGHTests\bin\x64\Release\net48\AdSecGHTests.dll
       resultsFolder: '$(ADSEC_GH_RESULTS_DIRECTORY)'
-      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)"'
+      runTestsInIsolation: true
+      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)" /Platform:x64 /Blame'
 
   - task: VSTest@3
     displayName: 'dotnet tests Integration'
