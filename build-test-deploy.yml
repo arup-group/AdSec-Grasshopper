@@ -31,8 +31,6 @@ variables:
     value: $(RESULTS_DIRECTORY)\yak
   - name: STRYKER_OUTPUT_DIRECTORY
     value: $(DEFAULT_WORKING_DIRECTORY)/StrykerOutput
-  - name: COVERLET_ADAPTER_PATH
-    value: $(USERPROFILE)\.nuget\packages\coverlet.collector\6.0.2\build
 
 pool: 'rhino-compute'
 
@@ -122,38 +120,20 @@ steps:
     env:
       MSBUILDDISABLENODEREUSE: 1
 
-  - task: VSTest@3
+  - powershell: |
+      dotnet test .\AdSecCoreTests\AdSecCoreTests.csproj -c $(configuration) --framework net8.0 -p:Platform=x64 --no-build --collect "XPlat Code Coverage" --results-directory "$(ADSEC_CORE_RESULTS_DIRECTORY)"
     displayName: 'dotnet tests AdSecCore'
     retryCountOnTaskFailure: 1
-    inputs:
-      testSelector: 'testAssemblies'
-      testAssemblyVer2: |
-        AdSecCoreTests\bin\x64\Release\net8.0\AdSecCoreTests.dll
-      resultsFolder: '$(ADSEC_CORE_RESULTS_DIRECTORY)'
-      runTestsInIsolation: true
-      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)" /Platform:x64 /Blame'
 
-  - task: VSTest@3
+  - powershell: |
+      dotnet test .\AdSecGHTests\AdSecGHTests.csproj -c $(configuration) --framework net48 -p:Platform=x64 --no-build --collect "XPlat Code Coverage" --results-directory "$(ADSEC_GH_RESULTS_DIRECTORY)"
     displayName: 'dotnet tests AdSecGh'
     retryCountOnTaskFailure: 1
-    inputs:
-      testSelector: 'testAssemblies'
-      testAssemblyVer2: |
-        AdSecGHTests\bin\x64\Release\net48\AdSecGHTests.dll
-      resultsFolder: '$(ADSEC_GH_RESULTS_DIRECTORY)'
-      runTestsInIsolation: true
-      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)" /Platform:x64 /Blame'
 
-  - task: VSTest@3
+  - powershell: |
+      dotnet test .\IntegrationTests\IntegrationTests.csproj -c $(configuration) --framework net48 -p:Platform=x64 --no-build --collect "XPlat Code Coverage" --results-directory "$(INTEGRATION_RESULTS_DIRECTORY)"
     displayName: 'dotnet tests Integration'
     retryCountOnTaskFailure: 1
-    inputs:
-      testSelector: 'testAssemblies'
-      testAssemblyVer2: |
-        IntegrationTests\bin\x64\Release\net48\IntegrationTests.dll
-      resultsFolder: '$(INTEGRATION_RESULTS_DIRECTORY)'
-      runTestsInIsolation: true
-      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)" /Platform:x64 /Blame'
 
   - powershell: |
       if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post -UseBasicParsing | Select-Object StatusCode).StatusCode) {
