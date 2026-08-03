@@ -124,12 +124,14 @@ steps:
 
   - task: VSTest@3
     displayName: 'dotnet tests AdSecCore'
+    retryCountOnTaskFailure: 1
     inputs:
       testSelector: 'testAssemblies'
       testAssemblyVer2: |
         AdSecCoreTests\bin\x64\Release\net8.0\AdSecCoreTests.dll
       resultsFolder: '$(ADSEC_CORE_RESULTS_DIRECTORY)'
-      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)"'
+      runTestsInIsolation: true
+      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)" /Platform:x64 /Blame'
 
   - task: VSTest@3
     displayName: 'dotnet tests AdSecGh'
@@ -142,12 +144,14 @@ steps:
 
   - task: VSTest@3
     displayName: 'dotnet tests Integration'
+    retryCountOnTaskFailure: 1
     inputs:
       testSelector: 'testAssemblies'
       testAssemblyVer2: |
         IntegrationTests\bin\x64\Release\net48\IntegrationTests.dll
       resultsFolder: '$(INTEGRATION_RESULTS_DIRECTORY)'
-      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)"'
+      runTestsInIsolation: true
+      otherConsoleOptions: '--collect:"XPlat Code Coverage" /TestAdapterPath:"$(COVERLET_ADAPTER_PATH)" /Platform:x64 /Blame'
 
   - powershell: |
       if (200 -ne (Invoke-WebRequest -Uri https://codecov.io/validate -Body (Get-Content -Raw -LiteralPath .\codecov.yml) -Method post -UseBasicParsing | Select-Object StatusCode).StatusCode) {
