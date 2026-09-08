@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using AdSecCore;
+using AdSecCore.Functions;
 
 using AdSecGH.Helpers;
 using AdSecGH.Parameters;

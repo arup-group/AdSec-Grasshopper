@@ -109,7 +109,7 @@ namespace AdSecGHTests.Parameters {
       InstanceOfGoos.Add(new AdSecInteractionDiagramGoo(
         solution.Strength.GetForceMomentInteractionCurve(new Angle())[0], Angle.FromRadians(0), new Rectangle3d()));
       InstanceOfGoos.Add(new AdSecPointGoo(length, length));
-      InstanceOfGoos.Add(new AdSecProfileGoo(profile, Plane.WorldXY));
+      InstanceOfGoos.Add(new AdSecProfileGoo(profile, Plane.WorldXY, Plane.WorldXY));
       var barBundle
         = IBarBundle.Create(IReinforcement.Create(tensionCompressionCurve, tensionCompressionCurve), length);
       InstanceOfGoos.Add(new AdSecRebarBundleGoo(barBundle));

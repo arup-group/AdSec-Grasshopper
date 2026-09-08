@@ -93,7 +93,7 @@ namespace AdSecGHTests.Helpers.Extensions {
       var length = new Length(1, LengthUnit.Meter);
       var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(length, length),
         new WebConstant(length)));
-      var profileGoo = new AdSecProfileGoo(profile, Plane.WorldXY);
+      var profileGoo = new AdSecProfileGoo(profile, Plane.WorldXY, Plane.WorldXY);
       ComponentTestHelper.SetInput(_component, profileGoo);
 
       object result = ComponentTestHelper.GetOutput(_component);

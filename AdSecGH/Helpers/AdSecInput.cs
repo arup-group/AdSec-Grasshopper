@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using AdSecCore.Functions;
-
 using AdSecGH.Parameters;
 
 using Grasshopper.Kernel;
@@ -69,7 +67,7 @@ namespace AdSecGH.Helpers {
         profileGoo = adsecGoo;
       } else if (ghType.Value is OasysProfileGoo oasysGoo) {
         var profile = AdSecProfiles.CreateProfile(oasysGoo.Value);
-        profileGoo = new AdSecProfileGoo(profile, Plane.WorldYZ);
+        profileGoo = new AdSecProfileGoo(profile, Plane.WorldYZ, Plane.WorldYZ);
       } else {
         castSuccessful = false;
       }
@@ -189,7 +187,7 @@ namespace AdSecGH.Helpers {
       if (temporaryPoints.Count == 1) {
         iPoints.Add(AdSecPointGoo.CreateFromPoint3d(temporaryPoints[0], Plane.WorldYZ));
       } else if (temporaryPoints.Count > 1) {
-        Plane.FitPlaneToPoints(temporaryPoints, out var plane);
+        RhinoHelper.TryFitPlaneToPolyline(new Polyline(temporaryPoints), out var plane);
         foreach (var point in temporaryPoints) {
           iPoints.Add(AdSecPointGoo.CreateFromPoint3d(point, plane));
         }

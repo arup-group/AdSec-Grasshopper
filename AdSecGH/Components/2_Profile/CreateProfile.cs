@@ -8,6 +8,8 @@ using AdSecGH.Helpers;
 using AdSecGH.Parameters;
 using AdSecGH.Properties;
 
+using GH_IO.Serialization;
+
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 
@@ -33,6 +35,12 @@ namespace AdSecGH.Components {
     protected override string HtmlHelp_Source() {
       string help = "GOTO:https://arup-group.github.io/oasys-combined/adsec-api/api/Oasys.Profiles.html";
       return help;
+    }
+
+    public override bool Read(GH_IReader reader) {
+      bool result = base.Read(reader);
+      SyncPlaneParameterMetadata();
+      return result;
     }
 
     protected override void Mode1Clicked() {
@@ -87,21 +95,35 @@ namespace AdSecGH.Components {
       ClearRuntimeMessages();
       Params.Input.ForEach(input => input.ClearRuntimeMessages());
 
-      var local = Plane.WorldYZ;
-      var temp = Plane.Unset;
-      if (DA.GetData(Params.Input.Count - 1, ref temp)) {
-        local = temp;
-      }
-
+      var localPlane = GetLocalPlane(DA, Plane.WorldYZ);
       if (_mode == FoldMode.Catalogue) {
         var profiles = SolveInstanceForCatalogueProfile(DA);
         var adSecProfile = AdSecProfiles.CreateProfile(profiles[0]);
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, Plane.WorldYZ, localPlane));
       } else if (_mode == FoldMode.Other) {
+        localPlane = GetLocalPlane(DA, Plane.Unset);
         var profile = SolveInstanceForStandardProfile(DA);
         var adSecProfile = AdSecProfiles.CreateProfile(profile);
-        DA.SetData(0, new AdSecProfileGoo(adSecProfile, local));
+        DA.SetData(0, new AdSecProfileGoo(adSecProfile, PerimeterProfilePlane, localPlane));
       }
+    }
+
+    private Plane GetLocalPlane(IGH_DataAccess DA, Plane plane) {
+      var localPlane = plane;
+      if (DA.GetData(Params.Input.Count - 1, ref localPlane)) {
+        return localPlane;
+      }
+      return localPlane;
+    }
+
+    private void SyncPlaneParameterMetadata() {
+      var attributes = BusinessComponent.GetAllInputAttributes();
+      // Plane is always the trailing input for this component in both modes.
+      var planeParam = Params.Input[Params.Input.Count - 1];
+      var planeAttribute = attributes[attributes.Length - 1];
+      planeParam.Name = planeAttribute.Name;
+      planeParam.NickName = planeAttribute.NickName;
+      planeParam.Description = planeAttribute.Description;
     }
   }
 }

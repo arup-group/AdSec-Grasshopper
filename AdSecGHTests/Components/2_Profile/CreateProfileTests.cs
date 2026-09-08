@@ -8,6 +8,8 @@ using AdSecGH.Properties;
 
 using AdSecGHTests.Helpers;
 
+using GH_IO.Serialization;
+
 using Grasshopper.Kernel;
 
 using Oasys.GH.Helpers;
@@ -56,6 +58,31 @@ namespace AdSecGHTests.Components {
     [Fact]
     public void ShouldHaveNoErrors() {
       Assert.Empty(_component.RuntimeMessages(GH_RuntimeMessageLevel.Error));
+    }
+
+    [Fact]
+    public void ReadShouldSyncPlaneParameterMetadata() {
+      int planeIndex = _component.Params.Input.Count - 1;
+      var expectedPlaneAttribute = _component.BusinessComponent.GetAllInputAttributes().Last();
+
+      // Seed the reader with a valid component serialization payload.
+      var chunk = new GH_LooseChunk("root");
+      bool wrote = _component.Write(chunk);
+      Assert.True(wrote);
+
+      // Simulate stale metadata restored from an older GH file.
+      _component.Params.Input[planeIndex].Name = "LegacyName";
+      _component.Params.Input[planeIndex].NickName = "LegacyNick";
+      _component.Params.Input[planeIndex].Description = "LegacyDescription";
+
+      GH_IReader reader = chunk;
+      bool result = _component.Read(reader);
+      var planeParamAfterRead = _component.Params.Input[_component.Params.Input.Count - 1];
+
+      Assert.True(result);
+      Assert.Equal(expectedPlaneAttribute.Name, planeParamAfterRead.Name);
+      Assert.Equal(expectedPlaneAttribute.NickName, planeParamAfterRead.NickName);
+      Assert.Equal(expectedPlaneAttribute.Description, planeParamAfterRead.Description);
     }
 
     [Fact]
@@ -108,8 +135,7 @@ namespace AdSecGHTests.Components {
     [InlineData(10, "STD GI(m) 0.11 0.11 0.11 0.11 0.11 0.11")] //I Beam Asymmetrical
     [InlineData(11, "STD CB(m) 0.11 0.11 0.11 0.11 0.11 0.121")] //I Beam Cellular
     [InlineData(12, "STD I(m) 0.11 0.11 0.11 0.11")] //I Beam Symmetrical
-    [InlineData(13,
-      "GEO P(m) M(0.021213203435596|0.015) L(-0.021213203435596|-0.015) L(-0.0070710678118655|-0.005) ")] //Perimeter
+    [InlineData(13, "GEO P(m) M(-0.0375|-0.06) L(0.0125|0.06) L(0.0125|-0.06) ")] //Perimeter
     [InlineData(14, "STD RHS(m) 0.11 0.11 0.11 0.11")] //Rectangle Hollow
     [InlineData(15, "STD R(m) 0.11 0.11")] //Rectangle
     [InlineData(16, "STD RE(m) 0.11 0.11 0.11 0.11 2")] //Recto Ellipse
@@ -124,7 +150,7 @@ namespace AdSecGHTests.Components {
       SetValidInputs($"{splittedCode[0]} {splittedCode[1]}"); //take first two parts of the string as code
 
       var result = (AdSecProfileGoo)ComponentTestHelper.GetOutput(_component);
-
+      var str = result.Value.Profile.Description();
       Assert.NotNull(result);
       Assert.Equal(expectedDesc, result.Value.Profile.Description());
       Assert.Equal(0, result.Value.LocalPlane.Origin.X);
@@ -152,8 +178,7 @@ namespace AdSecGHTests.Components {
     [InlineData(10, "STD GI(m) 0.11 0.11 0.11 0.11 0.11 0.11")] //I Beam Asymmetrical
     [InlineData(11, "STD CB(m) 0.11 0.11 0.11 0.11 0.11 0.121")] //I Beam Cellular
     [InlineData(12, "STD I(m) 0.11 0.11 0.11 0.11")] //I Beam Symmetrical
-    [InlineData(13,
-      "GEO P(m) M(0.021213203435596|0.015) L(-0.021213203435596|-0.015) L(-0.0070710678118655|-0.005) ")] //Perimeter
+    [InlineData(13, "GEO P(m) M(0.021213203435596|0.015) L(-0.021213203435596|-0.015) L(-0.0070710678118655|-0.005) ")] //Perimeter
     [InlineData(14, "STD RHS(m) 0.11 0.11 0.11 0.11")] //Rectangle Hollow
     [InlineData(15, "STD R(m) 0.11 0.11")] //Rectangle
     [InlineData(16, "STD RE(m) 0.11 0.11 0.11 0.11 2")] //Recto Ellipse
@@ -246,7 +271,7 @@ namespace AdSecGHTests.Components {
       }
 
       ComponentTestHelper.SetInput(_component,
-        Surface.CreateExtrusionToPoint(new LineCurve(new Line(0, 0, 0, 2, 2, 2)), new Point3d(3, 3, 3)), input);
+        Surface.CreateExtrusionToPoint(new LineCurve(new Line(0, 0, 0, 3, 4, 0)), new Point3d(3, 4, 12)), input);
     }
 
     private void SetInputsForCatalogue() {

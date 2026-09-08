@@ -23,7 +23,7 @@ namespace AdSecGHTests.Parameters {
       var thickness = new Length(0.2, LengthUnit.Meter);
       var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(thickness, length),
         new WebConstant(thickness)));
-      _testGoo = new AdSecProfileGoo(profile, Plane.WorldXY);
+      _testGoo = new AdSecProfileGoo(profile, Plane.WorldXY, Plane.WorldXY);
     }
 
     [Fact]
@@ -33,13 +33,9 @@ namespace AdSecGHTests.Parameters {
 
     [Fact]
     public void AdSecProfileGoo_ThrowsError_WhenNullIProfileProvided() {
-      Assert.Throws<ArgumentNullException>(() => new AdSecProfileGoo(null, Plane.Unset));
+      Assert.Throws<ArgumentNullException>(() => new AdSecProfileGoo(null, Plane.Unset, Plane.Unset));
     }
 
-    [Fact]
-    public void AdSecProfileGoo_ThrowsError_WhenNullPolygonProvided() {
-      Assert.Throws<ArgumentNullException>(() => new AdSecProfileGoo(null, LengthUnit.Inch));
-    }
 
     [Fact]
     public void IsValid_ReturnsTrue_Always() { // as it is geometry
@@ -104,7 +100,7 @@ namespace AdSecGHTests.Parameters {
     [Fact]
     public void CloneToCatalogueProfileDoesNotThrowException() {
       var catologueSection = Oasys.Profiles.ICatalogueProfile.Create("CAT W W44x335");
-      var profileGoo = new AdSecProfileGoo(catologueSection, Plane.WorldXY);
+      var profileGoo = new AdSecProfileGoo(catologueSection, Plane.WorldXY, Plane.WorldXY);
       Assert.Contains("CAT W W44x335", profileGoo.Clone().Description());
     }
 

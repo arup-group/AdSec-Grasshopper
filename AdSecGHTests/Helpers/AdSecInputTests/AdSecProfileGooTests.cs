@@ -37,7 +37,7 @@ namespace AdSecGHTests.Helpers {
       var length = new Length(1, LengthUnit.Meter);
       var profile = AdSecProfiles.CreateProfile(new AngleProfile(length, new Flange(length, length),
         new WebConstant(length)));
-      var profileGoo = new AdSecProfileGoo(profile, Plane.WorldXY);
+      var profileGoo = new AdSecProfileGoo(profile, Plane.WorldXY, Plane.WorldXY);
       var objwrap = new GH_ObjectWrapper(profileGoo);
       bool castSuccessful = AdSecInput.TryCastToAdSecProfileGoo(objwrap, ref _profileGoo);
 

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-
-using AdSecGH.Parameters;
 
 using Oasys.AdSec;
-using Oasys.AdSec.DesignCode;
 using Oasys.AdSec.Materials;
 using Oasys.AdSec.Reinforcement;
 using Oasys.AdSec.Reinforcement.Groups;
@@ -163,89 +159,19 @@ namespace AdSecCore.Builders {
       return this;
     }
 
-    public SectionBuilder WithProfile(IProfile profile) {
-      _profile = profile;
+    public SectionBuilder WithReinforcementGroupsOffset(List<IGroup> groups, Length deltaY, Length deltaZ) {
+
+      foreach (var group in groups) {
+        var offsetGroup = OffsetReinforcementGroup(group, deltaY, deltaZ);
+        ReinforcementGroups.Add(offsetGroup);
+      }
+
       return this;
     }
 
-    public static List<AdSecRebarGroup> CalibrateReinforcementGroupsForSection(
-      List<AdSecRebarGroup> reinforcements, IDesignCode designCode, ISection sectionSection) {
-      var adSec = IAdSec.Create(designCode);
-
-      string description = sectionSection.Profile.Description();
-      MaxYZ(description, out double maxY1, out double maxZ1);
-
-      var flattened = adSec.Flatten(sectionSection);
-      string description2 = flattened.Profile.Description();
-      MaxYZ(description2, out double maxY2, out double maxZ2);
-
-      double deltaY = maxY2 - maxY1;
-      double deltaZ = maxZ2 - maxZ1;
-
-      return UpdateRebarGroups(reinforcements, deltaY, deltaZ);
-    }
-
-    private static List<AdSecRebarGroup> UpdateRebarGroups(
-      List<AdSecRebarGroup> reinforcements, double deltaY, double deltaZ) {
-      var updatedReinforcement = new List<AdSecRebarGroup>();
-      foreach (var group in reinforcements) {
-        updatedReinforcement.Add(RepositionSingleRebars(deltaY, deltaZ, group));
-      }
-
-      return updatedReinforcement;
-    }
-
-    private static AdSecRebarGroup RepositionSingleRebars(double deltaY, double deltaZ, AdSecRebarGroup group) {
-      var adSecRebarGroup = new AdSecRebarGroup(group);
-
-      if (!(group.Group is ISingleBars bars)) {
-        return adSecRebarGroup;
-      }
-
-      var bundle = IBarBundle.Create(bars.BarBundle.Material, bars.BarBundle.Diameter, bars.BarBundle.CountPerBundle);
-      var singleBars = ISingleBars.Create(bundle);
-
-      foreach (var point in bars.Positions) {
-        var y = new Length(point.Y.As(LengthUnit.Meter) - deltaY, LengthUnit.Meter);
-        var z = new Length(point.Z.As(LengthUnit.Meter) - deltaZ, LengthUnit.Meter);
-        singleBars.Positions.Add(IPoint.Create(y, z));
-      }
-
-      adSecRebarGroup.Group = singleBars;
-      return adSecRebarGroup;
-    }
-
-    public static List<(double y, double z)> ParseCoordinates(string input) {
-      var coordinates = new List<(double y, double z)>();
-      // Pattern to match numbers before and after |
-      var pattern = @"\(([-\d.]+)\|([-\d.]+)\)";
-      var regex = new Regex(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(100));
-      var matches = regex.Matches(input);
-      foreach (Match match in matches) {
-        if (double.TryParse(match.Groups[1].Value, out double y) &&
-            double.TryParse(match.Groups[2].Value, out double z)) {
-          coordinates.Add((y, z));
-        }
-      }
-      return coordinates;
-    }
-
-    private static void MaxYZ(string description, out double maxY, out double maxZ) {
-      var coordinates = ParseCoordinates(description);
-      maxY = double.MinValue;
-      maxZ = double.MinValue;
-      foreach (var coordinate in coordinates) {
-        double y = coordinate.y;
-        double z = coordinate.z;
-
-        if (y > maxY) {
-          maxY = y;
-        }
-
-        if (z > maxZ) {
-          maxZ = z;
-        }
-      }
+    public SectionBuilder WithProfile(IProfile profile) {
+      _profile = profile;
+      return this;
     }
 
     internal enum SectionType {
@@ -257,6 +183,88 @@ namespace AdSecCore.Builders {
     public SectionBuilder WithSubComponents(List<ISubComponent> subComponents) {
       _subComponents = subComponents;
       return this;
+    }
+
+
+    private static IGroup OffsetReinforcementGroup(IGroup originalGroup, Length deltaY, Length deltaZ) {
+      switch (originalGroup) {
+        case ISingleBars singleBars:
+          return OffsetSingleBars(singleBars, deltaY, deltaZ);
+
+        case ILineGroup lineGroup:
+          return OffsetLineGroup(lineGroup, deltaY, deltaZ);
+
+        case IArcGroup arcGroup:
+          return OffsetArcGroup(arcGroup, deltaY, deltaZ);
+
+        case ICircleGroup circleGroup:
+          return OffsetCircleGroup(circleGroup, deltaY, deltaZ);
+
+        // Template, Perimeter, and Link groups typically don't need coordinate offsets
+        // as they are positioned automatically relative to section geometry
+        default:
+          return originalGroup;
+      }
+    }
+
+
+    private static ISingleBars OffsetSingleBars(ISingleBars originalBars, Length deltaY, Length deltaZ) {
+      var offsetBars = ISingleBars.Create(originalBars.BarBundle);
+      double maxy = 0;
+      foreach (var position in originalBars.Positions) {
+        var newY = position.Y + deltaY;
+        var newZ = position.Z + deltaZ;
+        offsetBars.Positions.Add(IPoint.Create(newY, newZ));
+        if (Math.Abs(newY.Value) > Math.Abs(maxy)) {
+          maxy = newY.Value;
+        }
+      }
+
+      if (originalBars.Preload != null) {
+        offsetBars.Preload = originalBars.Preload;
+      }
+
+      return offsetBars;
+    }
+
+
+    private static ILineGroup OffsetLineGroup(ILineGroup originalGroup, Length deltaY, Length deltaZ) {
+      var startY = originalGroup.FirstBarPosition.Y + deltaY;
+      var startZ = originalGroup.FirstBarPosition.Z + deltaZ;
+      var endY = originalGroup.LastBarPosition.Y + deltaY;
+      var endZ = originalGroup.LastBarPosition.Z + deltaZ;
+
+      return ILineGroup.Create(
+        IPoint.Create(startY, startZ),
+        IPoint.Create(endY, endZ),
+        originalGroup.Layer
+      );
+    }
+
+
+    private static IArcGroup OffsetArcGroup(IArcGroup originalGroup, Length deltaY, Length deltaZ) {
+      var centerY = originalGroup.Centre.Y + deltaY;
+      var centerZ = originalGroup.Centre.Z + deltaZ;
+
+      return IArcGroup.Create(
+        IPoint.Create(centerY, centerZ),
+        originalGroup.Radius,
+        originalGroup.StartAngle,
+        originalGroup.SweepAngle,
+        originalGroup.Layer
+      );
+    }
+
+    private static ICircleGroup OffsetCircleGroup(ICircleGroup originalGroup, Length deltaY, Length deltaZ) {
+      var centerY = originalGroup.Centre.Y + deltaY;
+      var centerZ = originalGroup.Centre.Z + deltaZ;
+
+      return ICircleGroup.Create(
+        IPoint.Create(centerY, centerZ),
+        originalGroup.Radius,
+        originalGroup.StartAngle,
+        originalGroup.Layer
+      );
     }
   }
 }
