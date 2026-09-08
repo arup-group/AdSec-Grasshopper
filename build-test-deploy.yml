@@ -217,8 +217,13 @@ steps:
   - powershell: |
       $branchPattern = '^(refs/heads/[0-9A-Za-z._/-]+|[0-9A-Za-z._/-]+)$'
 
-      # Get the target branch name from Azure DevOps metadata
-      $targetBranch = if ($env:TARGET_BRANCH) { $env:TARGET_BRANCH } else { 'main' }
+      $targetBranch = $env:TARGET_BRANCH
+      if ([string]::IsNullOrWhiteSpace($targetBranch) -or $targetBranch -like '$(*') {
+        $targetBranch = $env:SOURCE_BRANCH
+      }
+      if ([string]::IsNullOrWhiteSpace($targetBranch) -or $targetBranch -like '$(*') {
+        $targetBranch = 'main'
+      }
 
       if ($targetBranch -notmatch $branchPattern) {
         throw "Unexpected branch ref format: $targetBranch"
