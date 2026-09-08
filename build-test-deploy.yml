@@ -13,10 +13,8 @@ variables:
     value: $(System.DefaultWorkingDirectory)
   - name: PIPELINE_WORKSPACE
     value: $(Pipeline.Workspace)
-  - name: SOURCE_BRANCH
-    value: $(Build.SourceBranch)
-  - name: TARGET_BRANCH
-    value: $(System.PullRequest.TargetBranch)
+  - name: BASE_BRANCH
+    value: $[ coalesce(variables['System.PullRequest.TargetBranch'], variables['Build.SourceBranch']) ]
   - name: APPX_PACKAGE_DIRECTORY
     value: $(build.artifactStagingDirectory)\AppxPackages
   - name: RESULTS_DIRECTORY
@@ -188,10 +186,7 @@ steps:
       $branchPattern = '^(refs/heads/[0-9A-Za-z._/-]+|[0-9A-Za-z._/-]+)$'
 
       # Get PR target or fallback
-      $fullBranch = $env:TARGET_BRANCH
-      if (-not $fullBranch) {
-        $fullBranch = $env:SOURCE_BRANCH
-      }
+      $fullBranch = $env:BASE_BRANCH
 
       if ($fullBranch -notmatch $branchPattern) {
         throw "Unexpected branch ref format: $fullBranch"
@@ -217,13 +212,7 @@ steps:
   - powershell: |
       $branchPattern = '^(refs/heads/[0-9A-Za-z._/-]+|[0-9A-Za-z._/-]+)$'
 
-      $targetBranch = $env:TARGET_BRANCH
-      if ([string]::IsNullOrWhiteSpace($targetBranch) -or $targetBranch -like '$(*') {
-        $targetBranch = $env:SOURCE_BRANCH
-      }
-      if ([string]::IsNullOrWhiteSpace($targetBranch) -or $targetBranch -like '$(*') {
-        $targetBranch = 'main'
-      }
+      $targetBranch = $env:BASE_BRANCH
 
       if ($targetBranch -notmatch $branchPattern) {
         throw "Unexpected branch ref format: $targetBranch"
