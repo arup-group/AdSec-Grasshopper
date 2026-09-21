@@ -13,10 +13,8 @@ variables:
     value: $(System.DefaultWorkingDirectory)
   - name: PIPELINE_WORKSPACE
     value: $(Pipeline.Workspace)
-  - name: SOURCE_BRANCH
-    value: $(Build.SourceBranch)
-  - name: TARGET_BRANCH
-    value: $(System.PullRequest.TargetBranch)
+  - name: BASE_BRANCH
+    value: $[ coalesce(variables['System.PullRequest.TargetBranch'], variables['Build.SourceBranch']) ]
   - name: APPX_PACKAGE_DIRECTORY
     value: $(build.artifactStagingDirectory)\AppxPackages
   - name: RESULTS_DIRECTORY
@@ -188,10 +186,7 @@ steps:
       $branchPattern = '^(refs/heads/[0-9A-Za-z._/-]+|[0-9A-Za-z._/-]+)$'
 
       # Get PR target or fallback
-      $fullBranch = $env:TARGET_BRANCH
-      if (-not $fullBranch) {
-        $fullBranch = $env:SOURCE_BRANCH
-      }
+      $fullBranch = $env:BASE_BRANCH
 
       if ($fullBranch -notmatch $branchPattern) {
         throw "Unexpected branch ref format: $fullBranch"
@@ -217,8 +212,7 @@ steps:
   - powershell: |
       $branchPattern = '^(refs/heads/[0-9A-Za-z._/-]+|[0-9A-Za-z._/-]+)$'
 
-      # Get the target branch name from Azure DevOps metadata
-      $targetBranch = if ($env:TARGET_BRANCH) { $env:TARGET_BRANCH } else { 'main' }
+      $targetBranch = $env:BASE_BRANCH
 
       if ($targetBranch -notmatch $branchPattern) {
         throw "Unexpected branch ref format: $targetBranch"
@@ -227,6 +221,20 @@ steps:
       $targetBranch = $targetBranch -replace '^refs/heads/', ''
 
       Write-Host "Calculating PR modifications against origin/$targetBranch..."
+
+      $mutationBuildPaths = @(
+        'AdSecCore/bin',
+        'AdSecCore/obj',
+        'AdSecCoreTests/bin',
+        'AdSecCoreTests/obj'
+      )
+
+      foreach ($path in $mutationBuildPaths) {
+        if (Test-Path $path) {
+          Write-Host "Removing stale mutation build path: $path"
+          Remove-Item -Path $path -Recurse -Force
+        }
+      }
 
       # Extract changed AdSecCore C# files and format paths for Stryker.
       # Stryker expects mutate paths relative to the mutated project's root, not the repo root.
@@ -237,13 +245,31 @@ steps:
       if ($changedFiles) {
           $mutateFiles = $changedFiles | ForEach-Object { $_ -replace '^AdSecCore/', '' }
 
-          # Format multiple files into a clean comma-separated list
-          $mutateArg = $mutateFiles -join ','
-          Write-Host "Fast PR Optimization Active. Targeted repo files: $($changedFiles -join ',')"
-          Write-Host "Stryker mutate filter: $mutateArg"
+            $mutateArgs = foreach ($mutateFile in $mutateFiles) {
+              '--mutate'
+              $mutateFile
+            }
 
-          # Execute Stryker focusing ONLY on the PR modifications
-          dotnet stryker -s AdSecCore.sln --project AdSecCore/AdSecCore.csproj --test-project AdSecCoreTests/AdSecCoreTests.csproj --mutate "$mutateArg" -l advanced *>&1 | Tee-Object -FilePath "stryker.log"
+            Write-Host "Targeted repo files: $($changedFiles -join ',')"
+            Write-Host "Stryker mutate filters: $($mutateFiles -join ',')"
+
+            $strykerArgs = @(
+              'stryker'
+              '-s'
+              'AdSecCore.sln'
+              '--project'
+              'AdSecCore/AdSecCore.csproj'
+              '--test-project'
+              'AdSecCoreTests/AdSecCoreTests.csproj'
+                '--concurrency'
+                '1'
+            ) + $mutateArgs + @(
+              '-l'
+              'advanced'
+            )
+
+            # Execute Stryker focusing only on the PR modifications
+            & dotnet @strykerArgs 2>&1 | Tee-Object -FilePath "stryker.log"
 
           if ($LASTEXITCODE -ne 0) {
             Write-Error "Stryker task failed!"
