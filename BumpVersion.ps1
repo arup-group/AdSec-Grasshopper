@@ -30,22 +30,22 @@ function Validate-VersionFormat {
 # Function to update a file's contents based on a search/replacement pattern
 function Update-FileContent {
     param (
-        [string]$filePath,
-        [string]$searchPattern,
-        [string]$replacementPattern,
-        [string]$successMessage
+        [string]$FilePath,
+        [string]$SearchPattern,
+        [string]$ReplacementPattern,
+        [string]$SuccessMessage
     )
 
     # Read the content of the file
-    $content = Get-Content $filePath
+    $content = Get-Content $FilePath
 
     # Replace based on the provided pattern and replacement
-    $updatedContent = $content -replace $searchPattern, $replacementPattern
+    $updatedContent = $content -replace $SearchPattern, $ReplacementPattern
 
     # Write the updated content back to the file
-    Set-Content $filePath -Value $updatedContent
+    Set-Content $FilePath -Value $updatedContent
 
-    Write-Host $successMessage
+    Write-Output $SuccessMessage
 }
 
 # Check if the version format is valid
@@ -97,13 +97,33 @@ $filesToUpdate = @(
         FilePath = ".\AdSecGH\AdSecGH.csproj"
         SearchPattern = '(Copyright © Oasys 1985 - )\d{4}'
         ReplacementPattern = "`${1}$currentYear"
+    },
+    @{
+        FilePath = ".\AdSecCoreTests\missing_sections.ads"
+        SearchPattern = '(Copyright © Oasys 1985-)\d{4}'
+        ReplacementPattern = "`${1}$currentYear"
+    },
+    @{
+        FilePath = ".\AdSecCoreTests\sections_with_warnings.ads"
+        SearchPattern = '(Copyright © Oasys 1985-)\d{4}'
+        ReplacementPattern = "`${1}$currentYear"
+    },
+    @{
+        FilePath = ".\AdSecCoreTests\simple.ads"
+        SearchPattern = '(Copyright © Oasys 1985-)\d{4}'
+        ReplacementPattern = "`${1}$currentYear"
+    },
+    @{
+        FilePath = ".\AdSecCoreTests\simple_2_section.ads"
+        SearchPattern = '(Copyright © Oasys 1985-)\d{4}'
+        ReplacementPattern = "`${1}$currentYear"
     }
 )
 
 # Loop through each file and apply its update
 foreach ($file in $filesToUpdate) {
     $message = if ($file.SuccessMessage) { $file.SuccessMessage } else { "Updated copyright year in $($file.FilePath) to $currentYear" }
-    Update-FileContent -filePath $file.FilePath -searchPattern $file.SearchPattern -replacementPattern $file.ReplacementPattern -successMessage $message
+    Update-FileContent -FilePath $file.FilePath -SearchPattern $file.SearchPattern -ReplacementPattern $file.ReplacementPattern -SuccessMessage $message
 }
 
 Write-Host "Version update completed."
