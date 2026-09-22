@@ -33,9 +33,8 @@ namespace AdSecCore.Functions {
     public PlaneParameter Plane { get; set; } = new PlaneParameter() {
       Name = "LocalPlane",
       NickName = "P",
-      Description = "[Optional] Plane representing local coordinate system, by default a YZ - plane is used",
+      Description = "[Optional] The plane indicates the local coordinate system, with the default being a YZ-plane; however, the perimeter profile uses the default geometry plane instead",
       Access = Access.Item,
-      Default = new[] { OasysPlane.PlaneYZ, },
       Optional = true,
     };
 
