@@ -4,6 +4,8 @@ using Grasshopper.Kernel.Types;
 
 using Oasys.AdSec;
 
+using OasysGH.Units;
+
 using OasysUnits;
 using OasysUnits.Units;
 
@@ -15,8 +17,8 @@ namespace AdSecGHTests.Parameters {
 
     [Fact]
     public void ShouldBeAbleToCastToVector3d() {
-      var value = IDeformation.Create(Strain.From(1, StrainUnit.Ratio), Curvature.From(2, CurvatureUnit.PerMeter),
-        Curvature.From(3, CurvatureUnit.PerMeter));
+      var value = IDeformation.Create(Strain.From(1, DefaultUnits.StrainUnitResult), Curvature.From(2, DefaultUnits.CurvatureUnit),
+        Curvature.From(3, DefaultUnits.CurvatureUnit));
       var deformation = new AdSecDeformationGoo(value);
       var vec = new GH_Vector();
       Assert.True(deformation.CastTo(ref vec));

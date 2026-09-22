@@ -169,7 +169,7 @@ namespace AdSecGH.Parameters {
 
     internal static IList<IPoint> PtsFromPolylineCurve(PolylineCurve curve) {
       curve.TryGetPolyline(out var tempCurve);
-      Plane.FitPlaneToPoints(tempCurve.ToList(), out var plane);
+      RhinoHelper.TryFitPlaneToPolyline(tempCurve, out var plane);
       var mapToLocal = Rhino.Geometry.Transform.PlaneToPlane(Plane.WorldXY, plane);
 
       var points = IList<IPoint>.Create();

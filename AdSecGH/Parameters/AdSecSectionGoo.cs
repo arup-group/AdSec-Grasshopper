@@ -49,13 +49,12 @@ namespace AdSecGH.Parameters {
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(AdSecSection))) {
-        target = Value == null ? default : (Q)(object)new AdSecSection(Value.Section, Value.DesignCode, Value._codeName,
-          Value._materialName, Value.LocalPlane);
+        target = Value == null ? default : (Q)(object)new AdSecSection(CreateSectionDesign(Value));
         return true;
       }
 
       if (typeof(Q).IsAssignableFrom(typeof(AdSecProfileGoo))) {
-        target = Value == null ? default : (Q)(object)new AdSecProfileGoo(Value.Section.Profile, Value.LocalPlane);
+        target = Value == null ? default : (Q)(object)new AdSecProfileGoo(Value.Section.Profile, Value.GlobalPlane, Value.LocalPlane);
         return true;
       }
 
@@ -207,6 +206,20 @@ namespace AdSecGH.Parameters {
             }
         }
       }
+    }
+
+    private static AdSecCore.Functions.SectionDesign CreateSectionDesign(AdSecSection value) {
+      return new AdSecCore.Functions.SectionDesign {
+        Section = value.Section,
+        DesignCode = new AdSecCore.Functions.DesignCode {
+          IDesignCode = value.DesignCode,
+          DesignCodeName = value._codeName
+        },
+        CodeName = value._codeName,
+        MaterialName = value._materialName,
+        GlobalPlane = value.GlobalPlane.ToOasys(),
+        LocalPlane = value.LocalPlane.ToOasys()
+      };
     }
 
     private static ObjectAttributes GetAttribute(ObjectAttributes attributes, DrawInstructions instructions) {
