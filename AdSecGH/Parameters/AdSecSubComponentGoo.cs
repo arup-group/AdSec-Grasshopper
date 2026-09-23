@@ -38,8 +38,7 @@ namespace AdSecGH.Parameters {
       offset = subComponent.ISubComponent.Offset;
       var sectionDesign = subComponent.SectionDesign;
       var plane = sectionDesign.LocalPlane.ToGh();
-      section = new AdSecSection(sectionDesign.Section, sectionDesign.DesignCode.IDesignCode,
-        sectionDesign.MaterialName, sectionDesign.CodeName, plane, offset);
+      section = new AdSecSection(sectionDesign);
 
       if (!PlaneHelper.IsNotParallelToWorldXYZ(plane)) {
         return;
