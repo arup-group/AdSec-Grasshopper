@@ -398,8 +398,15 @@ steps:
     displayName: Remove Yak from Results
 
   - powershell: |
-      cd AdSecGH
-      & 'C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\MSBuild.exe' AdSecGH.csproj /t:pack /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg /p:DebugType=portable /property:Configuration=Debug
+      # Stryker removes AdSecCore/obj (including project.assets.json); restore before pack.
+      dotnet restore AdSecGH\AdSecGH.csproj -p:Platform=x64 -p:Configuration=Release
+      & 'C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\MSBuild.exe' AdSecGH\AdSecGH.csproj `
+        /t:pack `
+        /p:Platform=x64 `
+        /p:Configuration=Release `
+        /p:IncludeSymbols=true `
+        /p:SymbolPackageFormat=snupkg `
+        /p:DebugType=portable
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables.TAG_EXISTS, 'true'))
     displayName: Package NuGet
 
