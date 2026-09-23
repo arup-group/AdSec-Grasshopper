@@ -13,14 +13,17 @@ using Oasys.AdSec.Reinforcement.Layers;
 using Oasys.Profiles;
 
 using OasysUnits;
+using OasysUnits.Units;
 
 namespace AdSecCore.Functions {
   public class SectionDesign {
     public ISection Section { get; set; }
     public DesignCode DesignCode { get; set; }
-    public string CodeName { get; set; }
-    public string MaterialName { get; set; }
+    public string CodeName { get; set; } = string.Empty;
+    public string MaterialName { get; set; } = string.Empty;
     public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
+    public OasysPlane GlobalPlane { get; set; } = OasysPlane.PlaneYZ;
+    public IPoint SubComponentOffset { get; set; }
   }
 
   public class OasysPlane {
@@ -109,10 +112,14 @@ namespace AdSecCore.Functions {
   public class ProfileDesign {
     public IProfile Profile { get; set; }
     public OasysPlane LocalPlane { get; set; } = OasysPlane.PlaneYZ;
+    public OasysPlane GlobalPlane { get; set; } = OasysPlane.PlaneYZ;
+    public Length OffsetY { get; set; } = new Length(0.0, LengthUnit.Meter);
+    public Length OffsetZ { get; set; } = new Length(0.0, LengthUnit.Meter);
 
     public static ProfileDesign From(SectionDesign sectionDesign) {
       return new ProfileDesign {
         Profile = sectionDesign.Section.Profile,
+        GlobalPlane = sectionDesign.GlobalPlane,
         LocalPlane = sectionDesign.LocalPlane,
       };
     }

@@ -105,7 +105,7 @@ steps:
       MSBUILDDISABLENODEREUSE: 1
 
   - powershell: |
-      dotnet tool install --global dotnet-stryker
+      dotnet tool install --global dotnet-stryker --version 4.16.0
     displayName: Install Stryker
     failOnStderr: false
 
