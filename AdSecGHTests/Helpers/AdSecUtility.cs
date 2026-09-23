@@ -46,7 +46,7 @@ namespace AdSecGHTests.Helpers {
     }
 
     public static GH_Component AnalyzeComponent() {
-      var component = new Analyse();
+      var component = new AnalyseSection();
       component.SetInputParamAt(0, new AdSecSectionGoo(SectionObject()));
       return component;
     }

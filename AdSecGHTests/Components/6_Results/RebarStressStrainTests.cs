@@ -57,7 +57,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(_component.MatchesExpectedIcon(Resources.StressStrainRebar));
+      Assert.True(_component.MatchesExpectedIcon(Resources.RebarStressStrain));
     }
 
     [Fact]

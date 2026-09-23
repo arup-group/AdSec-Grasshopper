@@ -20,11 +20,11 @@ using Xunit;
 
 namespace AdSecGHTests.Components {
   [Collection("GrasshopperFixture collection")]
-  public class CreateDeformationTests {
-    private readonly CreateDeformation _component;
+  public class CreateDeformationLoadTests {
+    private readonly CreateDeformationLoad _component;
     private readonly DoubleComparer _comparer = new DoubleComparer();
-    public CreateDeformationTests() {
-      _component = new CreateDeformation();
+    public CreateDeformationLoadTests() {
+      _component = new CreateDeformationLoad();
     }
 
     private void SetDefaultInputs() {
@@ -78,7 +78,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(_component.MatchesExpectedIcon(Resources.DeformationLoad));
+      Assert.True(_component.MatchesExpectedIcon(Resources.CreateDeformationLoad));
     }
 
     [Fact]

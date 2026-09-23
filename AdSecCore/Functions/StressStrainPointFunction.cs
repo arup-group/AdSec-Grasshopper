@@ -34,7 +34,7 @@ namespace AdSecCore.Functions {
     public PressureUnit LocalStressUnit { get; set; } = PressureUnit.Megapascal;
 
     public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
-      Name = "Create Stress-Strain Point",
+      Name = "Create Stress Strain Point",
       NickName = "SSPoint",
       Description = "Create a stress-strain point",
     };

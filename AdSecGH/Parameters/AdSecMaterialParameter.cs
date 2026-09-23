@@ -11,6 +11,9 @@ using AdSecGHCore.Constants;
 using Grasshopper.Kernel;
 
 namespace AdSecGH.Parameters {
+  /// <summary>
+  ///   This class provides a parameter interface for the <see cref="AdSecMaterialGoo" /> type.
+  /// </summary>
   public class AdSecMaterialParameter : GH_PersistentParam<AdSecMaterialGoo> {
 
     public AdSecMaterialParameter() : base(new GH_InstanceDescription("Material", "Mat", "AdSec Material Parameter",

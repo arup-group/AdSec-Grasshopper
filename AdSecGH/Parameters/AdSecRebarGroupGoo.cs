@@ -14,6 +14,9 @@ using OasysGH.Units;
 using OasysUnits;
 
 namespace AdSecGH.Parameters {
+  /// <summary>
+  ///   Goo wrapper class, makes sure <see cref="AdSecRebarGroup" /> can be used in Grasshopper.
+  /// </summary>
   public class AdSecRebarGroupGoo : GH_Goo<AdSecRebarGroup> {
     public override bool IsValid => true;
     public override string TypeDescription => $"AdSec {TypeName} Parameter";

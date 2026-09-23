@@ -220,7 +220,7 @@ namespace AdSecGHTests.Components {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(_component.MatchesExpectedIcon(Resources.Prestress));
+      Assert.True(_component.MatchesExpectedIcon(Resources.CreatePreStressLoad));
     }
 
     [Fact]

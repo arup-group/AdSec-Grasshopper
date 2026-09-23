@@ -53,7 +53,7 @@ namespace AdSecCore.Functions {
     };
 
     public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
-      Name = "Rebar Stress/Strain",
+      Name = "Rebar Stress Strain",
       NickName = "RSS",
       Description = "Calculate the Rebar Stress/Strains in the Section for a given Load or Deformation.",
     };

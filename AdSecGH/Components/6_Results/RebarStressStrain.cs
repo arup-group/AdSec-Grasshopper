@@ -29,6 +29,6 @@ namespace AdSecGH.Components {
     public override Guid ComponentGuid => new Guid("bb9fe65b-76e1-466b-be50-3dd9c7a3283f");
     public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.obscure;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.StressStrainRebar;
+    protected override Bitmap Icon => Resources.RebarStressStrain;
   }
 }

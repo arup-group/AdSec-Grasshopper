@@ -5,7 +5,7 @@ using Oasys.AdSec;
 using OasysUnits;
 
 namespace AdSecCore.Functions {
-  public class CreateDeformationFunction : Function {
+  public class CreateDeformationLoadFunction : Function {
     public StrainParameter StrainInput { get; set; } = new StrainParameter {
       Name = "εx",
       NickName = "X",

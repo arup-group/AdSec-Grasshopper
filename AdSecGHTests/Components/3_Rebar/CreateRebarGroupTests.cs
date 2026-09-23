@@ -69,7 +69,7 @@ namespace AdSecGHTests.Components._3_Rebar {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(component.MatchesExpectedIcon(Resources.RebarGroup));
+      Assert.True(component.MatchesExpectedIcon(Resources.CreateReinforcementGroup));
     }
 
     [Fact]

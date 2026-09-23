@@ -243,7 +243,7 @@ namespace AdSecGHTests.Components.Properties {
 
     [Fact]
     public void ShouldHaveIconReferenced() {
-      Assert.True(_component.MatchesExpectedIcon(Resources.StressStrainCrv));
+      Assert.True(_component.MatchesExpectedIcon(Resources.CreateStressStrainCrv));
     }
   }
 }

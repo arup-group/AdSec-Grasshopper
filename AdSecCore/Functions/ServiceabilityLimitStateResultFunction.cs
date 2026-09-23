@@ -11,10 +11,10 @@ using OasysUnits.Units;
 namespace AdSecCore.Functions {
 
 
-  public class SlsResultFunction : ResultFunction {
+  public class ServiceabilityLimitStateResultFunction : ResultFunction {
     private IServiceabilityResult Sls { get; set; }
     public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
-      Name = "Serviceability Result",
+      Name = "Serviceability Limit State Result",
       NickName = "SLS",
       Description = "Performs serviceability analysis (SLS), for a given Load or Deformation.",
     };

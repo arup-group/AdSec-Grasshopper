@@ -21,7 +21,7 @@ namespace AdSecGH.Parameters {
     public static bool Hidden => true;
     public static bool IsPreviewCapable => false;
 
-    protected override Bitmap Icon => Resources.DesignCodeParameter;
+    protected override Bitmap Icon => Resources.DesignCodeParam;
 
     protected override ToolStripMenuItem Menu_CustomMultiValueItem() {
       return ToolStripMenuHelper.CreateInvisibleMenuItem();

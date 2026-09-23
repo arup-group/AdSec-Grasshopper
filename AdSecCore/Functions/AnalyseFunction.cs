@@ -3,7 +3,7 @@
 using Oasys.AdSec;
 
 namespace AdSecCore.Functions {
-  public class AnalyseFunction : Function {
+  public class AnalyseSectionFunction : Function {
     public override FuncAttribute Metadata { get; set; } = new FuncAttribute {
       Description = "Analyse an AdSec Section",
       Name = "Analyse Section",

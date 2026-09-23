@@ -21,7 +21,7 @@ namespace AdSecGH.Components {
     public override Guid ComponentGuid => new Guid("846d546a-4284-4d69-906b-0e6985d7ddd3");
     public override GH_Exposure Exposure => GH_Exposure.primary;
     public override OasysPluginInfo PluginInfo => AdSecGH.PluginInfo.Instance;
-    protected override Bitmap Icon => Resources.RebarSpacing;
+    protected override Bitmap Icon => Resources.CreateRebarSpacing;
 
     public override void SetSelected(int i, int j) {
       string selectedItem = _dropDownItems[i][j];
