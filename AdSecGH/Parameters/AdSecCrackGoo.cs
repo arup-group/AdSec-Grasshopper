@@ -30,6 +30,11 @@ namespace AdSecGH.Parameters {
 
     public AdSecCrackGoo(CrackLoad crackLoad) : base(crackLoad) {
       var plane = Value.Plane.ToGh();
+
+      if (crackLoad.Load == null) {
+        return;
+      }
+
       // create point from crack position in global axis
       var point3d = new Point3d(m_value.Load.Position.Y.Value, m_value.Load.Position.Z.Value, 0);
 
@@ -157,6 +162,9 @@ namespace AdSecGH.Parameters {
     }
 
     public override string ToString() {
+      if (!IsValidCrack()) {
+        return "Couldn't calculate Crack";
+      }
       return
         $"AdSec {TypeName} {{Y:{Math.Round(Value.Load.Position.Y.Value, 4)}{Value.Load.Position.Y.Unit}, Z:{Math.Round(Value.Load.Position.Z.Value, 4)}{Value.Load.Position.Z.Unit}, Width:{Math.Round(Value.Load.Width.Value, 4)}{Value.Load.Width.Unit}}}";
     }
