@@ -169,7 +169,7 @@ namespace AdSecGH.Parameters {
       var outMesh = new Mesh();
 
       outMesh.Vertices.AddVertices(loadsurface.Vertices.Select(load => new Point3d(load.X.As(DefaultUnits.ForceUnit),
-        load.ZZ.As(DefaultUnits.MomentUnit), load.YY.As(DefaultUnits.MomentUnit))));
+        load.YY.As(DefaultUnits.MomentUnit), load.ZZ.As(DefaultUnits.MomentUnit))));
 
       outMesh.Faces.AddFaces(loadsurface.Faces.Select(face => new MeshFace(face.Vertex1, face.Vertex2, face.Vertex3)));
 
@@ -192,18 +192,18 @@ namespace AdSecGH.Parameters {
       double maxN = _bbox.PointAt(1, 0.5, 0.5).X;
       double minN = _bbox.PointAt(0, 0.5, 0.5).X;
 
-      double maxMyy = _bbox.PointAt(0.5, 0.5, 1).Z;
-      double minMyy = _bbox.PointAt(0.5, 0.5, 0).Z;
+      double maxMyy = _bbox.PointAt(0.5, 1, 0.5).Y;
+      double minMyy = _bbox.PointAt(0.5, 0, 0.5).Y;
 
-      double maxMzz = _bbox.PointAt(0.5, 1, 0.5).Y;
-      double minMzz = _bbox.PointAt(0.5, 0, 0.5).Y;
+      double maxMzz = _bbox.PointAt(0.5, 0.5, 1).Z;
+      double minMzz = _bbox.PointAt(0.5, 0.5, 0).Z;
 
       _previewPosXaxis = new Line(_plane.Origin, _plane.ZAxis, maxN);
-      _previewPosYaxis = new Line(_plane.Origin, _plane.YAxis, maxMyy);
-      _previewPosZaxis = new Line(_plane.Origin, _plane.XAxis, maxMzz);
+      _previewPosYaxis = new Line(_plane.Origin, _plane.XAxis, maxMyy);
+      _previewPosZaxis = new Line(_plane.Origin, _plane.YAxis, maxMzz);
       _previewNegXaxis = new Line(_plane.Origin, _plane.ZAxis, minN);
-      _previewNegYaxis = new Line(_plane.Origin, _plane.YAxis, minMyy);
-      _previewNegZaxis = new Line(_plane.Origin, _plane.XAxis, minMzz);
+      _previewNegYaxis = new Line(_plane.Origin, _plane.XAxis, minMyy);
+      _previewNegZaxis = new Line(_plane.Origin, _plane.YAxis, minMzz);
 
       double size = Math.Max(
         Math.Max(Math.Max(Math.Max(Math.Max(Math.Abs(maxN), Math.Abs(minN)), Math.Abs(maxMyy)), Math.Abs(minMyy)),
@@ -229,32 +229,32 @@ namespace AdSecGH.Parameters {
         Origin = _previewPosYaxis.PointAt(1.05),
       };
       _posMyy = new Text3d("+Myy", planePosMyy, size) {
-        HorizontalAlignment = TextHorizontalAlignment.Center,
-        VerticalAlignment = TextVerticalAlignment.Bottom,
+        HorizontalAlignment = TextHorizontalAlignment.Left,
+        VerticalAlignment = TextVerticalAlignment.Middle,
       };
 
       var planeNegMyy = new Plane(_plane) {
         Origin = _previewNegYaxis.PointAt(1.05),
       };
       _negMyy = new Text3d("-Myy", planeNegMyy, size) {
-        HorizontalAlignment = TextHorizontalAlignment.Center,
-        VerticalAlignment = TextVerticalAlignment.Top,
+        HorizontalAlignment = TextHorizontalAlignment.Right,
+        VerticalAlignment = TextVerticalAlignment.Middle,
       };
 
       var planePosMzz = new Plane(_plane) {
         Origin = _previewPosZaxis.PointAt(1.05),
       };
       _posMzz = new Text3d("+Mzz", planePosMzz, size) {
-        HorizontalAlignment = TextHorizontalAlignment.Left,
-        VerticalAlignment = TextVerticalAlignment.Middle,
+        HorizontalAlignment = TextHorizontalAlignment.Center,
+        VerticalAlignment = TextVerticalAlignment.Bottom,
       };
 
       var planeNegMzz = new Plane(_plane) {
         Origin = _previewNegZaxis.PointAt(1.05),
       };
       _negMzz = new Text3d("-Mzz", planeNegMzz, size) {
-        HorizontalAlignment = TextHorizontalAlignment.Right,
-        VerticalAlignment = TextVerticalAlignment.Middle,
+        HorizontalAlignment = TextHorizontalAlignment.Center,
+        VerticalAlignment = TextVerticalAlignment.Top,
       };
     }
   }
