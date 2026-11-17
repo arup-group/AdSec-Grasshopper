@@ -29,6 +29,10 @@ namespace AdSecGH.Parameters {
     private Point3d _point;
 
     public AdSecCrackGoo(CrackLoad crackLoad) : base(crackLoad) {
+      if (crackLoad == null) {
+        throw new System.ArgumentNullException(nameof(crackLoad));
+      }
+
       var plane = Value.Plane.ToGh();
       // create point from crack position in global axis
       var point3d = new Point3d(m_value.Load.Position.Y.Value, m_value.Load.Position.Z.Value, 0);

@@ -272,7 +272,7 @@ namespace Oasys.GH.Helpers {
         { typeof(StringArrayParam), a => (a as StringArrayParam).Value }, {
           typeof(CrackParameter), a => {
             var crack = (a as CrackParameter).Value;
-            return new AdSecCrackGoo(crack);
+            return crack == null ? null : new AdSecCrackGoo(crack);
           }
         }, {
           typeof(LoadParameter), a => {
